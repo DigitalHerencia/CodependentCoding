@@ -1,0 +1,45 @@
+name: Feature Request
+about: Use this template for feature work items derived from the implementation plan
+title: "FEATURE: "
+labels: ["feature","spec","priority-medium"]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please fill out this feature request created from `specs/001-product-requirements-document/tasks.md`.
+  - type: input
+    id: short_description
+    attributes:
+      label: Short summary
+      description: One-line summary of the feature
+      placeholder: "Short summary"
+  - type: textarea
+    id: context
+    attributes:
+      label: Context and background
+      description: Why we are building this, links to spec/plan
+  - type: textarea
+    id: files
+    attributes:
+      label: Files to create or change
+      description: List files and paths impacted by this feature (from tasks.md)
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: Tests or checks that prove the feature is done
+  - type: textarea
+    id: subtasks
+    attributes:
+      label: Implementation subtasks (checklist)
+      description: One checklist item per subtask; include tests, lint, format, and PR
+  - type: dropdown
+    id: milestone
+    attributes:
+      label: Target milestone
+      options:
+        - "Phase 1"
+        - "Phase 2"
+        - "Phase 3"
