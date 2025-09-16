@@ -1,6 +1,6 @@
-# tasks.md — Moody Monday Mega-Super-Cool-Archive-Theater (MVP)
+# Codependent Coding (MVP)
 
- Feature: Moody Monday Mega-Super-Cool-Archive-Theater
+ Feature: Monday's Archive Theater
  Branch: `001-product-requirements-document`
  Spec: D:\Monday\specs\001-product-requirements-document\spec.md
  Plan: D:\Monday\specs\001-product-requirements-document\plan.md
@@ -267,6 +267,7 @@
 
 - All tasks follow Test-First: tests must be added before code. Contract and integration tests are prioritized.
 - Serverless DB connection patterns (Prisma + Neon) should use recommended unpooled patterns during migrations.
-- Upload storage provider choices deferred to research; default to S3-compatible (AWS S3) unless specified.
+- Upload storage provider choices deferred to research; default to UploadThing (managed uploads via @uploadthing/* packages) unless a different provider is explicitly required.
+- Implementation note: implementers should add a small server router (e.g., lib/uploadthing.ts or app/api/uploadthing/route.ts) and a client upload component (components/upload/UploadDropzone.tsx) that use @uploadthing/react and @uploadthing/next. See UploadThing docs for Next.js integration.
 
  Prepared by automated tasks generator from `plan.md`, `data-model.md`, `contracts/`, and `research.md`.
