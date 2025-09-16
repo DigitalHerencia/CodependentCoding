@@ -1,0 +1,31 @@
+name: Chore / Infrastructure
+about: Use for CI, infra, docs, or chores derived from the plan
+title: "CHORE: "
+labels: ["chore","infra","priority-low"]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this for infra, CI, docs, or housekeeping tasks created from the implementation plan.
+  - type: input
+    id: short_description
+    attributes:
+      label: Short summary
+  - type: textarea
+    id: context
+    attributes:
+      label: Context and background
+  - type: textarea
+    id: files
+    attributes:
+      label: Files to create or change
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+  - type: textarea
+    id: subtasks
+    attributes:
+      label: Implementation subtasks (checklist)
