@@ -14,11 +14,12 @@
 7. Plan Phase 2 → Describe task generation approach (placeholder tasks.md created)
 8. STOP - Ready for /tasks command
 
-
 ## Summary
+
 Build a secure web app to archive ChatGPT-exported conversations and attachments. Users upload exports, which the system validates, ingests, and stores as Archives linked to the user's account. Clerk manages auth and webhooks; Neon (Postgres) via Prisma stores user and archive metadata; attachments stored in S3-compatible storage.
 
 ## Technical Context
+
 **Language/Version**: TypeScript (Node) — inferred from Next.js recommendation
 **Primary Dependencies**: Next.js (App Router), React, Prisma, Clerk, Tailwind, uploadthing or AWS SDK for S3 (NEEDS CLARIFICATION)
 **Storage**: Neon Postgres via Prisma for metadata; S3-compatible object storage for attachments
@@ -32,41 +33,53 @@ Build a secure web app to archive ChatGPT-exported conversations and attachments
 ## Constitution Check
 
 **Simplicity**:
+
 - Projects: 1 (web)
 - Using framework directly: yes (Next.js App Router)
 - Single data model: yes (User, Archive)
 
 **Architecture**:
+
 - Feature implemented within app, small libraries for cross-cutting concerns (prisma client, upload adapters)
 
 **Testing (NON-NEGOTIABLE)**:
+
 - TDD encouraged: contract tests created first
 
 **Observability**:
+
 - Structured logging recommended during implementation
 
 **Versioning**:
+
 - Start at 0.1.0, increment build number on CI
 
 ## Project Structure
+
 (see plan-template for folder examples). Default to web app structure.
 
 ## Phase 0: Outline & Research
+
 - research.md created; open items enumerated
 
 ## Phase 1: Design & Contracts
+
 - data-model.md created
 - contracts/api-openapi.yaml created
 - quickstart.md created
 
 ## Phase 2: Task Planning Approach
+
 - tasks.md placeholder created; /tasks command will expand into prioritized TDD tasks
 
 ## Complexity Tracking
+
 - No constitution violations requiring special justification were found.
 
 ## Progress Tracking
+
 **Phase Status**:
+
 - [x] Phase 0: Research complete (/plan command)
 - [x] Phase 1: Design complete (/plan command)
 - [x] Phase 2: Task planning described (placeholder)
@@ -75,10 +88,10 @@ Build a secure web app to archive ChatGPT-exported conversations and attachments
 - [ ] Phase 5: Validation passed
 
 **Gate Status**:
+
 - [x] Initial Constitution Check: PASS
 - [x] Post-Design Constitution Check: PASS
 - [ ] All NEEDS CLARIFICATION resolved
 - [x] Complexity deviations documented
-
 
 Prepared by automated plan generator.

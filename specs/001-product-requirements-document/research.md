@@ -3,7 +3,7 @@
 ## Decision log
 
 1) Storage backend (production)
-Decision: Use S3-compatible object storage (initial recommendation: AWS S3). 
+Decision: Use S3-compatible object storage (initial recommendation: AWS S3).
 Rationale: Widely supported, well-documented SDKs, presigned URL support for edge deployments; works with Vercel serverless via presigned uploads.
 Alternatives considered: DigitalOcean Spaces (compatible, cheaper), Backblaze B2 (cheaper but smaller ecosystem). Choice depends on org preferences and compliance.
 
@@ -20,14 +20,15 @@ Rationale: Simpler to implement initially; meets a 5s SLA for low-to-moderate we
 Decision: Proceed with Next.js (App Router), Prisma + Neon, Clerk for auth, Tailwind for UI. These are implementation preferences from PRD; plan remains agnostic in core spec while implementation uses them.
 
 ## Open research items (NEEDS CLARIFICATION)
+
 - Production storage provider preference and retention policy
 - Expected webhook throughput / peak rate for sizing
 - Compliance requirements (GDPR/HIPAA)
 
 ## Research tasks
+
 - Validate S3 access patterns under Vercel constraints (presigned vs server-mediated uploads)
 - Evaluate uploadthing vs custom presigned URL approach for edge compatibility and resumable uploads
 - Determine Neon connection pooling recommendations for serverless (prisma, connection handling)
-
 
 Prepared during Phase 0 by automated plan generator.

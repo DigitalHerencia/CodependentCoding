@@ -3,14 +3,71 @@ import * as fs from 'fs'
 import * as path from 'path'
 import * as yaml from 'js-yaml'
 
+interface Schema {
+  type: string
+  format?: string
+  properties?: Record<string, Schema>
+  items?: Schema
+  $ref?: string
+}
+
+interface RequestBody {
+  required?: boolean
+  content?: Record<string, {
+    schema: Schema
+  }>
+}
+
+interface Response {
+  description: string
+  content?: Record<string, {
+    schema: Schema
+  }>
+}
+
+interface Operation {
+  summary: string
+  parameters?: Parameter[]
+  requestBody?: RequestBody
+  responses: Record<string, Response>
+}
+
+interface PathItem {
+  get?: Operation
+  post?: Operation
+  delete?: Operation
+}
+
+interface OpenAPISpec {
+  openapi: string
+  info: {
+    title: string
+    version: string
+  }
+  paths: Record<string, PathItem>
+  components: {
+    schemas: Record<string, Schema>
+  }
+}
+
+interface Parameter {
+  name: string
+  in: string
+  required?: boolean
+  schema: {
+    type: string
+    format?: string
+  }
+}
+
 describe('Archive API Contract Tests', () => {
-  let apiSpec: any
+  let apiSpec: OpenAPISpec
 
   beforeAll(() => {
     // Load OpenAPI specification
     const apiSpecPath = path.join(process.cwd(), 'specs', '001-product-requirements-document', 'contracts', 'api-openapi.yaml')
     const apiSpecContent = fs.readFileSync(apiSpecPath, 'utf8')
-    apiSpec = yaml.load(apiSpecContent)
+    apiSpec = yaml.load(apiSpecContent) as OpenAPISpec
   })
 
   it('should have OpenAPI specification defined', () => {
@@ -25,22 +82,22 @@ describe('Archive API Contract Tests', () => {
     expect(path).toBeDefined()
     expect(path.post).toBeDefined()
 
-    const postSpec = path.post
+    const postSpec = path.post!
     expect(postSpec.summary).toBe('Create an archive from uploaded ChatGPT export')
-    expect(postSpec.requestBody.required).toBe(true)
-    expect(postSpec.requestBody.content['multipart/form-data']).toBeDefined()
+    expect(postSpec.requestBody!.required).toBe(true)
+    expect(postSpec.requestBody!.content!['multipart/form-data']).toBeDefined()
 
     // Validate schema properties
-    const schema = postSpec.requestBody.content['multipart/form-data'].schema
-    expect(schema.properties.file).toBeDefined()
-    expect(schema.properties.file.type).toBe('string')
-    expect(schema.properties.file.format).toBe('binary')
-    expect(schema.properties.title).toBeDefined()
-    expect(schema.properties.title.type).toBe('string')
+    const schema = postSpec.requestBody!.content!['multipart/form-data'].schema
+    expect(schema.properties!.file).toBeDefined()
+    expect(schema.properties!.file.type).toBe('string')
+    expect(schema.properties!.file.format).toBe('binary')
+    expect(schema.properties!.title).toBeDefined()
+    expect(schema.properties!.title.type).toBe('string')
 
     // Validate response
     expect(postSpec.responses['201']).toBeDefined()
-    expect(postSpec.responses['201'].content['application/json'].schema.$ref).toBe('#/components/schemas/Archive')
+    expect(postSpec.responses['201'].content!['application/json'].schema.$ref).toBe('#/components/schemas/Archive')
   })
 
   it('should define /archives/{id} GET endpoint', () => {
@@ -48,19 +105,19 @@ describe('Archive API Contract Tests', () => {
     expect(path).toBeDefined()
     expect(path.get).toBeDefined()
 
-    const getSpec = path.get
+    const getSpec = path.get!
     expect(getSpec.summary).toBe('Get archive by id')
 
     // Validate path parameter
     expect(getSpec.parameters).toHaveLength(1)
-    expect(getSpec.parameters[0].name).toBe('id')
-    expect(getSpec.parameters[0].in).toBe('path')
-    expect(getSpec.parameters[0].required).toBe(true)
-    expect(getSpec.parameters[0].schema.type).toBe('string')
+    expect(getSpec.parameters![0].name).toBe('id')
+    expect(getSpec.parameters![0].in).toBe('path')
+    expect(getSpec.parameters![0].required).toBe(true)
+    expect(getSpec.parameters![0].schema.type).toBe('string')
 
     // Validate response
     expect(getSpec.responses['200']).toBeDefined()
-    expect(getSpec.responses['200'].content['application/json'].schema.$ref).toBe('#/components/schemas/Archive')
+    expect(getSpec.responses['200'].content!['application/json'].schema.$ref).toBe('#/components/schemas/Archive')
   })
 
   it('should define /archives/{id} DELETE endpoint', () => {
@@ -68,7 +125,7 @@ describe('Archive API Contract Tests', () => {
     expect(path).toBeDefined()
     expect(path.delete).toBeDefined()
 
-    const deleteSpec = path.delete
+    const deleteSpec = path.delete!
     expect(deleteSpec.summary).toBe('Delete archive')
     expect(deleteSpec.responses['204'].description).toBe('Deleted')
   })
@@ -78,30 +135,30 @@ describe('Archive API Contract Tests', () => {
     expect(path).toBeDefined()
     expect(path.get).toBeDefined()
 
-    const getSpec = path.get
+    const getSpec = path.get!
     expect(getSpec.summary).toBe('Search user archives')
 
     // Validate query parameters
     expect(getSpec.parameters).toHaveLength(3)
 
-    const qParam = getSpec.parameters.find((p: any) => p.name === 'q')
-    expect(qParam.in).toBe('query')
-    expect(qParam.schema.type).toBe('string')
+    const qParam = getSpec.parameters!.find((p: Parameter) => p.name === 'q')
+    expect(qParam!.in).toBe('query')
+    expect(qParam!.schema.type).toBe('string')
 
-    const startDateParam = getSpec.parameters.find((p: any) => p.name === 'startDate')
-    expect(startDateParam.in).toBe('query')
-    expect(startDateParam.schema.type).toBe('string')
-    expect(startDateParam.schema.format).toBe('date')
+    const startDateParam = getSpec.parameters!.find((p: Parameter) => p.name === 'startDate')
+    expect(startDateParam!.in).toBe('query')
+    expect(startDateParam!.schema.type).toBe('string')
+    expect(startDateParam!.schema.format).toBe('date')
 
-    const endDateParam = getSpec.parameters.find((p: any) => p.name === 'endDate')
-    expect(endDateParam.in).toBe('query')
-    expect(endDateParam.schema.type).toBe('string')
-    expect(endDateParam.schema.format).toBe('date')
+    const endDateParam = getSpec.parameters!.find((p: Parameter) => p.name === 'endDate')
+    expect(endDateParam!.in).toBe('query')
+    expect(endDateParam!.schema.type).toBe('string')
+    expect(endDateParam!.schema.format).toBe('date')
 
     // Validate response
     expect(getSpec.responses['200']).toBeDefined()
-    expect(getSpec.responses['200'].content['application/json'].schema.type).toBe('array')
-    expect(getSpec.responses['200'].content['application/json'].schema.items.$ref).toBe('#/components/schemas/Archive')
+    expect(getSpec.responses['200'].content!['application/json'].schema.type).toBe('array')
+    expect(getSpec.responses['200'].content!['application/json'].schema.items!.$ref).toBe('#/components/schemas/Archive')
   })
 
   it('should define Archive schema component', () => {
@@ -110,7 +167,7 @@ describe('Archive API Contract Tests', () => {
     expect(archiveSchema.type).toBe('object')
 
     // Validate required properties
-    const properties = archiveSchema.properties
+    const properties = archiveSchema.properties!
     expect(properties.id).toBeDefined()
     expect(properties.id.type).toBe('string')
 
@@ -135,13 +192,13 @@ describe('Archive API Contract Tests', () => {
     expect(properties.updatedAt.format).toBe('date-time')
 
     // Validate attachment schema
-    const attachmentSchema = properties.attachments.items
+    const attachmentSchema = properties.attachments.items!
     expect(attachmentSchema.type).toBe('object')
-    expect(attachmentSchema.properties.name.type).toBe('string')
-    expect(attachmentSchema.properties.size.type).toBe('integer')
-    expect(attachmentSchema.properties.contentType.type).toBe('string')
-    expect(attachmentSchema.properties.url.type).toBe('string')
-    expect(attachmentSchema.properties.checksum.type).toBe('string')
+    expect(attachmentSchema.properties!.name.type).toBe('string')
+    expect(attachmentSchema.properties!.size.type).toBe('integer')
+    expect(attachmentSchema.properties!.contentType.type).toBe('string')
+    expect(attachmentSchema.properties!.url.type).toBe('string')
+    expect(attachmentSchema.properties!.checksum.type).toBe('string')
   })
 
   it('should fail because API endpoints are not implemented yet', async () => {
