@@ -1,0 +1,123 @@
+openapi: 3.0.1
+info:
+  title: ChatGPT Archive Utility API
+  version: "0.1.0"
+paths:
+  /archives:
+    post:
+      summary: Create an archive from uploaded ChatGPT export
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                title:
+                  type: string
+      responses:
+        '201':
+          description: Archive created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Archive'
+  /archives/{id}:
+    get:
+      summary: Get archive by id
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Archive
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Archive'
+    delete:
+      summary: Delete archive
+      responses:
+        '204':
+          description: Deleted
+  /search:
+    get:
+      summary: Search user archives
+      parameters:
+        - in: query
+          name: q
+          schema:
+            type: string
+        - in: query
+          name: startDate
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: endDate
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: search results
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Archive'
+  /webhook/clerk:
+    post:
+      summary: Clerk webhook endpoint for user lifecycle events
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Invalid signature
+components:
+  schemas:
+    Archive:
+      type: object
+      properties:
+        id:
+          type: string
+        userId:
+          type: string
+        title:
+          type: string
+        content:
+          type: string
+        attachments:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+              size:
+                type: integer
+              contentType:
+                type: string
+              url:
+                type: string
+              checksum:
+                type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time

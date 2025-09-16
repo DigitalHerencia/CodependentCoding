@@ -1,0 +1,49 @@
+{
+  "name": "chatgpt-archive-utility",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "test": "vitest",
+    "test:watch": "vitest --watch",
+    "db:push": "prisma db push",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@clerk/backend": "^1.5.0",
+    "@clerk/nextjs": "^5.3.0",
+    "@prisma/client": "^5.20.0",
+    "autoprefixer": "^10.4.0",
+    "next": "^15.0.0",
+    "postcss": "^8.4.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-markdown": "^9.0.0",
+    "tailwindcss": "^3.4.0",
+    "uploadthing": "^6.13.0",
+    "zod": "^3.23.0"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^6.8.0",
+    "@types/js-yaml": "^4.0.9",
+    "@types/node": "^22.0.0",
+    "@types/react": "^18.3.0",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.0",
+    "eslint": "^8.57.0",
+    "eslint-config-next": "^15.0.0",
+    "js-yaml": "^4.1.0",
+    "jsdom": "^25.0.0",
+    "prisma": "^5.20.0",
+    "typescript": "^5.5.0",
+    "vitest": "^2.0.0"
+  },
+  "engines": {
+    "node": ">=18.18.0"
+  }
+}

@@ -1,0 +1,58 @@
+# Dependencies
+node_modules/
+
+# Production
+.next/
+out/
+.build/
+
+yarn.lock
+pnpm-lock.yaml
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Testing
+coverage/
+
+# OS / Editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Misc
+*.log
+*.pid
+*.seed
+*.pid.lock
+
+# TypeScript
+*.tsbuildinfo
+
+# Prisma
+prisma/*.db
+prisma/*.sqlite
+
+# Next.js cache
+.next/cache/
+
+# PostCSS / Tailwind
+.postcssrc*
+
+# Temporary files
+.tmp/
+temp/
+
+# Build artifacts
+build/
+dist/
