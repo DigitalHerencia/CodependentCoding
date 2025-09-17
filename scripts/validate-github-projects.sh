@@ -84,7 +84,8 @@ echo "📊 Summary"
 echo "========="
 
 # Count total milestones
-MILESTONE_COUNT=$(echo "$MILESTONES" | wc -l)
+readarray -t MILESTONES_ARR <<< "$MILESTONES"
+MILESTONE_COUNT=${#MILESTONES_ARR[@]}
 echo "Total milestones: $MILESTONE_COUNT/4"
 
 # Count total issues with milestones
