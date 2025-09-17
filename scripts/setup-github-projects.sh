@@ -19,7 +19,16 @@ if ! gh auth status &> /dev/null; then
     exit 1
 fi
 
-REPO="DigitalHerencia/CodependentCoding"
+# Accept repository as first argument or from GITHUB_REPO environment variable
+if [ -n "$1" ]; then
+    REPO="$1"
+elif [ -n "$GITHUB_REPO" ]; then
+    REPO="$GITHUB_REPO"
+else
+    echo "❌ Repository name not specified."
+    echo "   Usage: $0 <owner/repo>  (or set GITHUB_REPO environment variable)"
+    exit 1
+fi
 
 echo "📋 Creating Milestones..."
 echo "========================"
