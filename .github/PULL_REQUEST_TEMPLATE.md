@@ -1,10 +1,12 @@
+# Pull Request Template
+
 ## Summary
 
 Describe the change and why it is needed. Reference the issue(s) this PR closes.
 
 ## Related Issue
 
-Closes: #<issue-number>
+Closes: #\<issue-number>
 
 ## Implementation details
 

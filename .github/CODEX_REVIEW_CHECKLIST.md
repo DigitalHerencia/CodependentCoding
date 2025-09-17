@@ -1,4 +1,5 @@
-Codex Code Review Checklist
+
+# Codex Code Review Checklist
 
 - [ ] Security: No obvious injection/XSS/SSRF/SSRF vectors. Secrets not committed.
 - [ ] Correctness: Behavior matches spec and tests.

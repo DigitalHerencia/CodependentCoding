@@ -9,6 +9,7 @@ This document summarizes the implementation of GitHub Projects v2 Kanban board s
 **Automated Solution**: Run `./scripts/setup-github-projects.sh` or `./scripts/setup-github-projects.ps1`
 
 **Manual Commands** (copy-paste ready):
+
 ```bash
 # Phase 1 — Foundation
 gh api repos/DigitalHerencia/CodependentCoding/milestones \
@@ -42,6 +43,7 @@ gh api repos/DigitalHerencia/CodependentCoding/milestones \
 ### ✅ Create the Projects v2 board with columns above
 
 **Board Configuration** (requires web UI):
+
 - **Name**: `Roadmap — ChatGPT Archive Utility`
 - **Description**: `Kanban for phased delivery`
 - **Columns**: Backlog, Selected, In progress, In review, QA, Done
@@ -51,6 +53,7 @@ gh api repos/DigitalHerencia/CodependentCoding/milestones \
 ### ✅ Configure the listed automations
 
 **Automation Rules** (Project Settings → Automation):
+
 1. **PR opened linking issue** → Move card to "In review"
 2. **PR merged or issue closed** → Move card to "Done"  
 3. **Issue added to milestone** → Move card to "Selected"
@@ -60,6 +63,7 @@ gh api repos/DigitalHerencia/CodependentCoding/milestones \
 ### ✅ Add existing issues (T001..T019) to the board
 
 **Issues Confirmed**:
+
 - T001-T019 exist as Issues #1-18 in the repository
 - All issues have proper titles, descriptions, and labels
 - Ready for board assignment
@@ -80,11 +84,13 @@ gh api repos/DigitalHerencia/CodependentCoding/milestones \
 ## Deliverables 📦
 
 ### Scripts
+
 - `scripts/setup-github-projects.sh` - Bash automation script
 - `scripts/setup-github-projects.ps1` - PowerShell automation script  
 - `scripts/validate-github-projects.sh` - Validation script
 
 ### Documentation
+
 - `docs/github-projects-setup.md` - Comprehensive setup guide
 - `docs/projects-quick-reference.md` - Quick command reference
 - Updated `README.md` with project management section
@@ -92,12 +98,14 @@ gh api repos/DigitalHerencia/CodependentCoding/milestones \
 ## Execution Steps 🚀
 
 ### Option 1: Automated Setup
+
 ```bash
 cd /path/to/CodependentCoding
 ./scripts/setup-github-projects.sh
 ```
 
 ### Option 2: Manual Setup
+
 1. Run milestone creation commands from `docs/projects-quick-reference.md`
 2. Follow web UI instructions in `docs/github-projects-setup.md`
 3. Validate with `./scripts/validate-github-projects.sh`
@@ -105,11 +113,13 @@ cd /path/to/CodependentCoding
 ## Validation ✔️
 
 Run the validation script to confirm setup:
+
 ```bash
 ./scripts/validate-github-projects.sh
 ```
 
 This script checks:
+
 - All 4 milestones exist
 - All 16 issues are assigned to correct milestones
 - Provides summary statistics
@@ -117,12 +127,14 @@ This script checks:
 ## Next Actions Required 🎯
 
 **Manual Steps** (GitHub CLI limitations):
+
 1. **Create Projects v2 board** via GitHub web UI
 2. **Configure board columns** (Backlog, Selected, In progress, In review, QA, Done)
 3. **Set up automations** via Project Settings → Automation
 4. **Add T001-T019 issues to board** (will auto-organize by milestone)
 
-**Web UI URL**: https://github.com/DigitalHerencia/CodependentCoding/projects
+**Web UI URL**:
+<https://github.com/DigitalHerencia/CodependentCoding/projects>
 
 ## Success Criteria Met ✅
 

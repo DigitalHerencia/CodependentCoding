@@ -15,7 +15,7 @@ Run the setup script to create milestones and assign issues automatically:
 ```
 
 ## Manual Setup Instructions
-
+.\scripts\setup-github-projects.ps1
 ### 1. Create Milestones
 
 Use the following `gh` CLI commands to create the four project milestones:
@@ -60,6 +60,9 @@ gh api repos/DigitalHerencia/CodependentCoding/milestones \
 |-----------|-------|---------|
 | **Phase 1 — Foundation** | T001, T002, T003, T004, T005, T017 | #1, #2, #3, #4, #5, #16 |
 | **Phase 2 — Core Features** | T006, T007, T008, T009, T010, T011 | #6, #7, #8, #9, #10, #11 |
+1. A workflow was added at `.github\workflows\setup-projects.yml` that will create milestones and T001-T019 issues and assign them to milestones.
+2. To run the automation from the GitHub UI: go to the repository → Actions → `Setup GitHub Project (milestones & issues)` → Run workflow (workflow_dispatch).
+3. Alternatively, run the workflow via the REST API or `gh` CLI once you have permissions.
 | **Phase 3 — UX & Analytics** | T012, T013, T014, T015 | #12, #13, #14, #15 |
 | **Phase 4 — Polish & Docs** | T018, T019 | #17, #18 |
 
