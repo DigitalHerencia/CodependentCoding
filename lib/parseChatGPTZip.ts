@@ -14,7 +14,7 @@ export interface ChatGPTConversation {
   messages: ChatGPTMessage[]
   created_at: string
   updated_at?: string
-  metadata?: Record<string, any>
+  metadata?: Record<string, unknown>
 }
 
 export interface ParsedAttachment {
@@ -28,7 +28,7 @@ export interface ParsedAttachment {
 export interface ParsedZipResult {
   conversations: ChatGPTConversation[]
   attachments: ParsedAttachment[]
-  metadata?: Record<string, any>
+  metadata?: Record<string, unknown>
 }
 
 /**
@@ -114,14 +114,18 @@ export async function parseChatGPTZip(zipBuffer: Buffer): Promise<ParsedZipResul
 /**
  * Normalizes conversation data from ChatGPT export format
  */
-function normalizeConversation(data: any, filename: string): ChatGPTConversation | null {
+function normalizeConversation(data: unknown, filename: string): ChatGPTConversation | null {
   try {
+    if (!data || typeof data !== 'object') {
+      return null
+    }
+    
     // ChatGPT exports can have different formats, handle common structures
-    let conversationData = data
+    let conversationData = data as Record<string, unknown>
     
     // If the data has a 'conversation' wrapper
-    if (data.conversation) {
-      conversationData = data.conversation
+    if (conversationData.conversation && typeof conversationData.conversation === 'object') {
+      conversationData = conversationData.conversation as Record<string, unknown>
     }
     
     // Extract basic info
@@ -135,18 +139,21 @@ function normalizeConversation(data: any, filename: string): ChatGPTConversation
     
     if (Array.isArray(messageData)) {
       // Direct messages array
-      messageData.forEach((msg: any) => {
+      messageData.forEach((msg: unknown) => {
         const normalizedMsg = normalizeMessage(msg)
         if (normalizedMsg) {
           messages.push(normalizedMsg)
         }
       })
-    } else if (typeof messageData === 'object') {
+    } else if (messageData && typeof messageData === 'object') {
       // Mapping format (common in ChatGPT exports)
-      Object.values(messageData).forEach((msg: any) => {
-        const normalizedMsg = normalizeMessage(msg.message || msg)
-        if (normalizedMsg) {
-          messages.push(normalizedMsg)
+      Object.values(messageData as Record<string, unknown>).forEach((msg: unknown) => {
+        if (msg && typeof msg === 'object') {
+          const msgObj = msg as Record<string, unknown>
+          const normalizedMsg = normalizeMessage(msgObj.message || msg)
+          if (normalizedMsg) {
+            messages.push(normalizedMsg)
+          }
         }
       })
     }
@@ -176,8 +183,14 @@ function normalizeConversation(data: any, filename: string): ChatGPTConversation
 /**
  * Normalizes message data from ChatGPT export format
  */
-function normalizeMessage(msg: any): ChatGPTMessage | null {
-  if (!msg || !msg.content) {
+function normalizeMessage(msg: unknown): ChatGPTMessage | null {
+  if (!msg || typeof msg !== 'object') {
+    return null
+  }
+  
+  const msgObj = msg as Record<string, unknown>
+  
+  if (!msgObj.content) {
     return null
   }
   
@@ -186,19 +199,25 @@ function normalizeMessage(msg: any): ChatGPTMessage | null {
   let role: 'user' | 'assistant' | 'system' = 'user'
   
   // Extract role
-  if (msg.role) {
-    role = msg.role
-  } else if (msg.author?.role) {
-    role = msg.author.role
+  if (typeof msgObj.role === 'string' && ['user', 'assistant', 'system'].includes(msgObj.role)) {
+    role = msgObj.role as 'user' | 'assistant' | 'system'
+  } else if (msgObj.author && typeof msgObj.author === 'object') {
+    const authorObj = msgObj.author as Record<string, unknown>
+    if (typeof authorObj.role === 'string' && ['user', 'assistant', 'system'].includes(authorObj.role)) {
+      role = authorObj.role as 'user' | 'assistant' | 'system'
+    }
   }
   
   // Extract content
-  if (typeof msg.content === 'string') {
-    content = msg.content
-  } else if (msg.content.parts && Array.isArray(msg.content.parts)) {
-    content = msg.content.parts.join(' ')
-  } else if (msg.content.text) {
-    content = msg.content.text
+  if (typeof msgObj.content === 'string') {
+    content = msgObj.content
+  } else if (msgObj.content && typeof msgObj.content === 'object') {
+    const contentObj = msgObj.content as Record<string, unknown>
+    if (contentObj.parts && Array.isArray(contentObj.parts)) {
+      content = contentObj.parts.filter(part => typeof part === 'string').join(' ')
+    } else if (typeof contentObj.text === 'string') {
+      content = contentObj.text
+    }
   }
   
   if (!content || content.trim().length === 0) {
@@ -208,8 +227,8 @@ function normalizeMessage(msg: any): ChatGPTMessage | null {
   return {
     role,
     content: content.trim(),
-    timestamp: msg.create_time || msg.timestamp,
-    attachments: msg.attachments || []
+    timestamp: typeof msgObj.create_time === 'string' ? msgObj.create_time : (typeof msgObj.timestamp === 'string' ? msgObj.timestamp : undefined),
+    attachments: Array.isArray(msgObj.attachments) ? msgObj.attachments.filter(att => typeof att === 'string') : []
   }
 }
 
