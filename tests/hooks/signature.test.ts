@@ -1,5 +1,8 @@
 import { describe, it, expect } from 'vitest'
-import { verifyClerkWebhook, generateSignature } from '../../lib/verifyClerkWebhook'
+import { verifyClerkWebhook } from '../../lib/verifyClerkWebhook'
+
+// Add Node's crypto import so createHmac and timingSafeEqual are available
+import * as crypto from 'node:crypto'
 
 describe('Webhook Signature Validation Tests', () => {
   // Mock Clerk webhook secret for testing
