@@ -73,9 +73,17 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Archive'
-  /webhook/clerk:
+  /api/clerk/webhook:
     post:
-      summary: Clerk webhook endpoint for user lifecycle events
+      summary: Handle Clerk webhook events
+      operationId: handleClerkWebhook
+      parameters:
+        - in: header
+          name: svix-signature
+          required: true
+          schema:
+            type: string
+            description: Webhook signature for verification
       requestBody:
         required: true
         content:
@@ -84,9 +92,18 @@ paths:
               $ref: '#/components/schemas/ClerkWebhookEvent'
       responses:
         '200':
-          description: OK
+          description: Webhook processed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
         '401':
           description: Invalid signature
+        '400':
+          description: Invalid request
   /api/admin/users:
     get:
       summary: Get paginated list of users (admin only)
@@ -244,6 +261,38 @@ components:
         updatedAt:
           type: string
           format: date-time
+    ClerkWebhookEvent:
+      type: object
+      required:
+        - type
+        - data
+        - object
+        - evt_id
+      properties:
+        type:
+          type: string
+          description: Event type (e.g., user.created, user.deleted)
+        data:
+          oneOf:
+            - $ref: '#/components/schemas/ClerkUser'
+            - type: object
+        object:
+          type: string
+          enum: [event]
+        evt_id:
+          type: string
+    ClerkUser:
+      type: object
+      required:
+        - id
+        - email_addresses
+        - created_at
+      properties:
+        id:
+          type: string
+          description: Clerk user ID
+        email_addresses:
+=======
     AdminUser:
       type: object
       properties:
@@ -310,9 +359,19 @@ components:
           items:
             type: object
             properties:
-              userId:
+              id:
                 type: string
-              email:
+              email_address:
                 type: string
-              archiveCount:
-                type: integer
+              verification:
+                type: object
+        first_name:
+          type: string
+        last_name:
+          type: string
+        created_at:
+          type: integer
+          description: Unix timestamp
+        updated_at:
+          type: integer
+          description: Unix timestamp
