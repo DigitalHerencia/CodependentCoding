@@ -24,16 +24,6 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // TODO: Implement webhook signature verification
-    // This would use the verifyClerkWebhook function from T006
-    // const isValid = verifyClerkWebhook(body, signature)
-    // if (!isValid) {
-    //   return NextResponse.json(
-    //     { error: 'Invalid webhook signature' },
-    //     { status: 401 }
-    //   )
-    // }
-
     // Parse webhook payload
     let webhookData
     try {
@@ -86,9 +76,13 @@ export async function POST(request: NextRequest) {
     )
 
     // Add rate limit headers (use IP-based key for webhooks)
-    const ip = request.ip || 
-              request.headers.get('x-forwarded-for') || 
-              'unknown'
+    // NextRequest doesn't have `ip`. Derive client IP from proxy headers.
+    const forwarded =
+      request.headers.get('x-forwarded-for') ||
+      request.headers.get('x-real-ip') ||
+      request.headers.get('cf-connecting-ip') ||
+      null
+    const ip = forwarded ? forwarded.split(',')[0].trim() : 'unknown'
     const key = `ip:${ip}`
     
     return addRateLimitHeaders(response, key, rateLimitConfigs.webhook.maxRequests)

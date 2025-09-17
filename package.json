@@ -11,6 +11,7 @@
     "test:watch": "vitest"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.890.0",
     "@prisma/client": "^6.16.2",
     "@uploadthing/react": "^7.3.3",
     "js-yaml": "^4.1.0",
@@ -24,6 +25,8 @@
     "zod": "^4.1.9"
   },
   "devDependencies": {
+    "@aws-sdk/s3-request-presigner": "^3.890.0",
+    "@aws-sdk/types": "^3.887.0",
     "@eslint/eslintrc": "^3.3.1",
     "@tailwindcss/postcss": "^4.1.13",
     "@testing-library/jest-dom": "^6.8.0",

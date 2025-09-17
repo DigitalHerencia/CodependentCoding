@@ -87,7 +87,7 @@ export async function POST(request: NextRequest) {
 
 ## S3 Server-Side Encryption
 
-### Configuration
+### Encryption Configuration
 
 All file uploads are encrypted at rest using AWS S3 server-side encryption:
 
@@ -252,6 +252,7 @@ All 17 rate limit tests pass successfully.
 ## Files Created/Modified
 
 ### New Files
+
 - `lib/middleware/rateLimit.ts` - Core rate limiting middleware
 - `lib/s3-encryption.ts` - S3 encryption configuration and utilities
 - `app/api/uploads/route.ts` - Upload endpoint with rate limiting
@@ -260,6 +261,7 @@ All 17 rate limit tests pass successfully.
 - `SECURITY.md` - This documentation file
 
 ### Dependencies Added
+
 - `@aws-sdk/client-s3` - S3 client for file uploads
 - `@aws-sdk/s3-request-presigner` - Presigned URL generation
 - `jsdom` - Testing environment for vitest

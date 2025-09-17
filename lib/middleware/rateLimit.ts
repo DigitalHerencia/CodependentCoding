@@ -81,20 +81,33 @@ export function createRateLimit(config: RateLimitConfig) {
  */
 function defaultKeyGenerator(req: NextRequest): string {
   // Try to get user ID from common auth headers
-  const userId = req.headers.get('x-user-id') || 
-                req.headers.get('x-clerk-user-id') ||
-                req.headers.get('authorization')?.split(' ')[1] // Bearer token
-  
-  if (userId) {
-    return `user:${userId}`
+  const userIdHeader =
+    req.headers.get('x-user-id') ||
+    req.headers.get('x-clerk-user-id')
+
+  if (userIdHeader) {
+    return `user:${userIdHeader}`
   }
-  
-  // Fallback to IP address
-  const ip = req.ip || 
-            req.headers.get('x-forwarded-for') || 
-            req.headers.get('x-real-ip') || 
-            'unknown'
-  
+
+  // Safely parse Authorization header (e.g. "Bearer <token>")
+  const authHeader = req.headers.get('authorization') || req.headers.get('Authorization')
+  if (authHeader) {
+    const parts = authHeader.split(' ').filter(Boolean)
+    if (parts.length > 0) {
+      const tokenOrId = parts[parts.length - 1]
+      if (tokenOrId) {
+        return `user:${tokenOrId}`
+      }
+    }
+  }
+
+  // Fallback to IP if no user identifier found
+  const forwarded =
+    req.headers.get('x-forwarded-for') ||
+    req.headers.get('x-real-ip') ||
+    req.headers.get('cf-connecting-ip') ||
+    null
+  const ip = forwarded ? forwarded.split(',')[0].trim() : 'unknown'
   return `ip:${ip}`
 }
 
