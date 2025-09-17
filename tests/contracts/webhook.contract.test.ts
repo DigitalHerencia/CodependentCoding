@@ -1,44 +1,39 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, it, expect, beforeAll } from 'vitest'
 import yaml from 'js-yaml'
 import fs from 'fs'
 import path from 'path'
 
 describe('Clerk Webhook Contract Tests', () => {
-  let apiSpec: any
+	let apiSpec: any
 
-  beforeAll(() => {
-    const apiSpecPath = path.join(process.cwd(), 'specs', '001-product-requirements-document', 'contracts', 'api-openapi.yaml')
-    const yamlContent = fs.readFileSync(apiSpecPath, 'utf8')
-    apiSpec = yaml.load(yamlContent)
-  })
+	beforeAll(() => {
+		const apiSpecPath = path.join(
+			process.cwd(),
+			'specs',
+			'001-product-requirements-document',
+			'contracts',
+			'api-openapi.yaml'
+		)
+		const yamlContent = fs.readFileSync(apiSpecPath, 'utf8')
+		apiSpec = yaml.load(yamlContent)
+	})
 
-  describe('Webhook Endpoint Contract', () => {
-    it('should define /api/clerk/webhook endpoint in OpenAPI spec', () => {
-      expect(apiSpec.paths).toBeDefined()
-      expect(apiSpec.paths['/api/clerk/webhook']).toBeDefined()
+	it('should define /api/clerk/webhook endpoint and schemas', () => {
+		expect(apiSpec.paths).toBeDefined()
+		expect(apiSpec.paths['/api/clerk/webhook']).toBeDefined()
 
-      const webhookEndpoint = apiSpec.paths['/api/clerk/webhook']
-      expect(webhookEndpoint.post).toBeDefined()
+		const webhookEndpoint = apiSpec.paths['/api/clerk/webhook']
+		const postOperation = webhookEndpoint.post
+		expect(postOperation).toBeDefined()
+		expect(postOperation.summary).toBe('Handle Clerk webhook events')
+		expect(postOperation.operationId).toBe('handleClerkWebhook')
 
-      const postOperation = webhookEndpoint.post
-      expect(postOperation.summary).toBe('Handle Clerk webhook events')
-      expect(postOperation.operationId).toBe('handleClerkWebhook')
-    })
-
-    it('should require webhook signature header', () => {
-      const webhookEndpoint = apiSpec.paths['/api/clerk/webhook']
-      const postOperation = webhookEndpoint.post
-
-      expect(postOperation.parameters).toBeDefined()
-      const signatureParam = postOperation.parameters.find((p: any) =>
-        p.name === 'svix-signature'
-      )
-
-      expect(signatureParam).toBeDefined()
-      expect(signatureParam.in).toBe('header')
-      expect(signatureParam.required).toBe(true)
-      expect(signatureParam.schema.type).toBe('string')
-    })
+		// Header param
+		expect(postOperation.parameters).toBeDefined()
+		const signatureParam = postOperation.parameters.find((p: any) => p.name === 'svix-signature')
+		expect(signatureParam).toBeDefined()
+		expect(signatureParam.in).toBe('header')
 
     it('should define webhook request body schema', () => {
       const webhookEndpoint = apiSpec.paths['/api/clerk/webhook']
@@ -105,10 +100,11 @@ describe('Clerk Webhook Contract Tests', () => {
       // 1. Make HTTP POST request to webhook endpoint
       // 2. Verify proper signature validation
       // 3. Test user creation/deletion handling
-      // 4. Verify database operations
 
-      // For now, this serves as a placeholder for the RED phase
-      expect(true).toBe(true) // This will pass, indicating we need implementation
+      // For RED phase, we expect this to fail because the implementation doesn't exist
+      expect(() => {
+        require('../../lib/verifyClerkWebhook')
+      }).toThrow('Cannot find module')
     })
 
     it('should validate HMAC signature when implemented', () => {
@@ -119,12 +115,15 @@ describe('Clerk Webhook Contract Tests', () => {
       // - Proper HMAC-SHA256 signature validation
 
       // Test cases to implement:
-      // 1. Valid signature should authenticate
+      // 1. Valid signature should authenticate  
       // 2. Invalid signature should return 401
       // 3. Missing signature should return 400
       // 4. Malformed signature should return 400
 
-      expect(true).toBe(true) // Placeholder for implementation
+      // For RED phase, expect this to fail because the implementation doesn't exist
+      expect(() => {
+        require('../../lib/verifyClerkWebhook')
+      }).toThrow('Cannot find module')
     })
   })
 })

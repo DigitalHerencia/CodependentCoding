@@ -51,7 +51,7 @@ export async function updateArchiveTags(
 
     const archive = await prisma.archive.update({
       where: { id: data.archiveId },
-      data: { tags: normalizedTags },
+      data: { tags: { set: normalizedTags } },
       select: { tags: true },
     });
 
@@ -109,7 +109,7 @@ export async function addArchiveTag(
 
     const updatedArchive = await prisma.archive.update({
       where: { id: data.archiveId },
-      data: { tags: updatedTags },
+      data: { tags: { set: updatedTags } },
       select: { tags: true },
     });
 
@@ -159,7 +159,7 @@ export async function removeArchiveTag(
 
     const updatedArchive = await prisma.archive.update({
       where: { id: data.archiveId },
-      data: { tags: updatedTags },
+      data: { tags: { set: updatedTags } },
       select: { tags: true },
     });
 
