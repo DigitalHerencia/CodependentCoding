@@ -1,222 +1,123 @@
-import { describe, it, expect } from 'vitest'
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 
-// The server action doesn't exist yet - this will fail (RED phase)
-describe('Archive Create Server Action Tests', () => {
-  describe('Input Validation', () => {
-    it('should fail because createArchive action is not implemented yet', async () => {
-      // Try to import the server action that doesn't exist yet
-      try {
-        const { createArchive } = await import('../../lib/actions/archive')
-        expect.fail('createArchive should not be available yet')
-      } catch (error) {
-        // Expected - the module doesn't exist yet
-        expect(error).toBeDefined()
-      }
-    })
+// Mock @prisma/client before importing the module under test so the module's
+// top-level `new PrismaClient()` receives our mocked client.
+vi.mock('@prisma/client', () => {
+  const mockArchive = {
+    create: vi.fn(),
+    findMany: vi.fn(),
+    findUnique: vi.fn(),
+    delete: vi.fn(),
+  }
 
-    it('should validate required title field', async () => {
-      // This test will fail initially because the action doesn't exist
-      // But it defines our expected validation behavior
-      const invalidPayload = {
-        userId: 'user_123',
-        // title missing
-        content: 'Some conversation content',
-        attachments: []
-      }
+  class PrismaClient {
+    archive = mockArchive
+    // keep shape for other possible usage
+    $disconnect = vi.fn()
+  }
 
-      try {
-        const { createArchive } = await import('../../lib/actions/archive')
-        const result = await createArchive(invalidPayload)
-        
-        // If we get here, validation should have failed
-        expect(result.success).toBe(false)
-        expect(result.error).toContain('title')
-      } catch (error) {
-        // Expected initially - module doesn't exist
-        expect(error).toBeDefined()
-      }
-    })
+  return { PrismaClient }
+})
 
-    it('should validate title max length (255 characters)', async () => {
-      const longTitle = 'a'.repeat(256) // Exceeds 255 char limit
-      const invalidPayload = {
-        userId: 'user_123',
-        title: longTitle,
-        content: 'Some conversation content',
-        attachments: []
-      }
+// Mock revalidatePath from next/cache (it's invoked in create/delete)
+vi.mock('next/cache', () => {
+  return { revalidatePath: vi.fn() }
+})
 
-      try {
-        const { createArchive } = await import('../../lib/actions/archive')
-        const result = await createArchive(invalidPayload)
-        
-        expect(result.success).toBe(false)
-        expect(result.error).toContain('title')
-        expect(result.error).toContain('255')
-      } catch (error) {
-        // Expected initially - module doesn't exist
-        expect(error).toBeDefined()
-      }
-    })
+// Now import the module under test (after mocks are established)
+import * as archivesModule from '../../lib/actions/archives'
+import { revalidatePath } from 'next/cache'
+import { PrismaClient } from '@prisma/client'
 
-    it('should validate required userId field', async () => {
-      const invalidPayload = {
-        // userId missing
-        title: 'Test Archive',
-        content: 'Some conversation content',
-        attachments: []
-      }
+describe('archives actions', () => {
+  let mockArchive: any
 
-      try {
-        const { createArchive } = await import('../../lib/actions/archive')
-        const result = await createArchive(invalidPayload)
-        
-        expect(result.success).toBe(false)
-        expect(result.error).toContain('userId')
-      } catch (error) {
-        // Expected initially - module doesn't exist
-        expect(error).toBeDefined()
-      }
-    })
-
-    it('should validate required content field', async () => {
-      const invalidPayload = {
-        userId: 'user_123',
-        title: 'Test Archive',
-        // content missing
-        attachments: []
-      }
-
-      try {
-        const { createArchive } = await import('../../lib/actions/archive')
-        const result = await createArchive(invalidPayload)
-        
-        expect(result.success).toBe(false)
-        expect(result.error).toContain('content')
-      } catch (error) {
-        // Expected initially - module doesn't exist
-        expect(error).toBeDefined()
-      }
-    })
-
-    it('should validate attachments array structure', async () => {
-      const invalidPayload = {
-        userId: 'user_123',
-        title: 'Test Archive',
-        content: 'Some conversation content',
-        attachments: [
-          {
-            name: 'file.jpg',
-            // missing required fields: size, contentType, url, checksum
-          }
-        ]
-      }
-
-      try {
-        const { createArchive } = await import('../../lib/actions/archive')
-        const result = await createArchive(invalidPayload)
-        
-        expect(result.success).toBe(false)
-        expect(result.error).toMatch(/attachment/i)
-      } catch (error) {
-        // Expected initially - module doesn't exist
-        expect(error).toBeDefined()
-      }
-    })
+  beforeEach(() => {
+    vi.clearAllMocks()
+    // get the same mocked archive object the module used at import-time
+    const prisma = new PrismaClient()
+    mockArchive = prisma.archive
   })
 
-  describe('Success Cases', () => {
-    it('should create archive with valid payload', async () => {
-      const validPayload = {
-        userId: 'user_123',
-        title: 'Test Archive',
-        content: 'Some conversation content with ChatGPT messages',
-        attachments: [
-          {
-            name: 'screenshot.jpg',
-            size: 1024567,
-            contentType: 'image/jpeg',
-            url: 'https://storage.example.com/screenshot.jpg',
-            checksum: 'abc123def456'
-          }
-        ]
-      }
+  it('createArchive - creates and returns normalized archive and revalidates path', async () => {
+    const now = new Date()
+    const created = {
+      id: 'abc-123',
+      userId: 'mock-user-id',
+      title: 'My Title',
+      content: 'My content',
+      attachments: [
+        { name: 'file.txt', size: 12, contentType: 'text/plain', url: 'https://u', checksum: 'c' },
+      ],
+      createdAt: now,
+      updatedAt: now,
+    }
 
-      try {
-        const { createArchive } = await import('../../lib/actions/archive')
-        const result = await createArchive(validPayload)
-        
-        expect(result.success).toBe(true)
-        expect(result.data).toBeDefined()
-        expect(result.data.id).toBeDefined()
-        expect(result.data.title).toBe(validPayload.title)
-        expect(result.data.userId).toBe(validPayload.userId)
-        expect(result.data.content).toBe(validPayload.content)
-        expect(result.data.attachments).toEqual(validPayload.attachments)
-        expect(result.data.createdAt).toBeInstanceOf(Date)
-        expect(result.data.updatedAt).toBeInstanceOf(Date)
-      } catch (error) {
-        // Expected initially - module doesn't exist
-        expect(error).toBeDefined()
-      }
-    })
+    mockArchive.create.mockResolvedValue(created)
 
-    it('should create archive with empty attachments array', async () => {
-      const validPayload = {
-        userId: 'user_123',
-        title: 'Text Only Archive',
-        content: 'Just text conversation, no attachments',
-        attachments: []
-      }
+    const input = {
+      title: 'My Title',
+      content: 'My content',
+      attachments: created.attachments,
+    }
 
-      try {
-        const { createArchive } = await import('../../lib/actions/archive')
-        const result = await createArchive(validPayload)
-        
-        expect(result.success).toBe(true)
-        expect(result.data.attachments).toEqual([])
-      } catch (error) {
-        // Expected initially - module doesn't exist
-        expect(error).toBeDefined()
-      }
-    })
+    const result = await archivesModule.createArchive(input)
+
+    expect(mockArchive.create).toHaveBeenCalled()
+    expect(result.id).toBe(created.id)
+    expect(result.title).toBe(created.title)
+    expect(Array.isArray(result.attachments)).toBe(true)
+    expect(result.attachments[0].name).toBe('file.txt')
+    expect((revalidatePath as any)).toHaveBeenCalledWith('/archives')
   })
 
-  describe('Integration Requirements', () => {
-    it('should validate that implementation follows server action pattern', async () => {
-      // This test ensures our implementation follows Next.js server action conventions
-      try {
-        const archiveModule = await import('../../lib/actions/archive')
-        
-        // Server actions should be async functions
-        expect(typeof archiveModule.createArchive).toBe('function')
-        
-        // The module should contain 'use server' directive
-        // Note: This is a conceptual test - in practice, 'use server' 
-        // is a build-time directive, not runtime checkable
-        expect(archiveModule).toBeDefined()
-      } catch (error) {
-        // Expected initially - module doesn't exist
-        expect(error).toBeDefined()
-      }
-    })
+  it('getArchives - maps database rows to normalized Archive[]', async () => {
+    const row = {
+      id: 'row-1',
+      userId: 'mock-user-id',
+      title: 'T',
+      content: 'C',
+      attachments: [{ name: 'a', size: 1, contentType: 'text/plain', url: 'u', checksum: 'x' }],
+      createdAt: new Date('2020-01-01'),
+      updatedAt: new Date('2020-01-02'),
+    }
+    mockArchive.findMany.mockResolvedValue([row])
 
-    it('should export validation schemas for reuse', async () => {
-      const { CreateArchiveSchema, AttachmentSchema } = await import('../../lib/actions/archive')
-      
-      // Schemas should be available for validation in other parts of the app
-      expect(CreateArchiveSchema).toBeDefined()
-      expect(AttachmentSchema).toBeDefined()
-      
-      // Test that schemas validate correctly
-      const validData = {
-        userId: 'user_123',
-        title: 'Test Archive',
-        content: 'Test content',
-        attachments: []
-      }
-      
-      expect(() => CreateArchiveSchema.parse(validData)).not.toThrow()
-    })
+    const list = await archivesModule.getArchives()
+    expect(mockArchive.findMany).toHaveBeenCalled()
+    expect(list.length).toBe(1)
+    expect(list[0].id).toBe(row.id)
+    expect(Array.isArray(list[0].attachments)).toBe(true)
+    expect(list[0].attachments[0].name).toBe('a')
+  })
+
+  it('getArchive - returns null when not found and returns normalized object when found', async () => {
+    mockArchive.findUnique.mockResolvedValue(null)
+    const notFound = await archivesModule.getArchive('00000000-0000-0000-0000-000000000000')
+    expect(notFound).toBeNull()
+
+    const row = {
+      id: 'row-2',
+      userId: 'mock-user-id',
+      title: 'Title2',
+      content: 'Content2',
+      attachments: [{ name: 'b', size: 2, contentType: 'text/plain', url: 'u2', checksum: 'y' }],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    }
+    mockArchive.findUnique.mockResolvedValue(row)
+
+    const found = await archivesModule.getArchive('00000000-0000-0000-0000-000000000000')
+    expect(found).not.toBeNull()
+    expect(found?.id).toBe(row.id)
+    expect(found?.attachments[0].name).toBe('b')
+  })
+
+  it('deleteArchive - calls prisma.delete and revalidates', async () => {
+    mockArchive.delete.mockResolvedValue({ id: 'to-delete' })
+    await archivesModule.deleteArchive('00000000-0000-0000-0000-000000000000')
+    expect(mockArchive.delete).toHaveBeenCalled()
+    expect((revalidatePath as any)).toHaveBeenCalledWith('/archives')
   })
 })
