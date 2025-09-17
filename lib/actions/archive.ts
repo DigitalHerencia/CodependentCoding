@@ -39,7 +39,7 @@ export async function createArchive(input: CreateArchiveInput): Promise<ServerAc
   userId: string
   title: string
   content: string
-  attachments: unknown
+  attachments: z.infer<typeof AttachmentSchema>[]
   createdAt: Date
   updatedAt: Date
 }>> {
@@ -60,15 +60,30 @@ export async function createArchive(input: CreateArchiveInput): Promise<ServerAc
       }
     })
 
+    // Validate and normalize attachments coming from Prisma (JsonValue | null)
+    const ValidatedAttachments = AttachmentSchema.array()
+    const validatedAttachments = ValidatedAttachments.parse(archive.attachments ?? [])
+
+    // Build response object with typed attachments
+    const response = {
+      id: archive.id,
+      userId: archive.userId,
+      title: archive.title,
+      content: archive.content,
+      attachments: validatedAttachments,
+      createdAt: archive.createdAt,
+      updatedAt: archive.updatedAt
+    }
+
     return {
       success: true,
-      data: archive
+      data: response
     }
   } catch (error) {
     // Handle Zod validation errors
     if (error instanceof z.ZodError) {
-      const errorMessages = error.errors.map(err => 
-        `${err.path.join('.')}: ${err.message}`
+      const errorMessages = error.issues.map(issue =>
+        `${issue.path.join('.')}: ${issue.message}`
       ).join('; ')
       
       return {
