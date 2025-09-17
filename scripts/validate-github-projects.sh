@@ -72,7 +72,10 @@ for milestone in "${EXPECTED_MILESTONES[@]}"; do
     echo "  Expected: $EXPECTED_ISSUES"
     echo "  Assigned: $ASSIGNED_ISSUES"
     
-    if [ "$ASSIGNED_ISSUES" = "$EXPECTED_ISSUES " ]; then
+    # Trim whitespace before comparison
+    ASSIGNED_ISSUES_TRIMMED=$(echo "$ASSIGNED_ISSUES" | xargs)
+    EXPECTED_ISSUES_TRIMMED=$(echo "$EXPECTED_ISSUES" | xargs)
+    if [ "$ASSIGNED_ISSUES_TRIMMED" = "$EXPECTED_ISSUES_TRIMMED" ]; then
         echo "  ✅ Assignments correct"
     else
         echo "  ⚠️  Assignments differ from expected"
