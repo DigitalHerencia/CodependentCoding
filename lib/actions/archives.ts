@@ -42,23 +42,45 @@ export type Archive = {
   updatedAt: Date
 }
 
+/**
+ * Safely parse/normalize attachments that come from Prisma (JsonValue | null | unknown)
+ * Returns an array of Attachment objects or an empty array on invalid input.
+ */
+function parseAttachments(raw: unknown): Attachment[] {
+  const parsed = z.array(AttachmentSchema).safeParse(raw ?? [])
+  return parsed.success ? parsed.data : []
+}
+
 export async function createArchive(input: CreateArchiveInput): Promise<Archive> {
   const validatedInput = CreateArchiveSchema.parse(input)
-  
+
   // For now, we'll use a mock user ID since Clerk auth isn't set up yet
   const mockUserId = 'mock-user-id'
-  
-  const archive = await prisma.archive.create({
+
+  const created = await prisma.archive.create({
     data: {
       userId: mockUserId,
       title: validatedInput.title,
       content: validatedInput.content,
+      // Prisma expects JSON for JSON columns; passing the typed array is fine
       attachments: validatedInput.attachments,
     },
   })
 
   revalidatePath('/archives')
-  return archive
+
+  // Normalize attachments to the strongly-typed Attachment[]
+  const normalized: Archive = {
+    id: created.id,
+    userId: created.userId,
+    title: created.title,
+    content: created.content,
+    attachments: parseAttachments((created as { attachments?: unknown }).attachments),
+    createdAt: created.createdAt,
+    updatedAt: created.updatedAt,
+  }
+
+  return normalized
 }
 
 export async function getArchives(): Promise<Archive[]> {
@@ -69,24 +91,43 @@ export async function getArchives(): Promise<Archive[]> {
     },
   })
 
-  return archives
+  // Map/normalize attachments to Attachment[]
+  return archives.map((a) => ({
+    id: a.id,
+    userId: a.userId,
+    title: a.title,
+    content: a.content,
+    attachments: parseAttachments((a as { attachments?: unknown }).attachments),
+    createdAt: a.createdAt,
+    updatedAt: a.updatedAt,
+  }))
 }
 
 export async function getArchive(id: string): Promise<Archive | null> {
   const validatedId = ArchiveIdSchema.parse(id)
-  
+
   const archive = await prisma.archive.findUnique({
     where: {
       id: validatedId,
     },
   })
 
-  return archive
+  if (!archive) return null
+
+  return {
+    id: archive.id,
+    userId: archive.userId,
+    title: archive.title,
+    content: archive.content,
+    attachments: parseAttachments((archive as { attachments?: unknown }).attachments),
+    createdAt: archive.createdAt,
+    updatedAt: archive.updatedAt,
+  }
 }
 
 export async function deleteArchive(id: string): Promise<void> {
   const validatedId = ArchiveIdSchema.parse(id)
-  
+
   await prisma.archive.delete({
     where: {
       id: validatedId,

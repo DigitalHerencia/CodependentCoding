@@ -1,192 +1,174 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { PrismaClient } from '@prisma/client'
 
-// Mock Prisma for now since we don't have a real database connection
-vi.mock('@prisma/client', () => ({
-  PrismaClient: vi.fn().mockImplementation(() => ({
-    archive: {
-      create: vi.fn(),
-      findMany: vi.fn(),
-      findUnique: vi.fn(),
-      delete: vi.fn(),
-    },
-    user: {
-      findUnique: vi.fn(),
-      create: vi.fn(),
-    }
-  })),
-}))
+// Shared mock methods that will be used by the mocked PrismaClient
+const mockArchiveMethods = {
+  create: vi.fn(),
+  findMany: vi.fn(),
+  findUnique: vi.fn(),
+  delete: vi.fn(),
+}
+const mockUserMethods = {
+  findUnique: vi.fn(),
+  create: vi.fn(),
+}
 
-// Mock server actions that we'll implement
-vi.mock('../../lib/actions/archives', () => ({
-  createArchive: vi.fn(),
-  getArchives: vi.fn(),
-  getArchive: vi.fn(),
-  deleteArchive: vi.fn(),
-}))
+// Mock @prisma/client BEFORE the actions module is imported so that
+// the actions use the mocked PrismaClient instance.
+vi.mock('@prisma/client', () => {
+  const PrismaClient = vi.fn().mockImplementation(() => ({
+    archive: mockArchiveMethods,
+    user: mockUserMethods,
+  }))
+  return { PrismaClient }
+})
 
 describe('Archive CRUD Flow Integration Tests', () => {
   beforeEach(() => {
+    // Reset mocked implementations/behavior between tests
     vi.clearAllMocks()
   })
 
-  it('should fail because archive server actions are not implemented yet', async () => {
-    // This test should initially fail because we haven't implemented the server actions
-    
-    try {
-      // Try to import server actions that don't exist yet
-      const { createArchive, getArchives, getArchive, deleteArchive } = await import('../../lib/actions/archives')
-      
-      // If we get here, the import succeeded but the functions should be mocked and not working
-      expect(createArchive).toBeDefined()
-      expect(getArchives).toBeDefined()
-      expect(getArchive).toBeDefined()
-      expect(deleteArchive).toBeDefined()
-
-      // These should fail because they're not implemented properly yet
-      const result = await createArchive({
-        title: 'Test Archive',
-        content: 'Test content',
-        attachments: []
-      })
-
-      // This will fail because the actual implementation doesn't exist
-      expect.fail('Server actions should not be working yet')
-    } catch (error) {
-      // Expected - the server actions module doesn't exist yet
-      expect(error).toBeDefined()
-    }
-  })
-
-  it('should handle complete upload → parse → create → list → view flow', async () => {
-    // This integration test covers the full user flow described in the requirements
-    // It should fail initially and pass after implementation
-
-    // 1. Upload phase (simulated)
-    const mockFile = {
-      name: 'conversations.json',
-      content: JSON.stringify([{
-        id: '1',
-        title: 'Test conversation',
-        create_time: 1703097600,
-        messages: [
-          { role: 'user', content: { parts: ['Hello'] } },
-          { role: 'assistant', content: { parts: ['Hi there!'] } }
-        ]
-      }])
-    }
-
-    // 2. Parse phase - extract conversations from ChatGPT export
-    const parsedData = {
+  it('createArchive should validate input and save via prisma', async () => {
+    // Arrange: valid input
+    const input = {
       title: 'Test conversation',
       content: 'User: Hello\nAssistant: Hi there!',
-      attachments: []
-    }
-
-    // 3. Create phase - save to database
-    try {
-      const { createArchive } = await import('../../lib/actions/archives')
-      const createdArchive = await createArchive(parsedData)
-      
-      expect(createdArchive).toBeDefined()
-      expect(createdArchive.id).toBeDefined()
-      expect(createdArchive.title).toBe('Test conversation')
-    } catch (error) {
-      // Expected to fail initially
-      expect(error).toBeDefined()
-    }
-
-    // 4. List phase - retrieve all archives
-    try {
-      const { getArchives } = await import('../../lib/actions/archives')
-      const archives = await getArchives()
-      
-      expect(Array.isArray(archives)).toBe(true)
-      expect(archives.length).toBeGreaterThan(0)
-    } catch (error) {
-      // Expected to fail initially  
-      expect(error).toBeDefined()
-    }
-
-    // 5. View phase - get specific archive
-    try {
-      const { getArchive } = await import('../../lib/actions/archives')
-      const archive = await getArchive('some-id')
-      
-      expect(archive).toBeDefined()
-      expect(archive.title).toBeDefined()
-      expect(archive.content).toBeDefined()
-    } catch (error) {
-      // Expected to fail initially
-      expect(error).toBeDefined()
-    }
-  })
-
-  it('should fail because archive pages are not implemented yet', async () => {
-    // This test checks that the UI components don't exist yet
-    
-    try {
-      // Try to import components that don't exist yet
-      const ArchiveList = await import('../../app/(dashboard)/archives/page')
-      const ArchiveDetail = await import('../../app/(dashboard)/archives/[id]/page')
-      
-      expect.fail('Archive pages should not exist yet')
-    } catch (error) {
-      // Expected - the pages don't exist yet
-      expect(error).toBeDefined()
-    }
-  })
-
-  it('should fail because archive features are not implemented yet', async () => {
-    // This test checks that feature components don't exist yet
-    
-    try {
-      // Try to import feature components that don't exist yet  
-      const ArchiveCard = await import('../../features/archive/ArchiveCard')
-      const ArchiveList = await import('../../features/archive/ArchiveList')
-      
-      expect.fail('Archive feature components should not exist yet')
-    } catch (error) {
-      // Expected - the feature components don't exist yet
-      expect(error).toBeDefined()
-    }
-  })
-
-  it('should validate archive CRUD operations with proper data', async () => {
-    // Test data validation and CRUD operations
-    const validArchiveData = {
-      title: 'Valid Archive Title',
-      content: 'Some content here',
       attachments: [
         {
-          name: 'file.txt',
-          size: 1024,
-          contentType: 'text/plain',
-          url: 'https://example.com/file.txt',
-          checksum: 'abc123'
-        }
-      ]
+          // changed: provide full attachment shape expected by the action's parameter type
+          name: 'image.png',
+          size: 12345,
+          contentType: 'image/png',
+          url: 'https://example.com/image.png',
+          checksum: 'sha256:abcdef1234567890',
+        },
+      ],
     }
 
-    const invalidArchiveData = {
-      // Missing required title
-      content: 'Some content',
-      attachments: []
+    const createdAt = new Date()
+    const createdFromDb = {
+      id: '11111111-1111-1111-1111-111111111111',
+      userId: 'mock-user-id',
+      title: input.title,
+      content: input.content,
+      // changed: mirror the full attachment shape in the mocked DB row
+      attachments: input.attachments,
+      createdAt,
+      updatedAt: createdAt,
     }
 
-    try {
-      const { createArchive } = await import('../../lib/actions/archives')
-      
-      // Valid data should work (eventually)
-      const validResult = await createArchive(validArchiveData)
-      expect(validResult).toBeDefined()
+    // Mock prisma.archive.create to return the created record
+    mockArchiveMethods.create.mockResolvedValue(createdFromDb)
 
-      // Invalid data should be rejected
-      const invalidResult = await createArchive(invalidArchiveData)
-      expect.fail('Invalid data should be rejected')
-    } catch (error) {
-      // Expected - either because module doesn't exist or validation fails
-      expect(error).toBeDefined()
+    // Dynamically import the actions so the above vi.mock is applied
+    const { createArchive } = await import('../../lib/actions/archives')
+
+    // Act
+    const result = await createArchive(input)
+
+    // Assert
+    expect(result).toBeDefined()
+    expect(result.id).toBe(createdFromDb.id)
+    expect(result.title).toBe(input.title)
+    expect(mockArchiveMethods.create).toHaveBeenCalled()
+  })
+
+  it('getArchives should return list from prisma', async () => {
+    // Arrange
+    const dbRows = [
+      {
+        id: '22222222-2222-2222-2222-222222222222',
+        userId: 'user-1',
+        title: 'Archived 1',
+        content: 'Some content',
+        attachments: [],
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+    ]
+    mockArchiveMethods.findMany.mockResolvedValue(dbRows)
+
+    const { getArchives } = await import('../../lib/actions/archives')
+
+    // Act
+    const list = await getArchives()
+
+    // Assert
+    expect(Array.isArray(list)).toBe(true)
+    expect(list.length).toBe(1)
+    expect(list[0].id).toBe(dbRows[0].id)
+    expect(mockArchiveMethods.findMany).toHaveBeenCalled()
+  })
+
+  it('getArchive should return archive when found (and handle null safely)', async () => {
+    // Arrange
+    const uuid = '33333333-3333-3333-3333-333333333333'
+    const dbRow = {
+      id: uuid,
+      userId: 'user-2',
+      title: 'Single Archive',
+      content: 'Content here',
+      attachments: [],
+      createdAt: new Date(),
+      updatedAt: new Date(),
     }
+    mockArchiveMethods.findUnique.mockResolvedValue(dbRow)
+
+    const { getArchive } = await import('../../lib/actions/archives')
+
+    // Act
+    const archive = await getArchive(uuid)
+
+    // Guard/narrow: resolve TypeScript "'archive' is possibly 'null'." warning
+    expect(archive).not.toBeNull()
+    if (!archive) throw new Error('Expected archive to be present')
+
+    // Assert properties after narrowing
+    expect(archive.title).toBe(dbRow.title)
+    expect(archive.content).toBe(dbRow.content)
+    expect(mockArchiveMethods.findUnique).toHaveBeenCalled()
+  })
+
+  it('deleteArchive should call prisma.delete with validated id', async () => {
+    // Arrange
+    const uuid = '44444444-4444-4444-4444-444444444444'
+    mockArchiveMethods.delete.mockResolvedValue({})
+
+    const { deleteArchive } = await import('../../lib/actions/archives')
+
+    // Act
+    await deleteArchive(uuid)
+
+    // Assert - archives.delete calls Prisma with where: { id: uuid }
+    expect(mockArchiveMethods.delete).toHaveBeenCalledWith({ where: { id: uuid } })
+  })
+
+  it('createArchive should reject invalid data at runtime (zod validation)', async () => {
+    // Import the action first so we can use its parameter type for a safe cast
+    const { createArchive } = await import('../../lib/actions/archives')
+
+    // Arrange: missing required 'title' property -> invalid
+    // Use the function parameter type to avoid 'any' while still providing malformed input
+    const invalidData = {
+      content: 'Some content only',
+      attachments: [],
+    } as unknown as Parameters<typeof createArchive>[0]
+
+    // Act + Assert: should reject with validation error
+    await expect(createArchive(invalidData)).rejects.toThrow()
+  })
+
+  it('feature and UI modules should be importable (components/pages implemented)', async () => {
+    // These modules exist in the repo now — ensure they import without throwing
+    // Import using dynamic import to keep tests resilient in environments where ESM/CJS interplay exists
+    const ArchiveCard = await import('../../features/archive/ArchiveCard')
+    const ArchiveListFeature = await import('../../features/archive/ArchiveList')
+    const ArchivesPage = await import('../../app/(dashboard)/archives/page')
+    const ArchiveDetailPage = await import('../../app/(dashboard)/archives/[id]/page')
+
+    expect(ArchiveCard).toBeDefined()
+    expect(ArchiveListFeature).toBeDefined()
+    expect(ArchivesPage).toBeDefined()
+    expect(ArchiveDetailPage).toBeDefined()
   })
 })

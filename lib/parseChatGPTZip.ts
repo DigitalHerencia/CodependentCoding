@@ -162,13 +162,13 @@ function normalizeConversation(data: unknown, filename: string): ChatGPTConversa
     if (messages.length === 0) {
       return null
     }
-    
+
     return {
-      id,
-      title,
+      id: id as string,
+      title: title as string,
       messages,
-      created_at,
-      updated_at: conversationData.update_time || conversationData.updated_at,
+      created_at: created_at as string,
+      updated_at: (conversationData.update_time || conversationData.updated_at) as string | undefined,
       metadata: {
         originalFilename: filename,
         messageCount: messages.length
