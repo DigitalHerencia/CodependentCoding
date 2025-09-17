@@ -3,12 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "next build --turbopack",
-    "start": "next start",
-    "lint": "eslint",
-    "test": "vitest --run",
-    "test:watch": "vitest"
+  "dev": "next dev --turbopack",
+  "build": "next build --turbopack",
+  "start": "next start",
+  "lint": "eslint . --ext .ts,.tsx,.js,.jsx",
+  "test": "vitest"
   },
   "dependencies": {
     "@prisma/client": "^6.16.1",
@@ -31,7 +30,6 @@
     "@vitejs/plugin-react": "^5.0.2",
     "eslint": "^9.35.0",
     "eslint-config-next": "15.5.3",
-    "js-yaml": "^4.1.0",
     "jsdom": "^27.0.0",
     "tailwindcss": "^4.1.13",
     "typescript": "^5.9.2",

@@ -73,13 +73,27 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Archive'
+  /webhook/clerk:
+    post:
+      summary: Clerk webhook endpoint for user lifecycle events
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClerkWebhookEvent'
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Invalid signature
   /api/clerk/webhook:
     post:
       summary: Handle Clerk webhook events
       operationId: handleClerkWebhook
       parameters:
-        - name: svix-signature
-          in: header
+        - in: header
+          name: svix-signature
           required: true
           schema:
             type: string
@@ -91,9 +105,9 @@ paths:
               $ref: '#/components/schemas/ClerkWebhookEvent'
       responses:
         '200':
-          description: Webhook processed successfully
+          description: OK
         '400':
-          description: Bad request or malformed signature
+          description: Bad Request
         '401':
           description: Invalid signature
 components:
@@ -183,56 +197,4 @@ components:
         updatedAt:
           type: string
           format: date-time
-    ClerkWebhookEvent:
-      type: object
-      required:
-        - type
-        - data
-        - object
-        - evt_id
-      properties:
-        type:
-          type: string
-          enum:
-            - user.created
-            - user.deleted
-            - user.updated
-        data:
-          oneOf:
-            - $ref: '#/components/schemas/ClerkUser'
-        object:
-          type: string
-          enum:
-            - event
-        evt_id:
-          type: string
-    ClerkUser:
-      type: object
-      required:
-        - id
-        - email_addresses
-        - created_at
-      properties:
-        id:
-          type: string
-        email_addresses:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-              email_address:
-                type: string
-              verification:
-                type: object
-        first_name:
-          type: string
-        last_name:
-          type: string
-        created_at:
-          type: integer
-          format: int64
-        updated_at:
-          type: integer
-          format: int64
+  

@@ -123,3 +123,9 @@ describe('Webhook Signature Validation Tests', () => {
     })
   })
 })
+
+// Helper functions for testing signature generation and verification
+// These will be moved to actual implementation files later
+
+
+
