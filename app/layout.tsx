@@ -3,7 +3,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "ChatGPT Archive Utility",
-  description: "Analytics timeline visualization for ChatGPT archives",
+  description: "Archive and manage your ChatGPT conversations",
 };
 
 export default function RootLayout({
@@ -13,7 +13,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="antialiased">
+      <body className="font-sans antialiased">
         {children}
       </body>
     </html>

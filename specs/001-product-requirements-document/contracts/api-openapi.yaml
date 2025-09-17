@@ -81,14 +81,137 @@ paths:
         content:
           application/json:
             schema:
-              type: object
+              $ref: '#/components/schemas/ClerkWebhookEvent'
       responses:
         '200':
           description: OK
         '401':
           description: Invalid signature
+  /api/admin/users:
+    get:
+      summary: Get paginated list of users (admin only)
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 1
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 20
+            maximum: 100
+        - in: query
+          name: search
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Paginated user list with stats
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminUserList'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden - Admin access required
+  /api/admin/users/export:
+    get:
+      summary: Export user data as CSV (admin only)
+      parameters:
+        - in: query
+          name: format
+          schema:
+            type: string
+            enum: [csv, json]
+            default: csv
+      responses:
+        '200':
+          description: User data export
+          content:
+            text/csv:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AdminUser'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden - Admin access required
+  /api/admin/stats:
+    get:
+      summary: Get system statistics (admin only)
+      responses:
+        '200':
+          description: System statistics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminStats'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden - Admin access required
 components:
   schemas:
+    ClerkWebhookEvent:
+      type: object
+      required:
+        - type
+        - data
+        - object
+        - evt_id
+      properties:
+        type:
+          type: string
+          description: The type of webhook event (e.g., user.created, user.updated, user.deleted)
+        data:
+          $ref: '#/components/schemas/ClerkUser'
+        object:
+          type: string
+          enum: [event]
+        evt_id:
+          type: string
+          description: Unique identifier for the webhook event
+        
+    ClerkUser:
+      type: object
+      required:
+        - id
+        - email_addresses
+        - created_at
+      properties:
+        id:
+          type: string
+          description: Clerk user ID
+        email_addresses:
+          type: array
+          items:
+            type: object
+            properties:
+              email_address:
+                type: string
+                format: email
+              id:
+                type: string
+        first_name:
+          type: string
+          nullable: true
+        last_name:
+          type: string
+          nullable: true
+        created_at:
+          type: integer
+          description: Unix timestamp of when the user was created
+        updated_at:
+          type: integer
+          description: Unix timestamp of when the user was last updated
+
     Archive:
       type: object
       properties:
@@ -121,3 +244,75 @@ components:
         updatedAt:
           type: string
           format: date-time
+    AdminUser:
+      type: object
+      properties:
+        id:
+          type: string
+        clerkId:
+          type: string
+        email:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        archiveCount:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    AdminUserList:
+      type: object
+      properties:
+        users:
+          type: array
+          items:
+            $ref: '#/components/schemas/AdminUser'
+        pagination:
+          type: object
+          properties:
+            page:
+              type: integer
+            limit:
+              type: integer
+            total:
+              type: integer
+            totalPages:
+              type: integer
+            hasNext:
+              type: boolean
+            hasPrev:
+              type: boolean
+    AdminStats:
+      type: object
+      properties:
+        totalUsers:
+          type: integer
+        totalArchives:
+          type: integer
+        archivesToday:
+          type: integer
+        archivesThisWeek:
+          type: integer
+        archivesThisMonth:
+          type: integer
+        storageUsed:
+          type: integer
+          description: Storage used in bytes
+        averageArchivesPerUser:
+          type: number
+        topUsers:
+          type: array
+          items:
+            type: object
+            properties:
+              userId:
+                type: string
+              email:
+                type: string
+              archiveCount:
+                type: integer
