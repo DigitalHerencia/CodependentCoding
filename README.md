@@ -1,7 +1,17 @@
 
 # Codependent Coding
 
+**ChatGPT Archive Utility** - A secure web application for archiving and viewing ChatGPT conversation exports.
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+
+## Project Management
+
+The project uses GitHub Projects v2 for phase-based delivery tracking:
+
+- **Project Board**: [Roadmap — ChatGPT Archive Utility](https://github.com/DigitalHerencia/CodependentCoding/projects)
+- **Setup Documentation**: [`docs/github-projects-setup.md`](docs/github-projects-setup.md)
+- **Quick Setup**: Run `./scripts/setup-github-projects.sh` to create milestones and assign issues
 
 ## Getting Started
 
