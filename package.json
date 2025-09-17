@@ -7,12 +7,8 @@
     "build": "next build --turbopack",
     "start": "next start",
     "lint": "eslint",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "db:generate": "prisma generate",
-    "db:push": "prisma db push",
-    "db:test": "npx tsx scripts/test-db.ts",
-    "db:validate": "npx tsx scripts/validate-schema.ts"
+    "test": "vitest --run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@prisma/client": "^6.16.1",
@@ -31,8 +27,9 @@
     "@vitejs/plugin-react": "^5.0.2",
     "eslint": "^9.35.0",
     "eslint-config-next": "15.5.3",
+    "js-yaml": "^4.1.0",
+    "jsdom": "^27.0.0",
     "prisma": "^6.16.2",
-    "tailwindcss": "^4.1.13",
     "tsx": "^4.20.5",
     "typescript": "^5.9.2",
     "vitest": "^3.2.4"
