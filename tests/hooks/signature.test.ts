@@ -18,7 +18,7 @@ describe('Webhook Signature Validation Tests', () => {
       const signature = generateSignature(payload, timestamp, WEBHOOK_SECRET)
       
       // Signature should be base64 encoded and start with expected prefix
-      expect(signature).toMatch(/^v1,[a-zA-Z0-9+/]+=*$/)
+      expect(signature).toMatch(/^v1=[a-zA-Z0-9+/]+=*$/)
     })
     
     it('should generate different signatures for different payloads', () => {
@@ -64,7 +64,7 @@ describe('Webhook Signature Validation Tests', () => {
     it('should reject invalid signatures', () => {
       const payload = JSON.stringify({ data: 'test' })
       const timestamp = Date.now().toString()
-      const invalidSignature = 'v1,invalidSignatureHere'
+      const invalidSignature = 'v1=invalidSignatureHere'
       const svixSignature = `t=${timestamp},${invalidSignature}`
       
       const isValid = verifySignature(payload, svixSignature, WEBHOOK_SECRET)
@@ -76,9 +76,9 @@ describe('Webhook Signature Validation Tests', () => {
       const malformedHeaders = [
         'invalid-format',
         't=123456',
-        'v1,signature-without-timestamp',
+        'v1=signature-without-timestamp',
         '',
-        'v2,unsupported-version'
+        'v2=unsupported-version'
       ]
       
       malformedHeaders.forEach(header => {
@@ -101,7 +101,7 @@ describe('Webhook Signature Validation Tests', () => {
       expect(isValid2).toBe(true)
       
       // Modified signature should fail
-      const modifiedSig = svixSignature.replace('v1,', 'v1,x')
+      const modifiedSig = svixSignature.replace('v1=', 'v1=x')
       const isInvalid = verifySignature(payload, modifiedSig, WEBHOOK_SECRET)
       expect(isInvalid).toBe(false)
     })
@@ -119,7 +119,10 @@ describe('Webhook Signature Validation Tests', () => {
       // 4. Validate timestamp to prevent replay attacks
       // 5. Handle multiple signatures in header (v1,sig1 v1,sig2)
       
-      expect(true).toBe(true) // Placeholder - will update when implementing
+      // For RED phase, expect this to fail because lib/verifyClerkWebhook doesn't exist
+      expect(() => {
+        require('../../lib/verifyClerkWebhook')
+      }).toThrow('Cannot find module')
     })
   })
 })
@@ -132,7 +135,7 @@ function generateSignature(payload: string, timestamp: string, secret: string): 
   const hmac = crypto.createHmac('sha256', secret)
   hmac.update(data)
   const signature = hmac.digest('base64')
-  return `v1,${signature}`
+  return `v1=${signature}`
 }
 
 function verifySignature(payload: string, svixSignature: string, secret: string): boolean {
@@ -142,16 +145,21 @@ function verifySignature(payload: string, svixSignature: string, secret: string)
     if (parts.length < 2) return false
     
     const timestampPart = parts.find(p => p.startsWith('t='))
-    const signaturePart = parts.find(p => p.startsWith('v1,'))
+    const signaturePart = parts.find(p => p.startsWith('v1='))
     
     if (!timestampPart || !signaturePart) return false
     
     const timestamp = timestampPart.replace('t=', '')
-    const providedSignature = signaturePart.replace('v1,', '')
+    const providedSignature = signaturePart.replace('v1=', '')
     
     // Generate expected signature
     const expectedSignature = generateSignature(payload, timestamp, secret)
-    const expectedSigValue = expectedSignature.replace('v1,', '')
+    const expectedSigValue = expectedSignature.replace('v1=', '')
+    
+    // Ensure both buffers are same length for timing-safe comparison
+    if (providedSignature.length !== expectedSigValue.length) {
+      return false
+    }
     
     // Timing-safe comparison
     return crypto.timingSafeEqual(
