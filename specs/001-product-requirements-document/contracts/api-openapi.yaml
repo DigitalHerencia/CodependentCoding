@@ -183,3 +183,56 @@ components:
         updatedAt:
           type: string
           format: date-time
+    ClerkWebhookEvent:
+      type: object
+      required:
+        - type
+        - data
+        - object
+        - evt_id
+      properties:
+        type:
+          type: string
+          enum:
+            - user.created
+            - user.deleted
+            - user.updated
+        data:
+          oneOf:
+            - $ref: '#/components/schemas/ClerkUser'
+        object:
+          type: string
+          enum:
+            - event
+        evt_id:
+          type: string
+    ClerkUser:
+      type: object
+      required:
+        - id
+        - email_addresses
+        - created_at
+      properties:
+        id:
+          type: string
+        email_addresses:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              email_address:
+                type: string
+              verification:
+                type: object
+        first_name:
+          type: string
+        last_name:
+          type: string
+        created_at:
+          type: integer
+          format: int64
+        updated_at:
+          type: integer
+          format: int64
