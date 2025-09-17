@@ -184,9 +184,7 @@ export default function MessageBlock({
           prose prose-sm max-w-none
           ${theme === 'dark' ? 'prose-invert' : ''}
         `}>
-          <ReactMarkdown 
-            components={MarkdownComponents(theme)}
-          >
+          <ReactMarkdown>
             {message.content}
           </ReactMarkdown>
         </div>

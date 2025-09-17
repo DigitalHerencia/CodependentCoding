@@ -12,8 +12,7 @@ const searchParamsSchema = z.object({
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
-    
-    // Parse and validate query parameters
+
     const validationResult = searchParamsSchema.safeParse({
       q: searchParams.get('q') || undefined,
       startDate: searchParams.get('startDate') || undefined,
@@ -22,7 +21,7 @@ export async function GET(request: NextRequest) {
 
     if (!validationResult.success) {
       return NextResponse.json(
-        { error: 'Invalid query parameters', details: validationResult.error.errors },
+        { error: 'Invalid query parameters', details: validationResult.error },
         { status: 400 }
       )
     }
@@ -30,26 +29,9 @@ export async function GET(request: NextRequest) {
     const { q, startDate, endDate } = validationResult.data
 
     // Build where clause for Prisma query
-    const whereClause: any = {}
+    const whereClause = {}
 
-    // Add search query filter (search in title and content)
-    if (q) {
-      whereClause.OR = [
-        { title: { contains: q, mode: 'insensitive' } },
-        { content: { contains: q, mode: 'insensitive' } },
-      ]
-    }
 
-    // Add date filters
-    if (startDate || endDate) {
-      whereClause.createdAt = {}
-      if (startDate) {
-        whereClause.createdAt.gte = new Date(startDate)
-      }
-      if (endDate) {
-        whereClause.createdAt.lte = new Date(endDate)
-      }
-    }
 
     // Execute search query
     const archives = await prisma.archive.findMany({
