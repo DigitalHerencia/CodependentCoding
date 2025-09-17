@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeAll } from 'vitest'
+import { describe, it, expect, beforeAll, vi } from 'vitest'
 import { TimelineChart, type TimelineDataPoint } from '../../components/analytics/TimelineChart'
 import type { AnalyticsResponse } from '../../app/api/analytics/route'
 
