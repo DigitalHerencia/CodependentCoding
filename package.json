@@ -9,6 +9,8 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.890.0",
+    "@aws-sdk/s3-request-presigner": "^3.890.0",
     "@prisma/client": "^6.16.1",
     "@uploadthing/react": "^7.3.3",
     "next": "15.5.3",
@@ -25,6 +27,7 @@
     "@vitejs/plugin-react": "^5.0.2",
     "eslint": "^9.35.0",
     "eslint-config-next": "15.5.3",
+    "jsdom": "^27.0.0",
     "tailwindcss": "^4.1.13",
     "typescript": "^5.9.2",
     "vitest": "^3.2.4"
