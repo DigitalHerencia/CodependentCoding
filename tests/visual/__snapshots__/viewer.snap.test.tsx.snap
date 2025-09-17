@@ -1,6 +1,6 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`ConversationViewer Visual Snapshots > handles role-specific styling > conversation-viewer-all-roles 1`] = `
+exports[`ConversationViewer Visual Snapshots > handles role-specific styling and theming > conversation-viewer-roles 1`] = `
 <div
   aria-label="Conversation viewer: Role Test"
   class="relative 
@@ -285,7 +285,7 @@ exports[`ConversationViewer Visual Snapshots > handles role-specific styling > c
 </div>
 `;
 
-exports[`ConversationViewer Visual Snapshots > renders conversation viewer with messages in light theme > conversation-viewer-light-theme 1`] = `
+exports[`ConversationViewer Visual Snapshots > renders conversation viewer with messages > conversation-viewer-basic 1`] = `
 <div
   aria-label="Conversation viewer: Test Conversation"
   class="relative 
@@ -575,49 +575,7 @@ exports[`ConversationViewer Visual Snapshots > renders conversation viewer with 
             <p
               class="mb-3 leading-relaxed"
             >
-              I'm doing well, thank you for asking! I'm here and ready to help you with any questions or tasks you might have.
-            </p>
-            
-
-            <p
-              class="mb-3 leading-relaxed"
-            >
-              Here are some things I can help with:
-            </p>
-            
-
-            <ul
-              class="list-disc list-inside space-y-1 my-3 pl-4"
-            >
-              
-
-              <li>
-                Answering questions
-              </li>
-              
-
-              <li>
-                Writing and editing text
-              </li>
-              
-
-              <li>
-                Problem solving
-              </li>
-              
-
-              <li>
-                Code assistance
-              </li>
-              
-
-            </ul>
-            
-
-            <p
-              class="mb-3 leading-relaxed"
-            >
-              What would you like to work on today?
+              I am doing well, thank you for asking! How can I help you today?
             </p>
           </div>
         </div>
@@ -730,7 +688,7 @@ exports[`ConversationViewer Visual Snapshots > renders empty conversation viewer
 </div>
 `;
 
-exports[`ConversationViewer Visual Snapshots > renders with close handler > conversation-viewer-with-close 1`] = `
+exports[`ConversationViewer Visual Snapshots > renders with close handler and accessibility features > conversation-viewer-with-close 1`] = `
 <div
   aria-label="Conversation viewer: Closeable Conversation"
   class="relative 
@@ -1042,49 +1000,7 @@ exports[`ConversationViewer Visual Snapshots > renders with close handler > conv
             <p
               class="mb-3 leading-relaxed"
             >
-              I'm doing well, thank you for asking! I'm here and ready to help you with any questions or tasks you might have.
-            </p>
-            
-
-            <p
-              class="mb-3 leading-relaxed"
-            >
-              Here are some things I can help with:
-            </p>
-            
-
-            <ul
-              class="list-disc list-inside space-y-1 my-3 pl-4"
-            >
-              
-
-              <li>
-                Answering questions
-              </li>
-              
-
-              <li>
-                Writing and editing text
-              </li>
-              
-
-              <li>
-                Problem solving
-              </li>
-              
-
-              <li>
-                Code assistance
-              </li>
-              
-
-            </ul>
-            
-
-            <p
-              class="mb-3 leading-relaxed"
-            >
-              What would you like to work on today?
+              I am doing well, thank you for asking! How can I help you today?
             </p>
           </div>
         </div>
@@ -1094,12 +1010,12 @@ exports[`ConversationViewer Visual Snapshots > renders with close handler > conv
 </div>
 `;
 
-exports[`ConversationViewer Visual Snapshots > renders with custom className > conversation-viewer-custom-class 1`] = `
+exports[`ConversationViewer Visual Snapshots > renders with custom className and maintains styling > conversation-viewer-custom 1`] = `
 <div
   aria-label="Conversation viewer: Custom Styled"
   class="relative 
     bg-white text-black
-    border-2 border-red-500
+    border-2 border-red-500 custom-viewer
     transition-all duration-300 ease-in-out
     focus:outline-none"
   role="dialog"
@@ -1384,49 +1300,7 @@ exports[`ConversationViewer Visual Snapshots > renders with custom className > c
             <p
               class="mb-3 leading-relaxed"
             >
-              I'm doing well, thank you for asking! I'm here and ready to help you with any questions or tasks you might have.
-            </p>
-            
-
-            <p
-              class="mb-3 leading-relaxed"
-            >
-              Here are some things I can help with:
-            </p>
-            
-
-            <ul
-              class="list-disc list-inside space-y-1 my-3 pl-4"
-            >
-              
-
-              <li>
-                Answering questions
-              </li>
-              
-
-              <li>
-                Writing and editing text
-              </li>
-              
-
-              <li>
-                Problem solving
-              </li>
-              
-
-              <li>
-                Code assistance
-              </li>
-              
-
-            </ul>
-            
-
-            <p
-              class="mb-3 leading-relaxed"
-            >
-              What would you like to work on today?
+              I am doing well, thank you for asking! How can I help you today?
             </p>
           </div>
         </div>

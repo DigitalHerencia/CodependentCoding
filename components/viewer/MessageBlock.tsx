@@ -58,19 +58,32 @@ function MarkdownComponents(theme: 'light' | 'dark') {
       <h3 className="text-lg font-medium mb-2 mt-4">{children}</h3>
     ),
     
-    // Code blocks
-    code: ({ inline, children }: { inline?: boolean; children: React.ReactNode }) => (
-      inline ? (
-        <code className={`
-          px-1 py-0.5 rounded text-sm font-mono
-          ${theme === 'dark' ? 'bg-gray-800 text-gray-300' : 'bg-gray-100 text-gray-800'}
-        `}>
+    // Code blocks - handle both inline and block code
+    code: ({ inline, children, className }: { 
+      inline?: boolean; 
+      children: React.ReactNode; 
+      className?: string;
+    }) => {
+      if (inline) {
+        return (
+          <code className={`
+            px-1 py-0.5 rounded text-sm font-mono
+            ${theme === 'dark' ? 'bg-gray-800 text-gray-300' : 'bg-gray-100 text-gray-800'}
+          `}>
+            {children}
+          </code>
+        )
+      }
+      
+      // Block code (will be wrapped by pre)
+      return (
+        <code className={className}>
           {children}
         </code>
-      ) : null // Will be handled by pre component
-    ),
+      )
+    },
     
-    // Pre-formatted text (code blocks)
+    // Pre-formatted text (code blocks)  
     pre: ({ children }: { children: React.ReactNode }) => (
       <div className={`
         p-4 rounded-lg overflow-x-auto text-sm font-mono my-4
