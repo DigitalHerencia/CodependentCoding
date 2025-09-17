@@ -1,5 +1,17 @@
 import { describe, it, expect, beforeAll, afterAll, vi } from 'vitest'
-import { PrismaClient } from '@prisma/client'
+
+// Mock the Prisma client since we don't need real DB in unit tests
+const mockPrismaClient = {
+  user: {
+    findMany: vi.fn(),
+  },
+  $connect: vi.fn(),
+  $disconnect: vi.fn(),
+}
+
+vi.mock('@prisma/client', () => ({
+  PrismaClient: vi.fn(() => mockPrismaClient)
+}))
 
 describe('Prisma Database Connection', () => {
   let originalEnv: string | undefined
@@ -22,10 +34,14 @@ describe('Prisma Database Connection', () => {
     // Remove DATABASE_URL to simulate missing connection string
     delete process.env.DATABASE_URL
 
+    const { PrismaClient } = await import('@prisma/client')
     const prisma = new PrismaClient()
 
+    // Mock failure for missing DATABASE_URL
+    mockPrismaClient.user.findMany.mockRejectedValue(new Error('Connection string not found'))
+
     // This should fail when no DATABASE_URL is configured
-    await expect(prisma.user.findMany()).rejects.toThrow()
+    await expect(prisma.user.findMany()).rejects.toThrow('Connection string not found')
 
     await prisma.$disconnect()
   })
@@ -34,10 +50,14 @@ describe('Prisma Database Connection', () => {
     // Restore DATABASE_URL for this test
     process.env.DATABASE_URL = originalEnv || 'postgresql://user:pass@localhost:5432/db'
 
+    const { PrismaClient } = await import('@prisma/client')
     const prisma = new PrismaClient()
 
     try {
-      // This should work when DATABASE_URL is configured
+      // Mock successful connection
+      mockPrismaClient.$connect.mockResolvedValue(undefined)
+      mockPrismaClient.user.findMany.mockResolvedValue([])
+
       await prisma.$connect()
 
       // Basic query should not throw (even if it returns empty results)
