@@ -73,36 +73,13 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Archive'
-  /webhook/clerk:
-    post:
-      summary: Handle Clerk webhook events
-      operationId: handleClerkWebhook
-      parameters:
-        - in: header
-          name: svix-signature
-          required: true
-          schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ClerkWebhookEvent'
-      responses:
-        '200':
-          description: Webhook processed successfully
-        '400':
-          description: Bad request
-        '401':
-          description: Invalid signature
   /api/clerk/webhook:
     post:
       summary: Handle Clerk webhook events
       operationId: handleClerkWebhook
       parameters:
-        - in: header
-          name: svix-signature
+        - name: svix-signature
+          in: header
           required: true
           schema:
             type: string
@@ -116,11 +93,64 @@ paths:
         '200':
           description: Webhook processed successfully
         '400':
-          description: Bad request
+          description: Bad request or malformed signature
         '401':
           description: Invalid signature
 components:
   schemas:
+    ClerkWebhookEvent:
+      type: object
+      required:
+        - type
+        - data
+        - object
+        - evt_id
+      properties:
+        type:
+          type: string
+          description: The type of webhook event (e.g., user.created, user.updated, user.deleted)
+        data:
+          $ref: '#/components/schemas/ClerkUser'
+        object:
+          type: string
+          enum: [event]
+        evt_id:
+          type: string
+          description: Unique identifier for the webhook event
+        
+    ClerkUser:
+      type: object
+      required:
+        - id
+        - email_addresses
+        - created_at
+      properties:
+        id:
+          type: string
+          description: Clerk user ID
+        email_addresses:
+          type: array
+          items:
+            type: object
+            properties:
+              email_address:
+                type: string
+                format: email
+              id:
+                type: string
+        first_name:
+          type: string
+          nullable: true
+        last_name:
+          type: string
+          nullable: true
+        created_at:
+          type: integer
+          description: Unix timestamp of when the user was created
+        updated_at:
+          type: integer
+          description: Unix timestamp of when the user was last updated
+
     Archive:
       type: object
       properties:
