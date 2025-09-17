@@ -105,10 +105,11 @@ describe('Clerk Webhook Contract Tests', () => {
       // 1. Make HTTP POST request to webhook endpoint
       // 2. Verify proper signature validation
       // 3. Test user creation/deletion handling
-      // 4. Verify database operations
 
-      // For now, this serves as a placeholder for the RED phase
-      expect(true).toBe(true) // This will pass, indicating we need implementation
+      // For RED phase, we expect this to fail because the implementation doesn't exist
+      expect(() => {
+        require('../../lib/verifyClerkWebhook')
+      }).toThrow('Cannot find module')
     })
 
     it('should validate HMAC signature when implemented', () => {
@@ -119,12 +120,15 @@ describe('Clerk Webhook Contract Tests', () => {
       // - Proper HMAC-SHA256 signature validation
 
       // Test cases to implement:
-      // 1. Valid signature should authenticate
+      // 1. Valid signature should authenticate  
       // 2. Invalid signature should return 401
       // 3. Missing signature should return 400
       // 4. Malformed signature should return 400
 
-      expect(true).toBe(true) // Placeholder for implementation
+      // For RED phase, expect this to fail because the implementation doesn't exist
+      expect(() => {
+        require('../../lib/verifyClerkWebhook')
+      }).toThrow('Cannot find module')
     })
   })
 })
