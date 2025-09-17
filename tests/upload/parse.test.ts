@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import JSZip from 'jszip'
-import { parseChatGPTZip } from '../../lib/parseChatGPTZip'
+import { parseChatGPTZip } from '../../lib/utils/parseChatGPTZip'
 
 describe('parseChatGPTZip', () => {
   it('parses a ZIP with a JSON conversation and an attachment', async () => {

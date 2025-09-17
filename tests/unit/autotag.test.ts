@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { autoTagContent, createHeuristicTagger, createGPTTagger } from '../../lib/autotag';
+import { autoTagContent, createHeuristicTagger, createGPTTagger } from '../../lib/utils/autotag';
 
 describe('Auto-tagging', () => {
   describe('Heuristic Tagger', () => {

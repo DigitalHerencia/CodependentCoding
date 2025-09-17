@@ -2,7 +2,7 @@
 
 import { z } from 'zod';
 import { revalidatePath } from 'next/cache';
-import { prisma } from '../prisma';
+import { prisma } from '../db/prisma';
 
 // Zod schemas for validation
 const updateTagsSchema = z.object({
@@ -186,7 +186,7 @@ export async function generateArchiveTags(
   formData: FormData
 ): Promise<ActionResult<string[]>> {
   try {
-    const { autoTagContent } = await import('../autotag');
+    const { autoTagContent } = await import('../utils/autotag');
     
     const data = generateTagsSchema.parse({
       archiveId: formData.get('archiveId'),

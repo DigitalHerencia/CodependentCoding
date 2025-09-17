@@ -29,7 +29,7 @@ async function testPrismaStructure() {
 
   try {
     // Import the prisma file to ensure it's structured correctly
-    const prismaModule = await import('../lib/prisma')
+    const prismaModule = await import('../lib/db/prisma')
     
     // Check that it exports what we expect
     if (!prismaModule.prisma) {

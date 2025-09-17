@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createRateLimit, rateLimitConfigs, addRateLimitHeaders } from '../../../lib/middleware/rateLimit'
-import { uploadToS3, generatePresignedUploadUrl } from '../../../lib/s3-encryption'
+import { uploadToS3, generatePresignedUploadUrl } from '../../../lib/utils/s3-encryption'
 
 // Create rate limiting middleware for uploads
 const uploadRateLimit = createRateLimit(rateLimitConfigs.upload)

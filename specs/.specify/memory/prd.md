@@ -3,10 +3,12 @@ Product Requirements Document — ChatGPT Archive Utility
 
 Overview
 --------
+
 ChatGPT Archive Utility (working name) is a secure web app to archive, index, and manage exported ChatGPT conversations and attachments. It will use Next.js App Router (React 19, TS5), Clerk for auth (universal login), Neon Postgres with Prisma ORM for storage, Tailwind v4 + shadcn UI for components, and a server-first architecture following React Server Components and Server Actions patterns.
 
 Goals & Success Metrics
 -----------------------
+
 - Users can sign up and sign in using Clerk universal login (100% of flows tested).
 - Clerk user lifecycle events upsert to Neon within 5s after webhook delivery (99% success rate).
 - Prisma migrations run successfully against Neon unpooled URL and Prisma client generates.
@@ -14,6 +16,7 @@ Goals & Success Metrics
 
 Core Features (MVP)
 -------------------
+
 1. Authentication & user sync
    - Universal login via Clerk
    - Server webhook handler that upserts Clerk user profile to Neon via Prisma
@@ -27,6 +30,7 @@ Core Features (MVP)
 
 Non-Functional Requirements
 ---------------------------
+
 - TypeScript strict mode
 - Server-first rendering; only use client components where necessary
 - Clear separation: components/ (pure UI) vs features/ (business logic)
@@ -35,6 +39,7 @@ Non-Functional Requirements
 
 Architecture & Flow
 -------------------
+
 - Browser -> Next.js App Router (RSC)
 - Clerk handles auth (Universal Login) and issues webhooks to /api/clerk/webhook-handler
 - Webhook handler verifies HMAC using Clerk webhook secret and upserts to Neon via Prisma
@@ -42,6 +47,7 @@ Architecture & Flow
 
 Data Model (initial)
 --------------------
+
 - User
   - id: uuid
   - clerkId: string (unique)
@@ -58,6 +64,7 @@ Data Model (initial)
 
 Security Considerations
 -----------------------
+
 - Verify Clerk webhook signature using timing-safe comparison
 - Use principle of least privilege for Neo/Postgres roles
 - Validate and sanitize all inputs with Zod
@@ -65,12 +72,14 @@ Security Considerations
 
 Developer & CI/CD Notes
 -----------------------
+
 - Repo should exclude .env from commits; use .gitignore
 - Vercel environment variables must be set for DATABASE_URL, DATABASE_URL_UNPOOLED, CLERK_*, NEON_API_KEY
 - Use prisma migrate dev with DATABASE_URL_UNPOOLED locally; runtime uses DATABASE_URL
 
 AI-Agent & Copilot Optimization
 ------------------------------
+
 - Keep commits small and single-purpose.
 - Use explicit export names and simple functions so Copilot and AI agents can generate tests and follow-ups.
 - Write Server Actions under lib/actions with 'use server' directives and clear Zod schemas.
@@ -78,6 +87,7 @@ AI-Agent & Copilot Optimization
 
 Milestones & Timeline (estimates)
 --------------------------------
+
 - Scaffolding & auth (1 day)
 - Prisma schema & migrations (0.5 day)
 - Webhook handler & tests (0.5 day)
@@ -86,12 +96,14 @@ Milestones & Timeline (estimates)
 
 Next Steps / Immediate TODOs
 --------------------------
+
 1. Initialize git repo and add .gitignore (do not commit .env)
 2. Add package.json, tsconfig, and initial Next app layout with ClerkProvider
 3. Add Prisma schema and lib/prisma.ts
 4. Implement webhook handler and basic user upsert test
 
 Appendix: environment variables (required)
+
 - DATABASE_URL (runtime pooled)
 - DATABASE_URL_UNPOOLED (migration)
 - NEON_API_KEY
@@ -109,11 +121,9 @@ prisma @prisma/client tailwindcss postcss autoprefixer \
 @clerk/nextjs @clerk/backend zod @uploadthing/react \
 @uploadthing/middleware @uploadthing/next
 
-
 Set up Tailwind:
 
 npx tailwindcss init -p
-
 
 Tailwind config:
 Update content array to include your app paths:
@@ -132,8 +142,7 @@ NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
 CLERK_SECRET_KEY=
 CLERK_PRODUCTION_WEBHOOK_SECRET=
 
-
-Wrap app in <ClerkProvider> in layout.tsx.
+Wrap app in \<ClerkProvider> in layout.tsx.
 
 🧬 4. Prisma + Neon Setup
 
@@ -160,7 +169,6 @@ model Archive {
   user        User     @relation(fields: [userId], references: [id])
 }
 
-
 Then run:
 
 npx prisma db push
@@ -172,7 +180,6 @@ Inside lib/actions/archive.ts:
 'use server'
 import { z } from 'zod'
 // define your validation schema
-
 
 Structure your project like:
 
@@ -189,7 +196,6 @@ Use file input with edge-compatible uploaders like uploadthing
 Example S3 setup:
 
 import { PutObjectCommand } from '@aws-sdk/client-s3'
-
 
 Store uploaded .zip metadata in your Archive model and parse contents using a server action.
 

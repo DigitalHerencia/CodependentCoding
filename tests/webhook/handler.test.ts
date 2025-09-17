@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { NextRequest } from 'next/server'
-import { generateSignature } from '../../lib/verifyClerkWebhook'
+import { generateSignature } from '../../lib/utils/verifyClerkWebhook'
 
 // Mock Prisma
 vi.mock('../../lib/prisma', () => {
@@ -35,7 +35,7 @@ describe('Webhook Handler Tests', () => {
 
   beforeEach(async () => {
     // Get the mocked functions from the mocked module
-    const { prisma } = await import('../../lib/prisma')
+    const { prisma } = await import('../../lib/db/prisma')
     const mockUpsert = prisma.user.upsert as any
     const mockDelete = prisma.user.delete as any
     
@@ -111,7 +111,7 @@ describe('Webhook Handler Tests', () => {
   describe('Valid Webhook Processing', () => {
     it('should process user.created event and upsert user', async () => {
       const { POST } = await import('../../app/api/clerk/webhook-handler/route')
-      const { prisma } = await import('../../lib/prisma')
+      const { prisma } = await import('../../lib/db/prisma')
       const mockUpsert = prisma.user.upsert as any
       
       const payload = JSON.stringify({
@@ -158,7 +158,7 @@ describe('Webhook Handler Tests', () => {
 
     it('should process user.updated event and upsert user', async () => {
       const { POST } = await import('../../app/api/clerk/webhook-handler/route')
-      const { prisma } = await import('../../lib/prisma')
+      const { prisma } = await import('../../lib/db/prisma')
       const mockUpsert = prisma.user.upsert as any
       
       const updatedUserData = {
@@ -209,7 +209,7 @@ describe('Webhook Handler Tests', () => {
 
     it('should process user.deleted event and delete user', async () => {
       const { POST } = await import('../../app/api/clerk/webhook-handler/route')
-      const { prisma } = await import('../../lib/prisma')
+      const { prisma } = await import('../../lib/db/prisma')
       const mockDelete = prisma.user.delete as any
       
       const payload = JSON.stringify({
@@ -242,7 +242,7 @@ describe('Webhook Handler Tests', () => {
 
     it('should acknowledge unsupported event types', async () => {
       const { POST } = await import('../../app/api/clerk/webhook-handler/route')
-      const { prisma } = await import('../../lib/prisma')
+      const { prisma } = await import('../../lib/db/prisma')
       const mockUpsert = prisma.user.upsert as any
       const mockDelete = prisma.user.delete as any
       
@@ -305,7 +305,7 @@ describe('Webhook Handler Tests', () => {
 
     it('should return 500 if database operation fails', async () => {
       const { POST } = await import('../../app/api/clerk/webhook-handler/route')
-      const { prisma } = await import('../../lib/prisma')
+      const { prisma } = await import('../../lib/db/prisma')
       const mockUpsert = prisma.user.upsert as any
       
       const payload = JSON.stringify({

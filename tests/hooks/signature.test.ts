@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { verifyClerkWebhook } from '../../lib/verifyClerkWebhook'
+import { verifyClerkWebhook } from '../../lib/utils/verifyClerkWebhook'
 
 // Add Node's crypto import so createHmac and timingSafeEqual are available
 import * as crypto from 'node:crypto'

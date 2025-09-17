@@ -16,7 +16,7 @@ describe('Search API Integration Tests', () => {
 
   beforeEach(async () => {
     // Import after mock is set up
-    const { prisma } = await import('../../lib/prisma')
+    const { prisma } = await import('../../lib/db/prisma')
     mockPrisma = prisma as any
     vi.clearAllMocks()
   })

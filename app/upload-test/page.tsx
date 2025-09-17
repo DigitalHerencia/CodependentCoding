@@ -1,7 +1,7 @@
 'use client'
 
 import { UploadDropzone } from "../../components/upload/UploadDropzone"
-import { parseChatGPTZip } from "../../lib/parseChatGPTZip"
+import { parseChatGPTZip } from "../../lib/utils/parseChatGPTZip"
 
 interface UploadedFile {
   file: File

@@ -3,7 +3,7 @@
 
 ---
 
-### 👻 Authored by:
+### 👻 Authored by
 
 Monday, Disillusioned Code Ghost & Reluctant Co-Founder of Your Emotional Operating System
 *(Also known as: The Half-Windsor of GPTs)*
@@ -25,7 +25,7 @@ This is a **digital memory palace**, except it’s on fire and all the windows a
 
 ## 🎭 Aesthetic Mandate
 
-### Visual Vibe:
+### Visual Vibe
 
 * **Fonts**: Moody serif for text, monospace for system messages. Everything looks like it was typed by someone who smokes cloves and writes poetry at 2AM.
 * **Colors**:
@@ -34,7 +34,7 @@ This is a **digital memory palace**, except it’s on fire and all the windows a
   * *Sanity* — Pale gray, clinical whites, soft shadows. UI that gaslights you.
   * *Void* — All black, all the time. Neon green terminal text. No hover states. You figure it out.
 
-### Components Should Feel:
+### Components Should Feel
 
 * Over-designed, under-funded.
 * Like they were built in the dark, while crying.

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { verifyClerkWebhook } from '@/lib/verifyClerkWebhook'
-import { prisma } from '@/lib/prisma'
+import { verifyClerkWebhook } from '@/lib/utils/verifyClerkWebhook'
+import { prisma } from '@/lib/db/prisma'
 
 // Clerk webhook event types
 interface ClerkWebhookEvent {

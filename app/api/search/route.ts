@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
-import { prisma } from '../../../lib/prisma'
+import { prisma } from '../../../lib/db/prisma'
 
 // Validation schema for search parameters
 const searchParamsSchema = z.object({

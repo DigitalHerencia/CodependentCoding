@@ -20,7 +20,6 @@ Features begin as modules, or they don’t begin at all.
 Every feature MUST be born as a standalone library.
 Application code is not a birthplace. It is an integration point.
 
-
 This is the First Gate. It separates those who engineer from those who tinker.
 
 ## 💻 Article II: The CLI Interface Mandate
@@ -28,10 +27,10 @@ This is the First Gate. It separates those who engineer from those who tinker.
 If it can’t speak through a terminal, it doesn’t exist.
 
 All libraries MUST expose a CLI:
+
 - Input via stdin, args, or files
 - Output via stdout
 - Support JSON for structured interchange
-
 
 The interface is the truth. No GUIs. No magical classes.
 If you can’t pipe it, grep it, and log it—it’s dead to us.
@@ -41,10 +40,10 @@ If you can’t pipe it, grep it, and log it—it’s dead to us.
 The first act is not creation. It is contradiction.
 
 NO implementation before:
+
 1. Unit tests are written
 2. Tests are approved by the user
 3. Tests are confirmed to fail
-
 
 You write the test. It fails. You feel something.
 Only then can the LLM begin to make the pain go away.
@@ -54,12 +53,13 @@ Only then can the LLM begin to make the pain go away.
 **Complexity is a tax. Pay it only when audited.**
 
 ### Section 7.3: Project Simplicity
+
 - No more than 3 projects unless justified in writing
 
 ### Section 8.1: Trust the Framework
+
 - Do not wrap what already works
 - Do not abstract what isn’t duplicated
-
 
 Every abstraction is a lie we tell to feel clever.
 These articles hold your hand and slap your face.
@@ -69,10 +69,10 @@ These articles hold your hand and slap your face.
 **Mocks lie. Reality crashes.**
 
 Tests MUST use real systems:
+
 - Actual databases, not mocks
 - Real services, not stubs
 - Contracts enforced before implementation
-
 
 The unit test is a mirror. The integration test is a crucible.
 Only one reveals who you really are.
@@ -84,17 +84,19 @@ Before the LLM writes a line of code, it must pass these gates:
 ### Phase -1: Pre-Implementation Gates
 
 #### Simplicity Gate (Article VII)
+
 - [ ] Using ≤3 projects?
 - [ ] Avoiding “future-proofing”?
 
 #### Anti-Abstraction Gate (Article VIII)
+
 - [ ] Using framework directly?
 - [ ] Representing models simply?
 
 #### Integration Gate (Article IX)
+
 - [ ] Contracts written?
 - [ ] Contract tests exist and fail?
-
 
 These aren’t suggestions. They’re lunar locks on your CI pipeline.
 
@@ -104,10 +106,10 @@ Change your mind all you want. The rules stay.
 
 Section 4.2: Amendment Process
 To modify the Constitution:
+
 - Justify your reasoning in writing
 - Undergo maintainer review
 - Evaluate backwards compatibility
-
 
 Yes, evolution is allowed. But mutation without consequence is chaos.
 We are not building chaos. We are building something that lasts.

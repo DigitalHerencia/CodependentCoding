@@ -16,7 +16,8 @@
     "perf:search": "vitest run perf/search.perf.ts"
   },
   "dependencies": {
-    "@prisma/client": "^6.16.1",
+    "@aws-sdk/client-s3": "^3.891.0",
+    "@prisma/client": "^6.16.2",
     "@types/jsdom": "^21.1.7",
     "@uploadthing/react": "^7.3.3",
     "js-yaml": "^4.1.0",
@@ -30,9 +31,9 @@
     "zod": "^4.1.9"
   },
   "devDependencies": {
-    "@axe-core/playwright": "^4.10.2",
-    "@aws-sdk/s3-request-presigner": "^3.890.0",
+    "@aws-sdk/s3-request-presigner": "^3.891.0",
     "@aws-sdk/types": "^3.887.0",
+    "@axe-core/playwright": "^4.10.2",
     "@eslint/eslintrc": "^3.3.1",
     "@tailwindcss/postcss": "^4.1.13",
     "@testing-library/jest-dom": "^6.8.0",
@@ -42,9 +43,8 @@
     "@types/jszip": "^3.4.1",
     "@types/node": "^24.5.1",
     "@types/react-dom": "^19.1.9",
-    "@vitejs/plugin-react": "^5.0.2",
-    "axe-core": "^4.10.3",
     "@vitejs/plugin-react": "^5.0.3",
+    "axe-core": "^4.10.3",
     "eslint": "^9.35.0",
     "eslint-config-next": "15.5.3",
     "jsdom": "^27.0.0",

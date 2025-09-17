@@ -15,7 +15,9 @@ Run the setup script to create milestones and assign issues automatically:
 ```
 
 ## Manual Setup Instructions
+
 .\scripts\setup-github-projects.ps1
+
 ### 1. Create Milestones
 
 Use the following `gh` CLI commands to create the four project milestones:
@@ -60,6 +62,7 @@ gh api repos/DigitalHerencia/CodependentCoding/milestones \
 |-----------|-------|---------|
 | **Phase 1 — Foundation** | T001, T002, T003, T004, T005, T017 | #1, #2, #3, #4, #5, #16 |
 | **Phase 2 — Core Features** | T006, T007, T008, T009, T010, T011 | #6, #7, #8, #9, #10, #11 |
+
 1. A workflow was added at `.github\workflows\setup-projects.yml` that will create milestones and T001-T019 issues and assign them to milestones.
 2. To run the automation from the GitHub UI: go to the repository → Actions → `Setup GitHub Project (milestones & issues)` → Run workflow (workflow_dispatch).
 3. Alternatively, run the workflow via the REST API or `gh` CLI once you have permissions.
@@ -70,7 +73,7 @@ gh api repos/DigitalHerencia/CodependentCoding/milestones \
 
 Since `gh` CLI has limited Projects v2 support, create the board via the GitHub web UI:
 
-1. **Navigate to Projects**: https://github.com/DigitalHerencia/CodependentCoding/projects
+1. **Navigate to Projects**: <https://github.com/DigitalHerencia/CodependentCoding/projects>
 2. **Create New Project**: Click "New project"
 3. **Choose Template**: Select "Board" template
 4. **Configure Project**:
@@ -94,16 +97,19 @@ Create the following columns in order:
 Go to **Project Settings → Automation** and add these rules:
 
 #### Rule 1: PR Linked to Issue → In Review
+
 - **Trigger**: Pull request opened
 - **Condition**: Pull request links to an issue in this project
 - **Action**: Move linked issue to "In review"
 
 #### Rule 2: Issue/PR Closed → Done  
+
 - **Trigger**: Issue closed OR Pull request merged
 - **Condition**: Issue/PR is in this project
 - **Action**: Move to "Done"
 
 #### Rule 3: Milestone Assigned → Selected
+
 - **Trigger**: Issue updated
 - **Condition**: Milestone is added to issue
 - **Action**: Move to "Selected"
@@ -196,6 +202,7 @@ GitHub's Projects v2 API is still evolving. Some operations may require web UI i
 ### Permission Issues
 
 Ensure you have:
+
 - **Admin** or **Write** access to the repository
 - **Admin** access to the organization (for organization-level projects)
 
