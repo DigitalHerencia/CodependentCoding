@@ -1,0 +1,44 @@
+{
+  // Template for a profile. Copy this file and customize it for the development environment.
+  "settings": {
+    "editor.tabSize": 2,
+    "editor.formatOnSave": true,
+    "typescript.tsdk": "node_modules/typescript/lib",
+    "files.exclude": {
+      "**/.next": true,
+      "**/node_modules": true
+    }
+  },
+  "extensions": [
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "Prisma.prisma",
+    "tailwindcss.vscode-tailwindcss",
+    "clerk.dev"
+  ],
+  "mcp": {
+    "filesystem": {
+      "root": "/workspace"
+    },
+    "prisma-postgres": {
+      "database": "postgres://user:password@localhost:5432/db"
+    },
+    "neon": {
+      "enabled": true
+    },
+    "clerk": {
+      "frontendApi": "",
+      "apiKey": ""
+    },
+    "sequentialthinking": {},
+    "memory": {},
+    "github": {},
+    "docs": {}
+  },
+  "tasks": {
+    // Example tasks: you can define scripts or terminal commands here
+    "scaffold": "pnpm dlx create-next-app . --ts",
+    "lint": "pnpm eslint .",
+    "test": "pnpm vitest"
+  }
+}

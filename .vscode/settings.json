@@ -1,0 +1,69 @@
+{
+  // -------------------------------
+  // FORMATTING & LINTING (PROJECT)
+  // -------------------------------
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+
+  "eslint.enable": true,
+  "eslint.useFlatConfig": true,
+  "eslint.format.enable": true,
+  "eslint.codeActionsOnSave.mode": "all",
+  "eslint.problems.shortenToSingleLine": true,
+  "eslint.ignoreUntitled": true,
+  "eslint.quiet": true,
+
+  // -------------------------------
+  // TAILWIND (PROJECT)
+  // -------------------------------
+  "tailwindCSS.emmetCompletions": true,
+  "tailwindCSS.includeLanguages": {
+    "typescriptreact": "html",
+    "javascriptreact": "html"
+  },
+  "tailwindCSS.experimental.classRegex": [
+    ["clsx\\(([^)]*)\\)", "(?:'|\"|`)([^'\"`]*)(?:'|\"|`)"]
+  ],
+
+  // -------------------------------
+  // TYPESCRIPT / NEXT.JS (PROJECT)
+  // -------------------------------
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.preferences.importModuleSpecifier": "shortest",
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "typescript.tsserver.experimental.enableProjectDiagnostics": true,
+
+  // -------------------------------
+  // FILE MANAGEMENT
+  // -------------------------------
+  "files.exclude": {
+    "**/.next": true,
+    "**/.vercel": true,
+    "**/node_modules": true,
+    "**/dist": true
+  },
+
+  // -------------------------------
+  // GIT
+  // -------------------------------
+  "git.decorations.enabled": true,
+  "git.enableSmartCommit": true,
+  "git.confirmSync": false,
+
+  // -------------------------------
+  // PROJECT COPILOT INSTRUCTIONS
+  // -------------------------------
+  "github.copilot.chat.instructions": ["copilot-instructions.md"],
+
+  "chat.instructionsFilesLocations": {
+    ".github/copilot-instructions": true
+  },
+
+  // -------------------------------
+  // MCP
+  // -------------------------------
+  "mcp.workingDirectory": "${workspaceFolder}",
+  "mcp.server.timeout": 10000
+}
