@@ -23,7 +23,9 @@
     "typescriptreact": "html",
     "javascriptreact": "html"
   },
-  "tailwindCSS.experimental.classRegex": [["clsx\\(([^)]*)\\)", "(?:'|\"|`)([^'\"`]*)(?:'|\"|`)"]],
+  "tailwindCSS.experimental.classRegex": [
+    ["clsx\\(([^)]*)\\)", "(?:'|\"|`)([^'\"`]*)(?:'|\"|`)"]
+  ],
 
   // -------------------------------
   // TYPESCRIPT / NEXT.JS (PROJECT)
@@ -43,27 +45,6 @@
     "**/dist": true
   },
 
-  "files.watcherExclude": {
-    "**/.next/**": true,
-    "**/.vercel/**": true,
-    "**/dist/**": true,
-    "lv_artifacts": true,
-    "lv_artifacts/**": true,
-    "lv_artifacts/src": true,
-    "lv_artifacts/src/**": true
-  },
-
-  "search.exclude": {
-    "**/.next/**": true,
-    "**/.vercel/**": true,
-    "**/dist/**": true,
-    "lv_artifacts": true,
-    "lv_artifacts/**": true,
-    "lv_artifacts/src": true,
-    "lv_artifacts/src/**": true,
-    "**/.loaded-vibes/**": true
-  },
-
   // -------------------------------
   // GIT
   // -------------------------------
@@ -72,20 +53,10 @@
   "git.confirmSync": false,
 
   // -------------------------------
-  // PROJECT COPILOT INSTRUCTIONS
+  // PROJECT COPILOT INSTRUCTIONS (FRAMEWORK DEVELOPMENT)
   // -------------------------------
-  "github.copilot.chat.codeGeneration.useInstructionFiles": true,
-  "github.copilot.chat.pullRequestDescriptionGeneration.instructions": [
-    { "file": "PULL_REQUEST_TEMPLATE.md" }
-  ],
-  "github.copilot.chat.reviewSelection.instructions": [
-    { "file": "genaiscript-extension.instructions.md" }
-  ],
-
-  // -------------------------------
-  // COPILOT CHAT EXTENSION
-  // -------------------------------
-
+  // These instructions govern the development OF the Loaded Vibes framework.
+  // Do NOT include the "shipped" instructions (templates/global.instructions.md) here.
   "chat.checkpoints.enabled": true,
   "chat.customAgentInSubagent.enabled": true,
   "chat.edits2.enabled": true,
@@ -103,22 +74,5 @@
   // -------------------------------
 
   "chat.mcp.autostart": "onlyNew",
-  "chat.mcp.access": "all",
-
-  // -------------------------------
-  // GENAI SCRIPT EXTENSION
-  // -------------------------------
-
-  "genaiscript.localTypeDefinitions": true,
-  "genaiscript.languageChatModelsProvider": true,
-  "genaiscript.languageChatModels": {
-    "default": "github_copilot_chat:current",
-    "openai:gpt-4o-mini": "github_copilot_chat:current"
-  },
-  "genaiscript.askLanguageChatModel": true,
-  "genaiscript.cache": true,
-  "genaiscript.cli.packageManager": "pnpm",
-  "genaiscript.cli.nodeOptions": "--enable-source-maps --max-old-space-size=4096",
-  "genaiscript.cli.version": "latest",
-  "genaiscript.githubCopilotInstructions": true
+  "chat.mcp.access": "all"
 }

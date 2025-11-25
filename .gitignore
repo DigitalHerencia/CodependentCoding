@@ -1,0 +1,29 @@
+# Node / tooling
+node_modules/
+dist/
+build/
+temp/
+.env
+.env.local
+
+# VS Code / workspace
+.vscode/*.code-workspace
+.vscode/.history
+.history/
+.DS_Store
+Thumbs.db
+
+# Loaded Vibes runtime mirrors
+lv_artifacts/src/
+**/.loaded-vibes/
+.agent_work/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Coverage
+coverage/
+.nyc_output/

@@ -1,0 +1,254 @@
+{
+  "initialization": {
+    "label": "Initialization",
+    "description": "Bootstrap environment readiness, verify prerequisites, and surface blockers.",
+    "instructions": "../.github/instructions/initialization.instructions.md",
+    "toolset": "../.github/toolsets/initialization.toolset.jsonc",
+    "prompt": "../.github/prompts/initialization.prompt.md",
+    "contexts": [
+      "../../docs/PRD.md",
+      "../../docs/TECH_REQUIREMENTS.md",
+      "../../README.md"
+    ],
+    "checkpoints": ["analyze", "design", "implement", "validate", "handoff"],
+    "defaultMode": "plan-first"
+  },
+  "scaffolding": {
+    "label": "Scaffolding",
+    "description": "Translate requirements into project topology and baseline files.",
+    "instructions": "../.github/instructions/scaffolding.instructions.md",
+    "toolset": "../.github/toolsets/scaffolding.toolset.jsonc",
+    "prompt": "../.github/prompts/scaffolding.prompt.md",
+    "contexts": [
+      "../../docs/PRD.md",
+      "../../docs/TECH_REQUIREMENTS.md",
+      "../../CHANGELOG.md"
+    ],
+    "checkpoints": ["analyze", "design", "implement", "validate", "handoff"],
+    "defaultMode": "plan-first"
+  },
+  "configuration": {
+    "label": "Configuration",
+    "description": "Wire up linting, formatting, testing, and workspace automation.",
+    "instructions": "../.github/instructions/configuration.instructions.md",
+    "toolset": "../.github/toolsets/configuration.toolset.jsonc",
+    "prompt": "../.github/prompts/configuration.prompt.md",
+    "contexts": [
+      "../../docs/PRD.md",
+      "../../docs/TECH_REQUIREMENTS.md",
+      "../../CHANGELOG.md"
+    ],
+    "checkpoints": ["analyze", "design", "implement", "validate", "handoff"],
+    "defaultMode": "plan-first"
+  },
+  "verification": {
+    "label": "Verification",
+    "description": "Execute static checks, detect config drift, and confirm structural soundness.",
+    "instructions": "../.github/instructions/verification.instructions.md",
+    "toolset": "../.github/toolsets/verification.toolset.jsonc",
+    "prompt": "../.github/prompts/verification.prompt.md",
+    "contexts": [
+      "../../docs/PRD.md",
+      "../../docs/TECH_REQUIREMENTS.md",
+      "../../CHANGELOG.md"
+    ],
+    "checkpoints": ["analyze", "design", "validate", "handoff"],
+    "defaultMode": "plan-first"
+  },
+  "data": {
+    "label": "Data",
+    "description": "Design Prisma schema, migrations, and safety checks.",
+    "instructions": "../.github/instructions/data.instructions.md",
+    "toolset": "../.github/toolsets/data.toolset.jsonc",
+    "prompt": "../.github/prompts/data.prompt.md",
+    "contexts": [
+      "../../docs/PRD.md",
+      "../../docs/TECH_REQUIREMENTS.md",
+      "../../CHANGELOG.md"
+    ],
+    "checkpoints": ["analyze", "design", "implement", "validate", "handoff"],
+    "defaultMode": "plan-first"
+  },
+  "auth": {
+    "label": "Auth",
+    "description": "Integrate Clerk, ABAC/RBAC, and session flows.",
+    "instructions": "../.github/instructions/auth.instructions.md",
+    "toolset": "../.github/toolsets/auth.toolset.jsonc",
+    "prompt": "../.github/prompts/auth.prompt.md",
+    "contexts": [
+      "../../docs/PRD.md",
+      "../../docs/TECH_REQUIREMENTS.md",
+      "../../CHANGELOG.md"
+    ],
+    "checkpoints": ["analyze", "design", "implement", "validate", "handoff"],
+    "defaultMode": "plan-first"
+  },
+  "testing": {
+    "label": "Testing",
+    "description": "Configure Vitest/Playwright, author plans, and ensure coverage hooks.",
+    "instructions": "../.github/instructions/testing.instructions.md",
+    "toolset": "../.github/toolsets/testing.toolset.jsonc",
+    "prompt": "../.github/prompts/testing.prompt.md",
+    "contexts": [
+      "../../docs/PRD.md",
+      "../../docs/TECH_REQUIREMENTS.md",
+      "../../CHANGELOG.md"
+    ],
+    "checkpoints": ["analyze", "design", "implement", "validate", "handoff"],
+    "defaultMode": "plan-first"
+  },
+  "validation": {
+    "label": "Validation",
+    "description": "Confirm business logic + UX alignment with PRD intent.",
+    "instructions": "../.github/instructions/validation.instructions.md",
+    "toolset": "../.github/toolsets/validation.toolset.jsonc",
+    "prompt": "../.github/prompts/validation.prompt.md",
+    "contexts": [
+      "../../docs/PRD.md",
+      "../../docs/TECH_REQUIREMENTS.md",
+      "../../CHANGELOG.md"
+    ],
+    "checkpoints": ["analyze", "design", "validate", "handoff"],
+    "defaultMode": "plan-first"
+  },
+  "features": {
+    "label": "Features",
+    "description": "Implement modules, components, and workflows with budgets.",
+    "instructions": "../.github/instructions/features.instructions.md",
+    "toolset": "../.github/toolsets/features.toolset.jsonc",
+    "prompt": "../.github/prompts/features.prompt.md",
+    "contexts": [
+      "../../docs/PRD.md",
+      "../../docs/TECH_REQUIREMENTS.md",
+      "../../CHANGELOG.md"
+    ],
+    "checkpoints": ["analyze", "design", "implement", "validate", "handoff"],
+    "defaultMode": "plan-first"
+  },
+  "debug": {
+    "label": "Debug",
+    "description": "Resolve defects, stabilize, and collaborate with observability/perf.",
+    "instructions": "../.github/instructions/debug.instructions.md",
+    "toolset": "../.github/toolsets/debug.toolset.jsonc",
+    "prompt": "../.github/prompts/debug.prompt.md",
+    "contexts": [
+      "../../docs/PRD.md",
+      "../../docs/TECH_REQUIREMENTS.md",
+      "../../CHANGELOG.md"
+    ],
+    "checkpoints": ["analyze", "implement", "validate", "handoff"],
+    "defaultMode": "plan-first"
+  },
+  "security": {
+    "label": "Security",
+    "description": "Apply CSP, HSTS, AI permissions, and data-protection guardrails.",
+    "instructions": "../.github/instructions/security.instructions.md",
+    "toolset": "../.github/toolsets/security.toolset.jsonc",
+    "prompt": "../.github/prompts/security.prompt.md",
+    "contexts": [
+      "../../docs/PRD.md",
+      "../../docs/TECH_REQUIREMENTS.md",
+      "../../CHANGELOG.md"
+    ],
+    "checkpoints": ["analyze", "design", "implement", "validate", "handoff"],
+    "defaultMode": "plan-first"
+  },
+  "performance": {
+    "label": "Performance",
+    "description": "Optimize bundle size, DB queries, and dependencies.",
+    "instructions": "../.github/instructions/performance.instructions.md",
+    "toolset": "../.github/toolsets/performance.toolset.jsonc",
+    "prompt": "../.github/prompts/performance.prompt.md",
+    "contexts": [
+      "../../docs/PRD.md",
+      "../../docs/TECH_REQUIREMENTS.md",
+      "../../CHANGELOG.md"
+    ],
+    "checkpoints": ["analyze", "design", "implement", "validate", "handoff"],
+    "defaultMode": "plan-first"
+  },
+  "observability": {
+    "label": "Observability",
+    "description": "Integrate telemetry, logs, alerts, and dashboards.",
+    "instructions": "../.github/instructions/observability.instructions.md",
+    "toolset": "../.github/toolsets/observability.toolset.jsonc",
+    "prompt": "../.github/prompts/observability.prompt.md",
+    "contexts": [
+      "../../docs/PRD.md",
+      "../../docs/TECH_REQUIREMENTS.md",
+      "../../CHANGELOG.md"
+    ],
+    "checkpoints": ["analyze", "design", "implement", "validate", "handoff"],
+    "defaultMode": "plan-first"
+  },
+  "code-review": {
+    "label": "Code Review",
+    "description": "Perform PR analysis, static checks, and gate policies.",
+    "instructions": "../.github/instructions/code-review.instructions.md",
+    "toolset": "../.github/toolsets/code-review.toolset.jsonc",
+    "prompt": "../.github/prompts/code-review.prompt.md",
+    "contexts": [
+      "../../docs/PRD.md",
+      "../../docs/TECH_REQUIREMENTS.md",
+      "../../CHANGELOG.md"
+    ],
+    "checkpoints": ["analyze", "validate", "handoff"],
+    "defaultMode": "plan-first"
+  },
+  "documentation": {
+    "label": "Documentation",
+    "description": "Generate and update README, CONTRIBUTING, SECURITY, etc.",
+    "instructions": "../.github/instructions/documentation.instructions.md",
+    "toolset": "../.github/toolsets/documentation.toolset.jsonc",
+    "prompt": "../.github/prompts/documentation.prompt.md",
+    "contexts": [
+      "../../docs/PRD.md",
+      "../../docs/TECH_REQUIREMENTS.md",
+      "../../CHANGELOG.md"
+    ],
+    "checkpoints": ["analyze", "design", "implement", "handoff"],
+    "defaultMode": "plan-first"
+  },
+  "ci-cd": {
+    "label": "CI/CD",
+    "description": "Define GitHub Actions, pipelines, and automation policies.",
+    "instructions": "../.github/instructions/ci-cd.instructions.md",
+    "toolset": "../.github/toolsets/ci-cd.toolset.jsonc",
+    "prompt": "../.github/prompts/ci-cd.prompt.md",
+    "contexts": [
+      "../../docs/PRD.md",
+      "../../docs/TECH_REQUIREMENTS.md",
+      "../../CHANGELOG.md"
+    ],
+    "checkpoints": ["analyze", "design", "implement", "validate", "handoff"],
+    "defaultMode": "plan-first"
+  },
+  "deploy": {
+    "label": "Deploy",
+    "description": "Execute deployments, smoke tests, and rollback strategies.",
+    "instructions": "../.github/instructions/deploy.instructions.md",
+    "toolset": "../.github/toolsets/deploy.toolset.jsonc",
+    "prompt": "../.github/prompts/deploy.prompt.md",
+    "contexts": [
+      "../../docs/PRD.md",
+      "../../docs/TECH_REQUIREMENTS.md",
+      "../../CHANGELOG.md"
+    ],
+    "checkpoints": ["analyze", "design", "implement", "validate", "handoff"],
+    "defaultMode": "plan-first"
+  },
+  "updates": {
+    "label": "Updates",
+    "description": "Ship post-launch fixes, QoL improvements, and patch notes.",
+    "instructions": "../.github/instructions/updates.instructions.md",
+    "toolset": "../.github/toolsets/updates.toolset.jsonc",
+    "prompt": "../.github/prompts/updates.prompt.md",
+    "contexts": [
+      "../../docs/PRD.md",
+      "../../docs/TECH_REQUIREMENTS.md",
+      "../../CHANGELOG.md"
+    ],
+    "checkpoints": ["analyze", "design", "implement", "validate", "handoff"],
+    "defaultMode": "plan-first"
+  }
+}
