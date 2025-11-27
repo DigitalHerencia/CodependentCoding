@@ -1,0 +1,165 @@
+# CI Check for Manifest File Resolution
+# Verifies each entry in devcycles.config.json resolves to valid
+# prompt/instruction/toolset files.
+#
+# Closes #26
+# Requirements: TECH_REQUIREMENTS §7, SPEC-ARTIFACTS §3
+
+name: Manifest Validation
+
+on:
+  push:
+    paths:
+      - 'dist/genaiscript/devcycles.config.json'
+      - 'dist/.github/prompts/**'
+      - 'dist/.github/instructions/**'
+      - 'dist/.github/toolsets/**'
+  pull_request:
+    paths:
+      - 'dist/genaiscript/devcycles.config.json'
+      - 'dist/.github/prompts/**'
+      - 'dist/.github/instructions/**'
+      - 'dist/.github/toolsets/**'
+
+permissions:
+  contents: read
+
+jobs:
+  validate-manifest:
+    name: Validate Manifest File Resolution
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Validate manifest entries
+        shell: bash
+        run: |
+          set -uo pipefail
+
+          MANIFEST_FILE="dist/genaiscript/devcycles.config.json"
+          MANIFEST_DIR="dist/genaiscript"
+          EXIT_CODE=0
+          declare -a MISSING_FILES
+          VALIDATED_COUNT=0
+
+          # Function to validate a file reference
+          # Args: $1=devcycle, $2=field_name, $3=relative_path
+          # Returns: 0 if valid, 1 if missing
+          validate_file_ref() {
+            local devcycle="$1"
+            local field="$2"
+            local path="$3"
+
+            if [ -z "$path" ]; then
+              echo "   ⚠️  $field: (not defined)"
+              return 0
+            fi
+
+            local normalized
+            normalized=$(cd "$MANIFEST_DIR" && realpath -m "$path" 2>/dev/null || echo "")
+
+            if [ -f "$normalized" ]; then
+              echo "   ✅ $field: $path"
+              return 0
+            else
+              echo "   ❌ $field: $path"
+              echo "      Expected at: $normalized"
+              return 1
+            fi
+          }
+
+          echo "🔍 Validating DevCycle manifest file resolution..."
+          echo ""
+
+          # Check if manifest exists
+          if [ ! -f "$MANIFEST_FILE" ]; then
+            echo "❌ Manifest file not found: $MANIFEST_FILE"
+            echo ""
+            echo "   Per TECH_REQUIREMENTS §4.1, the manifest must exist and be validated"
+            echo "   during bootstrap. Missing files or mismatched references block execution."
+            exit 1
+          fi
+
+          echo "📄 Found manifest: $MANIFEST_FILE"
+          echo ""
+
+          # Get all DevCycle keys from manifest
+          DEVCYCLES=$(jq -r 'keys[]' "$MANIFEST_FILE")
+
+          echo "🔧 Checking file references for each DevCycle..."
+          echo ""
+
+          for devcycle in $DEVCYCLES; do
+            echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+            echo "📦 DevCycle: $devcycle"
+            echo ""
+
+            # Extract file references
+            INSTRUCTION=$(jq -r ".\"$devcycle\".instructions // empty" "$MANIFEST_FILE")
+            TOOLSET=$(jq -r ".\"$devcycle\".toolset // empty" "$MANIFEST_FILE")
+            PROMPT=$(jq -r ".\"$devcycle\".prompt // empty" "$MANIFEST_FILE")
+
+            CYCLE_VALID=true
+
+            # Validate each file reference
+            if ! validate_file_ref "$devcycle" "instructions" "$INSTRUCTION"; then
+              MISSING_FILES+=("$devcycle.instructions: $INSTRUCTION")
+              CYCLE_VALID=false
+              EXIT_CODE=1
+            fi
+
+            if ! validate_file_ref "$devcycle" "toolset" "$TOOLSET"; then
+              MISSING_FILES+=("$devcycle.toolset: $TOOLSET")
+              CYCLE_VALID=false
+              EXIT_CODE=1
+            fi
+
+            if ! validate_file_ref "$devcycle" "prompt" "$PROMPT"; then
+              MISSING_FILES+=("$devcycle.prompt: $PROMPT")
+              CYCLE_VALID=false
+              EXIT_CODE=1
+            fi
+
+            if [ "$CYCLE_VALID" = true ]; then
+              ((VALIDATED_COUNT++)) || true
+            fi
+            echo ""
+          done
+
+          # Summary
+          TOTAL_CYCLES=$(echo "$DEVCYCLES" | wc -w)
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo ""
+
+          if [ $EXIT_CODE -eq 0 ]; then
+            echo "✅ All manifest entries validated successfully!"
+            echo ""
+            echo "   Validated $VALIDATED_COUNT/$TOTAL_CYCLES DevCycles"
+            echo "   All prompt/instruction/toolset files exist."
+          else
+            echo "❌ Manifest validation failed!"
+            echo ""
+            echo "   Validated $VALIDATED_COUNT/$TOTAL_CYCLES DevCycles"
+            echo ""
+            echo "   Missing files:"
+            for missing in "${MISSING_FILES[@]}"; do
+              echo "   • $missing"
+            done
+            echo ""
+            echo "   📚 References:"
+            echo "   • TECH_REQUIREMENTS §7 - Workflow & Governance Requirements"
+            echo "   • SPEC-ARTIFACTS §3 - Artifact validation during bootstrap"
+            echo "   • TECH_REQUIREMENTS §4.1 - Manifest validation requirements"
+            echo ""
+            echo "   To fix: Create the missing files or update the manifest"
+            echo "   references to point to existing files."
+          fi
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+          exit $EXIT_CODE
