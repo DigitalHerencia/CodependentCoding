@@ -47,6 +47,24 @@ const BACKUP_DIR = 'backup';
 const LOGS_DIR = 'logs';
 const MAX_BACKUPS = 5;
 
+// File exclusion patterns for asset analysis and copying
+const EXCLUDED_PREFIXES = [
+  'node_modules',
+  'logs',
+  'backup',
+  'sandbox',
+  'upgrade-hints',
+];
+
+// Version bump display configuration
+const VERSION_BUMP_DISPLAY = {
+  major: '🔴 MAJOR',
+  minor: '🟡 MINOR',
+  patch: '🟢 PATCH',
+  none: '⚪ UP TO DATE',
+  downgrade: '⬇️ DOWNGRADE',
+};
+
 /**
  * Semantic version comparison result
  * @typedef {'major'|'minor'|'patch'|'none'|'downgrade'} VersionBump
@@ -237,6 +255,22 @@ function computeChecksumSync(filePath) {
 }
 
 /**
+ * Filters file paths to exclude non-asset directories.
+ * @param {string[]} files - Array of file paths
+ * @returns {string[]} Filtered file paths
+ */
+function filterAssetFiles(files) {
+  return files.filter((f) => {
+    for (const prefix of EXCLUDED_PREFIXES) {
+      if (f.startsWith(prefix)) {
+        return false;
+      }
+    }
+    return true;
+  });
+}
+
+/**
  * Recursively lists all files in a directory.
  * @param {string} dir - Directory path
  * @param {string} [prefix] - Path prefix
@@ -347,15 +381,8 @@ async function analyzeUpgrade(shippedRoot, installedRoot, logger) {
 
   // Get all shipped files
   const shippedFiles = await listFilesRecursive(shippedRoot);
-  const relevantFiles = shippedFiles.filter(
-    (f) =>
-      !f.startsWith('node_modules') &&
-      !f.startsWith('logs') &&
-      !f.startsWith('backup') &&
-      !f.startsWith('sandbox') &&
-      f !== VERSION_FILE &&
-      f !== MANIFEST_FILE &&
-      f !== ASSETS_FILE
+  const relevantFiles = filterAssetFiles(shippedFiles).filter(
+    (f) => f !== VERSION_FILE && f !== MANIFEST_FILE && f !== ASSETS_FILE
   );
 
   const pristineAssets = [];
@@ -462,14 +489,7 @@ function formatAnalysis(analysis) {
   lines.push('');
 
   // Version bump indicator
-  const bumpEmoji =
-    {
-      major: '🔴 MAJOR',
-      minor: '🟡 MINOR',
-      patch: '🟢 PATCH',
-      none: '⚪ UP TO DATE',
-      downgrade: '⬇️ DOWNGRADE',
-    }[analysis.versionBump] || '❓ UNKNOWN';
+  const bumpEmoji = VERSION_BUMP_DISPLAY[analysis.versionBump] || '❓ UNKNOWN';
 
   lines.push(`Version Bump: ${bumpEmoji}`);
   lines.push('');
@@ -544,13 +564,7 @@ async function createBackup(installedRoot, version, fileGuard, logger) {
 
   // Copy current assets to backup
   const files = await listFilesRecursive(installedRoot);
-  const filesToBackup = files.filter(
-    (f) =>
-      !f.startsWith(BACKUP_DIR) &&
-      !f.startsWith('sandbox') &&
-      !f.startsWith('logs') &&
-      !f.startsWith('node_modules')
-  );
+  const filesToBackup = filterAssetFiles(files);
 
   for (const relPath of filesToBackup) {
     const srcPath = path.join(installedRoot, relPath);
@@ -614,13 +628,7 @@ async function applyMirror(shippedRoot, installedRoot, analysis, fileGuard, logg
 
   // Get all shipped files
   const shippedFiles = await listFilesRecursive(shippedRoot);
-  const relevantFiles = shippedFiles.filter(
-    (f) =>
-      !f.startsWith('node_modules') &&
-      !f.startsWith('logs') &&
-      !f.startsWith('backup') &&
-      !f.startsWith('sandbox')
-  );
+  const relevantFiles = filterAssetFiles(shippedFiles);
 
   for (const relPath of relevantFiles) {
     const srcPath = path.join(shippedRoot, relPath);
@@ -652,13 +660,7 @@ async function applyMerge(shippedRoot, installedRoot, analysis, fileGuard, logge
 
   // Get all shipped files
   const shippedFiles = await listFilesRecursive(shippedRoot);
-  const relevantFiles = shippedFiles.filter(
-    (f) =>
-      !f.startsWith('node_modules') &&
-      !f.startsWith('logs') &&
-      !f.startsWith('backup') &&
-      !f.startsWith('sandbox')
-  );
+  const relevantFiles = filterAssetFiles(shippedFiles);
 
   for (const relPath of relevantFiles) {
     const srcPath = path.join(shippedRoot, relPath);
@@ -729,13 +731,7 @@ async function applySandbox(shippedRoot, installedRoot, targetVersion, fileGuard
 
   // Get all shipped files
   const shippedFiles = await listFilesRecursive(shippedRoot);
-  const relevantFiles = shippedFiles.filter(
-    (f) =>
-      !f.startsWith('node_modules') &&
-      !f.startsWith('logs') &&
-      !f.startsWith('backup') &&
-      !f.startsWith('sandbox')
-  );
+  const relevantFiles = filterAssetFiles(shippedFiles);
 
   for (const relPath of relevantFiles) {
     const srcPath = path.join(shippedRoot, relPath);
@@ -766,13 +762,7 @@ async function updateAssetTracking(installedRoot, shippedRoot, targetVersion, fi
   const assets = {};
 
   const shippedFiles = await listFilesRecursive(shippedRoot);
-  const relevantFiles = shippedFiles.filter(
-    (f) =>
-      !f.startsWith('node_modules') &&
-      !f.startsWith('logs') &&
-      !f.startsWith('backup') &&
-      !f.startsWith('sandbox')
-  );
+  const relevantFiles = filterAssetFiles(shippedFiles);
 
   for (const relPath of relevantFiles) {
     const installedPath = path.join(installedRoot, relPath);
@@ -1091,10 +1081,12 @@ export async function runUpgrade(options = {}) {
     console.log(`      loaded-vibes sandbox apply <asset>`);
     console.log(`      loaded-vibes sandbox apply --all`);
     console.log(`      loaded-vibes sandbox discard`);
+    console.log('   (Note: sandbox commands planned for future release)');
   } else {
     console.log('');
-    console.log('   💡 To rollback:');
-    console.log(`      loaded-vibes restore --from ${path.basename(backupPath)}`);
+    console.log('   💡 To rollback (manually restore from backup):');
+    console.log(`      cp -r ${backupPath}/* ${installedRoot}/`);
+    console.log('   (Note: restore command planned for future release)');
   }
 
   console.log('');
