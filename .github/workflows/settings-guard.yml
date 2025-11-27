@@ -74,7 +74,7 @@ jobs:
               SETTING_CONTENT=$(grep -A 10 "\"$setting\"" "$SETTINGS_FILE")
               
               # Check if the setting or its nested values reference dist/
-              if echo "$SETTING_CONTENT" | grep -qE '"[^"]*dist/[^"]*"'; then
+              if echo "$SETTING_CONTENT" | grep -qE '(["/]|^)"dist/'; then
                 echo "   ❌ $setting references dist/** path"
                 echo ""
                 echo "   Found:"
