@@ -165,7 +165,12 @@ export function validateDevCycleEntry(key, entry) {
     warnings.push(`DevCycle '${key}': Missing or invalid checkpoints array`);
   }
 
-  return errors.length > 0 ? invalidResult(errors, warnings) : { valid: true, errors: [], warnings };
+  if (errors.length > 0) {
+    return invalidResult(errors, warnings);
+  }
+  const result = validResult();
+  result.warnings = warnings;
+  return result;
 }
 
 /**

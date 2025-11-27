@@ -56,6 +56,15 @@ export function saveChangelogContent(content) {
 }
 
 /**
+ * Generates an ISO 8601 timestamp with milliseconds removed.
+ *
+ * @returns {string} Timestamp in format YYYY-MM-DDTHH:MM:SSZ
+ */
+export function getTimestamp() {
+  return new Date().toISOString().replace(/\.\d{3}Z$/, 'Z');
+}
+
+/**
  * Formats a changelog entry into the project's standard format.
  *
  * @param {ChangelogEntry} entry - Entry to format
@@ -140,7 +149,7 @@ export function addChangelogEntry(entry) {
 export function addDecision(goal, action, result, next, closes) {
   return addChangelogEntry({
     type: 'Decision',
-    timestamp: new Date().toISOString().replace(/\.\d{3}Z$/, 'Z'),
+    timestamp: getTimestamp(),
     goal,
     action,
     result,
@@ -162,7 +171,7 @@ export function addDecision(goal, action, result, next, closes) {
 export function addUpdate(goal, action, result, next, closes) {
   return addChangelogEntry({
     type: 'Update',
-    timestamp: new Date().toISOString().replace(/\.\d{3}Z$/, 'Z'),
+    timestamp: getTimestamp(),
     goal,
     action,
     result,
@@ -183,7 +192,7 @@ export function addUpdate(goal, action, result, next, closes) {
 export function addValidation(goal, action, result, next) {
   return addChangelogEntry({
     type: 'Validation',
-    timestamp: new Date().toISOString().replace(/\.\d{3}Z$/, 'Z'),
+    timestamp: getTimestamp(),
     goal,
     action,
     result,
@@ -203,7 +212,7 @@ export function addValidation(goal, action, result, next) {
 export function addFix(goal, action, result, closes) {
   return addChangelogEntry({
     type: 'Fix',
-    timestamp: new Date().toISOString().replace(/\.\d{3}Z$/, 'Z'),
+    timestamp: getTimestamp(),
     goal,
     action,
     result,
@@ -224,25 +233,17 @@ export function getRecentEntries(count = 5) {
   }
 
   // Match entries that start with [Type][timestamp]
-  const entryRegex = /^\[(?:Decision|Update|Validation|Fix|Feature)\]\[\d{4}-\d{2}-\d{2}T[^\]]+\]/gm;
-  const matches = content.match(entryRegex);
-
-  if (!matches) {
-    return [];
-  }
-
-  // Get full entries by finding each match and extracting to next entry or end
   const entries = [];
   const lines = content.split('\n');
+  const entryPattern = /^\[(?:Decision|Update|Validation|Fix|Feature)\]\[\d{4}-\d{2}-\d{2}T[^\]]+\]/;
 
   for (let i = 0; i < lines.length && entries.length < count; i++) {
-    if (entryRegex.test(lines[i])) {
+    if (entryPattern.test(lines[i])) {
       entries.push(lines[i]);
-      entryRegex.lastIndex = 0; // Reset regex state
     }
   }
 
-  return entries.slice(0, count);
+  return entries;
 }
 
 /** Exported paths for external use */

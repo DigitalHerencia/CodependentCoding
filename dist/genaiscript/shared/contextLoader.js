@@ -80,14 +80,22 @@ export function loadTechRequirements() {
  * @returns {string} TODO contents or empty string
  */
 export function loadTODO() {
+  return readFileMemoized(resolveTodoPath());
+}
+
+/**
+ * Resolves the path to TODO.md, checking both cases.
+ *
+ * @returns {string} Resolved path to TODO.md
+ */
+export function resolveTodoPath() {
   const todoUpper = path.resolve(REPO_ROOT, 'TODO.md');
   const todoLower = path.resolve(REPO_ROOT, 'todo.md');
 
-  let content = readFileMemoized(todoUpper);
-  if (!content) {
-    content = readFileMemoized(todoLower);
+  if (existsSync(todoUpper)) {
+    return todoUpper;
   }
-  return content;
+  return todoLower;
 }
 
 /**

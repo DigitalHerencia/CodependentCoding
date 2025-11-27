@@ -126,7 +126,7 @@ export function recordPhaseExecution(phase, mode, task = null, nextPhase = null)
   };
 
   const completedPhases = Array.from(
-    new Set([...(current.completedPhases || []), phase])
+    new Set([...current.completedPhases, phase])
   );
 
   const updated = {
@@ -134,7 +134,7 @@ export function recordPhaseExecution(phase, mode, task = null, nextPhase = null)
     lastPhase: phase,
     nextPhase: nextPhase,
     completedPhases,
-    history: [...(current.history || []), entry],
+    history: [...current.history, entry],
   };
 
   saveState(updated);

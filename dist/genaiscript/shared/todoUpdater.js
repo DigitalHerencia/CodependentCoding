@@ -16,7 +16,23 @@ import { fileURLToPath } from 'url';
 const CURRENT_DIR = path.dirname(fileURLToPath(import.meta.url));
 const GENAI_ROOT = path.resolve(CURRENT_DIR, '..');
 const REPO_ROOT = path.resolve(GENAI_ROOT, '..', '..');
-const TODO_PATH = path.resolve(REPO_ROOT, 'TODO.md');
+
+/**
+ * Resolves the path to TODO.md, checking both cases.
+ *
+ * @returns {string} Resolved path to TODO.md
+ */
+function resolveTodoPath() {
+  const todoUpper = path.resolve(REPO_ROOT, 'TODO.md');
+  const todoLower = path.resolve(REPO_ROOT, 'todo.md');
+
+  if (existsSync(todoUpper)) {
+    return todoUpper;
+  }
+  return todoLower;
+}
+
+const TODO_PATH = resolveTodoPath();
 
 /**
  * @typedef {Object} TodoItem
@@ -31,14 +47,11 @@ const TODO_PATH = path.resolve(REPO_ROOT, 'TODO.md');
  * @returns {string} TODO content or empty string
  */
 export function loadTodoContent() {
-  if (!existsSync(TODO_PATH)) {
-    const altPath = path.resolve(REPO_ROOT, 'todo.md');
-    if (existsSync(altPath)) {
-      return readFileSync(altPath, 'utf8');
-    }
+  const todoPath = resolveTodoPath();
+  if (!existsSync(todoPath)) {
     return '';
   }
-  return readFileSync(TODO_PATH, 'utf8');
+  return readFileSync(todoPath, 'utf8');
 }
 
 /**
