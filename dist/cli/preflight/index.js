@@ -7,13 +7,19 @@
  * @module dist/cli/preflight
  * @see docs/PRD.md §5.1 - Distribution & Installation requirements
  * @see docs/TECH_REQUIREMENTS.md §5.1 - Distribution Model preflight checks
+ * @see docs/TECH_REQUIREMENTS.md §4.4 - Bootstrapper Flow (artifact validation)
  * @see spec/cli.spec.md §3 - Distribution & Bootstrap Coupling
+ * @see spec/artifact.spec.md §4 - Validation & Tagging
  */
 
 import { execSync, spawn } from 'child_process';
 import { access, readFile } from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import {
+  validateAllArtifacts,
+  formatValidationResults,
+} from './artifactValidator.js';
 
 const CURRENT_DIR = path.dirname(fileURLToPath(import.meta.url));
 const TIMEOUT_MS = 10000;
@@ -368,10 +374,80 @@ async function checkGenAIScriptExtension() {
 }
 
 /**
+ * Checks artifact presence, schema compliance, and manifest references.
+ * Implements Issue #28 requirements per SPEC-ARTIFACTS §4 and TECH §4.4.
+ * @returns {Promise<CheckResult>}
+ */
+async function checkArtifacts() {
+  const name = 'Artifact Validation';
+
+  try {
+    const result = validateAllArtifacts();
+
+    if (result.valid) {
+      const artifactCounts = {
+        instructions: result.details.schemas?.instructions?.length || 0,
+        prompts: result.details.schemas?.prompts?.length || 0,
+        toolsets: result.details.schemas?.toolsets?.length || 0,
+      };
+
+      return {
+        name,
+        passed: true,
+        message: `All artifacts valid (${artifactCounts.instructions} instructions, ${artifactCounts.prompts} prompts, ${artifactCounts.toolsets} toolsets)`,
+        details: result.details,
+      };
+    }
+
+    // Build remediation steps from errors
+    const remediation = [
+      'Fix the following artifact validation errors:',
+      ...result.errors.slice(0, 5).map((e) => `  • ${e}`),
+    ];
+
+    if (result.errors.length > 5) {
+      remediation.push(`  ... and ${result.errors.length - 5} more errors`);
+    }
+
+    remediation.push(
+      '',
+      '[TECH §4.4] Artifact validation blocks DevCycle execution.',
+      '[SPEC-ARTIFACTS §4] Bootstrapper + CI SHALL verify artifact presence,',
+      '  schema compliance, and manifest references before DevCycles run.',
+      '',
+      'Run `node dist/cli/preflight/artifactValidator.js` for detailed output.'
+    );
+
+    return {
+      name,
+      passed: false,
+      message: `${result.errors.length} artifact error(s), ${result.warnings.length} warning(s)`,
+      remediation,
+      details: result.details,
+    };
+  } catch (error) {
+    return {
+      name,
+      passed: false,
+      message: `Artifact validation failed: ${error.message}`,
+      remediation: [
+        'Ensure artifact validator module is properly installed.',
+        'Check that dist/cli/preflight/artifactValidator.js exists.',
+        '[TECH §4.4] Artifact validation is required during bootstrap.',
+      ],
+    };
+  }
+}
+
+/**
  * Runs all preflight checks.
+ * @param {Object} [options] - Options for preflight checks
+ * @param {boolean} [options.includeArtifacts=true] - Whether to include artifact validation
  * @returns {Promise<PreflightResult>}
  */
-async function runPreflightChecks() {
+async function runPreflightChecks(options = {}) {
+  const { includeArtifacts = true } = options;
+
   const checks = await Promise.all([
     checkNode(),
     checkGit(),
@@ -379,6 +455,12 @@ async function runPreflightChecks() {
     checkVSCode(),
     checkGenAIScriptExtension(),
   ]);
+
+  // Add artifact validation check if enabled
+  if (includeArtifacts) {
+    const artifactCheck = await checkArtifacts();
+    checks.push(artifactCheck);
+  }
 
   const passedCount = checks.filter((c) => c.passed).length;
   const failedCount = checks.length - passedCount;
@@ -456,6 +538,7 @@ export {
   checkPnpm,
   checkVSCode,
   checkGenAIScriptExtension,
+  checkArtifacts,
 };
 
 /**
