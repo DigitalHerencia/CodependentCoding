@@ -254,9 +254,70 @@ export function validateCoreFiles() {
 }
 
 /**
- * Validates state.json structure.
+ * @typedef {Object} ExecutionSnapshot
+ * @property {string} phase - DevCycle phase name
+ * @property {Object} params - Execution parameters (mode, task, etc.)
+ * @property {Object} outputs - Phase outputs and artifacts
+ * @property {Object} timestamps - Phase timing information
+ * @property {string} timestamps.startTime - ISO 8601 start timestamp
+ * @property {string} timestamps.endTime - ISO 8601 end timestamp
+ * @property {number} timestamps.durationMs - Duration in milliseconds
+ * @property {'pending'|'running'|'complete'|'failed'|'blocked'} status - Execution status
+ * @property {string|null} errorMessage - Error message if failed
+ * @see TECH §4.5, SPEC-ENGINE §5
+ */
+
+/**
+ * Validates an execution snapshot object structure.
+ *
+ * @param {Object} snapshot - Snapshot to validate
+ * @param {number} index - Index in snapshots array (for error messages)
+ * @returns {ValidationResult}
+ * @see TECH §4.5, SPEC-ENGINE §5
+ */
+export function validateExecutionSnapshot(snapshot, index) {
+  const errors = [];
+  const warnings = [];
+  const prefix = `Snapshot[${index}]`;
+
+  if (!snapshot || typeof snapshot !== 'object') {
+    return invalidResult([`${prefix}: Invalid snapshot object`]);
+  }
+
+  // Required fields
+  if (typeof snapshot.phase !== 'string' || !snapshot.phase) {
+    errors.push(`${prefix}: Missing or invalid 'phase' field`);
+  }
+
+  if (!snapshot.params || typeof snapshot.params !== 'object') {
+    warnings.push(`${prefix}: Missing 'params' object`);
+  }
+
+  if (!snapshot.outputs || typeof snapshot.outputs !== 'object') {
+    warnings.push(`${prefix}: Missing 'outputs' object`);
+  }
+
+  if (!snapshot.timestamps || typeof snapshot.timestamps !== 'object') {
+    errors.push(`${prefix}: Missing 'timestamps' object`);
+  } else {
+    if (!snapshot.timestamps.startTime) {
+      errors.push(`${prefix}: Missing 'timestamps.startTime'`);
+    }
+  }
+
+  const validStatuses = ['pending', 'running', 'complete', 'failed', 'blocked'];
+  if (!validStatuses.includes(snapshot.status)) {
+    warnings.push(`${prefix}: Invalid status '${snapshot.status}', expected one of: ${validStatuses.join(', ')}`);
+  }
+
+  return errors.length > 0 ? invalidResult(errors, warnings) : { valid: true, errors: [], warnings };
+}
+
+/**
+ * Validates state.json structure including execution snapshots.
  *
  * @returns {ValidationResult}
+ * @see TECH §4.5, SPEC-ENGINE §5
  */
 export function validateStateFile() {
   const statePath = path.resolve(GENAI_ROOT, 'state', 'state.json');
@@ -269,6 +330,7 @@ export function validateStateFile() {
     const raw = readFileSync(statePath, 'utf8');
     const state = JSON.parse(raw);
 
+    const errors = [];
     const warnings = [];
 
     // Check for expected fields
@@ -282,7 +344,21 @@ export function validateStateFile() {
       warnings.push('State missing or invalid history array');
     }
 
-    return { valid: true, errors: [], warnings };
+    // Validate execution snapshots (TECH §4.5, SPEC-ENGINE §5)
+    if (state.executionSnapshots && Array.isArray(state.executionSnapshots)) {
+      for (let i = 0; i < state.executionSnapshots.length; i++) {
+        const snapshotResult = validateExecutionSnapshot(state.executionSnapshots[i], i);
+        errors.push(...snapshotResult.errors);
+        warnings.push(...snapshotResult.warnings);
+      }
+    }
+
+    // Check for lastUpdated timestamp
+    if (!state.lastUpdated) {
+      warnings.push('State missing lastUpdated timestamp');
+    }
+
+    return errors.length > 0 ? invalidResult(errors, warnings) : { valid: true, errors: [], warnings };
   } catch (err) {
     return invalidResult(['Failed to parse state.json: ' + err.message]);
   }
