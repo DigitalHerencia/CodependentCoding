@@ -330,13 +330,9 @@ export class SecretRedactor {
 
     let result = value;
 
-    // Apply main patterns
+    // Apply main patterns - replace entire matched portion with redacted placeholder
     for (const { regex } of this.patterns) {
-      result = result.replace(regex, (match) => {
-        // For patterns with capture groups, only redact the captured part
-        // For full matches, redact the whole thing
-        return REDACTED_PLACEHOLDER;
-      });
+      result = result.replace(regex, REDACTED_PLACEHOLDER);
     }
 
     // Apply env var pattern
