@@ -513,7 +513,7 @@ describe('CLI Integration', () => {
       timeout: COMMAND_TIMEOUT_MS,
       encoding: 'utf8',
     });
-    assert.strictEqual(invalidResult.status, 1, 'Invalid devcycle should exit 1');
+    assert.strictEqual(invalidResult.status, 1, 'Invalid DevCycle should exit 1');
   });
 
   it('should not leak sensitive information in help output', () => {
