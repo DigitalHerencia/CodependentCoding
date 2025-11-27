@@ -8,20 +8,12 @@
  * References: TECH_REQUIREMENTS §5.3, SPEC-CLI §4, SPEC-OBS §3, ADR-0001.
  */
 
-import {
-  createReadStream,
-  existsSync,
-  mkdirSync,
-  readdirSync,
-  readFileSync,
-  statSync,
-  writeFileSync,
-  watch,
-} from 'fs';
+import { createReadStream, existsSync, readdirSync, readFileSync, statSync, watch } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { DEFAULT_LOGS_DIR } from '../services/ndjsonLogger.js';
 import { generateSummary } from '../../genaiscript/logging/markdownSummaries.js';
+import { createFileGuard } from '../security/fileGuard.js';
 
 type LogFilters = {
   devCycleId?: string;
@@ -56,6 +48,8 @@ const SEVERITY_ICONS: Record<string, string> = {
   warn: '!!',
   error: 'XX',
 };
+
+const fileGuard = createFileGuard();
 
 function parseArgs(argv: string[]): CliOptions {
   const options: CliOptions = {
@@ -109,7 +103,9 @@ function parseSince(value?: string): Date | undefined {
   if (!value) return undefined;
   const parsed = new Date(value);
   if (Number.isNaN(parsed.getTime())) {
-    console.error(`Invalid --since value "${value}". Use ISO timestamps, e.g., 2025-11-27T07:30:00Z.`);
+    console.error(
+      `Invalid --since value "${value}". Use ISO timestamps, e.g., 2025-11-27T07:30:00Z.`
+    );
     process.exit(1);
   }
   return parsed;
@@ -150,9 +146,9 @@ function printHelp(logsDir: string) {
   console.log(lines.join('\n'));
 }
 
-function ensureLogsDir(logsDir: string) {
+function ensureLogsDir(logsDir: string, guard = fileGuard) {
   if (!existsSync(logsDir)) {
-    mkdirSync(logsDir, { recursive: true });
+    guard.mkdirSync(logsDir, { recursive: true });
     console.log(`Created log directory at ${logsDir}`);
   }
 }
@@ -246,8 +242,10 @@ function formatEntry(entry: LogEntry): string {
   const icon = SEVERITY_ICONS[entry.severity] || '??';
   const req = entry.requirementId ? ` req:${entry.requirementId}` : '';
   const checkpoint = entry.checkpointId ? ` chk:${entry.checkpointId}` : '';
-  return `[${entry.timestamp}] ${icon} ${entry.severity.padEnd(5)} ` +
-    `${entry.devCycleId} ${entry.phase.padEnd(9)} ${entry.message}${req}${checkpoint}`;
+  return (
+    `[${entry.timestamp}] ${icon} ${entry.severity.padEnd(5)} ` +
+    `${entry.devCycleId} ${entry.phase.padEnd(9)} ${entry.message}${req}${checkpoint}`
+  );
 }
 
 function printEntries(entries: LogEntry[], filters: LogFilters) {
@@ -312,25 +310,30 @@ function buildMarkdownExport(entries: LogEntry[], filters: LogFilters, logsDir: 
   lines.push('```yaml');
   lines.push(`devCycles: [${Array.from(grouped.keys()).join(', ')}]`);
   lines.push(`requirementIds: [${Array.from(requirementIds).filter(Boolean).join(', ')}]`);
-  lines.push(`filters: ${JSON.stringify({
-    devCycleId: filters.devCycleId || null,
-    severities: filters.severities ? Array.from(filters.severities) : null,
-    since: filters.since ? filters.since.toISOString() : null,
-  })}`);
+  lines.push(
+    `filters: ${JSON.stringify({
+      devCycleId: filters.devCycleId || null,
+      severities: filters.severities ? Array.from(filters.severities) : null,
+      since: filters.since ? filters.since.toISOString() : null,
+    })}`
+  );
   lines.push('```');
   lines.push('');
 
   for (const [devCycleId, devEntries] of grouped) {
     // Summaries expect NDJSON-shaped records; keep the fields they consume.
-    const summary = generateSummary(devCycleId, devEntries.map((e) => ({
-      devCycleId: e.devCycleId,
-      phase: e.phase,
-      severity: e.severity,
-      requirementId: e.requirementId,
-      checkpointId: e.checkpointId,
-      timestamp: e.timestamp,
-      message: e.message,
-    })));
+    const summary = generateSummary(
+      devCycleId,
+      devEntries.map((e) => ({
+        devCycleId: e.devCycleId,
+        phase: e.phase,
+        severity: e.severity,
+        requirementId: e.requirementId,
+        checkpointId: e.checkpointId,
+        timestamp: e.timestamp,
+        message: e.message,
+      }))
+    );
 
     const files = Array.from(new Set(devEntries.map((e) => path.basename(e.file))));
 
@@ -346,7 +349,9 @@ function buildMarkdownExport(entries: LogEntry[], filters: LogFilters, logsDir: 
     for (const entry of devEntries) {
       const req = entry.requirementId ? ` (req: ${entry.requirementId})` : '';
       lines.push(
-        `- ${entry.timestamp} | ${entry.severity.toUpperCase()} | ${entry.phase} | ${entry.message}${req} (${path.basename(entry.file)})`
+        `- ${entry.timestamp} | ${entry.severity.toUpperCase()} | ${entry.phase} | ${
+          entry.message
+        }${req} (${path.basename(entry.file)})`
       );
     }
     lines.push('');
@@ -359,12 +364,12 @@ function buildMarkdownExport(entries: LogEntry[], filters: LogFilters, logsDir: 
   return lines.join('\n');
 }
 
-function writeExport(markdown: string, exportPath: string) {
+async function writeExport(markdown: string, exportPath: string, guard = fileGuard) {
   const targetDir = path.dirname(exportPath);
   if (!existsSync(targetDir)) {
-    mkdirSync(targetDir, { recursive: true });
+    await guard.mkdir(targetDir, { recursive: true });
   }
-  writeFileSync(exportPath, markdown, 'utf8');
+  await guard.writeFile(exportPath, markdown, 'utf8');
   console.log(`Markdown export written to ${exportPath}`);
 }
 
@@ -458,7 +463,7 @@ async function main() {
 
   if (args.exportPath) {
     const markdown = buildMarkdownExport(filtered, filters, args.logsDir);
-    writeExport(markdown, args.exportPath);
+    await writeExport(markdown, args.exportPath);
   }
 
   if (args.follow) {
@@ -481,8 +486,4 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.a
   });
 }
 
-export {
-  main as runLogsCommand,
-  parseArgs as parseLogsArgs,
-  buildMarkdownExport,
-};
+export { main as runLogsCommand, parseArgs as parseLogsArgs, buildMarkdownExport };

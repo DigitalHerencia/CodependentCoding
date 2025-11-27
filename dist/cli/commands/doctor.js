@@ -10,17 +10,15 @@
  * @see TECH_REQUIREMENTS §5.3 - Diagnostics & Logs
  */
 
-import { access, copyFile, mkdir, readFile } from 'fs/promises';
+import { access, readFile } from 'fs/promises';
 import { constants as fsConstants, existsSync } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { createInterface } from 'readline';
 import { spawnSync } from 'child_process';
-import {
-  runPreflightChecks,
-  formatResults as formatPreflightResults,
-} from '../preflight/index.js';
+import { runPreflightChecks, formatResults as formatPreflightResults } from '../preflight/index.js';
 import { createLogger } from '../services/ndjsonLogger.js';
+import { createFileGuard } from '../security/fileGuard.js';
 
 const CURRENT_DIR = path.dirname(fileURLToPath(import.meta.url));
 const PHASE = 'doctor';
@@ -179,7 +177,7 @@ async function runPreflight(logger) {
  * @param {Array} remediations
  * @returns {Promise<Object>}
  */
-async function checkMcp(logger, paths, remediations) {
+async function checkMcp(logger, paths, remediations, fileGuard) {
   const configPath = existsSync(paths.installedMcp) ? paths.installedMcp : paths.shippedMcp;
   const usingInstalled = existsSync(paths.installedMcp);
 
@@ -191,8 +189,8 @@ async function checkMcp(logger, paths, remediations) {
       remediations.push({
         description: 'Copy shipped MCP config into .loaded-vibes/.vscode',
         action: async () => {
-          await mkdir(path.dirname(paths.installedMcp), { recursive: true });
-          await copyFile(paths.shippedMcp, paths.installedMcp);
+          await fileGuard.mkdir(path.dirname(paths.installedMcp), { recursive: true });
+          await fileGuard.copyFileIntoRoot(paths.shippedMcp, paths.installedMcp);
         },
       });
     }
@@ -201,7 +199,8 @@ async function checkMcp(logger, paths, remediations) {
       name: 'MCP endpoints',
       passed: false,
       details: message,
-      remediation: 'Copy the shipped mcp.json into .loaded-vibes/.vscode or provide a project-specific MCP configuration.',
+      remediation:
+        'Copy the shipped mcp.json into .loaded-vibes/.vscode or provide a project-specific MCP configuration.',
     };
   }
 
@@ -257,8 +256,8 @@ async function checkMcp(logger, paths, remediations) {
     remediations.push({
       description: 'Copy shipped MCP config into .loaded-vibes/.vscode',
       action: async () => {
-        await mkdir(path.dirname(paths.installedMcp), { recursive: true });
-        await copyFile(paths.shippedMcp, paths.installedMcp);
+        await fileGuard.mkdir(path.dirname(paths.installedMcp), { recursive: true });
+        await fileGuard.copyFileIntoRoot(paths.shippedMcp, paths.installedMcp);
       },
     });
   }
@@ -267,9 +266,12 @@ async function checkMcp(logger, paths, remediations) {
     name: 'MCP endpoints',
     passed,
     details: passed
-      ? `MCP config loaded from ${usingInstalled ? 'project .loaded-vibes/.vscode' : 'shipped .vscode'}`
+      ? `MCP config loaded from ${
+          usingInstalled ? 'project .loaded-vibes/.vscode' : 'shipped .vscode'
+        }`
       : `Issues: ${issues.join(' | ')}`,
-    remediation: 'Ensure MCP servers have valid commands and no placeholder env vars. Install required server packages or update PATH.',
+    remediation:
+      'Ensure MCP servers have valid commands and no placeholder env vars. Install required server packages or update PATH.',
   };
 }
 
@@ -280,7 +282,7 @@ async function checkMcp(logger, paths, remediations) {
  * @param {Array} remediations
  * @returns {Promise<Object>}
  */
-async function checkPermissions(logger, paths, remediations) {
+async function checkPermissions(logger, paths, remediations, fileGuard) {
   const targets = [
     paths.installedRoot,
     path.join(paths.installedRoot, 'logs'),
@@ -296,7 +298,7 @@ async function checkPermissions(logger, paths, remediations) {
       remediations.push({
         description: `Create ${target}`,
         action: async () => {
-          await mkdir(target, { recursive: true });
+          await fileGuard.mkdir(target, { recursive: true });
         },
       });
       continue;
@@ -331,7 +333,7 @@ async function checkPermissions(logger, paths, remediations) {
  * @param {Array} remediations
  * @returns {Promise<Object>}
  */
-async function checkManifest(logger, paths, remediations) {
+async function checkManifest(logger, paths, remediations, fileGuard) {
   const shipped = await readJson(paths.shippedManifest);
   const installed = await readJson(paths.installedManifest);
 
@@ -352,8 +354,8 @@ async function checkManifest(logger, paths, remediations) {
     remediations.push({
       description: 'Copy shipped manifest into .loaded-vibes/genaiscript',
       action: async () => {
-        await mkdir(path.dirname(paths.installedManifest), { recursive: true });
-        await copyFile(paths.shippedManifest, paths.installedManifest);
+        await fileGuard.mkdir(path.dirname(paths.installedManifest), { recursive: true });
+        await fileGuard.copyFileIntoRoot(paths.shippedManifest, paths.installedManifest);
       },
     });
 
@@ -371,8 +373,8 @@ async function checkManifest(logger, paths, remediations) {
     remediations.push({
       description: 'Replace invalid manifest with shipped version',
       action: async () => {
-        await mkdir(path.dirname(paths.installedManifest), { recursive: true });
-        await copyFile(paths.shippedManifest, paths.installedManifest);
+        await fileGuard.mkdir(path.dirname(paths.installedManifest), { recursive: true });
+        await fileGuard.copyFileIntoRoot(paths.shippedManifest, paths.installedManifest);
       },
     });
 
@@ -397,8 +399,8 @@ async function checkManifest(logger, paths, remediations) {
     remediations.push({
       description: 'Sync manifest from shipped assets into .loaded-vibes',
       action: async () => {
-        await mkdir(path.dirname(paths.installedManifest), { recursive: true });
-        await copyFile(paths.shippedManifest, paths.installedManifest);
+        await fileGuard.mkdir(path.dirname(paths.installedManifest), { recursive: true });
+        await fileGuard.copyFileIntoRoot(paths.shippedManifest, paths.installedManifest);
       },
     });
   }
@@ -413,7 +415,9 @@ async function checkManifest(logger, paths, remediations) {
   return {
     name: 'Manifest drift',
     passed,
-    details: passed ? 'Manifest matches shipped version and references resolve.' : `Issues: ${allIssues.join(' | ')}`,
+    details: passed
+      ? 'Manifest matches shipped version and references resolve.'
+      : `Issues: ${allIssues.join(' | ')}`,
     remediation: 'Restore the manifest from shipped assets or fix referenced file paths.',
   };
 }
@@ -437,7 +441,10 @@ async function applyRemediations(remediations, logger, autoApprove) {
       await remediation.action();
       logger.info(PHASE, 'Remediation applied', { remediation: remediation.description });
     } catch (err) {
-      logger.error(PHASE, 'Remediation failed', { remediation: remediation.description, error: err.message });
+      logger.error(PHASE, 'Remediation failed', {
+        remediation: remediation.description,
+        error: err.message,
+      });
     }
   }
 }
@@ -495,16 +502,23 @@ export async function runDoctor(options = {}) {
 
   const remediations = [];
   const paths = resolvePaths(options.cwd);
+  const fileGuard = createFileGuard({
+    allowedRoot: paths.installedRoot,
+    autoApprove: options.autoApprove,
+  });
   const results = [];
 
   logger.requirement(PHASE, REQUIREMENT_ID, 'Starting doctor diagnostics');
-  logger.info(PHASE, 'Scanning workspace', { cwd: options.cwd || process.cwd(), refs: [REQUIREMENT_ID, TECH_REF] });
+  logger.info(PHASE, 'Scanning workspace', {
+    cwd: options.cwd || process.cwd(),
+    refs: [REQUIREMENT_ID, TECH_REF],
+  });
 
   try {
     results.push(await runPreflight(logger));
-    results.push(await checkMcp(logger, paths, remediations));
-    results.push(await checkPermissions(logger, paths, remediations));
-    results.push(await checkManifest(logger, paths, remediations));
+    results.push(await checkMcp(logger, paths, remediations, fileGuard));
+    results.push(await checkPermissions(logger, paths, remediations, fileGuard));
+    results.push(await checkManifest(logger, paths, remediations, fileGuard));
 
     await applyRemediations(remediations, logger, options.autoApprove);
   } catch (err) {

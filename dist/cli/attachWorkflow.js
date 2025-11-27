@@ -15,13 +15,23 @@
 import { createHash } from 'crypto';
 import { createInterface } from 'readline';
 import { existsSync, statSync, readFileSync, mkdirSync } from 'fs';
-import { cp, rm, writeFile, mkdir, readdir, stat } from 'fs/promises';
+import { readdir, stat } from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { createFileGuard } from './security/fileGuard.js';
 
 const CURRENT_DIR = path.dirname(fileURLToPath(import.meta.url));
 const DEFAULT_SOURCE_ROOT = path.resolve(CURRENT_DIR, '..'); // dist/**
-const DEFAULT_FOCUS_SEGMENTS = ['.github', '.vscode', '.genaiscript', 'cli', 'docs', 'genaiscript', 'scripts', 'src'];
+const DEFAULT_FOCUS_SEGMENTS = [
+  '.github',
+  '.vscode',
+  '.genaiscript',
+  'cli',
+  'docs',
+  'genaiscript',
+  'scripts',
+  'src',
+];
 const REQUIREMENT_ID = 'PRD §5.1';
 
 /**
@@ -102,7 +112,11 @@ function detectExistingRepo(targetDir) {
  * @param {string[]} focusSegments
  * @returns {Promise<Array<{segment:string, exists:boolean, conflicts:string[], newFiles:string[]}>>}
  */
-async function enumerateConflicts(sourceRoot, destinationRoot, focusSegments = DEFAULT_FOCUS_SEGMENTS) {
+async function enumerateConflicts(
+  sourceRoot,
+  destinationRoot,
+  focusSegments = DEFAULT_FOCUS_SEGMENTS
+) {
   const results = [];
 
   for (const segment of focusSegments) {
@@ -173,9 +187,14 @@ async function promptYesNo(question, defaultValue = false) {
  * @param {string[]} focusSegments
  * @returns {Promise<string[]>} - Action log entries
  */
-async function applyMirror(sourceRoot, destinationRoot, focusSegments = DEFAULT_FOCUS_SEGMENTS) {
+async function applyMirror(
+  sourceRoot,
+  destinationRoot,
+  focusSegments = DEFAULT_FOCUS_SEGMENTS,
+  fileGuard = createFileGuard({ allowedRoot: destinationRoot })
+) {
   const actions = [];
-  await mkdir(destinationRoot, { recursive: true });
+  await fileGuard.mkdir(destinationRoot, { recursive: true });
 
   for (const segment of focusSegments) {
     const src = path.join(sourceRoot, segment);
@@ -183,11 +202,11 @@ async function applyMirror(sourceRoot, destinationRoot, focusSegments = DEFAULT_
     if (!existsSync(src)) continue;
 
     if (existsSync(dst)) {
-      await rm(dst, { recursive: true, force: true });
+      await fileGuard.remove(dst, { recursive: true, force: true });
       actions.push(`Removed existing ${dst}`);
     }
 
-    await cp(src, dst, { recursive: true });
+    await fileGuard.copyIntoRoot(src, dst, { recursive: true });
     actions.push(`Mirrored ${segment} from dist into ${dst}`);
   }
 
@@ -202,11 +221,17 @@ async function applyMirror(sourceRoot, destinationRoot, focusSegments = DEFAULT_
  * @param {{autoApprove?:boolean}} [options]
  * @returns {Promise<string[]>} - Action log entries
  */
-async function applyMerge(sourceRoot, destinationRoot, focusSegments = DEFAULT_FOCUS_SEGMENTS, options = {}) {
+async function applyMerge(
+  sourceRoot,
+  destinationRoot,
+  focusSegments = DEFAULT_FOCUS_SEGMENTS,
+  options = {},
+  fileGuard = createFileGuard({ allowedRoot: destinationRoot, autoApprove: options.autoApprove })
+) {
   const actions = [];
   const autoApprove = options.autoApprove || false;
 
-  await mkdir(destinationRoot, { recursive: true });
+  await fileGuard.mkdir(destinationRoot, { recursive: true });
 
   for (const segment of focusSegments) {
     const srcBase = path.join(sourceRoot, segment);
@@ -219,10 +244,10 @@ async function applyMerge(sourceRoot, destinationRoot, focusSegments = DEFAULT_F
       const sourceFile = path.join(srcBase, relPath);
       const destFile = path.join(dstBase, relPath);
       const destDir = path.dirname(destFile);
-      await mkdir(destDir, { recursive: true });
+      await fileGuard.mkdir(destDir, { recursive: true });
 
       if (!existsSync(destFile)) {
-        await cp(sourceFile, destFile);
+        await fileGuard.copyFileIntoRoot(sourceFile, destFile);
         actions.push(`Added ${destFile}`);
         continue;
       }
@@ -234,9 +259,11 @@ async function applyMerge(sourceRoot, destinationRoot, focusSegments = DEFAULT_F
         continue; // identical
       }
 
-      const overwrite = autoApprove || await promptYesNo(`Conflict at ${destFile}. Overwrite with shipped version?`, false);
+      const overwrite =
+        autoApprove ||
+        (await promptYesNo(`Conflict at ${destFile}. Overwrite with shipped version?`, false));
       if (overwrite) {
-        await cp(sourceFile, destFile);
+        await fileGuard.copyFileIntoRoot(sourceFile, destFile);
         actions.push(`Overwrote ${destFile} with shipped version`);
       } else {
         actions.push(`Kept existing ${destFile} (user declined overwrite)`);
@@ -254,19 +281,24 @@ async function applyMerge(sourceRoot, destinationRoot, focusSegments = DEFAULT_F
  * @param {string[]} focusSegments
  * @returns {Promise<{sandboxPath:string, actions:string[]}>}
  */
-async function applySandbox(sourceRoot, destinationRoot, focusSegments = DEFAULT_FOCUS_SEGMENTS) {
+async function applySandbox(
+  sourceRoot,
+  destinationRoot,
+  focusSegments = DEFAULT_FOCUS_SEGMENTS,
+  fileGuard = createFileGuard({ allowedRoot: destinationRoot })
+) {
   const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
   const sandboxPath = path.join(destinationRoot, 'sandbox', timestamp);
   const actions = [];
 
-  await mkdir(sandboxPath, { recursive: true });
+  await fileGuard.mkdir(sandboxPath, { recursive: true });
 
   for (const segment of focusSegments) {
     const src = path.join(sourceRoot, segment);
     if (!existsSync(src)) continue;
 
     const dst = path.join(sandboxPath, segment);
-    await cp(src, dst, { recursive: true });
+    await fileGuard.copyIntoRoot(src, dst, { recursive: true });
     actions.push(`Copied ${segment} into sandbox at ${dst}`);
   }
 
@@ -279,9 +311,13 @@ async function applySandbox(sourceRoot, destinationRoot, focusSegments = DEFAULT
  * @param {Object} logData
  * @returns {Promise<string>} - Log file path
  */
-async function writeInstallLog(destinationRoot, logData) {
+async function writeInstallLog(
+  destinationRoot,
+  logData,
+  fileGuard = createFileGuard({ allowedRoot: destinationRoot })
+) {
   const logsDir = path.join(destinationRoot, 'logs');
-  await mkdir(logsDir, { recursive: true });
+  await fileGuard.mkdir(logsDir, { recursive: true });
 
   const datePart = new Date().toISOString().slice(0, 10).replace(/-/g, '');
   const logPath = path.join(logsDir, `install-${datePart}.md`);
@@ -293,7 +329,9 @@ async function writeInstallLog(destinationRoot, logData) {
   lines.push(`- Target: ${logData.targetDir}`);
   lines.push(`- Strategy: ${logData.strategy}`);
   lines.push(`- Requirement: ${REQUIREMENT_ID}`);
-  lines.push(`- Repo detected: ${logData.repoDetected ? `yes (${logData.indicators.join(', ')})` : 'no'}`);
+  lines.push(
+    `- Repo detected: ${logData.repoDetected ? `yes (${logData.indicators.join(', ')})` : 'no'}`
+  );
   lines.push(`- Conflicts scanned: ${logData.conflicts.length}`);
   lines.push('');
 
@@ -302,10 +340,14 @@ async function writeInstallLog(destinationRoot, logData) {
     for (const conflict of logData.conflicts) {
       lines.push(
         `- ${conflict.segment}: ${conflict.conflicts.length} differing file(s), ` +
-        `${conflict.newFiles.length} new file(s) to copy`
+          `${conflict.newFiles.length} new file(s) to copy`
       );
       if (conflict.conflicts.length > 0) {
-        lines.push(`  - Paths: ${conflict.conflicts.slice(0, 5).join(', ')}${conflict.conflicts.length > 5 ? ' …' : ''}`);
+        lines.push(
+          `  - Paths: ${conflict.conflicts.slice(0, 5).join(', ')}${
+            conflict.conflicts.length > 5 ? ' …' : ''
+          }`
+        );
       }
     }
     lines.push('');
@@ -328,7 +370,10 @@ async function writeInstallLog(destinationRoot, logData) {
   }
 
   const prefix = existsSync(logPath) ? '\n\n---\n' : '';
-  await writeFile(logPath, `${prefix}${lines.join('\n')}`, { flag: 'a', encoding: 'utf8' });
+  await fileGuard.writeFile(logPath, `${prefix}${lines.join('\n')}`, {
+    flag: 'a',
+    encoding: 'utf8',
+  });
   return logPath;
 }
 
@@ -343,6 +388,7 @@ async function runAttachWorkflow(options) {
   const autoApprove = options.autoApprove || false;
   const sourceRoot = options.sourceRoot || DEFAULT_SOURCE_ROOT;
   const destinationRoot = path.join(targetDir, '.loaded-vibes');
+  const fileGuard = createFileGuard({ allowedRoot: destinationRoot, autoApprove });
 
   const repoInfo = detectExistingRepo(targetDir);
   const conflicts = await enumerateConflicts(sourceRoot, destinationRoot, DEFAULT_FOCUS_SEGMENTS);
@@ -351,35 +397,51 @@ async function runAttachWorkflow(options) {
   const approvals = [];
 
   if (strategy === 'mirror') {
-    const confirmed = autoApprove || await promptYesNo(
-      'Mirror will replace existing .loaded-vibes assets. Continue?',
-      false
-    );
+    const confirmed =
+      autoApprove ||
+      (await promptYesNo('Mirror will replace existing .loaded-vibes assets. Continue?', false));
     approvals.push(`Mirror approved: ${confirmed}`);
     if (!confirmed) {
       throw new Error('Mirror aborted by user');
     }
     actions = await applyMirror(sourceRoot, destinationRoot, DEFAULT_FOCUS_SEGMENTS);
   } else if (strategy === 'merge') {
-    actions = await applyMerge(sourceRoot, destinationRoot, DEFAULT_FOCUS_SEGMENTS, { autoApprove });
+    actions = await applyMirror(sourceRoot, destinationRoot, DEFAULT_FOCUS_SEGMENTS, fileGuard);
+    autoApprove,
+      (actions = await applyMerge(
+        sourceRoot,
+        destinationRoot,
+        DEFAULT_FOCUS_SEGMENTS,
+        { autoApprove },
+        fileGuard
+      ));
   } else if (strategy === 'sandbox') {
-    const sandboxResult = await applySandbox(sourceRoot, destinationRoot, DEFAULT_FOCUS_SEGMENTS);
+    const sandboxResult = await applySandbox(
+      sourceRoot,
+      destinationRoot,
+      DEFAULT_FOCUS_SEGMENTS,
+      fileGuard
+    );
     actions = sandboxResult.actions;
     approvals.push(`Sandbox location: ${sandboxResult.sandboxPath}`);
   } else {
     throw new Error(`Unknown strategy: ${strategy}`);
   }
 
-  const logPath = await writeInstallLog(destinationRoot, {
-    timestamp: new Date().toISOString(),
-    targetDir,
-    strategy,
-    repoDetected: repoInfo.repoDetected,
-    indicators: repoInfo.indicators,
-    conflicts,
-    actions,
-    approvals,
-  });
+  const logPath = await writeInstallLog(
+    destinationRoot,
+    {
+      timestamp: new Date().toISOString(),
+      targetDir,
+      strategy,
+      repoDetected: repoInfo.repoDetected,
+      indicators: repoInfo.indicators,
+      conflicts,
+      actions,
+      approvals,
+    },
+    fileGuard
+  );
 
   return { logPath, actions, conflicts };
 }

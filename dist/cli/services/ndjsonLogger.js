@@ -11,12 +11,14 @@
  * @see spec/observability.spec.md §3 - Implementation Guidance
  */
 
-import { createWriteStream, existsSync, mkdirSync } from 'fs';
+import { createWriteStream, existsSync } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { createFileGuard } from '../security/fileGuard.js';
 
 const CURRENT_DIR = path.dirname(fileURLToPath(import.meta.url));
 const DEFAULT_LOGS_DIR = path.resolve(CURRENT_DIR, '..', '..', '..', '.loaded-vibes', 'logs');
+const logFileGuard = createFileGuard();
 
 /**
  * @typedef {Object} NDJSONEvent
@@ -103,7 +105,7 @@ export class NDJSONLogger {
    */
   initialize() {
     if (!existsSync(this.logsDir)) {
-      mkdirSync(this.logsDir, { recursive: true });
+      logFileGuard.mkdirSync(this.logsDir, { recursive: true });
     }
 
     // Use YYYYMMDD-HHMMSS-mmm format for filename-safe timestamps
@@ -120,6 +122,7 @@ export class NDJSONLogger {
       String(now.getMilliseconds()).padStart(3, '0'),
     ].join('');
     this.logFilePath = path.join(this.logsDir, `${this.devCycleId}-${timestamp}.ndjson`);
+    logFileGuard.ensureWithinBoundarySync(this.logFilePath);
     this.stream = createWriteStream(this.logFilePath, { flags: 'a', encoding: 'utf8' });
   }
 

@@ -17,15 +17,17 @@ import { EventEmitter } from 'events';
 import { createInterface } from 'readline';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
+import { readFileSync, existsSync } from 'fs';
 
 import { NDJSONLogger, createLogger } from './ndjsonLogger.js';
+import { createFileGuard } from '../security/fileGuard.js';
 
 const CURRENT_DIR = path.dirname(fileURLToPath(import.meta.url));
 const GENAI_ROOT = path.resolve(CURRENT_DIR, '..', '..', 'genaiscript');
 const ORCHESTRATOR_PATH = path.resolve(GENAI_ROOT, 'orchestrator.genai.js');
 const STATE_DIR = path.resolve(GENAI_ROOT, 'state');
 const RUNNER_STATE_PATH = path.resolve(STATE_DIR, 'runner-state.json');
+const stateFileGuard = createFileGuard();
 
 /**
  * @typedef {Object} RunnerEvent
@@ -119,12 +121,12 @@ function loadRunnerState() {
  */
 function saveRunnerState(state) {
   if (!existsSync(STATE_DIR)) {
-    mkdirSync(STATE_DIR, { recursive: true });
+    stateFileGuard.mkdirSync(STATE_DIR, { recursive: true });
   }
 
   state.lastUpdated = new Date().toISOString();
   const serialized = JSON.stringify(state, null, 2);
-  writeFileSync(RUNNER_STATE_PATH, serialized, 'utf8');
+  stateFileGuard.writeFileSync(RUNNER_STATE_PATH, serialized, 'utf8');
 }
 
 /**
@@ -255,7 +257,10 @@ export class DevCycleRunner extends EventEmitter {
     console.log(`\nRequirement: ${warning.requirementId}`);
     console.log('\n' + '─'.repeat(60));
 
-    return this._promptForApproval('firewall-approval', 'Do you want to proceed with this destructive operation?');
+    return this._promptForApproval(
+      'firewall-approval',
+      'Do you want to proceed with this destructive operation?'
+    );
   }
 
   /**
@@ -398,7 +403,9 @@ export class DevCycleRunner extends EventEmitter {
 
     // Fallback: Check for phase transitions from orchestrator output
     // This pattern matches the current orchestrator format but may change
-    const legacyPhaseMatch = trimmed.match(/Context Hydrated for DevCycle.*\(SPEC-ENGINE §4\)\s+(.+)/);
+    const legacyPhaseMatch = trimmed.match(
+      /Context Hydrated for DevCycle.*\(SPEC-ENGINE §4\)\s+(.+)/
+    );
     if (legacyPhaseMatch) {
       this.state.currentPhase = legacyPhaseMatch[1];
       this._emitEvent({
