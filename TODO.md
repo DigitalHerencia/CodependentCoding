@@ -71,11 +71,11 @@ This backlog tracks Spec-Driven Workflow actions for the Loaded Vibes framework.
 
 ### Documentation
 
-| Status | Item                                                                                                                                                                | Source                                       |
-| ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------- |
-| ☐      | Author end-user documentation (README quickstart, SUPPORT, SECURITY, CHANGELOG) explaining installation, dashboard usage, DevCycle governance, and troubleshooting. | PRD §§2-4, Tech Requirements §5.2            |
-| ☐      | Document contributor workflow: PRD/Tech update → template regeneration → bootstrapper parity → `doctor` + `genaiscript test` → TODO/CHANGELOG.                      | SPEC-DEV §4, Tech Requirements §7-8          |
-| ☐      | Map CLI telemetry + changelog deltas to DevCycle identifiers for release notes compliance.                                                                          | PRD §5.4, Tech Requirements §10, SPEC-OBS §3 |
+| Status | Item                                                                                                                                                                            | Source                                           |
+| ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------ |
+| ☑      | Author end-user documentation (README quickstart, SUPPORT, SECURITY, CHANGELOG) explaining installation, dashboard usage, DevCycle governance, and troubleshooting. Closes #29. | PRD §§2-4, Tech Requirements §5.2                |
+| ☑      | Document contributor workflow: PRD/Tech update → template regeneration → bootstrapper parity → `doctor` + `genaiscript test` → TODO/CHANGELOG.                                  | SPEC-DEV §4, Tech Requirements §7-8 (Closes #30) |
+| ☑      | Map CLI telemetry + changelog deltas to DevCycle identifiers for release notes compliance.                                                                                      | PRD §5.4, Tech Requirements §10, SPEC-OBS §3     |
 
 ### Testing & Validation
 

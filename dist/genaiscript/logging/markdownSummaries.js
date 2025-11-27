@@ -13,7 +13,7 @@
 import { readFileSync, writeFileSync, existsSync, readdirSync, mkdirSync, statSync } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { addChangelogEntry, getTimestamp } from '../shared/changelogUpdater.js';
+import { addChangelogEntry, formatEntry, getTimestamp } from '../shared/changelogUpdater.js';
 import { addTodoItem } from '../shared/todoUpdater.js';
 
 const CURRENT_DIR = path.dirname(fileURLToPath(import.meta.url));
@@ -71,7 +71,7 @@ export function parseNDJSONLine(line) {
 
   try {
     const parsed = JSON.parse(trimmed);
-    
+
     // Validate required fields per SPEC-OBS §3
     if (!parsed.devCycleId || !parsed.phase || !parsed.timestamp) {
       return null;
@@ -249,9 +249,7 @@ export function generateTodoEntry(devCycleId, entries) {
   }
 
   // Build source citation
-  const source = requirementIds.length > 0
-    ? requirementIds.join(', ')
-    : `SPEC-OBS §3`;
+  const source = requirementIds.length > 0 ? requirementIds.join(', ') : `SPEC-OBS §3`;
 
   return `| ${statusIndicator} | ${description} | ${source} |`;
 }
@@ -271,9 +269,7 @@ export function generateChangelogEntry(devCycleId, entries, goal) {
   const hasWarnings = entries.some((e) => e.severity === 'warn');
 
   // Get timestamps
-  const sortedEntries = [...entries].sort((a, b) =>
-    a.timestamp.localeCompare(b.timestamp)
-  );
+  const sortedEntries = [...entries].sort((a, b) => a.timestamp.localeCompare(b.timestamp));
   const startTime = sortedEntries[0]?.timestamp || new Date().toISOString();
   const endTime = sortedEntries[sortedEntries.length - 1]?.timestamp || startTime;
 
@@ -286,9 +282,8 @@ export function generateChangelogEntry(devCycleId, entries, goal) {
   }
 
   // Build action description with citations
-  const citations = requirementIds.length > 0
-    ? ` per ${requirementIds.join(', ')}`
-    : ' per SPEC-OBS §3';
+  const citations =
+    requirementIds.length > 0 ? ` per ${requirementIds.join(', ')}` : ' per SPEC-OBS §3';
 
   const action = `Executed ${devCycleId} DevCycle phases (${phases.join(' → ')})${citations}`;
 
@@ -311,9 +306,10 @@ export function generateChangelogEntry(devCycleId, entries, goal) {
   const followUpMessages = entries
     .filter((e) => e.message && e.message.toLowerCase().includes('next'))
     .map((e) => e.message);
-  const next = followUpMessages.length > 0
-    ? followUpMessages[0]
-    : hasErrors
+  const next =
+    followUpMessages.length > 0
+      ? followUpMessages[0]
+      : hasErrors
       ? 'Address errors before proceeding'
       : 'Proceed to next DevCycle';
 
@@ -324,6 +320,7 @@ export function generateChangelogEntry(devCycleId, entries, goal) {
     action,
     result,
     next,
+    devCycleId: devCycleId?.toLowerCase(),
   };
 }
 
@@ -339,17 +336,9 @@ export function generateSummary(devCycleId, entries) {
   const changelogEntryObj = generateChangelogEntry(devCycleId, entries);
 
   // Format changelog entry as string for display
-  const changelogEntry = [
-    `[${changelogEntryObj.type}][${changelogEntryObj.timestamp}]`,
-    `Goal: ${changelogEntryObj.goal}`,
-    `→ Action: ${changelogEntryObj.action}`,
-    `→ Result: ${changelogEntryObj.result}`,
-    `→ Next: ${changelogEntryObj.next}`,
-  ].join(' ');
+  const changelogEntry = formatEntry(changelogEntryObj);
 
-  const sortedEntries = [...entries].sort((a, b) =>
-    a.timestamp.localeCompare(b.timestamp)
-  );
+  const sortedEntries = [...entries].sort((a, b) => a.timestamp.localeCompare(b.timestamp));
 
   return {
     devCycleId,
@@ -412,7 +401,9 @@ export function changelogEntryExists(devCycleId, timestamp, toleranceMinutes = 5
 
     for (const line of lines) {
       // Match [Type][timestamp] pattern
-      const match = line.match(/^\[(?:Decision|Update|Validation|Fix|Feature)\]\[(\d{4}-\d{2}-\d{2}T[^\]]+)\]/);
+      const match = line.match(
+        /^\[(?:Decision|Update|Validation|Fix|Feature)\]\[(\d{4}-\d{2}-\d{2}T[^\]]+)\]/
+      );
       if (match) {
         const entryTime = new Date(match[1]).getTime();
         const timeDiff = Math.abs(targetTime - entryTime);
@@ -440,10 +431,7 @@ export function changelogEntryExists(devCycleId, timestamp, toleranceMinutes = 5
  * @returns {SummaryWriteResult} Result of the write operation
  */
 export function writeSummary(summary, options = {}) {
-  const {
-    skipDuplicateCheck = false,
-    todoCategory = 'Observability & Logging',
-  } = options;
+  const { skipDuplicateCheck = false, todoCategory = 'Observability & Logging' } = options;
 
   const result = {
     success: true,
@@ -462,9 +450,8 @@ export function writeSummary(summary, options = {}) {
           const description = summary.hasErrors
             ? `Review and fix ${summary.devCycleId} DevCycle errors`
             : `Review ${summary.devCycleId} DevCycle warnings`;
-          const source = summary.requirementIds.length > 0
-            ? summary.requirementIds.join(', ')
-            : 'SPEC-OBS §3';
+          const source =
+            summary.requirementIds.length > 0 ? summary.requirementIds.join(', ') : 'SPEC-OBS §3';
           addTodoItem(todoCategory, description, source);
           result.todoUpdated = true;
         }
@@ -474,10 +461,7 @@ export function writeSummary(summary, options = {}) {
         console.log(`ℹ️  CHANGELOG entry for ${summary.devCycleId} already exists, skipping.`);
       } else {
         // Always add CHANGELOG entry
-        const changelogEntryObj = generateChangelogEntry(
-          summary.devCycleId,
-          summary.events
-        );
+        const changelogEntryObj = generateChangelogEntry(summary.devCycleId, summary.events);
         addChangelogEntry(changelogEntryObj);
         result.changelogUpdated = true;
       }
@@ -487,17 +471,13 @@ export function writeSummary(summary, options = {}) {
         const description = summary.hasErrors
           ? `Review and fix ${summary.devCycleId} DevCycle errors`
           : `Review ${summary.devCycleId} DevCycle warnings`;
-        const source = summary.requirementIds.length > 0
-          ? summary.requirementIds.join(', ')
-          : 'SPEC-OBS §3';
+        const source =
+          summary.requirementIds.length > 0 ? summary.requirementIds.join(', ') : 'SPEC-OBS §3';
         addTodoItem(todoCategory, description, source);
         result.todoUpdated = true;
       }
 
-      const changelogEntryObj = generateChangelogEntry(
-        summary.devCycleId,
-        summary.events
-      );
+      const changelogEntryObj = generateChangelogEntry(summary.devCycleId, summary.events);
       addChangelogEntry(changelogEntryObj);
       result.changelogUpdated = true;
     }
@@ -617,7 +597,8 @@ export function persistLogEntries(entries, filename, logDir = DEFAULT_LOG_DIR) {
     }
 
     // Generate filename if not provided
-    const logFilename = filename || `devcycle-${new Date().toISOString().replace(/[:.]/g, '-')}.ndjson`;
+    const logFilename =
+      filename || `devcycle-${new Date().toISOString().replace(/[:.]/g, '-')}.ndjson`;
     const logPath = path.join(logDir, logFilename);
 
     // Convert entries to NDJSON

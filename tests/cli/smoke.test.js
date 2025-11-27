@@ -309,6 +309,18 @@ describe('Telemetry Command', () => {
       'Telemetry export help should mention format option'
     );
   });
+
+  it('should display release-notes help with --help flag', async () => {
+    const result = await runCli(['telemetry', 'release-notes', '--help'], {
+      timeout: 10000,
+    });
+
+    assert.strictEqual(result.code, 0, 'Telemetry release-notes --help should exit with code 0');
+    assert.ok(
+      result.stdout.includes('release-notes') && result.stdout.includes('--format'),
+      'Release-notes help should mention release-notes usage and format option'
+    );
+  });
 });
 
 // ============================================================

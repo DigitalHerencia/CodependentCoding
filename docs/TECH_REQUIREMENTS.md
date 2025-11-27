@@ -225,6 +225,14 @@ Both files are emitted atomically at phase completion. The Markdown file include
 - Security: Exports run through the existing redaction pipeline (`redactTelemetry`, SPEC-SECURITY §2) and are written via `fileGuard` to `.loaded-vibes/**` only.
 - Observability: Each export cites `TECH §11 / SPEC-OBS §2` and records filters (DevCycle ID, timeframe) for traceability. Future remote sinks can reuse the JSON payload without rehydrating NDJSON logs.
 
+### 11.6 Release Notes Compliance
+
+- CLI command: `loaded-vibes telemetry release-notes --format json|markdown [--devcycle <id>] [--since <iso>] [--out <path>]`.
+- Inputs: `.loaded-vibes/logs/*.ndjson` telemetry, `CHANGELOG.md`, and manifest metadata to guarantee each entry maps back to a canonical DevCycle (`PRD §5.4`, `TECH §10`, `SPEC-OBS §3`).
+- Outputs: `.loaded-vibes/release-notes/release-notes-<timestamp>.{json,md}` via `fileGuard`; JSON includes machine-readable `compliance` totals (`telemetryMapped`, `changelogMapped`, `totalDevCycles`), Markdown mirrors the structure for stakeholder review.
+- Per-DevCycle sections cite requirement IDs (union of telemetry + manifest references), embed TODO + CHANGELOG snippets, list severity counts/timeframes, and flag gaps when changelog evidence is missing (⚠️).
+- The generator functions as the compliance verification process: CI or humans run it before publishing release notes to confirm telemetry/changelog parity; any DevCycle lacking both signals blocks release packaging until TODO/CHANGELOG automation catches up.
+
 ## 12. Roadmap & Open Questions
 
 - Evaluate optional local HTTP API for CLI dashboards or VS Code webviews.

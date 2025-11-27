@@ -14,6 +14,7 @@ import { fileURLToPath } from 'url';
 import { createFileGuard } from '../security/fileGuard.js';
 import { generateSummary } from '../../genaiscript/logging/markdownSummaries.js';
 import { redactTelemetry, redactString } from '../services/redaction.js';
+import { readChangelogEntries, formatEntry } from '../../genaiscript/shared/changelogUpdater.js';
 
 const CURRENT_DIR = path.dirname(fileURLToPath(import.meta.url));
 const CLI_ROOT = path.resolve(CURRENT_DIR, '..');
@@ -21,6 +22,9 @@ const REQUIREMENT_REF = 'TECH §11 / SPEC-OBS §2 / ADR-0001';
 const VALID_FORMATS = new Set(['json', 'markdown', 'md']);
 const DEFAULT_FORMAT = 'json';
 const REPORT_VERSION = '1.0.0';
+const RELEASE_NOTES_REQUIREMENT_REF = 'PRD §5.4 / TECH §10 / SPEC-OBS §3';
+const RELEASE_NOTES_REPORT_VERSION = '1.0.0';
+const MANIFEST_PATH = path.resolve(CLI_ROOT, '..', 'genaiscript', 'devcycles.config.json');
 
 /**
  * Entry point for `loaded-vibes telemetry` command.
@@ -38,6 +42,9 @@ export async function runTelemetryCli(argv = []) {
     case 'export':
       await runTelemetryExport(rest);
       return;
+    case 'release-notes':
+      await runTelemetryReleaseNotes(rest);
+      return;
     default:
       console.error(`Unknown telemetry subcommand: ${subcommand}`);
       printTelemetryHelp();
@@ -54,6 +61,7 @@ function printTelemetryHelp() {
   console.log('');
   console.log('Subcommands:');
   console.log('  export   Aggregate NDJSON logs and emit JSON/Markdown telemetry report');
+  console.log('  release-notes   Generate release notes grouped by DevCycle');
   console.log('');
   console.log('Example:');
   console.log('  loaded-vibes telemetry export --format json');
@@ -82,19 +90,53 @@ async function runTelemetryExport(argv = []) {
     return;
   }
 
-  const report = buildTelemetryReport(filteredEntries, options);
+  const manifestMetadata = loadManifestMetadata();
+  const report = buildTelemetryReport(filteredEntries, options, manifestMetadata);
   await writeTelemetryReport(report, options);
 }
 
-function parseExportArgs(argv) {
+async function runTelemetryReleaseNotes(argv = []) {
+  const options = parseExportArgs(argv, {
+    defaultFormat: 'markdown',
+    exportsSubdir: ['release-notes'],
+  });
+
+  if (options.help) {
+    printReleaseNotesHelp(options.defaultLogsDir);
+    return;
+  }
+
+  validateFormat(options.format);
+
+  const logEntries = loadLogEntries(options.logsDir);
+  const filteredEntries = applyFilters(logEntries, options);
+
+  if (filteredEntries.length === 0) {
+    console.log('No NDJSON telemetry entries match the provided filters.');
+    return;
+  }
+
+  const manifestMetadata = loadManifestMetadata();
+  const telemetryReport = buildTelemetryReport(filteredEntries, options, manifestMetadata);
+  const changelogEntries = readChangelogEntries();
+  const releaseNotes = buildReleaseNotesReport(telemetryReport, manifestMetadata, changelogEntries);
+
+  await writeReleaseNotesReport(releaseNotes, options);
+}
+
+function parseExportArgs(argv, overrides = {}) {
   const cwd = process.cwd();
   const loadedVibesRoot = path.resolve(cwd, '.loaded-vibes');
-  const defaultLogsDir = path.join(loadedVibesRoot, 'logs');
-  const defaultSummariesDir = path.join(loadedVibesRoot, 'summaries');
-  const defaultExportsDir = path.join(loadedVibesRoot, 'telemetry', 'exports');
+  const defaultLogsDir = overrides.defaultLogsDir || path.join(loadedVibesRoot, 'logs');
+  const defaultSummariesDir =
+    overrides.defaultSummariesDir || path.join(loadedVibesRoot, 'summaries');
+  const defaultExportsDir =
+    overrides.defaultExportsDir ||
+    path.join(loadedVibesRoot, ...(overrides.exportsSubdir || ['telemetry', 'exports']));
+  const resolvedDefaultFormat = overrides.defaultFormat || DEFAULT_FORMAT;
 
   const options = {
-    format: DEFAULT_FORMAT,
+    format: resolvedDefaultFormat,
     devCycleId: undefined,
     since: undefined,
     logsDir: defaultLogsDir,
@@ -112,7 +154,7 @@ function parseExportArgs(argv) {
     switch (arg) {
       case '--format':
       case '-f':
-        options.format = (argv[i + 1] || DEFAULT_FORMAT).toLowerCase();
+        options.format = (argv[i + 1] || resolvedDefaultFormat).toLowerCase();
         i += 1;
         break;
       case '--devcycle':
@@ -178,6 +220,23 @@ function printExportHelp(defaultLogsDir) {
   console.log(
     '  --out, --output     Target file path (defaults to .loaded-vibes/telemetry/exports)'
   );
+  console.log('  --pretty            Pretty-print JSON output');
+  console.log('  --compact           Minified JSON output');
+  console.log('  --help, -h          Show this help');
+  console.log('');
+  console.log(`Default logs directory: ${defaultLogsDir}`);
+}
+
+function printReleaseNotesHelp(defaultLogsDir) {
+  console.log('');
+  console.log('loaded-vibes telemetry release-notes --format <json|markdown>');
+  console.log('');
+  console.log('Options:');
+  console.log('  --format, -f        Output format (json, markdown)');
+  console.log('  --devcycle, -d      Filter by DevCycle ID');
+  console.log('  --since             Filter entries on/after ISO timestamp');
+  console.log('  --logs-dir          Override NDJSON logs directory');
+  console.log('  --out, --output     Target file path (defaults to .loaded-vibes/release-notes)');
   console.log('  --pretty            Pretty-print JSON output');
   console.log('  --compact           Minified JSON output');
   console.log('  --help, -h          Show this help');
@@ -279,9 +338,10 @@ function applyFilters(entries, options) {
   });
 }
 
-function buildTelemetryReport(entries, options) {
+function buildTelemetryReport(entries, options, manifestMetadata = {}) {
   const grouped = groupByDevCycle(entries);
   const devCycles = [];
+  const manifest = manifestMetadata || {};
 
   for (const [devCycleId, devEntries] of grouped) {
     const summary = generateSummary(
@@ -300,9 +360,13 @@ function buildTelemetryReport(entries, options) {
     const severityCounts = countSeverities(devEntries);
     const logFiles = Array.from(new Set(devEntries.map((entry) => path.basename(entry.file))));
     const status = summary.hasErrors ? 'error' : summary.hasWarnings ? 'warning' : 'success';
+    const manifestMeta = manifest[devCycleId.toLowerCase()] || {};
 
     devCycles.push({
       devCycleId,
+      devCycleLabel: manifestMeta.label || null,
+      manifestRequirementIds: manifestMeta.requirementIds || [],
+      description: manifestMeta.description || null,
       status,
       eventCount: devEntries.length,
       severityCounts,
@@ -426,7 +490,8 @@ function buildMarkdownReport(report) {
   }
 
   for (const devCycle of report.devCycles) {
-    lines.push(`## DevCycle ${devCycle.devCycleId}`);
+    const headingLabel = devCycle.devCycleLabel ? ` — ${devCycle.devCycleLabel}` : '';
+    lines.push(`## DevCycle ${devCycle.devCycleId}${headingLabel}`);
     lines.push(`- Status: ${devCycle.status}`);
     lines.push(`- Events: ${devCycle.eventCount}`);
     lines.push(
@@ -452,4 +517,260 @@ function buildMarkdownReport(report) {
   }
 
   return lines.join('\n');
+}
+
+function loadManifestMetadata() {
+  if (!existsSync(MANIFEST_PATH)) {
+    return {};
+  }
+
+  try {
+    const raw = readFileSync(MANIFEST_PATH, 'utf8');
+    const manifest = JSON.parse(raw);
+    const mapping = {};
+
+    for (const [id, entry] of Object.entries(manifest)) {
+      const normalized = normalizeDevCycleId(id);
+      if (!normalized) {
+        continue;
+      }
+
+      mapping[normalized] = {
+        label: entry.label || null,
+        description: entry.description || null,
+        requirementIds: Array.isArray(entry.requirementIds) ? entry.requirementIds : [],
+      };
+    }
+
+    return mapping;
+  } catch {
+    return {};
+  }
+}
+
+function buildReleaseNotesReport(telemetryReport, manifestMetadata = {}, changelogEntries = []) {
+  const manifest = manifestMetadata || {};
+  const normalizedChangelog = (changelogEntries || []).map((entry) => ({
+    ...entry,
+    normalizedDevCycleId: inferDevCycleIdFromEntry(entry),
+  }));
+
+  const releaseDevCycles = telemetryReport.devCycles.map((cycle) => {
+    const normalizedId = normalizeDevCycleId(cycle.devCycleId) || cycle.devCycleId;
+    const manifestMeta = manifest[normalizedId] || {};
+    const matchedChangelog = findChangelogEntriesForDevCycle(normalizedId, normalizedChangelog);
+    const combinedRequirementIds = Array.from(
+      new Set([
+        ...(cycle.requirementIds || []),
+        ...(cycle.manifestRequirementIds || []),
+        ...(manifestMeta.requirementIds || []),
+      ])
+    );
+
+    return {
+      devCycleId: cycle.devCycleId,
+      normalizedDevCycleId: normalizedId,
+      label: manifestMeta.label || cycle.devCycleLabel || null,
+      description: manifestMeta.description || cycle.description || null,
+      requirementIds: combinedRequirementIds,
+      telemetry: {
+        status: cycle.status,
+        eventCount: cycle.eventCount,
+        severityCounts: cycle.severityCounts,
+        timeframe: cycle.timeframe,
+        todoEntry: cycle.todoEntry,
+        changelogEntry: cycle.changelogEntry,
+        checkpointCount: cycle.checkpointCount,
+        logFiles: cycle.logFiles,
+      },
+      changelog: matchedChangelog,
+      compliance: {
+        telemetryMapped: true,
+        changelogMapped: matchedChangelog.length > 0,
+      },
+    };
+  });
+
+  const complianceSummary = releaseDevCycles.reduce(
+    (acc, cycle) => {
+      if (cycle.compliance.telemetryMapped) {
+        acc.telemetryMapped += 1;
+      }
+      if (cycle.compliance.changelogMapped) {
+        acc.changelogMapped += 1;
+      }
+      return acc;
+    },
+    { telemetryMapped: 0, changelogMapped: 0 }
+  );
+  complianceSummary.totalDevCycles = releaseDevCycles.length;
+
+  return {
+    formatVersion: RELEASE_NOTES_REPORT_VERSION,
+    generatedAt: new Date().toISOString(),
+    requirement: RELEASE_NOTES_REQUIREMENT_REF,
+    source: telemetryReport.source,
+    devCycleCount: releaseDevCycles.length,
+    compliance: complianceSummary,
+    devCycles: releaseDevCycles,
+  };
+}
+
+async function writeReleaseNotesReport(report, options) {
+  const guard = createFileGuard({ allowedRoot: options.loadedVibesRoot });
+  const format = normalizeFormat(options.format);
+  const targetPath = options.outputPath || buildDefaultReleaseNotesPath(options.exportsDir, format);
+
+  await guard.mkdir(path.dirname(targetPath), { recursive: true });
+
+  if (format === 'json') {
+    const redacted = redactTelemetry(report);
+    const data = JSON.stringify(redacted, null, options.pretty ? 2 : undefined);
+    await guard.writeFile(targetPath, `${data}\n`, 'utf8');
+  } else {
+    const markdown = buildReleaseNotesMarkdown(report);
+    const sanitized = redactString(markdown);
+    await guard.writeFile(targetPath, `${sanitized}\n`, 'utf8');
+  }
+
+  console.log(`Release notes written to ${targetPath} (${RELEASE_NOTES_REQUIREMENT_REF}).`);
+}
+
+function buildReleaseNotesMarkdown(report) {
+  const lines = [];
+  lines.push('# Loaded Vibes Release Notes');
+  lines.push('');
+  lines.push(`Generated: ${report.generatedAt}`);
+  lines.push(`Requirement: ${RELEASE_NOTES_REQUIREMENT_REF}`);
+  lines.push('');
+  lines.push('```json');
+  lines.push(
+    JSON.stringify(
+      {
+        formatVersion: report.formatVersion,
+        filters: report.source?.filters,
+        logsDir: report.source?.logsDir,
+        compliance: report.compliance,
+      },
+      null,
+      2
+    )
+  );
+  lines.push('```');
+  lines.push('');
+
+  if (report.devCycles.length === 0) {
+    lines.push('_No DevCycle entries matched the provided filters._');
+    return lines.join('\n');
+  }
+
+  for (const cycle of report.devCycles) {
+    const headingLabel = cycle.label ? ` — ${cycle.label}` : '';
+    lines.push(`## DevCycle ${cycle.devCycleId}${headingLabel}`);
+    if (cycle.description) {
+      lines.push(cycle.description);
+      lines.push('');
+    }
+    lines.push(
+      `- Requirement IDs: ${
+        cycle.requirementIds.length > 0 ? cycle.requirementIds.join(', ') : 'SPEC-OBS §3'
+      }`
+    );
+    lines.push(`- Events: ${cycle.telemetry.eventCount}`);
+    lines.push(
+      `- Severities: info=${cycle.telemetry.severityCounts.info}, warn=${cycle.telemetry.severityCounts.warn}, error=${cycle.telemetry.severityCounts.error}`
+    );
+    lines.push(
+      `- Timeframe: ${cycle.telemetry.timeframe.start || 'n/a'} → ${
+        cycle.telemetry.timeframe.end || 'n/a'
+      }`
+    );
+    lines.push(`- Checkpoints logged: ${cycle.telemetry.checkpointCount}`);
+    lines.push(
+      `- Compliance: ${
+        cycle.compliance.changelogMapped ? '✅' : '⚠️'
+      } telemetry ↔ changelog mapping`
+    );
+    lines.push('');
+    lines.push('### Telemetry Summary');
+    lines.push(cycle.telemetry.changelogEntry || '_n/a_');
+    lines.push('');
+    lines.push('### TODO Entry');
+    lines.push(cycle.telemetry.todoEntry || '_n/a_');
+    lines.push('');
+    lines.push('### CHANGELOG References');
+    if (cycle.changelog.length === 0) {
+      lines.push('_No matching CHANGELOG entries (manual review required)._');
+    } else {
+      for (const entry of cycle.changelog) {
+        lines.push(`- ${formatEntry(entry)}`);
+      }
+    }
+    lines.push('');
+  }
+
+  return lines.join('\n');
+}
+
+function findChangelogEntriesForDevCycle(devCycleId, changelogEntries) {
+  const target = normalizeDevCycleId(devCycleId);
+  if (!target) {
+    return [];
+  }
+
+  return changelogEntries
+    .filter((entry) => entry.normalizedDevCycleId && entry.normalizedDevCycleId === target)
+    .map((entry) => ({
+      type: entry.type,
+      timestamp: entry.timestamp,
+      goal: entry.goal,
+      action: entry.action,
+      result: entry.result,
+      next: entry.next,
+      devCycleId: entry.devCycleId || entry.normalizedDevCycleId,
+    }));
+}
+
+function inferDevCycleIdFromEntry(entry) {
+  if (!entry) {
+    return null;
+  }
+
+  if (entry.devCycleId) {
+    return normalizeDevCycleId(entry.devCycleId);
+  }
+
+  const goalMatch = entry.goal?.match(/([a-z0-9-]+)\s+DevCycle/i);
+  if (goalMatch) {
+    return normalizeDevCycleId(goalMatch[1]);
+  }
+
+  const actionMatch = entry.action?.match(/([a-z0-9-]+)\s+DevCycle/i);
+  if (actionMatch) {
+    return normalizeDevCycleId(actionMatch[1]);
+  }
+
+  return null;
+}
+
+function normalizeDevCycleId(value) {
+  if (!value || typeof value !== 'string') {
+    return null;
+  }
+  return value.trim().toLowerCase();
+}
+
+function buildDefaultReleaseNotesPath(exportsDir, format) {
+  const now = new Date();
+  const timestamp = [
+    now.getFullYear(),
+    String(now.getMonth() + 1).padStart(2, '0'),
+    String(now.getDate()).padStart(2, '0'),
+    '-',
+    String(now.getHours()).padStart(2, '0'),
+    String(now.getMinutes()).padStart(2, '0'),
+    String(now.getSeconds()).padStart(2, '0'),
+  ].join('');
+  const ext = format === 'markdown' ? 'md' : 'json';
+  return path.join(exportsDir, `release-notes-${timestamp}.${ext}`);
 }

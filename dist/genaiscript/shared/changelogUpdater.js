@@ -33,6 +33,7 @@ const CHANGELOG_PATH = path.resolve(REPO_ROOT, 'CHANGELOG.md');
  * @property {string} action - Action taken
  * @property {string} result - Result of the action
  * @property {string} next - Next steps
+ * @property {string} [devCycleId] - Optional DevCycle identifier for compliance mapping
  */
 
 /**
@@ -61,6 +62,10 @@ export function formatEntry(entry) {
     `→ Next: ${entry.next}`,
   ];
 
+  if (entry.devCycleId) {
+    parts.push(`→ DevCycle: ${entry.devCycleId}`);
+  }
+
   return parts.join(' ');
 }
 
@@ -84,7 +89,8 @@ export function parseEntry(line) {
   const goalMatch = line.match(/Goal:\s*(.+?)\s*→\s*Action:/);
   const actionMatch = line.match(/→\s*Action:\s*(.+?)\s*→\s*Result:/);
   const resultMatch = line.match(/→\s*Result:\s*(.+?)\s*→\s*Next:/);
-  const nextMatch = line.match(/→\s*Next:\s*(.+?)(?:\s*$)/);
+  const nextMatch = line.match(/→\s*Next:\s*(.+?)(?:\s*(?:→|$))/);
+  const devCycleMatch = line.match(/→\s*DevCycle:\s*([a-z0-9_-]+)/i);
 
   if (!goalMatch || !actionMatch || !resultMatch || !nextMatch) {
     // Try alternate format without all sections
@@ -95,6 +101,7 @@ export function parseEntry(line) {
       action: actionMatch?.[1] || line.substring(headerMatch[0].length).trim(),
       result: resultMatch?.[1] || '',
       next: nextMatch?.[1] || '',
+      devCycleId: devCycleMatch?.[1]?.toLowerCase(),
     };
   }
 
@@ -105,6 +112,7 @@ export function parseEntry(line) {
     action: actionMatch[1].trim(),
     result: resultMatch[1].trim(),
     next: nextMatch[1].trim(),
+    devCycleId: devCycleMatch?.[1]?.toLowerCase(),
   };
 }
 
@@ -274,9 +282,7 @@ export function entryExists(goal, timestamp, toleranceMinutes = 5) {
  * @returns {ChangelogEntry} Formatted entry
  */
 export function createDevCycleEntry(devCycleId, description, result, next, citations = []) {
-  const citationStr = citations.length > 0
-    ? ` per ${citations.join(', ')}`
-    : '';
+  const citationStr = citations.length > 0 ? ` per ${citations.join(', ')}` : '';
 
   return {
     type: 'Update',
@@ -285,6 +291,7 @@ export function createDevCycleEntry(devCycleId, description, result, next, citat
     action: `${description}${citationStr}`,
     result: result,
     next: next,
+    devCycleId: devCycleId?.toLowerCase(),
   };
 }
 
