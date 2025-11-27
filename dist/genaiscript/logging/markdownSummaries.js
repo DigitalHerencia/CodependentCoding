@@ -10,7 +10,7 @@
  * @see PRD §5.3, TECH_REQUIREMENTS §7, SPEC-OBS §3, Issue #17
  */
 
-import { readFileSync, writeFileSync, existsSync, readdirSync, mkdirSync } from 'fs';
+import { readFileSync, writeFileSync, existsSync, readdirSync, mkdirSync, statSync } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { addChangelogEntry, getTimestamp } from '../shared/changelogUpdater.js';
@@ -141,14 +141,31 @@ export function findLatestLogFile(logDir = DEFAULT_LOG_DIR) {
   try {
     const files = readdirSync(logDir)
       .filter((f) => f.endsWith('.ndjson'))
-      .map((f) => ({
-        name: f,
-        path: path.join(logDir, f),
-        mtime: existsSync(path.join(logDir, f))
-          ? readFileSync(path.join(logDir, f), 'utf8').length // Simple proxy for recency
-          : 0,
-      }))
-      .sort((a, b) => b.name.localeCompare(a.name)); // Sort by name descending (assumes timestamp in name)
+      .map((f) => {
+        const filePath = path.join(logDir, f);
+        // Extract timestamp from filename pattern: devcycle-YYYY-MM-DDTHH-MM-SS-MMMZ.ndjson
+        // Fall back to file modification time if timestamp not in filename
+        const timestampMatch = f.match(/(\d{4}-\d{2}-\d{2}T[\d-]+Z)/);
+        let sortKey;
+        if (timestampMatch) {
+          // Parse timestamp from filename (replace dashes back to colons for ISO format)
+          sortKey = timestampMatch[1].replace(/-(\d{2})-(\d{2})-(\d{3})Z$/, ':$1:$2.$3Z');
+        } else {
+          // Use file modification time as fallback
+          try {
+            const stats = statSync(filePath);
+            sortKey = stats.mtime.toISOString();
+          } catch {
+            sortKey = '1970-01-01T00:00:00.000Z';
+          }
+        }
+        return {
+          name: f,
+          path: filePath,
+          sortKey,
+        };
+      })
+      .sort((a, b) => b.sortKey.localeCompare(a.sortKey)); // Sort by timestamp descending
 
     return files.length > 0 ? files[0].path : null;
   } catch {
