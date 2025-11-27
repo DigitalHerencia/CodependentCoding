@@ -90,6 +90,6 @@ This backlog tracks Spec-Driven Workflow actions for the Loaded Vibes framework.
 
 | Status | Item                                                                                                        | Notes                                      |
 | ------ | ----------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
-| ☑      | Decided execution summary format: dual-mode JSON + Markdown output (ADR-0001). Closes #35.                  | See `docs/decisions/ADR-0001-execution-summary-format.md`, TECH §11 |
+| ☑      | Decided execution summary format: dual-mode JSON + Markdown output (ADR-0001). Closes #35.                  | See [ADR-0001](../docs/decisions/ADR-0001-execution-summary-format.md), TECH §11 |
 | ☑      | Consolidated PRD + Tech Requirements to absorb CLI & engine specs.                                          | Logged in `CHANGELOG.md`                   |
 | ☑      | Created 7 spec files (SPEC-ARCH, SPEC-ARTIFACTS, SPEC-CLI, SPEC-DEV, SPEC-ENGINE, SPEC-OBS, SPEC-SECURITY). | Provide reusable references for issues/PRs |
