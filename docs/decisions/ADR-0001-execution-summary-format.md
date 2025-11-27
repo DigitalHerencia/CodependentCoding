@@ -85,7 +85,7 @@ Before enabling CI gating, the framework must decide on a standard format for pe
   "status": "success | failure | skipped",
   "requirementIds": ["string"],
   "checkpoints": [
-    { "id": "string", "approved": true, "approver": "string" }
+    { "id": "string", "approved": "boolean", "approver": "string" }
   ],
   "validationResult": {
     "passed": "boolean",
