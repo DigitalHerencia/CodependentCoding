@@ -65,7 +65,7 @@ This backlog tracks Spec-Driven Workflow actions for the Loaded Vibes framework.
 | ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------- |
 | ☑      | Implement CI guard that ensures `.vscode/settings.json` only references `.github/copilot-instructions.md` (no shipped instructions) and blocks edits outside allowed directories. | Tech Requirements §11, PRD §4.3, SPEC-ARCH §3 |
 | ☑      | Add CI checks verifying manifest entries (`devcycles.config.json`) resolve to valid prompt/instruction/toolset files.                                                             | Tech Requirements §7, SPEC-ARTIFACTS §3       |
-| ☐      | Validate artifact presence, schema compliance, and manifest references during bootstrap before DevCycles run.                                                                     | Tech Requirements §4.4, SPEC-ARTIFACTS §4     |
+| ☑      | Validate artifact presence, schema compliance, and manifest references during bootstrap before DevCycles run.                                                                     | Tech Requirements §4.4, SPEC-ARTIFACTS §4     |
 | ☑      | Add reusable `tasks.json` entries for orchestrator runs, retro CLI smoke tests, lint/test shortcuts, and bootstrap validation.                                                    | Tech Requirements §8                          |
 
 ### Documentation
