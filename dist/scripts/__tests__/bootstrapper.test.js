@@ -184,8 +184,13 @@ test('[bootstrapper] validates required settings are present', async () => {
   const settingsPath = path.join(DIST_ROOT, '.vscode', 'settings.json');
   const content = await readFile(settingsPath, 'utf8');
 
-  // Strip comments for JSONC parsing
-  const stripped = content.replace(/\/\/.*$/gm, '').replace(/\/\*[\s\S]*?\*\//g, '');
+  // Strip single-line comments (but not URLs containing //)
+  // Remove lines that start with // (with optional leading whitespace)
+  // Remove trailing // comments after values
+  const stripped = content
+    .replace(/^\s*\/\/.*$/gm, '')
+    .replace(/,\s*\/\/[^"\n]*$/gm, ',')
+    .replace(/\/\*[\s\S]*?\*\//g, '');
   const settings = JSON.parse(stripped);
 
   // Check genaiscript.localTypeDefinitions is true per TECH §8
@@ -200,13 +205,18 @@ test('[bootstrapper] validates required settings are present', async () => {
 test('[bootstrapper] validates instructionsFilesLocations does not reference dist/**', async () => {
   const settingsPath = path.join(DIST_ROOT, '.vscode', 'settings.json');
   const content = await readFile(settingsPath, 'utf8');
-  const stripped = content.replace(/\/\/.*$/gm, '').replace(/\/\*[\s\S]*?\*\//g, '');
+  const stripped = content
+    .replace(/^\s*\/\/.*$/gm, '')
+    .replace(/,\s*\/\/[^"\n]*$/gm, ',')
+    .replace(/\/\*[\s\S]*?\*\//g, '');
   const settings = JSON.parse(stripped);
 
   const instrLocs = settings['chat.instructionsFilesLocations'];
   if (instrLocs && typeof instrLocs === 'object') {
     for (const loc of Object.keys(instrLocs)) {
-      assert.ok(!loc.includes('dist/'),
+      // Check if path starts with dist/ or is exactly 'dist'
+      const isDistPath = loc === 'dist' || loc.startsWith('dist/') || loc.startsWith('./dist/') || loc.startsWith('/dist/');
+      assert.ok(!isDistPath,
         `instructionsFilesLocations should not reference dist/**. Found: ${loc}`);
     }
   }

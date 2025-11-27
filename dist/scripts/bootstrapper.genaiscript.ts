@@ -113,8 +113,12 @@ async function fileExists(candidate) {
 async function readJsonFile(filePath) {
   try {
     const content = await readFile(filePath, 'utf8');
-    // Strip comments for JSONC files
-    const stripped = content.replace(/\/\/.*$/gm, '').replace(/\/\*[\s\S]*?\*\//g, '');
+    // Strip single-line comments (but not URLs containing //)
+    // Match // only at the start of a line or preceded by whitespace
+    const stripped = content
+      .replace(/^\s*\/\/.*$/gm, '')  // Remove lines that start with //
+      .replace(/,\s*\/\/[^"\n]*$/gm, ',')  // Remove trailing // comments after values
+      .replace(/\/\*[\s\S]*?\*\//g, '');  // Remove block comments
     return JSON.parse(stripped);
   } catch (error) {
     return null;
@@ -192,7 +196,8 @@ async function validateVsCodeProfile() {
     const instrLocs = shippedSettings['chat.instructionsFilesLocations'];
     if (instrLocs && typeof instrLocs === 'object') {
       for (const loc of Object.keys(instrLocs)) {
-        if (loc.includes('dist/')) {
+        // Check if path starts with dist/ or is exactly 'dist'
+        if (loc === 'dist' || loc.startsWith('dist/') || loc.startsWith('./dist/') || loc.startsWith('/dist/')) {
           check.status = 'fail';
           check.errors.push(`instructionsFilesLocations references shipped path: ${loc}`);
           check.remediation.push('Remove dist/** references from chat.instructionsFilesLocations per SPEC-ARCH §3');

@@ -200,8 +200,11 @@ function Read-JsonFile {
 
   try {
     $content = Get-Content -Path $Path -Raw
-    # Strip comments for JSONC files
-    $content = $content -replace '//.*$', '' -replace '/\*[\s\S]*?\*/', ''
+    # Strip single-line comments (but not URLs containing //)
+    # Remove lines that start with // (with optional leading whitespace)
+    $content = $content -replace '^\s*//.*$', '' -replace ',\s*//[^"\n]*$', ','
+    # Remove block comments
+    $content = $content -replace '/\*[\s\S]*?\*/', ''
     return $content | ConvertFrom-Json
   } catch {
     return $null
@@ -334,7 +337,8 @@ function Test-VsCodeProfile {
       $instrLocs = $settings.'chat.instructionsFilesLocations'
       if ($instrLocs) {
         $instrLocs.PSObject.Properties | ForEach-Object {
-          if ($_.Name -match 'dist/') {
+          # Check if path starts with dist/ or is exactly 'dist'
+          if ($_.Name -eq 'dist' -or $_.Name -like 'dist/*' -or $_.Name -like './dist/*' -or $_.Name -like '/dist/*') {
             $errors += "instructionsFilesLocations references shipped path: $($_.Name)"
             $remediation += 'Remove dist/** references from chat.instructionsFilesLocations per SPEC-ARCH §3'
             $status = 'fail'
