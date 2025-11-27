@@ -41,8 +41,10 @@ function readOptionalSync(filePath) {
     if (existsSync(filePath)) {
       return readFileSync(filePath, 'utf8');
     }
-  } catch {
-    // File read failed, return empty
+  } catch (error) {
+    // Log file read failures for debugging, but don't throw
+    // These are optional files that may not exist or be accessible
+    console.warn(`⚠️  contextLoader: Failed to read ${filePath}: ${error.message}`);
   }
   return '';
 }

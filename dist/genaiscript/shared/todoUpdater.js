@@ -77,7 +77,9 @@ export function readTodoItems() {
   try {
     const content = readFileSync(TODO_PATH, 'utf8');
     return parseTodo(content);
-  } catch {
+  } catch (error) {
+    // Log read failures but return empty array to allow graceful degradation
+    console.warn(`⚠️  todoUpdater: Failed to read TODO.md: ${error.message}`);
     return [];
   }
 }

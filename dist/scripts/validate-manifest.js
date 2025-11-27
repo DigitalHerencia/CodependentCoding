@@ -16,7 +16,16 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 
 const CURRENT_DIR = path.dirname(fileURLToPath(import.meta.url));
+// Scripts are in dist/scripts/, genaiscript is in dist/genaiscript/
 const GENAI_ROOT = path.resolve(CURRENT_DIR, '..', 'genaiscript');
+
+// Validate the expected directory structure exists
+if (!existsSync(GENAI_ROOT)) {
+  console.error(`❌ Expected genaiscript directory not found at: ${GENAI_ROOT}`);
+  console.error('   This script expects to run from dist/scripts/ with dist/genaiscript/ as a sibling directory.');
+  process.exit(1);
+}
+
 const MANIFEST_PATH = path.resolve(GENAI_ROOT, 'devcycles.config.json');
 
 // Canonical DevCycle list from TECH_REQUIREMENTS §6

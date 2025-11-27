@@ -126,7 +126,9 @@ export function readChangelogEntries() {
     }
 
     return entries;
-  } catch {
+  } catch (error) {
+    // Log read failures but return empty array to allow graceful degradation
+    console.warn(`⚠️  changelogUpdater: Failed to read CHANGELOG.md: ${error.message}`);
     return [];
   }
 }
