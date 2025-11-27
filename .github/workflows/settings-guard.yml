@@ -53,7 +53,6 @@ jobs:
           INSTRUCTION_SETTINGS=(
             "chat.instructionsFilesLocations"
             "github.copilot.chat.codeGeneration.instructions"
-            "github.copilot.chat.codeGeneration.useInstructionFiles"
             "github.copilot.chat.pullRequestDescriptionGeneration.instructions"
             "github.copilot.chat.reviewSelection.instructions"
             "github.copilot.chat.testGeneration.instructions"
