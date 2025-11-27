@@ -10,9 +10,10 @@
     "ecmaVersion": 2021,
     "sourceType": "module"
   },
-  "ignorePatterns": ["lv_artifacts/src/**", "**/.loaded-vibes/**"],
+  "ignorePatterns": ["dist/src/**", "**/.loaded-vibes/**"],
   "rules": {
     "no-unused-vars": ["warn", { "args": "none" }],
     "no-console": "off"
   }
 }
+

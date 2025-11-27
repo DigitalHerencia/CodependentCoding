@@ -4,7 +4,7 @@ Loaded Vibes enforces strict separation between development assets, shipped arti
 
 ## Supported Versions
 
-The framework is distributed through tagged releases under `lv_artifacts/**` and the `create-loaded-vibes` CLI. We currently support the latest major release and the immediately preceding release.
+The framework is distributed through tagged releases under `dist/**` and the `create-loaded-vibes` CLI. We currently support the latest major release and the immediately preceding release.
 
 ## Reporting a Vulnerability
 
@@ -24,9 +24,10 @@ The framework is distributed through tagged releases under `lv_artifacts/**` and
 ## Scope
 
 - Workspace automation (`.github`, `.vscode`, `docs`, `templates`).
-- Shipped assets (`lv_artifacts/**`, `.loaded-vibes/**`).
+- Shipped assets (`dist/**`, `.loaded-vibes/**`).
 - Retro CLI commands and GenAIScript orchestrator scripts.
 
-Out-of-scope: third-party dependencies outside our control (report upstream), and user-generated application code under `lv_artifacts/src/**`.
+Out-of-scope: third-party dependencies outside our control (report upstream), and user-generated application code under `dist/src/**`.
 
 Thank you for helping keep Loaded Vibes secure.
+

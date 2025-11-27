@@ -16,7 +16,7 @@ Loaded Vibes delivers a spec-driven framework that keeps authoring assets, shipp
 
 ## 2. Product Goals & Success Metrics
 
-- **Separation of concerns:** Authoring stays inside `.github/`, `.vscode`, `docs`, `templates`; shipped assets live in `lv_artifacts/**`; runtime code generates only under `lv_artifacts/src/**` in end-user projects.
+- **Separation of concerns:** Authoring stays inside `.github/`, `.vscode`, `docs`, `templates`; shipped assets live in `dist/**`; runtime code generates only under `dist/src/**` in end-user projects.
 - **Deterministic DevCycles:** Every DevCycle run produces traceable plans, validation evidence, TODO/CHANGELOG hooks, and human approval checkpoints.
 - **Delightful CLI experience:** The retro console presents DevCycle queues, logs, diagnostics, and ASCII-first feedback that mirror the orchestrator state.
 - **Distribution clarity:** Releases publish via `create-loaded-vibes`, optional binaries, and mirrored `.loaded-vibes/` folders with signed artifacts.
@@ -35,8 +35,8 @@ Loaded Vibes delivers a spec-driven framework that keeps authoring assets, shipp
 ### 4.1 Asset Taxonomy
 
 1. **Development Assets:** `.github/`, `.vscode/`, `docs/`, `templates/` govern authoring. Only these directories may change during framework development.
-2. **Shipped Product:** `lv_artifacts/**` mirrors what users receive (agents, prompts, toolsets, docs, scripts, GenAIScript engine, VS Code defaults).
-3. **Runtime Output:** End users generate `lv_artifacts/src/**` inside their projects; framework authors never lint or edit runtime files.
+2. **Shipped Product:** `dist/**` mirrors what users receive (agents, prompts, toolsets, docs, scripts, GenAIScript engine, VS Code defaults).
+3. **Runtime Output:** End users generate `dist/src/**` inside their projects; framework authors never lint or edit runtime files.
 
 ### 4.2 Directory Responsibilities
 
@@ -44,21 +44,21 @@ Loaded Vibes delivers a spec-driven framework that keeps authoring assets, shipp
 - `.github/` stores dev-environment governance (Copilot instructions, issue templates, automation configs).
 - `.vscode/` configures IDE behavior for maintainers only; it never references shipped instructions.
 - `templates/` stores gold master content used to regenerate shipped artifacts.
-- `lv_artifacts/.github/**` defines the product-facing constitution (global instructions, agent manifests, prompts, toolsets).
+- `dist/.github/**` defines the product-facing constitution (global instructions, agent manifests, prompts, toolsets).
 
 ### 4.3 Workspace vs. Release Enforcement
 
-- WHEN authoring inside `D:/LoadedVibes`, THE SYSTEM SHALL block edits outside the allowed directories unless explicitly updating `lv_artifacts`.
-- WHEN generating runtime code, THE SYSTEM SHALL emit assets exclusively under `lv_artifacts/src/**` within the consumer project.
+- WHEN authoring inside `D:/LoadedVibes`, THE SYSTEM SHALL block edits outside the allowed directories unless explicitly updating `dist`.
+- WHEN generating runtime code, THE SYSTEM SHALL emit assets exclusively under `dist/src/**` within the consumer project.
 - WHEN IDE tooling loads instructions or settings, THE SYSTEM SHALL source them from `.github`/`.vscode` in the workspace, never from shipped payloads.
 
 ## 5. Product Pillars & Requirements (EARS)
 
 ### 5.1 Distribution & Installation
 
-- WHEN a user runs `npx create-loaded-vibes [project]`, THE SYSTEM SHALL download the latest signed release, mirror `lv_artifacts/**` into `.loaded-vibes/`, install dependencies, and invoke `loaded-vibes init` for profile setup.
+- WHEN a user runs `npx create-loaded-vibes [project]`, THE SYSTEM SHALL download the latest signed release, mirror `dist/**` into `.loaded-vibes/`, install dependencies, and invoke `loaded-vibes init` for profile setup.
 - WHEN the CLI runs preflight checks, THE SYSTEM SHALL verify Node ≥ 20, git, pnpm, VS Code, and the GenAIScript extension, surfacing actionable remediation steps.
-- WHEN attaching to an existing repo, THE SYSTEM SHALL detect conflicts in `.github`, `.vscode`, or `lv_artifacts/**` and offer Mirror, Merge, or Sandbox strategies while logging decisions to `.loaded-vibes/logs/install-YYYYMMDD.md`.
+- WHEN attaching to an existing repo, THE SYSTEM SHALL detect conflicts in `.github`, `.vscode`, or `dist/**` and offer Mirror, Merge, or Sandbox strategies while logging decisions to `.loaded-vibes/logs/install-YYYYMMDD.md`.
 
 ### 5.2 Retro Console Experience
 
@@ -94,7 +94,7 @@ Loaded Vibes delivers a spec-driven framework that keeps authoring assets, shipp
 ## 7. Dependencies & Assumptions
 
 - Spec-Driven Workflow artifacts (PRD, Tech Requirements, TODO, CHANGELOG) stay current and live under `docs/`.
-- GenAIScript orchestrator + bootstrapper referenced in Tech Requirements are available inside `lv_artifacts/genaiscript/**`.
+- GenAIScript orchestrator + bootstrapper referenced in Tech Requirements are available inside `dist/genaiscript/**`.
 - ASCII artwork, gradients, and fonts referenced by the CLI ship within releases or are generated locally without external fetches.
 
 ## 8. Risks & Mitigations
@@ -111,8 +111,8 @@ Loaded Vibes delivers a spec-driven framework that keeps authoring assets, shipp
 | `.vscode/`          | Maintainers      | IDE profile for authoring workspace only.                                              |
 | `docs/`             | Maintainers      | Canonical specs (this PRD + Tech Requirements) and supporting references.              |
 | `templates/`        | Maintainers      | Gold masters used to regenerate shipped artifacts.                                     |
-| `lv_artifacts/`     | Product Snapshot | Shipped assets (agents, prompts, docs, scripts, GenAIScript engine, VS Code defaults). |
-| `lv_artifacts/src/` | End User         | Runtime output produced in consumer projects; never referenced by workspace tooling.   |
+| `dist/`     | Product Snapshot | Shipped assets (agents, prompts, docs, scripts, GenAIScript engine, VS Code defaults). |
+| `dist/src/` | End User         | Runtime output produced in consumer projects; never referenced by workspace tooling.   |
 
 ## 10. Related Documents
 
@@ -121,3 +121,4 @@ Loaded Vibes delivers a spec-driven framework that keeps authoring assets, shipp
 - `TODO.md` / `CHANGELOG.md` – Rolling execution evidence mandated by Spec-Driven Workflow.
 
 This consolidated PRD supersedes prior standalone CLI and engine specs; future product changes MUST update this document before implementation.
+

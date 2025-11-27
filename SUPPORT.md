@@ -1,6 +1,6 @@
 # Support Policy
 
-Loaded Vibes framework maintainers provide support for the authoring workspace and the shipped `lv_artifacts` payload under the Spec-Driven Workflow contract.
+Loaded Vibes framework maintainers provide support for the authoring workspace and the shipped `dist` payload under the Spec-Driven Workflow contract.
 
 ## Primary Channels
 
@@ -32,3 +32,4 @@ Loaded Vibes framework maintainers provide support for the authoring workspace a
 - `.genaiscript/instructions/llms-full.txt` plus `.github/instructions/genaiscript.instructions.md` for scripting questions.
 
 Please reference this document whenever raising or triaging support requests to keep responses predictable and auditable.
+

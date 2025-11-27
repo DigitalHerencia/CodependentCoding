@@ -1,8 +1,8 @@
 # Node / tooling
 node_modules/
-dist/
 build/
 temp/
+/.agent_work
 .env
 .env.local
 
@@ -12,11 +12,6 @@ temp/
 .history/
 .DS_Store
 Thumbs.db
-
-# Loaded Vibes runtime mirrors
-lv_artifacts/src/
-**/.loaded-vibes/
-.agent_work/
 
 # Logs
 *.log

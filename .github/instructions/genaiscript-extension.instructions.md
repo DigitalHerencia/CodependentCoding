@@ -1,6 +1,6 @@
 ---
-applyTo: "**"
-description: "Supplemental instructions for GenAIScript VS Code extension assets"
+applyTo: '**'
+description: 'Supplemental instructions for GenAIScript VS Code extension assets'
 ---
 
 # GenAIScript VS Code Extension Asset Instructions
@@ -11,7 +11,8 @@ description: "Supplemental instructions for GenAIScript VS Code extension assets
 - Use the GenAIScript extension settings catalog to align workspace configuration, model selection, CLI integration, caching, diagnostics, and language chat model mappings with supported options before emitting code (`https://microsoft.github.io/genaiscript/reference/vscode/settings/`).
 - Follow GitHub Copilot guidance for `.instructions.md` and `.prompt.md` assets so Copilot can auto-load them in Chat (`https://learn.microsoft.com/en-us/visualstudio/ide/copilot-chat-context?view=visualstudio#use-custom-instructions`).
 - Leverage Copilot Agent Mode + MCP tooling to expose GenAIScript-specific MCP servers when required, as described in the official Copilot getting-started guidance (`https://learn.microsoft.com/en-us/visualstudio/ide/visual-studio-github-copilot-get-started?view=visualstudio#start-using-copilot`).
-- Cross-reference `/docs/PRD.md`, `/docs/TECH_REQUIREMENTS.md`, and every relevant template inside `templates/` to ensure assets trace design intent to shipped artifacts in `lv_artifacts/`.
+- Cross-reference `/docs/PRD.md`, `/docs/TECH_REQUIREMENTS.md`, and every relevant template inside `templates/` to ensure assets trace design intent to shipped artifacts in `dist/`.
+- Align every asset with the spec suite in `spec/` (**SPEC-ARCH**, **SPEC-ARTIFACTS**, **SPEC-CLI**, **SPEC-DEV**, **SPEC-ENGINE**, **SPEC-OBS**, **SPEC-SECURITY**). Cite the applicable spec ID plus PRD/Tech clauses whenever you modify prompts, instructions, toolsets, or scripts.
 
 ### Instruction Layering (Deduplication)
 
@@ -57,11 +58,19 @@ description: "Supplemental instructions for GenAIScript VS Code extension assets
 
 ## Loaded Vibes Alignment & Quality Gates
 
-- Every asset must cite the Loaded Vibes PRD requirement it satisfies (EARS format) and trace to the technical requirement or template it implements.
+- Every asset must cite the Loaded Vibes PRD requirement it satisfies (EARS format), the supporting `/docs/TECH_REQUIREMENTS.md` clause, and the governing spec ID (e.g., **SPEC-ENGINE**, **SPEC-CLI**).
 - Enforce the Spec-Driven Workflow loop: no implementation guidance without an Analyze + Design summary, no deployment instructions without Validate evidence, and every handoff must include changelog + decision record hooks.
-- Validate scripts with `genaiscript test` or the extension test runner before surfacing them in `lv_artifacts/`; capture expected CLI output or trace logs for reproducibility.
-- Require security + safety steps: enable `system.safety_*` modules, reference the GenAIScript content-safety page for high-risk prompts, and block any instructions that bypass secret scanning or telemetry controls.
-- Document performance considerations: plan for token budgeting using `flex` options in `def`, throttle concurrency, reuse caches, and align with extension-level cache settings.
+- Tie each script to the canonical DevCycle list in `/docs/TECH_REQUIREMENTS.md` §6 and confirm its manifest entry (`devcycles.config.json`) references the same instruction + toolset pair before emitting code.
+- Validate scripts with `genaiscript test` or the extension test runner before surfacing them in `dist/`; capture expected CLI output or trace logs for reproducibility and archive NDJSON snippets per **SPEC-OBS**.
+- Require security + safety steps: enable `system.safety_*` modules, reference the GenAIScript content-safety page for high-risk prompts, block instructions that bypass secret scanning or telemetry controls, and honor Bad Vibes Firewall approvals from **SPEC-SECURITY**.
+- Document performance considerations: plan for token budgeting using `flex` options in `def`, throttle concurrency, reuse caches, and align with extension-level cache settings; record the rationale in TODO/CHANGELOG entries.
+
+## Observability & Security Enforcement
+
+- Emit NDJSON logs for every GenAIScript run and ensure they include `devCycleId`, `phase`, `requirementId`, and severity fields as mandated by **SPEC-OBS** and `/docs/TECH_REQUIREMENTS.md` §4.5.
+- Persist orchestrator state snapshots in `dist/genaiscript/state/state.json` when scripts mutate DevCycle state, and reference those snapshots in CLI integrations per **SPEC-ENGINE**.
+- Surface checksum verification, directory boundary checks, and Bad Vibes Firewall approval prompts inside scripts whenever they trigger destructive actions, following **SPEC-SECURITY** and `/docs/PRD.md` §5.5.
+- Prefer MCP helpers (filesystem, git, memory) over ad-hoc shell commands to preserve traceability and honor the workspace vs. shipped separation described in **SPEC-ARCH**.
 
 ## Deliverable Checklist (Must Pass Before Committing)
 
@@ -69,6 +78,6 @@ description: "Supplemental instructions for GenAIScript VS Code extension assets
 2. **Templates honored** – Ensure the correct template from `templates/` seeded the artifact and note any intentional deviations in a decision record.
 3. **PRD/Tech Requirements traceability** – Reference the exact clause in `docs/PRD.md` and `docs/TECH_REQUIREMENTS.md` that the asset fulfills.
 4. **Extension verification** – State how the asset was validated in VS Code (e.g., `@genaiscript /run <script>`, CLI run, or Copilot Agent Mode dry-run) and note any configuration prerequisites.
-5. **Handoff package** – Provide locations for updated instructions, prompts, agents, toolsets, automation scripts, and any resulting assets destined for `lv_artifacts/` so downstream tooling can mirror them.
+5. **Handoff package** – Provide locations for updated instructions, prompts, agents, toolsets, automation scripts, and any resulting assets destined for `dist/` so downstream tooling can mirror them.
 
 Adhering to these rules ensures every Loaded Vibes deliverable fully leverages the GenAIScript extension feature set, satisfies Copilot quality expectations, and maintains parity between the development workspace and the shipped framework.

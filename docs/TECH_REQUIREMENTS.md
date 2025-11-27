@@ -12,8 +12,8 @@
 
 ## 1. System Context & Principles
 
-- Authoring occurs inside `D:/LoadedVibes` and is limited to `.github/`, `.vscode/`, `docs/`, and `templates/` unless explicitly updating `lv_artifacts/`.
-- Shipped payloads live under `lv_artifacts/**`; runtime output lives under `lv_artifacts/src/**` only after users install the framework.
+- Authoring occurs inside `D:/LoadedVibes` and is limited to `.github/`, `.vscode/`, `docs/`, and `templates/` unless explicitly updating `dist/`.
+- Shipped payloads live under `dist/**`; runtime output lives under `dist/src/**` only after users install the framework.
 - Tooling (tasks, MCP servers, Copilot instructions) must reference development assets exclusively to avoid contaminating the shipped snapshot.
 - Spec-Driven Workflow artifacts (PRD, this document, TODO, CHANGELOG) anchor every DevCycle.
 
@@ -21,22 +21,22 @@
 
 | Layer                | Responsibilities                                                              | Key Artifacts                                                             |
 | -------------------- | ----------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
-| **Bootstrap**        | Detect profile gaps, sync MCP + extensions, expose CLI entry points.          | `lv_artifacts/scripts/bootstrapper.genaiscript.ts`, `bootstrapper.ps1`    |
-| **Orchestration**    | Load manifest, hydrate context, coordinate Analyze → Handoff lifecycle.       | `lv_artifacts/genaiscript/orchestrator.genai.js`, `devcycles.config.json` |
-| **Phase Runners**    | Execute DevCycle-specific logic with manifest-provided instructions/toolsets. | `lv_artifacts/genaiscript/phases/*.genai.js`                              |
-| **Shared Utilities** | Context loading, memory/state persistence, validation helpers.                | `lv_artifacts/genaiscript/shared/*.js`                                    |
-| **Governance**       | Instructions, prompts, toolsets, TODO/CHANGELOG, PRD/TechReq references.      | `lv_artifacts/.github/**`, workspace docs                                 |
+| **Bootstrap**        | Detect profile gaps, sync MCP + extensions, expose CLI entry points.          | `dist/scripts/bootstrapper.genaiscript.ts`, `bootstrapper.ps1`    |
+| **Orchestration**    | Load manifest, hydrate context, coordinate Analyze → Handoff lifecycle.       | `dist/genaiscript/orchestrator.genai.js`, `devcycles.config.json` |
+| **Phase Runners**    | Execute DevCycle-specific logic with manifest-provided instructions/toolsets. | `dist/genaiscript/phases/*.genai.js`                              |
+| **Shared Utilities** | Context loading, memory/state persistence, validation helpers.                | `dist/genaiscript/shared/*.js`                                    |
+| **Governance**       | Instructions, prompts, toolsets, TODO/CHANGELOG, PRD/TechReq references.      | `dist/.github/**`, workspace docs                                 |
 | **Retro CLI**        | Installer, dashboard, diagnostics, DevCycle UX.                               | `create-loaded-vibes`, `loaded-vibes` CLI, `.loaded-vibes/**`             |
 
 ## 3. Artifact Layers & Deliverables
 
-1. **Global Instructions (Framework Layer)** – `lv_artifacts/.github/global.instructions.md` defines universal rules, canonical DevCycle names, artifact taxonomy, and governance contract.
-2. **Custom Agent (Stack Layer)** – `.github/copilot-instructions.md` for workspace + `lv_artifacts/.github/agents/*.agent.md` for shipped product enforce Next.js 15 / React 19 / Prisma / Clerk / Tailwind / Vercel guidance, formatting, safety, and self-correction behavior.
-3. **Prompts (DevCycle Entry)** – `lv_artifacts/.github/prompts/*.prompt.md` trigger exactly one DevCycle, load correct instruction + toolset, and wire environment context.
-4. **Instruction Files (Domain Layer)** – `lv_artifacts/.github/instructions/*.instructions.md` specify DevCycle goals, acceptance criteria, and security/performance guardrails.
-5. **Toolsets (Execution Layer)** – `lv_artifacts/.github/toolsets/*.toolset.jsonc` enumerate allowed VS Code tools, MCP servers, CLIs, and safety checks per DevCycle; generated from workspace settings + MCP configs.
-6. **Workspace Profile** – `.vscode/settings.json`, `.vscode/extensions.json`, `.vscode/mcp.json`, `.vscode/tasks.json` define maintainer environment; shipped equivalents live under `lv_artifacts/.vscode/`.
-7. **Automation & Scripts** – `lv_artifacts/genaiscript/**` and `lv_artifacts/scripts/**` implement bootstrapper/orchestrator/phase tooling with deterministic outputs.
+1. **Global Instructions (Framework Layer)** – `dist/.github/global.instructions.md` defines universal rules, canonical DevCycle names, artifact taxonomy, and governance contract.
+2. **Custom Agent (Stack Layer)** – `.github/copilot-instructions.md` for workspace + `dist/.github/agents/*.agent.md` for shipped product enforce Next.js 15 / React 19 / Prisma / Clerk / Tailwind / Vercel guidance, formatting, safety, and self-correction behavior.
+3. **Prompts (DevCycle Entry)** – `dist/.github/prompts/*.prompt.md` trigger exactly one DevCycle, load correct instruction + toolset, and wire environment context.
+4. **Instruction Files (Domain Layer)** – `dist/.github/instructions/*.instructions.md` specify DevCycle goals, acceptance criteria, and security/performance guardrails.
+5. **Toolsets (Execution Layer)** – `dist/.github/toolsets/*.toolset.jsonc` enumerate allowed VS Code tools, MCP servers, CLIs, and safety checks per DevCycle; generated from workspace settings + MCP configs.
+6. **Workspace Profile** – `.vscode/settings.json`, `.vscode/extensions.json`, `.vscode/mcp.json`, `.vscode/tasks.json` define maintainer environment; shipped equivalents live under `dist/.vscode/`.
+7. **Automation & Scripts** – `dist/genaiscript/**` and `dist/scripts/**` implement bootstrapper/orchestrator/phase tooling with deterministic outputs.
 
 ## 4. DevCycle Manifest & Engine Requirements
 
@@ -68,12 +68,12 @@
 
 1. Ensure VS Code profile + MCP config match workspace requirements (extensions installed, `genaiscript.localTypeDefinitions=true`).
 2. Validate manifest coherence (files exist, instructions reference real toolsets, CLI + orchestrator in sync).
-3. Provide CLI entry points: `pwsh ./lv_artifacts/scripts/bootstrapper.ps1 -Phase scaffolding` and `npx genaiscript run ./lv_artifacts/genaiscript/orchestrator.genai.js --phase scaffolding`.
+3. Provide CLI entry points: `pwsh ./dist/scripts/bootstrapper.ps1 -Phase scaffolding` and `npx genaiscript run ./dist/genaiscript/orchestrator.genai.js --phase scaffolding`.
 4. Emit machine-readable status (JSON) for CLI dashboard + CI gating.
 
 ### 4.5 State & Telemetry
 
-- Persist execution snapshots in `lv_artifacts/genaiscript/state/state.json` (phase, params, outputs, timestamps).
+- Persist execution snapshots in `dist/genaiscript/state/state.json` (phase, params, outputs, timestamps).
 - Append summary stubs to `TODO.md` and `CHANGELOG.md`; DevCycle instructions flesh out details.
 - Provide hooks for future telemetry exports (NDJSON, remote sink) referenced by CLI logs.
 
@@ -173,7 +173,7 @@ Global instructions MUST list only these names; instruction files define behavio
 - `genaiscript test` covers orchestrator + phase scripts with mocked env.
 - CLI smoke tests verify install, dashboard, doctor, logs, upgrade commands; results documented in TODO/CHANGELOG.
 - Maintain mapping between PRD clauses and manifest entries; CLI logs must include `requirementId` metadata for audits.
-- Periodically compare this document’s DevCycle list with `lv_artifacts/.github/global.instructions.md`; CI check recommended.
+- Periodically compare this document’s DevCycle list with `dist/.github/global.instructions.md`; CI check recommended.
 
 ## 11. Roadmap & Open Questions
 
@@ -183,3 +183,4 @@ Global instructions MUST list only these names; instruction files define behavio
 - Assess additional MCP/toolset needs for observability/performance phases.
 
 This consolidated Technical Requirements document supersedes standalone CLI and engine specs; all future technical changes must update this file and receive PRD sign-off.
+

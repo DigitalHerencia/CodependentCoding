@@ -12,7 +12,7 @@ Thank you for investing in the Loaded Vibes framework! Follow the steps below to
 
 1. Clone the repo to `D:/LoadedVibes` (Windows requirement).
 2. Install VS Code with the recommended settings in `.vscode/settings.json` and ensure the GenAIScript extension is enabled.
-3. Do **not** edit `lv_artifacts/src/**`; those are runtime outputs for end users.
+3. Do **not** edit `dist/src/**`; those are runtime outputs for end users.
 
 ## 3. Making Changes
 
@@ -34,3 +34,4 @@ Thank you for investing in the Loaded Vibes framework! Follow the steps below to
 - Request review from `@LoadedVibes/framework-maintainers`.
 
 By following these guidelines, you help maintain deterministic DevCycles and a clean separation between authoring assets and shipped artifacts. We appreciate your contributions!
+

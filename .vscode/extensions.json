@@ -1,6 +1,6 @@
 {
   // Extension recommendations apply only to the D:/LoadedVibes development workspace.
-  // Do not auto-install them when opening the shipped lv_artifacts snapshot.
+  // Do not auto-install them when opening the shipped dist snapshot.
   "recommendations": [
     "dbaeumer.vscode-eslint",
     "esbenp.prettier-vscode",
@@ -35,3 +35,4 @@
     "webplan-pro.dendron-keybindings"
   ]
 }
+

@@ -16,7 +16,7 @@ script({
     profilePath: {
       type: 'string',
       description:
-        'Path to the VS Code profile that should mirror lv_artifacts/.vscode/profile.jsonc',
+        'Path to the VS Code profile that should mirror dist/.vscode/profile.jsonc',
     },
     preflightOnly: {
       type: 'boolean',
@@ -49,7 +49,7 @@ async function ensureProfile(targetPath) {
 
   const templatePath = path.resolve(ARTIFACTS_ROOT, '.vscode', 'profile.jsonc');
   if (!(await fileExists(templatePath))) {
-    throw new Error('Profile template missing at lv_artifacts/.vscode/profile.jsonc');
+    throw new Error('Profile template missing at dist/.vscode/profile.jsonc');
   }
 
   await copyFile(templatePath, resolvedTarget);
@@ -116,3 +116,4 @@ if (hasBlockingIssues) {
 console.log(
   `Bootstrap validation succeeded for ${validationResults.length} phase(s). Profile located at ${profileStatus.path}.`
 );
+

@@ -127,6 +127,7 @@ console.log({
 if (env.vars.chainNext === 'true' && nextPhase) {
   console.log(`🔁 Next recommended DevCycle: ${nextPhase}`);
   console.log(
-    `Run: npx genaiscript run lv_artifacts/genaiscript/orchestrator.genai.js --phase ${nextPhase}`
+    `Run: npx genaiscript run dist/genaiscript/orchestrator.genai.js --phase ${nextPhase}`
   );
 }
+

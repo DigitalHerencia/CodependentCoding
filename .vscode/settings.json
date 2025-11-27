@@ -39,29 +39,19 @@
   "files.exclude": {
     "**/.next": true,
     "**/.vercel": true,
-    "**/node_modules": true,
-    "**/dist": true
+    "**/node_modules": true
   },
 
   "files.watcherExclude": {
     "**/.next/**": true,
     "**/.vercel/**": true,
-    "**/dist/**": true,
-    "lv_artifacts": true,
-    "lv_artifacts/**": true,
-    "lv_artifacts/src": true,
-    "lv_artifacts/src/**": true
+    "**/dist/**": true
   },
 
   "search.exclude": {
     "**/.next/**": true,
     "**/.vercel/**": true,
-    "**/dist/**": true,
-    "lv_artifacts": true,
-    "lv_artifacts/**": true,
-    "lv_artifacts/src": true,
-    "lv_artifacts/src/**": true,
-    "**/.loaded-vibes/**": true
+    "**/dist/**": true
   },
 
   // -------------------------------
@@ -120,5 +110,46 @@
   "genaiscript.cli.packageManager": "pnpm",
   "genaiscript.cli.nodeOptions": "--enable-source-maps --max-old-space-size=4096",
   "genaiscript.cli.version": "latest",
-  "genaiscript.githubCopilotInstructions": true
+  "genaiscript.githubCopilotInstructions": true,
+
+  // -------------------------------
+  // MATERIAL ICONS
+  // -------------------------------
+
+  "workbench.iconTheme": "material-icon-theme",
+  "material-icon-theme.activeIconPack": "react",
+
+  "material-icon-theme.folders.associations": {
+    "dist": "dist",
+    "spec": "config",
+    "templates": "template",
+    "public": "public",
+    "docs": "docs",
+    "mcp": "config",
+    ".genaiscript": "config",
+    ".agent_work": "robot",
+    ".genaiscript/instructions": "meta",
+    "genaiscript": "javascript",
+    "agents": "angular",
+    "toolsets": "tools",
+    "phases": "ci",
+    "state": "benchmark",
+    "instructions": "meta"
+  },
+  "material-icon-theme.files.associations": {
+    "support.md": "authors",
+    "*.agent.md": "robots",
+    "*.spec.md": "architecture",
+    "*.template.md": "template",
+    "*.toolset.jsonc": "palette",
+    "tech_requirements.md": "controller",
+    "prd.md": "bbx",
+    "*.instructions.md": "copilot",
+    ".eslintrc.json": "eslint",
+    ".prettierrc.json": "prettier",
+    "mcp.json": "settings",
+    "extensions.json": "settings",
+    "settings.json": "settings",
+    "profile.jsonc": "settings"
+  }
 }
