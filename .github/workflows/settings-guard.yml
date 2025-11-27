@@ -94,11 +94,13 @@ jobs:
           # Validate chat.instructionsFilesLocations paths specifically
           echo "🔒 Validating chat.instructionsFilesLocations paths..."
           if grep -q '"chat.instructionsFilesLocations"' "$SETTINGS_FILE"; then
-            # Extract paths from the instructionsFilesLocations object
+            # Extract .md paths from the instructionsFilesLocations object using jq
             # This setting uses format: { "path": true/false }
-            # Use 10 lines context (consistent with other checks)
-            INSTRUCTION_PATHS=$(grep -A 10 '"chat.instructionsFilesLocations"' "$SETTINGS_FILE" | \
-              grep -oE '"[^"]+\.md"' | tr -d '"' || true)
+            if ! command -v jq >/dev/null 2>&1; then
+              echo "❌ jq is required but not installed. Please install jq to run this workflow."
+              exit 1
+            fi
+            INSTRUCTION_PATHS=$(jq -r '.["chat.instructionsFilesLocations"] | keys[] | select(test("\\.md$"))' "$SETTINGS_FILE" || true)
             
             if [ -n "$INSTRUCTION_PATHS" ]; then
               while IFS= read -r path; do
