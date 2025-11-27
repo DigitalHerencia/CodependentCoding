@@ -13,7 +13,7 @@ This backlog tracks Spec-Driven Workflow actions for the Loaded Vibes framework.
 | ☑      | Build phase runner template with Analyze → Design → Implement → Validate → Reflect stages and EARS requirement citations.                                                                     | Tech Requirements §4.3, SPEC-ENGINE §4     |
 | ☑      | Implement orchestrator context hydration: load PRD, TechReq, TODO, CHANGELOG, and `state.json` before Analyze phase.                                                                          | Tech Requirements §4.2, SPEC-ENGINE §4     |
 | ☐      | Build phase runner template with Analyze → Design → Implement → Validate → Reflect stages and EARS requirement citations.                                                                     | Tech Requirements §4.3, SPEC-ENGINE §4     |
-| ☐      | Integrate DevCycle runner service that streams `genaiscript/orchestrator.genai.js` output into CLI with pause/resume checkpoints and approval prompts.                                        | Tech Requirements §4.2, SPEC-ENGINE §4     |
+| ☑      | Integrate DevCycle runner service that streams `genaiscript/orchestrator.genai.js` output into CLI with pause/resume checkpoints and approval prompts.                                        | Tech Requirements §4.2, SPEC-ENGINE §4     |
 | ☑      | Create shared utilities (`dist/genaiscript/shared/*.js`) for context loading, memory persistence, validation helpers.                                                                         | Tech Requirements §2, SPEC-ARCH §1.2       |
 
 ### CLI & Dashboard
@@ -43,6 +43,8 @@ This backlog tracks Spec-Driven Workflow actions for the Loaded Vibes framework.
 | ☐      | Implement NDJSON log format with fields: `devCycleId`, `phase`, `requirementId`, `severity`, `checkpointId`, timestamps. | Tech Requirements §4.5, SPEC-OBS §1-3       |
 | ☐      | Persist execution snapshots in `dist/genaiscript/state/state.json` with phase, params, outputs, timestamps.              | Tech Requirements §4.5, SPEC-ENGINE §5      |
 | ☑      | Generate Markdown summaries from NDJSON for TODO/CHANGELOG updates with requirement ID references.                       | PRD §5.3, Tech Requirements §7, SPEC-OBS §3 |
+| ☑      | Persist execution snapshots in `dist/genaiscript/state/state.json` with phase, params, outputs, timestamps.              | Tech Requirements §4.5, SPEC-ENGINE §5      |
+| ☐      | Generate Markdown summaries from NDJSON for TODO/CHANGELOG updates with requirement ID references.                       | PRD §5.3, Tech Requirements §7, SPEC-OBS §3 |
 | ☐      | Implement dual-mode execution summaries (JSON + Markdown) per ADR-0001; create `summary-writer.js` utility.              | Tech Requirements §11, SPEC-OBS §2, ADR-0001 |
 
 ### Security & Safety
