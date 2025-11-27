@@ -11,7 +11,7 @@
     "start": "node index.js",
     "dashboard": "node commands/dashboard.js",
     "doctor": "node commands/doctor.js",
-    "logs": "node commands/logs.ts",
+    "logs": "npx ts-node commands/logs.ts",
     "test": "node --test **/__tests__/*.test.js"
   },
   "keywords": [

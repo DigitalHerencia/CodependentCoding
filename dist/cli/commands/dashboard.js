@@ -22,7 +22,7 @@ import Spinner from 'ink-spinner';
 import Fuse from 'fuse.js';
 import figlet from 'figlet';
 import gradient from 'gradient-string';
-import { readFileSync, existsSync, readdirSync, statSync, watch } from 'fs';
+import fs, { readFileSync, existsSync, readdirSync, statSync, watch } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import os from 'os';
@@ -53,7 +53,12 @@ const COLORS = {
 // Create synthwave gradient
 const synthwaveGradient = gradient(['#ff00ff', '#00ffff', '#ff6ec7']);
 
-// Throttle helper for <200ms update latency (PRD §6)
+/**
+ * Throttle helper for <200ms update latency (PRD §6).
+ * Returns undefined for throttled calls, or the result of fn() otherwise.
+ * @param {number} limit - Minimum time between calls in milliseconds
+ * @returns {Function} Throttled function wrapper
+ */
 const createThrottle = (limit = 150) => {
   let lastCall = 0;
   return (fn) => {
@@ -62,6 +67,8 @@ const createThrottle = (limit = 150) => {
       lastCall = now;
       return fn();
     }
+    // Return undefined for throttled calls - callers should handle this gracefully
+    return undefined;
   };
 };
 
@@ -128,6 +135,10 @@ function loadStateSnapshots() {
 
 /**
  * Gets recent log entries from NDJSON files.
+ * Uses efficient tail reading to only read the last ~8KB of each file,
+ * rather than loading entire files into memory.
+ * @param {number} maxEntries - Maximum number of entries to return
+ * @returns {Array} Recent log entries
  */
 function getRecentLogs(maxEntries = 10) {
   if (!existsSync(LOGS_DIR)) {
@@ -146,13 +157,15 @@ function getRecentLogs(maxEntries = 10) {
 
     const entries = [];
     for (const file of files) {
-      const content = readFileSync(file.path, 'utf8');
-      const lines = content.trim().split('\n').filter(Boolean);
+      // Read only the last ~8KB of each file for efficiency
+      const tailBytes = readFileTail(file.path, 8192);
+      const lines = tailBytes.trim().split('\n').filter(Boolean);
+      // Take last 20 lines from the tail
       for (const line of lines.slice(-20)) {
         try {
           entries.push(JSON.parse(line));
         } catch {
-          // Skip invalid lines
+          // Skip invalid or partial lines at the start of the buffer
         }
       }
     }
@@ -161,6 +174,38 @@ function getRecentLogs(maxEntries = 10) {
       .slice(0, maxEntries);
   } catch {
     return [];
+  }
+}
+
+/**
+ * Reads the last N bytes from a file efficiently.
+ * Falls back to full file read if the file is smaller than the buffer.
+ * @param {string} filePath - Path to the file
+ * @param {number} bytes - Number of bytes to read from end
+ * @returns {string} The last N bytes of the file as a string
+ */
+function readFileTail(filePath, bytes = 8192) {
+  try {
+    const stats = statSync(filePath);
+    const fileSize = stats.size;
+
+    // For small files, just read the whole thing
+    if (fileSize <= bytes) {
+      return readFileSync(filePath, 'utf8');
+    }
+
+    // For larger files, read only the tail
+    const fd = fs.openSync(filePath, 'r');
+    try {
+      const buffer = Buffer.alloc(bytes);
+      const startPosition = fileSize - bytes;
+      fs.readSync(fd, buffer, 0, bytes, startPosition);
+      return buffer.toString('utf8');
+    } finally {
+      fs.closeSync(fd);
+    }
+  } catch {
+    return '';
   }
 }
 
