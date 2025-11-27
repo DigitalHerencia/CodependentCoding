@@ -22,11 +22,11 @@ This backlog tracks Spec-Driven Workflow actions for the Loaded Vibes framework.
 | ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
 | ☐      | Ship the `create-loaded-vibes` npm package with download/verification/extraction flow plus `loaded-vibes init` automation that mirrors `dist/**` into `.loaded-vibes/`.                                           | PRD §5.1-5.3, Tech Requirements §5.1, SPEC-CLI §3 |
 | ☐      | Build the retro dashboard (`loaded-vibes dashboard`) with synthwave UI: ASCII masthead, gradient canvas, DevCycle queue, live logs, metrics, TODO/CHANGELOG feeds, notifications, and command palette (`Ctrl+P`). | PRD §5.2, Tech Requirements §5.2, SPEC-CLI §2     |
-| ☐      | Implement `loaded-vibes doctor` diagnostics: scan prerequisites, MCP availability, file permissions, manifest drift, with auto-remediation prompts.                                                               | PRD §5.4, Tech Requirements §5.3, SPEC-CLI §4     |
-| ☐      | Implement `loaded-vibes logs` command: surface NDJSON traces from `.loaded-vibes/logs/*.ndjson`, filterable by DevCycle/time/severity, with Markdown export.                                                      | Tech Requirements §5.3, SPEC-CLI §4, SPEC-OBS §3  |
-| ☐      | Implement `loaded-vibes devcycle <name>` to manually trigger DevCycles from CLI, streaming orchestrator events with requirement ID citations.                                                                     | Tech Requirements §5.2, SPEC-CLI §1               |
+| ☑      | Implement `loaded-vibes doctor` diagnostics: scan prerequisites, MCP availability, file permissions, manifest drift, with auto-remediation prompts.                                                               | PRD §5.4, Tech Requirements §5.3, SPEC-CLI §4     |
+| [x]    | Implement `loaded-vibes logs` command: surface NDJSON traces from `.loaded-vibes/logs/*.ndjson`, filterable by DevCycle/time/severity, with Markdown export.                                                      | Tech Requirements §5.3, SPEC-CLI §4, SPEC-OBS §3  |
+| ☑      | Implement `loaded-vibes devcycle <name>` to manually trigger DevCycles from CLI, streaming orchestrator events with requirement ID citations.                                                                     | Tech Requirements §5.2, SPEC-CLI §1               |
 | ☐      | Implement `loaded-vibes upgrade` for updating `.loaded-vibes/` assets with semantic versioning + diff hints.                                                                                                      | Tech Requirements §11, SPEC-CLI §3                |
-| ☐      | Implement retrofit/attach workflow (Mirror / Merge / Sandbox) with conflict detection for `.github`, `.vscode`, and `dist/**`, logging results to `.loaded-vibes/logs/install-YYYYMMDD.md`.                       | PRD §5.1, Tech Requirements §5.1, SPEC-CLI §3     |
+| ☑      | Implement retrofit/attach workflow (Mirror / Merge / Sandbox) with conflict detection for `.github`, `.vscode`, and `dist/**`, logging results to `.loaded-vibes/logs/install-YYYYMMDD.md`.                       | PRD §5.1, Tech Requirements §5.1, SPEC-CLI §3     |
 
 ### Bootstrapper & Validation
 
@@ -110,6 +110,7 @@ This backlog tracks Spec-Driven Workflow actions for the Loaded Vibes framework.
 
 | Status | Item                                                                                                        | Notes                                      |
 | ------ | ----------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
+| ☑      | Implemented retrofit/attach workflow (Mirror / Merge / Sandbox) with conflict detection and install logging. Closes #10. | See `dist/cli/attachWorkflow.js`; logs under `.loaded-vibes/logs/install-YYYYMMDD.md` |
 | ☑      | Decided execution summary format: dual-mode JSON + Markdown output (ADR-0001). Closes #35.                  | See [ADR-0001](../docs/decisions/ADR-0001-execution-summary-format.md), TECH §11 |
 | ☑      | Evaluated local HTTP API for CLI dashboards and VS Code webviews.                                           | Hybrid file-based approach adopted; see `docs/decisions/ADR-001-dashboard-http-api.md`, TECH §11.1 |
 | ☑      | Design versioning strategy for user customizations inside `.loaded-vibes` during upgrades.                  | ADR-001 created; Tech Requirements §11 updated; Closes #37 |

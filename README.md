@@ -64,3 +64,20 @@ Loaded Vibes generates all assets for the end user inside:
 
 Refer to `docs/PRD.md` §5 and `docs/TECH_REQUIREMENTS.md` §§5–10 whenever CLI behavior needs to change.
 
+## 5. DevCycle Command
+
+Run DevCycles manually from the shipped assets while keeping requirement traceability:
+
+- Usage: `node dist/cli/devcycle.js <devcycle> --mode plan-first --task "ticket-123"` (supports `--dry-run`, `--skip-bootstrap`, `--auto-approve`, `--verbose`, `--list`).
+- Validates `dist/genaiscript/devcycles.config.json` plus prompt/instruction/toolset references before execution (TECH §4.1).
+- Streams Analyze  Reflect NDJSON events with requirement IDs, checkpoint approvals, and Bad Vibes Firewall notices inline (SPEC-CLI §1, PRD §5.2, §5.5).
+- Suggests nearest manifest entries when the name is misspelled and surfaces the default mode/tooling for the selected DevCycle.
+
+## 6. Logs Command
+
+Inspect NDJSON traces stored in `.loaded-vibes/logs/*.ndjson` per Tech Requirements 5.3 (use `ts-node` or the compiled CLI binary in packaged releases):
+
+- Show latest entries: `node dist/cli/commands/logs.ts`
+- Filter by DevCycle/time/severity: `node dist/cli/commands/logs.ts --devcycle <id> --since <iso> --severity warn,error`
+- Stream updates: add `--follow` to tail new NDJSON lines as they are written.
+- Export a Markdown snapshot referencing requirement IDs: `node dist/cli/commands/logs.ts --export .loaded-vibes/logs/export.md`

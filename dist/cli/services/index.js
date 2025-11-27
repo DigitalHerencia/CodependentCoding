@@ -26,3 +26,15 @@ export {
   redactSensitive,
   DEFAULT_LOGS_DIR,
 } from './ndjsonLogger.js';
+
+export {
+  runAttachWorkflow,
+  enumerateConflicts,
+  detectExistingRepo,
+  applyMirror,
+  applyMerge,
+  applySandbox,
+  writeInstallLog,
+  DEFAULT_FOCUS_SEGMENTS,
+  DEFAULT_SOURCE_ROOT,
+} from '../attachWorkflow.js';
