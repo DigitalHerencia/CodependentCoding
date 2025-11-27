@@ -86,7 +86,7 @@ This backlog tracks Spec-Driven Workflow actions for the Loaded Vibes framework.
 | ☐      | Evaluate optional local HTTP API for CLI dashboards or VS Code webviews.                   | Tech Requirements §12 |
 | ☐      | Assess additional MCP/toolset needs for observability/performance phases.                  | Tech Requirements §12 |
 | ☐      | Determine persisted execution summary format (JSON vs Markdown) before enabling CI gating. | Tech Requirements §11 |
-| ☐      | Evaluate optional local HTTP API for CLI dashboards or VS Code webviews.                   | Tech Requirements §11 |
+| ☑      | Evaluate optional local HTTP API for CLI dashboards or VS Code webviews.                   | Tech Requirements §11.1, ADR-001 |
 | ☐      | Design versioning strategy for user customizations inside `.loaded-vibes` during upgrades. | Tech Requirements §11 |
 | ☑      | Assess additional MCP/toolset needs for observability/performance phases.                  | Tech Requirements §11.1 |
 
@@ -103,6 +103,7 @@ This backlog tracks Spec-Driven Workflow actions for the Loaded Vibes framework.
 
 | Status | Item                                                                                                        | Notes                                      |
 | ------ | ----------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
+| ☑      | Evaluated local HTTP API for CLI dashboards and VS Code webviews.                                           | Hybrid file-based approach adopted; see `docs/decisions/ADR-001-dashboard-http-api.md`, TECH §11.1 |
 | ☑      | Design versioning strategy for user customizations inside `.loaded-vibes` during upgrades.                  | ADR-001 created; Tech Requirements §11 updated; Closes #37 |
 | ☑      | Assessed MCP/toolset needs for Observability and Performance DevCycles (Issue #38).                         | Logged in Tech Requirements §11.1          |
 | ☑      | Consolidated PRD + Tech Requirements to absorb CLI & engine specs.                                          | Logged in `CHANGELOG.md`                   |

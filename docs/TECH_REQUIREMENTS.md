@@ -236,6 +236,7 @@ The CLI generates upgrade hints before applying changes:
 ## 12. Roadmap & Open Questions
 
 - Determine format for persisted execution summaries (JSON vs Markdown) before enabling CI gating.
+- Design versioning strategy for user customizations inside `.loaded-vibes` during upgrades (semantic versions + diff hints proposed).
 - Evaluate optional local HTTP API for CLI dashboards or VS Code webviews.
 - Assess additional MCP/toolset needs for observability/performance phases.
 - Design versioning strategy for user customizations inside `.loaded-vibes` during upgrades (semantic versions + diff hints proposed).
@@ -360,6 +361,20 @@ Based on this assessment, the following updates are recommended:
 | Rationale   | Current toolsets lack automation for TODO generation, browser profiling, and benchmark execution. Adding these MCPs aligns with SPEC-OBS §3 and TECH §8 requirements. |
 | Consequences| Toolset files require updates; shared utilities tracked as future work in TODO.         |
 | References  | SPEC-OBS §1-3, TECH §4.5, TECH §8, PRD §6, Issue #38                                    |
+
+### 11.1 Dashboard & VS Code Integration Architecture (Resolved)
+
+Per [ADR-001](decisions/ADR-001-dashboard-http-api.md), the framework adopts a **hybrid file-based approach**:
+
+- **CLI Dashboard:** Uses Ink/React-Ink components with direct file watching for NDJSON logs and state. No HTTP server required.
+- **VS Code Extension:** Uses Extension Host file system APIs (`vscode.workspace.fs`, `fs.watch`) with webview message passing. No HTTP server required.
+- **Optional HTTP API (Future):** Reserved for advanced use cases (browser dashboards, remote access). If implemented, SHALL:
+  - Bind to `127.0.0.1` only
+  - Require per-session authentication token
+  - Support explicit opt-in via `loaded-vibes config set api.enabled true`
+  - Document security implications in SECURITY.md
+
+This architecture preserves the CLI-first philosophy, avoids network attack surface by default, and meets the `< 200 ms` dashboard latency target `[PRD §5.2]`, `[TECH §5.4]`, `[SPEC-SECURITY §1]`.
 
 This consolidated Technical Requirements document supersedes standalone CLI and engine specs; all future technical changes must update this file and receive PRD sign-off.
 
