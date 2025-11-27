@@ -207,14 +207,19 @@ This section documents the required MCP servers and toolsets for DevCycles 12 (P
 | `fetch`              | Export telemetry to external sinks (opt-in), validate remote endpoints  | Optional | Already configured; used only when remote export enabled |
 | `github`             | Log DevCycle events to issue comments, create observability reports     | Optional | Already configured; useful for CI/PR integration         |
 | `postgres` (Prisma)  | Query application logs if stored in DB, correlate with runtime metrics  | Optional | Already configured; fallback when NDJSON insufficient    |
-| `todos`              | Surface telemetry gaps as TODO items for remediation                    | Recommended | Not in current toolset; would improve workflow           |
+
+### Proposed MCP Servers
+
+| MCP Server   | Purpose                                                    | Status      | Notes                                                      |
+| ------------ | ---------------------------------------------------------- | ----------- | ---------------------------------------------------------- |
+| `todos`      | Surface telemetry gaps as TODO items for remediation       | Proposed    | Not implemented; would improve workflow. See Toolset Gaps. |
 
 **Toolset Gaps Identified:**
-1. **`todos` MCP server** – Currently not listed in `observability.toolset.jsonc`; adding it would streamline TODO generation from telemetry gaps per SPEC-OBS §3.
+1. **`todos` MCP server** – Proposed; currently not listed in `observability.toolset.jsonc`. Adding it would streamline TODO generation from telemetry gaps per SPEC-OBS §3. Implementation required.
 2. **Dedicated telemetry helper** – No specialized NDJSON formatting utility; currently relies on filesystem writes. Consider adding a `telemetry` script helper in `dist/genaiscript/shared/` for consistent NDJSON schema enforcement.
 
 **Fallback Behavior:**
-- WHEN `todos` MCP is unavailable, THE SYSTEM SHALL append remediation items directly to `TODO.md` via filesystem operations and log the fallback action.
+- WHEN the proposed `todos` MCP is unavailable (i.e., not yet implemented), THE SYSTEM SHALL append remediation items directly to `TODO.md` via filesystem operations and log the fallback action.
 - WHEN remote `fetch` export fails, THE SYSTEM SHALL persist logs locally under `.loaded-vibes/logs/` and queue retry via CLI `doctor` remediation.
 - WHEN `memory` MCP is unavailable, THE SYSTEM SHALL rely solely on `dist/genaiscript/state/state.json` for checkpoint persistence without in-memory caching and warn about potential session continuity limitations.
 
