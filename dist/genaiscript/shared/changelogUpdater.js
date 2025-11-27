@@ -4,14 +4,21 @@
  *
  * Provides functions to read, parse, and update CHANGELOG.md entries.
  * Supports the action log format used by the Loaded Vibes framework.
+ * Implements idempotency checks to prevent duplicate entries per TECH §9.
  *
  * @module changelogUpdater
- * @see TECH_REQUIREMENTS §7, SPEC-OBS §3, PRD §5.3
+ * @see TECH_REQUIREMENTS §7, TECH_REQUIREMENTS §9, SPEC-OBS §3, PRD §5.3, Issue #22
  */
 
 import { readFileSync, writeFileSync, existsSync } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import {
+  checkChangelogEntryExists,
+  checkFileIdempotency,
+  logIdempotencyWarning,
+  normalizeText,
+} from './idempotency.js';
 
 const CURRENT_DIR = path.dirname(fileURLToPath(import.meta.url));
 const GENAI_ROOT = path.resolve(CURRENT_DIR, '..');
@@ -135,11 +142,18 @@ export function readChangelogEntries() {
 
 /**
  * Adds a new entry to the top of the CHANGELOG.
+ * Implements idempotency check to prevent duplicate entries per TECH §9.
  *
  * @param {ChangelogEntry} entry - Entry to add
- * @returns {boolean} True if successfully added
+ * @param {Object} [options={}] - Options for the add operation
+ * @param {boolean} [options.skipIdempotencyCheck=false] - Skip duplicate checking
+ * @param {boolean} [options.warnOnDuplicate=true] - Log warning when duplicate detected
+ * @param {number} [options.toleranceMinutes=5] - Time tolerance for duplicate detection
+ * @returns {{ added: boolean, skipped: boolean, reason: string|null }} Result object
+ * @see TECH §9, Issue #22
  */
-export function addChangelogEntry(entry) {
+export function addChangelogEntry(entry, options = {}) {
+  const { skipIdempotencyCheck = false, warnOnDuplicate = true, toleranceMinutes = 5 } = options;
   const formattedEntry = formatEntry(entry);
 
   if (!existsSync(CHANGELOG_PATH)) {
@@ -149,11 +163,32 @@ export function addChangelogEntry(entry) {
 ${formattedEntry}
 `;
     writeFileSync(CHANGELOG_PATH, initialContent, 'utf8');
-    return true;
+    return { added: true, skipped: false, reason: null };
   }
 
   try {
     const content = readFileSync(CHANGELOG_PATH, 'utf8');
+
+    // Idempotency check: Ensure entry is absent before append (TECH §9, Issue #22)
+    if (!skipIdempotencyCheck) {
+      const idempotencyResult = checkChangelogEntryExists(
+        content,
+        entry.goal,
+        entry.timestamp,
+        toleranceMinutes
+      );
+      if (idempotencyResult.wouldDuplicate) {
+        if (warnOnDuplicate) {
+          logIdempotencyWarning(idempotencyResult, 'CHANGELOG update');
+        }
+        return {
+          added: false,
+          skipped: true,
+          reason: idempotencyResult.warningMessage,
+        };
+      }
+    }
+
     const lines = content.split('\n');
 
     // Find the first entry line (after header)
@@ -174,9 +209,9 @@ ${formattedEntry}
     lines.splice(insertIndex, 0, formattedEntry, '');
 
     writeFileSync(CHANGELOG_PATH, lines.join('\n'), 'utf8');
-    return true;
-  } catch {
-    return false;
+    return { added: true, skipped: false, reason: null };
+  } catch (error) {
+    return { added: false, skipped: false, reason: error.message };
   }
 }
 

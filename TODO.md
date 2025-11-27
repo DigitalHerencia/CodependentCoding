@@ -57,7 +57,7 @@ This backlog tracks Spec-Driven Workflow actions for the Loaded Vibes framework.
 | ☐      | Implement "Bad Vibes Firewall" prompts for destructive operations: describe affected paths, required approvals, and rollback steps. | PRD §5.5, Tech Requirements §5.4, SPEC-SECURITY §1   |
 | ☑      | Confine CLI file writes to `.loaded-vibes/**` unless user explicitly approves template copies to project root.                      | PRD §5.5, Tech Requirements §5.4, SPEC-SECURITY §1   |
 | ☑      | Add secret/environment variable redaction hooks in NDJSON logs and telemetry exports.                                               | Tech Requirements §9, SPEC-SECURITY §2, SPEC-OBS §4  |
-| ☐      | Ensure DevCycle operations are idempotent; rerunning cannot corrupt workspace or shipped artifacts.                                 | Tech Requirements §9, SPEC-SECURITY §1               |
+| ☑      | Ensure DevCycle operations are idempotent; rerunning cannot corrupt workspace or shipped artifacts.                                 | Tech Requirements §9, SPEC-SECURITY §1, Issue #22    |
 
 ### Governance & Artifacts
 
