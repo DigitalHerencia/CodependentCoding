@@ -74,7 +74,8 @@ jobs:
             tr '[:upper:]' '[:lower:]' | \
             sed 's/[‑–—]/-/g' | \
             sed 's/\//-/g' | \
-            sed 's/[[:space:]]*$//' | \
+            sed 's/[[:space:]]/-/g' | \
+            sed 's/-*$//' | \
             sort)
 
           # Extract DevCycle names from TECH_REQUIREMENTS.md §6 table
