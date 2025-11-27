@@ -16,6 +16,9 @@ on:
     paths:
       - '.vscode/settings.json'
 
+permissions:
+  contents: read
+
 jobs:
   validate-settings:
     name: Validate VS Code Settings
@@ -68,8 +71,8 @@ jobs:
           for setting in "${INSTRUCTION_SETTINGS[@]}"; do
             # Extract the section for this setting (including nested content)
             if grep -q "\"$setting\"" "$SETTINGS_FILE"; then
-              # Get the line number and content
-              SETTING_CONTENT=$(grep -A 10 "\"$setting\"" "$SETTINGS_FILE" | head -15)
+              # Get the setting and surrounding context (10 lines covers most nested objects)
+              SETTING_CONTENT=$(grep -A 10 "\"$setting\"" "$SETTINGS_FILE")
               
               # Check if the setting or its nested values reference dist/
               if echo "$SETTING_CONTENT" | grep -qE '"[^"]*dist/[^"]*"'; then
@@ -94,7 +97,8 @@ jobs:
           if grep -q '"chat.instructionsFilesLocations"' "$SETTINGS_FILE"; then
             # Extract paths from the instructionsFilesLocations object
             # This setting uses format: { "path": true/false }
-            INSTRUCTION_PATHS=$(grep -A 20 '"chat.instructionsFilesLocations"' "$SETTINGS_FILE" | \
+            # Use 10 lines context (consistent with other checks)
+            INSTRUCTION_PATHS=$(grep -A 10 '"chat.instructionsFilesLocations"' "$SETTINGS_FILE" | \
               grep -oE '"[^"]+\.md"' | tr -d '"' || true)
             
             if [ -n "$INSTRUCTION_PATHS" ]; then
@@ -133,8 +137,8 @@ jobs:
 
           for setting in "${COPILOT_FILE_SETTINGS[@]}"; do
             if grep -q "\"$setting\"" "$SETTINGS_FILE"; then
-              # Extract file paths from the array
-              FILE_PATHS=$(grep -A 5 "\"$setting\"" "$SETTINGS_FILE" | \
+              # Extract file paths from the array (10 lines context, consistent with other checks)
+              FILE_PATHS=$(grep -A 10 "\"$setting\"" "$SETTINGS_FILE" | \
                 grep -oE '"file"\s*:\s*"[^"]+"' | \
                 grep -oE '"[^"]+\.md"' | tr -d '"' || true)
               
