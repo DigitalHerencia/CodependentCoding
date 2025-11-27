@@ -159,17 +159,55 @@ jobs:
 
           # Check genaiscript.githubCopilotInstructions
           echo "🔒 Checking genaiscript.githubCopilotInstructions..."
-          if grep -q '"genaiscript.githubCopilotInstructions"' "$SETTINGS_FILE"; then
-            # This setting can be boolean (true/false) or a path string
-            GENAISCRIPT_VALUE=$(grep '"genaiscript.githubCopilotInstructions"' "$SETTINGS_FILE" | \
-              grep -oE ':\s*[^,}]+' | sed 's/^:\s*//' | tr -d ' ')
-            if [ "$GENAISCRIPT_VALUE" = "true" ] || [ "$GENAISCRIPT_VALUE" = "false" ]; then
+          if jq -e 'has("genaiscript.githubCopilotInstructions")' "$SETTINGS_FILE" > /dev/null; then
+            # This setting can be boolean (true/false), a path string, an array, or an object
+            GENAISCRIPT_TYPE=$(jq -r '.genaiscript.githubCopilotInstructions | type' "$SETTINGS_FILE")
+            if [ "$GENAISCRIPT_TYPE" = "boolean" ]; then
+              GENAISCRIPT_VALUE=$(jq -r '.genaiscript.githubCopilotInstructions' "$SETTINGS_FILE")
               echo "   ✅ Value: $GENAISCRIPT_VALUE (boolean, allowed)"
-            elif echo "$GENAISCRIPT_VALUE" | grep -qE 'dist/'; then
-              echo "   ❌ References dist/** path: $GENAISCRIPT_VALUE"
-              EXIT_CODE=1
+            elif [ "$GENAISCRIPT_TYPE" = "string" ]; then
+              GENAISCRIPT_VALUE=$(jq -r '.genaiscript.githubCopilotInstructions' "$SETTINGS_FILE")
+              if echo "$GENAISCRIPT_VALUE" | grep -qE '^dist/'; then
+                echo "   ❌ References dist/** path: $GENAISCRIPT_VALUE"
+                EXIT_CODE=1
+              else
+                echo "   ✅ Value: $GENAISCRIPT_VALUE (acceptable)"
+              fi
+            elif [ "$GENAISCRIPT_TYPE" = "array" ]; then
+              GENAISCRIPT_ARRAY=$(jq -r '.genaiscript.githubCopilotInstructions[]' "$SETTINGS_FILE")
+              FOUND_DIST=0
+              while IFS= read -r item; do
+                if echo "$item" | grep -qE '^dist/'; then
+                  echo "   ❌ Array references dist/** path: $item"
+                  EXIT_CODE=1
+                  FOUND_DIST=1
+                else
+                  echo "   ✅ Array item: $item"
+                fi
+              done <<< "$GENAISCRIPT_ARRAY"
+              if [ "$FOUND_DIST" -eq 0 ]; then
+                echo "   ✅ All array items acceptable"
+              fi
+            elif [ "$GENAISCRIPT_TYPE" = "object" ]; then
+              # Check all string values in the object for dist/** references
+              GENAISCRIPT_OBJECT_KEYS=$(jq -r '.genaiscript.githubCopilotInstructions | keys[]' "$SETTINGS_FILE")
+              FOUND_DIST=0
+              for key in $GENAISCRIPT_OBJECT_KEYS; do
+                value=$(jq -r ".genaiscript.githubCopilotInstructions[\"$key\"]" "$SETTINGS_FILE")
+                if echo "$value" | grep -qE '^dist/'; then
+                  echo "   ❌ Object key '$key' references dist/** path: $value"
+                  EXIT_CODE=1
+                  FOUND_DIST=1
+                else
+                  echo "   ✅ Object key '$key': $value"
+                fi
+              done
+              if [ "$FOUND_DIST" -eq 0 ]; then
+                echo "   ✅ All object values acceptable"
+              fi
             else
-              echo "   ✅ Value: $GENAISCRIPT_VALUE (acceptable)"
+              echo "   ⚠️  Unknown type for genaiscript.githubCopilotInstructions: $GENAISCRIPT_TYPE"
+              EXIT_CODE=1
             fi
           else
             echo "   ⏭️  Not configured"
