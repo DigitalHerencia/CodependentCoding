@@ -17,7 +17,7 @@ WHEN a user runs `loaded-vibes upgrade`, THE SYSTEM SHALL preserve user customiz
 
 - `[PRD §5.1]` Distribution & Installation: Detect conflicts in `.github`, `.vscode`, or `dist/**` and offer Mirror, Merge, or Sandbox strategies.
 - `[TECH §5.1]` CLI Distribution Model: Preflight, download, extract, init workflow.
-- `[TECH §12]` Open Question (resolved by this ADR): Design versioning strategy for user customizations (semantic versions + diff hints).
+- Open Question (resolved by this ADR): Design versioning strategy for user customizations (semantic versions + diff hints).
 - `[SPEC-CLI §3]` Distribution & Bootstrap Coupling: Bootstrapper status feeds CLI for readiness/drift detection.
 - `[SPEC-ARTIFACTS §4]` Validation & Tagging: Artifact presence, schema compliance, and manifest references.
 
