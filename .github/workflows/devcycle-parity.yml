@@ -168,7 +168,7 @@ jobs:
           echo "  1. Update docs/TECH_REQUIREMENTS.md §6 with the new canonical list"
           echo "  2. Update dist/.github/global.instructions.md to match"
           echo "  3. Ensure both files have matching DevCycle names (currently $CANONICAL_COUNT)"
-          echo "  4. Use lowercase and hyphen-separated names (e.g., 'code-review')"
+          echo "  4. Use the canonical DevCycle name format (e.g., 'Code Review') as defined in docs/TECH_REQUIREMENTS.md §6"
           echo "  5. Update devcycles.config.json if manifest entries are affected"
           echo ""
           echo "References:"
