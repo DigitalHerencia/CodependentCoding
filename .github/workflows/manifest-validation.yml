@@ -48,6 +48,32 @@ jobs:
           declare -a MISSING_FILES
           VALIDATED_COUNT=0
 
+          # Function to validate a file reference
+          # Args: $1=devcycle, $2=field_name, $3=relative_path
+          # Returns: 0 if valid, 1 if missing
+          validate_file_ref() {
+            local devcycle="$1"
+            local field="$2"
+            local path="$3"
+
+            if [ -z "$path" ]; then
+              echo "   ⚠️  $field: (not defined)"
+              return 0
+            fi
+
+            local normalized
+            normalized=$(cd "$MANIFEST_DIR" && realpath -m "$path" 2>/dev/null || echo "")
+
+            if [ -f "$normalized" ]; then
+              echo "   ✅ $field: $path"
+              return 0
+            else
+              echo "   ❌ $field: $path"
+              echo "      Expected at: $normalized"
+              return 1
+            fi
+          }
+
           echo "🔍 Validating DevCycle manifest file resolution..."
           echo ""
 
@@ -81,58 +107,23 @@ jobs:
 
             CYCLE_VALID=true
 
-            # Check instruction file
-            if [ -n "$INSTRUCTION" ]; then
-              # Resolve relative path from manifest directory
-              RESOLVED_INSTRUCTION="$MANIFEST_DIR/$INSTRUCTION"
-              # Normalize path (remove ../ and resolve)
-              NORMALIZED_INSTRUCTION=$(cd "$MANIFEST_DIR" && realpath -m "$INSTRUCTION" 2>/dev/null || echo "")
-              
-              if [ -f "$NORMALIZED_INSTRUCTION" ]; then
-                echo "   ✅ instructions: $INSTRUCTION"
-              else
-                echo "   ❌ instructions: $INSTRUCTION"
-                echo "      Expected at: $NORMALIZED_INSTRUCTION"
-                MISSING_FILES+=("$devcycle.instructions: $INSTRUCTION")
-                CYCLE_VALID=false
-                EXIT_CODE=1
-              fi
-            else
-              echo "   ⚠️  instructions: (not defined)"
+            # Validate each file reference
+            if ! validate_file_ref "$devcycle" "instructions" "$INSTRUCTION"; then
+              MISSING_FILES+=("$devcycle.instructions: $INSTRUCTION")
+              CYCLE_VALID=false
+              EXIT_CODE=1
             fi
 
-            # Check toolset file
-            if [ -n "$TOOLSET" ]; then
-              NORMALIZED_TOOLSET=$(cd "$MANIFEST_DIR" && realpath -m "$TOOLSET" 2>/dev/null || echo "")
-              
-              if [ -f "$NORMALIZED_TOOLSET" ]; then
-                echo "   ✅ toolset: $TOOLSET"
-              else
-                echo "   ❌ toolset: $TOOLSET"
-                echo "      Expected at: $NORMALIZED_TOOLSET"
-                MISSING_FILES+=("$devcycle.toolset: $TOOLSET")
-                CYCLE_VALID=false
-                EXIT_CODE=1
-              fi
-            else
-              echo "   ⚠️  toolset: (not defined)"
+            if ! validate_file_ref "$devcycle" "toolset" "$TOOLSET"; then
+              MISSING_FILES+=("$devcycle.toolset: $TOOLSET")
+              CYCLE_VALID=false
+              EXIT_CODE=1
             fi
 
-            # Check prompt file
-            if [ -n "$PROMPT" ]; then
-              NORMALIZED_PROMPT=$(cd "$MANIFEST_DIR" && realpath -m "$PROMPT" 2>/dev/null || echo "")
-              
-              if [ -f "$NORMALIZED_PROMPT" ]; then
-                echo "   ✅ prompt: $PROMPT"
-              else
-                echo "   ❌ prompt: $PROMPT"
-                echo "      Expected at: $NORMALIZED_PROMPT"
-                MISSING_FILES+=("$devcycle.prompt: $PROMPT")
-                CYCLE_VALID=false
-                EXIT_CODE=1
-              fi
-            else
-              echo "   ⚠️  prompt: (not defined)"
+            if ! validate_file_ref "$devcycle" "prompt" "$PROMPT"; then
+              MISSING_FILES+=("$devcycle.prompt: $PROMPT")
+              CYCLE_VALID=false
+              EXIT_CODE=1
             fi
 
             if [ "$CYCLE_VALID" = true ]; then
