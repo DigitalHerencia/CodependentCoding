@@ -85,11 +85,21 @@ This backlog tracks Spec-Driven Workflow actions for the Loaded Vibes framework.
 | ☐      | Determine persisted execution summary format (JSON vs Markdown) before enabling CI gating. | Tech Requirements §11 |
 | ☐      | Evaluate optional local HTTP API for CLI dashboards or VS Code webviews.                   | Tech Requirements §11 |
 | ☐      | Design versioning strategy for user customizations inside `.loaded-vibes` during upgrades. | Tech Requirements §11 |
-| ☐      | Assess additional MCP/toolset needs for observability/performance phases.                  | Tech Requirements §11 |
+| ☑      | Assess additional MCP/toolset needs for observability/performance phases.                  | Tech Requirements §11.1 |
+
+### MCP/Toolset Follow-up Items (Tech Requirements §11.1)
+
+| Status | Item                                                                                       | Source                     |
+| ------ | ------------------------------------------------------------------------------------------ | -------------------------- |
+| ☐      | Update `observability.toolset.jsonc` to add `todos` MCP server.                            | Tech Requirements §11.1.3  |
+| ☐      | Update `performance.toolset.jsonc` to add `playwright` and `runTests` MCP servers.         | Tech Requirements §11.1.3  |
+| ☐      | Create `dist/genaiscript/shared/telemetry.js` for NDJSON schema enforcement.               | Tech Requirements §11.1.3  |
+| ☐      | Create `dist/genaiscript/shared/profiler.js` for metric capture and regression detection.  | Tech Requirements §11.1.3  |
 
 ## Recently Completed
 
 | Status | Item                                                                                                        | Notes                                      |
 | ------ | ----------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
+| ☑      | Assessed MCP/toolset needs for Observability and Performance DevCycles (Issue #38).                         | Logged in Tech Requirements §11.1          |
 | ☑      | Consolidated PRD + Tech Requirements to absorb CLI & engine specs.                                          | Logged in `CHANGELOG.md`                   |
 | ☑      | Created 7 spec files (SPEC-ARCH, SPEC-ARTIFACTS, SPEC-CLI, SPEC-DEV, SPEC-ENGINE, SPEC-OBS, SPEC-SECURITY). | Provide reusable references for issues/PRs |

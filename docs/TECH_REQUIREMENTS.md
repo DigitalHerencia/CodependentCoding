@@ -180,7 +180,137 @@ Global instructions MUST list only these names; instruction files define behavio
 - Determine format for persisted execution summaries (JSON vs Markdown) before enabling CI gating.
 - Evaluate optional local HTTP API for CLI dashboards or VS Code webviews.
 - Design versioning strategy for user customizations inside `.loaded-vibes` during upgrades (semantic versions + diff hints proposed).
-- Assess additional MCP/toolset needs for observability/performance phases.
+- ~~Assess additional MCP/toolset needs for observability/performance phases.~~ (Completed—see §11.1.)
+
+### 11.1 MCP/Toolset Assessment for Observability & Performance DevCycles
+
+This section documents the required MCP servers and toolsets for DevCycles 12 (Performance) and 13 (Observability), fulfilling the open question above.
+
+#### 11.1.1 Observability DevCycle (DevCycle 13)
+
+**Required Signals** (per SPEC-OBS §1):
+- DevCycle start/end timestamps
+- Validation summaries
+- Toolset activation logs
+- Engine state transitions
+- Error stack traces (sanitized)
+- NDJSON event logs with `devCycleId`, `phase`, `requirementId`, `severity`, `checkpointId`
+
+**MCP Server Requirements:**
+
+| MCP Server           | Purpose                                                                 | Status   | Notes                                                    |
+| -------------------- | ----------------------------------------------------------------------- | -------- | -------------------------------------------------------- |
+| `filesystem`         | Read/write NDJSON logs, state snapshots, Markdown reports               | Required | Already configured; primary I/O for log persistence      |
+| `git`                | Track log file changes, commit evidence, diff generation                | Required | Already configured; enables traceability                 |
+| `memory`             | Persist DevCycle context, checkpoint state across phases                | Required | Already configured; supports session continuity          |
+| `sequentialthinking` | Structure telemetry reasoning, correlate events logically               | Required | Already configured; aids complex trace analysis          |
+| `fetch`              | Export telemetry to external sinks (opt-in), validate remote endpoints  | Optional | Already configured; used only when remote export enabled |
+| `github`             | Log DevCycle events to issue comments, create observability reports     | Optional | Already configured; useful for CI/PR integration         |
+| `postgres` (Prisma)  | Query application logs if stored in DB, correlate with runtime metrics  | Optional | Already configured; fallback when NDJSON insufficient    |
+| `todos`              | Surface telemetry gaps as TODO items for remediation                    | Recommended | Not in current toolset; would improve workflow           |
+
+**Toolset Gaps Identified:**
+1. **`todos` MCP server** – Currently not listed in `observability.toolset.jsonc`; adding it would streamline TODO generation from telemetry gaps per SPEC-OBS §3.
+2. **Dedicated telemetry helper** – No specialized NDJSON formatting utility; currently relies on filesystem writes. Consider adding a `telemetry` script helper in `dist/genaiscript/shared/` for consistent NDJSON schema enforcement.
+
+**Fallback Behavior:**
+- WHEN `todos` MCP is unavailable, THE SYSTEM SHALL append remediation items directly to `TODO.md` via filesystem operations and log the fallback action.
+- WHEN remote `fetch` export fails, THE SYSTEM SHALL persist logs locally under `.loaded-vibes/logs/` and queue retry via CLI `doctor` remediation.
+- WHEN `memory` MCP is unavailable, THE SYSTEM SHALL use `dist/genaiscript/state/state.json` for checkpoint persistence and warn about potential session drift.
+
+#### 11.1.2 Performance DevCycle (DevCycle 12)
+
+**Required Signals** (per TECH §8, PRD §6):
+- Core Web Vitals baselines
+- API latency metrics
+- Database query timing
+- Memory usage snapshots
+- Bundle size deltas
+- Regression detection thresholds
+
+**MCP Server Requirements:**
+
+| MCP Server           | Purpose                                                                 | Status   | Notes                                                    |
+| -------------------- | ----------------------------------------------------------------------- | -------- | -------------------------------------------------------- |
+| `filesystem`         | Read source for profiling, write benchmark results and reports          | Required | Already configured; primary I/O for performance data     |
+| `git`                | Track optimization commits, generate before/after diffs                 | Required | Already configured; enables regression detection         |
+| `memory`             | Cache baseline metrics across phases, persist optimization context      | Required | Already configured; supports incremental optimization    |
+| `sequentialthinking` | Structure performance analysis, prioritize optimization targets         | Required | Already configured; aids bottleneck identification       |
+| `postgres` (Prisma)  | Query slow-query logs, analyze N+1 patterns, validate index usage       | Required | Already configured; critical for DB performance work     |
+| `fetch`              | Retrieve external API performance data, validate endpoint latencies     | Optional | Already configured; used for external dependency profiling|
+| `github`             | Post performance reports to PRs, trigger CI benchmarks                  | Optional | Already configured; useful for automated regression gates|
+| `playwright`         | Run browser-based performance tests, capture Web Vitals                 | Recommended | Not in current MCP list; would enable CWV automation     |
+| `runTests`           | Execute Vitest benchmarks, capture timing data programmatically         | Recommended | Not in current MCP list; would enable benchmark automation|
+
+**Toolset Gaps Identified:**
+1. **`playwright` MCP server** – Not listed; would enable automated Core Web Vitals capture and browser performance profiling per PRD §6.
+2. **`runTests` MCP server** – Not listed; would allow programmatic benchmark execution via Vitest/Playwright test runners.
+3. **Dedicated benchmark CLI entry** – Current toolset lacks `benchmark` in allowed operations at the MCP level; add pnpm/npx benchmark script capability.
+4. **Profiler script helper** – No shared utility for consistent metric capture; consider adding `dist/genaiscript/shared/profiler.js` for repeatable benchmarking.
+
+**Fallback Behavior:**
+- WHEN `playwright` MCP is unavailable, THE SYSTEM SHALL instruct users to run browser performance tests manually via CLI and provide Lighthouse/DevTools guidance.
+- WHEN `runTests` MCP is unavailable, THE SYSTEM SHALL execute benchmarks via direct CLI invocation (`pnpm run benchmark`) and parse stdout for metrics.
+- WHEN profiling data is unavailable, THE SYSTEM SHALL coordinate with Observability DevCycle to provision instrumentation before proceeding.
+
+#### 11.1.3 Recommended Toolset Updates
+
+Based on this assessment, the following updates are recommended:
+
+**For `observability.toolset.jsonc`:**
+```jsonc
+"mcpServers": [
+  "filesystem",
+  "git",
+  "github",
+  "postgres",
+  "fetch",
+  "memory",
+  "sequentialthinking",
+  "todos"  // ADD: Streamline TODO generation from telemetry gaps
+]
+```
+
+**For `performance.toolset.jsonc`:**
+```jsonc
+"mcpServers": [
+  "filesystem",
+  "git",
+  "github",
+  "postgres",
+  "fetch",
+  "memory",
+  "sequentialthinking",
+  "playwright",  // ADD: Enable automated CWV/browser profiling
+  "runTests"     // ADD: Enable programmatic benchmark execution
+],
+"allowedOperations": [
+  "readFiles",
+  "writeFiles",
+  "runCLI",
+  "callMCP",
+  "benchmark",
+  "updateReports",
+  "runBrowserTests"  // ADD: Support browser performance testing
+]
+```
+
+**Shared Utilities (Future Work):**
+- `dist/genaiscript/shared/telemetry.js` – NDJSON schema enforcement, log rotation, sanitization hooks.
+- `dist/genaiscript/shared/profiler.js` – Metric capture, baseline comparison, regression detection.
+
+#### 11.1.4 Decision Record
+
+| Field       | Value                                                                                   |
+| ----------- | --------------------------------------------------------------------------------------- |
+| Decision    | DR-2025-11-27-MCP-TOOLSET-ASSESSMENT                                                    |
+| Date        | 2025-11-27                                                                              |
+| Status      | Accepted                                                                                |
+| Context     | Issue #38 requested assessment of MCP/toolset needs for Observability and Performance.  |
+| Decision    | Add `todos` MCP to observability toolset; add `playwright` and `runTests` MCPs to performance toolset; document fallback behaviors; track shared utility creation in TODO. |
+| Rationale   | Current toolsets lack automation for TODO generation, browser profiling, and benchmark execution. Adding these MCPs aligns with SPEC-OBS §3 and TECH §8 requirements. |
+| Consequences| Toolset files require updates; shared utilities tracked as future work in TODO.         |
+| References  | SPEC-OBS §1-3, TECH §4.5, TECH §8, PRD §6, Issue #38                                    |
 
 This consolidated Technical Requirements document supersedes standalone CLI and engine specs; all future technical changes must update this file and receive PRD sign-off.
 
