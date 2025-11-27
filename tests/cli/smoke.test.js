@@ -355,7 +355,7 @@ describe('DevCycle Command', () => {
     const result = runDevcycleSync(['initilaization']);
 
     // Should exit with error and suggest similar names
-    assert.strictEqual(result.status, 1, 'Invalid devcycle should exit with code 1');
+    assert.strictEqual(result.status, 1, 'Invalid DevCycle should exit with code 1');
     assert.ok(
       result.stdout.includes('Did you mean') || (result.stderr || '').includes('Did you mean'),
       'Should suggest similar devcycle names for typos'
