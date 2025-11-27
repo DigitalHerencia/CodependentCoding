@@ -268,7 +268,8 @@ export class DevCycleRunner extends EventEmitter {
   async _handleCheckpoint(line) {
     // Parse checkpoint from orchestrator output
     // Expected format: CHECKPOINT:<id>:<phase>:<message>
-    const match = line.match(/CHECKPOINT:(\w+):(\w+):(.+)/);
+    // Allow flexible identifiers with hyphens, underscores, and alphanumeric chars
+    const match = line.match(/CHECKPOINT:([a-zA-Z0-9_-]+):([a-zA-Z0-9_-]+):(.+)/);
     if (!match) return;
 
     const [, checkpointId, phase, message] = match;
@@ -319,8 +320,25 @@ export class DevCycleRunner extends EventEmitter {
    * @returns {Promise<boolean>} - Whether to proceed
    */
   async _handleFirewallWarning(line) {
-    // Expected format: FIREWALL:<operation>|<paths>|<rollback>|<requirementId>
-    const match = line.match(/FIREWALL:(.+)\|(.+)\|(.+)\|(.+)/);
+    // Parse firewall warning using JSON format for robustness
+    // Expected format: FIREWALL_JSON:<base64-encoded-json>
+    // Fallback format: FIREWALL:<operation>||<paths>||<rollback>||<requirementId>
+    // Using double-pipe as delimiter to reduce collision with single pipes in content
+
+    // Try JSON format first (preferred)
+    const jsonMatch = line.match(/FIREWALL_JSON:(.+)/);
+    if (jsonMatch) {
+      try {
+        const decoded = Buffer.from(jsonMatch[1], 'base64').toString('utf8');
+        const warning = JSON.parse(decoded);
+        return this._showFirewallWarning(warning);
+      } catch {
+        // Fall through to legacy format
+      }
+    }
+
+    // Legacy pipe-delimited format (use double-pipe for safety)
+    const match = line.match(/FIREWALL:(.+?)\|\|(.+?)\|\|(.+?)\|\|(.+)/);
     if (!match) return true;
 
     const [, operation, pathsStr, rollbackStr, requirementId] = match;
@@ -352,8 +370,8 @@ export class DevCycleRunner extends EventEmitter {
       return;
     }
 
-    // Check for firewall warnings
-    if (trimmed.startsWith('FIREWALL:')) {
+    // Check for firewall warnings (both JSON and legacy formats)
+    if (trimmed.startsWith('FIREWALL:') || trimmed.startsWith('FIREWALL_JSON:')) {
       const proceed = await this._handleFirewallWarning(trimmed);
       if (!proceed) {
         this._emitEvent({
@@ -365,20 +383,34 @@ export class DevCycleRunner extends EventEmitter {
       return;
     }
 
-    // Check for phase transitions
-    const phaseMatch = trimmed.match(/📚 Context Hydrated for DevCycle.*\(SPEC-ENGINE §4\)\s+(.+)/);
-    if (phaseMatch) {
-      this.state.currentPhase = phaseMatch[1];
+    // Check for structured phase marker (preferred)
+    // Format: PHASE:<phase-name> or PHASE_ENTER:<phase-name>
+    const structuredPhaseMatch = trimmed.match(/^PHASE(?:_ENTER)?:([a-zA-Z0-9_-]+)/);
+    if (structuredPhaseMatch) {
+      this.state.currentPhase = structuredPhaseMatch[1];
       this._emitEvent({
         type: 'phase',
-        phase: phaseMatch[1],
-        message: `Entered phase: ${phaseMatch[1]}`,
+        phase: structuredPhaseMatch[1],
+        message: `Entered phase: ${structuredPhaseMatch[1]}`,
+      });
+      return;
+    }
+
+    // Fallback: Check for phase transitions from orchestrator output
+    // This pattern matches the current orchestrator format but may change
+    const legacyPhaseMatch = trimmed.match(/Context Hydrated for DevCycle.*\(SPEC-ENGINE §4\)\s+(.+)/);
+    if (legacyPhaseMatch) {
+      this.state.currentPhase = legacyPhaseMatch[1];
+      this._emitEvent({
+        type: 'phase',
+        phase: legacyPhaseMatch[1],
+        message: `Entered phase: ${legacyPhaseMatch[1]}`,
       });
       return;
     }
 
     // Check for completion
-    if (trimmed.includes('✅ DevCycle complete')) {
+    if (trimmed.includes('✅ DevCycle complete') || trimmed.startsWith('DEVCYCLE_COMPLETE')) {
       this._emitEvent({
         type: 'complete',
         message: 'DevCycle completed successfully',
@@ -435,12 +467,14 @@ export class DevCycleRunner extends EventEmitter {
     });
 
     // Build command arguments
+    // Note: The orchestrator expects 'phase' parameter for the DevCycle to run
+    // (per orchestrator.genai.js parameters.phase), so we pass devCycleId as phase
     const args = [
       'genaiscript',
       'run',
       ORCHESTRATOR_PATH,
       '--vars',
-      `phase=${this.devCycleId}`,
+      `phase=${this.devCycleId}`, // devCycleId maps to orchestrator's phase parameter
       '--vars',
       `mode=${this.mode}`,
     ];

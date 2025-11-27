@@ -106,7 +106,19 @@ export class NDJSONLogger {
       mkdirSync(this.logsDir, { recursive: true });
     }
 
-    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+    // Use YYYYMMDD-HHMMSS-mmm format for filename-safe timestamps
+    const now = new Date();
+    const timestamp = [
+      now.getFullYear(),
+      String(now.getMonth() + 1).padStart(2, '0'),
+      String(now.getDate()).padStart(2, '0'),
+      '-',
+      String(now.getHours()).padStart(2, '0'),
+      String(now.getMinutes()).padStart(2, '0'),
+      String(now.getSeconds()).padStart(2, '0'),
+      '-',
+      String(now.getMilliseconds()).padStart(3, '0'),
+    ].join('');
     this.logFilePath = path.join(this.logsDir, `${this.devCycleId}-${timestamp}.ndjson`);
     this.stream = createWriteStream(this.logFilePath, { flags: 'a', encoding: 'utf8' });
   }
