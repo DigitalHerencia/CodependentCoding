@@ -36,6 +36,13 @@ jobs:
         with:
           node-version: '20'
 
+      - name: Cache CLI node_modules
+        uses: actions/cache@v4
+        with:
+          path: dist/cli/node_modules
+          key: ${{ runner.os }}-cli-node-modules-${{ hashFiles('dist/cli/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-cli-node-modules-
       - name: Install CLI dependencies
         working-directory: dist/cli
         run: npm install
