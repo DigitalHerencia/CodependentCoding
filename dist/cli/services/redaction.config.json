@@ -1,0 +1,9 @@
+{
+  "$schema": "./redaction.schema.json",
+  "description": "Secret redaction configuration for Loaded Vibes logging. See SPEC-SECURITY §2 and SPEC-OBS §4.",
+  "sensitiveKeys": [],
+  "patterns": [],
+  "stackTracePatterns": [],
+  "envVarPrefixes": [],
+  "redactStackPaths": true
+}

@@ -6,6 +6,7 @@
  *
  * @module dist/cli/services
  * @see docs/TECH_REQUIREMENTS.md §5 - Retro CLI Platform Requirements
+ * @see docs/TECH_REQUIREMENTS.md §9 - Security, Quality, Compliance
  */
 
 export {
@@ -24,8 +25,21 @@ export {
   NDJSONLogger,
   createLogger,
   redactSensitive,
+  redactLogEntry,
   DEFAULT_LOGS_DIR,
 } from './ndjsonLogger.js';
+
+export {
+  SecretRedactor,
+  createRedactor,
+  getRedactor,
+  redactString,
+  redactStackTrace,
+  redactTelemetry,
+  loadConfig as loadRedactionConfig,
+  DEFAULT_CONFIG as DEFAULT_REDACTION_CONFIG,
+  REDACTED_PLACEHOLDER,
+} from './redaction.js';
 
 export {
   runAttachWorkflow,

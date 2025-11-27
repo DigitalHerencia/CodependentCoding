@@ -1,0 +1,100 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Loaded Vibes Secret Redaction Configuration",
+  "description": "Configuration schema for secret/sensitive data redaction in NDJSON logs and telemetry exports. Implements TECH §9 and SPEC-SECURITY §2.",
+  "type": "object",
+  "properties": {
+    "description": {
+      "type": "string",
+      "description": "Human-readable description of this configuration"
+    },
+    "sensitiveKeys": {
+      "type": "array",
+      "description": "Additional key names to redact in objects (case-insensitive). These are appended to the default list.",
+      "items": {
+        "type": "string"
+      },
+      "default": [],
+      "examples": [["custom_secret", "my_api_key", "internal_token"]]
+    },
+    "patterns": {
+      "type": "array",
+      "description": "Additional regex patterns for value redaction. These are appended to the default patterns.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Human-readable name for the pattern"
+          },
+          "pattern": {
+            "type": "string",
+            "description": "Regular expression pattern string (use double backslashes for escaping)"
+          },
+          "flags": {
+            "type": "string",
+            "description": "Regex flags (default: 'gi' for global, case-insensitive)",
+            "default": "gi"
+          },
+          "category": {
+            "type": "string",
+            "description": "Category for grouping (e.g., 'api_key', 'token', 'env_var', 'secret')"
+          }
+        },
+        "required": ["name", "pattern"],
+        "additionalProperties": false
+      },
+      "default": [],
+      "examples": [
+        [
+          {
+            "name": "Custom Internal Token",
+            "pattern": "INTERNAL_[A-Z0-9]{32}",
+            "flags": "g",
+            "category": "token"
+          }
+        ]
+      ]
+    },
+    "stackTracePatterns": {
+      "type": "array",
+      "description": "Additional patterns specifically for stack trace sanitization.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "pattern": {
+            "type": "string"
+          },
+          "flags": {
+            "type": "string",
+            "default": "g"
+          },
+          "category": {
+            "type": "string"
+          }
+        },
+        "required": ["name", "pattern"],
+        "additionalProperties": false
+      },
+      "default": []
+    },
+    "envVarPrefixes": {
+      "type": "array",
+      "description": "Additional environment variable prefixes to redact (e.g., 'MY_APP_'). These are appended to the default prefixes.",
+      "items": {
+        "type": "string"
+      },
+      "default": [],
+      "examples": [["MY_APP_", "CUSTOM_", "INTERNAL_"]]
+    },
+    "redactStackPaths": {
+      "type": "boolean",
+      "description": "Whether to redact user home directory paths in stack traces for privacy",
+      "default": true
+    }
+  },
+  "additionalProperties": false
+}
