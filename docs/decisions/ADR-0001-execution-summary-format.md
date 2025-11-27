@@ -88,7 +88,7 @@ Before enabling CI gating, the framework must decide on a standard format for pe
     { "id": "string", "approved": true, "approver": "string" }
   ],
   "validationResult": {
-    "passed": true,
+    "passed": "boolean",
     "details": "string"
   },
   "artifacts": ["string"],
