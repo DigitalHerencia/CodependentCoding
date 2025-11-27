@@ -74,5 +74,11 @@
   // -------------------------------
 
   "chat.mcp.autostart": "onlyNew",
-  "chat.mcp.access": "all"
+  "chat.mcp.access": "all",
+
+  // -------------------------------
+  // GENAI SCRIPT EXTENSION (TECH §8)
+  // -------------------------------
+
+  "genaiscript.localTypeDefinitions": true
 }
