@@ -1,0 +1,197 @@
+# CI Guard for VS Code Settings
+# Ensures .vscode/settings.json instruction references only point to
+# development-layer assets (.github/copilot-instructions.md) and never
+# reference shipped assets in dist/**
+#
+# Closes #27
+# Requirements: PRD §4.3, SPEC-ARCH §3, Tech Requirements §11
+
+name: Settings Guard
+
+on:
+  push:
+    paths:
+      - '.vscode/settings.json'
+  pull_request:
+    paths:
+      - '.vscode/settings.json'
+
+jobs:
+  validate-settings:
+    name: Validate VS Code Settings
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Validate settings.json references
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          SETTINGS_FILE=".vscode/settings.json"
+          ALLOWED_INSTRUCTIONS=".github/copilot-instructions.md"
+          EXIT_CODE=0
+
+          echo "🔍 Checking VS Code settings for instruction references..."
+          echo ""
+
+          # If settings.json doesn't exist, succeed
+          if [ ! -f "$SETTINGS_FILE" ]; then
+            echo "✅ $SETTINGS_FILE not found - nothing to validate"
+            exit 0
+          fi
+
+          echo "📄 Found $SETTINGS_FILE"
+          echo ""
+
+          # Define instruction-related setting patterns that should not reference dist/**
+          # These are settings that load Copilot/GenAIScript instructions
+          INSTRUCTION_SETTINGS=(
+            "chat.instructionsFilesLocations"
+            "github.copilot.chat.codeGeneration.instructions"
+            "github.copilot.chat.codeGeneration.useInstructionFiles"
+            "github.copilot.chat.pullRequestDescriptionGeneration.instructions"
+            "github.copilot.chat.reviewSelection.instructions"
+            "github.copilot.chat.testGeneration.instructions"
+            "genaiscript.githubCopilotInstructions"
+          )
+
+          # Note: files.exclude, files.watcherExclude, search.exclude patterns
+          # are ALLOWED to reference dist/** since they are exclusion patterns,
+          # not instruction file references. The guard specifically checks
+          # instruction-related settings.
+
+          echo "🔒 Checking instruction-related settings for dist/** references..."
+          echo ""
+
+          for setting in "${INSTRUCTION_SETTINGS[@]}"; do
+            # Extract the section for this setting (including nested content)
+            if grep -q "\"$setting\"" "$SETTINGS_FILE"; then
+              # Get the line number and content
+              SETTING_CONTENT=$(grep -A 10 "\"$setting\"" "$SETTINGS_FILE" | head -15)
+              
+              # Check if the setting or its nested values reference dist/
+              if echo "$SETTING_CONTENT" | grep -qE '"[^"]*dist/[^"]*"'; then
+                echo "   ❌ $setting references dist/** path"
+                echo ""
+                echo "   Found:"
+                echo "$SETTING_CONTENT" | grep -E '"[^"]*dist/[^"]*"' | head -3 | sed 's/^/      /'
+                echo ""
+                echo "   Per PRD §4.3 and SPEC-ARCH §3, instruction settings must only"
+                echo "   reference development assets (.github/, .vscode/, docs/, templates/)."
+                echo ""
+                EXIT_CODE=1
+              else
+                echo "   ✅ $setting - no dist/** references"
+              fi
+            fi
+          done
+          echo ""
+
+          # Validate chat.instructionsFilesLocations paths specifically
+          echo "🔒 Validating chat.instructionsFilesLocations paths..."
+          if grep -q '"chat.instructionsFilesLocations"' "$SETTINGS_FILE"; then
+            # Extract paths from the instructionsFilesLocations object
+            # This setting uses format: { "path": true/false }
+            INSTRUCTION_PATHS=$(grep -A 20 '"chat.instructionsFilesLocations"' "$SETTINGS_FILE" | \
+              grep -oE '"[^"]+\.md"' | tr -d '"' || true)
+            
+            if [ -n "$INSTRUCTION_PATHS" ]; then
+              while IFS= read -r path; do
+                if [ "$path" = "$ALLOWED_INSTRUCTIONS" ]; then
+                  echo "   ✅ $path - primary instructions file"
+                elif [[ "$path" == .github/* ]]; then
+                  echo "   ✅ $path - allowed (.github/ development asset)"
+                elif [[ "$path" == dist/* ]]; then
+                  echo "   ❌ $path - shipped asset not allowed"
+                  echo ""
+                  echo "   ℹ️  To fix: Use .github/copilot-instructions.md instead"
+                  EXIT_CODE=1
+                else
+                  echo "   ⚠️  $path - verify this is a development asset"
+                fi
+              done <<< "$INSTRUCTION_PATHS"
+            else
+              echo "   ✅ No .md file paths found in instructionsFilesLocations"
+            fi
+          else
+            echo "   ⏭️  chat.instructionsFilesLocations not configured"
+          fi
+          echo ""
+
+          # Check github.copilot.chat.* instruction file arrays
+          echo "🔒 Checking Copilot instruction file references..."
+          
+          # These settings use format: [{ "file": "path" }]
+          COPILOT_FILE_SETTINGS=(
+            "github.copilot.chat.pullRequestDescriptionGeneration.instructions"
+            "github.copilot.chat.reviewSelection.instructions"
+            "github.copilot.chat.codeGeneration.instructions"
+            "github.copilot.chat.testGeneration.instructions"
+          )
+
+          for setting in "${COPILOT_FILE_SETTINGS[@]}"; do
+            if grep -q "\"$setting\"" "$SETTINGS_FILE"; then
+              # Extract file paths from the array
+              FILE_PATHS=$(grep -A 5 "\"$setting\"" "$SETTINGS_FILE" | \
+                grep -oE '"file"\s*:\s*"[^"]+"' | \
+                grep -oE '"[^"]+\.md"' | tr -d '"' || true)
+              
+              if [ -n "$FILE_PATHS" ]; then
+                while IFS= read -r path; do
+                  if [[ "$path" == dist/* ]]; then
+                    echo "   ❌ $setting references dist/** path: $path"
+                    EXIT_CODE=1
+                  else
+                    echo "   ✅ $setting: $path"
+                  fi
+                done <<< "$FILE_PATHS"
+              fi
+            fi
+          done
+          echo ""
+
+          # Check genaiscript.githubCopilotInstructions
+          echo "🔒 Checking genaiscript.githubCopilotInstructions..."
+          if grep -q '"genaiscript.githubCopilotInstructions"' "$SETTINGS_FILE"; then
+            # This setting can be boolean (true/false) or a path string
+            GENAISCRIPT_VALUE=$(grep '"genaiscript.githubCopilotInstructions"' "$SETTINGS_FILE" | \
+              grep -oE ':\s*[^,}]+' | sed 's/^:\s*//' | tr -d ' ')
+            if [ "$GENAISCRIPT_VALUE" = "true" ] || [ "$GENAISCRIPT_VALUE" = "false" ]; then
+              echo "   ✅ Value: $GENAISCRIPT_VALUE (boolean, allowed)"
+            elif echo "$GENAISCRIPT_VALUE" | grep -qE 'dist/'; then
+              echo "   ❌ References dist/** path: $GENAISCRIPT_VALUE"
+              EXIT_CODE=1
+            else
+              echo "   ✅ Value: $GENAISCRIPT_VALUE (acceptable)"
+            fi
+          else
+            echo "   ⏭️  Not configured"
+          fi
+          echo ""
+
+          # Final result
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          if [ $EXIT_CODE -eq 0 ]; then
+            echo "✅ All settings.json instruction references validated!"
+            echo ""
+            echo "   Workspace settings correctly reference development-layer assets only."
+            echo "   (Note: dist/** in exclude patterns is allowed and not checked)"
+          else
+            echo "❌ Settings validation failed!"
+            echo ""
+            echo "   Instruction-related settings must reference only:"
+            echo "   • .github/copilot-instructions.md (primary instructions)"
+            echo "   • Other .github/**/*.md files (supplemental instructions)"
+            echo ""
+            echo "   Do NOT use dist/** paths in instruction settings."
+            echo ""
+            echo "   📚 References:"
+            echo "   • PRD §4.3 - Workspace vs. Release Enforcement"
+            echo "   • SPEC-ARCH §3 - Path & Ownership Rules"
+            echo "   • Tech Requirements §11 - CI guard requirements"
+          fi
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+          exit $EXIT_CODE
