@@ -306,8 +306,10 @@ export function validateExecutionSnapshot(snapshot, index) {
   }
 
   const validStatuses = ['pending', 'running', 'complete', 'failed', 'blocked'];
-  if (!validStatuses.includes(snapshot.status)) {
-    warnings.push(`${prefix}: Invalid status '${snapshot.status}', expected one of: ${validStatuses.join(', ')}`);
+  if (snapshot.status === undefined || snapshot.status === null) {
+    warnings.push(`${prefix}: Missing 'status' field, expected one of: ${validStatuses.join(', ')}`);
+  } else if (!validStatuses.includes(snapshot.status)) {
+    warnings.push(`${prefix}: Invalid status '${String(snapshot.status)}', expected one of: ${validStatuses.join(', ')}`);
   }
 
   return errors.length > 0 ? invalidResult(errors, warnings) : { valid: true, errors: [], warnings };

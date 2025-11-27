@@ -283,10 +283,14 @@ export function completePhaseExecution(phase, outputs = {}, status = 'complete',
   const current = loadState();
   const snapshots = current.executionSnapshots || [];
 
-  // Find the most recent running snapshot for this phase
-  const snapshotIndex = snapshots.findLastIndex(
-    (s) => s.phase === phase && s.status === 'running'
-  );
+  // Find the most recent running snapshot for this phase (backwards compatible)
+  let snapshotIndex = -1;
+  for (let i = snapshots.length - 1; i >= 0; i--) {
+    if (snapshots[i].phase === phase && snapshots[i].status === 'running') {
+      snapshotIndex = i;
+      break;
+    }
+  }
 
   if (snapshotIndex === -1) {
     console.warn(`⚠️  No running snapshot found for phase: ${phase}`);

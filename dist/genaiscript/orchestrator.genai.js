@@ -267,8 +267,12 @@ const updatedState = {
     },
   ],
   nextPhase,
-  // Preserve existing snapshots from statePersistence module
-  executionSnapshots: loadStateSync().executionSnapshots || [],
+  // Preserve snapshots modified by startPhaseExecution/completePhaseExecution
+  // Use clearStateCache + loadStateSync to get latest snapshots after phase execution
+  executionSnapshots: (() => {
+    clearStateCache();
+    return loadStateSync().executionSnapshots || [];
+  })(),
 };
 
 await saveState(updatedState);
