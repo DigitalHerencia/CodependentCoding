@@ -28,7 +28,7 @@ Before enabling CI gating, the framework must decide on a standard format for pe
 ## Decision Drivers
 
 1. **CI Gating Compatibility**: CI tools must parse summaries to gate deployments.
-2. **Diff-ability**: PR reviews need human-friendly diffs.
+2. **Diff readability**: PR reviews need human-friendly diffs.
 3. **Interoperability**: Dashboards, tooling, and external integrations need machine-readable access.
 4. **Storage Efficiency**: Avoid redundant data in multiple formats.
 5. **Developer Experience**: Summaries should be readable without specialized tooling.
