@@ -31,7 +31,7 @@ This backlog tracks Spec-Driven Workflow actions for the Loaded Vibes framework.
 | Status | Item                                                                                                                                                       | Source                                        |
 | ------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------- |
 | ☐      | Harden bootstrapper (TS + PowerShell) to validate VS Code profiles, MCP endpoints, manifest coherence, and emit machine-readable JSON status for CI + CLI. | Tech Requirements §4.4, SPEC-SECURITY §2      |
-| ☐      | Implement preflight checks: verify Node ≥ 20, git, pnpm, VS Code, GenAIScript extension with actionable remediation guidance.                              | PRD §5.1, Tech Requirements §5.1, SPEC-CLI §3 |
+| ☑      | Implement preflight checks: verify Node ≥ 20, git, pnpm, VS Code, GenAIScript extension with actionable remediation guidance.                              | PRD §5.1, Tech Requirements §5.1, SPEC-CLI §3 |
 | ☐      | Add CI validation that `dist/.github/global.instructions.md` DevCycle list matches Tech Requirements §6 canonical table.                                   | Tech Requirements §10, SPEC-DEV §2            |
 
 ### Observability & Logging
