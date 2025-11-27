@@ -174,7 +174,7 @@ console.log({
   changelogLoaded: !!changelogEntries,
   changelogLength: changelogEntries.length,
   stateRestored: !!stateSnapshot,
-  completedPhases: stateSnapshot.completedPhases?.length || 0,
+  completedPhases: stateSnapshot?.completedPhases?.length || 0,
   prdExcerpt: prdContent?.slice(0, 400),
   techExcerpt: techRequirementsContent?.slice(0, 400),
 });
