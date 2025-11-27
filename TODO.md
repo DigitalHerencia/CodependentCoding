@@ -46,6 +46,7 @@ This backlog tracks Spec-Driven Workflow actions for the Loaded Vibes framework.
 | ☑      | Persist execution snapshots in `dist/genaiscript/state/state.json` with phase, params, outputs, timestamps.              | Tech Requirements §4.5, SPEC-ENGINE §5       |
 | ☐      | Generate Markdown summaries from NDJSON for TODO/CHANGELOG updates with requirement ID references.                       | PRD §5.3, Tech Requirements §7, SPEC-OBS §3  |
 | ☐      | Implement dual-mode execution summaries (JSON + Markdown) per ADR-0001; create `summary-writer.js` utility.              | Tech Requirements §11, SPEC-OBS §2, ADR-0001 |
+| ☑      | Implement `loaded-vibes telemetry export` command producing redacted JSON/Markdown snapshots with filter support.        | Tech Requirements §11.5, SPEC-OBS §2         |
 
 ### Security & Safety
 
@@ -110,13 +111,13 @@ This backlog tracks Spec-Driven Workflow actions for the Loaded Vibes framework.
 
 ## Recently Completed
 
-| Status | Item                                                                                                                     | Notes                                                                                              |
-| ------ | ------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------- |
-| ☑      | Added CI validation for DevCycle list parity between global.instructions.md and TECH_REQUIREMENTS.md §6. Closes #12.    | See `.github/workflows/devcycle-parity.yml`; parses both files, normalizes names, shows diff on mismatch |
-| ☑      | Implemented retrofit/attach workflow (Mirror / Merge / Sandbox) with conflict detection and install logging. Closes #10. | See `dist/cli/attachWorkflow.js`; logs under `.loaded-vibes/logs/install-YYYYMMDD.md`              |
-| ☑      | Decided execution summary format: dual-mode JSON + Markdown output (ADR-0001). Closes #35.                               | See [ADR-0001](../docs/decisions/ADR-0001-execution-summary-format.md), TECH §11                   |
-| ☑      | Evaluated local HTTP API for CLI dashboards and VS Code webviews.                                                        | Hybrid file-based approach adopted; see `docs/decisions/ADR-001-dashboard-http-api.md`, TECH §11.1 |
-| ☑      | Design versioning strategy for user customizations inside `.loaded-vibes` during upgrades.                               | ADR-001 created; Tech Requirements §11 updated; Closes #37                                         |
-| ☑      | Assessed MCP/toolset needs for Observability and Performance DevCycles (Issue #38).                                      | Logged in Tech Requirements §11.1                                                                  |
-| ☑      | Consolidated PRD + Tech Requirements to absorb CLI & engine specs.                                                       | Logged in `CHANGELOG.md`                                                                           |
-| ☑      | Created 7 spec files (SPEC-ARCH, SPEC-ARTIFACTS, SPEC-CLI, SPEC-DEV, SPEC-ENGINE, SPEC-OBS, SPEC-SECURITY).              | Provide reusable references for issues/PRs                                                         |
+| Status | Item                                                                                                                     | Notes                                                                                                    |
+| ------ | ------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------- |
+| ☑      | Added CI validation for DevCycle list parity between global.instructions.md and TECH_REQUIREMENTS.md §6. Closes #12.     | See `.github/workflows/devcycle-parity.yml`; parses both files, normalizes names, shows diff on mismatch |
+| ☑      | Implemented retrofit/attach workflow (Mirror / Merge / Sandbox) with conflict detection and install logging. Closes #10. | See `dist/cli/attachWorkflow.js`; logs under `.loaded-vibes/logs/install-YYYYMMDD.md`                    |
+| ☑      | Decided execution summary format: dual-mode JSON + Markdown output (ADR-0001). Closes #35.                               | See [ADR-0001](../docs/decisions/ADR-0001-execution-summary-format.md), TECH §11                         |
+| ☑      | Evaluated local HTTP API for CLI dashboards and VS Code webviews.                                                        | Hybrid file-based approach adopted; see `docs/decisions/ADR-001-dashboard-http-api.md`, TECH §11.1       |
+| ☑      | Design versioning strategy for user customizations inside `.loaded-vibes` during upgrades.                               | ADR-001 created; Tech Requirements §11 updated; Closes #37                                               |
+| ☑      | Assessed MCP/toolset needs for Observability and Performance DevCycles (Issue #38).                                      | Logged in Tech Requirements §11.1                                                                        |
+| ☑      | Consolidated PRD + Tech Requirements to absorb CLI & engine specs.                                                       | Logged in `CHANGELOG.md`                                                                                 |
+| ☑      | Created 7 spec files (SPEC-ARCH, SPEC-ARTIFACTS, SPEC-CLI, SPEC-DEV, SPEC-ENGINE, SPEC-OBS, SPEC-SECURITY).              | Provide reusable references for issues/PRs                                                               |

@@ -123,32 +123,17 @@ describe('CLI Main Entry', () => {
     const result = runCliSync(['--help']);
 
     assert.strictEqual(result.status, 0, 'CLI --help should exit with code 0');
-    assert.ok(
-      result.stdout.includes('LOADED VIBES CLI'),
-      'Help output should include CLI title'
-    );
-    assert.ok(
-      result.stdout.includes('dashboard'),
-      'Help output should list dashboard command'
-    );
-    assert.ok(
-      result.stdout.includes('doctor'),
-      'Help output should list doctor command'
-    );
-    assert.ok(
-      result.stdout.includes('upgrade'),
-      'Help output should list upgrade command'
-    );
+    assert.ok(result.stdout.includes('LOADED VIBES CLI'), 'Help output should include CLI title');
+    assert.ok(result.stdout.includes('dashboard'), 'Help output should list dashboard command');
+    assert.ok(result.stdout.includes('doctor'), 'Help output should list doctor command');
+    assert.ok(result.stdout.includes('upgrade'), 'Help output should list upgrade command');
   });
 
   it('should display help with -h flag', () => {
     const result = runCliSync(['-h']);
 
     assert.strictEqual(result.status, 0, 'CLI -h should exit with code 0');
-    assert.ok(
-      result.stdout.includes('Usage:'),
-      'Help output should include usage information'
-    );
+    assert.ok(result.stdout.includes('Usage:'), 'Help output should include usage information');
   });
 
   it('should display help with no arguments', () => {
@@ -178,7 +163,9 @@ describe('Dashboard Command', () => {
 
     // Dashboard help should work with dependencies installed
     assert.ok(
-      result.status === 0 || result.stderr?.includes('Cannot find package') || result.stderr?.includes('ERR_MODULE_NOT_FOUND'),
+      result.status === 0 ||
+        result.stderr?.includes('Cannot find package') ||
+        result.stderr?.includes('ERR_MODULE_NOT_FOUND'),
       'Dashboard --help should run or report missing dependencies gracefully'
     );
 
@@ -195,10 +182,7 @@ describe('Dashboard Command', () => {
 
   it('should be listed in main CLI help', () => {
     const result = runCliSync(['--help']);
-    assert.ok(
-      result.stdout.includes('dashboard'),
-      'Main CLI help should list dashboard command'
-    );
+    assert.ok(result.stdout.includes('dashboard'), 'Main CLI help should list dashboard command');
   });
 });
 
@@ -287,10 +271,7 @@ describe('Logs Command', () => {
       timeout: 15000,
     });
     // Accept either success or graceful failure
-    assert.ok(
-      spawnResult.status !== null,
-      'Logs --help should complete (not hang)'
-    );
+    assert.ok(spawnResult.status !== null, 'Logs --help should complete (not hang)');
     if (spawnResult.status === 0) {
       assert.ok(
         spawnResult.stdout.includes('logs') ||
@@ -299,6 +280,34 @@ describe('Logs Command', () => {
         'Logs help should mention logs, NDJSON, or options'
       );
     }
+  });
+});
+
+// ============================================================
+// Telemetry Command Tests
+// ============================================================
+
+describe('Telemetry Command', () => {
+  it('should display telemetry help with --help flag', () => {
+    const result = runCliSync(['telemetry', '--help']);
+
+    assert.strictEqual(result.status, 0, 'Telemetry --help should exit with code 0');
+    assert.ok(
+      result.stdout.includes('telemetry export'),
+      'Telemetry help should mention export subcommand'
+    );
+  });
+
+  it('should display export help with --help flag', async () => {
+    const result = await runCli(['telemetry', 'export', '--help'], {
+      timeout: 10000,
+    });
+
+    assert.strictEqual(result.code, 0, 'Telemetry export --help should exit with code 0');
+    assert.ok(
+      result.stdout.includes('--format') || result.stdout.includes('json'),
+      'Telemetry export help should mention format option'
+    );
   });
 });
 
@@ -383,10 +392,7 @@ describe('Upgrade Command', () => {
   it('should display upgrade help in main CLI help', () => {
     const result = runCliSync(['--help']);
 
-    assert.ok(
-      result.stdout.includes('upgrade'),
-      'Main help should mention upgrade command'
-    );
+    assert.ok(result.stdout.includes('upgrade'), 'Main help should mention upgrade command');
   });
 
   it('should run upgrade --analyze without making changes', async () => {
@@ -522,18 +528,9 @@ describe('CLI Integration', () => {
 
     // Verify no secrets or sensitive paths are exposed
     // Use regex to check for likely secret exposures, not just keyword presence
-    assert.ok(
-      !/password\s*[:=]\s*\S+/i.test(output),
-      'Help should not leak password values'
-    );
-    assert.ok(
-      !/secret\s*[:=]\s*\S+/i.test(output),
-      'Help should not leak secret values'
-    );
-    assert.ok(
-      !/api[_-]?key\s*[:=]\s*\S+/i.test(output),
-      'Help should not leak API key values'
-    );
+    assert.ok(!/password\s*[:=]\s*\S+/i.test(output), 'Help should not leak password values');
+    assert.ok(!/secret\s*[:=]\s*\S+/i.test(output), 'Help should not leak secret values');
+    assert.ok(!/api[_-]?key\s*[:=]\s*\S+/i.test(output), 'Help should not leak API key values');
   });
 });
 

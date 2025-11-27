@@ -49,11 +49,11 @@ Loaded Vibes generates all assets for the end user inside:
 
 ## Summary of Separation
 
-| Scope               | Directory           | Purpose                                                                                      |
-| :------------------ | :------------------ | :------------------------------------------------------------------------------------------- |
-| **Dev Environment** | `D:\LoadedVibes`    | Where we build the framework. Configured by root `.vscode`, `.github`, `docs`, `templates`.  |
-| **Shipped Product** | `dist/`     | The artifacts delivered to users. Contains its own `.github`, `.vscode`, `genaiscript`, etc. |
-| **User Project**    | `dist/src/` | The generated application code. Ignored by framework tooling.                                |
+| Scope               | Directory        | Purpose                                                                                      |
+| :------------------ | :--------------- | :------------------------------------------------------------------------------------------- |
+| **Dev Environment** | `D:\LoadedVibes` | Where we build the framework. Configured by root `.vscode`, `.github`, `docs`, `templates`.  |
+| **Shipped Product** | `dist/`          | The artifacts delivered to users. Contains its own `.github`, `.vscode`, `genaiscript`, etc. |
+| **User Project**    | `dist/src/`      | The generated application code. Ignored by framework tooling.                                |
 
 ## 4. Retro CLI Quickstart
 
@@ -84,13 +84,13 @@ node dist/cli/commands/dashboard.js
 
 ### Keyboard Controls
 
-| Key | Action |
-|-----|--------|
-| `Ctrl+P` | Open command palette (fuzzy search) |
-| `r` | Refresh dashboard data |
-| `l` | Toggle live log streaming |
-| `h` / `?` | Show keyboard shortcuts help |
-| `q` / `Ctrl+C` | Quit dashboard |
+| Key            | Action                              |
+| -------------- | ----------------------------------- |
+| `Ctrl+P`       | Open command palette (fuzzy search) |
+| `r`            | Refresh dashboard data              |
+| `l`            | Toggle live log streaming           |
+| `h` / `?`      | Show keyboard shortcuts help        |
+| `q` / `Ctrl+C` | Quit dashboard                      |
 
 ### Performance Target
 
@@ -107,7 +107,6 @@ Run DevCycles manually from the shipped assets while keeping requirement traceab
 
 ## 7. Logs Command
 
-
 Inspect NDJSON traces stored in `.loaded-vibes/logs/*.ndjson` per Tech Requirements 5.3 (use `ts-node` or the compiled CLI binary in packaged releases):
 
 - Show latest entries: `node dist/cli/commands/logs.ts`
@@ -115,7 +114,16 @@ Inspect NDJSON traces stored in `.loaded-vibes/logs/*.ndjson` per Tech Requireme
 - Stream updates: add `--follow` to tail new NDJSON lines as they are written.
 - Export a Markdown snapshot referencing requirement IDs: `node dist/cli/commands/logs.ts --export .loaded-vibes/logs/export.md`
 
-## 8. CI Workflows
+## 8. Telemetry Export Command
+
+Convert NDJSON telemetry logs into sanitized JSON or Markdown snapshots for audits and PR attachments.
+
+- Usage: `loaded-vibes telemetry export --format json|markdown [--devcycle <id>] [--since <iso>]`
+- Defaults to reading `.loaded-vibes/logs/*.ndjson` and writing to `.loaded-vibes/telemetry/exports/telemetry-<timestamp>.json|md`.
+- JSON exports power CI integrations and dashboards; Markdown mirrors ADR-0001 dual-mode guidance for reviewer-friendly diffs.
+- All exports pass through the secret redaction pipeline (SPEC-SECURITY §2) and cite relevant PRD/TECH requirement IDs.
+
+## 9. CI Workflows
 
 The repository includes automated CI checks to validate framework governance:
 

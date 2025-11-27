@@ -19,14 +19,14 @@
 
 ## 2. Layered Architecture Overview
 
-| Layer                | Responsibilities                                                              | Key Artifacts                                                             |
-| -------------------- | ----------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| Layer                | Responsibilities                                                              | Key Artifacts                                                     |
+| -------------------- | ----------------------------------------------------------------------------- | ----------------------------------------------------------------- |
 | **Bootstrap**        | Detect profile gaps, sync MCP + extensions, expose CLI entry points.          | `dist/scripts/bootstrapper.genaiscript.ts`, `bootstrapper.ps1`    |
 | **Orchestration**    | Load manifest, hydrate context, coordinate Analyze → Handoff lifecycle.       | `dist/genaiscript/orchestrator.genai.js`, `devcycles.config.json` |
 | **Phase Runners**    | Execute DevCycle-specific logic with manifest-provided instructions/toolsets. | `dist/genaiscript/phases/*.genai.js`                              |
 | **Shared Utilities** | Context loading, memory/state persistence, validation helpers.                | `dist/genaiscript/shared/*.js`                                    |
 | **Governance**       | Instructions, prompts, toolsets, TODO/CHANGELOG, PRD/TechReq references.      | `dist/.github/**`, workspace docs                                 |
-| **Retro CLI**        | Installer, dashboard, diagnostics, DevCycle UX.                               | `create-loaded-vibes`, `loaded-vibes` CLI, `.loaded-vibes/**`             |
+| **Retro CLI**        | Installer, dashboard, diagnostics, DevCycle UX.                               | `create-loaded-vibes`, `loaded-vibes` CLI, `.loaded-vibes/**`     |
 
 ## 3. Artifact Layers & Deliverables
 
@@ -183,10 +183,10 @@ Execution summaries use **dual-mode output** (JSON + Markdown) to serve both mac
 
 ### 11.2 Format Specification
 
-| Output | Format | Location | Purpose |
-| --- | --- | --- | --- |
-| Structured summary | JSON | `.loaded-vibes/summaries/<devCycleId>-<timestamp>.json` | CI gating, dashboards, programmatic queries |
-| Human summary | Markdown | `.loaded-vibes/summaries/<devCycleId>-<timestamp>.md` | PR attachments, TODO/CHANGELOG, manual review |
+| Output             | Format   | Location                                                | Purpose                                       |
+| ------------------ | -------- | ------------------------------------------------------- | --------------------------------------------- |
+| Structured summary | JSON     | `.loaded-vibes/summaries/<devCycleId>-<timestamp>.json` | CI gating, dashboards, programmatic queries   |
+| Human summary      | Markdown | `.loaded-vibes/summaries/<devCycleId>-<timestamp>.md`   | PR attachments, TODO/CHANGELOG, manual review |
 
 Both files are emitted atomically at phase completion. The Markdown file includes YAML frontmatter mirroring JSON fields for light parsing.
 
@@ -214,9 +214,21 @@ Both files are emitted atomically at phase completion. The Markdown file include
 3. Extend `loaded-vibes logs` to display/export summaries.
 4. Update CI workflows to consume `*.json` for gating decisions.
 
+### 11.5 Telemetry Export CLI
+
+- CLI command: `loaded-vibes telemetry export --format json|markdown [--devcycle <id>] [--since <iso>] [--out <path>]`.
+- Default sources: `.loaded-vibes/logs/*.ndjson` (input), `.loaded-vibes/summaries/` (metadata), `.loaded-vibes/telemetry/exports/` (output directory).
+- Formats:
+  - **JSON** – primary artifact for CI/dashboards; aligns with ADR-0001 decision (Option C). Structured payload includes `devCycleId`, severity counts, timeframe, requirement IDs, log file references, and filters applied.
+  - **Markdown** – mirrors JSON content for human review with embedded TODO/CHANGELOG snippets and YAML frontmatter referencing filters + source directories.
+- Trade-offs: JSON enables machine parsing and diff automation; Markdown improves readability and aligns with TODO/CHANGELOG workflows. Dual-mode approach satisfies SPEC-OBS §2 and ADR-0001 by serving both audiences without additional orchestration logic.
+- Security: Exports run through the existing redaction pipeline (`redactTelemetry`, SPEC-SECURITY §2) and are written via `fileGuard` to `.loaded-vibes/**` only.
+- Observability: Each export cites `TECH §11 / SPEC-OBS §2` and records filters (DevCycle ID, timeframe) for traceability. Future remote sinks can reuse the JSON payload without rehydrating NDJSON logs.
+
 ## 12. Roadmap & Open Questions
 
 - Evaluate optional local HTTP API for CLI dashboards or VS Code webviews.
+
 ## 11. Customization Versioning Strategy
 
 ### 11.1 Overview
@@ -224,21 +236,23 @@ Both files are emitted atomically at phase completion. The Markdown file include
 WHEN a user runs `loaded-vibes upgrade`, THE SYSTEM SHALL preserve user customizations while applying upstream changes, detect conflicts, and provide actionable resolution paths `[PRD §5.1]`.
 
 The versioning strategy uses a three-tier approach:
+
 1. **Framework Version Tracking:** Semantic versioning in `.loaded-vibes/manifest.json`
 2. **Asset Version Tracking:** Checksum-based tracking in `.loaded-vibes/assets.json`
 3. **Conflict Resolution:** Mirror/Merge/Sandbox strategies per `[PRD §5.1]`
 
 ### 11.2 Semantic Versioning Scheme
 
-| Version Bump | Scope | Upgrade Impact |
-|--------------|-------|----------------|
+| Version Bump      | Scope                                                                    | Upgrade Impact                               |
+| ----------------- | ------------------------------------------------------------------------ | -------------------------------------------- |
 | **Major** (X.0.0) | Breaking changes to manifest schema, toolset APIs, or DevCycle contracts | Requires manual review; auto-upgrade blocked |
-| **Minor** (1.X.0) | New DevCycles, prompts, toolsets, or non-breaking enhancements | Auto-merge safe for unmodified assets |
-| **Patch** (1.2.X) | Bug fixes, documentation updates, security patches | Silent update for pristine assets |
+| **Minor** (1.X.0) | New DevCycles, prompts, toolsets, or non-breaking enhancements           | Auto-merge safe for unmodified assets        |
+| **Patch** (1.2.X) | Bug fixes, documentation updates, security patches                       | Silent update for pristine assets            |
 
 ### 11.3 Asset Tracking
 
 Each shipped asset is tracked with:
+
 - **frameworkChecksum:** SHA256 of the shipped version
 - **localChecksum:** Current file checksum
 - **frameworkVersion:** Version when last synced from upstream
@@ -248,17 +262,18 @@ Each shipped asset is tracked with:
 ### 11.4 Diff Hint Generation
 
 The CLI generates upgrade hints before applying changes:
+
 - Pre-upgrade analysis via `loaded-vibes upgrade --analyze`
 - Diff hints stored in `.loaded-vibes/upgrade-hints/v{version}.json`
 - Visual indicators for added, modified, and conflicting sections
 
 ### 11.5 Conflict Handling Strategies
 
-| Strategy | Use Case | Behavior |
-|----------|----------|----------|
-| **Mirror** | Exact parity with upstream | Overwrites all assets; backs up local modifications |
-| **Merge** | Preserve customizations | Auto-merges non-conflicting changes; interactive resolution for conflicts |
-| **Sandbox** | Evaluate before committing | Extracts to sandbox directory; user selectively applies changes |
+| Strategy    | Use Case                   | Behavior                                                                  |
+| ----------- | -------------------------- | ------------------------------------------------------------------------- |
+| **Mirror**  | Exact parity with upstream | Overwrites all assets; backs up local modifications                       |
+| **Merge**   | Preserve customizations    | Auto-merges non-conflicting changes; interactive resolution for conflicts |
+| **Sandbox** | Evaluate before committing | Extracts to sandbox directory; user selectively applies changes           |
 
 ### 11.6 Upgrade Workflow
 
@@ -291,6 +306,7 @@ This section documents the required MCP servers and toolsets for DevCycles 12 (P
 #### 11.1.1 Observability DevCycle (DevCycle 13)
 
 **Required Signals** (per SPEC-OBS §1):
+
 - DevCycle start/end timestamps
 - Validation summaries
 - Toolset activation logs
@@ -300,27 +316,29 @@ This section documents the required MCP servers and toolsets for DevCycles 12 (P
 
 **MCP Server Requirements:**
 
-| MCP Server           | Purpose                                                                 | Status   | Notes                                                    |
-| -------------------- | ----------------------------------------------------------------------- | -------- | -------------------------------------------------------- |
-| `filesystem`         | Read/write NDJSON logs, state snapshots, Markdown reports               | Required | Already configured; primary I/O for log persistence      |
-| `git`                | Track log file changes, commit evidence, diff generation                | Required | Already configured; enables traceability                 |
-| `memory`             | Persist DevCycle context, checkpoint state across phases                | Required | Already configured; supports session continuity          |
-| `sequentialthinking` | Structure telemetry reasoning, correlate events logically               | Required | Already configured; aids complex trace analysis          |
-| `fetch`              | Export telemetry to external sinks (opt-in), validate remote endpoints  | Optional | Already configured; used only when remote export enabled |
-| `github`             | Log DevCycle events to issue comments, create observability reports     | Optional | Already configured; useful for CI/PR integration         |
-| `postgres` (Prisma)  | Query application logs if stored in DB, correlate with runtime metrics  | Optional | Already configured; fallback when NDJSON insufficient    |
+| MCP Server           | Purpose                                                                | Status   | Notes                                                    |
+| -------------------- | ---------------------------------------------------------------------- | -------- | -------------------------------------------------------- |
+| `filesystem`         | Read/write NDJSON logs, state snapshots, Markdown reports              | Required | Already configured; primary I/O for log persistence      |
+| `git`                | Track log file changes, commit evidence, diff generation               | Required | Already configured; enables traceability                 |
+| `memory`             | Persist DevCycle context, checkpoint state across phases               | Required | Already configured; supports session continuity          |
+| `sequentialthinking` | Structure telemetry reasoning, correlate events logically              | Required | Already configured; aids complex trace analysis          |
+| `fetch`              | Export telemetry to external sinks (opt-in), validate remote endpoints | Optional | Already configured; used only when remote export enabled |
+| `github`             | Log DevCycle events to issue comments, create observability reports    | Optional | Already configured; useful for CI/PR integration         |
+| `postgres` (Prisma)  | Query application logs if stored in DB, correlate with runtime metrics | Optional | Already configured; fallback when NDJSON insufficient    |
 
 ### Proposed MCP Servers
 
-| MCP Server   | Purpose                                                    | Status      | Notes                                                      |
-| ------------ | ---------------------------------------------------------- | ----------- | ---------------------------------------------------------- |
-| `todos`      | Surface telemetry gaps as TODO items for remediation       | Proposed    | Not implemented; would improve workflow. See Toolset Gaps. |
+| MCP Server | Purpose                                              | Status   | Notes                                                      |
+| ---------- | ---------------------------------------------------- | -------- | ---------------------------------------------------------- |
+| `todos`    | Surface telemetry gaps as TODO items for remediation | Proposed | Not implemented; would improve workflow. See Toolset Gaps. |
 
 **Toolset Gaps Identified:**
+
 1. **`todos` MCP server** – Proposed; currently not listed in `observability.toolset.jsonc`. Adding it would streamline TODO generation from telemetry gaps per SPEC-OBS §3. Implementation required.
 2. **Dedicated telemetry helper** – No specialized NDJSON formatting utility; currently relies on filesystem writes. Consider adding a `telemetry` script helper in `dist/genaiscript/shared/` for consistent NDJSON schema enforcement.
 
 **Fallback Behavior:**
+
 - WHEN the proposed `todos` MCP is unavailable (i.e., not yet implemented), THE SYSTEM SHALL append remediation items directly to `TODO.md` via filesystem operations and log the fallback action.
 - WHEN remote `fetch` export fails, THE SYSTEM SHALL persist logs locally under `.loaded-vibes/logs/` and queue retry via CLI `doctor` remediation.
 - WHEN `memory` MCP is unavailable, THE SYSTEM SHALL rely solely on `dist/genaiscript/state/state.json` for checkpoint persistence without in-memory caching and warn about potential session continuity limitations.
@@ -328,6 +346,7 @@ This section documents the required MCP servers and toolsets for DevCycles 12 (P
 #### 11.1.2 Performance DevCycle (DevCycle 12)
 
 **Required Signals** (per PRD §6; some signals inferred and should be added to TECH_REQUIREMENTS):
+
 - Core Web Vitals baselines
 - API latency metrics
 - Database query timing
@@ -337,30 +356,32 @@ This section documents the required MCP servers and toolsets for DevCycles 12 (P
 
 **MCP Server Requirements:**
 
-| MCP Server           | Purpose                                                                 | Status   | Notes                                                    |
-| -------------------- | ----------------------------------------------------------------------- | -------- | -------------------------------------------------------- |
-| `filesystem`         | Read source for profiling, write benchmark results and reports          | Required | Already configured; primary I/O for performance data     |
-| `git`                | Track optimization commits, generate before/after diffs                 | Required | Already configured; enables regression detection         |
-| `memory`             | Cache baseline metrics across phases, persist optimization context      | Required | Already configured; supports incremental optimization    |
-| `sequentialthinking` | Structure performance analysis, prioritize optimization targets         | Required | Already configured; aids bottleneck identification       |
-| `postgres` (Prisma)  | Query slow-query logs, analyze N+1 patterns, validate index usage       | Required | Already configured; critical for DB performance work     |
-| `fetch`              | Retrieve external API performance data, validate endpoint latencies     | Optional | Already configured; used for external dependency profiling|
-| `github`             | Post performance reports to PRs, trigger CI benchmarks                  | Optional | Already configured; useful for automated regression gates|
+| MCP Server           | Purpose                                                             | Status   | Notes                                                      |
+| -------------------- | ------------------------------------------------------------------- | -------- | ---------------------------------------------------------- |
+| `filesystem`         | Read source for profiling, write benchmark results and reports      | Required | Already configured; primary I/O for performance data       |
+| `git`                | Track optimization commits, generate before/after diffs             | Required | Already configured; enables regression detection           |
+| `memory`             | Cache baseline metrics across phases, persist optimization context  | Required | Already configured; supports incremental optimization      |
+| `sequentialthinking` | Structure performance analysis, prioritize optimization targets     | Required | Already configured; aids bottleneck identification         |
+| `postgres` (Prisma)  | Query slow-query logs, analyze N+1 patterns, validate index usage   | Required | Already configured; critical for DB performance work       |
+| `fetch`              | Retrieve external API performance data, validate endpoint latencies | Optional | Already configured; used for external dependency profiling |
+| `github`             | Post performance reports to PRs, trigger CI benchmarks              | Optional | Already configured; useful for automated regression gates  |
 
 **Recommended MCP Servers (Not Yet Configured):**
 
-| MCP Server           | Purpose                                                                 | Status        | Notes                                                    |
-| -------------------- | ----------------------------------------------------------------------- | ------------- | -------------------------------------------------------- |
-| `playwright`         | Run browser-based performance tests, capture Web Vitals                 | Not Configured | Playwright is available as a VS Code extension (`ms-playwright.playwright`), but not as an MCP server. Adding an MCP server would enable CWV automation. |
-| `runTests`           | Execute Vitest benchmarks, capture timing data programmatically         | Not Configured | Not present as an MCP server; would enable benchmark automation via programmatic test runners. |
+| MCP Server   | Purpose                                                         | Status         | Notes                                                                                                                                                    |
+| ------------ | --------------------------------------------------------------- | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `playwright` | Run browser-based performance tests, capture Web Vitals         | Not Configured | Playwright is available as a VS Code extension (`ms-playwright.playwright`), but not as an MCP server. Adding an MCP server would enable CWV automation. |
+| `runTests`   | Execute Vitest benchmarks, capture timing data programmatically | Not Configured | Not present as an MCP server; would enable benchmark automation via programmatic test runners.                                                           |
 
 **Toolset Gaps Identified:**
+
 1. **`playwright` MCP server** – Not listed; Playwright is currently available only as a VS Code extension. Adding an MCP server would enable automated Core Web Vitals capture and browser performance profiling per PRD §6.
 2. **`runTests` MCP server** – Not listed; would allow programmatic benchmark execution via Vitest/Playwright test runners.
 3. **Dedicated benchmark CLI entry** – Current toolset lacks `benchmark` in allowed operations at the MCP level; add pnpm/npx benchmark script capability.
 4. **Profiler script helper** – No shared utility for consistent metric capture; consider adding `dist/genaiscript/shared/profiler.js` for repeatable benchmarking.
 
 **Fallback Behavior:**
+
 - WHEN `playwright` MCP is unavailable, THE SYSTEM SHALL instruct users to run browser performance tests manually via CLI and provide Lighthouse/DevTools guidance.
 - WHEN `runTests` MCP is unavailable, THE SYSTEM SHALL execute benchmarks via direct CLI invocation (`pnpm run benchmark`) and parse stdout for metrics.
 - WHEN profiling data is unavailable, THE SYSTEM SHALL coordinate with Observability DevCycle to provision instrumentation before proceeding.
@@ -370,6 +391,7 @@ This section documents the required MCP servers and toolsets for DevCycles 12 (P
 Based on this assessment, the following updates are recommended:
 
 **For `observability.toolset.jsonc`:**
+
 ```jsonc
 {
   "tools": {
@@ -381,28 +403,29 @@ Based on this assessment, the following updates are recommended:
       "fetch",
       "memory",
       "sequentialthinking",
-      "todos"  // ADD: Streamline TODO generation from telemetry gaps
+      "todos" // ADD: Streamline TODO generation from telemetry gaps
     ]
   }
 }
 ```
 
 **Shared Utilities (Future Work):**
+
 - `dist/genaiscript/shared/telemetry.js` – NDJSON schema enforcement, log rotation, sanitization hooks.
 - `dist/genaiscript/shared/profiler.js` – Metric capture, baseline comparison, regression detection.
 
 #### 11.1.4 Decision Record
 
-| Field       | Value                                                                                   |
-| ----------- | --------------------------------------------------------------------------------------- |
-| Decision    | DR-2025-11-27-MCP-TOOLSET-ASSESSMENT                                                    |
-| Date        | 2025-11-27                                                                              |
-| Status      | Accepted                                                                                |
-| Context     | Issue #38 requested assessment of MCP/toolset needs for Observability and Performance.  |
-| Decision    | Add `todos` MCP to observability toolset; add `playwright` and `runTests` MCPs to performance toolset; document fallback behaviors; track shared utility creation in TODO. |
-| Rationale   | Current toolsets lack automation for TODO generation, browser profiling, and benchmark execution. Adding these MCPs aligns with SPEC-OBS §3 and TECH §8 requirements. |
-| Consequences| Toolset files require updates; shared utilities tracked as future work in TODO.         |
-| References  | SPEC-OBS §1-3, TECH §4.5, TECH §8, PRD §6, Issue #38                                    |
+| Field        | Value                                                                                                                                                                      |
+| ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Decision     | DR-2025-11-27-MCP-TOOLSET-ASSESSMENT                                                                                                                                       |
+| Date         | 2025-11-27                                                                                                                                                                 |
+| Status       | Accepted                                                                                                                                                                   |
+| Context      | Issue #38 requested assessment of MCP/toolset needs for Observability and Performance.                                                                                     |
+| Decision     | Add `todos` MCP to observability toolset; add `playwright` and `runTests` MCPs to performance toolset; document fallback behaviors; track shared utility creation in TODO. |
+| Rationale    | Current toolsets lack automation for TODO generation, browser profiling, and benchmark execution. Adding these MCPs aligns with SPEC-OBS §3 and TECH §8 requirements.      |
+| Consequences | Toolset files require updates; shared utilities tracked as future work in TODO.                                                                                            |
+| References   | SPEC-OBS §1-3, TECH §4.5, TECH §8, PRD §6, Issue #38                                                                                                                       |
 
 ### 11.1 Dashboard & VS Code Integration Architecture (Resolved)
 
@@ -419,4 +442,3 @@ Per [ADR-001](decisions/ADR-001-dashboard-http-api.md), the framework adopts a *
 This architecture preserves the CLI-first philosophy, avoids network attack surface by default, and meets the `< 200 ms` dashboard latency target `[PRD §5.2]`, `[TECH §5.4]`, `[SPEC-SECURITY §1]`.
 
 This consolidated Technical Requirements document supersedes standalone CLI and engine specs; all future technical changes must update this file and receive PRD sign-off.
-
