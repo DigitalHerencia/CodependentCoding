@@ -200,8 +200,8 @@ Both files are emitted atomically at phase completion. The Markdown file include
   "endTime": "ISO8601",
   "status": "success | failure | skipped",
   "requirementIds": ["string"],
-  "checkpoints": [{ "id": "string", "approved": true, "approver": "string" }],
-  "validationResult": { "passed": true, "details": "string" },
+  "checkpoints": [{ "id": "string", "approved": "boolean", "approver": "string" }],
+  "validationResult": { "passed": "boolean", "details": "string" },
   "artifacts": ["string"],
   "logFile": "relative path to .ndjson"
 }
