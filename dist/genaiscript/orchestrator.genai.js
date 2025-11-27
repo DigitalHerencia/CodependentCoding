@@ -29,6 +29,10 @@ import {
 import {
   loadState as loadStateSync,
   clearStateCache,
+  startPhaseExecution,
+  completePhaseExecution,
+  hasResumablePhases,
+  getResumableSnapshots,
 } from './shared/statePersistence.js';
 
 script({
@@ -87,6 +91,17 @@ if (phaseOrder.length === 0) {
 }
 
 const state = await loadState();
+
+// Check for resumable phases at startup (SPEC-ENGINE §5)
+if (hasResumablePhases()) {
+  const resumable = getResumableSnapshots();
+  console.log('⚠️  Found resumable phase executions (SPEC-ENGINE §5):');
+  resumable.forEach((s) => {
+    console.log(`   - ${s.phase}: started at ${s.timestamps.startTime}, status: ${s.status}`);
+  });
+  console.log('   These phases may have been interrupted. Review before proceeding.');
+}
+
 const normalizedPhaseInput = (
   env.vars.phase ||
   state.nextPhase ||
@@ -179,13 +194,65 @@ console.log({
   techExcerpt: techRequirementsContent?.slice(0, 400),
 });
 
-await runPromptWithVars('./phases/scaffolding.genai.js', {
-  phase: normalizedPhaseInput,
+// Start execution snapshot before phase execution (TECH §4.5, SPEC-ENGINE §5)
+const executionParams = {
   mode: modeParam,
-  autoExecute: modeParam === 'execute' || modeParam === 'validate' ? 'true' : 'false',
-  context: hydratedContext,
-  ...(env.vars.task ? { task: env.vars.task } : {}),
+  task: env.vars.task || null,
+  skipBootstrap: env.vars.skipBootstrap === 'true',
+  chainNext: env.vars.chainNext === 'true',
+};
+const executionSnapshot = startPhaseExecution(normalizedPhaseInput, executionParams);
+console.log('📸 Execution snapshot started:', {
+  phase: normalizedPhaseInput,
+  startTime: executionSnapshot.timestamps.startTime,
+  status: executionSnapshot.status,
 });
+
+let phaseError = null;
+let phaseOutputs = {};
+
+try {
+  await runPromptWithVars('./phases/scaffolding.genai.js', {
+    phase: normalizedPhaseInput,
+    mode: modeParam,
+    autoExecute: modeParam === 'execute' || modeParam === 'validate' ? 'true' : 'false',
+    context: hydratedContext,
+    ...(env.vars.task ? { task: env.vars.task } : {}),
+  });
+
+  // Record phase outputs
+  phaseOutputs = {
+    checkpointsProcessed: selectedEntry.checkpoints?.length || 0,
+    contextHydrated: true,
+    documentsLoaded: ['PRD', 'TECH_REQUIREMENTS', 'TODO', 'CHANGELOG'],
+  };
+} catch (error) {
+  phaseError = error;
+  console.error('❌ Phase execution failed:', error.message);
+}
+
+// Complete execution snapshot with outputs (TECH §4.5, SPEC-ENGINE §5)
+const finalStatus = phaseError ? 'failed' : 'complete';
+const completedSnapshot = completePhaseExecution(
+  normalizedPhaseInput,
+  phaseOutputs,
+  finalStatus,
+  phaseError?.message || null
+);
+
+if (completedSnapshot) {
+  console.log('📸 Execution snapshot completed:', {
+    phase: completedSnapshot.phase,
+    status: completedSnapshot.status,
+    durationMs: completedSnapshot.timestamps.durationMs,
+    endTime: completedSnapshot.timestamps.endTime,
+  });
+}
+
+// Re-throw error after snapshot is saved
+if (phaseError) {
+  throw phaseError;
+}
 
 const updatedState = {
   lastPhase: normalizedPhaseInput,
@@ -200,6 +267,12 @@ const updatedState = {
     },
   ],
   nextPhase,
+  // Preserve snapshots modified by startPhaseExecution/completePhaseExecution
+  // Use clearStateCache + loadStateSync to get latest snapshots after phase execution
+  executionSnapshots: (() => {
+    clearStateCache();
+    return loadStateSync().executionSnapshots || [];
+  })(),
 };
 
 await saveState(updatedState);

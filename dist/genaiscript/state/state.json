@@ -1,5 +1,8 @@
 {
   "lastPhase": null,
+  "nextPhase": null,
   "completedPhases": [],
-  "history": []
+  "history": [],
+  "executionSnapshots": [],
+  "lastUpdated": null
 }
