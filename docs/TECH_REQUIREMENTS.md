@@ -239,11 +239,16 @@ This section documents the required MCP servers and toolsets for DevCycles 12 (P
 | `postgres` (Prisma)  | Query slow-query logs, analyze N+1 patterns, validate index usage       | Required | Already configured; critical for DB performance work     |
 | `fetch`              | Retrieve external API performance data, validate endpoint latencies     | Optional | Already configured; used for external dependency profiling|
 | `github`             | Post performance reports to PRs, trigger CI benchmarks                  | Optional | Already configured; useful for automated regression gates|
-| `playwright`         | Run browser-based performance tests, capture Web Vitals                 | Recommended | Not in current MCP list; would enable CWV automation     |
-| `runTests`           | Execute Vitest benchmarks, capture timing data programmatically         | Recommended | Not in current MCP list; would enable benchmark automation|
+
+**Recommended MCP Servers (Not Yet Configured):**
+
+| MCP Server           | Purpose                                                                 | Status        | Notes                                                    |
+| -------------------- | ----------------------------------------------------------------------- | ------------- | -------------------------------------------------------- |
+| `playwright`         | Run browser-based performance tests, capture Web Vitals                 | Not Configured | Playwright is available as a VS Code extension (`ms-playwright.playwright`), but not as an MCP server. Adding an MCP server would enable CWV automation. |
+| `runTests`           | Execute Vitest benchmarks, capture timing data programmatically         | Not Configured | Not present as an MCP server; would enable benchmark automation via programmatic test runners. |
 
 **Toolset Gaps Identified:**
-1. **`playwright` MCP server** – Not listed; would enable automated Core Web Vitals capture and browser performance profiling per PRD §6.
+1. **`playwright` MCP server** – Not listed; Playwright is currently available only as a VS Code extension. Adding an MCP server would enable automated Core Web Vitals capture and browser performance profiling per PRD §6.
 2. **`runTests` MCP server** – Not listed; would allow programmatic benchmark execution via Vitest/Playwright test runners.
 3. **Dedicated benchmark CLI entry** – Current toolset lacks `benchmark` in allowed operations at the MCP level; add pnpm/npx benchmark script capability.
 4. **Profiler script helper** – No shared utility for consistent metric capture; consider adding `dist/genaiscript/shared/profiler.js` for repeatable benchmarking.
