@@ -1,0 +1,91 @@
+{
+  // Loaded Vibes – Reusable VS Code Tasks
+  // Reference: Tech Requirements §8, Issue #25
+  "version": "2.0.0",
+  "tasks": [
+    // -------------------------------
+    // ORCHESTRATOR
+    // -------------------------------
+    {
+      "label": "Orchestrator: Run",
+      "type": "shell",
+      "command": "npx",
+      "args": [
+        "genaiscript",
+        "run",
+        "dist/genaiscript/orchestrator.genai.js"
+      ],
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new",
+        "clear": true
+      },
+      "problemMatcher": []
+    },
+    // -------------------------------
+    // LINT & TEST
+    // -------------------------------
+    {
+      "label": "Lint",
+      "type": "shell",
+      "command": "pnpm",
+      "args": ["lint"],
+      "group": "build",
+      "presentation": {
+        "reveal": "silent",
+        "panel": "shared"
+      },
+      "problemMatcher": ["$eslint-stylish"]
+    },
+    {
+      "label": "Test",
+      "type": "shell",
+      "command": "pnpm",
+      "args": ["test"],
+      "group": "test",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+    // -------------------------------
+    // BOOTSTRAP VALIDATION
+    // -------------------------------
+    // NOTE: Issue #13 – Task will fail until dist/scripts/bootstrapper.ps1 adds support for the --check flag as a new parameter.
+    //       Current parameters: -Phase, -Mode, -ProfilePath, -Task, -SkipBootstrap, -SkipOrchestrator, -PlanOnly.
+    //       Update bootstrapper.ps1 to accept --check and perform validation logic.
+    {
+      "label": "Bootstrap: Validate",
+      "type": "shell",
+      "command": "pwsh",
+      "args": [
+        "dist/scripts/bootstrapper.ps1",
+        "--check"
+      ],
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    // -------------------------------
+    // RETRO CLI SMOKE TESTS
+    // -------------------------------
+    // NOTE: Issue #34 – Task will fail until package.json is created and the pnpm retro:smoke script is defined in it.
+    {
+      "label": "Retro CLI: Smoke Tests",
+      "type": "shell",
+      "command": "pnpm",
+      "args": ["retro:smoke"],
+      "group": "test",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    }
+  ]
+}
