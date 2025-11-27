@@ -78,10 +78,13 @@ This backlog tracks Spec-Driven Workflow actions for the Loaded Vibes framework.
 | ☐      | Create CLI smoke tests covering `create`, `dashboard`, `doctor`, `logs`, `devcycle`, `upgrade` commands.              | Tech Requirements §10, SPEC-CLI §6 |
 | ☐      | Maintain mapping between PRD clauses and manifest entries; CLI logs must include `requirementId` metadata for audits. | Tech Requirements §10, SPEC-OBS §3 |
 
-### Open Questions (Tech Requirements §11)
+### Open Questions (Tech Requirements §12)
 
 | Status | Item                                                                                       | Source                |
 | ------ | ------------------------------------------------------------------------------------------ | --------------------- |
+| ☐      | Determine persisted execution summary format (JSON vs Markdown) before enabling CI gating. | Tech Requirements §12 |
+| ☐      | Evaluate optional local HTTP API for CLI dashboards or VS Code webviews.                   | Tech Requirements §12 |
+| ☐      | Assess additional MCP/toolset needs for observability/performance phases.                  | Tech Requirements §12 |
 | ☐      | Determine persisted execution summary format (JSON vs Markdown) before enabling CI gating. | Tech Requirements §11 |
 | ☐      | Evaluate optional local HTTP API for CLI dashboards or VS Code webviews.                   | Tech Requirements §11 |
 | ☐      | Design versioning strategy for user customizations inside `.loaded-vibes` during upgrades. | Tech Requirements §11 |
@@ -100,6 +103,7 @@ This backlog tracks Spec-Driven Workflow actions for the Loaded Vibes framework.
 
 | Status | Item                                                                                                        | Notes                                      |
 | ------ | ----------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
+| ☑      | Design versioning strategy for user customizations inside `.loaded-vibes` during upgrades.                  | ADR-001 created; Tech Requirements §11 updated; Closes #37 |
 | ☑      | Assessed MCP/toolset needs for Observability and Performance DevCycles (Issue #38).                         | Logged in Tech Requirements §11.1          |
 | ☑      | Consolidated PRD + Tech Requirements to absorb CLI & engine specs.                                          | Logged in `CHANGELOG.md`                   |
 | ☑      | Created 7 spec files (SPEC-ARCH, SPEC-ARTIFACTS, SPEC-CLI, SPEC-DEV, SPEC-ENGINE, SPEC-OBS, SPEC-SECURITY). | Provide reusable references for issues/PRs |
