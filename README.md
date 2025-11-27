@@ -114,3 +114,24 @@ Inspect NDJSON traces stored in `.loaded-vibes/logs/*.ndjson` per Tech Requireme
 - Filter by DevCycle/time/severity: `node dist/cli/commands/logs.ts --devcycle <id> --since <iso> --severity warn,error`
 - Stream updates: add `--follow` to tail new NDJSON lines as they are written.
 - Export a Markdown snapshot referencing requirement IDs: `node dist/cli/commands/logs.ts --export .loaded-vibes/logs/export.md`
+
+## 8. CI Workflows
+
+The repository includes automated CI checks to validate framework governance:
+
+### Manifest Validation
+
+The `manifest-validation.yml` workflow verifies that all DevCycle entries in `dist/genaiscript/devcycles.config.json` resolve to valid files:
+
+- **Trigger:** Push/PR changes to manifest file or any prompt/instruction/toolset files
+- **Validation:** For each of the 18 DevCycles, checks that `instructions`, `toolset`, and `prompt` file references exist
+- **Output:** Lists all validated DevCycles with detailed error messages for any missing files
+- **References:** TECH_REQUIREMENTS §7, SPEC-ARTIFACTS §3
+
+### Settings Guard
+
+The `settings-guard.yml` workflow ensures VS Code settings only reference development-layer assets:
+
+- **Trigger:** Push/PR changes to `.vscode/settings.json`
+- **Validation:** Blocks instruction references to `dist/**` shipped assets
+- **References:** PRD §4.3, SPEC-ARCH §3, Tech Requirements §11
