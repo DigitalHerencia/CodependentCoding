@@ -18,6 +18,10 @@ import {
 import { addChangelogEntry, getTimestamp } from '../shared/changelogUpdater.js';
 import { markTodoComplete, addTodoItem } from '../shared/todoUpdater.js';
 import { readFile } from 'fs/promises';
+import {
+  reflectStageHook,
+  persistLogEntries,
+} from '../logging/markdownSummaries.js';
 
 /**
  * Phase runner metadata for orchestrator consumption.
@@ -75,7 +79,14 @@ script({
  */
 
 /**
- * Logs an NDJSON event to console (placeholder for file persistence).
+ * Collects NDJSON events for later processing by markdownSummaries module.
+ * @type {NDJSONEvent[]}
+ * @see SPEC-OBS §3, Issue #17
+ */
+const collectedEvents = [];
+
+/**
+ * Logs an NDJSON event to console and collects it for summary generation.
  * @param {NDJSONEvent} event - Event to log
  * @see SPEC-OBS §3
  */
@@ -85,6 +96,8 @@ function logNDJSON(event) {
     timestamp: event.timestamp || new Date().toISOString(),
   };
   console.log('📊 NDJSON:', JSON.stringify(logEntry));
+  // Collect event for Markdown summary generation (Issue #17)
+  collectedEvents.push(logEntry);
 }
 
 /**
@@ -435,7 +448,7 @@ async function validateStage(devCycleId, implementation, toolsetText) {
  * @param {Object} plan - Design plan
  * @param {string} focusTask - Original task description
  * @returns {Promise<Object>} Reflect/handoff summary
- * @see TECH §4.3, TECH §7, SPEC-ENGINE §4
+ * @see TECH §4.3, TECH §7, SPEC-ENGINE §4, Issue #17
  */
 async function reflectStage(devCycleId, validation, entry, plan, focusTask) {
   logNDJSON(createStageEvent(devCycleId, 'reflect', 'reflect-start', 'TECH §7', 'info', 'Starting Reflect stage'));
@@ -482,6 +495,39 @@ async function reflectStage(devCycleId, validation, entry, plan, focusTask) {
     // Item may not exist or already complete
   }
 
+  // =========================================================================
+  // Markdown Summary Generation from NDJSON logs (Issue #17, SPEC-OBS §3)
+  // =========================================================================
+  
+  // Persist collected NDJSON events to log file
+  if (collectedEvents.length > 0) {
+    const logFilePath = persistLogEntries(collectedEvents);
+    if (logFilePath) {
+      console.log(`📊 NDJSON logs persisted to: ${logFilePath}`);
+    }
+    
+    // Generate Markdown summaries from collected events
+    // This integrates with the reflectStageHook per Issue #17
+    try {
+      const summaryResult = reflectStageHook(devCycleId, collectedEvents, {
+        skipDuplicateCheck: false, // Ensure idempotent writes
+        todoCategory: 'Observability & Logging',
+      });
+      
+      if (summaryResult.todoUpdated) {
+        console.log('📋 TODO.md updated with DevCycle summary from NDJSON logs.');
+      }
+      if (summaryResult.changelogUpdated) {
+        console.log('📝 CHANGELOG.md updated with action log from NDJSON logs.');
+      }
+      if (!summaryResult.success) {
+        console.log('⚠️  Markdown summary generation had issues:', summaryResult.error);
+      }
+    } catch (err) {
+      console.log('⚠️  Markdown summary hook failed:', err.message);
+    }
+  }
+
   const reflectSummary = {
     devCycleId,
     label: entry.label,
@@ -490,6 +536,7 @@ async function reflectStage(devCycleId, validation, entry, plan, focusTask) {
     todoUpdates: validation.followUps?.length || 0,
     nextRecommendation: plan.citations?.includes('chain') ? 'Continue to next DevCycle' : 'Await manual trigger',
     timestamp: new Date().toISOString(),
+    ndjsonEventsCount: collectedEvents.length,
   };
 
   logNDJSON(createStageEvent(
