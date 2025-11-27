@@ -41,7 +41,7 @@ This backlog tracks Spec-Driven Workflow actions for the Loaded Vibes framework.
 | ☐      | Implement NDJSON log format with fields: `devCycleId`, `phase`, `requirementId`, `severity`, `checkpointId`, timestamps. | Tech Requirements §4.5, SPEC-OBS §1-3       |
 | ☐      | Persist execution snapshots in `dist/genaiscript/state/state.json` with phase, params, outputs, timestamps.              | Tech Requirements §4.5, SPEC-ENGINE §5      |
 | ☐      | Generate Markdown summaries from NDJSON for TODO/CHANGELOG updates with requirement ID references.                       | PRD §5.3, Tech Requirements §7, SPEC-OBS §3 |
-| ☐      | Capture and document CLI telemetry export format (JSON vs Markdown) then wire export commands.                           | Tech Requirements §11, SPEC-OBS §2          |
+| ☐      | Implement dual-mode execution summaries (JSON + Markdown) per ADR-0001; create `summary-writer.js` utility.              | Tech Requirements §11, SPEC-OBS §2, ADR-0001 |
 
 ### Security & Safety
 
@@ -82,6 +82,9 @@ This backlog tracks Spec-Driven Workflow actions for the Loaded Vibes framework.
 
 | Status | Item                                                                                       | Source                |
 | ------ | ------------------------------------------------------------------------------------------ | --------------------- |
+| ☐      | Evaluate optional local HTTP API for CLI dashboards or VS Code webviews.                   | Tech Requirements §12 |
+| ☐      | Design versioning strategy for user customizations inside `.loaded-vibes` during upgrades. | Tech Requirements §12 |
+| ☐      | Assess additional MCP/toolset needs for observability/performance phases.                  | Tech Requirements §12 |
 | ☐      | Determine persisted execution summary format (JSON vs Markdown) before enabling CI gating. | Tech Requirements §12 |
 | ☐      | Evaluate optional local HTTP API for CLI dashboards or VS Code webviews.                   | Tech Requirements §12 |
 | ☐      | Assess additional MCP/toolset needs for observability/performance phases.                  | Tech Requirements §12 |
@@ -103,6 +106,7 @@ This backlog tracks Spec-Driven Workflow actions for the Loaded Vibes framework.
 
 | Status | Item                                                                                                        | Notes                                      |
 | ------ | ----------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
+| ☑      | Decided execution summary format: dual-mode JSON + Markdown output (ADR-0001). Closes #35.                  | See [ADR-0001](../docs/decisions/ADR-0001-execution-summary-format.md), TECH §11 |
 | ☑      | Evaluated local HTTP API for CLI dashboards and VS Code webviews.                                           | Hybrid file-based approach adopted; see `docs/decisions/ADR-001-dashboard-http-api.md`, TECH §11.1 |
 | ☑      | Design versioning strategy for user customizations inside `.loaded-vibes` during upgrades.                  | ADR-001 created; Tech Requirements §11 updated; Closes #37 |
 | ☑      | Assessed MCP/toolset needs for Observability and Performance DevCycles (Issue #38).                         | Logged in Tech Requirements §11.1          |

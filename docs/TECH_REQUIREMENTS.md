@@ -175,6 +175,48 @@ Global instructions MUST list only these names; instruction files define behavio
 - Maintain mapping between PRD clauses and manifest entries; CLI logs must include `requirementId` metadata for audits.
 - Periodically compare this document’s DevCycle list with `dist/.github/global.instructions.md`; CI check recommended.
 
+## 11. Execution Summary Format
+
+### 11.1 Decision
+
+Execution summaries use **dual-mode output** (JSON + Markdown) to serve both machine and human consumers. See [ADR-0001](decisions/ADR-0001-execution-summary-format.md) for full rationale.
+
+### 11.2 Format Specification
+
+| Output | Format | Location | Purpose |
+| --- | --- | --- | --- |
+| Structured summary | JSON | `.loaded-vibes/summaries/<devCycleId>-<timestamp>.json` | CI gating, dashboards, programmatic queries |
+| Human summary | Markdown | `.loaded-vibes/summaries/<devCycleId>-<timestamp>.md` | PR attachments, TODO/CHANGELOG, manual review |
+
+Both files are emitted atomically at phase completion. The Markdown file includes YAML frontmatter mirroring JSON fields for light parsing.
+
+### 11.3 JSON Schema
+
+```json
+{
+  "devCycleId": "string",
+  "phase": "string",
+  "startTime": "ISO8601",
+  "endTime": "ISO8601",
+  "status": "success | failure | skipped",
+  "requirementIds": ["string"],
+  "checkpoints": [{ "id": "string", "approved": "boolean", "approver": "string" }],
+  "validationResult": { "passed": "boolean", "details": "string" },
+  "artifacts": ["string"],
+  "logFile": "relative path to .ndjson"
+}
+```
+
+### 11.4 Migration Steps
+
+1. Create shared utility `dist/genaiscript/shared/summary-writer.js` to emit both JSON and Markdown.
+2. Update orchestrator to invoke the utility at each phase completion.
+3. Extend `loaded-vibes logs` to display/export summaries.
+4. Update CI workflows to consume `*.json` for gating decisions.
+
+## 12. Roadmap & Open Questions
+
+- Evaluate optional local HTTP API for CLI dashboards or VS Code webviews.
 ## 11. Customization Versioning Strategy
 
 ### 11.1 Overview
