@@ -53,7 +53,9 @@
     // -------------------------------
     // BOOTSTRAP VALIDATION
     // -------------------------------
-    // NOTE: Issue #13 – Task will fail until dist/scripts/bootstrapper.ps1 implements --check flag.
+    // NOTE: Issue #13 – Task will fail until dist/scripts/bootstrapper.ps1 adds support for the --check flag as a new parameter.
+    //       Current parameters: -Phase, -Mode, -ProfilePath, -Task, -SkipBootstrap, -SkipOrchestrator, -PlanOnly.
+    //       Update bootstrapper.ps1 to accept --check and perform validation logic.
     {
       "label": "Bootstrap: Validate",
       "type": "shell",
