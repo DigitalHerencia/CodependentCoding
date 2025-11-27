@@ -175,11 +175,68 @@ Global instructions MUST list only these names; instruction files define behavio
 - Maintain mapping between PRD clauses and manifest entries; CLI logs must include `requirementId` metadata for audits.
 - Periodically compare this document’s DevCycle list with `dist/.github/global.instructions.md`; CI check recommended.
 
-## 11. Roadmap & Open Questions
+## 11. Customization Versioning Strategy
+
+### 11.1 Overview
+
+WHEN a user runs `loaded-vibes upgrade`, THE SYSTEM SHALL preserve user customizations while applying upstream changes, detect conflicts, and provide actionable resolution paths `[PRD §5.1]`.
+
+The versioning strategy uses a three-tier approach:
+1. **Framework Version Tracking:** Semantic versioning in `.loaded-vibes/manifest.json`
+2. **Asset Version Tracking:** Checksum-based tracking in `.loaded-vibes/assets.json`
+3. **Conflict Resolution:** Mirror/Merge/Sandbox strategies per `[PRD §5.1]`
+
+### 11.2 Semantic Versioning Scheme
+
+| Version Bump | Scope | Upgrade Impact |
+|--------------|-------|----------------|
+| **Major** (X.0.0) | Breaking changes to manifest schema, toolset APIs, or DevCycle contracts | Requires manual review; auto-upgrade blocked |
+| **Minor** (1.X.0) | New DevCycles, prompts, toolsets, or non-breaking enhancements | Auto-merge safe for unmodified assets |
+| **Patch** (1.2.X) | Bug fixes, documentation updates, security patches | Silent update for pristine assets |
+
+### 11.3 Asset Tracking
+
+Each shipped asset is tracked with:
+- **frameworkChecksum:** SHA256 of the shipped version
+- **localChecksum:** Current file checksum
+- **frameworkVersion:** Version when last synced from upstream
+- **lastModified:** Local modification timestamp
+- **status:** `pristine` | `modified` | `conflict`
+
+### 11.4 Diff Hint Generation
+
+The CLI generates upgrade hints before applying changes:
+- Pre-upgrade analysis via `loaded-vibes upgrade --analyze`
+- Diff hints stored in `.loaded-vibes/upgrade-hints/v{version}.json`
+- Visual indicators for added, modified, and conflicting sections
+
+### 11.5 Conflict Handling Strategies
+
+| Strategy | Use Case | Behavior |
+|----------|----------|----------|
+| **Mirror** | Exact parity with upstream | Overwrites all assets; backs up local modifications |
+| **Merge** | Preserve customizations | Auto-merges non-conflicting changes; interactive resolution for conflicts |
+| **Sandbox** | Evaluate before committing | Extracts to sandbox directory; user selectively applies changes |
+
+### 11.6 Upgrade Workflow
+
+1. **Pre-Upgrade:** Checksum validation, backup creation, diff analysis
+2. **Strategy Selection:** User chooses Mirror/Merge/Sandbox
+3. **Execution:** Apply strategy with Bad Vibes Firewall warnings `[PRD §5.5]`
+4. **Post-Upgrade:** Asset registry update, NDJSON logging, doctor validation
+
+### 11.7 Rollback & Recovery
+
+- Automatic backup retention (last 5 upgrades) in `.loaded-vibes/backup/`
+- Restore commands: `loaded-vibes restore --from v{timestamp}`
+- Single-asset restore: `loaded-vibes restore --from v{timestamp} --asset <path>`
+
+**Decision Record:** `docs/decisions/ADR-001-customization-versioning-strategy.md`
+
+## 12. Roadmap & Open Questions
 
 - Determine format for persisted execution summaries (JSON vs Markdown) before enabling CI gating.
 - Evaluate optional local HTTP API for CLI dashboards or VS Code webviews.
-- Design versioning strategy for user customizations inside `.loaded-vibes` during upgrades (semantic versions + diff hints proposed).
 - Assess additional MCP/toolset needs for observability/performance phases.
 
 This consolidated Technical Requirements document supersedes standalone CLI and engine specs; all future technical changes must update this file and receive PRD sign-off.
