@@ -37,12 +37,20 @@ const TIMEOUT_MS = 10000;
 
 /**
  * Executes a command with timeout and returns stdout.
- * @param {string} command - Command to execute
- * @param {string[]} args - Command arguments
+ * Note: Uses shell: true for cross-platform compatibility.
+ * Commands and arguments should be hardcoded or validated before use.
+ * @param {string} command - Command to execute (must be a known safe command)
+ * @param {string[]} args - Command arguments (must be validated)
  * @param {number} [timeout=TIMEOUT_MS] - Timeout in milliseconds
  * @returns {Promise<string>} Command output
  */
 function execCommand(command, args = [], timeout = TIMEOUT_MS) {
+  // Allowlist of safe commands for preflight checks
+  const allowedCommands = ['git', 'pnpm', 'code'];
+  if (!allowedCommands.includes(command)) {
+    return Promise.reject(new Error(`Command '${command}' is not in the allowed list`));
+  }
+
   return new Promise((resolve, reject) => {
     const proc = spawn(command, args, {
       shell: true,
@@ -242,15 +250,26 @@ async function checkVSCode() {
     };
   } catch (error) {
     // Fallback: check common installation paths
-    const commonPaths =
-      process.platform === 'win32'
-        ? [
-            process.env.LOCALAPPDATA + '\\Programs\\Microsoft VS Code\\Code.exe',
-            process.env.PROGRAMFILES + '\\Microsoft VS Code\\Code.exe',
-          ]
-        : process.platform === 'darwin'
-          ? ['/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code']
-          : ['/usr/bin/code', '/usr/share/code/bin/code', '/snap/bin/code'];
+    const commonPaths = [];
+
+    if (process.platform === 'win32') {
+      // Windows: check common installation paths, filtering out undefined env vars
+      if (process.env.LOCALAPPDATA) {
+        commonPaths.push(
+          path.join(process.env.LOCALAPPDATA, 'Programs', 'Microsoft VS Code', 'Code.exe')
+        );
+      }
+      if (process.env.PROGRAMFILES) {
+        commonPaths.push(
+          path.join(process.env.PROGRAMFILES, 'Microsoft VS Code', 'Code.exe')
+        );
+      }
+    } else if (process.platform === 'darwin') {
+      commonPaths.push('/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code');
+    } else {
+      // Linux
+      commonPaths.push('/usr/bin/code', '/usr/share/code/bin/code', '/snap/bin/code');
+    }
 
     for (const codePath of commonPaths) {
       try {
@@ -439,12 +458,30 @@ export {
   checkGenAIScriptExtension,
 };
 
-// Run main if executed directly
-const isMainModule =
-  import.meta.url === `file://${process.argv[1]}` ||
-  process.argv[1]?.endsWith('preflight/index.js');
+/**
+ * Checks if this module is being run directly (not imported).
+ * Handles cross-platform path differences.
+ * @returns {boolean}
+ */
+function isRunningDirectly() {
+  if (!process.argv[1]) {
+    return false;
+  }
 
-if (isMainModule) {
+  // Normalize paths for cross-platform comparison
+  const scriptPath = fileURLToPath(import.meta.url);
+  const invokePath = path.resolve(process.argv[1]);
+
+  // Check exact match or if script is being run via node
+  return (
+    scriptPath === invokePath ||
+    path.basename(invokePath) === 'index.js' &&
+    path.basename(path.dirname(invokePath)) === 'preflight'
+  );
+}
+
+// Run main if executed directly
+if (isRunningDirectly()) {
   main().catch((error) => {
     console.error('Preflight check failed:', error.message);
     process.exit(1);
