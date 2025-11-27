@@ -4,17 +4,21 @@
  *
  * Provides structured logging in Newline-Delimited JSON format for DevCycle events.
  * Logs are stored in `.loaded-vibes/logs/*.ndjson` and include requirement ID tracking.
+ * All entries pass through secret redaction middleware per TECH §9 and SPEC-SECURITY §2.
  *
  * @module dist/cli/services/ndjsonLogger
  * @see docs/TECH_REQUIREMENTS.md §4.5 - State & Telemetry
  * @see docs/TECH_REQUIREMENTS.md §5.3 - Diagnostics & Logs
+ * @see docs/TECH_REQUIREMENTS.md §9 - Security, Quality, Compliance
  * @see spec/observability.spec.md §3 - Implementation Guidance
+ * @see spec/security.spec.md §2 - Component Controls (Logging Stack)
  */
 
 import { createWriteStream, existsSync } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { createFileGuard } from '../security/fileGuard.js';
+import { getRedactor, redactLogEntry } from './redaction.js';
 
 const CURRENT_DIR = path.dirname(fileURLToPath(import.meta.url));
 const DEFAULT_LOGS_DIR = path.resolve(CURRENT_DIR, '..', '..', '..', '.loaded-vibes', 'logs');
@@ -42,42 +46,14 @@ const logFileGuard = createFileGuard();
 /**
  * Redacts sensitive information from log data.
  * Implements TECH §9 and SPEC-SECURITY §2 requirements.
+ * Delegates to the comprehensive redaction module for pattern-based and key-based redaction.
  *
  * @param {Object} data - Data object to redact
  * @returns {Object} Redacted data object
+ * @deprecated Use redaction.js module directly for full control
  */
 function redactSensitive(data) {
-  if (!data || typeof data !== 'object') {
-    return data;
-  }
-
-  const sensitiveKeys = [
-    'password',
-    'secret',
-    'token',
-    'api_key',
-    'apikey',
-    'api-key',
-    'authorization',
-    'auth',
-    'credential',
-    'private_key',
-    'privatekey',
-    'private-key',
-  ];
-
-  const redacted = { ...data };
-
-  for (const key of Object.keys(redacted)) {
-    const lowerKey = key.toLowerCase();
-    if (sensitiveKeys.some((sensitive) => lowerKey.includes(sensitive))) {
-      redacted[key] = '[REDACTED]';
-    } else if (typeof redacted[key] === 'object' && redacted[key] !== null) {
-      redacted[key] = redactSensitive(redacted[key]);
-    }
-  }
-
-  return redacted;
+  return getRedactor().redactObject(data);
 }
 
 /**
@@ -128,6 +104,7 @@ export class NDJSONLogger {
 
   /**
    * Logs an event in NDJSON format.
+   * All entries pass through secret redaction middleware per TECH §9 and SPEC-SECURITY §2.
    *
    * @param {Partial<NDJSONEvent>} event - Event data to log
    * @returns {void}
@@ -142,16 +119,18 @@ export class NDJSONLogger {
       timestamp: new Date().toISOString(),
       severity: 'info',
       ...event,
-      data: event.data ? redactSensitive(event.data) : undefined,
     };
 
-    const line = JSON.stringify(fullEvent) + '\n';
+    // Apply comprehensive redaction to entire entry (message, data, etc.)
+    const redactedEvent = redactLogEntry(fullEvent);
+
+    const line = JSON.stringify(redactedEvent) + '\n';
     this.stream.write(line);
     this.eventCount++;
 
     if (this.includeConsole) {
-      const icon = this._getSeverityIcon(fullEvent.severity);
-      console.log(`${icon} [${fullEvent.phase || 'system'}] ${fullEvent.message}`);
+      const icon = this._getSeverityIcon(redactedEvent.severity);
+      console.log(`${icon} [${redactedEvent.phase || 'system'}] ${redactedEvent.message}`);
     }
   }
 
@@ -201,6 +180,28 @@ export class NDJSONLogger {
    */
   error(phase, message, data) {
     this.log({ phase, message, severity: 'error', data });
+  }
+
+  /**
+   * Logs an exception with sanitized stack trace.
+   * Stack traces are redacted per SPEC-OBS §4 and SPEC-SECURITY §2.
+   *
+   * @param {string} phase - Current phase
+   * @param {Error} err - Error object
+   * @param {Object} [data] - Optional additional data
+   * @returns {void}
+   */
+  exception(phase, err, data) {
+    this.log({
+      phase,
+      message: err.message || 'Unknown error',
+      severity: 'error',
+      data: {
+        ...data,
+        stack: err.stack,
+        name: err.name,
+      },
+    });
   }
 
   /**
@@ -298,4 +299,9 @@ export function createLogger(options) {
   return new NDJSONLogger(options);
 }
 
-export { redactSensitive, DEFAULT_LOGS_DIR };
+// Re-export redaction utilities for convenience
+export {
+  redactSensitive,
+  redactLogEntry,
+  DEFAULT_LOGS_DIR,
+};
