@@ -34,7 +34,7 @@ This backlog tracks Spec-Driven Workflow actions for the Loaded Vibes framework.
 | ------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------- |
 | ☐      | Harden bootstrapper (TS + PowerShell) to validate VS Code profiles, MCP endpoints, manifest coherence, and emit machine-readable JSON status for CI + CLI. | Tech Requirements §4.4, SPEC-SECURITY §2      |
 | ☑      | Implement preflight checks: verify Node ≥ 20, git, pnpm, VS Code, GenAIScript extension with actionable remediation guidance.                              | PRD §5.1, Tech Requirements §5.1, SPEC-CLI §3 |
-| ☐      | Add CI validation that `dist/.github/global.instructions.md` DevCycle list matches Tech Requirements §6 canonical table.                                   | Tech Requirements §10, SPEC-DEV §2            |
+| ☑      | Add CI validation that `dist/.github/global.instructions.md` DevCycle list matches Tech Requirements §6 canonical table.                                   | Tech Requirements §10, SPEC-DEV §2            |
 
 ### Observability & Logging
 
@@ -112,6 +112,7 @@ This backlog tracks Spec-Driven Workflow actions for the Loaded Vibes framework.
 
 | Status | Item                                                                                                                     | Notes                                                                                              |
 | ------ | ------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------- |
+| ☑      | Added CI validation for DevCycle list parity between global.instructions.md and TECH_REQUIREMENTS.md §6. Closes #12.    | See `.github/workflows/devcycle-parity.yml`; parses both files, normalizes names, shows diff on mismatch |
 | ☑      | Implemented retrofit/attach workflow (Mirror / Merge / Sandbox) with conflict detection and install logging. Closes #10. | See `dist/cli/attachWorkflow.js`; logs under `.loaded-vibes/logs/install-YYYYMMDD.md`              |
 | ☑      | Decided execution summary format: dual-mode JSON + Markdown output (ADR-0001). Closes #35.                               | See [ADR-0001](../docs/decisions/ADR-0001-execution-summary-format.md), TECH §11                   |
 | ☑      | Evaluated local HTTP API for CLI dashboards and VS Code webviews.                                                        | Hybrid file-based approach adopted; see `docs/decisions/ADR-001-dashboard-http-api.md`, TECH §11.1 |
