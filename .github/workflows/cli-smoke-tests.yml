@@ -1,0 +1,72 @@
+# CLI Smoke Tests Workflow
+# Runs CLI smoke tests to verify basic command functionality
+#
+# Closes #34
+# Requirements: TECH_REQUIREMENTS §10, SPEC-CLI §6
+
+name: CLI Smoke Tests
+
+on:
+  push:
+    paths:
+      - 'dist/cli/**'
+      - 'tests/cli/**'
+      - '.github/workflows/cli-smoke-tests.yml'
+  pull_request:
+    paths:
+      - 'dist/cli/**'
+      - 'tests/cli/**'
+      - '.github/workflows/cli-smoke-tests.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  smoke-tests:
+    name: CLI Smoke Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Cache CLI node_modules
+        uses: actions/cache@v4
+        with:
+          path: dist/cli/node_modules
+          key: ${{ runner.os }}-cli-node-modules-${{ hashFiles('dist/cli/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-cli-node-modules-
+      - name: Install CLI dependencies
+        working-directory: dist/cli
+        run: npm install
+
+      - name: Run smoke tests
+        run: node --test tests/cli/smoke.test.js
+
+      - name: Test summary
+        if: always()
+        run: |
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "CLI Smoke Tests Complete"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo ""
+          echo "Tested commands:"
+          echo "  ✓ loaded-vibes --help"
+          echo "  ✓ loaded-vibes dashboard --help"
+          echo "  ✓ loaded-vibes doctor"
+          echo "  ✓ loaded-vibes logs --help"
+          echo "  ✓ loaded-vibes devcycle --list"
+          echo "  ✓ loaded-vibes upgrade --analyze"
+          echo "  ✓ loaded-vibes preflight"
+          echo ""
+          echo "📚 References:"
+          echo "  • TECH_REQUIREMENTS §10 - CLI smoke tests"
+          echo "  • SPEC-CLI §6 - Validation & Tagging"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"

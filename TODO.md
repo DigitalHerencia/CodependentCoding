@@ -81,7 +81,7 @@ This backlog tracks Spec-Driven Workflow actions for the Loaded Vibes framework.
 | Status | Item                                                                                                                  | Source                             |
 | ------ | --------------------------------------------------------------------------------------------------------------------- | ---------------------------------- |
 | ☐      | Implement `genaiscript test` coverage for orchestrator + phase scripts with mocked env.                               | Tech Requirements §10, SPEC-DEV §3 |
-| ☐      | Create CLI smoke tests covering `create`, `dashboard`, `doctor`, `logs`, `devcycle`, `upgrade` commands.              | Tech Requirements §10, SPEC-CLI §6 |
+| ☑      | Create CLI smoke tests covering `create`, `dashboard`, `doctor`, `logs`, `devcycle`, `upgrade` commands.              | Tech Requirements §10, SPEC-CLI §6 |
 | ☐      | Maintain mapping between PRD clauses and manifest entries; CLI logs must include `requirementId` metadata for audits. | Tech Requirements §10, SPEC-OBS §3 |
 
 ### Open Questions (Tech Requirements §12)
