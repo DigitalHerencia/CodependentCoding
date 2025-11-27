@@ -102,17 +102,19 @@ jobs:
             
             if [ -n "$INSTRUCTION_PATHS" ]; then
               while IFS= read -r path; do
-                if [ "$path" = "$ALLOWED_INSTRUCTIONS" ]; then
+                # Normalize path: remove leading './' if present
+                norm_path="${path#./}"
+                if [ "$norm_path" = "$ALLOWED_INSTRUCTIONS" ]; then
                   echo "   ✅ $path - primary instructions file"
-                elif [[ "$path" == .github/* ]]; then
-                  echo "   ✅ $path - allowed (.github/ development asset)"
-                elif [[ "$path" == dist/* ]]; then
+                elif [[ "$norm_path" == .github/*.md || "$norm_path" == .github/**/*.md ]]; then
+                  echo "   ✅ $path - allowed (.github/ markdown asset)"
+                elif [[ "$norm_path" == dist/* ]]; then
                   echo "   ❌ $path - shipped asset not allowed"
                   echo ""
-                  echo "   ℹ️  To fix: Use .github/copilot-instructions.md instead"
+                  echo "   ℹ️  To fix: Use .github/copilot-instructions.md or .github/**/*.md instead"
                   EXIT_CODE=1
                 else
-                  echo "   ⚠️  $path - verify this is a development asset"
+                  echo "   ⚠️  $path - verify this is a development markdown asset"
                 fi
               done <<< "$INSTRUCTION_PATHS"
             else
