@@ -21,6 +21,7 @@ import { readFileSync, existsSync } from 'fs';
 
 import { NDJSONLogger, createLogger } from './ndjsonLogger.js';
 import { createFileGuard } from '../security/fileGuard.js';
+import { createBadVibesFirewall, COMMON_OPERATIONS } from '../security/badVibesFirewall.js';
 
 const CURRENT_DIR = path.dirname(fileURLToPath(import.meta.url));
 const GENAI_ROOT = path.resolve(CURRENT_DIR, '..', '..', 'genaiscript');
@@ -77,6 +78,8 @@ const stateFileGuard = createFileGuard();
  * @property {string[]} affectedPaths - Paths that would be affected
  * @property {string[]} rollbackSteps - Steps to rollback if needed
  * @property {string} requirementId - Requirement ID for traceability
+ * @property {string[]} [requiredApprovals] - List of required approval types
+ * @property {'low'|'medium'|'high'|'critical'} [riskLevel] - Risk severity level
  */
 
 /**
@@ -154,6 +157,10 @@ export class DevCycleRunner extends EventEmitter {
     this.logger = createLogger({
       devCycleId: this.devCycleId,
       includeConsole: this.verbose,
+    });
+    this.firewall = createBadVibesFirewall({
+      autoApprove: this.autoApprove,
+      logger: this.logger,
     });
     this.process = null;
     this.isPaused = false;
@@ -234,6 +241,7 @@ export class DevCycleRunner extends EventEmitter {
   /**
    * Displays Bad Vibes Firewall warning for destructive operations.
    * Implements PRD §5.5 and SPEC-SECURITY §1 requirements.
+   * Now delegates to the BadVibesFirewall module for consistent handling.
    *
    * @param {FirewallWarning} warning
    * @returns {Promise<boolean>} - Whether to proceed
@@ -246,21 +254,19 @@ export class DevCycleRunner extends EventEmitter {
       data: warning,
     });
 
-    console.log('\n' + '🔥'.repeat(30));
-    console.log('⚠️  BAD VIBES FIREWALL WARNING ⚠️');
-    console.log('🔥'.repeat(30));
-    console.log(`\nOperation: ${warning.operation}`);
-    console.log(`\nAffected Paths:`);
-    warning.affectedPaths.forEach((p) => console.log(`  • ${p}`));
-    console.log(`\nRollback Steps:`);
-    warning.rollbackSteps.forEach((step, i) => console.log(`  ${i + 1}. ${step}`));
-    console.log(`\nRequirement: ${warning.requirementId}`);
-    console.log('\n' + '─'.repeat(60));
+    // Use the BadVibesFirewall module for consistent prompting, logging, and state persistence
+    const result = await this.firewall.guard({
+      operation: warning.operation,
+      affectedPaths: warning.affectedPaths,
+      rollbackSteps: warning.rollbackSteps,
+      requiredApprovals: warning.requiredApprovals || ['user confirmation'],
+      riskLevel: warning.riskLevel || 'high',
+      devCycleId: this.devCycleId,
+      phase: this.state.currentPhase,
+      requirementId: warning.requirementId,
+    });
 
-    return this._promptForApproval(
-      'firewall-approval',
-      'Do you want to proceed with this destructive operation?'
-    );
+    return result.approved;
   }
 
   /**

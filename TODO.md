@@ -51,6 +51,8 @@ This backlog tracks Spec-Driven Workflow actions for the Loaded Vibes framework.
 
 | Status | Item                                                                                                                                | Source                                               |
 | ------ | ----------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
+| ☐      | Implement SHA256 verification for all downloaded releases; block unsigned payloads with actionable guidance.                        | PRD §5.5, Tech Requirements §5.4, SPEC-SECURITY §1-2 |
+| ☑      | Implement "Bad Vibes Firewall" prompts for destructive operations: describe affected paths, required approvals, and rollback steps. | PRD §5.5, Tech Requirements §5.4, SPEC-SECURITY §1   |
 | ☑      | Implement SHA256 verification for all downloaded releases; block unsigned payloads with actionable guidance.                        | PRD §5.5, Tech Requirements §5.4, SPEC-SECURITY §1-2 |
 | ☐      | Implement "Bad Vibes Firewall" prompts for destructive operations: describe affected paths, required approvals, and rollback steps. | PRD §5.5, Tech Requirements §5.4, SPEC-SECURITY §1   |
 | ☑      | Confine CLI file writes to `.loaded-vibes/**` unless user explicitly approves template copies to project root.                      | PRD §5.5, Tech Requirements §5.4, SPEC-SECURITY §1   |
