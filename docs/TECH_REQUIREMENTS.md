@@ -259,40 +259,20 @@ Based on this assessment, the following updates are recommended:
 
 **For `observability.toolset.jsonc`:**
 ```jsonc
-"mcpServers": [
-  "filesystem",
-  "git",
-  "github",
-  "postgres",
-  "fetch",
-  "memory",
-  "sequentialthinking",
-  "todos"  // ADD: Streamline TODO generation from telemetry gaps
-]
-```
-
-**For `performance.toolset.jsonc`:**
-```jsonc
-"mcpServers": [
-  "filesystem",
-  "git",
-  "github",
-  "postgres",
-  "fetch",
-  "memory",
-  "sequentialthinking",
-  "playwright",  // ADD: Enable automated CWV/browser profiling
-  "runTests"     // ADD: Enable programmatic benchmark execution
-],
-"allowedOperations": [
-  "readFiles",
-  "writeFiles",
-  "runCLI",
-  "callMCP",
-  "benchmark",
-  "updateReports",
-  "runBrowserTests"  // ADD: Support browser performance testing
-]
+{
+  "tools": {
+    "mcpServers": [
+      "filesystem",
+      "git",
+      "github",
+      "postgres",
+      "fetch",
+      "memory",
+      "sequentialthinking",
+      "todos"  // ADD: Streamline TODO generation from telemetry gaps
+    ]
+  }
+}
 ```
 
 **Shared Utilities (Future Work):**
