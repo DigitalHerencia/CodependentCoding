@@ -62,13 +62,18 @@ jobs:
           echo "🔍 Parsing DevCycle names from $INSTRUCTIONS_FILE..."
           
           # Extract section between "## Development Phases" and "## Artifact Types"
-          # Then filter for numbered list items (1-18 only)
+          # Filter for numbered list items, then normalize:
+          # - Remove number prefix
+          # - Lowercase
+          # - Convert unicode hyphens (‑–—) to ASCII hyphen
+          # - Convert slashes to hyphens
+          # - Trim trailing whitespace
           INSTRUCTIONS_CYCLES=$(awk '/^## Development Phases/,/^## Artifact Types/' "$INSTRUCTIONS_FILE" | \
             grep -E '^[0-9]+\. ' | \
-            head -18 | \
             sed 's/^[0-9]*\. //' | \
             tr '[:upper:]' '[:lower:]' | \
             sed 's/[‑–—]/-/g' | \
+            sed 's/\//-/g' | \
             sed 's/[[:space:]]*$//' | \
             sort)
 
@@ -79,8 +84,13 @@ jobs:
           
           # Extract table rows with numeric IDs (skip header and separator)
           # Column 3 contains the DevCycle name
+          # Normalize consistently with instructions parser:
+          # - Trim whitespace
+          # - Lowercase
+          # - Convert spaces to hyphens
+          # - Convert slashes to hyphens
+          # - Convert unicode hyphens to ASCII hyphen
           CANONICAL_CYCLES=$(grep -E '^\| *[0-9]+ *\|' "$TECH_REQ_FILE" | \
-            head -18 | \
             awk -F'|' '{gsub(/^[[:space:]]+|[[:space:]]+$/, "", $3); print $3}' | \
             tr '[:upper:]' '[:lower:]' | \
             sed 's/[[:space:]]/-/g' | \
@@ -96,8 +106,13 @@ jobs:
           echo "$CANONICAL_CYCLES" | nl
           echo ""
 
+          # Get count for dynamic messaging
+          CANONICAL_COUNT=$(echo "$CANONICAL_CYCLES" | wc -l | tr -d ' ')
+          INSTRUCTIONS_COUNT=$(echo "$INSTRUCTIONS_CYCLES" | wc -l | tr -d ' ')
+
           # Compare lists
           echo "🔄 Comparing lists..."
+          echo "   (Canonical: $CANONICAL_COUNT DevCycles, Instructions: $INSTRUCTIONS_COUNT DevCycles)"
           echo ""
 
           # Create temp files for diff
@@ -152,7 +167,7 @@ jobs:
           echo "To update DevCycle list:"
           echo "  1. Update docs/TECH_REQUIREMENTS.md §6 with the new canonical list"
           echo "  2. Update dist/.github/global.instructions.md to match"
-          echo "  3. Ensure both files have the same 18 DevCycle names"
+          echo "  3. Ensure both files have matching DevCycle names (currently $CANONICAL_COUNT)"
           echo "  4. Use lowercase and hyphen-separated names (e.g., 'code-review')"
           echo "  5. Update devcycles.config.json if manifest entries are affected"
           echo ""
