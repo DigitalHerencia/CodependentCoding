@@ -64,16 +64,49 @@ Loaded Vibes generates all assets for the end user inside:
 
 Refer to `docs/PRD.md` §5 and `docs/TECH_REQUIREMENTS.md` §§5–10 whenever CLI behavior needs to change.
 
-## 5. DevCycle Command
+## 5. Dashboard Command
+
+The retro synthwave dashboard provides a unified view of your DevCycle workflow with live updates:
+
+```
+node dist/cli/commands/dashboard.js
+```
+
+### Dashboard Features (PRD §5.2)
+
+- **ASCII Masthead**: Gradient-styled "LOADED VIBES" banner using figlet + gradient-string
+- **DevCycle Queue**: Shows all 18 DevCycles with status indicators (○ pending, ▶ running, ✓ done, ✗ failed)
+- **Live Logs**: Streams NDJSON log entries from `.loaded-vibes/logs/*.ndjson` with severity icons
+- **System Metrics**: CPU and memory usage with visual progress bars (updates every 2s)
+- **TODO/CHANGELOG Feed**: Recent TODO items and CHANGELOG entries from project root
+- **Notifications**: Toast-style alerts for dashboard events
+- **Command Palette**: Fuzzy search via Ctrl+P (uses fuse.js)
+
+### Keyboard Controls
+
+| Key | Action |
+|-----|--------|
+| `Ctrl+P` | Open command palette (fuzzy search) |
+| `r` | Refresh dashboard data |
+| `l` | Toggle live log streaming |
+| `h` / `?` | Show keyboard shortcuts help |
+| `q` / `Ctrl+C` | Quit dashboard |
+
+### Performance Target
+
+Dashboard updates are throttled to <200ms to meet PRD §6 latency requirements.
+
+## 6. DevCycle Command
 
 Run DevCycles manually from the shipped assets while keeping requirement traceability:
 
 - Usage: `node dist/cli/devcycle.js <devcycle> --mode plan-first --task "ticket-123"` (supports `--dry-run`, `--skip-bootstrap`, `--auto-approve`, `--verbose`, `--list`).
 - Validates `dist/genaiscript/devcycles.config.json` plus prompt/instruction/toolset references before execution (TECH §4.1).
-- Streams Analyze  Reflect NDJSON events with requirement IDs, checkpoint approvals, and Bad Vibes Firewall notices inline (SPEC-CLI §1, PRD §5.2, §5.5).
+- Streams Analyze → Reflect NDJSON events with requirement IDs, checkpoint approvals, and Bad Vibes Firewall notices inline (SPEC-CLI §1, PRD §5.2, §5.5).
 - Suggests nearest manifest entries when the name is misspelled and surfaces the default mode/tooling for the selected DevCycle.
 
-## 6. Logs Command
+## 7. Logs Command
+
 
 Inspect NDJSON traces stored in `.loaded-vibes/logs/*.ndjson` per Tech Requirements 5.3 (use `ts-node` or the compiled CLI binary in packaged releases):
 

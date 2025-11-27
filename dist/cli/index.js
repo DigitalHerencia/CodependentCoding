@@ -15,6 +15,9 @@ async function main() {
   const [command, ...rest] = process.argv.slice(2);
 
   switch (command) {
+    case 'dashboard':
+      await runDashboard();
+      return;
     case 'doctor':
       await runDoctorCli();
       return;
@@ -31,11 +34,14 @@ async function main() {
     case '--help':
     default:
       console.log('');
-      console.log('Loaded Vibes CLI');
+      console.log('╔════════════════════════════════════════════════════════════╗');
+      console.log('║                    LOADED VIBES CLI                        ║');
+      console.log('╚════════════════════════════════════════════════════════════╝');
       console.log('');
-      console.log('Usage: node dist/cli/index.js <command> [options]');
+      console.log('Usage: loaded-vibes <command> [options]');
       console.log('');
       console.log('Commands:');
+      console.log('  dashboard  Launch synthwave retro dashboard (PRD §5.2)');
       console.log('  doctor     Run diagnostics (PRD §5.4, TECH §5.3)');
       console.log('  preflight  Run prerequisite checks (PRD §5.1, TECH §5.1)');
       console.log('  upgrade    Upgrade .loaded-vibes assets (TECH §11, ADR-001)');
