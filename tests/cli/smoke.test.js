@@ -260,22 +260,42 @@ describe('Doctor Command', () => {
 
 describe('Logs Command', () => {
   it('should display logs help with --help flag', () => {
-    // The logs command is written in TypeScript, so we check if ts-node is available
-    // For smoke tests, we'll just verify the help flag works or fails gracefully
-    const result = runCliSync(['logs', '--help'], { timeout: 15000 });
-
-    // Logs command may need ts-node or may not be transpiled yet
+    // The logs command is written in TypeScript, so we run it directly via ts-node or tsx
+    // For smoke tests, we'll verify the help flag works or fails gracefully
+    const logsTsPath = path.join(PROJECT_ROOT, 'dist', 'cli', 'commands', 'logs.ts');
+    // Try tsx first, fallback to ts-node
+    let runner = null;
+    try {
+      require.resolve('tsx');
+      runner = 'tsx';
+    } catch (e) {
+      try {
+        require.resolve('ts-node');
+        runner = 'ts-node';
+      } catch (e2) {
+        runner = null;
+      }
+    }
+    if (!runner) {
+      // Skip test if neither tsx nor ts-node is available
+      console.warn('Skipping logs command test: tsx/ts-node not installed');
+      return;
+    }
+    const spawnResult = spawnSync(runner, [logsTsPath, '--help'], {
+      cwd: PROJECT_ROOT,
+      encoding: 'utf8',
+      timeout: 15000,
+    });
     // Accept either success or graceful failure
     assert.ok(
-      result.status !== null,
+      spawnResult.status !== null,
       'Logs --help should complete (not hang)'
     );
-
-    if (result.status === 0) {
+    if (spawnResult.status === 0) {
       assert.ok(
-        result.stdout.includes('logs') ||
-          result.stdout.includes('NDJSON') ||
-          result.stdout.includes('--devcycle'),
+        spawnResult.stdout.includes('logs') ||
+          spawnResult.stdout.includes('NDJSON') ||
+          spawnResult.stdout.includes('--devcycle'),
         'Logs help should mention logs, NDJSON, or options'
       );
     }
