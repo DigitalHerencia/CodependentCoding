@@ -68,17 +68,17 @@ jobs:
           echo ""
 
           for setting in "${INSTRUCTION_SETTINGS[@]}"; do
-            # Extract the section for this setting (including nested content)
-            if grep -q "\"$setting\"" "$SETTINGS_FILE"; then
-              # Get the setting and surrounding context (10 lines covers most nested objects)
-              SETTING_CONTENT=$(grep -A 10 "\"$setting\"" "$SETTINGS_FILE")
-              
+            # Extract the value for this setting using jq (handles nested objects/arrays)
+            SETTING_VALUE=$(jq -r ".\"$setting\" // empty" "$SETTINGS_FILE" 2>/dev/null || echo "")
+            
+            # Only check if the setting exists and is non-empty
+            if [ -n "$SETTING_VALUE" ]; then
               # Check if the setting or its nested values reference dist/
-              if echo "$SETTING_CONTENT" | grep -qE '(["/]|^)"dist/'; then
+              if echo "$SETTING_VALUE" | grep -qE 'dist/'; then
                 echo "   ❌ $setting references dist/** path"
                 echo ""
                 echo "   Found:"
-                echo "$SETTING_CONTENT" | grep -E '"[^"]*dist/[^"]*"' | head -3 | sed 's/^/      /'
+                echo "$SETTING_VALUE" | grep -E 'dist/' | head -3 | sed 's/^/      /'
                 echo ""
                 echo "   Per PRD §4.3 and SPEC-ARCH §3, instruction settings must only"
                 echo "   reference development assets (.github/, .vscode/, docs/, templates/)."
