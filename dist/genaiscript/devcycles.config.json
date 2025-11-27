@@ -11,7 +11,8 @@
       "../../README.md"
     ],
     "checkpoints": ["analyze", "design", "implement", "validate", "handoff"],
-    "defaultMode": "plan-first"
+    "defaultMode": "plan-first",
+    "requirementIds": ["PRD §5.1", "TECH §4.4", "TECH §6.1"]
   },
   "scaffolding": {
     "label": "Scaffolding",
@@ -25,7 +26,8 @@
       "../../CHANGELOG.md"
     ],
     "checkpoints": ["analyze", "design", "implement", "validate", "handoff"],
-    "defaultMode": "plan-first"
+    "defaultMode": "plan-first",
+    "requirementIds": ["PRD §4.1", "TECH §2", "TECH §6.2"]
   },
   "configuration": {
     "label": "Configuration",
@@ -39,7 +41,8 @@
       "../../CHANGELOG.md"
     ],
     "checkpoints": ["analyze", "design", "implement", "validate", "handoff"],
-    "defaultMode": "plan-first"
+    "defaultMode": "plan-first",
+    "requirementIds": ["PRD §4.2", "TECH §3.5", "TECH §6.3"]
   },
   "verification": {
     "label": "Verification",
@@ -53,7 +56,8 @@
       "../../CHANGELOG.md"
     ],
     "checkpoints": ["analyze", "design", "validate", "handoff"],
-    "defaultMode": "plan-first"
+    "defaultMode": "plan-first",
+    "requirementIds": ["PRD §5.4", "TECH §10", "TECH §6.4"]
   },
   "data": {
     "label": "Data",
@@ -67,7 +71,8 @@
       "../../CHANGELOG.md"
     ],
     "checkpoints": ["analyze", "design", "implement", "validate", "handoff"],
-    "defaultMode": "plan-first"
+    "defaultMode": "plan-first",
+    "requirementIds": ["PRD §4.1", "TECH §3.4", "TECH §6.5"]
   },
   "auth": {
     "label": "Auth",
@@ -81,7 +86,8 @@
       "../../CHANGELOG.md"
     ],
     "checkpoints": ["analyze", "design", "implement", "validate", "handoff"],
-    "defaultMode": "plan-first"
+    "defaultMode": "plan-first",
+    "requirementIds": ["PRD §5.5", "TECH §9", "TECH §6.6"]
   },
   "testing": {
     "label": "Testing",
@@ -95,7 +101,8 @@
       "../../CHANGELOG.md"
     ],
     "checkpoints": ["analyze", "design", "implement", "validate", "handoff"],
-    "defaultMode": "plan-first"
+    "defaultMode": "plan-first",
+    "requirementIds": ["PRD §6", "TECH §10", "TECH §6.7"]
   },
   "validation": {
     "label": "Validation",
@@ -109,7 +116,8 @@
       "../../CHANGELOG.md"
     ],
     "checkpoints": ["analyze", "design", "validate", "handoff"],
-    "defaultMode": "plan-first"
+    "defaultMode": "plan-first",
+    "requirementIds": ["PRD §5.3", "TECH §10", "TECH §6.8"]
   },
   "features": {
     "label": "Features",
@@ -123,7 +131,8 @@
       "../../CHANGELOG.md"
     ],
     "checkpoints": ["analyze", "design", "implement", "validate", "handoff"],
-    "defaultMode": "plan-first"
+    "defaultMode": "plan-first",
+    "requirementIds": ["PRD §3", "PRD §5.3", "TECH §6.9"]
   },
   "debug": {
     "label": "Debug",
@@ -137,7 +146,8 @@
       "../../CHANGELOG.md"
     ],
     "checkpoints": ["analyze", "implement", "validate", "handoff"],
-    "defaultMode": "plan-first"
+    "defaultMode": "plan-first",
+    "requirementIds": ["PRD §5.4", "TECH §6.10"]
   },
   "security": {
     "label": "Security",
@@ -151,7 +161,8 @@
       "../../CHANGELOG.md"
     ],
     "checkpoints": ["analyze", "design", "implement", "validate", "handoff"],
-    "defaultMode": "plan-first"
+    "defaultMode": "plan-first",
+    "requirementIds": ["PRD §5.5", "TECH §9", "TECH §6.11", "SPEC-SECURITY"]
   },
   "performance": {
     "label": "Performance",
@@ -165,7 +176,8 @@
       "../../CHANGELOG.md"
     ],
     "checkpoints": ["analyze", "design", "implement", "validate", "handoff"],
-    "defaultMode": "plan-first"
+    "defaultMode": "plan-first",
+    "requirementIds": ["PRD §6", "TECH §6.12", "TECH §11.1.2"]
   },
   "observability": {
     "label": "Observability",
@@ -179,7 +191,8 @@
       "../../CHANGELOG.md"
     ],
     "checkpoints": ["analyze", "design", "implement", "validate", "handoff"],
-    "defaultMode": "plan-first"
+    "defaultMode": "plan-first",
+    "requirementIds": ["PRD §5.4", "TECH §4.5", "TECH §5.3", "TECH §6.13", "SPEC-OBS"]
   },
   "code-review": {
     "label": "Code Review",
@@ -193,7 +206,8 @@
       "../../CHANGELOG.md"
     ],
     "checkpoints": ["analyze", "validate", "handoff"],
-    "defaultMode": "plan-first"
+    "defaultMode": "plan-first",
+    "requirementIds": ["PRD §5.3", "TECH §7", "TECH §6.14"]
   },
   "documentation": {
     "label": "Documentation",
@@ -207,7 +221,8 @@
       "../../CHANGELOG.md"
     ],
     "checkpoints": ["analyze", "design", "implement", "handoff"],
-    "defaultMode": "plan-first"
+    "defaultMode": "plan-first",
+    "requirementIds": ["PRD §9", "TECH §6.15"]
   },
   "ci-cd": {
     "label": "CI/CD",
@@ -221,7 +236,8 @@
       "../../CHANGELOG.md"
     ],
     "checkpoints": ["analyze", "design", "implement", "validate", "handoff"],
-    "defaultMode": "plan-first"
+    "defaultMode": "plan-first",
+    "requirementIds": ["PRD §5.1", "TECH §6.16", "TECH §10"]
   },
   "deploy": {
     "label": "Deploy",
@@ -235,7 +251,8 @@
       "../../CHANGELOG.md"
     ],
     "checkpoints": ["analyze", "design", "implement", "validate", "handoff"],
-    "defaultMode": "plan-first"
+    "defaultMode": "plan-first",
+    "requirementIds": ["PRD §5.1", "TECH §6.17"]
   },
   "updates": {
     "label": "Updates",
@@ -249,6 +266,7 @@
       "../../CHANGELOG.md"
     ],
     "checkpoints": ["analyze", "design", "implement", "validate", "handoff"],
-    "defaultMode": "plan-first"
+    "defaultMode": "plan-first",
+    "requirementIds": ["PRD §5.3", "TECH §6.18", "TECH §11"]
   }
 }

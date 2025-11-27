@@ -6,15 +6,20 @@
  * Logs are stored in `.loaded-vibes/logs/*.ndjson` and include requirement ID tracking.
  * All entries pass through secret redaction middleware per TECH §9 and SPEC-SECURITY §2.
  *
+ * Per Issue #33 and SPEC-OBS §3, all log entries must include `requirementId` metadata
+ * for traceability. The logger loads requirement IDs from the manifest and automatically
+ * includes them in log entries.
+ *
  * @module dist/cli/services/ndjsonLogger
  * @see docs/TECH_REQUIREMENTS.md §4.5 - State & Telemetry
  * @see docs/TECH_REQUIREMENTS.md §5.3 - Diagnostics & Logs
  * @see docs/TECH_REQUIREMENTS.md §9 - Security, Quality, Compliance
+ * @see docs/TECH_REQUIREMENTS.md §10 - Validation & Traceability (requirementId logging)
  * @see spec/observability.spec.md §3 - Implementation Guidance
  * @see spec/security.spec.md §2 - Component Controls (Logging Stack)
  */
 
-import { createWriteStream, existsSync } from 'fs';
+import { createWriteStream, existsSync, readFileSync } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { createFileGuard } from '../security/fileGuard.js';
@@ -22,13 +27,40 @@ import { getRedactor, redactLogEntry } from './redaction.js';
 
 const CURRENT_DIR = path.dirname(fileURLToPath(import.meta.url));
 const DEFAULT_LOGS_DIR = path.resolve(CURRENT_DIR, '..', '..', '..', '.loaded-vibes', 'logs');
+const MANIFEST_PATH = path.resolve(CURRENT_DIR, '..', '..', 'genaiscript', 'devcycles.config.json');
 const logFileGuard = createFileGuard();
+
+/**
+ * Loads the DevCycle manifest to extract requirement IDs.
+ * Per TECH §10 and SPEC-OBS §3, logs must include requirementId metadata.
+ *
+ * @returns {Object} - Map of devCycleId to requirementIds array
+ */
+function loadManifestRequirementIds() {
+  try {
+    if (!existsSync(MANIFEST_PATH)) {
+      return {};
+    }
+    const raw = readFileSync(MANIFEST_PATH, 'utf8');
+    const manifest = JSON.parse(raw);
+    const mapping = {};
+    for (const [devCycleId, config] of Object.entries(manifest)) {
+      mapping[devCycleId] = config.requirementIds || [];
+    }
+    return mapping;
+  } catch {
+    return {};
+  }
+}
+
+// Cache manifest requirement IDs at module load
+const MANIFEST_REQUIREMENT_IDS = loadManifestRequirementIds();
 
 /**
  * @typedef {Object} NDJSONEvent
  * @property {string} devCycleId - DevCycle identifier
  * @property {string} phase - Current phase (analyze, design, implement, validate, reflect)
- * @property {string} [requirementId] - Optional PRD/TECH requirement reference
+ * @property {string|string[]} requirementId - PRD/TECH requirement reference(s) - REQUIRED per SPEC-OBS §3
  * @property {'debug'|'info'|'warn'|'error'} severity - Log severity level
  * @property {string} [checkpointId] - Optional checkpoint identifier
  * @property {string} message - Human-readable log message
@@ -41,6 +73,7 @@ const logFileGuard = createFileGuard();
  * @property {string} [logsDir] - Directory for log files (default: .loaded-vibes/logs)
  * @property {string} devCycleId - DevCycle identifier for this logging session
  * @property {boolean} [includeConsole] - Also write logs to console (default: false)
+ * @property {string[]} [requirementIds] - Override requirement IDs for this session
  */
 
 /**
@@ -58,7 +91,7 @@ function redactSensitive(data) {
 
 /**
  * Creates an NDJSON Logger instance for a DevCycle session.
- * Implements SPEC-OBS §3 logging requirements.
+ * Implements SPEC-OBS §3 logging requirements with requirementId tracking.
  */
 export class NDJSONLogger {
   /**
@@ -71,6 +104,32 @@ export class NDJSONLogger {
     this.stream = null;
     this.logFilePath = null;
     this.eventCount = 0;
+
+    // Load requirementIds from manifest or use provided override (TECH §10, SPEC-OBS §3)
+    this.requirementIds = options.requirementIds ||
+      MANIFEST_REQUIREMENT_IDS[this.devCycleId] ||
+      [];
+  }
+
+  /**
+   * Gets the requirement IDs for the current DevCycle.
+   * Per TECH §10, CLI logs must include requirementId metadata for audits.
+   *
+   * @returns {string[]} - Array of requirement IDs
+   */
+  getRequirementIds() {
+    return [...this.requirementIds];
+  }
+
+  /**
+   * Formats requirement IDs as a comma-separated string for log entries.
+   *
+   * @returns {string} - Formatted requirement ID string
+   */
+  formatRequirementIds() {
+    return this.requirementIds.length > 0
+      ? this.requirementIds.join(', ')
+      : 'SPEC-OBS §3';
   }
 
   /**
@@ -105,6 +164,7 @@ export class NDJSONLogger {
   /**
    * Logs an event in NDJSON format.
    * All entries pass through secret redaction middleware per TECH §9 and SPEC-SECURITY §2.
+   * Per TECH §10 and SPEC-OBS §3, requirementId is automatically included from the manifest.
    *
    * @param {Partial<NDJSONEvent>} event - Event data to log
    * @returns {void}
@@ -114,10 +174,14 @@ export class NDJSONLogger {
       this.initialize();
     }
 
+    // Include requirementId from manifest if not explicitly provided (TECH §10, SPEC-OBS §3)
+    const requirementId = event.requirementId || this.formatRequirementIds();
+
     const fullEvent = {
       devCycleId: this.devCycleId,
       timestamp: new Date().toISOString(),
       severity: 'info',
+      requirementId,
       ...event,
     };
 
@@ -135,67 +199,73 @@ export class NDJSONLogger {
   }
 
   /**
-   * Logs a debug-level event.
+   * Logs a debug-level event with automatic requirementId inclusion.
    *
    * @param {string} phase - Current phase
    * @param {string} message - Log message
    * @param {Object} [data] - Optional additional data
+   * @param {string} [requirementId] - Override requirement ID
    * @returns {void}
    */
-  debug(phase, message, data) {
-    this.log({ phase, message, severity: 'debug', data });
+  debug(phase, message, data, requirementId) {
+    this.log({ phase, message, severity: 'debug', data, requirementId });
   }
 
   /**
-   * Logs an info-level event.
+   * Logs an info-level event with automatic requirementId inclusion.
    *
    * @param {string} phase - Current phase
    * @param {string} message - Log message
    * @param {Object} [data] - Optional additional data
+   * @param {string} [requirementId] - Override requirement ID
    * @returns {void}
    */
-  info(phase, message, data) {
-    this.log({ phase, message, severity: 'info', data });
+  info(phase, message, data, requirementId) {
+    this.log({ phase, message, severity: 'info', data, requirementId });
   }
 
   /**
-   * Logs a warning-level event.
+   * Logs a warning-level event with automatic requirementId inclusion.
    *
    * @param {string} phase - Current phase
    * @param {string} message - Log message
    * @param {Object} [data] - Optional additional data
+   * @param {string} [requirementId] - Override requirement ID
    * @returns {void}
    */
-  warn(phase, message, data) {
-    this.log({ phase, message, severity: 'warn', data });
+  warn(phase, message, data, requirementId) {
+    this.log({ phase, message, severity: 'warn', data, requirementId });
   }
 
   /**
-   * Logs an error-level event.
+   * Logs an error-level event with automatic requirementId inclusion.
    *
    * @param {string} phase - Current phase
    * @param {string} message - Log message
    * @param {Object} [data] - Optional additional data
+   * @param {string} [requirementId] - Override requirement ID
    * @returns {void}
    */
-  error(phase, message, data) {
-    this.log({ phase, message, severity: 'error', data });
+  error(phase, message, data, requirementId) {
+    this.log({ phase, message, severity: 'error', data, requirementId });
   }
 
   /**
-   * Logs an exception with sanitized stack trace.
+   * Logs an exception with sanitized stack trace and automatic requirementId inclusion.
    * Stack traces are redacted per SPEC-OBS §4 and SPEC-SECURITY §2.
    *
    * @param {string} phase - Current phase
    * @param {Error} err - Error object
    * @param {Object} [data] - Optional additional data
+   * @param {string} [requirementId] - Override requirement ID
    * @returns {void}
    */
-  exception(phase, err, data) {
+  exception(phase, err, data, requirementId) {
     this.log({
       phase,
       message: err.message || 'Unknown error',
       severity: 'error',
+      requirementId,
       data: {
         ...data,
         stack: err.stack,
@@ -205,26 +275,28 @@ export class NDJSONLogger {
   }
 
   /**
-   * Logs a checkpoint event.
+   * Logs a checkpoint event with automatic requirementId inclusion.
    *
    * @param {string} phase - Current phase
    * @param {string} checkpointId - Checkpoint identifier
    * @param {boolean} approved - Whether checkpoint was approved
    * @param {string} [approver] - Who approved the checkpoint
+   * @param {string} [requirementId] - Override requirement ID
    * @returns {void}
    */
-  checkpoint(phase, checkpointId, approved, approver) {
+  checkpoint(phase, checkpointId, approved, approver, requirementId) {
     this.log({
       phase,
       checkpointId,
       message: `Checkpoint ${checkpointId}: ${approved ? 'approved' : 'rejected'}`,
       severity: approved ? 'info' : 'warn',
+      requirementId,
       data: { approved, approver },
     });
   }
 
   /**
-   * Logs a requirement reference.
+   * Logs a requirement reference. This method allows explicit requirement ID specification.
    *
    * @param {string} phase - Current phase
    * @param {string} requirementId - Requirement ID (e.g., 'PRD §5.1', 'TECH §4.2')
@@ -291,6 +363,7 @@ export class NDJSONLogger {
 
 /**
  * Creates a new NDJSON logger instance.
+ * The logger automatically loads requirementIds from the manifest per TECH §10.
  *
  * @param {LoggerOptions} options - Logger options
  * @returns {NDJSONLogger}
@@ -299,9 +372,32 @@ export function createLogger(options) {
   return new NDJSONLogger(options);
 }
 
-// Re-export redaction utilities for convenience
+/**
+ * Gets the requirement IDs for a specific DevCycle from the manifest.
+ * Per TECH §10, CLI logs must include requirementId metadata for audits.
+ *
+ * @param {string} devCycleId - DevCycle identifier
+ * @returns {string[]} - Array of requirement IDs from manifest, or empty array if not found
+ */
+export function getRequirementIdsForDevCycle(devCycleId) {
+  return MANIFEST_REQUIREMENT_IDS[devCycleId] || [];
+}
+
+/**
+ * Gets all manifest requirement ID mappings.
+ * Per TECH §10, maintains mapping between PRD clauses and manifest entries.
+ *
+ * @returns {Object} - Map of devCycleId to requirementIds array
+ */
+export function getAllManifestRequirementIds() {
+  return { ...MANIFEST_REQUIREMENT_IDS };
+}
+
+// Re-export redaction utilities and manifest constants for convenience
 export {
   redactSensitive,
   redactLogEntry,
   DEFAULT_LOGS_DIR,
+  MANIFEST_PATH,
+  loadManifestRequirementIds,
 };
