@@ -4,14 +4,21 @@
  *
  * Provides functions to read, parse, and update TODO.md entries.
  * Supports adding new items, marking items complete, and querying status.
+ * Implements idempotency checks to prevent duplicate entries per TECH §9.
  *
  * @module todoUpdater
- * @see TECH_REQUIREMENTS §7, SPEC-OBS §3, PRD §5.3
+ * @see TECH_REQUIREMENTS §7, TECH_REQUIREMENTS §9, SPEC-OBS §3, PRD §5.3, Issue #22
  */
 
 import { readFileSync, writeFileSync, existsSync } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import {
+  checkTodoEntryExists,
+  checkFileIdempotency,
+  logIdempotencyWarning,
+  normalizeText,
+} from './idempotency.js';
 
 const CURRENT_DIR = path.dirname(fileURLToPath(import.meta.url));
 const GENAI_ROOT = path.resolve(CURRENT_DIR, '..');
@@ -143,13 +150,20 @@ export function markTodoComplete(searchText) {
 
 /**
  * Adds a new TODO item under the specified category.
+ * Implements idempotency check to prevent duplicate entries per TECH §9.
  *
  * @param {string} category - Category heading to add under (e.g., "Engine & Orchestration")
  * @param {string} item - Item description
  * @param {string} source - Source reference (e.g., "TECH §4.3, SPEC-ENGINE §3")
- * @returns {boolean} True if item was added successfully
+ * @param {Object} [options={}] - Options for the add operation
+ * @param {boolean} [options.skipIdempotencyCheck=false] - Skip duplicate checking
+ * @param {boolean} [options.warnOnDuplicate=true] - Log warning when duplicate detected
+ * @returns {{ added: boolean, skipped: boolean, reason: string|null }} Result object
+ * @see TECH §9, Issue #22
  */
-export function addTodoItem(category, item, source) {
+export function addTodoItem(category, item, source, options = {}) {
+  const { skipIdempotencyCheck = false, warnOnDuplicate = true } = options;
+
   if (!existsSync(TODO_PATH)) {
     // Create basic TODO structure if file doesn't exist
     const initialContent = `# TODO
@@ -165,11 +179,27 @@ This backlog tracks Spec-Driven Workflow actions for the Loaded Vibes framework.
 | ☐      | ${item} | ${source} |
 `;
     writeFileSync(TODO_PATH, initialContent, 'utf8');
-    return true;
+    return { added: true, skipped: false, reason: null };
   }
 
   try {
     const content = readFileSync(TODO_PATH, 'utf8');
+
+    // Idempotency check: Ensure entry is absent before append (TECH §9, Issue #22)
+    if (!skipIdempotencyCheck) {
+      const idempotencyResult = checkTodoEntryExists(content, item);
+      if (idempotencyResult.wouldDuplicate) {
+        if (warnOnDuplicate) {
+          logIdempotencyWarning(idempotencyResult, 'TODO update');
+        }
+        return {
+          added: false,
+          skipped: true,
+          reason: idempotencyResult.warningMessage,
+        };
+      }
+    }
+
     const lines = content.split('\n');
     const newRow = `| ☐      | ${item} | ${source} |`;
 
@@ -232,9 +262,9 @@ This backlog tracks Spec-Driven Workflow actions for the Loaded Vibes framework.
     }
 
     writeFileSync(TODO_PATH, lines.join('\n'), 'utf8');
-    return true;
-  } catch {
-    return false;
+    return { added: true, skipped: false, reason: null };
+  } catch (error) {
+    return { added: false, skipped: false, reason: error.message };
   }
 }
 

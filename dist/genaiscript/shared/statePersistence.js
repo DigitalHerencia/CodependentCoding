@@ -5,14 +5,22 @@
  * Provides synchronous, memoized access to orchestrator state
  * stored in `dist/genaiscript/state/state.json`. Handles state
  * loading, saving, and history management for DevCycle tracking.
+ * Implements idempotency checks and state integrity protection per TECH §9.
  *
  * @module statePersistence
- * @see PRD §5, TECH_REQUIREMENTS §4.5, SPEC-ARCH §1.2
+ * @see PRD §5, TECH_REQUIREMENTS §4.5, TECH_REQUIREMENTS §9, SPEC-ARCH §1.2, Issue #22
  */
 
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import {
+  checkStateIntegrity,
+  validateStateUpdate,
+  checkFileIdempotency,
+  computeHash,
+  logIdempotencyWarning,
+} from './idempotency.js';
 
 const CURRENT_DIR = path.dirname(fileURLToPath(import.meta.url));
 const GENAI_ROOT = path.resolve(CURRENT_DIR, '..');
@@ -124,14 +132,23 @@ export function loadState() {
 }
 
 /**
- * Saves the orchestrator state synchronously.
+ * Saves the orchestrator state synchronously with idempotency and integrity checks.
  * Creates the state directory if it does not exist.
  * Adds lastUpdated timestamp for tracking (TECH §4.5).
+ * Implements state integrity protection per TECH §9.
  *
  * @param {OrchestratorState} state - State object to save
- * @returns {void}
+ * @param {Object} [options={}] - Options for the save operation
+ * @param {boolean} [options.skipIdempotencyCheck=false] - Skip hash comparison
+ * @param {boolean} [options.skipIntegrityValidation=false] - Skip integrity validation
+ * @param {boolean} [options.warnOnDuplicate=true] - Log warning when duplicate detected
+ * @returns {{ saved: boolean, skipped: boolean, reason: string|null, warnings: string[] }} Result object
+ * @see TECH §4.5, TECH §9, Issue #22
  */
-export function saveState(state) {
+export function saveState(state, options = {}) {
+  const { skipIdempotencyCheck = false, skipIntegrityValidation = false, warnOnDuplicate = true } = options;
+  const warnings = [];
+
   if (!existsSync(STATE_DIR)) {
     mkdirSync(STATE_DIR, { recursive: true });
   }
@@ -143,8 +160,63 @@ export function saveState(state) {
   };
 
   const serialized = JSON.stringify(stateWithTimestamp, null, 2);
+
+  // Load existing state for comparison
+  const existingState = existsSync(STATE_PATH) ? loadState() : getDefaultState();
+
+  // Integrity validation (TECH §9, Issue #22)
+  if (!skipIntegrityValidation) {
+    const validationResult = validateStateUpdate(existingState, stateWithTimestamp);
+    if (!validationResult.valid) {
+      return {
+        saved: false,
+        skipped: false,
+        reason: `State integrity validation failed: ${validationResult.errors.join('; ')}`,
+        warnings: validationResult.warnings,
+      };
+    }
+    warnings.push(...validationResult.warnings);
+  }
+
+  // Idempotency check: Compare hashes to avoid unnecessary writes (TECH §9)
+  if (!skipIdempotencyCheck) {
+    const idempotencyCheck = checkFileIdempotency(STATE_PATH, serialized);
+    if (idempotencyCheck.unchanged) {
+      if (warnOnDuplicate) {
+        console.log('ℹ️  [Idempotency] State file unchanged, skipping write. Reference: TECH §9');
+      }
+      return {
+        saved: false,
+        skipped: true,
+        reason: 'State unchanged (idempotent operation)',
+        warnings,
+      };
+    }
+
+    // Check for duplicate history entries
+    const integrityCheck = checkStateIntegrity(existingState, stateWithTimestamp);
+    if (integrityCheck.wouldDuplicate) {
+      if (warnOnDuplicate) {
+        logIdempotencyWarning(integrityCheck, 'State update');
+      }
+      return {
+        saved: false,
+        skipped: true,
+        reason: integrityCheck.warningMessage,
+        warnings,
+      };
+    }
+  }
+
   writeFileSync(STATE_PATH, serialized, 'utf8');
   stateCache = stateWithTimestamp;
+
+  return {
+    saved: true,
+    skipped: false,
+    reason: null,
+    warnings,
+  };
 }
 
 /**
