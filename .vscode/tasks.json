@@ -74,7 +74,7 @@
     // -------------------------------
     // RETRO CLI SMOKE TESTS
     // -------------------------------
-    // NOTE: Issue #34 – Task will fail until pnpm retro:smoke script is defined in package.json.
+    // NOTE: Issue #34 – Task will fail until package.json is created and the pnpm retro:smoke script is defined in it.
     {
       "label": "Retro CLI: Smoke Tests",
       "type": "shell",
