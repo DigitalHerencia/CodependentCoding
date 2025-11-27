@@ -25,7 +25,7 @@ This backlog tracks Spec-Driven Workflow actions for the Loaded Vibes framework.
 | ☑      | Implement `loaded-vibes doctor` diagnostics: scan prerequisites, MCP availability, file permissions, manifest drift, with auto-remediation prompts.                                                               | PRD §5.4, Tech Requirements §5.3, SPEC-CLI §4     |
 | [x]    | Implement `loaded-vibes logs` command: surface NDJSON traces from `.loaded-vibes/logs/*.ndjson`, filterable by DevCycle/time/severity, with Markdown export.                                                      | Tech Requirements §5.3, SPEC-CLI §4, SPEC-OBS §3  |
 | ☑      | Implement `loaded-vibes devcycle <name>` to manually trigger DevCycles from CLI, streaming orchestrator events with requirement ID citations.                                                                     | Tech Requirements §5.2, SPEC-CLI §1               |
-| ☐      | Implement `loaded-vibes upgrade` for updating `.loaded-vibes/` assets with semantic versioning + diff hints.                                                                                                      | Tech Requirements §11, SPEC-CLI §3                |
+| ☑      | Implement `loaded-vibes upgrade` for updating `.loaded-vibes/` assets with semantic versioning + diff hints.                                                                                                      | Tech Requirements §11, SPEC-CLI §3                |
 | ☑      | Implement retrofit/attach workflow (Mirror / Merge / Sandbox) with conflict detection for `.github`, `.vscode`, and `dist/**`, logging results to `.loaded-vibes/logs/install-YYYYMMDD.md`.                       | PRD §5.1, Tech Requirements §5.1, SPEC-CLI §3     |
 
 ### Bootstrapper & Validation

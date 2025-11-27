@@ -4,16 +4,12 @@
  * Loaded Vibes CLI Entry Point
  *
  * Minimal command dispatcher for retro CLI commands.
- * Supports doctor, preflight, dashboard, devcycle, and logs commands.
- *
- * @see docs/PRD.md §5.1-5.4 - CLI Experience
- * @see docs/TECH_REQUIREMENTS.md §5 - Retro CLI Platform Requirements
+ * Currently supports `doctor`, `preflight`, and `upgrade`.
  */
 
 import { runDoctorCli } from './commands/doctor.js';
 import { runPreflightChecks, formatResults } from './preflight/index.js';
-import { runDashboard } from './commands/dashboard.js';
-import { runDevcycleCommand } from './devcycle.js';
+import { runUpgradeCli } from './commands/upgrade.js';
 
 async function main() {
   const [command, ...rest] = process.argv.slice(2);
@@ -31,8 +27,8 @@ async function main() {
       process.exit(result.success ? 0 : 1);
       return;
     }
-    case 'devcycle':
-      await runDevcycleCommand(rest);
+    case 'upgrade':
+      await runUpgradeCli();
       return;
     case '-h':
     case '--help':
@@ -48,23 +44,18 @@ async function main() {
       console.log('  dashboard  Launch synthwave retro dashboard (PRD §5.2)');
       console.log('  doctor     Run diagnostics (PRD §5.4, TECH §5.3)');
       console.log('  preflight  Run prerequisite checks (PRD §5.1, TECH §5.1)');
-      console.log('  devcycle   Trigger a DevCycle (TECH §4.1, SPEC-CLI §1)');
-      console.log('');
-      console.log('Dashboard Controls:');
-      console.log('  Ctrl+P     Open command palette');
-      console.log('  r          Refresh dashboard data');
-      console.log('  l          Toggle live log streaming');
-      console.log('  h / ?      Show keyboard shortcuts');
-      console.log('  q          Quit dashboard');
+      console.log('  upgrade    Upgrade .loaded-vibes assets (TECH §11, ADR-001)');
       console.log('');
       console.log('Options for doctor:');
       console.log('  --yes, -y     Auto-approve remediation prompts');
       console.log('  --verbose     Mirror NDJSON logs to console');
       console.log('');
-      console.log('Options for devcycle:');
-      console.log('  --mode        plan-only|plan-first|execute|validate');
-      console.log('  --dry-run     Alias for --mode plan-only');
-      console.log('  --list        Show all available DevCycles');
+      console.log('Options for upgrade:');
+      console.log('  --analyze, -a   Analyze only, do not apply changes');
+      console.log('  --strategy <s>  Strategy: mirror, merge (default), or sandbox');
+      console.log('  --yes, -y       Auto-approve all prompts');
+      console.log('  --force, -f     Force major version upgrades');
+      console.log('  --verbose, -v   Verbose output');
       console.log('');
       process.exit(0);
   }
