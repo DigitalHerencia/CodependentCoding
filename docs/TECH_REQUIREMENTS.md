@@ -220,7 +220,7 @@ This section documents the required MCP servers and toolsets for DevCycles 12 (P
 
 #### 11.1.2 Performance DevCycle (DevCycle 12)
 
-**Required Signals** (per TECH §8, PRD §6):
+**Required Signals** (per PRD §6; some signals inferred and should be added to TECH_REQUIREMENTS):
 - Core Web Vitals baselines
 - API latency metrics
 - Database query timing
