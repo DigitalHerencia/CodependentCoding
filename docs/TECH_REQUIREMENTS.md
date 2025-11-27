@@ -216,7 +216,7 @@ This section documents the required MCP servers and toolsets for DevCycles 12 (P
 **Fallback Behavior:**
 - WHEN `todos` MCP is unavailable, THE SYSTEM SHALL append remediation items directly to `TODO.md` via filesystem operations and log the fallback action.
 - WHEN remote `fetch` export fails, THE SYSTEM SHALL persist logs locally under `.loaded-vibes/logs/` and queue retry via CLI `doctor` remediation.
-- WHEN `memory` MCP is unavailable, THE SYSTEM SHALL use `dist/genaiscript/state/state.json` for checkpoint persistence and warn about potential session drift.
+- WHEN `memory` MCP is unavailable, THE SYSTEM SHALL rely solely on `dist/genaiscript/state/state.json` for checkpoint persistence without in-memory caching and warn about potential session continuity limitations.
 
 #### 11.1.2 Performance DevCycle (DevCycle 12)
 
