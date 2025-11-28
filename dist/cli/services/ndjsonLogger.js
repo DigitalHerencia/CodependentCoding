@@ -184,12 +184,13 @@ export class NDJSONLogger {
     // - requirementId: from manifest or explicit
     // - severity: default to 'info'
     // - checkpointId: include if provided, otherwise null (allows explicit presence for filtering)
+    //   Using nullish coalescing (??) to preserve falsy but valid values like empty string
     const fullEvent = {
       devCycleId: this.devCycleId,
       phase: event.phase || 'system',
       requirementId,
       severity: event.severity || 'info',
-      checkpointId: event.checkpointId || null,
+      checkpointId: event.checkpointId ?? null,
       timestamp: new Date().toISOString(),
       message: event.message || '',
       ...(event.data !== undefined ? { data: event.data } : {}),
@@ -405,9 +406,10 @@ export function getAllManifestRequirementIds() {
 
 /**
  * Required fields per SPEC-OBS §3 for NDJSON log entries.
+ * Note: checkpointId is conditionally required - must be present (can be null for non-checkpoint events)
  * @type {string[]}
  */
-export const REQUIRED_LOG_FIELDS = ['devCycleId', 'phase', 'requirementId', 'severity', 'timestamp'];
+export const REQUIRED_LOG_FIELDS = ['devCycleId', 'phase', 'requirementId', 'severity', 'timestamp', 'checkpointId'];
 
 /**
  * Validates an NDJSON log entry against the required schema per SPEC-OBS §3.

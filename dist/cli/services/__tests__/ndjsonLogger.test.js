@@ -332,7 +332,7 @@ describe('parseAndValidateLogLine()', () => {
 
 describe('REQUIRED_LOG_FIELDS', () => {
   it('should include all SPEC-OBS §3 required fields', () => {
-    const expectedFields = ['devCycleId', 'phase', 'requirementId', 'severity', 'timestamp'];
+    const expectedFields = ['devCycleId', 'phase', 'requirementId', 'severity', 'timestamp', 'checkpointId'];
     
     for (const field of expectedFields) {
       assert.ok(
