@@ -140,7 +140,7 @@ if (env.vars.skipBootstrap !== 'true') {
  * - stateSnapshot: Current state from state.json
  *
  * This context is attached to env.vars.context and passed to phase runners.
- * @see TECH_REQUIREMENTS §4.2
+ * @see TECH_REQUIREMENTS (§4.2)
  */
 
 // Clear caches to ensure fresh context reads per SPEC-ENGINE §4
