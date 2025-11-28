@@ -26,6 +26,7 @@ import {
   validateNoDuplicates,
   addTodoItem,
 } from '../todoUpdater.js';
+import { normalizeText } from '../idempotency.js';
 
 const CURRENT_DIR = path.dirname(fileURLToPath(import.meta.url));
 const TEST_DIR = path.resolve(CURRENT_DIR, '__test_artifacts__');
@@ -104,10 +105,10 @@ describe('TODO Updater - Deduplication Functions', () => {
     it('should identify duplicate patterns in parsed content', () => {
       const items = parseTodo(TODO_WITH_DUPLICATES);
 
-      // Group by normalized text manually to verify logic
+      // Group by normalized text using the same normalizeText function
       const itemsByText = new Map();
       for (const item of items) {
-        const normalized = item.item.toLowerCase().replace(/\s+/g, ' ').trim();
+        const normalized = normalizeText(item.item);
         if (!itemsByText.has(normalized)) {
           itemsByText.set(normalized, []);
         }
@@ -131,10 +132,10 @@ describe('TODO Updater - Deduplication Functions', () => {
       // This tests the validation logic based on parsed content
       const items = parseTodo(TODO_WITH_DUPLICATES);
 
-      // Simulate validation logic
+      // Simulate validation logic using the same normalizeText function
       const itemsByText = new Map();
       for (const item of items) {
-        const normalized = item.item.toLowerCase().replace(/\s+/g, ' ').trim();
+        const normalized = normalizeText(item.item);
         if (!itemsByText.has(normalized)) {
           itemsByText.set(normalized, []);
         }
@@ -148,10 +149,10 @@ describe('TODO Updater - Deduplication Functions', () => {
     it('should return valid=true for content without duplicates', () => {
       const items = parseTodo(TODO_WITHOUT_DUPLICATES);
 
-      // Simulate validation logic
+      // Simulate validation logic using the same normalizeText function
       const itemsByText = new Map();
       for (const item of items) {
-        const normalized = item.item.toLowerCase().replace(/\s+/g, ' ').trim();
+        const normalized = normalizeText(item.item);
         if (!itemsByText.has(normalized)) {
           itemsByText.set(normalized, []);
         }
@@ -167,10 +168,10 @@ describe('TODO Updater - Deduplication Functions', () => {
     it('should prefer completed (☑) entries over incomplete (☐)', () => {
       const items = parseTodo(TODO_WITH_DUPLICATES);
 
-      // Find duplicate sets
+      // Find duplicate sets using the same normalizeText function
       const itemsByText = new Map();
       for (const item of items) {
-        const normalized = item.item.toLowerCase().replace(/\s+/g, ' ').trim();
+        const normalized = normalizeText(item.item);
         if (!itemsByText.has(normalized)) {
           itemsByText.set(normalized, []);
         }
@@ -203,10 +204,10 @@ describe('TODO Updater - Deduplication Functions', () => {
     it('should prefer entries with more detailed source references', () => {
       const items = parseTodo(TODO_WITH_DUPLICATES);
 
-      // Find duplicate sets with same completion status
+      // Find duplicate sets using the same normalizeText function
       const itemsByText = new Map();
       for (const item of items) {
-        const normalized = item.item.toLowerCase().replace(/\s+/g, ' ').trim();
+        const normalized = normalizeText(item.item);
         if (!itemsByText.has(normalized)) {
           itemsByText.set(normalized, []);
         }
@@ -258,10 +259,10 @@ describe('TODO Updater - Deduplication Functions', () => {
       const existingItem = items.find((i) => i.item.includes('Existing test item'));
       assert.ok(existingItem, 'Should find existing item');
 
-      // Check if idempotency would detect it
-      const normalized = existingItem.item.toLowerCase().replace(/\s+/g, ' ').trim();
+      // Check if idempotency would detect it using the same normalizeText function
+      const normalized = normalizeText(existingItem.item);
       const wouldDuplicate = items.some(
-        (i) => i.item.toLowerCase().replace(/\s+/g, ' ').trim() === normalized
+        (i) => normalizeText(i.item) === normalized
       );
 
       assert.strictEqual(wouldDuplicate, true, 'Should detect that item exists');
@@ -270,10 +271,10 @@ describe('TODO Updater - Deduplication Functions', () => {
     it('should allow status updates without creating duplicates', () => {
       const items = parseTodo(TODO_WITH_DUPLICATES);
 
-      // Find items that appear with both ☐ and ☑ statuses
+      // Find items that appear with both ☐ and ☑ statuses using the same normalizeText function
       const itemsByText = new Map();
       for (const item of items) {
-        const normalized = item.item.toLowerCase().replace(/\s+/g, ' ').trim();
+        const normalized = normalizeText(item.item);
         if (!itemsByText.has(normalized)) {
           itemsByText.set(normalized, []);
         }

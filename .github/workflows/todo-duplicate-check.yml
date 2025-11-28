@@ -20,6 +20,10 @@ on:
       - 'TODO.md'
   workflow_dispatch:
 
+# Set minimal permissions for the GITHUB_TOKEN
+permissions:
+  contents: read
+
 jobs:
   check-duplicates:
     name: Check for Duplicate TODO Entries

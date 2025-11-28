@@ -25,6 +25,9 @@ const GENAI_ROOT = path.resolve(CURRENT_DIR, '..');
 const REPO_ROOT = path.resolve(GENAI_ROOT, '..', '..');
 const TODO_PATH = path.resolve(REPO_ROOT, 'TODO.md');
 
+/** Maximum length for truncated duplicate item descriptions in reports */
+const MAX_DUPLICATE_DISPLAY_LENGTH = 80;
+
 /**
  * @typedef {Object} TodoItem
  * @property {string} status - '☑' for complete, '☐' for incomplete
@@ -429,7 +432,7 @@ export function validateNoDuplicates() {
   }
 
   const duplicateInfo = duplicates.map((d) => ({
-    item: d.item.slice(0, 80) + (d.item.length > 80 ? '...' : ''),
+    item: d.item.slice(0, MAX_DUPLICATE_DISPLAY_LENGTH) + (d.item.length > MAX_DUPLICATE_DISPLAY_LENGTH ? '...' : ''),
     count: d.entries.length,
   }));
 
