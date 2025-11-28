@@ -15,7 +15,7 @@
  * The hydrated context is attached to env.vars.context and made available
  * to all phase runners for consistent access to project documentation.
  *
- * @see TECH_REQUIREMENTS §4.2, SPEC-ENGINE §4
+ * @see TECH_REQUIREMENTS (§4.2), SPEC-ENGINE §4
  */
 
 import { loadManifest, loadCoreDocuments, loadState, saveState } from './shared/context.js';

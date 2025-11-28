@@ -32,6 +32,7 @@
   "typescript.preferences.importModuleSpecifier": "shortest",
   "typescript.updateImportsOnFileMove.enabled": "always",
   "typescript.tsserver.experimental.enableProjectDiagnostics": true,
+  "js/ts.implicitProjectConfig.checkJs": false,
 
   // -------------------------------
   // FILE MANAGEMENT
