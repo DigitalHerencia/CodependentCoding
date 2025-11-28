@@ -1,9 +1,11 @@
 ---
 applyTo: '**'
-description: 'Supplemental instructions for GenAIScript VS Code extension assets'
+description: 'Framework development: using GenAIScript extension to author shipped framework assets'
 ---
 
-# GenAIScript VS Code Extension Asset Instructions
+# GenAIScript Extension Instructions (Framework Development)
+
+**Context:** These instructions guide framework maintainers using the GenAIScript VS Code extension to **author the framework itself**, not to use it. The orchestrator, DevCycle scripts, and tooling built here ship to end users as `dist/genaiscript/**`.
 
 ## Authoritative References
 

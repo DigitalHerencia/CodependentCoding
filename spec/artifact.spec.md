@@ -50,11 +50,11 @@ Located at `dist/.github/global.instructions.md` (generated from `templates/glob
 
 - Files: `.vscode/settings.json`, `.vscode/extensions.json`, `.vscode/mcp.json`, `.vscode/tasks.json`.
 - Define maintainer-only VS Code settings and MCP servers. Shipped equivalents live under `dist/.vscode/` `[TECH §3.6]`.
-- Profiles must reference `[SPEC-ARTIFACTS]` to prevent accidental coupling with runtime assets `[PRD §4.2]`.
+- Profiles must reference `[SPEC-ARTIFACTS]` to prevent accidental coupling with runtime assets from `dist/**` `[PRD §4.2]`.
 
 ### 1.6 Bootstrapper
 
-- Workspace location: `/bootstrapper/` (scripts + GenAIScript orchestration entry points) → shipped scripts under `dist/scripts/` `[TECH §4.4]`.
+- Workspace location: `dist/scripts/` (PowerShell + GenAIScript orchestration entry points) `[TECH §4.4]`.
 - Prepares workspace, validates manifest parity, and installs dependencies per PRD distribution workflows `[PRD §5.1]`.
 
 ### 1.7 Custom Agent
@@ -85,4 +85,3 @@ Located at `dist/.github/global.instructions.md` (generated from `templates/glob
 - Every GitHub issue or PR touching artifacts must cite `[SPEC-ARTIFACTS]` plus the originating PRD/Tech clause.
 - Bootstrapper + CI SHALL verify artifact presence, schema compliance, and manifest references before DevCycles run `[TECH §4.4]`.
 - Example issue note: `Implementation must follow artifact taxonomy in [SPEC-ARTIFACTS] and reference PRD §4.1`.
-

@@ -40,17 +40,16 @@ _All command semantics follow `TECH_REQUIREMENTS.md`._
 ## 4. Diagnostics & Logs
 
 - `doctor` scans prerequisites, MCP availability, file permissions, manifest drift, and can auto-remediate with confirmation `[PRD §5.4]`.
-- `logs` command surfaces NDJSON traces stored under `.loaded-vibes/logs/*.ndjson`, with filters for DevCycle, timeframe, severity `[TECH §5.3]`.
+- `logs` command surfaces NDJSON traces stored under `dist/.loaded-vibes/logs/*.ndjson` (shipped) then mirrored to `.loaded-vibes/logs/*.ndjson` in user projects, with filters for DevCycle, timeframe, severity `[TECH §5.3]`.
 - CLI exports Markdown summaries for sharing in PRs or incidents; include TODO/CHANGELOG references.
 
 ## 5. Security & Safety Controls
 
 - All downloads require SHA256 verification; unsigned payloads trigger Bad Vibes Firewall warnings `[PRD §5.5]`.
-- CLI confines writes to `.loaded-vibes/**` unless the user approves copying templates into the project root `[TECH §5.4]`.
+- CLI confines writes to `dist/.loaded-vibes/**` (during framework development) or user `.loaded-vibes/**` (after installation) unless the user approves copying templates into the project root `[TECH §5.4]`.
 - Sensitive logs redact secrets/env vars before persistence `[TECH §9]`.
 
 ## 6. Validation & Tagging
 
 - Smoke tests must cover `create`, `dashboard`, `doctor`, `logs`, and `devcycle` flows per `[TECH §10]`.
 - Tag CLI issues with `[SPEC-CLI]` and cite requirement IDs plus NDJSON excerpts.
-

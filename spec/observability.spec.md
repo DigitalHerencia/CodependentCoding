@@ -26,12 +26,12 @@ Elaborate TechReq observability requirements into a reusable reference.
 ## 2. Required Outputs
 
 - Markdown reports
-- `logs/` directory artifacts
+- Logs in `dist/.loaded-vibes/logs/` (shipped) then mirrored to `.loaded-vibes/logs/` in user projects
 - Telemetry summary (local only unless user opts in)
 
 ## 3. Implementation Guidance
 
-- Persist NDJSON logs under `.loaded-vibes/logs/*.ndjson` with `devCycleId`, `phase`, `requirementId`, `severity`, `checkpointId` `[TECH §5.3]`.
+- Persist NDJSON logs under `dist/.loaded-vibes/logs/*.ndjson` (shipped) then mirrored to `.loaded-vibes/logs/*.ndjson` in user projects with `devCycleId`, `phase`, `requirementId`, `severity`, `checkpointId` `[TECH §5.3]`.
 - Generate Markdown summaries for TODO/CHANGELOG updates referencing the same requirement IDs `[PRD §5.3]`.
 - Store engine state snapshots (`dist/genaiscript/state/state.json`) so CLI dashboards can reconstruct timelines `[TECH §4.5]`.
 - Provide opt-in/out toggles for telemetry exports; default to local-only storage `[PRD §5.4]`.
@@ -47,4 +47,3 @@ Elaborate TechReq observability requirements into a reusable reference.
 
 - Tag reference: `[SPEC-OBS]`.
 - Include affected log files and relevant requirement citations when filing issues.
-

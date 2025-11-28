@@ -17,17 +17,17 @@ Define the high-level structural architecture of the Loaded Vibes framework: ass
 
 ### 1.1 Asset Layers
 
-| Layer              | Description               | Allowed Contents                                        | Owner / Access        | Primary References    |
-| ------------------ | ------------------------- | ------------------------------------------------------- | --------------------- | --------------------- |
-| Framework Assets   | Shipped to end users      | `templates/`, `dist/`, `genaiscript/`, `agent/` | Product Snapshot      | `PRD §4.1`, `TECH §2` |
-| Development Assets | Maintainer-only workspace | `.github/`, `.vscode/`, `docs/`, `scripts/`             | Maintainers           | `PRD §4.2`, `TECH §1` |
-| Generated Assets   | Produced by DevCycles     | `dist/src/`, `.loaded-vibes/logs/`, reports     | End Users / DevCycles | `PRD §4.3`, `TECH §6` |
+| Layer              | Description               | Allowed Contents                                                                                                                                                              | Owner / Access        | Primary References    |
+| ------------------ | ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------- | --------------------- |
+| Development Assets | Maintainer-only workspace | `.github/`, `.vscode/`, `docs/`, `spec/`, `templates/`, `decisions/`, `.agent_work/`, marketing site (`app/`, `public/`)                                                      | Maintainers           | `PRD §4.2`, `TECH §1` |
+| Framework Assets   | Shipped to end users      | `dist/.vscode/`, `dist/.github/`, `dist/docs/`, `dist/.genaiscript/`, `dist/genaiscript/`, `dist/cli/`, `dist/scripts/`, `dist/packages/`, `dist/.loaded-vibes/`, `dist/src/` | Product Snapshot      | `PRD §4.1`, `TECH §2` |
+| Generated Assets   | Produced by DevCycles     | User project: `.loaded-vibes/logs/`, `src/` (mirrored from `dist/src/`)                                                                                                       | End Users / DevCycles | `PRD §4.3`, `TECH §6` |
 
 ### 1.2 Layer Responsibilities
 
 - Framework layer packages canonical instructions, prompts, toolsets, CLI scripts, and GenAIScript automation. It MUST remain immutable once released `[PRD §2]`.
-- Development layer hosts authoring experience (Copilot instructions, MCP configs, specs). It MUST never import runtime code or shipped payloads `[PRD §4.2]`.
-- Generated layer captures DevCycle outputs (state, logs, source scaffolding) within consumer environments, isolated under `.loaded-vibes/` or `dist/src/**` `[TECH §5.1]`.
+- Development layer hosts authoring experience (Copilot instructions, MCP configs, specs, templates). It MUST never import runtime code or shipped payloads from `dist/**` `[PRD §4.2]`.
+- Generated layer captures DevCycle outputs (state, logs, source scaffolding) within consumer environments, isolated under `.loaded-vibes/**` or `src/**` `[TECH §5.1]`.
 
 ## 2. Layer Boundaries
 
@@ -39,20 +39,20 @@ Define the high-level structural architecture of the Loaded Vibes framework: ass
 ## 3. Path & Ownership Rules
 
 - Only DevCycle actions may write to `dist/**` and only when regenerating shipped payloads with maintainer approval `[PRD §4.1]`.
-- Only maintainers may modify `.github/**`, `.vscode/**`, or `docs/**`; CI should block external contributors from touching shipped payloads `[PRD §9]`.
-- No file in `src/**` may be modified by templates post-generation (immutable after Init Cycle) `[TECH §6.1]`.
+- Only maintainers may modify `.github/**`, `.vscode/**`, `docs/**`, `spec/**`, `templates/**`, `decisions/**`, or `.agent_work/**`; CI should block external contributors from touching shipped payloads `[PRD §9]`.
+- No file in user project `src/**` may be modified by templates post-generation (immutable after Init Cycle) `[TECH §6.1]`.
 - Bootstrapper logs any cross-layer mutation attempt and triggers the Bad Vibes Firewall for destructive operations `[PRD §5.5]`.
+- WHEN referencing `.loaded-vibes/**`, distinguish between the shipped snapshot (`dist/.loaded-vibes/**`) and the user's runtime mirror (`<project-root>/.loaded-vibes/**`) `[PRD §4.3]`.
 
 ## 4. Interaction & Data Flow
 
 1. **Bootstrapper** loads Development assets, validates manifests, then stages Framework assets for release `[TECH §4.4]`.
-2. **Orchestrator** reads Framework assets (prompts/instructions/toolsets) and writes Generated outputs referenced by CLI dashboards `[TECH §4.2`, `§5.2`].
-3. **CLI** surfaces status by reading Generated logs and state, never mutating Development files `[PRD §5.2]`.
-4. **DevCycles** update `TODO.md` / `CHANGELOG.md` (Development) while emitting runtime code under Generated paths, ensuring traceability via requirement IDs `[PRD §5.3]`.
+2. **Orchestrator** reads Framework assets (`dist/.github/prompts/`, `dist/.github/instructions/`, `dist/.github/toolsets/`) and writes Generated outputs to `dist/.loaded-vibes/**` which later mirror to user projects `[TECH §4.2`, `§5.2`].
+3. **CLI** surfaces status by reading Generated logs (`dist/.loaded-vibes/logs/` or user `.loaded-vibes/logs/`) and state, never mutating Development files `[PRD §5.2]`.
+4. **DevCycles** update `TODO.md` / `CHANGELOG.md` (Development) while emitting runtime code under `dist/src/` (later mirrored to user `src/`), ensuring traceability via requirement IDs `[PRD §5.3]`.
 
 ## 5. Validation & Tagging
 
 - GitHub issues touching architecture MUST cite `[SPEC-ARCH]` plus the impacted PRD/Tech sections.
-- CI scripts SHALL verify directory ownership (no references from shipped assets to `.github/**`) and fail on violations `[TECH §7]`.
-- `loaded-vibes doctor` reports drift across the three layers and proposes remediation `[PRD §5.4]`.
-
+- CI scripts SHALL verify directory ownership (no references from `dist/**` assets to workspace `.github/**`, `.vscode/**`, `docs/**`) and fail on violations `[TECH §7]`.
+- `loaded-vibes doctor` reports drift across the three layers (Development, Framework, Generated) and proposes remediation `[PRD §5.4]`.

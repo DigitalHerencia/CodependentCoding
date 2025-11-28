@@ -8,22 +8,29 @@ Rewritten Meta-Instructions for Code Agent
 
 ## 1. Scope
 
-These rules define how the Agent must behave whenever it generates or modifies anything inside the Loaded Vibes GitHub repository.
+**Framework Development Agent Instructions**
 
-They apply to every artifact, including:
+These rules define how GitHub Copilot agents assist **maintainers building the Loaded Vibes framework** inside the `D:/LoadedVibes/` development workspace.
 
-- Global instructions
-- Agent profiles
-- Prompts
-- Domain-specific instructions
-- Toolsets
-- VS Code settings and workspace configs
-- GitHub automation files
-- PRD / Tech Specs
-- Documentation and scripts
-- Any file or operation initiated through Agent Chat
+**Primary Responsibilities:**
 
-Agent must apply these rules before producing output.
+- Generate shipped framework assets destined for `dist/**` from `templates/`
+- Author GenAIScript orchestrator, phase runners, and shared utilities
+- Create DevCycle manifests, prompts, instructions, and toolsets
+- Maintain PRD, technical specs, and decision records
+- Build CLI commands and bootstrapper scripts
+- Configure maintainer-only VS Code workspace (`.vscode/`, `.github/`)
+- Never confuse development workspace with end-user runtime environment
+
+**Applies to authoring:**
+
+- `dist/.github/**` - shipped Copilot instructions for end users
+- `dist/genaiscript/**` - orchestrator engine and DevCycle scripts
+- `dist/cli/**` - CLI commands users run
+- `docs/`, `spec/`, `templates/` - source-of-truth documentation
+- `.github/`, `.vscode/` - maintainer workspace configuration
+
+Agent must distinguish between developing the framework (this workspace) and using it (end-user projects).
 
 ## 2. Use Current, Authoritative Documentation
 

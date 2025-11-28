@@ -1,17 +1,24 @@
 // @ts-nocheck
 /**
- * CHANGELOG Updater Utility
+ * CHANGELOG Updater Module
  *
- * Provides helpers for reading and updating CHANGELOG.md with
- * new entries following the project's decision/update format.
+ * Provides functions to read, parse, and update CHANGELOG.md entries.
+ * Supports the action log format used by the Loaded Vibes framework.
+ * Implements idempotency checks to prevent duplicate entries per TECH §9.
  *
  * @module changelogUpdater
- * @see PRD §5.3, TECH_REQUIREMENTS §4.5, SPEC-ARCH §1.2
+ * @see TECH_REQUIREMENTS §7, TECH_REQUIREMENTS §9, SPEC-OBS §3, PRD §5.3, Issue #22
  */
 
 import { readFileSync, writeFileSync, existsSync } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import {
+  checkChangelogEntryExists,
+  checkFileIdempotency,
+  logIdempotencyWarning,
+  normalizeText,
+} from './idempotency.js';
 
 const CURRENT_DIR = path.dirname(fileURLToPath(import.meta.url));
 const GENAI_ROOT = path.resolve(CURRENT_DIR, '..');
@@ -19,67 +26,32 @@ const REPO_ROOT = path.resolve(GENAI_ROOT, '..', '..');
 const CHANGELOG_PATH = path.resolve(REPO_ROOT, 'CHANGELOG.md');
 
 /**
- * @typedef {'Decision' | 'Update' | 'Validation' | 'Fix' | 'Feature'} EntryType
- */
-
-/**
  * @typedef {Object} ChangelogEntry
- * @property {EntryType} type - Entry type
+ * @property {'Decision'|'Update'|'Validation'|'Fix'|'Feature'} type - Entry type
  * @property {string} timestamp - ISO 8601 timestamp
  * @property {string} goal - Goal description
  * @property {string} action - Action taken
  * @property {string} result - Result of the action
- * @property {string} [next] - Next steps (optional)
- * @property {string} [closes] - Issue reference (e.g., "Closes #7")
+ * @property {string} next - Next steps
+ * @property {string} [devCycleId] - Optional DevCycle identifier for compliance mapping
  */
 
 /**
- * Loads CHANGELOG.md content synchronously.
+ * Generates an ISO 8601 timestamp for the current time.
  *
- * @returns {string} CHANGELOG content or empty string
- */
-export function loadChangelogContent() {
-  if (!existsSync(CHANGELOG_PATH)) {
-    return '';
-  }
-  return readFileSync(CHANGELOG_PATH, 'utf8');
-}
-
-/**
- * Saves content to CHANGELOG.md synchronously.
- *
- * @param {string} content - Content to write
- * @returns {void}
- */
-export function saveChangelogContent(content) {
-  writeFileSync(CHANGELOG_PATH, content, 'utf8');
-}
-
-/**
- * Generates an ISO 8601 timestamp with milliseconds removed.
- *
- * @returns {string} Timestamp in format YYYY-MM-DDTHH:MM:SSZ
+ * @returns {string} ISO 8601 formatted timestamp (e.g., "2025-11-27T08:00Z")
  */
 export function getTimestamp() {
-  return new Date().toISOString().replace(/\.\d{3}Z$/, 'Z');
+  const now = new Date();
+  // Format: YYYY-MM-DDTHH:MMZ (simplified ISO 8601)
+  return now.toISOString().slice(0, 16) + 'Z';
 }
 
 /**
- * Formats a changelog entry into the project's standard format.
+ * Formats a changelog entry into the standard action log format.
  *
  * @param {ChangelogEntry} entry - Entry to format
  * @returns {string} Formatted entry string
- *
- * @example
- * formatEntry({
- *   type: 'Update',
- *   timestamp: '2025-11-27T04:00Z',
- *   goal: 'Create shared utilities',
- *   action: 'Created contextLoader.js, statePersistence.js, todoUpdater.js, changelogUpdater.js, validators.js',
- *   result: 'Shared utilities available in dist/genaiscript/shared/',
- *   next: 'Use in orchestrator and phase runners',
- *   closes: 'Closes #7'
- * })
  */
 export function formatEntry(entry) {
   const parts = [
@@ -87,163 +59,240 @@ export function formatEntry(entry) {
     `Goal: ${entry.goal}`,
     `→ Action: ${entry.action}`,
     `→ Result: ${entry.result}`,
+    `→ Next: ${entry.next}`,
   ];
 
-  if (entry.next) {
-    parts.push(`→ Next: ${entry.next}`);
-  }
-
-  if (entry.closes) {
-    parts.push(entry.closes);
+  if (entry.devCycleId) {
+    parts.push(`→ DevCycle: ${entry.devCycleId}`);
   }
 
   return parts.join(' ');
 }
 
 /**
- * Adds a new entry to the CHANGELOG.md.
- * Entries are prepended after the header line.
+ * Parses a changelog entry line back into a structured object.
  *
- * @param {ChangelogEntry} entry - Entry to add
- * @returns {boolean} True if entry was added successfully
+ * @param {string} line - Entry line to parse
+ * @returns {ChangelogEntry|null} Parsed entry or null if invalid
  */
-export function addChangelogEntry(entry) {
-  let content = loadChangelogContent();
-
-  if (!content) {
-    // Create new CHANGELOG with header
-    content = '# CHANGELOG\n\n';
+export function parseEntry(line) {
+  // Match pattern: [Type][Timestamp] Goal: ... → Action: ... → Result: ... → Next: ...
+  const headerMatch = line.match(/^\[(\w+)\]\[([^\]]+)\]/);
+  if (!headerMatch) {
+    return null;
   }
 
-  const formattedEntry = formatEntry(entry);
+  const type = headerMatch[1];
+  const timestamp = headerMatch[2];
 
-  // Find the header line
-  const headerEnd = content.indexOf('\n\n');
-  if (headerEnd === -1) {
-    // No double newline, append after first line
-    const firstLineEnd = content.indexOf('\n');
-    if (firstLineEnd === -1) {
-      content = content + '\n\n' + formattedEntry + '\n';
-    } else {
-      content = content.slice(0, firstLineEnd + 1) + '\n' + formattedEntry + '\n' + content.slice(firstLineEnd + 1);
-    }
-  } else {
-    // Insert after header
-    content = content.slice(0, headerEnd + 2) + formattedEntry + '\n\n' + content.slice(headerEnd + 2);
+  // Extract sections
+  const goalMatch = line.match(/Goal:\s*(.+?)\s*→\s*Action:/);
+  const actionMatch = line.match(/→\s*Action:\s*(.+?)\s*→\s*Result:/);
+  const resultMatch = line.match(/→\s*Result:\s*(.+?)\s*→\s*Next:/);
+  const nextMatch = line.match(/→\s*Next:\s*(.+?)(?:\s*(?:→|$))/);
+  const devCycleMatch = line.match(/→\s*DevCycle:\s*([a-z0-9_-]+)/i);
+
+  if (!goalMatch || !actionMatch || !resultMatch || !nextMatch) {
+    // Try alternate format without all sections
+    return {
+      type: type,
+      timestamp: timestamp,
+      goal: goalMatch?.[1] || '',
+      action: actionMatch?.[1] || line.substring(headerMatch[0].length).trim(),
+      result: resultMatch?.[1] || '',
+      next: nextMatch?.[1] || '',
+      devCycleId: devCycleMatch?.[1]?.toLowerCase(),
+    };
   }
 
-  saveChangelogContent(content);
-  return true;
+  return {
+    type: type,
+    timestamp: timestamp,
+    goal: goalMatch[1].trim(),
+    action: actionMatch[1].trim(),
+    result: resultMatch[1].trim(),
+    next: nextMatch[1].trim(),
+    devCycleId: devCycleMatch?.[1]?.toLowerCase(),
+  };
 }
 
 /**
- * Creates and adds a Decision entry.
+ * Reads and parses all CHANGELOG entries.
  *
- * @param {string} goal - Goal description
- * @param {string} action - Action taken
- * @param {string} result - Result of the action
- * @param {string} [next] - Next steps (optional)
- * @param {string} [closes] - Issue reference (optional)
- * @returns {boolean} True if entry was added
+ * @returns {ChangelogEntry[]} Array of parsed entries
  */
-export function addDecision(goal, action, result, next, closes) {
-  return addChangelogEntry({
-    type: 'Decision',
-    timestamp: getTimestamp(),
-    goal,
-    action,
-    result,
-    next,
-    closes,
-  });
-}
-
-/**
- * Creates and adds an Update entry.
- *
- * @param {string} goal - Goal description
- * @param {string} action - Action taken
- * @param {string} result - Result of the action
- * @param {string} [next] - Next steps (optional)
- * @param {string} [closes] - Issue reference (optional)
- * @returns {boolean} True if entry was added
- */
-export function addUpdate(goal, action, result, next, closes) {
-  return addChangelogEntry({
-    type: 'Update',
-    timestamp: getTimestamp(),
-    goal,
-    action,
-    result,
-    next,
-    closes,
-  });
-}
-
-/**
- * Creates and adds a Validation entry.
- *
- * @param {string} goal - Goal description
- * @param {string} action - Action taken
- * @param {string} result - Result of the action
- * @param {string} [next] - Next steps (optional)
- * @returns {boolean} True if entry was added
- */
-export function addValidation(goal, action, result, next) {
-  return addChangelogEntry({
-    type: 'Validation',
-    timestamp: getTimestamp(),
-    goal,
-    action,
-    result,
-    next,
-  });
-}
-
-/**
- * Creates and adds a Fix entry.
- *
- * @param {string} goal - Goal description
- * @param {string} action - Action taken
- * @param {string} result - Result of the action
- * @param {string} [closes] - Issue reference (optional)
- * @returns {boolean} True if entry was added
- */
-export function addFix(goal, action, result, closes) {
-  return addChangelogEntry({
-    type: 'Fix',
-    timestamp: getTimestamp(),
-    goal,
-    action,
-    result,
-    closes,
-  });
-}
-
-/**
- * Gets the most recent N changelog entries.
- *
- * @param {number} [count=5] - Number of entries to retrieve
- * @returns {string[]} Array of entry strings
- */
-export function getRecentEntries(count = 5) {
-  const content = loadChangelogContent();
-  if (!content) {
+export function readChangelogEntries() {
+  if (!existsSync(CHANGELOG_PATH)) {
     return [];
   }
 
-  // Match entries that start with [Type][timestamp]
-  const entries = [];
-  const lines = content.split('\n');
-  const entryPattern = /^\[(?:Decision|Update|Validation|Fix|Feature)\]\[\d{4}-\d{2}-\d{2}T[^\]]+\]/;
+  try {
+    const content = readFileSync(CHANGELOG_PATH, 'utf8');
+    const lines = content.split('\n');
+    const entries = [];
 
-  for (let i = 0; i < lines.length && entries.length < count; i++) {
-    if (entryPattern.test(lines[i])) {
-      entries.push(lines[i]);
+    for (const line of lines) {
+      if (line.startsWith('[')) {
+        const entry = parseEntry(line);
+        if (entry) {
+          entries.push(entry);
+        }
+      }
+    }
+
+    return entries;
+  } catch (error) {
+    // Log read failures but return empty array to allow graceful degradation
+    console.warn(`⚠️  changelogUpdater: Failed to read CHANGELOG.md: ${error.message}`);
+    return [];
+  }
+}
+
+/**
+ * Adds a new entry to the top of the CHANGELOG.
+ * Implements idempotency check to prevent duplicate entries per TECH §9.
+ *
+ * @param {ChangelogEntry} entry - Entry to add
+ * @param {Object} [options={}] - Options for the add operation
+ * @param {boolean} [options.skipIdempotencyCheck=false] - Skip duplicate checking
+ * @param {boolean} [options.warnOnDuplicate=true] - Log warning when duplicate detected
+ * @param {number} [options.toleranceMinutes=5] - Time tolerance for duplicate detection
+ * @returns {{ added: boolean, skipped: boolean, reason: string|null }} Result object
+ * @see TECH §9, Issue #22
+ */
+export function addChangelogEntry(entry, options = {}) {
+  const { skipIdempotencyCheck = false, warnOnDuplicate = true, toleranceMinutes = 5 } = options;
+  const formattedEntry = formatEntry(entry);
+
+  if (!existsSync(CHANGELOG_PATH)) {
+    // Create new CHANGELOG with header
+    const initialContent = `# CHANGELOG
+
+${formattedEntry}
+`;
+    writeFileSync(CHANGELOG_PATH, initialContent, 'utf8');
+    return { added: true, skipped: false, reason: null };
+  }
+
+  try {
+    const content = readFileSync(CHANGELOG_PATH, 'utf8');
+
+    // Idempotency check: Ensure entry is absent before append (TECH §9, Issue #22)
+    if (!skipIdempotencyCheck) {
+      const idempotencyResult = checkChangelogEntryExists(
+        content,
+        entry.goal,
+        entry.timestamp,
+        toleranceMinutes
+      );
+      if (idempotencyResult.wouldDuplicate) {
+        if (warnOnDuplicate) {
+          logIdempotencyWarning(idempotencyResult, 'CHANGELOG update');
+        }
+        return {
+          added: false,
+          skipped: true,
+          reason: idempotencyResult.warningMessage,
+        };
+      }
+    }
+
+    const lines = content.split('\n');
+
+    // Find the first entry line (after header)
+    let insertIndex = 0;
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      // Skip header and empty lines
+      if (line.startsWith('#') || line.trim() === '') {
+        insertIndex = i + 1;
+      } else if (line.startsWith('[')) {
+        // Found first entry, insert before it
+        insertIndex = i;
+        break;
+      }
+    }
+
+    // Insert new entry
+    lines.splice(insertIndex, 0, formattedEntry, '');
+
+    writeFileSync(CHANGELOG_PATH, lines.join('\n'), 'utf8');
+    return { added: true, skipped: false, reason: null };
+  } catch (error) {
+    return { added: false, skipped: false, reason: error.message };
+  }
+}
+
+/**
+ * Gets the most recent entries from the CHANGELOG.
+ *
+ * @param {number} count - Number of entries to return
+ * @returns {ChangelogEntry[]} Most recent entries
+ */
+export function getRecentEntries(count = 10) {
+  const entries = readChangelogEntries();
+  return entries.slice(0, count);
+}
+
+/**
+ * Gets entries by type.
+ *
+ * @param {'Decision'|'Update'|'Validation'|'Fix'|'Feature'} type - Entry type to filter by
+ * @returns {ChangelogEntry[]} Entries of the specified type
+ */
+export function getEntriesByType(type) {
+  const entries = readChangelogEntries();
+  return entries.filter((entry) => entry.type === type);
+}
+
+/**
+ * Checks if a similar entry already exists (by goal and timestamp proximity).
+ *
+ * @param {string} goal - Goal to check
+ * @param {string} timestamp - Timestamp to compare
+ * @param {number} [toleranceMinutes=5] - Time tolerance in minutes
+ * @returns {boolean} True if similar entry exists
+ */
+export function entryExists(goal, timestamp, toleranceMinutes = 5) {
+  const entries = readChangelogEntries();
+  const targetTime = new Date(timestamp).getTime();
+  const toleranceMs = toleranceMinutes * 60 * 1000;
+  const goalLower = goal.toLowerCase();
+
+  for (const entry of entries) {
+    const entryTime = new Date(entry.timestamp).getTime();
+    const timeDiff = Math.abs(targetTime - entryTime);
+
+    if (timeDiff < toleranceMs && entry.goal.toLowerCase().includes(goalLower)) {
+      return true;
     }
   }
 
-  return entries;
+  return false;
+}
+
+/**
+ * Creates a standard DevCycle completion entry.
+ *
+ * @param {string} devCycleId - DevCycle identifier
+ * @param {string} description - What was done
+ * @param {string} result - Result summary
+ * @param {string} next - Next steps
+ * @param {string[]} [citations=[]] - Requirement citations
+ * @returns {ChangelogEntry} Formatted entry
+ */
+export function createDevCycleEntry(devCycleId, description, result, next, citations = []) {
+  const citationStr = citations.length > 0 ? ` per ${citations.join(', ')}` : '';
+
+  return {
+    type: 'Update',
+    timestamp: getTimestamp(),
+    goal: `Complete ${devCycleId} DevCycle`,
+    action: `${description}${citationStr}`,
+    result: result,
+    next: next,
+    devCycleId: devCycleId?.toLowerCase(),
+  };
 }
 
 /** Exported paths for external use */

@@ -1,0 +1,231 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "title": "Loaded Vibes Asset Registry",
+  "description": "Tracks shipped framework assets with checksums for upgrade conflict detection per ADR-001",
+  "version": "1.0.0",
+  "generatedAt": "2025-11-28T00:00:00Z",
+  "layers": {
+    "development": {
+      "description": "Maintainer-only workspace (D:/LoadedVibes/)",
+      "directories": [
+        ".github/",
+        ".vscode/",
+        "docs/",
+        "spec/",
+        "templates/",
+        "decisions/",
+        ".agent_work/",
+        "app/",
+        "public/"
+      ],
+      "purpose": "Authoring workspace for framework development",
+      "shipped": false
+    },
+    "framework": {
+      "description": "Shipped product snapshot (D:/LoadedVibes/dist/)",
+      "directories": [
+        "dist/.vscode/",
+        "dist/.github/",
+        "dist/docs/",
+        "dist/.genaiscript/",
+        "dist/genaiscript/",
+        "dist/cli/",
+        "dist/scripts/",
+        "dist/packages/",
+        "dist/.loaded-vibes/",
+        "dist/src/"
+      ],
+      "purpose": "Complete framework payload delivered via installer",
+      "shipped": true
+    },
+    "endUser": {
+      "description": "User project environment (created after npx create-loaded-vibes)",
+      "directories": [".loaded-vibes/", ".github/", ".vscode/", "src/"],
+      "purpose": "Execution surface mirroring shipped framework",
+      "shipped": false
+    }
+  },
+  "assets": {
+    "dist/.vscode/settings.json": {
+      "layer": "framework",
+      "type": "configuration",
+      "frameworkChecksum": "sha256:pending",
+      "description": "End-user VS Code settings + MCP config",
+      "mirroredTo": "<project-root>/.vscode/settings.json"
+    },
+    "dist/.github/global.instructions.md": {
+      "layer": "framework",
+      "type": "governance",
+      "frameworkChecksum": "sha256:pending",
+      "description": "Universal rules, DevCycle taxonomy, governance contract",
+      "mirroredTo": "<project-root>/.github/global.instructions.md"
+    },
+    "dist/.github/prompts/initialization.prompt.md": {
+      "layer": "framework",
+      "type": "prompt",
+      "frameworkChecksum": "sha256:pending",
+      "description": "Initialization DevCycle entry point",
+      "mirroredTo": "<project-root>/.github/prompts/initialization.prompt.md"
+    },
+    "dist/.github/instructions/initialization.instructions.md": {
+      "layer": "framework",
+      "type": "instruction",
+      "frameworkChecksum": "sha256:pending",
+      "description": "Initialization DevCycle domain constraints",
+      "mirroredTo": "<project-root>/.github/instructions/initialization.instructions.md"
+    },
+    "dist/.github/toolsets/initialization.toolset.jsonc": {
+      "layer": "framework",
+      "type": "toolset",
+      "frameworkChecksum": "sha256:pending",
+      "description": "Initialization DevCycle tool allowances",
+      "mirroredTo": "<project-root>/.github/toolsets/initialization.toolset.jsonc"
+    },
+    "dist/genaiscript/orchestrator.genai.js": {
+      "layer": "framework",
+      "type": "engine",
+      "frameworkChecksum": "sha256:pending",
+      "description": "Main orchestration engine coordinating DevCycles",
+      "mirroredTo": "<project-root>/genaiscript/orchestrator.genai.js"
+    },
+    "dist/genaiscript/devcycles.config.json": {
+      "layer": "framework",
+      "type": "manifest",
+      "frameworkChecksum": "sha256:pending",
+      "description": "Canonical DevCycle manifest mapping prompts/instructions/toolsets",
+      "mirroredTo": "<project-root>/genaiscript/devcycles.config.json"
+    },
+    "dist/genaiscript/tools/summaryWriter.js": {
+      "layer": "framework",
+      "type": "utility",
+      "frameworkChecksum": "sha256:pending",
+      "description": "Dual-mode execution summary generator (JSON + Markdown)",
+      "mirroredTo": "<project-root>/genaiscript/tools/summaryWriter.js"
+    },
+    "dist/genaiscript/tools/todoUpdater.js": {
+      "layer": "framework",
+      "type": "utility",
+      "frameworkChecksum": "sha256:pending",
+      "description": "TODO.md parser and updater with deduplication",
+      "mirroredTo": "<project-root>/genaiscript/tools/todoUpdater.js"
+    },
+    "dist/genaiscript/tools/changelogUpdater.js": {
+      "layer": "framework",
+      "type": "utility",
+      "frameworkChecksum": "sha256:pending",
+      "description": "CHANGELOG.md entry manager with DevCycle tagging",
+      "mirroredTo": "<project-root>/genaiscript/tools/changelogUpdater.js"
+    },
+    "dist/genaiscript/shared/contextLoader.js": {
+      "layer": "framework",
+      "type": "utility",
+      "frameworkChecksum": "sha256:pending",
+      "description": "Memoized PRD/TECH/TODO/CHANGELOG context loader",
+      "mirroredTo": "<project-root>/genaiscript/shared/contextLoader.js"
+    },
+    "dist/cli/commands/logs.js": {
+      "layer": "framework",
+      "type": "cli",
+      "frameworkChecksum": "sha256:pending",
+      "description": "NDJSON log viewer with filters and Markdown export",
+      "mirroredTo": "<project-root>/cli/commands/logs.js"
+    },
+    "dist/cli/commands/upgrade.js": {
+      "layer": "framework",
+      "type": "cli",
+      "frameworkChecksum": "sha256:pending",
+      "description": "Framework upgrade command with Mirror/Merge/Sandbox strategies",
+      "mirroredTo": "<project-root>/cli/commands/upgrade.js"
+    },
+    "dist/scripts/bootstrapper.ps1": {
+      "layer": "framework",
+      "type": "bootstrap",
+      "frameworkChecksum": "sha256:pending",
+      "description": "PowerShell bootstrapper for environment validation",
+      "mirroredTo": "<project-root>/scripts/bootstrapper.ps1"
+    },
+    "dist/.loaded-vibes/logs/": {
+      "layer": "framework",
+      "type": "telemetry",
+      "frameworkChecksum": "n/a",
+      "description": "NDJSON event logs and execution summaries",
+      "mirroredTo": "<project-root>/.loaded-vibes/logs/"
+    },
+    "dist/docs/PRD.md": {
+      "layer": "framework",
+      "type": "documentation",
+      "frameworkChecksum": "sha256:pending",
+      "description": "Product requirements shipped to end users",
+      "mirroredTo": "<project-root>/docs/PRD.md"
+    },
+    "dist/docs/TECH_REQUIREMENTS.md": {
+      "layer": "framework",
+      "type": "documentation",
+      "frameworkChecksum": "sha256:pending",
+      "description": "Technical requirements shipped to end users",
+      "mirroredTo": "<project-root>/docs/TECH_REQUIREMENTS.md"
+    },
+    "dist/src/": {
+      "layer": "framework",
+      "type": "codegen-target",
+      "frameworkChecksum": "n/a",
+      "description": "Code generation target that becomes user src/",
+      "mirroredTo": "<project-root>/src/"
+    },
+    "dist/README.md": {
+      "layer": "framework",
+      "type": "documentation",
+      "frameworkChecksum": "sha256:pending",
+      "description": "Root readme for shipped framework",
+      "mirroredTo": "<project-root>/README.md"
+    },
+    "dist/VERSION": {
+      "layer": "framework",
+      "type": "metadata",
+      "frameworkChecksum": "sha256:pending",
+      "description": "Framework version identifier",
+      "mirroredTo": "<project-root>/VERSION"
+    }
+  },
+  "pathCorrections": {
+    "applied": [
+      {
+        "old": "dist/genaiscript/shared/summary-writer.js",
+        "new": "dist/genaiscript/tools/summaryWriter.js",
+        "reason": "Actual implementation location differs from TECH §11.4 documentation"
+      },
+      {
+        "old": ".loaded-vibes/summaries/",
+        "new": "dist/.loaded-vibes/logs/",
+        "reason": "Summaries stored alongside logs, not in separate directory"
+      },
+      {
+        "old": "agent/",
+        "new": "dist/.github/agents/",
+        "reason": "Agents live under shipped .github structure"
+      },
+      {
+        "old": "genaiscript/ (single folder)",
+        "new": "dist/genaiscript/ + dist/.genaiscript/",
+        "reason": "Two distinct roles: runtime scripts vs. core config"
+      },
+      {
+        "old": ".loaded-vibes/ in workspace",
+        "new": "dist/.loaded-vibes/ (shipped) + <project-root>/.loaded-vibes/ (user mirror)",
+        "reason": "Clarify layer separation per PRD §4.3"
+      },
+      {
+        "old": "scripts/ under workspace",
+        "new": "dist/scripts/",
+        "reason": "Bootstrap scripts are shipped artifacts"
+      }
+    ]
+  },
+  "references": {
+    "PRD": "docs/PRD.md §4.1-4.3, §9",
+    "TECH": "docs/TECH_REQUIREMENTS.md §2-3, §11",
+    "SPEC-ARCH": "spec/architecture.spec.md §1-3",
+    "SPEC-ARTIFACTS": "spec/artifact.spec.md §1-2",
+    "ADR-001": "decisions/ADR-001-customization-versioning-strategy.md"
+  }
+}

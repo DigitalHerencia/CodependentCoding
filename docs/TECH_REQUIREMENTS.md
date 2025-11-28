@@ -12,31 +12,101 @@
 
 ## 1. System Context & Principles
 
-- Authoring occurs inside `D:/LoadedVibes` and is limited to `.github/`, `.vscode/`, `docs/`, and `templates/` unless explicitly updating `dist/`.
-- Shipped payloads live under `dist/**`; runtime output lives under `dist/src/**` only after users install the framework.
+- Authoring occurs inside `D:/LoadedVibes` and is limited to `.github/`, `.vscode/`, `docs/`, `spec/`, `templates/`, `decisions/`, `.agent_work/`, and the marketing site unless explicitly regenerating `dist/**`.
+- Shipped payloads live under `dist/**` and include the runtime engine (`dist/genaiscript/`, `dist/.genaiscript/`), CLI (`dist/cli/`), scripts (`dist/scripts/`), packages (`dist/packages/`), internal logs/state (`dist/.loaded-vibes/`), and code-generation target (`dist/src/`).
+- After installation, users receive a mirror of `dist/**` inside their project root, with `.loaded-vibes/**` hosting logs/state and `src/**` containing generated application code.
 - Tooling (tasks, MCP servers, Copilot instructions) must reference development assets exclusively to avoid contaminating the shipped snapshot.
 - Spec-Driven Workflow artifacts (PRD, this document, TODO, CHANGELOG) anchor every DevCycle.
 
 ## 2. Layered Architecture Overview
 
-| Layer                | Responsibilities                                                              | Key Artifacts                                                     |
-| -------------------- | ----------------------------------------------------------------------------- | ----------------------------------------------------------------- |
-| **Bootstrap**        | Detect profile gaps, sync MCP + extensions, expose CLI entry points.          | `dist/scripts/bootstrapper.genaiscript.ts`, `bootstrapper.ps1`    |
-| **Orchestration**    | Load manifest, hydrate context, coordinate Analyze → Handoff lifecycle.       | `dist/genaiscript/orchestrator.genai.js`, `devcycles.config.json` |
-| **Phase Runners**    | Execute DevCycle-specific logic with manifest-provided instructions/toolsets. | `dist/genaiscript/phases/*.genai.js`                              |
-| **Shared Utilities** | Context loading, memory/state persistence, validation helpers.                | `dist/genaiscript/shared/*.js`                                    |
-| **Governance**       | Instructions, prompts, toolsets, TODO/CHANGELOG, PRD/TechReq references.      | `dist/.github/**`, workspace docs                                 |
-| **Retro CLI**        | Installer, dashboard, diagnostics, DevCycle UX.                               | `create-loaded-vibes`, `loaded-vibes` CLI, `.loaded-vibes/**`     |
+```mermaid
+graph LR
+    subgraph Bootstrap
+        BS[bootstrapper.ps1]
+        BSG[bootstrapper.genaiscript.ts]
+    end
+
+    subgraph Orchestration
+        ORC[orchestrator.genai.js]
+        MAN[devcycles.config.json]
+    end
+
+    subgraph PhaseRunners["Phase Runners"]
+        P1[phases/init.genai.js]
+        P2[phases/scaffold.genai.js]
+        P3[phases/config.genai.js]
+        PN[phases/...]
+    end
+
+    subgraph Utilities["Shared Utilities & Tools"]
+        CTX[shared/contextLoader.js]
+        SUM[tools/summaryWriter.js]
+        TODO[tools/todoUpdater.js]
+        CHG[tools/changelogUpdater.js]
+        VAL[tools/validators.js]
+    end
+
+    subgraph Governance
+        GI[dist/.github/global.instructions.md]
+        PR[dist/.github/prompts/*.prompt.md]
+        IN[dist/.github/instructions/*.instructions.md]
+        TS[dist/.github/toolsets/*.toolset.jsonc]
+    end
+
+    subgraph CLI["Retro CLI"]
+        INST[create-loaded-vibes]
+        DASH[loaded-vibes dashboard]
+        LOG[loaded-vibes logs]
+        DOC[loaded-vibes doctor]
+    end
+
+    BS --> ORC
+    BSG --> ORC
+    ORC --> MAN
+    MAN --> P1
+    MAN --> P2
+    MAN --> P3
+    MAN --> PN
+    P1 --> CTX
+    P1 --> SUM
+    P2 --> TODO
+    P2 --> CHG
+    P3 --> VAL
+    GI --> ORC
+    PR --> ORC
+    IN --> P1
+    TS --> P1
+    INST --> BS
+    DASH --> LOG
+    LOG --> DOC
+
+    style Bootstrap fill:#2d2d2d,stroke:#ff6ec7,stroke-width:2px
+    style Orchestration fill:#1a1a2e,stroke:#00d9ff,stroke-width:2px
+    style PhaseRunners fill:#16213e,stroke:#7dff7d,stroke-width:2px
+    style Utilities fill:#1a1a2e,stroke:#ffb86c,stroke-width:2px
+    style Governance fill:#2d2d2d,stroke:#bd93f9,stroke-width:2px
+    style CLI fill:#16213e,stroke:#ff79c6,stroke-width:2px
+```
+
+| Layer                | Responsibilities                                                              | Key Artifacts                                                                                |
+| -------------------- | ----------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| **Bootstrap**        | Detect profile gaps, sync MCP + extensions, expose CLI entry points.          | `dist/scripts/bootstrapper.genaiscript.ts`, `bootstrapper.ps1`                               |
+| **Orchestration**    | Load manifest, hydrate context, coordinate Analyze → Handoff lifecycle.       | `dist/genaiscript/orchestrator.genai.js`, `dist/genaiscript/devcycles.config.json`           |
+| **Phase Runners**    | Execute DevCycle-specific logic with manifest-provided instructions/toolsets. | `dist/genaiscript/phases/*.genai.js`                                                         |
+| **Shared Utilities** | Context loading, memory/state persistence, validation helpers.                | `dist/genaiscript/shared/*.js`, `dist/genaiscript/tools/*.js`                                |
+| **Governance**       | Instructions, prompts, toolsets, TODO/CHANGELOG, PRD/TechReq references.      | `dist/.github/**`, workspace `docs/`, `spec/`, `templates/`                                  |
+| **Retro CLI**        | Installer, dashboard, diagnostics, DevCycle UX.                               | `create-loaded-vibes`, `loaded-vibes` CLI, `dist/.loaded-vibes/**` mirrored to user projects |
 
 ## 3. Artifact Layers & Deliverables
 
 1. **Global Instructions (Framework Layer)** – `dist/.github/global.instructions.md` defines universal rules, canonical DevCycle names, artifact taxonomy, and governance contract.
-2. **Custom Agent (Stack Layer)** – `.github/copilot-instructions.md` for workspace + `dist/.github/agents/*.agent.md` for shipped product enforce Next.js 15 / React 19 / Prisma / Clerk / Tailwind / Vercel guidance, formatting, safety, and self-correction behavior.
+2. **Custom Agent (Stack Layer)** – Workspace `.github/copilot-instructions.md` governs maintainer behavior; `dist/.github/agents/*.agent.md` ships to end users for their Copilot configuration.
 3. **Prompts (DevCycle Entry)** – `dist/.github/prompts/*.prompt.md` trigger exactly one DevCycle, load correct instruction + toolset, and wire environment context.
 4. **Instruction Files (Domain Layer)** – `dist/.github/instructions/*.instructions.md` specify DevCycle goals, acceptance criteria, and security/performance guardrails.
 5. **Toolsets (Execution Layer)** – `dist/.github/toolsets/*.toolset.jsonc` enumerate allowed VS Code tools, MCP servers, CLIs, and safety checks per DevCycle; generated from workspace settings + MCP configs.
-6. **Workspace Profile** – `.vscode/settings.json`, `.vscode/extensions.json`, `.vscode/mcp.json`, `.vscode/tasks.json` define maintainer environment; shipped equivalents live under `dist/.vscode/`.
-7. **Automation & Scripts** – `dist/genaiscript/**` and `dist/scripts/**` implement bootstrapper/orchestrator/phase tooling with deterministic outputs.
+6. **Workspace Profile** – Maintainer-only files (`.vscode/settings.json`, `.vscode/extensions.json`, `.vscode/mcp.json`, `.vscode/tasks.json`) remain in workspace; shipped equivalents live under `dist/.vscode/`.
+7. **Automation & Scripts** – `dist/genaiscript/**` (orchestrator, phases, shared utilities, tools) and `dist/scripts/**` (bootstrapper, validators) implement engine logic with deterministic outputs.
 
 ## 4. DevCycle Manifest & Engine Requirements
 
@@ -183,10 +253,10 @@ Execution summaries use **dual-mode output** (JSON + Markdown) to serve both mac
 
 ### 11.2 Format Specification
 
-| Output             | Format   | Location                                                | Purpose                                       |
-| ------------------ | -------- | ------------------------------------------------------- | --------------------------------------------- |
-| Structured summary | JSON     | `.loaded-vibes/summaries/<devCycleId>-<timestamp>.json` | CI gating, dashboards, programmatic queries   |
-| Human summary      | Markdown | `.loaded-vibes/summaries/<devCycleId>-<timestamp>.md`   | PR attachments, TODO/CHANGELOG, manual review |
+| Output             | Format   | Location                                                                                                              | Purpose                                       |
+| ------------------ | -------- | --------------------------------------------------------------------------------------------------------------------- | --------------------------------------------- |
+| Structured summary | JSON     | `dist/.loaded-vibes/logs/<devCycleId>-<timestamp>.json` (shipped), mirrored to `.loaded-vibes/logs/` in user projects | CI gating, dashboards, programmatic queries   |
+| Human summary      | Markdown | `dist/.loaded-vibes/logs/<devCycleId>-<timestamp>.md` (shipped), mirrored to `.loaded-vibes/logs/` in user projects   | PR attachments, TODO/CHANGELOG, manual review |
 
 Both files are emitted atomically at phase completion. The Markdown file includes YAML frontmatter mirroring JSON fields for light parsing.
 
@@ -209,7 +279,7 @@ Both files are emitted atomically at phase completion. The Markdown file include
 
 ### 11.4 Migration Steps
 
-1. Create shared utility `dist/genaiscript/shared/summary-writer.js` to emit both JSON and Markdown.
+1. Create shared utility `dist/genaiscript/tools/summaryWriter.js` to emit both JSON and Markdown.
 2. Update orchestrator to invoke the utility at each phase completion.
 3. Extend `loaded-vibes logs` to display/export summaries.
 4. Update CI workflows to consume `*.json` for gating decisions.
@@ -217,7 +287,7 @@ Both files are emitted atomically at phase completion. The Markdown file include
 ### 11.5 Telemetry Export CLI
 
 - CLI command: `loaded-vibes telemetry export --format json|markdown [--devcycle <id>] [--since <iso>] [--out <path>]`.
-- Default sources: `.loaded-vibes/logs/*.ndjson` (input), `.loaded-vibes/summaries/` (metadata), `.loaded-vibes/telemetry/exports/` (output directory).
+- Default sources: `dist/.loaded-vibes/logs/*.ndjson` (shipped logs, mirrored to user projects as `.loaded-vibes/logs/*.ndjson`), `dist/.loaded-vibes/telemetry/exports/` (output directory).
 - Formats:
   - **JSON** – primary artifact for CI/dashboards; aligns with ADR-0001 decision (Option C). Structured payload includes `devCycleId`, severity counts, timeframe, requirement IDs, log file references, and filters applied.
   - **Markdown** – mirrors JSON content for human review with embedded TODO/CHANGELOG snippets and YAML frontmatter referencing filters + source directories.
@@ -228,8 +298,8 @@ Both files are emitted atomically at phase completion. The Markdown file include
 ### 11.6 Release Notes Compliance
 
 - CLI command: `loaded-vibes telemetry release-notes --format json|markdown [--devcycle <id>] [--since <iso>] [--out <path>]`.
-- Inputs: `.loaded-vibes/logs/*.ndjson` telemetry, `CHANGELOG.md`, and manifest metadata to guarantee each entry maps back to a canonical DevCycle (`PRD §5.4`, `TECH §10`, `SPEC-OBS §3`).
-- Outputs: `.loaded-vibes/release-notes/release-notes-<timestamp>.{json,md}` via `fileGuard`; JSON includes machine-readable `compliance` totals (`telemetryMapped`, `changelogMapped`, `totalDevCycles`), Markdown mirrors the structure for stakeholder review.
+- Inputs: `dist/.loaded-vibes/logs/*.ndjson` telemetry (shipped then mirrored to `.loaded-vibes/logs/*.ndjson` in user projects), `CHANGELOG.md`, and manifest metadata to guarantee each entry maps back to a canonical DevCycle (`PRD §5.4`, `TECH §10`, `SPEC-OBS §3`).
+- Outputs: `dist/.loaded-vibes/release-notes/release-notes-<timestamp>.{json,md}` (shipped) or `.loaded-vibes/release-notes/` (user projects) via `fileGuard`; JSON includes machine-readable `compliance` totals (`telemetryMapped`, `changelogMapped`, `totalDevCycles`), Markdown mirrors the structure for stakeholder review.
 - Per-DevCycle sections cite requirement IDs (union of telemetry + manifest references), embed TODO + CHANGELOG snippets, list severity counts/timeframes, and flag gaps when changelog evidence is missing (⚠️).
 - The generator functions as the compliance verification process: CI or humans run it before publishing release notes to confirm telemetry/changelog parity; any DevCycle lacking both signals blocks release packaging until TODO/CHANGELOG automation catches up.
 
@@ -343,12 +413,12 @@ This section documents the required MCP servers and toolsets for DevCycles 12 (P
 **Toolset Gaps Identified:**
 
 1. **`todos` MCP server** – Proposed; currently not listed in `observability.toolset.jsonc`. Adding it would streamline TODO generation from telemetry gaps per SPEC-OBS §3. Implementation required.
-2. **Dedicated telemetry helper** – No specialized NDJSON formatting utility; currently relies on filesystem writes. Consider adding a `telemetry` script helper in `dist/genaiscript/shared/` for consistent NDJSON schema enforcement.
+2. **Dedicated telemetry helper** – No specialized NDJSON formatting utility; currently relies on filesystem writes. Consider adding a `telemetry` script helper in `dist/genaiscript/tools/` for consistent NDJSON schema enforcement.
 
 **Fallback Behavior:**
 
 - WHEN the proposed `todos` MCP is unavailable (i.e., not yet implemented), THE SYSTEM SHALL append remediation items directly to `TODO.md` via filesystem operations and log the fallback action.
-- WHEN remote `fetch` export fails, THE SYSTEM SHALL persist logs locally under `.loaded-vibes/logs/` and queue retry via CLI `doctor` remediation.
+- WHEN remote `fetch` export fails, THE SYSTEM SHALL persist logs locally under `dist/.loaded-vibes/logs/` (framework) or `.loaded-vibes/logs/` (user projects) and queue retry via CLI `doctor` remediation.
 - WHEN `memory` MCP is unavailable, THE SYSTEM SHALL rely solely on `dist/genaiscript/state/state.json` for checkpoint persistence without in-memory caching and warn about potential session continuity limitations.
 
 #### 11.1.2 Performance DevCycle (DevCycle 12)
@@ -386,7 +456,7 @@ This section documents the required MCP servers and toolsets for DevCycles 12 (P
 1. **`playwright` MCP server** – Not listed; Playwright is currently available only as a VS Code extension. Adding an MCP server would enable automated Core Web Vitals capture and browser performance profiling per PRD §6.
 2. **`runTests` MCP server** – Not listed; would allow programmatic benchmark execution via Vitest/Playwright test runners.
 3. **Dedicated benchmark CLI entry** – Current toolset lacks `benchmark` in allowed operations at the MCP level; add pnpm/npx benchmark script capability.
-4. **Profiler script helper** – No shared utility for consistent metric capture; consider adding `dist/genaiscript/shared/profiler.js` for repeatable benchmarking.
+4. **Profiler script helper** – No shared utility for consistent metric capture; consider adding `dist/genaiscript/tools/profiler.js` for repeatable benchmarking.
 
 **Fallback Behavior:**
 
@@ -419,8 +489,8 @@ Based on this assessment, the following updates are recommended:
 
 **Shared Utilities (Future Work):**
 
-- `dist/genaiscript/shared/telemetry.js` – NDJSON schema enforcement, log rotation, sanitization hooks.
-- `dist/genaiscript/shared/profiler.js` – Metric capture, baseline comparison, regression detection.
+- `dist/genaiscript/tools/telemetry.js` – NDJSON schema enforcement, log rotation, sanitization hooks.
+- `dist/genaiscript/tools/profiler.js` – Metric capture, baseline comparison, regression detection.
 
 #### 11.1.4 Decision Record
 

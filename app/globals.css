@@ -1,0 +1,75 @@
+/* Import Tailwind core */
+@import 'tailwindcss';
+
+/* Plugins (v4 CSS-first) */
+@plugin "@tailwindcss/typography";
+@plugin "tailwindcss-animate";
+
+/* Design tokens */
+@theme {
+  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter', sans-serif;
+  --font-display: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    'Liberation Mono', 'Courier New', monospace;
+
+  --color-background: oklch(18% 0.04 270);
+  --color-foreground: oklch(98% 0 0);
+  --color-muted-foreground: oklch(75% 0.05 280);
+
+  --color-grid-line: oklch(25% 0.06 270 / 0.65);
+}
+
+/* Base layout */
+:root {
+  color-scheme: dark;
+}
+
+body {
+  @apply min-h-screen bg-background text-foreground font-sans;
+}
+
+/* Utility: background grid */
+.bg-grid {
+  background-image: linear-gradient(
+      to right,
+      color-mix(in oklab, var(--color-grid-line) 60%, transparent),
+      transparent 1px
+    ),
+    linear-gradient(
+      to bottom,
+      color-mix(in oklab, var(--color-grid-line) 60%, transparent),
+      transparent 1px
+    );
+  background-size: 40px 40px;
+  background-position: center;
+}
+
+/* Typography tweaks */
+.prose {
+  --tw-prose-body: var(--color-muted-foreground);
+  --tw-prose-headings: oklch(96% 0.09 330);
+  --tw-prose-links: oklch(80% 0.14 330);
+  --tw-prose-bold: oklch(98% 0 0);
+  --tw-prose-quotes: oklch(90% 0.09 330);
+}
+
+/* Small helper tokens */
+.font-display {
+  font-family: var(--font-display);
+}
+
+.font-mono {
+  font-family: var(--font-mono);
+}
+
+.text-muted-foreground {
+  color: var(--color-muted-foreground);
+}
+
+.bg-background {
+  background-color: var(--color-background);
+}
+
+.text-foreground {
+  color: var(--color-foreground);
+}

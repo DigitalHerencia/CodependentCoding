@@ -1,40 +1,69 @@
 ---
-applyTo: "**/*.genai.*"
-description: "Instructions for working with GenAIScript files"
+applyTo: '**/*.genai.*'
+description: 'GenAIScript runtime conventions for executing DevCycles in end-user projects'
 ---
 
-## GenAIScript Code Generation Instructions
+## GenAIScript Runtime Instructions (End-User Project)
 
-GenAIScript is a custom runtime for Node.js that favors declarative prompt assembly through tagged template literals, shared context helpers, and deterministic tool invocation. Follow the layered guidance below to avoid duplicating rules that already exist elsewhere:
+**Context:** These instructions apply to GenAIScript scripts **executing inside an end-user's Loaded Vibes project**, not during framework development. Scripts here implement DevCycle phases and generate application code.
 
-1. **Reference order**
+### Script Execution Model
 
-   - Workspace/extension rules live in `.github/genaiscript-extension.instructions.md` and describe how VS Code + Copilot should load scripts, contexts, and MCP integrations.
-   - This file defines repository-specific coding conventions for `.genai.*` assets.
-   - The upstream API manual lives in `.genaiscript/instructions/llms-full.txt` (mirrors https://microsoft.github.io/genaiscript/llms-full.txt) and should be used for syntax or helper details when needed.
+1. **Orchestrator-Driven**
 
-2. **Authoring requirements**
+   - All DevCycle execution flows through `orchestrator.genai.js`
+   - Phase scripts in `phases/*.genai.js` are invoked by orchestrator
+   - Never bypass orchestrator for DevCycle operations
 
-   - Always emit **TypeScript** using **ESM syntax**; GenAIScript ambient types from https://microsoft.github.io/genaiscript/genaiscript.d.ts are automatically in scope—no imports required.
-   - Prefer GenAIScript globals (`script`, `def`, `env`, `run`, `filesystem`, MCP helpers, etc.) over raw Node APIs. Only access the Node runtime when a GenAIScript helper does not exist and document the exception with a `TODO`.
-   - Keep code intention-revealing and minimal: avoid try/catch wrappers, imperative logging, or hand-rolled parsers unless mandated by Tech Requirements.
-   - Use inline `TODO:` comments whenever assumptions or follow-up actions need human review.
+2. **Context Sources**
 
-3. **File layout & naming**
+   - User's project specs: `docs/project-prd.md`, `docs/tech-requirements.md`
+   - Existing code: `src/**` (read-only unless implementing changes)
+   - Framework state: `genaiscript/state/state.json`, TODO.md, CHANGELOG.md
+   - DevCycle config: `genaiscript/devcycles.config.json`
 
-   - Save new scripts under `./genaisrc/` with the `.genai.mts` extension so the CLI + GenAIScript extension auto-detect them.
-   - Group shared utilities under `genaisrc/shared/` and prefer exporting small helpers over duplicating logic inside individual scripts.
-   - When generating outputs, honor the Spec-Driven Workflow contract: persist context into `memory/state.json`, update TODO/CHANGELOG stubs when applicable, and respect the directory separation described in the PRD.
+3. **Tool Access**
+   - Use only tools listed in active DevCycle's toolset (`.github/toolsets/*.toolset.jsonc`)
+   - MCP servers: filesystem, git, memory, postgres (via Prisma), todos
+   - Built-in helpers: `def`, `defData`, `defSchema`, `workspace.readText()`, etc.
+   - Custom tools must be registered in toolset before use
 
-4. **Prompt construction tips**
+### Code Generation Guidelines
 
-   - Pull requirement snippets via `defMarkdown`/`def` helpers so prompts cite `docs/PRD.md` and `docs/TECH_REQUIREMENTS.md` explicitly.
-   - When referencing files, prefer `workspace.readText()` + `def` rather than embedding large strings manually.
-   - Favor structured outputs by defining schemas (`defSchema`) and referencing them inside `$`` prompts, especially for changelog or TODO updates.
+1. **Target Directory: `src/**` Only\*\*
 
-5. **Tooling defaults**
-   - Scripts execute within the Loaded Vibes Copilot agent; assume `.github/copilot-instructions.md` already enforced safety rails—do not disable them.
-   - Use built-in tools (`filesystem`, `git`, `todos`, `runTests`, `memory`, `runSubagent`, etc.) per the manifest to keep DevCycles deterministic.
-   - Whenever a script exposes additional tools, document them inline and register them with `defTool` along with short descriptions for the retro CLI to surface.
+   - All application code belongs in `src/**`
+   - Never modify `genaiscript/**`, `.github/**`, or framework tooling
+   - Use `workspace.writeText(path, content)` for file creation
+   - Honor existing file structure and naming conventions
 
-Following this ordering keeps GenAIScript guidance DRY: extension-level rules define the environment, this file defines repository conventions, and `llms-full.txt` remains the canonical API reference.
+2. **Spec-Driven Workflow Compliance**
+
+   - Analyze: Read user PRD, extract EARS requirements
+   - Design: Create implementation plan, get approval
+   - Implement: Generate code, run tests
+   - Validate: Check against acceptance criteria
+   - Reflect: Update TODO/CHANGELOG with requirement IDs
+   - Handoff: Commit, document, prepare next phase
+
+3. **State Management**
+
+   - Persist execution snapshots to `genaiscript/state/state.json`
+   - Log events to `.loaded-vibes/logs/*.ndjson` with `devCycleId`, `requirementId`
+   - Update TODO.md with task status, CHANGELOG.md with summaries
+   - Use `memory` MCP for cross-phase context
+
+4. **Safety & Security**
+   - Trigger Bad Vibes Firewall for destructive operations
+   - Redact secrets/env vars from logs
+   - Validate inputs against schemas before processing
+   - Request human approval for database migrations, deployments
+
+### API Reference Hierarchy
+
+- **This file:** Runtime behavior, DevCycle execution model, state/logging
+- **`.genaiscript/instructions/llms-full.txt`:** Complete GenAIScript API syntax reference
+- **DevCycle instructions:** Domain-specific rules in `.github/instructions/*.instructions.md`
+- **Toolsets:** Available tools in `.github/toolsets/*.toolset.jsonc`
+
+When uncertain about GenAIScript syntax (e.g., `defTool`, `defAgent`, `$` templates), consult `llms-full.txt`. For DevCycle workflow or project requirements, reference instruction files.

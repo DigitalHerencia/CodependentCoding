@@ -8,22 +8,33 @@ Rewritten Meta-Instructions for VS Code Copilot Chat (Agent Mode)
 
 ## 1. Scope
 
-These rules define how Copilot Chat must behave whenever it generates or modifies anything inside the Loaded Vibes development framework.
+These rules govern how Copilot Chat assists **framework maintainers** developing the Loaded Vibes framework itself inside the `D:/LoadedVibes/` workspace.
 
-They apply to every artifact, including:
+**Development Environment Context:**
 
-- Global instructions
-- Agent profiles
-- Prompts
-- Domain-specific instructions
-- Toolsets
-- VS Code settings and workspace configs
-- GitHub automation files
-- PRD / Tech Specs
-- Documentation and scripts
-- Any file or operation initiated through Copilot Chat
+- This workspace builds the framework that ships to end users
+- Assets created here populate `dist/**` for distribution
+- Uses `docs/`, `spec/`, `templates/` as source-of-truth
+- GenAIScript orchestrator, DevCycle manifests, and CLI tools are authored here
+- End-user experience is defined but not executed in this environment
 
-Copilot must apply these rules before producing output.
+**Applies to framework authoring tasks:**
+
+- Generating shipped instructions (`dist/.github/**`)
+- Creating DevCycle assets (prompts, instructions, toolsets) from `templates/`
+- Writing orchestrator/phase scripts under `dist/genaiscript/`
+- Updating PRD, specs, and decision records in `docs/`, `spec/`, `decisions/`
+- Configuring maintainer VS Code profile (`.vscode/`, NOT `dist/.vscode/`)
+- GitHub automation (`.github/workflows/`, issue templates)
+- Building CLI commands under `dist/cli/`
+
+**Does NOT apply to:**
+
+- End-user project development (that uses framework instructions in `dist/.github/`)
+- Running DevCycles inside a user's Loaded Vibes project
+- Generating application code for end users (that happens in user projects)
+
+Copilot must apply these rules before producing framework assets.
 
 ## 2. Use Current, Authoritative Documentation
 
@@ -226,10 +237,11 @@ If a conflict, missing dependency, or outdated pattern is detected, Copilot must
 
 ## 11. Environment Separation (Development vs. Shipped)
 
-- **Workspace scope:** All development happens inside `D:/LoadedVibes` and is limited to the files listed in the user brief (`.github`, `.vscode`, `docs`, `templates`, `README.md`).
-- **Shipped snapshot:** `D:/LoadedVibes/dist` mirrors the payload delivered to end users. Treat it as read-only reference material unless you are explicitly updating the shipped package.
-- **Runtime `src/` outputs:** When customers run Loaded Vibes, every generated asset must live inside `dist/src/` within their copy of the package. Never read from or write to any `src/` folder while editing the framework source.
-- **IDE/tooling hygiene:** VS Code settings, MCP configurations, and automation scripts must ignore `dist/src/**` so authoring tasks stay isolated from runtime assets.
+- **Workspace scope:** All development happens inside `D:/LoadedVibes` within `.github/`, `.vscode/`, `docs/`, `spec/`, `templates/`, `decisions/`, `.agent_work/`, and the marketing site (`app/`, `public/`).
+- **Shipped snapshot:** `D:/LoadedVibes/dist/` contains the complete framework payload delivered to end users, including `dist/.vscode/`, `dist/.github/`, `dist/docs/`, `dist/.genaiscript/`, `dist/genaiscript/`, `dist/cli/`, `dist/scripts/`, `dist/packages/`, `dist/.loaded-vibes/`, and `dist/src/`. Treat it as immutable unless explicitly regenerating via approved DevCycles.
+- **Runtime outputs:** After installation, users receive a mirror of `dist/**` inside their project root. The framework generates code into `dist/src/` (shipped target), which becomes `<project-root>/src/**` in the user's environment. Never read from or write to `src/` while authoring the framework source.
+- **IDE/tooling hygiene:** VS Code settings, MCP configurations, and automation scripts in the workspace must reference only workspace assets (`.github/`, `.vscode/`, `docs/`, `spec/`, `templates/`). Shipped profiles live exclusively under `dist/.vscode/` and `dist/.github/`.
+- **Telemetry & logs:** Distinguish between `dist/.loaded-vibes/**` (shipped logs/state) and `<project-root>/.loaded-vibes/**` (user's runtime mirror). Always clarify which layer when referencing paths.
 
 ## 12. Spec-Driven Workflow Loop
 
