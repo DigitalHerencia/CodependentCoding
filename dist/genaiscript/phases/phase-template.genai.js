@@ -576,9 +576,19 @@ async function reflectStage(devCycleId, validation, entry, plan, focusTask) {
     const status = hasErrors ? 'failure' : (validation.automatedTests?.passed ? 'success' : 'failure');
     
     // Get relative log file path for summary
-    const relativeLogPath = logFilePath 
-      ? logFilePath.replace(/^.*?(\.loaded-vibes)/, '$1')
-      : undefined;
+    // Pattern extracts path starting from .loaded-vibes directory
+    const LOADED_VIBES_PATH_PATTERN = /^.*?(\.loaded-vibes)/;
+    let relativeLogPath;
+    if (logFilePath) {
+      const match = logFilePath.match(LOADED_VIBES_PATH_PATTERN);
+      relativeLogPath = match ? logFilePath.replace(LOADED_VIBES_PATH_PATTERN, '$1') : logFilePath;
+    }
+    
+    // Build artifacts list, filtering out undefined values
+    const artifacts = [
+      ...(relativeLogPath ? [relativeLogPath] : []),
+      ...(validation.artifacts || []),
+    ].filter(Boolean);
     
     // Write dual-mode summaries (JSON + Markdown)
     const dualSummaryResult = createAndWriteSummary({
@@ -593,10 +603,7 @@ async function reflectStage(devCycleId, validation, entry, plan, focusTask) {
         details: validation.automatedTests?.details || 
           (hasErrors ? 'DevCycle completed with errors' : 'All phases completed successfully'),
       },
-      artifacts: [
-        ...(logFilePath ? [relativeLogPath] : []),
-        ...(validation.artifacts || []),
-      ],
+      artifacts,
       logFile: relativeLogPath,
       phase: 'reflect',
     });

@@ -187,8 +187,13 @@ export function generateYAMLFrontmatter(summary) {
   lines.push('validationResult:');
   lines.push(`  passed: ${summary.validationResult.passed}`);
   if (summary.validationResult.details) {
-    // Escape multiline details for YAML
-    const escapedDetails = summary.validationResult.details.replace(/"/g, '\\"');
+    // Escape YAML special characters for safe embedding
+    const escapedDetails = summary.validationResult.details
+      .replace(/\\/g, '\\\\')     // Escape backslashes first
+      .replace(/"/g, '\\"')        // Escape double quotes
+      .replace(/\n/g, '\\n')       // Escape newlines
+      .replace(/\r/g, '\\r')       // Escape carriage returns
+      .replace(/\t/g, '\\t');      // Escape tabs
     lines.push(`  details: "${escapedDetails}"`);
   }
 

@@ -265,6 +265,21 @@ describe('generateYAMLFrontmatter', () => {
     assert.ok(yaml.includes('logFile:'));
     assert.ok(yaml.includes('.loaded-vibes/logs/scaffolding-2025-11-28.ndjson'));
   });
+
+  it('should escape YAML special characters in validation details', () => {
+    const summary = createValidSummary();
+    summary.validationResult = {
+      passed: false,
+      details: 'Error: "Test failed"\nLine 1\rLine 2\tTabbed\\Path',
+    };
+    const yaml = generateYAMLFrontmatter(summary);
+    // Should escape quotes, newlines, carriage returns, tabs, and backslashes
+    assert.ok(yaml.includes('\\n'), 'Should escape newlines');
+    assert.ok(yaml.includes('\\"'), 'Should escape double quotes');
+    assert.ok(yaml.includes('\\r'), 'Should escape carriage returns');
+    assert.ok(yaml.includes('\\t'), 'Should escape tabs');
+    assert.ok(yaml.includes('\\\\'), 'Should escape backslashes');
+  });
 });
 
 // ============================================================
