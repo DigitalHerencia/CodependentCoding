@@ -40,8 +40,8 @@ This backlog tracks Spec-Driven Workflow actions for the Loaded Vibes framework.
 | ------ | ------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------- |
 | ☐      | Implement NDJSON log format with fields: `devCycleId`, `phase`, `requirementId`, `severity`, `checkpointId`, timestamps. | Tech Requirements §4.5, SPEC-OBS §1-3        |
 | ☑      | Persist execution snapshots in `dist/genaiscript/state/state.json` with phase, params, outputs, timestamps.              | Tech Requirements §4.5, SPEC-ENGINE §5       |
-| ☑      | Generate Markdown summaries from NDJSON for TODO/CHANGELOG updates with requirement ID references.                       | PRD §5.3, Tech Requirements §7, SPEC-OBS §3  |
-| ☐      | Implement dual-mode execution summaries (JSON + Markdown) per ADR-0001; create `summary-writer.js` utility.              | Tech Requirements §11, SPEC-OBS §2, ADR-0001 |
+| ☐      | Generate Markdown summaries from NDJSON for TODO/CHANGELOG updates with requirement ID references.                       | PRD §5.3, Tech Requirements §7, SPEC-OBS §3  |
+| ☑      | Implement dual-mode execution summaries (JSON + Markdown) per ADR-0001; create `summary-writer.js` utility. Closes #73.  | Tech Requirements §11, SPEC-OBS §2, ADR-0001 |
 | ☑      | Implement `loaded-vibes telemetry export` command producing redacted JSON/Markdown snapshots with filter support.        | Tech Requirements §11.5, SPEC-OBS §2         |
 
 ### Security & Safety
