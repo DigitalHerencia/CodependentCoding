@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { ReactNode } from 'react';
+import { Analytics } from '@vercel/analytics/next';
 
 export const metadata: Metadata = {
   title: 'Loaded Vibes - Bad Vibes, Clean Code',
@@ -14,6 +15,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" className="scroll-smooth">
+      <Analytics />
       <body className="bg-background text-foreground antialiased">{children}</body>
     </html>
   );

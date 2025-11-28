@@ -33,7 +33,7 @@ import {
   completePhaseExecution,
   hasResumablePhases,
   getResumableSnapshots,
-} from './shared/statePersistence.js';
+} from './state/statePersistence.js';
 
 script({
   title: 'Loaded Vibes Orchestrator',

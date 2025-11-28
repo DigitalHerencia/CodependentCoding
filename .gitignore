@@ -26,3 +26,11 @@ coverage/
 
 # State backups
 *.backup
+
+# Next.js
+.next/
+out/
+.cache/
+.vercel/
+.now/
+
