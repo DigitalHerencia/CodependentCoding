@@ -365,5 +365,3 @@ describe('Requirement Traceability', () => {
     assert.ok(true, 'Installer implements SPEC-CLI §3 requirements');
   });
 });
-
-console.log('create-loaded-vibes tests loaded successfully');

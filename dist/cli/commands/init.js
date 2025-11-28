@@ -187,8 +187,19 @@ async function writeInstallLog(logsDir, logData) {
     lines.push('');
   }
 
-  const prefix = existsSync(logPath) ? '\n\n---\n\n' : '';
-  await writeFile(logPath, `${prefix}${lines.join('\n')}`, { flag: 'a', encoding: 'utf8' });
+  // Use atomic write pattern to avoid race conditions
+  const content = lines.join('\n');
+  try {
+    const stats = await stat(logPath);
+    if (stats.size > 0) {
+      await writeFile(logPath, `\n\n---\n\n${content}`, { flag: 'a', encoding: 'utf8' });
+    } else {
+      await writeFile(logPath, content, { flag: 'a', encoding: 'utf8' });
+    }
+  } catch {
+    // File doesn't exist, create it
+    await writeFile(logPath, content, { encoding: 'utf8' });
+  }
 
   return logPath;
 }
