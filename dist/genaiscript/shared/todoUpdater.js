@@ -25,6 +25,9 @@ const GENAI_ROOT = path.resolve(CURRENT_DIR, '..');
 const REPO_ROOT = path.resolve(GENAI_ROOT, '..', '..');
 const TODO_PATH = path.resolve(REPO_ROOT, 'TODO.md');
 
+/** Maximum length for truncated duplicate item descriptions in reports */
+const MAX_DUPLICATE_DISPLAY_LENGTH = 80;
+
 /**
  * @typedef {Object} TodoItem
  * @property {string} status - '☑' for complete, '☐' for incomplete
@@ -299,6 +302,146 @@ export function getTodosByCategory(category) {
   return items.filter((item) =>
     item.category.toLowerCase().includes(category.toLowerCase())
   );
+}
+
+/**
+ * Finds duplicate TODO entries based on normalized item text.
+ * Duplicates are items with the same normalized description text.
+ *
+ * @returns {{ duplicates: Array<{ item: string, entries: TodoItem[] }>, hasDuplicates: boolean }}
+ * @see SPEC-DEV §4, SPEC-OBS §3, Issue #71
+ */
+export function findDuplicates() {
+  const items = readTodoItems();
+  const itemsByNormalizedText = new Map();
+
+  for (const item of items) {
+    const normalized = normalizeText(item.item);
+    if (!itemsByNormalizedText.has(normalized)) {
+      itemsByNormalizedText.set(normalized, []);
+    }
+    itemsByNormalizedText.get(normalized).push(item);
+  }
+
+  const duplicates = [];
+  for (const [text, entries] of itemsByNormalizedText) {
+    if (entries.length > 1) {
+      duplicates.push({
+        item: entries[0].item,
+        entries,
+      });
+    }
+  }
+
+  return {
+    duplicates,
+    hasDuplicates: duplicates.length > 0,
+  };
+}
+
+/**
+ * Removes duplicate TODO entries, keeping the completed (☑) version when available.
+ * When both are incomplete or both are complete, keeps the one with more detailed source reference.
+ *
+ * @param {Object} [options={}] - Options for the deduplication
+ * @param {boolean} [options.dryRun=false] - If true, returns the result without modifying the file
+ * @returns {{ removed: number, kept: Array<{ item: string, status: string }>, modified: boolean }}
+ * @see SPEC-DEV §4, SPEC-OBS §3, PRD §5.3, Issue #71
+ */
+export function removeDuplicates(options = {}) {
+  const { dryRun = false } = options;
+
+  if (!existsSync(TODO_PATH)) {
+    return { removed: 0, kept: [], modified: false };
+  }
+
+  try {
+    const content = readFileSync(TODO_PATH, 'utf8');
+    const lines = content.split('\n');
+    const items = readTodoItems();
+
+    // Group items by normalized text
+    const itemsByNormalizedText = new Map();
+    for (const item of items) {
+      const normalized = normalizeText(item.item);
+      if (!itemsByNormalizedText.has(normalized)) {
+        itemsByNormalizedText.set(normalized, []);
+      }
+      itemsByNormalizedText.get(normalized).push(item);
+    }
+
+    // Identify lines to remove (duplicates)
+    const linesToRemove = new Set();
+    const kept = [];
+
+    for (const [, entries] of itemsByNormalizedText) {
+      if (entries.length > 1) {
+        // Sort: completed items first, then by source reference length (longer = more detailed)
+        entries.sort((a, b) => {
+          // Completed items come first
+          if (a.status === '☑' && b.status !== '☑') return -1;
+          if (b.status === '☑' && a.status !== '☑') return 1;
+          // Then by source reference length (longer = more detailed)
+          return (b.source?.length || 0) - (a.source?.length || 0);
+        });
+
+        // Keep the first (best) entry, mark others for removal
+        kept.push({ item: entries[0].item, status: entries[0].status });
+        for (let i = 1; i < entries.length; i++) {
+          linesToRemove.add(entries[i].lineNumber);
+        }
+      }
+    }
+
+    if (linesToRemove.size === 0) {
+      return { removed: 0, kept: [], modified: false };
+    }
+
+    if (dryRun) {
+      return { removed: linesToRemove.size, kept, modified: false };
+    }
+
+    // Remove duplicate lines (adjust for 0-based index)
+    const newLines = lines.filter((_, index) => !linesToRemove.has(index + 1));
+    writeFileSync(TODO_PATH, newLines.join('\n'), 'utf8');
+
+    return { removed: linesToRemove.size, kept, modified: true };
+  } catch (error) {
+    console.error(`⚠️  todoUpdater: Failed to remove duplicates: ${error.message}`);
+    return { removed: 0, kept: [], modified: false };
+  }
+}
+
+/**
+ * Validates TODO.md for duplicates and returns a report.
+ * Useful for CI checks to prevent duplicate entries.
+ *
+ * @returns {{ valid: boolean, duplicateCount: number, duplicates: Array<{ item: string, count: number }>, message: string }}
+ * @see SPEC-DEV §4, SPEC-OBS §3, Tech Requirements §7, Issue #71
+ */
+export function validateNoDuplicates() {
+  const { duplicates, hasDuplicates } = findDuplicates();
+
+  if (!hasDuplicates) {
+    return {
+      valid: true,
+      duplicateCount: 0,
+      duplicates: [],
+      message: '✅ No duplicate TODO entries found.',
+    };
+  }
+
+  const duplicateInfo = duplicates.map((d) => ({
+    item: d.item.slice(0, MAX_DUPLICATE_DISPLAY_LENGTH) + (d.item.length > MAX_DUPLICATE_DISPLAY_LENGTH ? '...' : ''),
+    count: d.entries.length,
+  }));
+
+  return {
+    valid: false,
+    duplicateCount: duplicates.length,
+    duplicates: duplicateInfo,
+    message: `❌ Found ${duplicates.length} duplicate TODO entries. Run deduplication to fix. [SPEC-DEV §4, SPEC-OBS §3]`,
+  };
 }
 
 /** Exported paths for external use */
