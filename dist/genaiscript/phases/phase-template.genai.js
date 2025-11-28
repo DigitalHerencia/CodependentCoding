@@ -21,7 +21,11 @@ import { readFile } from 'fs/promises';
 import {
   reflectStageHook,
   persistLogEntries,
+  extractRequirementIds,
 } from '../logging/markdownSummaries.js';
+import {
+  createAndWriteSummary,
+} from '../shared/summaryWriter.js';
 
 /**
  * Phase runner metadata for orchestrator consumption.
@@ -84,6 +88,14 @@ script({
  * @see SPEC-OBS §3, Issue #17
  */
 const collectedEvents = [];
+
+/**
+ * Tracks the DevCycle start time for execution summaries.
+ * Set when DevCycle begins execution.
+ * @type {string|null}
+ * @see TECH §11, Issue #73
+ */
+let devCycleStartTime = null;
 
 /**
  * Logs an NDJSON event to console and collects it for summary generation.
@@ -442,13 +454,14 @@ async function validateStage(devCycleId, implementation, toolsetText) {
 
 /**
  * REFLECT STAGE: Update TODO/CHANGELOG, memory, and prepare handoff.
+ * Now also writes dual-mode execution summaries per TECH §11 and ADR-0001.
  * @param {string} devCycleId - DevCycle identifier
  * @param {Object} validation - Results from Validate stage
  * @param {Object} entry - Manifest entry
  * @param {Object} plan - Design plan
  * @param {string} focusTask - Original task description
  * @returns {Promise<Object>} Reflect/handoff summary
- * @see TECH §4.3, TECH §7, SPEC-ENGINE §4, Issue #17
+ * @see TECH §4.3, TECH §7, TECH §11, SPEC-ENGINE §4, SPEC-OBS §2, ADR-0001, Issue #17, Issue #73
  */
 async function reflectStage(devCycleId, validation, entry, plan, focusTask) {
   logNDJSON(createStageEvent(devCycleId, 'reflect', 'reflect-start', 'TECH §7', 'info', 'Starting Reflect stage'));
@@ -500,8 +513,9 @@ async function reflectStage(devCycleId, validation, entry, plan, focusTask) {
   // =========================================================================
   
   // Persist collected NDJSON events to log file
+  let logFilePath = null;
   if (collectedEvents.length > 0) {
-    const logFilePath = persistLogEntries(collectedEvents);
+    logFilePath = persistLogEntries(collectedEvents);
     if (logFilePath) {
       console.log(`📊 NDJSON logs persisted to: ${logFilePath}`);
     }
@@ -526,6 +540,76 @@ async function reflectStage(devCycleId, validation, entry, plan, focusTask) {
     } catch (err) {
       console.log('⚠️  Markdown summary hook failed:', err.message);
     }
+  }
+
+  // =========================================================================
+  // Dual-Mode Execution Summaries (Issue #73, TECH §11, SPEC-OBS §2, ADR-0001)
+  // =========================================================================
+  
+  try {
+    // Extract requirement IDs from collected events
+    const requirementIds = extractRequirementIds(collectedEvents);
+    
+    // Build checkpoint approvals from events
+    const checkpointEvents = collectedEvents.filter(
+      (e) => e.checkpointId && e.checkpointId.includes('approval')
+    );
+    const checkpoints = checkpointEvents.map((e) => ({
+      id: e.checkpointId,
+      approved: e.severity !== 'error',
+      approver: 'system',
+    }));
+    
+    // Add standard checkpoints if none recorded
+    if (checkpoints.length === 0 && entry.checkpoints?.length > 0) {
+      for (const cp of entry.checkpoints) {
+        checkpoints.push({
+          id: cp,
+          approved: true,
+          approver: 'system',
+        });
+      }
+    }
+    
+    // Determine execution status
+    const hasErrors = collectedEvents.some((e) => e.severity === 'error');
+    const status = hasErrors ? 'failure' : (validation.automatedTests?.passed ? 'success' : 'failure');
+    
+    // Get relative log file path for summary
+    const relativeLogPath = logFilePath 
+      ? logFilePath.replace(/^.*?(\.loaded-vibes)/, '$1')
+      : undefined;
+    
+    // Write dual-mode summaries (JSON + Markdown)
+    const dualSummaryResult = createAndWriteSummary({
+      devCycleId,
+      startTime: devCycleStartTime || new Date().toISOString(),
+      endTime: new Date().toISOString(),
+      status,
+      requirementIds: requirementIds.length > 0 ? requirementIds : ['TECH §11', 'SPEC-OBS §2'],
+      checkpoints,
+      validationResult: {
+        passed: validation.automatedTests?.passed ?? !hasErrors,
+        details: validation.automatedTests?.details || 
+          (hasErrors ? 'DevCycle completed with errors' : 'All phases completed successfully'),
+      },
+      artifacts: [
+        ...(logFilePath ? [relativeLogPath] : []),
+        ...(validation.artifacts || []),
+      ],
+      logFile: relativeLogPath,
+      phase: 'reflect',
+    });
+    
+    if (dualSummaryResult.success) {
+      console.log('📝 Dual-mode execution summaries written (TECH §11, ADR-0001):');
+      console.log(`   JSON: ${dualSummaryResult.jsonPath}`);
+      console.log(`   Markdown: ${dualSummaryResult.markdownPath}`);
+    } else {
+      console.log('⚠️  Dual-mode summary write failed:', dualSummaryResult.error);
+    }
+  } catch (err) {
+    console.log('⚠️  Dual-mode execution summary generation failed:', err.message);
   }
 
   const reflectSummary = {
@@ -569,7 +653,8 @@ if (!entry) {
   throw new Error(`Phase '${phaseKey}' is not defined in devcycles.config.json. Reference: SPEC-ENGINE §3`);
 }
 
-// Log DevCycle start
+// Log DevCycle start and capture start time for execution summaries (Issue #73)
+devCycleStartTime = new Date().toISOString();
 logNDJSON(createStageEvent(phaseKey, 'init', 'devcycle-start', 'TECH §4.3', 'info', `Starting ${entry.label} DevCycle`));
 
 // Load required assets
