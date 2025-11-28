@@ -24,6 +24,7 @@ import {
   loadTechRequirements,
   loadTODO,
   loadChangelog,
+  loadSpecs,
   clearContextCache,
 } from './shared/contextLoader.js';
 import {
@@ -151,6 +152,7 @@ const prdContent = loadPRD();
 const techRequirementsContent = loadTechRequirements();
 const todoEntries = loadTODO();
 const changelogEntries = loadChangelog();
+const specs = loadSpecs();
 const stateSnapshot = loadStateSync();
 
 // Also load async documents for compatibility
@@ -162,6 +164,7 @@ const hydratedContext = {
   techRequirementsContent,
   todoEntries,
   changelogEntries,
+  specs,
   stateSnapshot,
   // Expose key metadata for quick reference
   devCycleId: normalizedPhaseInput,
@@ -188,6 +191,7 @@ console.log({
   todoLength: todoEntries.length,
   changelogLoaded: !!changelogEntries,
   changelogLength: changelogEntries.length,
+  specsLoaded: !!specs,
   stateRestored: !!stateSnapshot,
   completedPhases: stateSnapshot?.completedPhases?.length || 0,
   prdExcerpt: prdContent?.slice(0, 400),

@@ -9,8 +9,9 @@
 @theme {
   --font-sans: system-ui, -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter', sans-serif;
   --font-display: 'Space Grotesk', system-ui, -apple-system, sans-serif;
-  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
-    'Liberation Mono', 'Courier New', monospace;
+  --font-mono:
+    'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono',
+    'Courier New', monospace;
 
   --color-background: oklch(18% 0.04 270);
   --color-foreground: oklch(98% 0 0);
@@ -30,7 +31,8 @@ body {
 
 /* Utility: background grid */
 .bg-grid {
-  background-image: linear-gradient(
+  background-image:
+    linear-gradient(
       to right,
       color-mix(in oklab, var(--color-grid-line) 60%, transparent),
       transparent 1px

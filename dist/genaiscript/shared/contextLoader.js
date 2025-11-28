@@ -23,6 +23,7 @@ const PRD_PATH = path.resolve(REPO_ROOT, 'docs', 'PRD.md');
 const TECH_PATH = path.resolve(REPO_ROOT, 'docs', 'TECH_REQUIREMENTS.md');
 const TODO_PATH = path.resolve(REPO_ROOT, 'TODO.md');
 const CHANGELOG_PATH = path.resolve(REPO_ROOT, 'CHANGELOG.md');
+const SPECS_STATE_PATH = path.resolve(GENAI_ROOT, 'state', 'specs.json');
 
 /**
  * Memoization cache for loaded documents.
@@ -104,6 +105,22 @@ export function loadChangelog() {
 }
 
 /**
+ * Loads the parsed project specs (PRD + Tech) from state.
+ *
+ * @returns {object|null} Parsed specs or null if not found
+ */
+export function loadSpecs() {
+  const content = loadCachedDocument('specs', SPECS_STATE_PATH);
+  if (!content) return null;
+  try {
+    return JSON.parse(content);
+  } catch (e) {
+    console.error('Failed to parse specs.json', e);
+    return null;
+  }
+}
+
+/**
  * Clears the document cache to force fresh reads.
  * Call this at the start of each DevCycle to ensure fresh context.
  *
@@ -124,6 +141,7 @@ export function loadAllDocuments() {
     tech: loadTechRequirements(),
     todo: loadTODO(),
     changelog: loadChangelog(),
+    specs: loadSpecs(),
   };
 }
 

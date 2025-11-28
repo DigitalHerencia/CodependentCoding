@@ -129,7 +129,7 @@ jobs:
 
           # Check github.copilot.chat.* instruction file arrays
           echo "🔒 Checking Copilot instruction file references..."
-          
+
           # These settings use format: [{ "file": "path" }]
           COPILOT_FILE_SETTINGS=(
             "github.copilot.chat.pullRequestDescriptionGeneration.instructions"

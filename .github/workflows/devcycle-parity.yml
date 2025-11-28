@@ -60,7 +60,7 @@ jobs:
           # Format: numbered list under "## Development Phases" section
           # Lines: "1. initialization" through "18. updates"
           echo "🔍 Parsing DevCycle names from $INSTRUCTIONS_FILE..."
-          
+
           # Extract section between "## Development Phases" and "## Artifact Types"
           # Filter for numbered list items, then normalize:
           # - Remove number prefix
@@ -82,7 +82,7 @@ jobs:
           # Format: | # | DevCycle | Purpose |
           # Table rows start with: | 1 | Initialization | ...
           echo "🔍 Parsing canonical DevCycle names from $TECH_REQ_FILE §6..."
-          
+
           # Extract table rows with numeric IDs (skip header and separator)
           # Column 3 contains the DevCycle name
           # Normalize consistently with instructions parser:

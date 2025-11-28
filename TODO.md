@@ -36,15 +36,15 @@ This backlog tracks Spec-Driven Workflow actions for the Loaded Vibes framework.
 
 ### Observability & Logging
 
-| Status | Item                                                                                                                     | Source                                       |
-| ------ | ------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------- |
+| Status | Item                                                                                                                                 | Source                                       |
+| ------ | ------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------- |
 | ☑      | Implement NDJSON log format with fields: `devCycleId`, `phase`, `requirementId`, `severity`, `checkpointId`, timestamps. Closes #72. | Tech Requirements §4.5, SPEC-OBS §1-3        |
-| ☐      | Persist execution snapshots in `dist/genaiscript/state/state.json` with phase, params, outputs, timestamps.              | Tech Requirements §4.5, SPEC-ENGINE §5       |
-| ☑      | Generate Markdown summaries from NDJSON for TODO/CHANGELOG updates with requirement ID references.                       | PRD §5.3, Tech Requirements §7, SPEC-OBS §3  |
-| ☑      | Persist execution snapshots in `dist/genaiscript/state/state.json` with phase, params, outputs, timestamps.              | Tech Requirements §4.5, SPEC-ENGINE §5       |
-| ☐      | Generate Markdown summaries from NDJSON for TODO/CHANGELOG updates with requirement ID references.                       | PRD §5.3, Tech Requirements §7, SPEC-OBS §3  |
-| ☑      | Implement dual-mode execution summaries (JSON + Markdown) per ADR-0001; create `summary-writer.js` utility. Closes #73.  | Tech Requirements §11, SPEC-OBS §2, ADR-0001 |
-| ☑      | Implement `loaded-vibes telemetry export` command producing redacted JSON/Markdown snapshots with filter support.        | Tech Requirements §11.5, SPEC-OBS §2         |
+| ☐      | Persist execution snapshots in `dist/genaiscript/state/state.json` with phase, params, outputs, timestamps.                          | Tech Requirements §4.5, SPEC-ENGINE §5       |
+| ☑      | Generate Markdown summaries from NDJSON for TODO/CHANGELOG updates with requirement ID references.                                   | PRD §5.3, Tech Requirements §7, SPEC-OBS §3  |
+| ☑      | Persist execution snapshots in `dist/genaiscript/state/state.json` with phase, params, outputs, timestamps.                          | Tech Requirements §4.5, SPEC-ENGINE §5       |
+| ☐      | Generate Markdown summaries from NDJSON for TODO/CHANGELOG updates with requirement ID references.                                   | PRD §5.3, Tech Requirements §7, SPEC-OBS §3  |
+| ☑      | Implement dual-mode execution summaries (JSON + Markdown) per ADR-0001; create `summary-writer.js` utility. Closes #73.              | Tech Requirements §11, SPEC-OBS §2, ADR-0001 |
+| ☑      | Implement `loaded-vibes telemetry export` command producing redacted JSON/Markdown snapshots with filter support.                    | Tech Requirements §11.5, SPEC-OBS §2         |
 
 ### Security & Safety
 
@@ -67,18 +67,21 @@ This backlog tracks Spec-Driven Workflow actions for the Loaded Vibes framework.
 
 ### Documentation
 
-| Status | Item                                                                                                                                                                            | Source                                           |
-| ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------ |
-| ☑      | Author end-user documentation (README quickstart, SUPPORT, SECURITY, CHANGELOG) explaining installation, dashboard usage, DevCycle governance, and troubleshooting. Closes #29. | PRD §§2-4, Tech Requirements §5.2                |
-| ☑      | Document contributor workflow: PRD/Tech update → template regeneration → bootstrapper parity → `doctor` + `genaiscript test` → TODO/CHANGELOG.                                  | SPEC-DEV §4, Tech Requirements §7-8 (Closes #30) |
-| ☑      | Map CLI telemetry + changelog deltas to DevCycle identifiers for release notes compliance.                                                                                      | PRD §5.4, Tech Requirements §10, SPEC-OBS §3     |
+| Status | Item                                                                                                                                                                            | Source                                               |
+| ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
+| ☑      | Author end-user documentation (README quickstart, SUPPORT, SECURITY, CHANGELOG) explaining installation, dashboard usage, DevCycle governance, and troubleshooting. Closes #29. | PRD §§2-4, Tech Requirements §5.2                    |
+| ☑      | Document contributor workflow: PRD/Tech update → template regeneration → bootstrapper parity → `doctor` + `genaiscript test` → TODO/CHANGELOG.                                  | SPEC-DEV §4, Tech Requirements §7-8 (Closes #30)     |
+| ☑      | Map CLI telemetry + changelog deltas to DevCycle identifiers for release notes compliance.                                                                                      | PRD §5.4, Tech Requirements §10, SPEC-OBS §3         |
+| ☑      | Create comprehensive framework documentation in `dist/docs/` with 13 markdown guides covering quickstart, architecture, DevCycles, CLI, configuration, and troubleshooting.     | PRD §§2-4, Tech Requirements §5.2, SPEC-ARTIFACTS §2 |
+| ☑      | Integrate framework docs into Next.js app with `/docs` route, synthwave-styled navigation, and 16 documentation pages matching site aesthetic.                                  | PRD §5.2, Tech Requirements §5.2, SPEC-CLI §2        |
+| ☑      | Implement CLI contextual hint system with `dist/cli/hints/` module providing workflow guidance, DevCycle tips, and error remediation.                                           | PRD §5.2, Tech Requirements §5.3, SPEC-CLI §4        |
 
 ### Testing & Validation
 
-| Status | Item                                                                                                                  | Source                             |
-| ------ | --------------------------------------------------------------------------------------------------------------------- | ---------------------------------- |
-| ☐      | Implement `genaiscript test` coverage for orchestrator + phase scripts with mocked env.                               | Tech Requirements §10, SPEC-DEV §3 |
-| ☑      | Create CLI smoke tests covering `create`, `dashboard`, `doctor`, `logs`, `devcycle`, `upgrade` commands.              | Tech Requirements §10, SPEC-CLI §6 |
+| Status | Item                                                                                                                              | Source                             |
+| ------ | --------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------- |
+| ☐      | Implement `genaiscript test` coverage for orchestrator + phase scripts with mocked env.                                           | Tech Requirements §10, SPEC-DEV §3 |
+| ☑      | Create CLI smoke tests covering `create`, `dashboard`, `doctor`, `logs`, `devcycle`, `upgrade` commands.                          | Tech Requirements §10, SPEC-CLI §6 |
 | ☑      | Maintain mapping between PRD clauses and manifest entries; CLI logs must include `requirementId` metadata for audits. Closes #72. | Tech Requirements §10, SPEC-OBS §3 |
 
 ### Open Questions (Tech Requirements §12)
@@ -101,13 +104,13 @@ This backlog tracks Spec-Driven Workflow actions for the Loaded Vibes framework.
 
 ## Recently Completed
 
-| Status | Item                                                                                                                     | Notes                                                                                                    |
-| ------ | ------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------- |
+| Status | Item                                                                                                                     | Notes                                                                                                                    |
+| ------ | ------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------ |
 | ☑      | Prevent duplicate TODO entries from DevCycle runs. Closes #71.                                                           | See `.github/workflows/todo-duplicate-check.yml`; deduplication functions in `todoUpdater.js` [SPEC-DEV §4, SPEC-OBS §3] |
-| ☑      | Added CI validation for DevCycle list parity between global.instructions.md and TECH_REQUIREMENTS.md §6. Closes #12.     | See `.github/workflows/devcycle-parity.yml`; parses both files, normalizes names, shows diff on mismatch |
-| ☑      | Implemented retrofit/attach workflow (Mirror / Merge / Sandbox) with conflict detection and install logging. Closes #10. | See `dist/cli/attachWorkflow.js`; logs under `.loaded-vibes/logs/install-YYYYMMDD.md`                    |
-| ☑      | Decided execution summary format: dual-mode JSON + Markdown output (ADR-0001). Closes #35.                               | See [ADR-0001](../docs/decisions/ADR-0001-execution-summary-format.md), TECH §11                         |
-| ☑      | Evaluated local HTTP API for CLI dashboards and VS Code webviews.                                                        | Hybrid file-based approach adopted; see `docs/decisions/ADR-001-dashboard-http-api.md`, TECH §11.1       |
-| ☑      | Assessed MCP/toolset needs for Observability and Performance DevCycles (Issue #38).                                      | Logged in Tech Requirements §11.1                                                                        |
-| ☑      | Consolidated PRD + Tech Requirements to absorb CLI & engine specs.                                                       | Logged in `CHANGELOG.md`                                                                                 |
-| ☑      | Created 7 spec files (SPEC-ARCH, SPEC-ARTIFACTS, SPEC-CLI, SPEC-DEV, SPEC-ENGINE, SPEC-OBS, SPEC-SECURITY).              | Provide reusable references for issues/PRs                                                               |
+| ☑      | Added CI validation for DevCycle list parity between global.instructions.md and TECH_REQUIREMENTS.md §6. Closes #12.     | See `.github/workflows/devcycle-parity.yml`; parses both files, normalizes names, shows diff on mismatch                 |
+| ☑      | Implemented retrofit/attach workflow (Mirror / Merge / Sandbox) with conflict detection and install logging. Closes #10. | See `dist/cli/attachWorkflow.js`; logs under `.loaded-vibes/logs/install-YYYYMMDD.md`                                    |
+| ☑      | Decided execution summary format: dual-mode JSON + Markdown output (ADR-0001). Closes #35.                               | See [ADR-0001](../docs/decisions/ADR-0001-execution-summary-format.md), TECH §11                                         |
+| ☑      | Evaluated local HTTP API for CLI dashboards and VS Code webviews.                                                        | Hybrid file-based approach adopted; see `docs/decisions/ADR-001-dashboard-http-api.md`, TECH §11.1                       |
+| ☑      | Assessed MCP/toolset needs for Observability and Performance DevCycles (Issue #38).                                      | Logged in Tech Requirements §11.1                                                                                        |
+| ☑      | Consolidated PRD + Tech Requirements to absorb CLI & engine specs.                                                       | Logged in `CHANGELOG.md`                                                                                                 |
+| ☑      | Created 7 spec files (SPEC-ARCH, SPEC-ARTIFACTS, SPEC-CLI, SPEC-DEV, SPEC-ENGINE, SPEC-OBS, SPEC-SECURITY).              | Provide reusable references for issues/PRs                                                                               |

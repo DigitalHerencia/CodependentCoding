@@ -116,6 +116,9 @@ function Header() {
         <a href="#copy" className="hover:text-white">
           Philosophy
         </a>
+        <a href="/docs" className="hover:text-white">
+          Docs
+        </a>
         <a href="#cta" className="hover:text-white">
           Get started
         </a>
@@ -277,10 +280,10 @@ function Footer() {
         <a href="https://github.com/your-org/loaded-vibes" className="hover:text-white">
           GitHub
         </a>
-        <a href="#" className="hover:text-white">
+        <a href="/docs" className="hover:text-white">
           Docs
         </a>
-        <a href="#" className="hover:text-white">
+        <a href="/docs/reference/cli" className="hover:text-white">
           CLI reference
         </a>
       </div>
