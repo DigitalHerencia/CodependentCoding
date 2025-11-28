@@ -1,0 +1,53 @@
+{
+  "name": "create-loaded-vibes",
+  "version": "1.0.0",
+  "description": "CLI installer for Loaded Vibes framework - provisions .loaded-vibes/ with DevCycle automation assets",
+  "type": "module",
+  "main": "src/index.js",
+  "bin": {
+    "create-loaded-vibes": "./bin/create-loaded-vibes.js"
+  },
+  "scripts": {
+    "start": "node bin/create-loaded-vibes.js",
+    "test": "node --test src/__tests__/*.test.js"
+  },
+  "keywords": [
+    "loaded-vibes",
+    "create",
+    "cli",
+    "installer",
+    "devcycle",
+    "framework",
+    "copilot"
+  ],
+  "author": "Digital Herencia",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/DigitalHerencia/LoadedVibes.git",
+    "directory": "packages/create-loaded-vibes"
+  },
+  "homepage": "https://github.com/DigitalHerencia/LoadedVibes#readme",
+  "bugs": {
+    "url": "https://github.com/DigitalHerencia/LoadedVibes/issues"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "files": [
+    "bin/",
+    "src/",
+    "dist/",
+    "README.md"
+  ],
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "figlet": "^1.8.0",
+    "gradient-string": "^3.0.0",
+    "prompts": "^2.4.2"
+  },
+  "devDependencies": {},
+  "publishConfig": {
+    "access": "public"
+  }
+}
