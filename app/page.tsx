@@ -24,13 +24,13 @@ export default function Page() {
           id="features"
           className="mt-16 space-y-8 md:mt-24 animate-in fade-in-50 slide-in-from-bottom-8 duration-700"
         >
-          <SectionLabel>Why loaded?</SectionLabel>
+          <SectionLabel>Why Loaded Vibes?</SectionLabel>
           <h2 className="font-display text-3xl tracking-tight text-white sm:text-4xl">
-            A dev workflow that hits harder than your production incident log.
+            Everything you need to build production-ready apps.
           </h2>
-          <p className="max-w-2xl text-sm text-muted-foreground sm:text-base">
-            Loaded Vibes is a synthwave-flavored framework for wiring AI agents, specs, and infra
-            into one repeatable loop. Less yak shaving, more shipped features.
+          <p className="max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base">
+            Loaded Vibes orchestrates your entire development lifecycle with AI-powered DevCycles,
+            requirement traceability, and enterprise-grade security—all in one framework.
           </p>
 
           <FeatureGrid />
@@ -42,45 +42,90 @@ export default function Page() {
         >
           <div className="rounded-3xl border border-white/5 bg-black/40 p-6 backdrop-blur lg:p-10">
             <article className="prose prose-invert prose-sm max-w-none md:prose-base">
-              <h2>Bad vibes, clean code.</h2>
+              <h2>Built for the way you actually work.</h2>
               <p>
-                Loaded Vibes doesn’t pretend everything is fine. It assumes your backlog is cursed,
-                your infra is haunted, and your product manager is already promising features you
-                haven’t spec’d.
+                Loaded Vibes assumes your backlog is ambitious, your timeline is tight, and your
+                team needs guardrails that don't slow them down. We built a framework that keeps AI
+                agents aligned with your requirements.
               </p>
               <p>
-                Under the neon paint: execution summaries, dual JSON/Markdown artifacts, CI-gated
-                dev cycles, and a CLI that talks in the same language you yell at your terminal in.
+                Under the hood: 18 orchestrated DevCycles, dual JSON/Markdown execution summaries,
+                Bad Vibes Firewall for destructive operations, and full requirement traceability
+                from PRD to production.
               </p>
               <ul>
-                <li>Spec-driven workflows, not vibes-driven chaos.</li>
-                <li>Typed, versioned artifacts that don’t rot on day three.</li>
-                <li>A dashboard that looks like a retro console, not an Excel sheet.</li>
+                <li>Spec-driven workflows with EARS notation requirements.</li>
+                <li>Typed, versioned artifacts with automatic CHANGELOG updates.</li>
+                <li>Retro-styled dashboard for real-time DevCycle monitoring.</li>
               </ul>
             </article>
           </div>
         </section>
 
-        <section id="cta" className="mt-16 flex flex-col items-center gap-6 md:mt-24">
-          <p className="text-xs uppercase tracking-[0.25em] text-muted-foreground">
-            Ready to weaponize your insomnia?
-          </p>
+        <section id="cta" className="mt-20 flex flex-col items-center gap-8 md:mt-28">
+          <div className="text-center space-y-3">
+            <h2 className="font-display text-2xl text-white sm:text-3xl">
+              Ready to ship with intention?
+            </h2>
+            <p className="text-sm text-muted-foreground max-w-md">
+              Get started in seconds. One command, zero config drama.
+            </p>
+          </div>
+
+          {/* CLI install command */}
+          <div className="flex items-center gap-3 rounded-xl border border-white/10 bg-black/60 px-5 py-3 font-mono text-sm backdrop-blur">
+            <span className="text-muted-foreground">$</span>
+            <code className="text-emerald-300">npx create-loaded-vibes my-app</code>
+            <button
+              type="button"
+              className="ml-2 rounded-md p-1.5 text-muted-foreground transition hover:bg-white/10 hover:text-white"
+              aria-label="Copy to clipboard"
+            >
+              <svg className="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                />
+              </svg>
+            </button>
+          </div>
+
           <div className="flex flex-wrap items-center justify-center gap-4">
             <a
-              href="https://github.com/your-org/loaded-vibes"
-              className="group inline-flex items-center gap-2 rounded-full border border-pink-500/60 bg-linear-to-r from-pink-500 to-cyan-400 px-6 py-3 text-sm font-medium text-black shadow-[0_0_30px_rgba(236,72,153,0.45)] transition hover:-translate-y-0.5 hover:shadow-[0_0_40px_rgba(34,211,238,0.7)]"
+              href="https://github.com/DigitalHerencia/LoadedVibes"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group inline-flex items-center gap-2.5 rounded-lg bg-white px-6 py-3 text-sm font-semibold text-slate-900 shadow-lg transition hover:-translate-y-0.5 hover:shadow-xl"
             >
-              <span className="relative">
-                Get the CLI
-                <span className="pointer-events-none absolute inset-x-0 -bottom-px h-px bg-linear-to-r from-pink-500 via-white/60 to-cyan-400 opacity-0 transition group-hover:opacity-100" />
-              </span>
+              <svg className="size-5" fill="currentColor" viewBox="0 0 24 24">
+                <path
+                  fillRule="evenodd"
+                  d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              <span>View on GitHub</span>
             </a>
             <a
-              href="#copy"
-              className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-5 py-3 text-sm text-muted-foreground transition hover:border-white/40 hover:text-white"
+              href="/docs/getting-started/quickstart"
+              className="group inline-flex items-center gap-2 rounded-lg border border-pink-500/50 bg-pink-500/10 px-6 py-3 text-sm font-semibold text-pink-300 transition hover:-translate-y-0.5 hover:border-pink-400 hover:bg-pink-500/20 hover:text-pink-200"
             >
-              <span className="size-2 rounded-full bg-emerald-400/80 shadow-[0_0_18px_rgba(74,222,128,0.9)] animate-pulse" />
-              <span>Read the execution lore</span>
+              <span>Read the Docs</span>
+              <svg
+                className="size-4 transition group-hover:translate-x-0.5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M13 7l5 5m0 0l-5 5m5-5H6"
+                />
+              </svg>
             </a>
           </div>
         </section>
@@ -131,36 +176,34 @@ function HeroCopy() {
   return (
     <div className="space-y-6 animate-in fade-in-50 slide-in-from-left-4 duration-700">
       <p className="text-xs uppercase tracking-[0.28em] text-muted-foreground">
-        FRAMEWORK • AGENTIC • CI GATED
+        AGENTIC FRAMEWORK • SPEC-DRIVEN • AI-POWERED
       </p>
       <h1 className="font-display text-4xl leading-tight text-white sm:text-5xl md:text-6xl">
         Loaded Vibes
         <span className="block bg-linear-to-r from-pink-500 via-purple-400 to-cyan-400 bg-clip-text text-transparent">
-          for unruly developers.
+          Ship with intention.
         </span>
       </h1>
-      <p className="max-w-xl text-sm text-muted-foreground sm:text-base">
-        A synthwave-flavored dev framework that wires specs, AI, and infra into a single repeatable
-        loop. Forget “move fast and break things” – this is{' '}
-        <span className="font-semibold text-pink-300">
-          move precisely and clown production less.
+      <p className="max-w-xl text-sm leading-relaxed text-muted-foreground sm:text-base">
+        An enterprise-grade TypeScript framework that wires AI agents, specs, and infrastructure
+        into one repeatable DevCycle.
+        <span className="block mt-2 font-medium text-white/90">
+          Less chaos. More shipped features.
         </span>
       </p>
 
-      <ul className="mt-4 flex flex-wrap gap-3 text-[11px] font-medium">
-        {[
-          'Bad vibes, clean code',
-          'Solid infra, sharted loads',
-          'JSON + Markdown execution summaries',
-        ].map((item) => (
-          <li
-            key={item}
-            className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/50 px-4 py-2 text-muted-foreground"
-          >
-            <span className="size-1.5 rounded-full bg-linear-to-r from-pink-500 to-cyan-400" />
-            <span>{item}</span>
-          </li>
-        ))}
+      <ul className="mt-6 flex flex-wrap gap-3 text-[11px] font-medium">
+        {['Next.js 15 + React 19', 'GitHub Copilot Agent Mode', '18 DevCycles', 'MCP Servers'].map(
+          (item) => (
+            <li
+              key={item}
+              className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/50 px-4 py-2 text-muted-foreground"
+            >
+              <span className="size-1.5 rounded-full bg-linear-to-r from-pink-500 to-cyan-400" />
+              <span>{item}</span>
+            </li>
+          )
+        )}
       </ul>
     </div>
   );
@@ -277,7 +320,12 @@ function Footer() {
     <footer className="mt-16 flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-6 text-[11px] text-muted-foreground sm:flex-row">
       <p>© {new Date().getFullYear()} Loaded Vibes. No roadmap, only rituals.</p>
       <div className="flex items-center gap-4">
-        <a href="https://github.com/your-org/loaded-vibes" className="hover:text-white">
+        <a
+          href="https://github.com/DigitalHerencia/LoadedVibes"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="hover:text-white"
+        >
           GitHub
         </a>
         <a href="/docs" className="hover:text-white">
