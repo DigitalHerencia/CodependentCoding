@@ -9,10 +9,8 @@ This backlog tracks Spec-Driven Workflow actions for the Loaded Vibes framework.
 | Status | Item                                                                                                                                                                                          | Source                                     |
 | ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
 | ☑      | Finish GenAIScript engine coverage: populate `devcycles.config.json` entries for all 18 phases, author prompts/toolsets/instructions, and ensure phase scripts update TODO/CHANGELOG + state. | Tech Requirements §4.1-4.3, SPEC-ENGINE §3 |
-| ☐      | Implement orchestrator context hydration: load PRD, TechReq, TODO, CHANGELOG, and `state.json` before Analyze phase.                                                                          | Tech Requirements §4.2, SPEC-ENGINE §4     |
-| ☑      | Build phase runner template with Analyze → Design → Implement → Validate → Reflect stages and EARS requirement citations.                                                                     | Tech Requirements §4.3, SPEC-ENGINE §4     |
 | ☑      | Implement orchestrator context hydration: load PRD, TechReq, TODO, CHANGELOG, and `state.json` before Analyze phase.                                                                          | Tech Requirements §4.2, SPEC-ENGINE §4     |
-| ☐      | Build phase runner template with Analyze → Design → Implement → Validate → Reflect stages and EARS requirement citations.                                                                     | Tech Requirements §4.3, SPEC-ENGINE §4     |
+| ☑      | Build phase runner template with Analyze → Design → Implement → Validate → Reflect stages and EARS requirement citations.                                                                     | Tech Requirements §4.3, SPEC-ENGINE §4     |
 | ☑      | Integrate DevCycle runner service that streams `genaiscript/orchestrator.genai.js` output into CLI with pause/resume checkpoints and approval prompts.                                        | Tech Requirements §4.2, SPEC-ENGINE §4     |
 | ☑      | Create shared utilities (`dist/genaiscript/shared/*.js`) for context loading, memory persistence, validation helpers.                                                                         | Tech Requirements §2, SPEC-ARCH §1.2       |
 
@@ -41,8 +39,6 @@ This backlog tracks Spec-Driven Workflow actions for the Loaded Vibes framework.
 | Status | Item                                                                                                                     | Source                                       |
 | ------ | ------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------- |
 | ☐      | Implement NDJSON log format with fields: `devCycleId`, `phase`, `requirementId`, `severity`, `checkpointId`, timestamps. | Tech Requirements §4.5, SPEC-OBS §1-3        |
-| ☐      | Persist execution snapshots in `dist/genaiscript/state/state.json` with phase, params, outputs, timestamps.              | Tech Requirements §4.5, SPEC-ENGINE §5       |
-| ☑      | Generate Markdown summaries from NDJSON for TODO/CHANGELOG updates with requirement ID references.                       | PRD §5.3, Tech Requirements §7, SPEC-OBS §3  |
 | ☑      | Persist execution snapshots in `dist/genaiscript/state/state.json` with phase, params, outputs, timestamps.              | Tech Requirements §4.5, SPEC-ENGINE §5       |
 | ☐      | Generate Markdown summaries from NDJSON for TODO/CHANGELOG updates with requirement ID references.                       | PRD §5.3, Tech Requirements §7, SPEC-OBS §3  |
 | ☑      | Implement dual-mode execution summaries (JSON + Markdown) per ADR-0001; create `summary-writer.js` utility. Closes #73.  | Tech Requirements §11, SPEC-OBS §2, ADR-0001 |
@@ -52,10 +48,8 @@ This backlog tracks Spec-Driven Workflow actions for the Loaded Vibes framework.
 
 | Status | Item                                                                                                                                | Source                                               |
 | ------ | ----------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
-| ☐      | Implement SHA256 verification for all downloaded releases; block unsigned payloads with actionable guidance.                        | PRD §5.5, Tech Requirements §5.4, SPEC-SECURITY §1-2 |
-| ☑      | Implement "Bad Vibes Firewall" prompts for destructive operations: describe affected paths, required approvals, and rollback steps. | PRD §5.5, Tech Requirements §5.4, SPEC-SECURITY §1   |
 | ☑      | Implement SHA256 verification for all downloaded releases; block unsigned payloads with actionable guidance.                        | PRD §5.5, Tech Requirements §5.4, SPEC-SECURITY §1-2 |
-| ☐      | Implement "Bad Vibes Firewall" prompts for destructive operations: describe affected paths, required approvals, and rollback steps. | PRD §5.5, Tech Requirements §5.4, SPEC-SECURITY §1   |
+| ☑      | Implement "Bad Vibes Firewall" prompts for destructive operations: describe affected paths, required approvals, and rollback steps. | PRD §5.5, Tech Requirements §5.4, SPEC-SECURITY §1   |
 | ☑      | Confine CLI file writes to `.loaded-vibes/**` unless user explicitly approves template copies to project root.                      | PRD §5.5, Tech Requirements §5.4, SPEC-SECURITY §1   |
 | ☑      | Add secret/environment variable redaction hooks in NDJSON logs and telemetry exports.                                               | Tech Requirements §9, SPEC-SECURITY §2, SPEC-OBS §4  |
 | ☑      | Ensure DevCycle operations are idempotent; rerunning cannot corrupt workspace or shipped artifacts.                                 | Tech Requirements §9, SPEC-SECURITY §1, Issue #22    |
@@ -89,16 +83,10 @@ This backlog tracks Spec-Driven Workflow actions for the Loaded Vibes framework.
 
 | Status | Item                                                                                       | Source                           |
 | ------ | ------------------------------------------------------------------------------------------ | -------------------------------- |
-| ☐      | Evaluate optional local HTTP API for CLI dashboards or VS Code webviews.                   | Tech Requirements §12            |
-| ☐      | Design versioning strategy for user customizations inside `.loaded-vibes` during upgrades. | Tech Requirements §12            |
-| ☐      | Assess additional MCP/toolset needs for observability/performance phases.                  | Tech Requirements §12            |
-| ☐      | Determine persisted execution summary format (JSON vs Markdown) before enabling CI gating. | Tech Requirements §12            |
-| ☐      | Evaluate optional local HTTP API for CLI dashboards or VS Code webviews.                   | Tech Requirements §12            |
-| ☐      | Assess additional MCP/toolset needs for observability/performance phases.                  | Tech Requirements §12            |
-| ☐      | Determine persisted execution summary format (JSON vs Markdown) before enabling CI gating. | Tech Requirements §11            |
 | ☑      | Evaluate optional local HTTP API for CLI dashboards or VS Code webviews.                   | Tech Requirements §11.1, ADR-001 |
-| ☐      | Design versioning strategy for user customizations inside `.loaded-vibes` during upgrades. | Tech Requirements §11            |
+| ☑      | Design versioning strategy for user customizations inside `.loaded-vibes` during upgrades. | Tech Requirements §11, ADR-001   |
 | ☑      | Assess additional MCP/toolset needs for observability/performance phases.                  | Tech Requirements §11.1          |
+| ☑      | Determine persisted execution summary format (JSON vs Markdown) before enabling CI gating. | Tech Requirements §11, ADR-0001  |
 
 ### MCP/Toolset Follow-up Items (Tech Requirements §11.1)
 
@@ -113,11 +101,11 @@ This backlog tracks Spec-Driven Workflow actions for the Loaded Vibes framework.
 
 | Status | Item                                                                                                                     | Notes                                                                                                    |
 | ------ | ------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------- |
+| ☑      | Prevent duplicate TODO entries from DevCycle runs. Closes #71.                                                           | See `.github/workflows/todo-duplicate-check.yml`; deduplication functions in `todoUpdater.js` [SPEC-DEV §4, SPEC-OBS §3] |
 | ☑      | Added CI validation for DevCycle list parity between global.instructions.md and TECH_REQUIREMENTS.md §6. Closes #12.     | See `.github/workflows/devcycle-parity.yml`; parses both files, normalizes names, shows diff on mismatch |
 | ☑      | Implemented retrofit/attach workflow (Mirror / Merge / Sandbox) with conflict detection and install logging. Closes #10. | See `dist/cli/attachWorkflow.js`; logs under `.loaded-vibes/logs/install-YYYYMMDD.md`                    |
 | ☑      | Decided execution summary format: dual-mode JSON + Markdown output (ADR-0001). Closes #35.                               | See [ADR-0001](../docs/decisions/ADR-0001-execution-summary-format.md), TECH §11                         |
 | ☑      | Evaluated local HTTP API for CLI dashboards and VS Code webviews.                                                        | Hybrid file-based approach adopted; see `docs/decisions/ADR-001-dashboard-http-api.md`, TECH §11.1       |
-| ☑      | Design versioning strategy for user customizations inside `.loaded-vibes` during upgrades.                               | ADR-001 created; Tech Requirements §11 updated; Closes #37                                               |
 | ☑      | Assessed MCP/toolset needs for Observability and Performance DevCycles (Issue #38).                                      | Logged in Tech Requirements §11.1                                                                        |
 | ☑      | Consolidated PRD + Tech Requirements to absorb CLI & engine specs.                                                       | Logged in `CHANGELOG.md`                                                                                 |
 | ☑      | Created 7 spec files (SPEC-ARCH, SPEC-ARTIFACTS, SPEC-CLI, SPEC-DEV, SPEC-ENGINE, SPEC-OBS, SPEC-SECURITY).              | Provide reusable references for issues/PRs                                                               |
