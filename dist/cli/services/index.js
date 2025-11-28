@@ -27,6 +27,11 @@ export {
   redactSensitive,
   redactLogEntry,
   DEFAULT_LOGS_DIR,
+  getRequirementIdsForDevCycle,
+  getAllManifestRequirementIds,
+  validateLogEntry,
+  parseAndValidateLogLine,
+  REQUIRED_LOG_FIELDS,
 } from './ndjsonLogger.js';
 
 export {

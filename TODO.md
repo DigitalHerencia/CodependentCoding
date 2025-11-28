@@ -40,7 +40,7 @@ This backlog tracks Spec-Driven Workflow actions for the Loaded Vibes framework.
 
 | Status | Item                                                                                                                     | Source                                       |
 | ------ | ------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------- |
-| ☐      | Implement NDJSON log format with fields: `devCycleId`, `phase`, `requirementId`, `severity`, `checkpointId`, timestamps. | Tech Requirements §4.5, SPEC-OBS §1-3        |
+| ☑      | Implement NDJSON log format with fields: `devCycleId`, `phase`, `requirementId`, `severity`, `checkpointId`, timestamps. Closes #72. | Tech Requirements §4.5, SPEC-OBS §1-3        |
 | ☐      | Persist execution snapshots in `dist/genaiscript/state/state.json` with phase, params, outputs, timestamps.              | Tech Requirements §4.5, SPEC-ENGINE §5       |
 | ☑      | Generate Markdown summaries from NDJSON for TODO/CHANGELOG updates with requirement ID references.                       | PRD §5.3, Tech Requirements §7, SPEC-OBS §3  |
 | ☑      | Persist execution snapshots in `dist/genaiscript/state/state.json` with phase, params, outputs, timestamps.              | Tech Requirements §4.5, SPEC-ENGINE §5       |
@@ -83,7 +83,7 @@ This backlog tracks Spec-Driven Workflow actions for the Loaded Vibes framework.
 | ------ | --------------------------------------------------------------------------------------------------------------------- | ---------------------------------- |
 | ☐      | Implement `genaiscript test` coverage for orchestrator + phase scripts with mocked env.                               | Tech Requirements §10, SPEC-DEV §3 |
 | ☑      | Create CLI smoke tests covering `create`, `dashboard`, `doctor`, `logs`, `devcycle`, `upgrade` commands.              | Tech Requirements §10, SPEC-CLI §6 |
-| ☐      | Maintain mapping between PRD clauses and manifest entries; CLI logs must include `requirementId` metadata for audits. | Tech Requirements §10, SPEC-OBS §3 |
+| ☑      | Maintain mapping between PRD clauses and manifest entries; CLI logs must include `requirementId` metadata for audits. Closes #72. | Tech Requirements §10, SPEC-OBS §3 |
 
 ### Open Questions (Tech Requirements §12)
 

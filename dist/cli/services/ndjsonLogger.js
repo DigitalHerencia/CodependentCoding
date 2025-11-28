@@ -164,7 +164,8 @@ export class NDJSONLogger {
   /**
    * Logs an event in NDJSON format.
    * All entries pass through secret redaction middleware per TECH §9 and SPEC-SECURITY §2.
-   * Per TECH §10 and SPEC-OBS §3, requirementId is automatically included from the manifest.
+   * Per TECH §10 and SPEC-OBS §3, every entry includes: devCycleId, phase, requirementId,
+   * severity, and checkpointId (when applicable).
    *
    * @param {Partial<NDJSONEvent>} event - Event data to log
    * @returns {void}
@@ -177,12 +178,21 @@ export class NDJSONLogger {
     // Include requirementId from manifest if not explicitly provided (TECH §10, SPEC-OBS §3)
     const requirementId = event.requirementId || this.formatRequirementIds();
 
+    // Per SPEC-OBS §3, enforce required fields with sensible defaults:
+    // - devCycleId: always from logger instance
+    // - phase: default to 'system' if not provided
+    // - requirementId: from manifest or explicit
+    // - severity: default to 'info'
+    // - checkpointId: include if provided, otherwise null (allows explicit presence for filtering)
     const fullEvent = {
       devCycleId: this.devCycleId,
-      timestamp: new Date().toISOString(),
-      severity: 'info',
+      phase: event.phase || 'system',
       requirementId,
-      ...event,
+      severity: event.severity || 'info',
+      checkpointId: event.checkpointId || null,
+      timestamp: new Date().toISOString(),
+      message: event.message || '',
+      ...(event.data !== undefined ? { data: event.data } : {}),
     };
 
     // Apply comprehensive redaction to entire entry (message, data, etc.)
@@ -194,7 +204,7 @@ export class NDJSONLogger {
 
     if (this.includeConsole) {
       const icon = this._getSeverityIcon(redactedEvent.severity);
-      console.log(`${icon} [${redactedEvent.phase || 'system'}] ${redactedEvent.message}`);
+      console.log(`${icon} [${redactedEvent.phase}] ${redactedEvent.message}`);
     }
   }
 
@@ -391,6 +401,105 @@ export function getRequirementIdsForDevCycle(devCycleId) {
  */
 export function getAllManifestRequirementIds() {
   return { ...MANIFEST_REQUIREMENT_IDS };
+}
+
+/**
+ * Required fields per SPEC-OBS §3 for NDJSON log entries.
+ * @type {string[]}
+ */
+export const REQUIRED_LOG_FIELDS = ['devCycleId', 'phase', 'requirementId', 'severity', 'timestamp'];
+
+/**
+ * Validates an NDJSON log entry against the required schema per SPEC-OBS §3.
+ * Returns an object indicating validity and any missing fields.
+ *
+ * Required fields (SPEC-OBS §3):
+ * - devCycleId: string (non-empty)
+ * - phase: string (non-empty)
+ * - requirementId: string or string[] (non-empty)
+ * - severity: 'debug' | 'info' | 'warn' | 'error'
+ * - timestamp: ISO 8601 string
+ * - checkpointId: string | null (must be present, can be null if not applicable)
+ *
+ * @param {Object} entry - Log entry to validate
+ * @returns {{ valid: boolean, missingFields: string[], invalidFields: string[] }}
+ */
+export function validateLogEntry(entry) {
+  const missingFields = [];
+  const invalidFields = [];
+  const validSeverities = ['debug', 'info', 'warn', 'error'];
+
+  if (!entry || typeof entry !== 'object') {
+    return { valid: false, missingFields: ['entry'], invalidFields: [] };
+  }
+
+  // Check required string fields
+  if (!entry.devCycleId || typeof entry.devCycleId !== 'string') {
+    missingFields.push('devCycleId');
+  }
+
+  if (!entry.phase || typeof entry.phase !== 'string') {
+    missingFields.push('phase');
+  }
+
+  if (!entry.timestamp || typeof entry.timestamp !== 'string') {
+    missingFields.push('timestamp');
+  } else {
+    // Validate ISO 8601 format
+    const timestamp = new Date(entry.timestamp);
+    if (isNaN(timestamp.getTime())) {
+      invalidFields.push('timestamp');
+    }
+  }
+
+  // Validate requirementId (string or array of strings)
+  if (!entry.requirementId) {
+    missingFields.push('requirementId');
+  } else if (typeof entry.requirementId !== 'string' && !Array.isArray(entry.requirementId)) {
+    invalidFields.push('requirementId');
+  } else if (Array.isArray(entry.requirementId) && entry.requirementId.length === 0) {
+    invalidFields.push('requirementId');
+  }
+
+  // Validate severity
+  if (!entry.severity) {
+    missingFields.push('severity');
+  } else if (!validSeverities.includes(entry.severity)) {
+    invalidFields.push('severity');
+  }
+
+  // checkpointId must be present (can be null for non-checkpoint events)
+  if (!('checkpointId' in entry)) {
+    missingFields.push('checkpointId');
+  }
+
+  return {
+    valid: missingFields.length === 0 && invalidFields.length === 0,
+    missingFields,
+    invalidFields,
+  };
+}
+
+/**
+ * Parses and validates an NDJSON line, returning the entry if valid or null if invalid.
+ * Used by log readers to filter out malformed entries.
+ *
+ * @param {string} line - Single line of NDJSON
+ * @returns {{ entry: Object | null, validation: { valid: boolean, missingFields: string[], invalidFields: string[] } }}
+ */
+export function parseAndValidateLogLine(line) {
+  const trimmed = (line || '').trim();
+  if (!trimmed) {
+    return { entry: null, validation: { valid: false, missingFields: ['line'], invalidFields: [] } };
+  }
+
+  try {
+    const parsed = JSON.parse(trimmed);
+    const validation = validateLogEntry(parsed);
+    return { entry: validation.valid ? parsed : null, validation };
+  } catch {
+    return { entry: null, validation: { valid: false, missingFields: [], invalidFields: ['json'] } };
+  }
 }
 
 // Re-export redaction utilities and manifest constants for convenience
