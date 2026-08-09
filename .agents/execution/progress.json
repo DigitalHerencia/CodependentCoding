@@ -2,9 +2,9 @@
   "schemaVersion": 2,
   "roadmap": "generator-product-roadmap",
   "status": "in_progress",
-  "activeIssue": 95,
-  "activeBranch": "feature/95-vibes-template-modules",
-  "completed": [92, 93, 94],
+  "activeIssue": 96,
+  "activeBranch": "feature/96-design-personalization",
+  "completed": [92, 93, 94, 95],
   "workItems": [
     {
       "id": "LV-101",
@@ -63,7 +63,7 @@
     {
       "id": "LV-104",
       "issue": 95,
-      "status": "implemented",
+      "status": "verified",
       "branch": "feature/95-vibes-template-modules",
       "pullRequest": "https://github.com/DigitalHerencia/LoadedVibes/pull/105",
       "evidence": {
@@ -74,6 +74,23 @@
           "corepack pnpm lint",
           "corepack pnpm format:check",
           "corepack pnpm pack:check (345 safe entries)"
+        ],
+        "blocked": []
+      }
+    },
+    {
+      "id": "LV-105",
+      "issue": 96,
+      "status": "implemented",
+      "branch": "feature/96-design-personalization",
+      "pullRequest": null,
+      "evidence": {
+        "executed": [
+          "corepack pnpm exec vitest run tests/integration/materialize.test.ts (5 tests passed)",
+          "corepack pnpm typecheck",
+          "corepack pnpm lint",
+          "corepack pnpm format:check",
+          "corepack pnpm test:generated (5 tests passed)"
         ],
         "blocked": []
       }

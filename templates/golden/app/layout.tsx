@@ -3,6 +3,8 @@ import { Archivo_Black, Bebas_Neue, JetBrains_Mono } from "next/font/google"
 import type { ReactNode } from "react"
 
 import { AppProviders } from "@/components/app/app-providers"
+import { loadedVibesDesign } from "@/content/loadedvibes"
+import { site } from "@/content/site"
 import "./globals.css"
 
 const archivoBlack = Archivo_Black({
@@ -30,13 +32,12 @@ const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"
 
 export const metadata: Metadata = {
   metadataBase: new URL(appUrl),
-  applicationName: "Next Stack Template",
+  applicationName: site.name,
   title: {
-    default: "Next Stack Template",
-    template: "%s - Next Stack Template",
+    default: site.name,
+    template: `%s - ${site.name}`,
   },
-  description:
-    "A strict App Router SaaS template with Clerk auth, row-level RBAC, Prisma, Neon, Server Actions, and Tailwind CSS v4.",
+  description: site.description,
   alternates: {
     canonical: "/",
   },
@@ -50,8 +51,13 @@ export const metadata: Metadata = {
 }
 
 export const viewport: Viewport = {
-  themeColor: "#0a0a0a",
-  colorScheme: "dark",
+  themeColor:
+    loadedVibesDesign.theme === "paper"
+      ? "#f7f5ef"
+      : loadedVibesDesign.theme === "electric"
+        ? "#10072b"
+        : "#0a0a0a",
+  colorScheme: loadedVibesDesign.mode === "system" ? "light dark" : loadedVibesDesign.mode,
   width: "device-width",
   initialScale: 1,
 }
@@ -65,6 +71,10 @@ export default function RootLayout({ children }: RootLayoutProps) {
     <html
       lang="en"
       className={`${archivoBlack.variable} ${bebasNeue.variable} ${jetBrainsMono.variable}`}
+      data-theme={loadedVibesDesign.theme}
+      data-mode={loadedVibesDesign.mode}
+      data-radius={loadedVibesDesign.radius}
+      data-density={loadedVibesDesign.density}
       suppressHydrationWarning
     >
       <body className="min-h-dvh overflow-x-hidden bg-background">

@@ -5,15 +5,12 @@ import { ProcessPanel } from "@/components/blocks/process-panel"
 import { StatGrid } from "@/components/blocks/stat-grid"
 import { Button } from "@/components/ui/button"
 import { loadedVibesCapabilities } from "@/content/loadedvibes"
+import { site } from "@/content/site"
 
 export default function HomePage() {
   return (
     <div className="grid gap-10">
-      <PageHero
-        eyebrow="Generic SaaS starter"
-        title="Build the app, not the boundary map."
-        description="A strict App Router template for server-owned SaaS workflows, Clerk identity, local row-level authorization, Server Actions, Prisma, and Neon."
-      />
+      <PageHero eyebrow="Generic SaaS starter" title={site.name} description={site.description} />
       <div className="flex flex-wrap gap-3">
         <Button asChild>
           <Link href="/sign-up">Start the app</Link>

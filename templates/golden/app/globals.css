@@ -30,7 +30,8 @@
 @plugin "@tailwindcss/typography";
 
 :root {
-  --radius: 0rem;
+  --radius: 0.5rem;
+  --shell-padding-y: 2rem;
 
   --neutral-950: oklch(5.5% 0 0);
   --neutral-900: oklch(10.5% 0 0);
@@ -64,11 +65,111 @@
   --ring: var(--blue-600);
 }
 
+[data-theme="paper"] {
+  --neutral-950: oklch(98% 0.01 85);
+  --neutral-900: oklch(95% 0.015 85);
+  --neutral-800: oklch(90% 0.02 85);
+  --neutral-700: oklch(80% 0.025 85);
+  --neutral-400: oklch(42% 0.025 70);
+  --neutral-100: oklch(20% 0.02 70);
+  --blue-600: oklch(52% 0.15 45);
+}
+
+[data-theme="electric"] {
+  --neutral-950: oklch(12% 0.06 290);
+  --neutral-900: oklch(17% 0.07 290);
+  --neutral-800: oklch(23% 0.08 290);
+  --neutral-700: oklch(34% 0.1 290);
+  --neutral-400: oklch(76% 0.08 230);
+  --neutral-100: oklch(96% 0.03 210);
+  --blue-600: oklch(76% 0.2 195);
+}
+
+[data-mode="light"] {
+  --background: oklch(98% 0.01 85);
+  --foreground: oklch(20% 0.02 70);
+  --card: oklch(95% 0.015 85);
+  --card-foreground: oklch(20% 0.02 70);
+  --popover: oklch(95% 0.015 85);
+  --popover-foreground: oklch(20% 0.02 70);
+  --secondary: oklch(92% 0.02 85);
+  --secondary-foreground: oklch(20% 0.02 70);
+  --muted: oklch(92% 0.02 85);
+  --muted-foreground: oklch(42% 0.025 70);
+  --border: oklch(80% 0.025 85);
+  --input: oklch(90% 0.02 85);
+}
+
+[data-mode="dark"] {
+  --background: oklch(5.5% 0 0);
+  --foreground: oklch(98.5% 0 0);
+  --card: oklch(10.5% 0 0);
+  --card-foreground: oklch(98.5% 0 0);
+  --popover: oklch(10.5% 0 0);
+  --popover-foreground: oklch(98.5% 0 0);
+  --secondary: oklch(10.5% 0 0);
+  --secondary-foreground: oklch(98.5% 0 0);
+  --muted: oklch(10.5% 0 0);
+  --muted-foreground: oklch(69% 0 0);
+  --border: oklch(24% 0 0);
+  --input: oklch(16% 0 0);
+}
+
+[data-radius="compact"] {
+  --radius: 0rem;
+}
+[data-radius="medium"] {
+  --radius: 0.5rem;
+}
+[data-radius="rounded"] {
+  --radius: 1rem;
+}
+[data-density="compact"] {
+  --shell-padding-y: 1.25rem;
+}
+[data-density="comfortable"] {
+  --shell-padding-y: 2rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  [data-mode="system"] {
+    --background: oklch(5.5% 0 0);
+    --foreground: oklch(98.5% 0 0);
+    --card: oklch(10.5% 0 0);
+    --card-foreground: oklch(98.5% 0 0);
+    --popover: oklch(10.5% 0 0);
+    --popover-foreground: oklch(98.5% 0 0);
+    --secondary: oklch(10.5% 0 0);
+    --secondary-foreground: oklch(98.5% 0 0);
+    --muted: oklch(10.5% 0 0);
+    --muted-foreground: oklch(69% 0 0);
+    --border: oklch(24% 0 0);
+    --input: oklch(16% 0 0);
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  [data-mode="system"] {
+    --background: oklch(98% 0.01 85);
+    --foreground: oklch(20% 0.02 70);
+    --card: oklch(95% 0.015 85);
+    --card-foreground: oklch(20% 0.02 70);
+    --popover: oklch(95% 0.015 85);
+    --popover-foreground: oklch(20% 0.02 70);
+    --secondary: oklch(92% 0.02 85);
+    --secondary-foreground: oklch(20% 0.02 70);
+    --muted: oklch(92% 0.02 85);
+    --muted-foreground: oklch(42% 0.025 70);
+    --border: oklch(80% 0.025 85);
+    --input: oklch(90% 0.02 85);
+  }
+}
+
 @theme inline {
-  --radius-sm: 0rem;
-  --radius-md: 0rem;
-  --radius-lg: 0rem;
-  --radius-xl: 0rem;
+  --radius-sm: calc(var(--radius) * 0.5);
+  --radius-md: var(--radius);
+  --radius-lg: calc(var(--radius) * 1.5);
+  --radius-xl: calc(var(--radius) * 2);
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -101,7 +202,9 @@
     min-height: 100%;
     background: var(--background);
     color: var(--foreground);
-    font-family: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-family:
+      var(--font-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+      monospace;
     text-rendering: geometricPrecision;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -113,7 +216,11 @@
     background:
       linear-gradient(oklch(69% 0 0 / 0.12) 1px, transparent 1px),
       linear-gradient(90deg, oklch(69% 0 0 / 0.12) 1px, transparent 1px),
-      radial-gradient(circle at 0% 0%, oklch(51% 0.245 264 / 0.36), transparent 30rem),
+      radial-gradient(
+        circle at 0% 0%,
+        color-mix(in oklch, var(--primary) 36%, transparent),
+        transparent 30rem
+      ),
       var(--background);
     background-attachment: fixed;
     background-size:
@@ -122,6 +229,10 @@
       auto,
       auto;
     color: var(--foreground);
+  }
+
+  .lv-shell-main {
+    padding-block: var(--shell-padding-y);
   }
 
   :focus-visible {

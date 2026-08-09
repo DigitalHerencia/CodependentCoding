@@ -161,6 +161,57 @@ describe('createProject', () => {
     await assertLocalImportsResolve(target);
   });
 
+  it('wires product identity and semantic design choices into known surfaces', async () => {
+    const root = await mkdtemp(path.join(os.tmpdir(), 'loaded-vibes-design-'));
+    const target = path.join(root, 'signal-desk');
+    await createProject({
+      name: 'signal-desk',
+      product: 'bare-golden-app',
+      identity: {
+        displayName: 'Signal Desk',
+        description: 'Decisions without the meeting sprawl.',
+      },
+      design: {
+        theme: 'paper',
+        mode: 'light',
+        radius: 'rounded',
+        density: 'compact',
+        navigation: 'topbar',
+      },
+      targetDirectory: target,
+      git: { initialize: false },
+      install: { enabled: false },
+    });
+    const generatedDesign = await readFile(
+      path.join(target, 'content', 'loadedvibes.ts'),
+      'utf8',
+    );
+    expect(generatedDesign).toContain('"name": "Signal Desk"');
+    expect(generatedDesign).toContain(
+      '"description": "Decisions without the meeting sprawl."',
+    );
+    expect(generatedDesign).toContain('"theme": "paper"');
+    expect(generatedDesign).toContain('"radius": "rounded"');
+    expect(generatedDesign).toContain('"density": "compact"');
+    expect(generatedDesign).toContain('"navigation": "topbar"');
+    expect(generatedDesign).toContain('"mode": "light"');
+    await expect(
+      readFile(path.join(target, 'app', 'layout.tsx'), 'utf8'),
+    ).resolves.toContain('data-theme={loadedVibesDesign.theme}');
+    await expect(
+      readFile(path.join(target, 'app', 'globals.css'), 'utf8'),
+    ).resolves.toContain('[data-theme="paper"]');
+    await expect(
+      readFile(
+        path.join(target, 'components', 'shells', 'tenant-shell.tsx'),
+        'utf8',
+      ),
+    ).resolves.toContain('loadedVibesDesign.navigation === "sidebar"');
+    await expect(
+      readFile(path.join(target, 'content', 'site.ts'), 'utf8'),
+    ).resolves.toContain('name: loadedVibesProduct.name');
+  });
+
   it('does not attempt to recreate an existing filesystem-root parent', async () => {
     const root = await mkdtemp(
       path.join(os.tmpdir(), 'loaded-vibes-root-parent-'),
