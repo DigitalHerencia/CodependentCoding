@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 1,
+  "artifact": "loaded-vibes.execution.progress",
+  "authority": "execution-state-only",
+  "updatedAt": "2026-08-09T12:00:00Z",
+  "currentRevision": "5b749df",
+  "activeIssue": "https://github.com/DigitalHerencia/LoadedVibes/issues/88",
+  "activeBranch": "feature/88-loaded-vibes-generator",
+  "activePullRequest": null,
+  "overallStatus": "verification",
+  "workItems": [
+    {
+      "id": "LV-001-LV-009,LV-011-LV-012",
+      "title": "Canonical generator implementation and replacement proof",
+      "status": "verified",
+      "issueUrl": "https://github.com/DigitalHerencia/LoadedVibes/issues/88",
+      "branch": "feature/88-loaded-vibes-generator",
+      "pullRequestUrl": null,
+      "commits": ["5b749df"],
+      "validation": {
+        "executed": [
+          "corepack pnpm validate",
+          "corepack pnpm pack:check",
+          "workspace CLI generation with validate:ci",
+          "packed pnpm dlx generation with validate:ci",
+          "generated governance:validate",
+          "generated architecture:validate",
+          "generated test:connect-removal"
+        ],
+        "skipped": [],
+        "blocked": [
+          "generated security:verify release archive requires a generated-project HEAD commit"
+        ],
+        "inferred": []
+      }
+    },
+    {
+      "id": "LV-010",
+      "title": "Prove one dependency-aware optional module",
+      "status": "superseded",
+      "issueUrl": "https://github.com/DigitalHerencia/LoadedVibes/issues/88",
+      "branch": "feature/88-loaded-vibes-generator",
+      "pullRequestUrl": null,
+      "commits": [],
+      "validation": {
+        "executed": ["generated test:connect-removal"],
+        "skipped": [],
+        "blocked": [],
+        "inferred": [
+          "Current product boundary fixes the canonical stack and does not expose optional architecture selection"
+        ]
+      }
+    }
+  ],
+  "blockers": [],
+  "rules": {
+    "allowedStatuses": [
+      "not_started",
+      "in_progress",
+      "blocked",
+      "implemented",
+      "verified",
+      "superseded"
+    ],
+    "verifiedRequiresExecutedEvidence": true,
+    "mergeDoesNotImplyValidation": true
+  }
+}

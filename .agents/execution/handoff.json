@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "artifact": "loaded-vibes.execution.handoff",
+  "authority": "execution-state-only",
+  "state": "verification",
+  "currentRevision": "5b749df",
+  "lastVerifiedWorkItem": "LV-012",
+  "nextWorkItem": "Issue 88 review and merge",
+  "readFirst": ["AGENTS.md", "context/README.md", "context/specs/README.md"],
+  "knownFacts": [
+    "Vibes commit 19e20084a8c69cc5a70f8db5f8e5d908a84d582f is embedded as the canonical template.",
+    "The real workspace and packed-package initializer paths both generated and validated fresh applications.",
+    "Standalone Vibes remains intact as the safety copy."
+  ],
+  "blockers": [],
+  "executedEvidence": [
+    "corepack pnpm validate",
+    "corepack pnpm pack:check",
+    "node dist/cli.mjs D:\\LoadedVibesGeneratedAcceptance4 --name loaded-vibes-generated-acceptance --yes",
+    "corepack pnpm dlx D:\\LoadedVibes\\.artifacts\\create-loaded-vibes-0.1.0.tgz D:\\LoadedVibesPackedAcceptance --name loaded-vibes-packed-acceptance --yes",
+    "generated test:database-security (4 files, 16 tests)"
+  ],
+  "notes": [
+    "Generated security:verify archive mode requires a first project commit."
+  ]
+}

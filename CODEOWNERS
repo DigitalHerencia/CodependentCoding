@@ -1,6 +1,0 @@
-# Default owners
-* @LoadedVibes/framework-maintainers
-
-docs/* @LoadedVibes/spec-leads
-dist/** @LoadedVibes/release-engineering
-
