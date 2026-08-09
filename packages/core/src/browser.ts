@@ -1,0 +1,25 @@
+export {
+  capabilityRegistry,
+  resolveCapabilitySelection,
+  type CapabilityDefinition,
+  type CapabilityResolution,
+} from './capabilities.js';
+export {
+  normalizeRecipe,
+  resolveRecipe,
+  type ResolvedBuildSummary,
+  type ResolvedRecipe,
+} from './recipe.js';
+export { getProductPreset, productPresets } from '@loaded-vibes/recipes';
+export {
+  capabilityIds,
+  defaultDesign,
+  productPresetIds,
+  recipeSchema,
+  type CapabilityId,
+  type Design,
+  type ModuleSelection,
+  type NormalizedRecipe,
+  type ProductPresetId,
+  type RecipeInput,
+} from '@loaded-vibes/schema';
