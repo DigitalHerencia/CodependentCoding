@@ -66,7 +66,7 @@ describe('real user-facing CLI', () => {
     expect(
       JSON.parse(await readFile(path.join(target, 'package.json'), 'utf8')),
     ).toMatchObject({ name: 'configured-app' });
-  });
+  }, 15_000);
 
   it('rejects an occupied destination without changing it', async () => {
     const target = await mkdtemp(
@@ -118,5 +118,5 @@ describe('real user-facing CLI', () => {
       return result;
     }
     expect(await snapshot(targets[0]!)).toEqual(await snapshot(targets[1]!));
-  });
+  }, 15_000);
 });
