@@ -1,114 +1,60 @@
-schema_version: 1
+schema_version: 2
 id: loaded-vibes.product
 authority: machine-contract
 sources:
   - context/docs/prd.md
-  - context/docs/tech-req.md
-  - context/specs/README.md
+  - context/docs/design.md
 
 product:
   name: Loaded Vibes
-  class: opinionated-saas-project-initializer
-  package: create-loaded-vibes
-  bin: create-loaded-vibes
-  mission: generate a deterministic white-label production-oriented golden SaaS prototype
-  removes_variability: setup
-  downstream_toolkit: Codependent Coding
+  class: opinionated-saas-generator
+  primary_value: time-saved-and-product-fit
+  upstream_template_reference: DigitalHerencia/Vibes
+  surfaces:
+    - cli
+    - web-configurator
+    - loadedvibes-json
+    - generated-application
 
-v1:
-  runtime:
-    node: 24.x
-    package_manager: pnpm
-    pnpm: 11.1.1
-  default_preset: standard
-  supported_package_managers:
-    - pnpm
-  required_cli:
-    - target-directory
-    - --yes
-    - --config
-    - --no-git
-    - --skip-install
-    - --dry-run
-    - --help
-    - --version
-  default_behaviors:
-    install: true
-    initialize_git: true
-    acceptance_validation: true
-  prohibited:
-    - architecture-wizard
-    - arbitrary-stack-selection
-    - arbitrary-third-party-plugin-system
-    - automatic-provider-secret-collection
-    - automatic-provider-provisioning
-    - automatic-production-deployment
-    - silent-overwrite-of-non-empty-target
-    - generic-product-feature-generation
+priorities:
+  - user-value
+  - cli-and-web-ux
+  - generated-product-fit
+  - maintainable-generation
+  - proportional-safety
 
-fixed_generated_invariants:
-  - typescript
-  - nextjs-app-router
-  - react-server-components-default
-  - neon-postgresql
-  - prisma
-  - clerk-authentication
-  - local-user-organization-membership
-  - custom-rbac-and-resource-authorization
-  - tenant-containment-and-rls
-  - stripe-integration-boundaries
-  - zod-runtime-validation
-  - tailwind
-  - shadcn-compatible-primitives
-  - canonical-server-operation-layers
-  - provider-and-webhook-boundaries
-  - governance-context-and-machine-contracts
-  - tests-and-ci
-  - vercel-oriented-deployment-support
+presets:
+  required_initial:
+    - b2b-saas
+    - client-portal
+    - platform-marketplace
+    - bare-golden-app
 
-supported_variability:
-  - project-name
-  - target-directory
-  - approved-design-preset
-  - explicitly-contracted-optional-modules
-  - git-initialization
-  - dependency-installation
+commands:
+  target:
+    - create
+    - add
+    - doctor
+    - explain
+    - preset-validate
+    - preset-print
+    - version
 
-acceptance:
-  validated_project_requires:
-    - dependencies-installed
-    - generated-artifacts-created
-    - credential-free-acceptance-gate-executed
-    - credential-free-acceptance-gate-passed
-  skip_install_status: generated-not-acceptance-validated
+web:
+  initial_mode: stateless
+  requires_auth: false
+  requires_database: false
+  outputs:
+    - cli-command
+    - loadedvibes-json
 
-controls:
-  - id: PROD-001
-    source: context/docs/prd.md
-    rule: configuration must not disable fixed generated invariants
-    severity: critical
-    enforcement:
-      - config-schema
-      - generator-tests
-      - generated-contract-tests
-  - id: PROD-002
-    source: context/docs/prd.md
-    rule: accepted success requires executed passing generated-project acceptance validation
-    severity: critical
-    enforcement:
-      - cli-lifecycle
-      - generated-e2e
-  - id: PROD-003
-    source: context/docs/auth.md
-    rule: v1 does not collect provider credentials provision providers or deploy
-    severity: critical
-    enforcement:
-      - code-review
-      - secret-scan
-  - id: PROD-004
-    source: context/specs/LV-010-first-optional-module.md
-    rule: optionality requires an explicit repository-owned module contract
-    severity: high
-    enforcement:
-      - config-schema
-      - module-tests
+prohibited_product_drift:
+  - generic-framework-generator
+  - arbitrary-stack-selector
+  - enterprise-governance-platform
+  - hosted-project-control-plane
+  - plugin-marketplace-v1
+  - mandatory-telemetry
+  - automatic-provider-secret-collection
+  - arbitrary-generated-repo-upgrade-engine
+  - validation-as-primary-product

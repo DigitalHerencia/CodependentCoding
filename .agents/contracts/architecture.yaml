@@ -1,157 +1,54 @@
-schema_version: 1
+schema_version: 2
 id: loaded-vibes.architecture
 authority: machine-contract
 sources:
   - context/docs/architecture.md
   - context/docs/tech-req.md
-  - context/docs/auth.md
 
-generator:
-  grammar:
-    - CLI collects
-    - Config normalizes
-    - Preflight protects
-    - Planner decides files
-    - Materializer writes
-    - Transforms specialize
-    - Lifecycle installs and validates
-    - Evidence reports
+recipe_core:
+  single_schema: true
+  consumers:
+    - cli
+    - web-configurator
+    - config-file
+  owns:
+    - normalization
+    - presets
+    - module-resolution
+    - generation-plan
+  must_not_depend_on:
+    - terminal-ui
+    - nextjs-web-ui
 
-  canonical_paths:
-    cli: src/cli.ts
-    commands: src/commands
-    config: src/config
-    prompts: src/prompts
-    preflight: src/preflight
-    generator: src/generator
-    lifecycle: src/lifecycle
-    template: template
-    modules: modules
-    tests: tests
-    human_governance: context
-    machine_governance: .agents
+repository_target:
+  apps:
+    - web
+  packages:
+    - cli
+    - core
+    - recipes
+    - schema
+  templates:
+    - golden
+    - modules
 
-  dependency_rules:
-    - id: ARCH-001
-      from: src/prompts
-      may_depend_on: [src/config]
-      must_not_own: [file-generation, lifecycle, architecture-decisions]
-    - id: ARCH-002
-      from: src/generator
-      may_depend_on: [src/config, safe-filesystem-utilities]
-      must_not_depend_on: [template-runtime-code]
-    - id: ARCH-003
-      from: src/lifecycle
-      may_depend_on: [src/config, subprocess-adapters, generated-project]
-      must_not_own: [template-architecture]
-    - id: ARCH-004
-      from: template
-      must_not_depend_on: [src, create-loaded-vibes-runtime]
-    - id: ARCH-005
-      from: modules
-      must_apply_through: generation-plan
-      must_not: bypass-generation-planner
-
-  template:
-    single_source: template
-    duplicate_golden_fixture_allowed: false
-    arbitrary_remote_template_allowed: false
-    generated_runtime_depends_on_generator: false
-    provenance_required: true
-
-  configuration:
-    one_normalized_schema: true
-    interactive_and_noninteractive_equivalent: true
-    unknown_fields: reject
-    unsupported_combinations: reject-before-write
-
-  filesystem:
-    non_empty_target: reject
-    dangerous_roots: reject
-    staging: sibling-run-owned
-    rollback: run-owned-paths-only
-    path_escape: reject
-    symlink_escape: reject
-
-  subprocess:
-    shell_string_with_user_input: prohibited
-    argv_execution: required
-
-  determinism:
-    required: true
-    volatile_timestamp_in_canonical_output: prohibited
-    comparison_basis:
-      - normalized-config
-      - generator-version
-      - template-revision
-      - planned-files
-      - generated-source
-
-  modules:
-    generic_plugin_framework_v1: prohibited
-    required_fields:
-      - id
-      - version
-      - requires
-      - conflicts
-      - files
-      - structured-transforms
-      - dependencies
-      - environment-example
-      - data-migrations
-      - provider-webhook-contributions
-      - governance
-      - validation
-      - removal-proof
+modules:
+  repository_owned: true
+  third_party_plugin_framework_v1: false
+  resolve_prerequisites_automatically: true
+  required_contract:
+    - id
+    - requires
+    - conflicts
+    - contributions
 
 generated_application:
-  grammar:
-    routes: adapt
-    features: orchestrate
-    components: render
-    fetchers: read
-    actions: write
-    schemas: validate
-    authorization: decides
-    transactions: preserve-invariants
-    webhooks: reconcile-external-truth
+  upstream_reference: DigitalHerencia/Vibes
+  preserve_application_grammar: true
+  preserve_auth_tenancy_provider_boundaries: true
 
-  trust:
-    clerk: external-identity
-    local_application: authorization-authority
-    rls: tenant-defense-in-depth
-    zod: runtime-boundary-validation
-    dto: transport-safety
-    integrations: provider-sdk-boundary
-    webhooks: verified-idempotent-reconciliation
-
-  governance_required:
-    - AGENTS.md
-    - context
-    - .agents/contracts
-    - .agents/execution
-    - architecture-validator
-    - contract-validator
-    - CI
-
-controls:
-  - id: ARCH-010
-    source: context/docs/architecture.md
-    rule: one canonical template source
-    severity: critical
-  - id: ARCH-011
-    source: context/docs/architecture.md
-    rule: generation uses safe staging and run-owned cleanup
-    severity: critical
-  - id: ARCH-012
-    source: context/docs/auth.md
-    rule: untrusted values never enter interpolated shell command strings
-    severity: critical
-  - id: ARCH-013
-    source: context/specs/LV-010-first-optional-module.md
-    rule: modules must declare dependency and removal contracts
-    severity: high
-  - id: ARCH-014
-    source: context/docs/architecture.md
-    rule: generated output preserves canonical application layer ownership
-    severity: critical
+safety:
+  collect_provider_secrets: false
+  overwrite_unrelated_nonempty_target: false
+  unsafe_shell_interpolation: false
+  windows_first_class: true

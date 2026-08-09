@@ -1,68 +1,8 @@
 {
-  "schemaVersion": 1,
-  "artifact": "loaded-vibes.execution.progress",
-  "authority": "execution-state-only",
-  "updatedAt": "2026-08-09T12:00:05Z",
-  "currentRevision": "d2c2ecc93a99a1af6ffe155db3d1b6d02c110daf",
+  "schemaVersion": 2,
+  "roadmap": "generator-product-roadmap",
+  "status": "planned",
   "activeIssue": null,
-  "activeBranch": null,
-  "activePullRequest": null,
-  "overallStatus": "verified",
-  "workItems": [
-    {
-      "id": "LV-001-LV-009,LV-011-LV-012",
-      "title": "Canonical generator implementation and replacement proof",
-      "status": "verified",
-      "issueUrl": "https://github.com/DigitalHerencia/LoadedVibes/issues/88",
-      "branch": "feature/88-loaded-vibes-generator",
-      "pullRequestUrl": "https://github.com/DigitalHerencia/LoadedVibes/pull/89",
-      "commits": ["528d16f"],
-      "validation": {
-        "executed": [
-          "corepack pnpm validate",
-          "corepack pnpm pack:check",
-          "workspace CLI generation with validate:ci",
-          "packed pnpm dlx generation with validate:ci",
-          "generated governance:validate",
-          "generated architecture:validate",
-          "generated test:connect-removal"
-        ],
-        "skipped": [],
-        "blocked": [
-          "generated security:verify release archive requires a generated-project HEAD commit"
-        ],
-        "inferred": []
-      }
-    },
-    {
-      "id": "LV-010",
-      "title": "Prove one dependency-aware optional module",
-      "status": "superseded",
-      "issueUrl": "https://github.com/DigitalHerencia/LoadedVibes/issues/88",
-      "branch": "feature/88-loaded-vibes-generator",
-      "pullRequestUrl": "https://github.com/DigitalHerencia/LoadedVibes/pull/89",
-      "commits": [],
-      "validation": {
-        "executed": ["generated test:connect-removal"],
-        "skipped": [],
-        "blocked": [],
-        "inferred": [
-          "Current product boundary fixes the canonical stack and does not expose optional architecture selection"
-        ]
-      }
-    }
-  ],
-  "blockers": [],
-  "rules": {
-    "allowedStatuses": [
-      "not_started",
-      "in_progress",
-      "blocked",
-      "implemented",
-      "verified",
-      "superseded"
-    ],
-    "verifiedRequiresExecutedEvidence": true,
-    "mergeDoesNotImplyValidation": true
-  }
+  "completed": [],
+  "note": "GitHub Issues and the Project v2 board are the operational source for implementation progress. Do not infer completion from this file."
 }
