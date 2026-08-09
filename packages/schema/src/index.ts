@@ -1,6 +1,16 @@
 export {
+  capabilityIds,
+  moduleSelectionSchema,
+  productPresetIds,
+  productPresetSchema,
   recipeSchema,
   recipeSchemaVersion,
+  resolvedModulesSchema,
+  type CapabilityId,
+  type ModuleSelection,
   type NormalizedRecipe,
+  type ParsedRecipe,
+  type ProductPresetId,
   type RecipeInput,
+  type ResolvedModules,
 } from './recipe.js';

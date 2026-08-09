@@ -57,6 +57,15 @@ program
       fileInput.product === undefined
         ? {}
         : { product: fileInput.recipe?.product ?? fileInput.product }),
+      ...(fileInput.recipe?.modules === undefined &&
+      fileInput.modules === undefined
+        ? {}
+        : {
+            modules: {
+              ...fileInput.recipe?.modules,
+              ...fileInput.modules,
+            },
+          }),
       git: { initialize: flags.git && (fileInput.git?.initialize ?? true) },
       install: {
         enabled: !flags.skipInstall && (fileInput.install?.enabled ?? true),

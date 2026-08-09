@@ -1,6 +1,11 @@
 import path from 'node:path';
 import { z } from 'zod';
-import { recipeSchema, type RecipeInput } from '@loaded-vibes/schema';
+import {
+  recipeSchema,
+  type ModuleSelection,
+  type ProductPresetId,
+  type RecipeInput,
+} from '@loaded-vibes/schema';
 import { LoadedVibesError } from '../errors.js';
 import { normalizeRecipe } from '../recipe.js';
 import { loadedVibesConfigSchema, type LoadedVibesConfig } from './schema.js';
@@ -9,7 +14,8 @@ export interface ConfigInput {
   recipe?: RecipeInput;
   schemaVersion?: 1;
   name?: string;
-  product?: 'bare-golden-app';
+  product?: ProductPresetId;
+  modules?: ModuleSelection;
   /** @deprecated Use `name` or `recipe.name`. */
   projectName?: string;
   targetDirectory?: string;
@@ -24,7 +30,8 @@ const configInputSchema = z
     recipe: recipeSchema.partial().optional(),
     schemaVersion: z.literal(1).optional(),
     name: z.string().optional(),
-    product: z.literal('bare-golden-app').optional(),
+    product: recipeSchema.shape.product.unwrap().optional(),
+    modules: recipeSchema.shape.modules.unwrap().optional(),
     projectName: z.string().optional(),
     targetDirectory: z.string().optional(),
     preset: z.literal('standard').optional(),
@@ -68,6 +75,10 @@ export function normalizeConfig(
       parsedInput.data.recipe?.product ??
       parsedInput.data.product ??
       'bare-golden-app',
+    modules: {
+      ...parsedInput.data.recipe?.modules,
+      ...parsedInput.data.modules,
+    },
   });
 
   const result = loadedVibesConfigSchema.safeParse({

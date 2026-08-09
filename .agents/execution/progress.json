@@ -2,14 +2,14 @@
   "schemaVersion": 2,
   "roadmap": "generator-product-roadmap",
   "status": "in_progress",
-  "activeIssue": 92,
-  "activeBranch": "feature/92-shared-recipe-core",
-  "completed": [],
+  "activeIssue": 93,
+  "activeBranch": "feature/93-presets-capability-resolver",
+  "completed": [92],
   "workItems": [
     {
       "id": "LV-101",
       "issue": 92,
-      "status": "implemented",
+      "status": "verified",
       "branch": "feature/92-shared-recipe-core",
       "pullRequest": "https://github.com/DigitalHerencia/LoadedVibes/pull/102",
       "evidence": {
@@ -18,6 +18,24 @@
           "corepack pnpm lint",
           "corepack pnpm format:check",
           "corepack pnpm exec vitest run tests/unit/config.test.ts tests/integration/materialize.test.ts",
+          "corepack pnpm build",
+          "corepack pnpm test:generated"
+        ],
+        "blocked": []
+      }
+    },
+    {
+      "id": "LV-102",
+      "issue": 93,
+      "status": "implemented",
+      "branch": "feature/93-presets-capability-resolver",
+      "pullRequest": null,
+      "evidence": {
+        "executed": [
+          "corepack pnpm format:check",
+          "corepack pnpm lint",
+          "corepack pnpm typecheck",
+          "corepack pnpm exec vitest run tests/unit/config.test.ts tests/unit/recipe-resolution.test.ts tests/integration/materialize.test.ts (16 tests passed)",
           "corepack pnpm build",
           "corepack pnpm test:generated"
         ],

@@ -13,6 +13,18 @@ describe('normalizeConfig', () => {
         schemaVersion: 1,
         name: 'acme-saas',
         product: 'bare-golden-app',
+        modules: {
+          organizations: true,
+          invitations: false,
+          rbac: true,
+          billing: false,
+          stripeConnect: false,
+          onboarding: false,
+          admin: false,
+          marketing: false,
+          sampleDomain: false,
+          governance: true,
+        },
       },
       targetDirectory: path.resolve('C:\\work', 'Acme SaaS'),
       git: { initialize: true },
@@ -25,6 +37,7 @@ describe('normalizeConfig', () => {
       schemaVersion: 1,
       name: 'shared-recipe',
       product: 'bare-golden-app',
+      modules: expect.objectContaining({ organizations: true, rbac: true }),
     });
   });
 
