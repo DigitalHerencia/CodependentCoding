@@ -8,6 +8,7 @@ import {
   type ProductPresetId,
 } from '@loaded-vibes/core/browser';
 import { useEffect, useMemo, useState } from 'react';
+import { LivePreview } from '@/components/live-preview';
 import {
   configurableCapabilities,
   createCliCommand,
@@ -294,7 +295,7 @@ export function Configurator() {
           data-density={draft.design.density}
         >
           <div className="review-top">
-            <span>Recipe preview</span>
+            <span>Live product preview</span>
             <span className="schema">schema v1</span>
           </div>
           <div className="product-preview">
@@ -309,6 +310,7 @@ export function Configurator() {
               </p>
             </div>
           </div>
+          <LivePreview recipe={resolved.recipe} />
           <div className="summary-block">
             <small>Starting point</small>
             <strong>{resolved.summary.preset.label}</strong>
