@@ -1,19 +1,18 @@
 {
   "schemaVersion": 2,
   "status": "in-progress",
-  "currentOutcome": "LV-108 stateless visual recipe configurator implemented on feature/99-web-configurator.",
-  "activeIssue": 99,
-  "activeBranch": "feature/99-web-configurator",
-  "activePullRequest": "https://github.com/DigitalHerencia/LoadedVibes/pull/109",
-  "lastCompletedIssue": 98,
-  "lastMergedPullRequest": "https://github.com/DigitalHerencia/LoadedVibes/pull/108",
-  "nextAction": "Open and review the Issue #99 pull request, then merge when its acceptance criteria remain satisfied.",
+  "currentOutcome": "LV-109 representative live preview and recipe-to-CLI handoff implemented on feature/100-live-preview-handoff.",
+  "activeIssue": 100,
+  "activeBranch": "feature/100-live-preview-handoff",
+  "activePullRequest": "https://github.com/DigitalHerencia/LoadedVibes/pull/110",
+  "lastCompletedIssue": 99,
+  "lastMergedPullRequest": "https://github.com/DigitalHerencia/LoadedVibes/pull/109",
+  "nextAction": "Open and review the Issue #100 pull request, then merge when its acceptance criteria remain satisfied.",
   "executedEvidence": [
-    "corepack pnpm exec vitest run tests/unit/web-configurator.test.ts (4 tests passed)",
+    "corepack pnpm exec vitest run tests/unit/web-configurator.test.ts (5 tests passed)",
     "corepack pnpm --dir apps/web typecheck",
     "corepack pnpm lint",
-    "corepack pnpm web:build (static route generated)",
-    "corepack pnpm validate (34 unit/integration tests and 7 generated CLI tests passed)"
+    "corepack pnpm web:build (static route generated)"
   ],
   "blockedEvidence": [],
   "notes": [
