@@ -4,6 +4,7 @@
   "currentOutcome": "LV-101 shared recipe core and workspace foundation implemented on feature/92-shared-recipe-core.",
   "activeIssue": 92,
   "activeBranch": "feature/92-shared-recipe-core",
+  "activePullRequest": "https://github.com/DigitalHerencia/LoadedVibes/pull/102",
   "nextAction": "Open and review the Issue #92 pull request, then merge when its acceptance criteria remain satisfied.",
   "executedEvidence": [
     "corepack pnpm typecheck",
