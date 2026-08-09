@@ -118,7 +118,7 @@
       "issue": 98,
       "status": "implemented",
       "branch": "feature/98-doctor-explain",
-      "pullRequest": null,
+      "pullRequest": "https://github.com/DigitalHerencia/LoadedVibes/pull/108",
       "evidence": {
         "executed": [
           "corepack pnpm exec vitest run tests/integration/diagnostics.test.ts tests/integration/add-module.test.ts (6 tests passed)",

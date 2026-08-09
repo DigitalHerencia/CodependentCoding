@@ -4,7 +4,7 @@
   "currentOutcome": "LV-107 actionable doctor diagnostics and manifest-backed explain output implemented on feature/98-doctor-explain.",
   "activeIssue": 98,
   "activeBranch": "feature/98-doctor-explain",
-  "activePullRequest": null,
+  "activePullRequest": "https://github.com/DigitalHerencia/LoadedVibes/pull/108",
   "lastCompletedIssue": 97,
   "lastMergedPullRequest": "https://github.com/DigitalHerencia/LoadedVibes/pull/107",
   "nextAction": "Open and review the Issue #98 pull request, then merge when its acceptance criteria remain satisfied.",
