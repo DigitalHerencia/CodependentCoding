@@ -145,4 +145,30 @@ describe('real user-facing CLI', () => {
       stat(path.join(target, 'app', '(public)', 'pricing', 'page.tsx')),
     ).resolves.toBeTruthy();
   }, 15_000);
+
+  it('diagnoses and explains a generated project without running validation suites', async () => {
+    const root = await mkdtemp(
+      path.join(os.tmpdir(), 'loaded-vibes-diagnostics-cli-'),
+    );
+    const target = path.join(root, 'diagnostic-app');
+    await execa('node', [
+      cli,
+      target,
+      '--name',
+      'diagnostic-app',
+      '--yes',
+      '--no-git',
+      '--skip-install',
+    ]);
+    const doctor = await execa('node', [cli, 'doctor', '--cwd', target], {
+      reject: false,
+    });
+    expect(doctor.exitCode).toBe(1);
+    expect(doctor.stdout).toContain('Run corepack pnpm install.');
+    expect(doctor.stdout).toContain('Add the Clerk secret key to .env.local.');
+    const explain = await execa('node', [cli, 'explain', '--cwd', target]);
+    expect(explain.stdout).toContain('Preset: Bare golden app');
+    expect(explain.stdout).toContain('Provider boundaries');
+    expect(explain.stdout).toContain('Remaining setup');
+  }, 15_000);
 });

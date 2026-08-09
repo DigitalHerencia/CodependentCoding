@@ -38,6 +38,12 @@
       "decision": "Post-generation add is limited to packaged repository modules, preflights every file, and permits declared replacements only while the destination still matches the golden baseline.",
       "status": "active",
       "issue": 97
+    },
+    {
+      "id": "LV-D-008",
+      "decision": "Doctor performs only local metadata, dependency, Prisma-client, and non-secret environment-shape checks; explain derives product meaning and remaining setup from the manifest and recipe.",
+      "status": "active",
+      "issue": 98
     }
   ]
 }

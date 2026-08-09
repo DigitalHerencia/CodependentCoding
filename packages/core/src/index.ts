@@ -5,6 +5,14 @@ export {
   type ModuleAdditionPlan,
   type ModuleAdditionResult,
 } from './commands/add.js';
+export {
+  diagnoseProject,
+  type DiagnosticCheck,
+  type DiagnosticOwner,
+  type DiagnosticStatus,
+  type DoctorResult,
+} from './commands/doctor.js';
+export { explainProject, type ProjectExplanation } from './commands/explain.js';
 export { loadConfigFile } from './config/load.js';
 export { normalizeConfig, type ConfigInput } from './config/normalize.js';
 export {
@@ -24,6 +32,7 @@ export {
   parseGenerationManifest,
   type GenerationManifest,
 } from './manifest.js';
+export { loadGeneratedProject, type GeneratedProject } from './project.js';
 export {
   capabilityRegistry,
   resolveCapabilitySelection,

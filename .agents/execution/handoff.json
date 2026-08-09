@@ -1,20 +1,19 @@
 {
   "schemaVersion": 2,
   "status": "in-progress",
-  "currentOutcome": "LV-106 generation manifest and safe post-generation module addition implemented on feature/97-post-generation-add.",
-  "activeIssue": 97,
-  "activeBranch": "feature/97-post-generation-add",
-  "activePullRequest": "https://github.com/DigitalHerencia/LoadedVibes/pull/107",
-  "lastCompletedIssue": 96,
-  "lastMergedPullRequest": "https://github.com/DigitalHerencia/LoadedVibes/pull/106",
-  "nextAction": "Open and review the Issue #97 pull request, then merge when its acceptance criteria remain satisfied.",
+  "currentOutcome": "LV-107 actionable doctor diagnostics and manifest-backed explain output implemented on feature/98-doctor-explain.",
+  "activeIssue": 98,
+  "activeBranch": "feature/98-doctor-explain",
+  "activePullRequest": null,
+  "lastCompletedIssue": 97,
+  "lastMergedPullRequest": "https://github.com/DigitalHerencia/LoadedVibes/pull/107",
+  "nextAction": "Open and review the Issue #98 pull request, then merge when its acceptance criteria remain satisfied.",
   "executedEvidence": [
-    "corepack pnpm exec vitest run tests/unit/config.test.ts tests/unit/recipe-resolution.test.ts tests/integration/add-module.test.ts tests/integration/materialize.test.ts (21 tests passed)",
+    "corepack pnpm exec vitest run tests/integration/diagnostics.test.ts tests/integration/add-module.test.ts (6 tests passed)",
     "corepack pnpm typecheck",
     "corepack pnpm lint",
     "corepack pnpm format:check",
-    "corepack pnpm test:generated (6 tests passed)",
-    "corepack pnpm pack:check (345 safe entries)"
+    "corepack pnpm test:generated (7 tests passed)"
   ],
   "blockedEvidence": [],
   "notes": [
