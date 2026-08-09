@@ -1,12 +1,19 @@
 import path from 'node:path';
 import { Command } from 'commander';
-import { cancel, intro, isCancel, outro, text } from '@clack/prompts';
+import { cancel, intro, isCancel, outro, spinner, text } from '@clack/prompts';
 import {
   createProject,
   loadConfigFile,
   LoadedVibesError,
+  resolveRecipe,
   type ConfigInput,
+  type RecipeInput,
 } from '@loaded-vibes/core';
+import {
+  collectInteractiveRecipe,
+  formatRecipeReview,
+  reviewRecipe,
+} from './create-flow.js';
 
 const program = new Command();
 program
@@ -42,46 +49,83 @@ program
         'A target directory is required.',
       );
 
-    const input: ConfigInput = {
-      targetDirectory: target,
+    const baseRecipe: RecipeInput = {
+      ...(fileInput.schemaVersion === undefined &&
+      fileInput.recipe?.schemaVersion === undefined
+        ? {}
+        : {
+            schemaVersion:
+              fileInput.schemaVersion ?? fileInput.recipe?.schemaVersion,
+          }),
       name:
         flags.name ??
         fileInput.recipe?.name ??
         fileInput.name ??
         fileInput.projectName ??
         path.basename(path.resolve(target)).toLowerCase(),
-      ...(fileInput.schemaVersion === undefined
-        ? {}
-        : { schemaVersion: fileInput.schemaVersion }),
-      ...(fileInput.recipe?.product === undefined &&
-      fileInput.product === undefined
-        ? {}
-        : { product: fileInput.recipe?.product ?? fileInput.product }),
-      ...(fileInput.recipe?.modules === undefined &&
-      fileInput.modules === undefined
-        ? {}
-        : {
-            modules: {
-              ...fileInput.recipe?.modules,
-              ...fileInput.modules,
-            },
-          }),
+      product:
+        fileInput.recipe?.product ?? fileInput.product ?? 'bare-golden-app',
+      modules: {
+        ...fileInput.recipe?.modules,
+        ...fileInput.modules,
+      },
+      identity: {
+        ...fileInput.recipe?.identity,
+        ...fileInput.identity,
+      },
+      design: {
+        ...fileInput.recipe?.design,
+        ...fileInput.design,
+      },
+    };
+    let recipe = baseRecipe;
+    const interactive = !flags.yes && !flags.config && process.stdin.isTTY;
+    if (interactive) {
+      const collected = await collectInteractiveRecipe(baseRecipe);
+      if (!collected) {
+        cancel('Creation cancelled.');
+        process.exitCode = 1;
+        return;
+      }
+      recipe = collected;
+      if (!(await reviewRecipe(recipe))) {
+        cancel('Creation cancelled before files were written.');
+        process.exitCode = 1;
+        return;
+      }
+    } else {
+      console.log(
+        `Build review\n\n${formatRecipeReview(resolveRecipe(recipe))}`,
+      );
+    }
+
+    const input: ConfigInput = {
+      targetDirectory: target,
+      recipe,
       git: { initialize: flags.git && (fileInput.git?.initialize ?? true) },
       install: {
         enabled: !flags.skipInstall && (fileInput.install?.enabled ?? true),
       },
     };
-    const result = await createProject(input, {
-      dryRun: Boolean(flags.dryRun),
-    });
+    const progress = spinner();
+    if (!flags.dryRun) progress.start('Building your product foundation');
+    let result;
+    try {
+      result = await createProject(input, {
+        dryRun: Boolean(flags.dryRun),
+      });
+    } catch (error) {
+      if (!flags.dryRun) progress.stop('Generation stopped');
+      throw error;
+    }
+    if (!flags.dryRun) progress.stop('Product foundation generated');
     if (result.status === 'planned') {
-      console.log(JSON.stringify(result.plan, null, 2));
       outro('Dry run complete; no files were written.');
     } else if (result.status === 'accepted') {
-      outro(`Created and acceptance-validated ${input.name}.`);
+      outro(`Created and acceptance-validated ${recipe.name}.`);
     } else {
       outro(
-        `Generated ${input.name}; install and acceptance validation were skipped.`,
+        `Generated ${recipe.name}; install and acceptance validation were skipped.`,
       );
     }
   });

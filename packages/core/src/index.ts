@@ -12,10 +12,22 @@ export {
   type CapabilityDefinition,
   type CapabilityResolution,
 } from './capabilities.js';
+export { capabilityIds, productPresetIds } from '@loaded-vibes/schema';
 export {
   normalizeRecipe,
   resolveRecipe,
   type ResolvedBuildSummary,
   type ResolvedRecipe,
 } from './recipe.js';
-export type { NormalizedRecipe, RecipeInput } from '@loaded-vibes/schema';
+export { getProductPreset, productPresets } from '@loaded-vibes/recipes';
+export type {
+  CapabilityId,
+  Design,
+  DesignInput,
+  ModuleSelection,
+  NormalizedRecipe,
+  ProductIdentity,
+  ProductIdentityInput,
+  ProductPresetId,
+  RecipeInput,
+} from '@loaded-vibes/schema';

@@ -2,7 +2,9 @@ import path from 'node:path';
 import { z } from 'zod';
 import {
   recipeSchema,
+  type DesignInput,
   type ModuleSelection,
+  type ProductIdentityInput,
   type ProductPresetId,
   type RecipeInput,
 } from '@loaded-vibes/schema';
@@ -16,6 +18,8 @@ export interface ConfigInput {
   name?: string;
   product?: ProductPresetId;
   modules?: ModuleSelection;
+  identity?: ProductIdentityInput;
+  design?: DesignInput;
   /** @deprecated Use `name` or `recipe.name`. */
   projectName?: string;
   targetDirectory?: string;
@@ -32,6 +36,8 @@ const configInputSchema = z
     name: z.string().optional(),
     product: recipeSchema.shape.product.unwrap().optional(),
     modules: recipeSchema.shape.modules.unwrap().optional(),
+    identity: recipeSchema.shape.identity.unwrap().optional(),
+    design: recipeSchema.shape.design.unwrap().optional(),
     projectName: z.string().optional(),
     targetDirectory: z.string().optional(),
     preset: z.literal('standard').optional(),
@@ -78,6 +84,14 @@ export function normalizeConfig(
     modules: {
       ...parsedInput.data.recipe?.modules,
       ...parsedInput.data.modules,
+    },
+    identity: {
+      ...parsedInput.data.recipe?.identity,
+      ...parsedInput.data.identity,
+    },
+    design: {
+      ...parsedInput.data.recipe?.design,
+      ...parsedInput.data.design,
     },
   });
 
