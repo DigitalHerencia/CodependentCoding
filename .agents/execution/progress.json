@@ -65,7 +65,7 @@
       "issue": 95,
       "status": "implemented",
       "branch": "feature/95-vibes-template-modules",
-      "pullRequest": null,
+      "pullRequest": "https://github.com/DigitalHerencia/LoadedVibes/pull/105",
       "evidence": {
         "executed": [
           "Vibes source revision verified as 19e20084a8c69cc5a70f8db5f8e5d908a84d582f",

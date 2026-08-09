@@ -4,7 +4,7 @@
   "currentOutcome": "LV-104 Vibes-derived golden template composition and supported capability modules implemented on feature/95-vibes-template-modules.",
   "activeIssue": 95,
   "activeBranch": "feature/95-vibes-template-modules",
-  "activePullRequest": null,
+  "activePullRequest": "https://github.com/DigitalHerencia/LoadedVibes/pull/105",
   "lastCompletedIssue": 94,
   "lastMergedPullRequest": "https://github.com/DigitalHerencia/LoadedVibes/pull/104",
   "nextAction": "Open and review the Issue #95 pull request, then merge when its acceptance criteria remain satisfied.",
