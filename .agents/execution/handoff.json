@@ -9,13 +9,12 @@
   "executedEvidence": [
     "corepack pnpm typecheck",
     "corepack pnpm lint",
+    "corepack pnpm format:check",
     "corepack pnpm exec vitest run tests/unit/config.test.ts tests/integration/materialize.test.ts (8 tests passed)",
     "corepack pnpm build",
     "corepack pnpm test:generated (5 tests passed)"
   ],
-  "blockedEvidence": [
-    "corepack pnpm format:check found unrelated pre-existing formatting in context/docs/tech-req.md"
-  ],
+  "blockedEvidence": [],
   "notes": [
     "Do not restart a repository-wide audit.",
     "Do not expand validation beyond the current Issue without a concrete reason.",

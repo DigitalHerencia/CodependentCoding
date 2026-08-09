@@ -16,13 +16,12 @@
         "executed": [
           "corepack pnpm typecheck",
           "corepack pnpm lint",
+          "corepack pnpm format:check",
           "corepack pnpm exec vitest run tests/unit/config.test.ts tests/integration/materialize.test.ts",
           "corepack pnpm build",
           "corepack pnpm test:generated"
         ],
-        "blocked": [
-          "corepack pnpm format:check: unrelated pre-existing formatting in context/docs/tech-req.md"
-        ]
+        "blocked": []
       }
     }
   ],
