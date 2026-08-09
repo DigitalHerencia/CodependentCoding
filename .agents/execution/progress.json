@@ -47,7 +47,7 @@
       "issue": 94,
       "status": "implemented",
       "branch": "feature/94-cli-product-flow",
-      "pullRequest": null,
+      "pullRequest": "https://github.com/DigitalHerencia/LoadedVibes/pull/104",
       "evidence": {
         "executed": [
           "corepack pnpm format:check",

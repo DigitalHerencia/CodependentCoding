@@ -4,7 +4,7 @@
   "currentOutcome": "LV-103 Express and Advanced CLI product flow implemented on feature/94-cli-product-flow.",
   "activeIssue": 94,
   "activeBranch": "feature/94-cli-product-flow",
-  "activePullRequest": null,
+  "activePullRequest": "https://github.com/DigitalHerencia/LoadedVibes/pull/104",
   "lastCompletedIssue": 93,
   "lastMergedPullRequest": "https://github.com/DigitalHerencia/LoadedVibes/pull/103",
   "nextAction": "Open and review the Issue #94 pull request, then merge when its acceptance criteria remain satisfied.",
