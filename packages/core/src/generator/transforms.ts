@@ -12,7 +12,7 @@ export async function applyTransforms(plan: GenerationPlan): Promise<void> {
     string,
     unknown
   >;
-  packageJson.name = plan.config.projectName;
+  packageJson.name = plan.config.recipe.name;
   packageJson.version = '0.1.0';
   packageJson.private = true;
   await writeFile(packagePath, `${JSON.stringify(packageJson, null, 2)}\n`);
@@ -27,13 +27,17 @@ export async function applyTransforms(plan: GenerationPlan): Promise<void> {
     schemaVersion: 1,
     generator: 'create-loaded-vibes',
     generatorVersion: '0.1.0',
-    preset: plan.config.preset,
-    projectName: plan.config.projectName,
+    preset: plan.config.recipe.product,
+    projectName: plan.config.recipe.name,
     templateRevision: templateMetadata.templateRevision,
     sourceRevision: templateMetadata.sourceRevision,
   };
   await writeFile(
     path.join(plan.stagingDirectory, '.loaded-vibes.json'),
     `${JSON.stringify(provenance, null, 2)}\n`,
+  );
+  await writeFile(
+    path.join(plan.stagingDirectory, 'loadedvibes.json'),
+    `${JSON.stringify(plan.config.recipe, null, 2)}\n`,
   );
 }

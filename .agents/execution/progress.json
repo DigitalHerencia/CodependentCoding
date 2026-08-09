@@ -1,8 +1,30 @@
 {
   "schemaVersion": 2,
   "roadmap": "generator-product-roadmap",
-  "status": "planned",
-  "activeIssue": null,
+  "status": "in_progress",
+  "activeIssue": 92,
+  "activeBranch": "feature/92-shared-recipe-core",
   "completed": [],
+  "workItems": [
+    {
+      "id": "LV-101",
+      "issue": 92,
+      "status": "implemented",
+      "branch": "feature/92-shared-recipe-core",
+      "pullRequest": null,
+      "evidence": {
+        "executed": [
+          "corepack pnpm typecheck",
+          "corepack pnpm lint",
+          "corepack pnpm exec vitest run tests/unit/config.test.ts tests/integration/materialize.test.ts",
+          "corepack pnpm build",
+          "corepack pnpm test:generated"
+        ],
+        "blocked": [
+          "corepack pnpm format:check: unrelated pre-existing formatting in context/docs/tech-req.md"
+        ]
+      }
+    }
+  ],
   "note": "GitHub Issues and the Project v2 board are the operational source for implementation progress. Do not infer completion from this file."
 }

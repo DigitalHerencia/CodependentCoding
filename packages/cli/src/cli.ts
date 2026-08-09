@@ -1,10 +1,12 @@
 import path from 'node:path';
 import { Command } from 'commander';
 import { cancel, intro, isCancel, outro, text } from '@clack/prompts';
-import { createProject } from './commands/create.js';
-import { loadConfigFile } from './config/load.js';
-import type { ConfigInput } from './config/normalize.js';
-import { LoadedVibesError } from './errors.js';
+import {
+  createProject,
+  loadConfigFile,
+  LoadedVibesError,
+  type ConfigInput,
+} from '@loaded-vibes/core';
 
 const program = new Command();
 program
@@ -41,12 +43,20 @@ program
       );
 
     const input: ConfigInput = {
-      ...fileInput,
       targetDirectory: target,
-      projectName:
+      name:
         flags.name ??
+        fileInput.recipe?.name ??
+        fileInput.name ??
         fileInput.projectName ??
         path.basename(path.resolve(target)).toLowerCase(),
+      ...(fileInput.schemaVersion === undefined
+        ? {}
+        : { schemaVersion: fileInput.schemaVersion }),
+      ...(fileInput.recipe?.product === undefined &&
+      fileInput.product === undefined
+        ? {}
+        : { product: fileInput.recipe?.product ?? fileInput.product }),
       git: { initialize: flags.git && (fileInput.git?.initialize ?? true) },
       install: {
         enabled: !flags.skipInstall && (fileInput.install?.enabled ?? true),
@@ -59,10 +69,10 @@ program
       console.log(JSON.stringify(result.plan, null, 2));
       outro('Dry run complete; no files were written.');
     } else if (result.status === 'accepted') {
-      outro(`Created and acceptance-validated ${input.projectName}.`);
+      outro(`Created and acceptance-validated ${input.name}.`);
     } else {
       outro(
-        `Generated ${input.projectName}; install and acceptance validation were skipped.`,
+        `Generated ${input.name}; install and acceptance validation were skipped.`,
       );
     }
   });

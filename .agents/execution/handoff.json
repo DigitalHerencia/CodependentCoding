@@ -1,8 +1,20 @@
 {
   "schemaVersion": 2,
-  "status": "roadmap-reset",
-  "currentOutcome": "Build Loaded Vibes as a high-value SaaS generator with an excellent CLI and stateless visual configurator.",
-  "nextAction": "Take the next Ready GitHub Issue and implement only that Issue/spec.",
+  "status": "in-progress",
+  "currentOutcome": "LV-101 shared recipe core and workspace foundation implemented on feature/92-shared-recipe-core.",
+  "activeIssue": 92,
+  "activeBranch": "feature/92-shared-recipe-core",
+  "nextAction": "Open and review the Issue #92 pull request, then merge when its acceptance criteria remain satisfied.",
+  "executedEvidence": [
+    "corepack pnpm typecheck",
+    "corepack pnpm lint",
+    "corepack pnpm exec vitest run tests/unit/config.test.ts tests/integration/materialize.test.ts (8 tests passed)",
+    "corepack pnpm build",
+    "corepack pnpm test:generated (5 tests passed)"
+  ],
+  "blockedEvidence": [
+    "corepack pnpm format:check found unrelated pre-existing formatting in context/docs/tech-req.md"
+  ],
   "notes": [
     "Do not restart a repository-wide audit.",
     "Do not expand validation beyond the current Issue without a concrete reason.",

@@ -2,7 +2,7 @@ import { mkdtemp, mkdir, symlink, writeFile } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { assertSafeTarget } from '../../src/preflight/target.js';
+import { assertSafeTarget } from '../../packages/core/src/preflight/target.js';
 
 describe('assertSafeTarget', () => {
   it('accepts a missing destination', async () => {

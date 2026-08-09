@@ -2,7 +2,7 @@ import { mkdir, mkdtemp, readFile } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { createProject } from '../../src/commands/create.js';
+import { createProject } from '@loaded-vibes/core';
 
 describe('createProject', () => {
   it('materializes the canonical template with structured identity transforms', async () => {
@@ -25,7 +25,14 @@ describe('createProject', () => {
       ),
     ).toMatchObject({
       projectName: 'acme-product',
-      preset: 'standard',
+      preset: 'bare-golden-app',
+    });
+    expect(
+      JSON.parse(await readFile(path.join(target, 'loadedvibes.json'), 'utf8')),
+    ).toEqual({
+      schemaVersion: 1,
+      name: 'acme-product',
+      product: 'bare-golden-app',
     });
   });
 

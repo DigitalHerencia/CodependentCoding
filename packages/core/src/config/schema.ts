@@ -1,11 +1,10 @@
 import { z } from 'zod';
+import { recipeSchema } from '@loaded-vibes/schema';
 
 export const loadedVibesConfigSchema = z
   .object({
-    schemaVersion: z.literal(1).default(1),
-    projectName: z.string().min(1),
+    recipe: recipeSchema,
     targetDirectory: z.string().min(1),
-    preset: z.literal('standard').default('standard'),
     git: z
       .object({ initialize: z.boolean() })
       .strict()
