@@ -2,12 +2,12 @@
   "schemaVersion": 1,
   "artifact": "loaded-vibes.execution.progress",
   "authority": "execution-state-only",
-  "updatedAt": "2026-08-09T12:00:00Z",
-  "currentRevision": "528d16f",
-  "activeIssue": "https://github.com/DigitalHerencia/LoadedVibes/issues/88",
-  "activeBranch": "feature/88-loaded-vibes-generator",
+  "updatedAt": "2026-08-09T12:00:05Z",
+  "currentRevision": "d2c2ecc93a99a1af6ffe155db3d1b6d02c110daf",
+  "activeIssue": null,
+  "activeBranch": null,
   "activePullRequest": null,
-  "overallStatus": "verification",
+  "overallStatus": "verified",
   "workItems": [
     {
       "id": "LV-001-LV-009,LV-011-LV-012",
@@ -15,7 +15,7 @@
       "status": "verified",
       "issueUrl": "https://github.com/DigitalHerencia/LoadedVibes/issues/88",
       "branch": "feature/88-loaded-vibes-generator",
-      "pullRequestUrl": null,
+      "pullRequestUrl": "https://github.com/DigitalHerencia/LoadedVibes/pull/89",
       "commits": ["528d16f"],
       "validation": {
         "executed": [
@@ -40,7 +40,7 @@
       "status": "superseded",
       "issueUrl": "https://github.com/DigitalHerencia/LoadedVibes/issues/88",
       "branch": "feature/88-loaded-vibes-generator",
-      "pullRequestUrl": null,
+      "pullRequestUrl": "https://github.com/DigitalHerencia/LoadedVibes/pull/89",
       "commits": [],
       "validation": {
         "executed": ["generated test:connect-removal"],
