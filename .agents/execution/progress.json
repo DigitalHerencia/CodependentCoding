@@ -168,7 +168,7 @@
       "issue": 101,
       "status": "implemented",
       "branch": "feature/101-release-polish",
-      "pullRequest": null,
+      "pullRequest": "https://github.com/DigitalHerencia/LoadedVibes/pull/111",
       "evidence": {
         "executed": [
           "corepack pnpm typecheck",

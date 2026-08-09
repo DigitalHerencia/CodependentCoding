@@ -4,7 +4,7 @@
   "currentOutcome": "LV-110 canonical package command, release smoke, and user/provider handoff documentation implemented on feature/101-release-polish.",
   "activeIssue": 101,
   "activeBranch": "feature/101-release-polish",
-  "activePullRequest": null,
+  "activePullRequest": "https://github.com/DigitalHerencia/LoadedVibes/pull/111",
   "lastCompletedIssue": 100,
   "lastMergedPullRequest": "https://github.com/DigitalHerencia/LoadedVibes/pull/110",
   "nextAction": "Open and review the Issue #101 pull request, then merge when its acceptance criteria remain satisfied.",
