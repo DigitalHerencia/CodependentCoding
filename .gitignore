@@ -1,6 +1,8 @@
 # Node / tooling
 node_modules/
 build/
+dist/
+.artifacts/
 temp/
 /.agent_work
 .env
@@ -33,4 +35,3 @@ out/
 .cache/
 .vercel/
 .now/
-

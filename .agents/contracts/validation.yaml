@@ -1,0 +1,116 @@
+schema_version: 1
+id: loaded-vibes.validation
+authority: machine-contract
+sources:
+  - context/docs/tech-req.md
+  - context/docs/prd.md
+  - context/specs/LV-008-generator-and-output-ci.md
+  - context/specs/LV-009-package-and-release.md
+
+evidence_states:
+  executed: check actually ran against identified revision/output
+  skipped: known check deliberately not run
+  blocked: prerequisite prevented execution
+  inferred: conclusion based on inspection or reasoning
+
+claim_rules:
+  pass_or_fail_requires: executed
+  previous_revision_is_current_evidence: false
+  inferred_may_claim_pass: false
+
+generator_gates:
+  fast:
+    required:
+      - format-check
+      - lint
+      - typecheck
+      - affected-unit-tests
+  ci:
+    required:
+      - format-check
+      - lint
+      - typecheck
+      - unit-tests
+      - integration-tests
+      - deterministic-generation-tests
+      - build
+  release:
+    required:
+      - ci
+      - package-content-inspection
+      - packed-package-execution
+      - secret-scan
+      - default-generated-project-acceptance
+
+generated_project:
+  credential_free_acceptance:
+    canonical_command: pnpm validate:ci
+    expected_capabilities:
+      - prisma-generate
+      - prisma-validate
+      - formatting
+      - eslint
+      - next-typegen
+      - typescript
+      - contract-validation
+      - unit-tests
+      - contract-tests
+      - production-build
+  release:
+    canonical_command: pnpm validate:release
+    may_require_credentials: true
+    is_default_generator_claim: false
+
+required_scenarios:
+  - id: VAL-001
+    name: default-real-cli-generation
+    subject: generated-project
+    required: true
+  - id: VAL-002
+    name: noninteractive-config-generation
+    subject: generator
+    required: true
+  - id: VAL-003
+    name: dry-run-no-write
+    subject: generator
+    required: true
+  - id: VAL-004
+    name: occupied-target-rejection
+    subject: generator
+    required: true
+  - id: VAL-005
+    name: deterministic-repeat-generation
+    subject: generator
+    required: true
+  - id: VAL-006
+    name: skip-install-truthful-partial-status
+    subject: generator
+    required: true
+  - id: VAL-007
+    name: no-git-generation
+    subject: generator
+    required: true
+  - id: VAL-008
+    name: windows-path-behavior
+    subject: generator
+    required: true
+  - id: VAL-009
+    name: packed-package-generation
+    subject: package
+    required: true
+  - id: VAL-010
+    name: optional-module-included-and-excluded
+    subject: generated-project
+    required_when: optional-module-ships
+
+completion:
+  generator_release_requires:
+    - generator-ci-passed
+    - packed-package-path-passed
+    - default-generated-project-acceptance-passed
+    - secret-scan-passed
+  replacement_readiness_requires:
+    - source-disposition-unresolved-count-zero
+    - packed-package-path-passed
+    - default-generated-project-acceptance-passed
+    - no-canonical-artifact-stranded-in-vibes

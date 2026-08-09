@@ -1,0 +1,16 @@
+id: vibes.quality-gates
+version: 1
+authority: executable-command-contract
+credential_free:
+  fast: pnpm validate:fast
+  complete: pnpm validate
+  ci: pnpm validate:ci
+focused:
+  governance: pnpm governance:validate
+  architecture: pnpm architecture:validate
+  database_and_webhook_security: pnpm test:database-security
+credentialed:
+  release: pnpm validate:release
+rules:
+  unrun_is_not_passed: true
+  production_actions_require_owner_gate: true

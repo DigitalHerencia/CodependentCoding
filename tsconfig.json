@@ -1,35 +1,16 @@
 {
   "compilerOptions": {
-    "target": "ES2020",
-    "lib": ["dom", "dom.iterable", "esnext"],
-    "allowJs": false,
-    "skipLibCheck": true,
+    "target": "ES2023",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
     "strict": true,
-    "noEmit": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
     "esModuleInterop": true,
-    "module": "ESNext",
-    "moduleResolution": "bundler",
+    "skipLibCheck": true,
     "resolveJsonModule": true,
-    "isolatedModules": true,
-    "jsx": "react-jsx",
-    "forceConsistentCasingInFileNames": true,
-    "paths": {
-      "@/*": ["./*"]
-    },
-    "incremental": true,
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ]
+    "types": ["node", "vitest/globals"],
+    "outDir": "dist"
   },
-  "include": [
-    "next-env.d.ts",
-    "global.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    ".next/types/**/*.ts",
-    ".next/dev/types/**/*.ts"
-  ],
-  "exclude": ["node_modules"]
+  "include": ["src/**/*.ts", "tests/**/*.ts", "tsdown.config.ts"]
 }

@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 1,
+  "artifact": "loaded-vibes.execution.decisions",
+  "authority": "execution-state-only",
+  "instructions": {
+    "purpose": "Record consequential implementation choices and promotion status. This file does not override context/docs or contracts.",
+    "statuses": ["proposed", "accepted", "rejected", "superseded"],
+    "promotionRule": "If a decision changes durable product or architecture truth, update the controlling Markdown and machine contracts in the same governed change."
+  },
+  "decisions": [
+    {
+      "id": "D-001",
+      "status": "accepted",
+      "title": "One published create-project package for V1",
+      "decision": "Implement LoadedVibes initially as one TypeScript CLI package with generator runtime and canonical template in the same repository rather than a multi-package framework.",
+      "rationale": "The product requires a thin deterministic initializer first; split packages only when an independent boundary is proven.",
+      "sources": ["context/docs/architecture.md", "context/docs/tech-req.md"]
+    },
+    {
+      "id": "D-002",
+      "status": "accepted",
+      "title": "Use create-loaded-vibes as package and bin identity",
+      "decision": "The canonical V1 package and executable are create-loaded-vibes.",
+      "rationale": "Matches create-project package conventions and makes the product category explicit.",
+      "sources": ["context/docs/prd.md"]
+    },
+    {
+      "id": "D-003",
+      "status": "accepted",
+      "title": "Support pnpm only in V1",
+      "decision": "The generator and generated-project acceptance path support pinned pnpm rather than abstracting over package managers.",
+      "rationale": "Package-manager choice is not legitimate product variability for the canonical baseline.",
+      "sources": ["context/docs/prd.md", "context/docs/tech-req.md"]
+    },
+    {
+      "id": "D-004",
+      "status": "accepted",
+      "title": "Use staging-first generation",
+      "decision": "Generate through a run-owned sibling staging directory and reject non-empty targets.",
+      "rationale": "Provides deterministic cleanup and prevents destructive partial writes.",
+      "sources": ["context/docs/architecture.md", "context/docs/auth.md"]
+    },
+    {
+      "id": "D-005",
+      "status": "accepted",
+      "title": "Use one standard preset before module generalization",
+      "decision": "V1 ships the canonical standard preset. Optional capabilities require explicit module contracts; the first proof does not create a generic plugin framework.",
+      "rationale": "Loaded Vibes exposes only validated product variability.",
+      "sources": [
+        "context/docs/prd.md",
+        "context/specs/LV-010-first-optional-module.md"
+      ]
+    },
+    {
+      "id": "D-006",
+      "status": "accepted",
+      "title": "No provider provisioning or deployment in V1",
+      "decision": "The CLI generates safe configuration examples and Vercel-oriented support but does not collect credentials, provision providers, or deploy.",
+      "rationale": "Deterministic local generation and validation must be reliable before external side effects are introduced.",
+      "sources": ["context/docs/auth.md", "context/docs/prd.md"]
+    },
+    {
+      "id": "D-007",
+      "status": "accepted",
+      "title": "Generated governance is product output",
+      "decision": "Every generated repository includes human context, machine contracts, execution state, AGENTS.md, and validation ownership.",
+      "rationale": "Codependent Coding and Codex must inherit known architecture rather than rediscover it.",
+      "sources": [
+        "context/docs/architecture.md",
+        "context/specs/LV-007-generated-governance.md"
+      ]
+    },
+    {
+      "id": "D-008",
+      "status": "accepted",
+      "title": "Acceptance success requires executed generated-project validation",
+      "decision": "Default success wording is reserved for output whose required credential-free acceptance gate actually passed. --skip-install output is reported as unvalidated.",
+      "rationale": "Evidence must not exceed executed checks.",
+      "sources": ["context/docs/prd.md", ".agents/contracts/validation.yaml"]
+    },
+    {
+      "id": "D-009",
+      "status": "accepted",
+      "title": "Keep Stripe Connect in the fixed canonical baseline",
+      "decision": "V1 preserves Stripe Connect as production-isolated canonical template capability and does not expose architecture selection through an optional-module prompt.",
+      "rationale": "The current product instruction defines a complete opinionated stack rather than a choose-your-own-stack initializer; the existing removal proof remains as template boundary evidence.",
+      "sources": [
+        "context/docs/prd.md",
+        "context/specs/LV-010-first-optional-module.md"
+      ]
+    }
+  ]
+}
