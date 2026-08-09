@@ -6,5 +6,16 @@ export {
   type LoadedVibesConfig,
 } from './config/schema.js';
 export { LoadedVibesError, type LoadedVibesErrorCode } from './errors.js';
-export { normalizeRecipe } from './recipe.js';
+export {
+  capabilityRegistry,
+  resolveCapabilitySelection,
+  type CapabilityDefinition,
+  type CapabilityResolution,
+} from './capabilities.js';
+export {
+  normalizeRecipe,
+  resolveRecipe,
+  type ResolvedBuildSummary,
+  type ResolvedRecipe,
+} from './recipe.js';
 export type { NormalizedRecipe, RecipeInput } from '@loaded-vibes/schema';

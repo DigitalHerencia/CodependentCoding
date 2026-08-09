@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@loaded-vibes/schema": "workspace:*",
+    "@loaded-vibes/recipes": "workspace:*",
     "execa": "9.6.1",
     "validate-npm-package-name": "7.0.2",
     "zod": "4.4.3"

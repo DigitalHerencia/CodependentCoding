@@ -74,6 +74,9 @@ importers:
 
   packages/core:
     dependencies:
+      '@loaded-vibes/recipes':
+        specifier: workspace:*
+        version: link:../recipes
       '@loaded-vibes/schema':
         specifier: workspace:*
         version: link:../schema
@@ -86,6 +89,12 @@ importers:
       zod:
         specifier: 4.4.3
         version: 4.4.3
+
+  packages/recipes:
+    dependencies:
+      '@loaded-vibes/schema':
+        specifier: workspace:*
+        version: link:../schema
 
   packages/schema:
     dependencies:

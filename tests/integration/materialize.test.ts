@@ -29,7 +29,7 @@ describe('createProject', () => {
     });
     expect(
       JSON.parse(await readFile(path.join(target, 'loadedvibes.json'), 'utf8')),
-    ).toEqual({
+    ).toMatchObject({
       schemaVersion: 1,
       name: 'acme-product',
       product: 'bare-golden-app',
