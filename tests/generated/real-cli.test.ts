@@ -38,6 +38,9 @@ describe('real user-facing CLI', () => {
     expect(
       JSON.parse(await readFile(path.join(target, 'package.json'), 'utf8')),
     ).toMatchObject({ name: 'fresh-app' });
+    await expect(
+      readFile(path.join(target, '.gitignore'), 'utf8'),
+    ).resolves.toContain('.next/');
     await expect(stat(path.join(target, '.git'))).rejects.toMatchObject({
       code: 'ENOENT',
     });

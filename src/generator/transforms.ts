@@ -1,8 +1,12 @@
-import { readFile, writeFile } from 'node:fs/promises';
+import { readFile, rename, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import type { GenerationPlan } from './plan.js';
 
 export async function applyTransforms(plan: GenerationPlan): Promise<void> {
+  await rename(
+    path.join(plan.stagingDirectory, 'gitignore.template'),
+    path.join(plan.stagingDirectory, '.gitignore'),
+  );
   const packagePath = path.join(plan.stagingDirectory, 'package.json');
   const packageJson = JSON.parse(await readFile(packagePath, 'utf8')) as Record<
     string,

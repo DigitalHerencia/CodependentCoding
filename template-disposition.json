@@ -1,5 +1,11 @@
 [
   {
+    "path": "gitignore.template",
+    "disposition": "generator",
+    "included": true,
+    "reason": "Pack-safe source transformed to generated .gitignore by the initializer."
+  },
+  {
     "path": ".agents/contracts/README.md",
     "disposition": "core",
     "included": true,
