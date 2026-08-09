@@ -13,7 +13,7 @@
   },
   "files": [
     "dist",
-    "template",
+    "templates",
     "README.md",
     "LICENSE"
   ],

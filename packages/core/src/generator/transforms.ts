@@ -40,4 +40,58 @@ export async function applyTransforms(plan: GenerationPlan): Promise<void> {
     path.join(plan.stagingDirectory, 'loadedvibes.json'),
     `${JSON.stringify(plan.config.recipe, null, 2)}\n`,
   );
+  const capabilitiesSource = `export const loadedVibesCapabilities = ${JSON.stringify(
+    {
+      marketing: plan.config.recipe.modules.marketing,
+      sampleDomain: plan.config.recipe.modules.sampleDomain !== false,
+      stripeConnect: plan.config.recipe.modules.stripeConnect,
+    },
+    null,
+    2,
+  )} as const\n`;
+  await writeFile(
+    path.join(plan.stagingDirectory, 'content', 'loadedvibes.ts'),
+    capabilitiesSource,
+  );
+  const publicRoutes = [
+    '/',
+    ...(plan.config.recipe.modules.marketing ? ['/pricing', '/faq'] : []),
+  ];
+  const protectedRoutes = [
+    '/dashboard',
+    ...(plan.config.recipe.modules.sampleDomain !== false
+      ? ['/projects', '/projects/new', '/projects/[projectId]']
+      : []),
+    '/settings',
+  ];
+  const apiRoutes = [
+    '/api/clerk/webhooks',
+    '/api/stripe/webhooks',
+    ...(plan.config.recipe.modules.stripeConnect
+      ? ['/api/stripe/connect/webhooks']
+      : []),
+  ];
+  const routesContract = `id: vibes.routes
+version: 1
+authority: current-source-contract
+public: ${JSON.stringify(publicRoutes)}
+auth: ["/sign-in", "/sign-up"]
+protected: ${JSON.stringify(protectedRoutes)}
+api: ${JSON.stringify(apiRoutes)}
+reference_catalog:
+  status: production-opt-in
+  route_groups:
+    - app/(presentation)
+    - app/(public)/(presentation)
+    - app/(auth)/(presentation)
+    - app/(tenant)/(presentation)
+  index: /catalog
+  production_gate: PRESENTATION_CATALOG_ENABLED
+  search_metadata: content/presentation/registry.ts
+  robots: noindex,nofollow
+`;
+  await writeFile(
+    path.join(plan.stagingDirectory, '.agents', 'contracts', 'routes.yaml'),
+    routesContract,
+  );
 }

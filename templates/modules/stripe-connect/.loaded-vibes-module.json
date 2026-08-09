@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "id": "stripe-connect",
+  "requires": ["organizations", "rbac", "billing"],
+  "conflicts": [],
+  "contributions": [
+    "app/api/stripe/connect",
+    "lib/connect",
+    "lib/actions/connectActions.ts",
+    "lib/fetchers/connectFetchers.ts",
+    "lib/db/transactions/connectTransactions.ts",
+    "lib/integrations/stripe/connect.ts",
+    "lib/integrations/stripe/connectWebhooks.ts",
+    "lib/webhooks/connectWebhookWorkflow.ts",
+    "schemas/connectSchemas.ts",
+    "types/connectTypes.ts"
+  ],
+  "sourceRevision": "19e20084a8c69cc5a70f8db5f8e5d908a84d582f"
+}

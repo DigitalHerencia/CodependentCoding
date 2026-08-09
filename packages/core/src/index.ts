@@ -7,6 +7,11 @@ export {
 } from './config/schema.js';
 export { LoadedVibesError, type LoadedVibesErrorCode } from './errors.js';
 export {
+  selectGeneratedModules,
+  type GeneratedModule,
+  type GeneratedModuleId,
+} from './modules.js';
+export {
   capabilityRegistry,
   resolveCapabilitySelection,
   type CapabilityDefinition,
