@@ -2,9 +2,9 @@
   "schemaVersion": 2,
   "roadmap": "generator-product-roadmap",
   "status": "in_progress",
-  "activeIssue": 96,
-  "activeBranch": "feature/96-design-personalization",
-  "completed": [92, 93, 94, 95],
+  "activeIssue": 97,
+  "activeBranch": "feature/97-post-generation-add",
+  "completed": [92, 93, 94, 95, 96],
   "workItems": [
     {
       "id": "LV-101",
@@ -81,7 +81,7 @@
     {
       "id": "LV-105",
       "issue": 96,
-      "status": "implemented",
+      "status": "verified",
       "branch": "feature/96-design-personalization",
       "pullRequest": "https://github.com/DigitalHerencia/LoadedVibes/pull/106",
       "evidence": {
@@ -91,6 +91,24 @@
           "corepack pnpm lint",
           "corepack pnpm format:check",
           "corepack pnpm test:generated (5 tests passed)"
+        ],
+        "blocked": []
+      }
+    },
+    {
+      "id": "LV-106",
+      "issue": 97,
+      "status": "implemented",
+      "branch": "feature/97-post-generation-add",
+      "pullRequest": "https://github.com/DigitalHerencia/LoadedVibes/pull/107",
+      "evidence": {
+        "executed": [
+          "corepack pnpm exec vitest run tests/unit/config.test.ts tests/unit/recipe-resolution.test.ts tests/integration/add-module.test.ts tests/integration/materialize.test.ts (21 tests passed)",
+          "corepack pnpm typecheck",
+          "corepack pnpm lint",
+          "corepack pnpm format:check",
+          "corepack pnpm test:generated (6 tests passed)",
+          "corepack pnpm pack:check (345 safe entries)"
         ],
         "blocked": []
       }

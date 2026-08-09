@@ -1,10 +1,14 @@
 import path from 'node:path';
 import type { LoadedVibesConfig } from './config/schema.js';
+import type { NormalizedRecipe } from '@loaded-vibes/schema';
 
-export type GeneratedModuleId =
-  | 'marketing'
-  | 'sample-domain'
-  | 'stripe-connect';
+export const generatedModuleIds = [
+  'marketing',
+  'sample-domain',
+  'stripe-connect',
+] as const;
+
+export type GeneratedModuleId = (typeof generatedModuleIds)[number];
 
 export interface GeneratedModule {
   id: GeneratedModuleId;
@@ -16,10 +20,16 @@ export function selectGeneratedModules(
   templateDirectory: string,
 ): GeneratedModule[] {
   const root = path.resolve(templateDirectory, '../modules');
-  const selected: GeneratedModuleId[] = [];
-  if (config.recipe.modules.marketing) selected.push('marketing');
-  if (config.recipe.modules.sampleDomain !== false)
-    selected.push('sample-domain');
-  if (config.recipe.modules.stripeConnect) selected.push('stripe-connect');
+  const selected = selectedGeneratedModuleIds(config.recipe);
   return selected.map((id) => ({ id, sourceDirectory: path.join(root, id) }));
+}
+
+export function selectedGeneratedModuleIds(
+  recipe: NormalizedRecipe,
+): GeneratedModuleId[] {
+  const selected: GeneratedModuleId[] = [];
+  if (recipe.modules.marketing) selected.push('marketing');
+  if (recipe.modules.sampleDomain !== false) selected.push('sample-domain');
+  if (recipe.modules.stripeConnect) selected.push('stripe-connect');
+  return selected;
 }

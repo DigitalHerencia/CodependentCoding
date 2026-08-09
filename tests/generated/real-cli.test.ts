@@ -119,4 +119,30 @@ describe('real user-facing CLI', () => {
     }
     expect(await snapshot(targets[0]!)).toEqual(await snapshot(targets[1]!));
   }, 15_000);
+
+  it('adds a supported module through the real CLI', async () => {
+    const root = await mkdtemp(path.join(os.tmpdir(), 'loaded-vibes-add-cli-'));
+    const target = path.join(root, 'add-app');
+    await execa('node', [
+      cli,
+      target,
+      '--name',
+      'add-app',
+      '--yes',
+      '--no-git',
+      '--skip-install',
+    ]);
+    const result = await execa('node', [
+      cli,
+      'add',
+      'marketing',
+      '--cwd',
+      target,
+    ]);
+    expect(result.stdout).toContain('Module: marketing');
+    expect(result.stdout).toContain('Capabilities: marketing');
+    await expect(
+      stat(path.join(target, 'app', '(public)', 'pricing', 'page.tsx')),
+    ).resolves.toBeTruthy();
+  }, 15_000);
 });

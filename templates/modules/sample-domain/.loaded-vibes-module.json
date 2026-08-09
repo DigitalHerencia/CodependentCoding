@@ -3,6 +3,8 @@
   "id": "sample-domain",
   "requires": ["organizations", "rbac"],
   "conflicts": [],
+  "replaces": ["features/dashboard/dashboard-feature.tsx"],
+  "setup": [],
   "contributions": [
     "app/(tenant)/projects",
     "features/dashboard/dashboard-feature.tsx",

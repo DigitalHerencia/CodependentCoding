@@ -9,7 +9,11 @@ export type LoadedVibesErrorCode =
   | 'TRANSFORM_FAILED'
   | 'INSTALL_FAILED'
   | 'VALIDATION_FAILED'
-  | 'GIT_INIT_FAILED';
+  | 'GIT_INIT_FAILED'
+  | 'PROJECT_NOT_GENERATED'
+  | 'MODULE_UNSUPPORTED'
+  | 'MODULE_ALREADY_PRESENT'
+  | 'MODULE_CONFLICT';
 
 export class LoadedVibesError extends Error {
   constructor(

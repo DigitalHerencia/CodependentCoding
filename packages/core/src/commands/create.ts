@@ -14,7 +14,7 @@ export interface CreateOptions {
   dryRun?: boolean;
 }
 
-async function resolveTemplateDirectory(): Promise<string> {
+export async function resolveTemplateDirectory(): Promise<string> {
   const moduleDirectory = path.dirname(fileURLToPath(import.meta.url));
   const candidates = [
     path.resolve(moduleDirectory, '../../../../templates/golden'),

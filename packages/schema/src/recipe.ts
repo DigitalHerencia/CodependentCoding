@@ -88,6 +88,13 @@ export const recipeSchema = z
   })
   .strict();
 
+export const normalizedRecipeSchema = recipeSchema.extend({
+  modules: resolvedModulesSchema,
+  identity: productIdentitySchema.extend({
+    displayName: z.string().trim().min(1),
+  }),
+});
+
 export type RecipeInput = z.input<typeof recipeSchema>;
 export type ParsedRecipe = z.output<typeof recipeSchema>;
 export type ProductPresetId = z.infer<typeof productPresetSchema>;
@@ -101,11 +108,4 @@ export type ProductIdentity = z.output<typeof productIdentitySchema> & {
 export type DesignInput = z.input<typeof designSchema>;
 export type Design = z.output<typeof designSchema>;
 
-export interface NormalizedRecipe {
-  schemaVersion: typeof recipeSchemaVersion;
-  name: string;
-  product: ProductPresetId;
-  modules: ResolvedModules;
-  identity: ProductIdentity;
-  design: Design;
-}
+export type NormalizedRecipe = z.infer<typeof normalizedRecipeSchema>;

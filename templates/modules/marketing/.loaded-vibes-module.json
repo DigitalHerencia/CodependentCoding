@@ -3,6 +3,12 @@
   "id": "marketing",
   "requires": [],
   "conflicts": [],
-  "contributions": ["app/(public)/pricing", "app/(public)/faq", "tests/e2e/public-routes.spec.ts"],
+  "replaces": [],
+  "setup": [],
+  "contributions": [
+    "app/(public)/pricing",
+    "app/(public)/faq",
+    "tests/e2e/public-routes.spec.ts"
+  ],
   "sourceRevision": "19e20084a8c69cc5a70f8db5f8e5d908a84d582f"
 }

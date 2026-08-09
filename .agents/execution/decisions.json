@@ -32,6 +32,12 @@
       "decision": "Generated identity and design choices are exposed through one typed product contract and consumed only by metadata, brand, semantic token, density, and navigation-shell surfaces.",
       "status": "active",
       "issue": 96
+    },
+    {
+      "id": "LV-D-007",
+      "decision": "Post-generation add is limited to packaged repository modules, preflights every file, and permits declared replacements only while the destination still matches the golden baseline.",
+      "status": "active",
+      "issue": 97
     }
   ]
 }
