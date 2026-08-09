@@ -58,6 +58,11 @@ export function resolveRecipe(input: RecipeInput): ResolvedRecipe {
       name: parsed.data.name,
       product: parsed.data.product,
       modules: resolution.modules,
+      identity: {
+        displayName: parsed.data.identity.displayName ?? parsed.data.name,
+        description: parsed.data.identity.description,
+      },
+      design: parsed.data.design,
     },
     summary: {
       preset: { id: preset.id, label: preset.label },

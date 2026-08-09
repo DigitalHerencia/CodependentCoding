@@ -18,7 +18,8 @@ describe('real user-facing CLI', () => {
       '--no-git',
       '--skip-install',
     ]);
-    expect(result.stdout).toContain('"validationGates"');
+    expect(result.stdout).toContain('Build review');
+    expect(result.stdout).toContain('Bare golden app');
     await expect(stat(target)).rejects.toMatchObject({ code: 'ENOENT' });
   });
 

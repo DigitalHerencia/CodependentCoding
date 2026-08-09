@@ -25,6 +25,14 @@ describe('normalizeConfig', () => {
           sampleDomain: false,
           governance: true,
         },
+        identity: { displayName: 'acme-saas', description: '' },
+        design: {
+          theme: 'obsidian',
+          radius: 'medium',
+          density: 'comfortable',
+          navigation: 'sidebar',
+          mode: 'system',
+        },
       },
       targetDirectory: path.resolve('C:\\work', 'Acme SaaS'),
       git: { initialize: true },
@@ -38,6 +46,8 @@ describe('normalizeConfig', () => {
       name: 'shared-recipe',
       product: 'bare-golden-app',
       modules: expect.objectContaining({ organizations: true, rbac: true }),
+      identity: { displayName: 'shared-recipe', description: '' },
+      design: expect.objectContaining({ theme: 'obsidian' }),
     });
   });
 
