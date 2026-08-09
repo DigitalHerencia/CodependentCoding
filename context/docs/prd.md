@@ -1,213 +1,129 @@
 ---
 title: Loaded Vibes Product Requirements
 artifact: prd
-status: approved-governance
+status: active
 product: Loaded Vibes
 authority: source-of-truth
 ---
 
 # Loaded Vibes Product Requirements
 
-## 1. Product definition
+## Product
 
-Loaded Vibes is an opinionated SaaS project generator and interactive CLI initializer.
+Loaded Vibes is an opinionated SaaS generator that turns a small amount of product intent into a polished, useful, correctly shaped starting application.
 
-It owns the deterministic starting state of future SaaS products by producing a complete, white-label, production-oriented golden prototype implementing the Loaded Vibes WebApp Architecture with the Hipster Stack.
+Its primary promise is not "we installed Next.js." Its promise is:
 
-Loaded Vibes is not a blank scaffold, generic boilerplate, stack selector, or architecture wizard.
+> Start with an application that already looks and behaves like the product you meant to build, while inheriting the proven Vibes/Hipster Stack baseline underneath.
 
-**Vibes supplies the current golden template evidence. LoadedVibes supplies the permanent generator product identity.**
+## Primary outcome
 
-## 2. Problem
+A user can describe or select the kind of SaaS they are building, choose meaningful capabilities and visual direction, review what will be generated, and receive a runnable project without repeatedly rebuilding auth, tenancy, billing, application shell, provider boundaries, forms, states, and project structure.
 
-Rebuilding the same application kernel for every product wastes time and creates architectural drift. Coding agents should not repeatedly decide where persistence is allowed, how authentication and local authorization interact, how tenancy/RLS work, how providers and webhooks are isolated, or which validation gates establish an acceptable starting state.
+## Product surfaces
 
-Loaded Vibes removes that setup variability.
+1. **Interactive CLI** — primary execution surface.
+2. **Web configurator** — stateless visual configuration and live-preview surface.
+3. **`loadedvibes.json`** — versioned reproducible recipe shared by CLI and web.
+4. **Generated application** — the actual product value.
 
-## 3. Primary users
+## Setup modes
 
-- **Product builder:** creates a new SaaS product and expects a runnable governed starting repository.
-- **Coding agent:** receives predictable topology, context, contracts, tests, and extension points.
-- **Maintainer:** updates generator/template while preventing drift and unsupported combinations.
+### Express
 
-## 4. Primary outcome
+Ask only high-leverage product questions and resolve the rest from strong defaults.
 
-One create-project command produces a repository that:
+### Advanced
 
-- contains the canonical SaaS platform kernel;
-- contains no template-maintenance/workbench junk;
-- applies the requested safe project identity;
-- installs reproducibly;
-- generates required framework/Prisma artifacts;
-- passes the applicable credential-free acceptance gate;
-- contains governance immediately usable by Codex and Codependent Coding.
+Expose supported capability and design choices without exposing fixed architecture internals.
 
-## 5. Canonical creation flow
+Both modes produce the same normalized recipe.
+
+## Product presets
+
+Initial presets:
+
+- `b2b-saas`
+- `client-portal`
+- `platform-marketplace`
+- `bare-golden-app`
+
+Presets establish useful defaults, not separate generator implementations.
+
+## Capabilities
+
+Initial capability model should support, as cleanly as Vibes can provide them:
+
+- organizations / team accounts;
+- memberships and invitations;
+- local RBAC;
+- subscription billing;
+- optional Stripe Connect/platform payments;
+- onboarding;
+- admin surface;
+- marketing site;
+- sample domain;
+- generated governance/context.
+
+Selecting a capability automatically resolves required prerequisites.
+
+## Design personalization
+
+The generator should make the starting application feel owned by the user. Supported recipe fields should include product identity plus a bounded design system such as theme preset, color family, radius, density, navigation shell, and light/dark/system preference where the template supports it.
+
+Personalization should flow through semantic tokens and known content/config surfaces rather than blind replacement.
+
+## CLI commands
+
+Target command surface:
 
 ```text
-target + supported preferences
-        ↓
-Loaded Vibes CLI
-        ↓
-normalized versioned configuration
-        ↓
-destination preflight
-        ↓
-deterministic generation plan
-        ↓
-canonical template materialization
-        ↓
-approved transforms / module closure
-        ↓
-install + git initialization
-        ↓
-generated-project validation
-        ↓
-success report + handoff
+loaded-vibes create [directory]
+loaded-vibes add <module>
+loaded-vibes doctor
+loaded-vibes explain
+loaded-vibes preset validate <file>
+loaded-vibes preset print
+loaded-vibes version
 ```
 
-## 6. V1 command surface
+Package/bin naming may transition from the current `create-loaded-vibes` implementation without breaking the active create flow unnecessarily.
 
-Canonical package and bin: `create-loaded-vibes`.
+## Web configurator
+
+The web experience should be a fast, stateless product configurator:
 
 ```text
-pnpm dlx create-loaded-vibes@latest <project-directory>
+choose product shape
+→ choose capabilities
+→ make it yours
+→ preview representative generated-app surfaces
+→ review build
+→ copy CLI command or download loadedvibes.json
 ```
 
-Required V1 options:
+No Loaded Vibes account system, hosted project database, billing system, or remote build infrastructure is required for the initial configurator.
 
-- target directory;
-- project/package name;
-- `--yes`;
-- `--config <path>`;
-- `--no-git`;
-- `--skip-install`;
-- `--dry-run`;
-- `--help`;
-- `--version`.
+## Post-init value
 
-V1 supports pnpm as the generated-project package manager. Multiple package managers are not a V1 product goal.
+- `add` lets users start smaller and add supported capability packs later.
+- `doctor` explains actionable local/provider configuration problems.
+- `explain` summarizes what the generated project contains and how it is shaped.
+- `.loadedvibes/manifest.json` or equivalent records generator/template/recipe/module provenance needed for safe future module additions.
 
-## 7. Fixed invariants
+## Non-goals
 
-Normal project choices must not disable canonical architecture/security properties.
+- universal app generation;
+- arbitrary framework/provider selection;
+- enterprise policy administration;
+- plugin marketplace;
+- hosted developer control plane;
+- proprietary deployment orchestration;
+- user accounts for the configurator;
+- mandatory telemetry;
+- automatic upgrade/merge engine for arbitrarily modified generated projects;
+- validation theater unrelated to user-visible correctness.
 
-Generated output preserves, where canonical doctrine requires them:
+## Success
 
-- TypeScript;
-- Next.js App Router;
-- React Server Components by default;
-- Neon/PostgreSQL;
-- Prisma;
-- Clerk authentication;
-- local `User`, `Organization`, and `Membership` state;
-- custom RBAC and resource/workflow authorization;
-- tenant containment and PostgreSQL RLS;
-- Stripe integration boundaries;
-- Zod runtime validation;
-- Tailwind CSS;
-- shadcn-compatible primitives;
-- canonical reads, actions, workflows, transactions, integrations, and webhooks;
-- route/feature/presentation separation;
-- project context and machine contracts;
-- formatting, linting, type checking, tests, architecture/contract validation, CI, and production build;
-- Vercel-oriented deployment support.
-
-## 8. Supported variability
-
-V1 may vary only product-level concerns that do not weaken fixed invariants:
-
-- project/package identity;
-- destination;
-- approved design tokens/presets when explicitly supported;
-- explicitly contracted optional capabilities;
-- Git initialization;
-- dependency installation.
-
-A field does not become supported merely because it can be represented in configuration.
-
-## 9. Presets and modules
-
-V1 ships one canonical `standard` preset.
-
-Do not build an arbitrary plugin system.
-
-Optional modules are added only through explicit reviewed contracts. Stripe Connect is the preferred first proof candidate if current template evidence still supports clean separation. Inclusion and exclusion must both preserve baseline validation.
-
-## 10. Generated repository contract
-
-Every accepted output includes:
-
-- runnable application source;
-- canonical package/tool configuration;
-- safe environment examples and typed config;
-- Prisma schema/migrations/generation setup;
-- human-readable governance;
-- machine-readable contracts;
-- root `AGENTS.md`;
-- validation scripts;
-- tests and GitHub CI;
-- stable generation provenance identifying generator/template revision and supported configuration.
-
-Provenance must not introduce volatile timestamps into deterministic canonical output.
-
-## 11. Validation outcome
-
-A generated repository is **accepted** only when all required credential-free gates have actually executed successfully.
-
-If `--skip-install` is used, generation may complete but must be reported as **generated, not acceptance-validated**, with exact remaining commands.
-
-## 12. Error behavior
-
-The CLI must:
-
-- reject unsafe/invalid project names;
-- reject non-empty destinations in V1;
-- reject invalid/unsupported config before mutation;
-- write through a staging workflow;
-- report failed phase and safe remediation;
-- clean run-owned temporary output after failure;
-- never claim success after a failed required gate.
-
-## 13. Security and privacy
-
-V1 does not request, collect, write, log, or transmit provider credentials.
-
-It does not automatically create Neon, Clerk, Stripe, GitHub, or Vercel resources and does not deploy the generated project.
-
-Generated output contains safe examples/setup guidance only.
-
-## 14. Success measures
-
-V1 succeeds when:
-
-1. identical supported configuration against the same generator/template revision produces equivalent output;
-2. fresh project creation works on supported Windows/PowerShell and POSIX environments;
-3. default output installs and passes its credential-free CI gate;
-4. the packed CLI behaves like workspace execution;
-5. generated output is immediately navigable by Codex/Codependent Coding without architecture rediscovery;
-6. every canonical Vibes artifact has an intentional successor/disposition.
-
-## 15. Non-goals
-
-- arbitrary technology selection;
-- multiple package managers in V1;
-- arbitrary third-party plugins;
-- generic code generation unrelated to the canonical SaaS;
-- automatic upgrades of modified generated repositories;
-- automatic provider provisioning;
-- automatic production deployment;
-- product-specific MVP feature implementation;
-- weakening architecture/security for configurability.
-
-## 16. Source basis
-
-Primary basis:
-
-- DevNotes Loaded Vibes project definition, Vibes audit, and generator roadmap;
-- Codependent Coding Knowledge System architecture/governance/validation doctrine;
-- current `DigitalHerencia/Vibes` implementation;
-- current create-project patterns from create-next-app, create-t3-app, create-vite, create-turbo, shadcn CLI;
-- current Codex `AGENTS.md` behavior and repository-governance guidance.
-
-Comparative tools inform ergonomics. They do not define Loaded Vibes scope.
+Loaded Vibes succeeds when a builder can get from idea to a recognizable, usable SaaS starting point quickly and can understand what was generated without rediscovering the architecture.

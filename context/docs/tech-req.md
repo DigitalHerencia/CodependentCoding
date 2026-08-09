@@ -1,247 +1,106 @@
 ---
 title: Loaded Vibes Technical Requirements
 artifact: technical-requirements
-status: approved-governance
+status: active
 product: Loaded Vibes
 authority: source-of-truth
 ---
 
 # Loaded Vibes Technical Requirements
 
-## 1. Runtime baseline
+## Baseline
 
-Generator:
+- Node 24.x
+- pnpm 11.x workspace
+- TypeScript ESM
+- Next.js/React for `apps/web`
+- Zod for recipe/runtime validation
+- Vibes as upstream generated-app reference
 
-- Node.js `24.x`;
-- pnpm `11.1.1`, pinned at repository level;
-- TypeScript ESM;
-- npm create package `create-loaded-vibes`;
-- executable `create-loaded-vibes`.
+## CLI/core dependencies
 
-Generated application versions inherit the canonical Vibes support matrix unless changed through an approved compatibility update.
+Prefer a small dependency surface and add a package only when it directly improves the generator experience.
 
-## 2. CLI dependency policy
+Target capabilities/dependencies:
 
-Use a deliberately small dependency surface.
+| Need | Preferred tool |
+|---|---|
+| terminal UX | `@clack/prompts` |
+| command routing | `citty` or the existing `commander` during incremental migration |
+| recipe validation | `zod` |
+| template/source acquisition when needed | `giget` |
+| package-manager detection/execution when multi-PM support is implemented | `nypm` |
+| cross-platform paths | Node `path` or `pathe` where it reduces platform branching |
+| structured JS/TS config edits | `magicast` |
+| compatibility checks | `semver` |
+| targeted file discovery | `tinyglobby` |
+| subprocesses not covered by `nypm` | existing `execa` is acceptable |
 
-| Concern                   | Requirement                                    |
-| ------------------------- | ---------------------------------------------- |
-| argument parsing          | `commander`                                    |
-| interactive prompts       | `@clack/prompts`                               |
-| runtime config validation | `zod`                                          |
-| subprocess execution      | `execa`                                        |
-| package-name validation   | `validate-npm-package-name`                    |
-| semantic compatibility    | `semver` where required                        |
-| filesystem                | prefer Node `fs/promises`, `fs.cp`, and `path` |
+Do not churn working code solely to swap dependencies. Adopt the preferred tool when the Issue needs the capability.
 
-Build/test tooling:
-
-- `tsdown` for bundling unless repository evidence shows incompatibility;
-- TypeScript;
-- Vitest;
-- ESLint;
-- Prettier.
-
-Do not add a text templating engine until an actual parameterized-file requirement justifies it. Prefer structured transforms and explicit file operations.
-
-## 3. Repository topology
+## Package topology
 
 ```text
-/
-├─ src/
-│  ├─ cli.ts
-│  ├─ commands/create.ts
-│  ├─ config/
-│  │  ├─ schema.ts
-│  │  ├─ normalize.ts
-│  │  └─ defaults.ts
-│  ├─ prompts/
-│  ├─ preflight/
-│  ├─ generator/
-│  │  ├─ plan.ts
-│  │  ├─ materialize.ts
-│  │  ├─ transforms.ts
-│  │  ├─ cleanup.ts
-│  │  └─ provenance.ts
-│  └─ lifecycle/
-│     ├─ install.ts
-│     ├─ git.ts
-│     ├─ validate.ts
-│     └─ rollback.ts
-├─ template/
-│  └─ ...canonical generated application...
-├─ modules/
-│  └─ ...explicit optional modules only...
-├─ tests/
-│  ├─ unit/
-│  ├─ integration/
-│  ├─ generated/
-│  └─ fixtures/
-├─ context/
-├─ .agents/
-├─ AGENTS.md
-├─ package.json
-└─ pnpm-lock.yaml
+apps/web
+packages/cli
+packages/core
+packages/recipes
+packages/schema
+templates/golden
+templates/modules
 ```
 
-V1 is one published package, not a multi-package framework. Split packages only when executed evidence proves an independent package boundary.
+`packages/core` must be framework/UI independent so CLI and web consume the same recipe behavior.
 
-## 4. Configuration model
+## Recipe schema
 
-All input surfaces normalize into one versioned schema.
+Minimum conceptual shape:
 
-```text
-interactive answers ─┐
-CLI flags            ├─> normalize -> validate -> LoadedVibesConfig
-config file          ┘
+```json
+{
+  "schemaVersion": 1,
+  "name": "acme",
+  "product": "b2b-saas",
+  "modules": {
+    "organizations": true,
+    "billing": true,
+    "stripeConnect": false,
+    "admin": true,
+    "marketing": true,
+    "onboarding": true,
+    "sampleDomain": "projects"
+  },
+  "design": {
+    "theme": "obsidian",
+    "radius": "medium",
+    "density": "comfortable",
+    "navigation": "sidebar",
+    "mode": "system"
+  }
+}
 ```
 
-Generation logic never consumes raw prompt-library values.
+Exact fields evolve through the recipe-core Issue. Unknown unsupported values should fail with useful messages.
 
-Conceptual fields:
+## Template/module behavior
 
-- `schemaVersion`;
-- `projectName`;
-- `targetDirectory`;
-- `preset`;
-- supported module selections;
-- `git.initialize`;
-- `install.enabled`.
+- the packaged golden template is self-contained;
+- Vibes is the upstream reference for refresh work;
+- modules are explicit overlays/contributions, not arbitrary plugins;
+- module dependency resolution is deterministic;
+- product identity/design changes use targeted known surfaces;
+- the generator records enough provenance for `add` but does not own later arbitrary source changes.
 
-Unknown config fields are rejected unless a future approved compatibility rule says otherwise.
+## Web configurator
 
-## 5. Determinism
+Use the same recipe schema/resolver as the CLI. Initial web app needs no database or auth. Recipe state may be encoded locally/in URL/downloaded file where practical.
 
-For a given generator version, template revision, and normalized supported configuration, planned files, dependencies, scripts, and transformations must be stable.
+## Default generation
 
-Do not write volatile timestamps into canonical output.
+Default create should not run the entire generated application's validation matrix. It may install dependencies and run narrowly necessary generation steps such as Prisma generation when required by the produced project. Broader checks belong to focused development/release work, `doctor`, or explicit user commands.
 
-Determinism tests compare generator-owned file plans and normalized generated source before environment-specific caches/artifacts.
+## Testing expectation
 
-## 6. Filesystem safety
+For implementation Issues, add or run only tests/checks needed to prove the changed behavior. Generator/package release work can use a broader generation smoke path when explicitly required.
 
-Before writing:
-
-- resolve/normalize target;
-- reject dangerous roots;
-- reject non-empty directories;
-- reject traversal escaping intended parent;
-- avoid following destination symlinks outside target;
-- validate package name separately from path;
-- verify template source.
-
-Generation uses a run-owned sibling staging directory. Cleanup must be idempotent and may remove only run-owned paths.
-
-## 7. Materialization
-
-Generation must:
-
-1. copy canonical `template/`;
-2. exclude Git history, caches, credentials, reports, and template-maintenance artifacts;
-3. apply structured identity transforms;
-4. apply approved module contributions;
-5. write stable provenance;
-6. validate generated governance/config structure;
-7. continue into lifecycle.
-
-Blind global search/replace is prohibited for structured files.
-
-## 8. Package installation
-
-V1 uses pnpm.
-
-Default:
-
-```text
-pnpm/corepack compatibility check
--> pnpm install --frozen-lockfile
--> pnpm db:generate
--> required acceptance validation
-```
-
-If an approved transform changes dependency resolution, intentionally regenerate and validate the lockfile rather than silently dropping frozen-lockfile guarantees.
-
-Subprocesses use argv arrays, never interpolated user-controlled shell strings.
-
-## 9. Git initialization
-
-Enabled by default unless `--no-git`.
-
-The generator may initialize Git and set the approved initial branch name. It does not create a commit unless a later approved spec explicitly requires it.
-
-Git failure is reported separately from application generation/validation.
-
-## 10. Generated application validation
-
-The Vibes baseline exposes canonical gates including:
-
-- `pnpm validate:fast`;
-- `pnpm governance:validate`;
-- `pnpm architecture:validate`;
-- `pnpm validate`;
-- `pnpm validate:ci`;
-- `pnpm validate:release`.
-
-Default generator acceptance executes generated `pnpm validate:ci` or its approved successor.
-
-`validate:release` remains a separate credentialed/release claim.
-
-## 11. Generator validation
-
-Required repository scripts:
-
-- `pnpm format:check`;
-- `pnpm lint`;
-- `pnpm typecheck`;
-- `pnpm test`;
-- `pnpm test:generated`;
-- `pnpm build`;
-- `pnpm pack:check`;
-- `pnpm validate`.
-
-`test:generated` must invoke the real CLI, not a test-only generator path.
-
-## 12. Generated-output matrix
-
-At minimum prove:
-
-- default generation;
-- non-interactive config;
-- `--dry-run`;
-- `--no-git`;
-- `--skip-install` truthful status;
-- invalid name/path rejection;
-- occupied target rejection;
-- deterministic repeat generation;
-- Windows path behavior;
-- canonical generated `pnpm validate:ci`.
-
-When the first optional module ships, test included and excluded output.
-
-## 13. Packaging
-
-Before release:
-
-- build clean source;
-- create npm pack artifact;
-- inspect contents;
-- execute packed package through isolated `pnpm dlx`/equivalent;
-- generate fresh app;
-- run generated acceptance validation;
-- secret-scan repo and package contents.
-
-Workspace success does not prove package success.
-
-## 14. CI and release
-
-PR CI invokes repository-owned scripts instead of reimplementing them inline.
-
-Release may publish only after generator CI, packed-package proof, default generated-project acceptance, version metadata checks, and security scans pass.
-
-Publishing, deployment, and provider mutation are explicit external actions.
-
-## 15. Deployment boundary
-
-The generator creates Vercel-oriented Next.js output but does not deploy V1 projects.
-
-Generated applications preserve environment separation, typed config, migration-order guidance, build/CI compatibility, rollback guidance, and smoke-test instructions.
+Do not create tests merely to increase ceremony or duplicate lower-level confidence.

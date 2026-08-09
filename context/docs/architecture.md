@@ -1,310 +1,154 @@
 ---
 title: Loaded Vibes Generator Architecture
 artifact: architecture
-status: approved-governance
+status: active
 product: Loaded Vibes
 authority: source-of-truth
 ---
 
 # Loaded Vibes Generator Architecture
 
-## 1. System context
+## Core architecture
 
-Loaded Vibes governs two systems:
-
-1. the **generator product**, which interprets bounded creation intent and materializes a repository;
-2. the **generated SaaS product**, which implements the Loaded Vibes WebApp Architecture.
-
-They must not be conflated.
+Loaded Vibes is a recipe compiler for SaaS projects.
 
 ```text
-User / Codex / package manager
-            |
-            v
-    create-loaded-vibes CLI
-            |
-            v
- normalized configuration
-            |
-            v
- generation plan + preflight
-            |
-            v
- canonical template + approved modules
-            |
-            v
- staged generated repository
-            |
-            v
- install / git / validation lifecycle
-            |
-            v
- accepted golden SaaS prototype
+CLI ───────────────┐
+Web Configurator ──┼─> recipe schema / normalization
+loadedvibes.json ──┘             ↓
+                         preset resolution
+                               ↓
+                        capability graph
+                               ↓
+                         generation plan
+                               ↓
+             Vibes-derived base + module overlays
+                               ↓
+                 structured personalization
+                               ↓
+                     generated application
+                               ↓
+                        concise handoff
 ```
 
-## 2. Generator grammar
+## Repository target
+
+The shared recipe core must be reusable by CLI and web. A pnpm workspace is justified by that real boundary.
 
 ```text
-CLI collects.
-Config normalizes.
-Preflight protects.
-Planner decides files.
-Materializer writes.
-Transforms specialize.
-Lifecycle installs and validates.
-Evidence reports.
+/
+├─ apps/
+│  └─ web/                    # marketing + configurator + preview
+├─ packages/
+│  ├─ cli/                    # terminal UX and command adapters
+│  ├─ core/                   # recipe, resolver, planner, generation
+│  ├─ recipes/                # product presets
+│  └─ schema/                 # JSON schema / shared recipe artifacts
+├─ templates/
+│  ├─ golden/                 # packaged Vibes-derived base
+│  └─ modules/                # explicit capability overlays
+├─ tests/                     # focused generator/CLI tests
+├─ context/
+├─ .agents/
+└─ AGENTS.md
 ```
 
-Every source file has one primary role.
+Codex may migrate toward this topology incrementally. Do not rewrite working code solely to make the tree pretty.
 
-## 3. Dependency direction
+## Recipe core
+
+The core owns:
+
+- versioned recipe schema;
+- defaults and normalization;
+- product presets;
+- module/capability registry;
+- dependency/conflict resolution;
+- generation plan;
+- materialization;
+- structured transforms;
+- generation manifest;
+- human-readable result summary.
+
+The core must not depend on terminal UI or Next.js web UI.
+
+## Product preset model
+
+A preset is a named set of recipe defaults. It is not a forked template.
 
 ```text
-cli/commands
-  -> prompts
-  -> config
-  -> preflight
-  -> generator
-  -> lifecycle
-
-generator
-  -> config + safe filesystem utilities
-
-lifecycle
-  -> config + subprocess adapters + generated project
-
-template
-  X must not import generator runtime
+preset
+  + explicit user overrides
+  → normalized recipe
+  → resolved capabilities
 ```
 
-Prohibited:
+## Capability/module model
 
-- prompt UI owning generation decisions;
-- lifecycle code mutating application architecture;
-- template source importing generator internals;
-- module code bypassing the generation planner;
-- shell-string execution of user-controlled values;
-- generated application runtime depending on the generator package.
+Modules are repository-owned capability packs. A module may contribute files, dependencies, environment examples, Prisma/provider pieces, docs, routes, and transforms.
 
-## 4. Canonical template boundary
-
-`template/` becomes the one runnable source used for generated applications after Vibes absorption.
-
-Rules:
-
-- canonical application changes are made once in `template/`;
-- generator tests instantiate the same source;
-- no duplicate golden fixture may become a competing template;
-- reference/workbench material is explicitly classified;
-- every excluded Vibes artifact has an intentional disposition;
-- provenance records the absorbed Vibes revision and later template revisions.
-
-## 5. Generation plan
-
-The planner produces complete intended output before irreversible mutation.
-
-Conceptual plan:
+A module declares only what is required to compose it safely:
 
 ```text
-GenerationPlan
-- target
-- project identity
-- preset
-- selected modules
-- template revision
-- file copy set
-- excluded paths
-- structured transforms
-- package changes
-- environment-example changes
-- validation gates
-- provenance
+id
+requires
+conflicts
+files/overlays
+package changes
+structured transforms
+generated setup notes
 ```
 
-`--dry-run` renders this plan without creating the target.
+Do not build a third-party plugin framework in v1.
 
-## 6. Configuration boundary
+## Vibes relationship
 
-Prompts and flags are adapters over one configuration domain model.
+Vibes remains the upstream application reference and evidence for the generated SaaS baseline. Loaded Vibes packages a self-contained snapshot/derivative so normal CLI execution does not depend on live GitHub availability.
 
-The config schema owns:
+Optional Vibes material such as Stripe Connect should become a real module only where its boundaries are clean enough to compose.
 
-- defaults;
-- supported choices;
-- compatibility;
-- unknown-field behavior;
-- serialization.
+## Generated application
 
-No prompt may expose a choice not supported by the schema and generated-output matrix.
-
-## 7. Staging and rollback
-
-```text
-preflight
--> create sibling temp directory
--> materialize template
--> transform
--> module composition
--> structural validation
--> promote to target
--> install
--> git
--> generated-project acceptance
-```
-
-Failure before promotion deletes run-owned staging safely.
-
-Failure after promotion reports incomplete state. V1 rejects pre-existing non-empty targets, so ownership of newly created output is unambiguous.
-
-Never recursively delete paths the run did not create.
-
-## 8. Project identity transforms
-
-Identity transforms are explicit and structured.
-
-Expected surfaces include:
-
-- `package.json` name;
-- canonical README/project title;
-- generated provenance;
-- explicitly designated metadata/config.
-
-Do not rename domain concepts, route names, env names, authorization nouns, database entities, or provider contracts merely because they resemble a template name.
-
-## 9. Optional module architecture
-
-Do not build a general plugin system in the base release.
-
-An optional module declares:
-
-```text
-Module
-- id/version
-- requires
-- conflicts
-- file contributions
-- structured transforms
-- dependencies
-- env-example additions
-- Prisma/migration contributions
-- provider/webhook contributions
-- docs/governance contributions
-- validation additions
-- removal proof
-```
-
-The first module proves this contract before further abstraction.
-
-## 10. Generated application architecture
-
-Generated output preserves:
+Generated apps retain the proven architecture rather than mirroring generator internals:
 
 ```text
 Routes adapt.
 Features orchestrate.
 Components render.
 Fetchers read.
-Actions write.
-Schemas validate.
+Actions receive mutations.
+Workflows coordinate use cases.
 Authorization decides.
-Transactions preserve invariants.
+Transactions preserve database invariants.
+Integration adapters own providers.
 Webhooks reconcile external truth.
 ```
 
-Canonical ownership:
+## Manifest
 
-- `app/`: routes/layouts/HTTP;
-- `features/`: use-case/presentation orchestration;
-- `components/`: presentation only;
-- `lib/fetchers/`: authenticated/authorized reads;
-- `lib/actions/`: thin mutation adapters;
-- `lib/<domain>/workflows/`: use-case sequence;
-- `lib/auth/`, `lib/authz/`: identity adaptation and local policy;
-- `lib/db/`: selects, DTOs, queries/commands, transactions, Prisma boundary;
-- `lib/integrations/`: provider SDK boundary;
-- `lib/webhooks/`: durable verified reconciliation;
-- `schemas/`: runtime trust-boundary validation;
-- `types/`: stable transport/shared contracts;
-- `prisma/`: schema, migrations, grants, RLS;
-- `context/`, `.agents/`, `AGENTS.md`: downstream governance.
+Generated projects keep a small machine-readable manifest containing recipe schema version, generator version, template revision, selected preset, selected modules, and normalized non-secret design/product config. Its purpose is reproducibility and safe `add` operations, not remote management.
 
-## 11. Trust boundaries
+## Default create lifecycle
 
-### Generator
+```text
+collect/parse intent
+→ resolve recipe
+→ show review
+→ create target safely
+→ materialize base/modules
+→ personalize
+→ install when enabled
+→ initialize git when enabled
+→ summarize setup and next actions
+```
 
-Untrusted:
+A full generated-app validation suite is not part of the default product experience. Focused sanity checks may run where needed to detect a broken generation operation.
 
-- CLI arguments;
-- config-file content;
-- destination path;
-- environment state;
-- subprocess exits/output;
-- filesystem collisions.
+## Safety boundaries
 
-Trusted but versioned:
-
-- embedded template;
-- repository-owned modules;
-- generator source.
-
-Rules:
-
-- validate config with Zod;
-- never interpolate user values into shell strings;
-- reject unsafe destinations;
-- never source arbitrary remote executable templates in V1;
-- never ingest secrets.
-
-### Generated application
-
-Retains Clerk identity, local authorization, tenant/RLS, Zod, provider isolation, DTO, transaction, and webhook boundaries from canonical doctrine.
-
-## 12. Provenance
-
-Generated output contains stable `.loaded-vibes.json` with:
-
-- schema version;
-- generator version;
-- template revision;
-- preset;
-- enabled modules;
-- normalized non-secret product config.
-
-No timestamp is required for canonical determinism.
-
-## 13. Validation architecture
-
-Two independent subjects must be proven.
-
-### Generator correctness
-
-Parsing, normalization, planning, safe materialization, transforms, rollback, packaging, determinism.
-
-### Generated-project correctness
-
-The output itself satisfies the canonical application gate.
-
-Generator tests cannot substitute for output execution.
-
-## 14. Release boundary
-
-The repository release creates an npm package.
-
-The package creates repositories.
-
-V1 does not deploy generated repos or provision providers.
-
-## 15. Durable-decision triggers
-
-Require an explicit durable decision when changing:
-
-- package/command identity;
-- template source boundary;
-- config schema compatibility;
-- supported package manager;
-- module model;
-- determinism rules;
-- overwrite behavior;
-- provider provisioning;
-- auto-deployment;
-- generated application architecture/security invariants.
+- validate recipe input;
+- reject unsafe destination behavior;
+- do not interpolate user values into unsafe shell strings;
+- do not collect provider secrets;
+- preserve Windows path behavior;
+- keep the packaged output self-contained.
