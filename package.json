@@ -19,9 +19,9 @@
   ],
   "scripts": {
     "build": "tsdown",
-    "dev": "tsx src/cli.ts",
-    "format": "prettier --write src tests scripts context .agents package.json tsconfig.json pnpm-workspace.yaml README.md SECURITY.md CONTRIBUTING.md eslint.config.mjs prettier.config.mjs tsdown.config.ts vitest.config.ts",
-    "format:check": "prettier --check src tests scripts context .agents package.json tsconfig.json pnpm-workspace.yaml README.md SECURITY.md CONTRIBUTING.md eslint.config.mjs prettier.config.mjs tsdown.config.ts vitest.config.ts",
+    "dev": "tsx packages/cli/src/cli.ts",
+    "format": "prettier --write packages tests scripts context .agents package.json tsconfig.json pnpm-workspace.yaml README.md SECURITY.md CONTRIBUTING.md eslint.config.mjs prettier.config.mjs tsdown.config.ts vitest.config.ts",
+    "format:check": "prettier --check packages tests scripts context .agents package.json tsconfig.json pnpm-workspace.yaml README.md SECURITY.md CONTRIBUTING.md eslint.config.mjs prettier.config.mjs tsdown.config.ts vitest.config.ts",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test": "vitest run tests/unit tests/integration",
@@ -38,6 +38,7 @@
     "zod": "4.4.3"
   },
   "devDependencies": {
+    "@loaded-vibes/core": "workspace:*",
     "@eslint/js": "10.0.1",
     "@types/node": "25.7.0",
     "@types/validate-npm-package-name": "4.0.2",

@@ -17,6 +17,8 @@ export interface CreateOptions {
 async function resolveTemplateDirectory(): Promise<string> {
   const moduleDirectory = path.dirname(fileURLToPath(import.meta.url));
   const candidates = [
+    path.resolve(moduleDirectory, '../../../../template'),
+    path.resolve(moduleDirectory, '../../../template'),
     path.resolve(moduleDirectory, '../../template'),
     path.resolve(moduleDirectory, '../template'),
   ];

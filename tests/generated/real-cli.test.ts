@@ -54,9 +54,9 @@ describe('real user-facing CLI', () => {
       config,
       JSON.stringify({
         schemaVersion: 1,
-        projectName: 'configured-app',
+        name: 'configured-app',
+        product: 'bare-golden-app',
         targetDirectory: target,
-        preset: 'standard',
         git: { initialize: false },
         install: { enabled: false },
       }),

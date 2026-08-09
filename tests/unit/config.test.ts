@@ -1,21 +1,37 @@
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { normalizeConfig } from '../../src/config/normalize.js';
+import { normalizeConfig, normalizeRecipe } from '@loaded-vibes/core';
 
 describe('normalizeConfig', () => {
-  it('normalizes every input surface into the fixed standard preset', () => {
+  it('normalizes legacy create input into the shared versioned recipe', () => {
     const config = normalizeConfig(
       { projectName: 'acme-saas', targetDirectory: 'Acme SaaS' },
       'C:\\work',
     );
     expect(config).toEqual({
-      schemaVersion: 1,
-      projectName: 'acme-saas',
+      recipe: {
+        schemaVersion: 1,
+        name: 'acme-saas',
+        product: 'bare-golden-app',
+      },
       targetDirectory: path.resolve('C:\\work', 'Acme SaaS'),
-      preset: 'standard',
       git: { initialize: true },
       install: { enabled: true },
     });
+  });
+
+  it('lets non-CLI consumers normalize a strict recipe', () => {
+    expect(normalizeRecipe({ name: 'shared-recipe' })).toEqual({
+      schemaVersion: 1,
+      name: 'shared-recipe',
+      product: 'bare-golden-app',
+    });
+  });
+
+  it('rejects unknown recipe fields', () => {
+    expect(() =>
+      normalizeRecipe({ name: 'safe-name', framework: 'next' } as never),
+    ).toThrowError(expect.objectContaining({ code: 'INVALID_CONFIG' }));
   });
 
   it('rejects unsafe package names', () => {
