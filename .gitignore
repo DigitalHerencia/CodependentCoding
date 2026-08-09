@@ -1,5 +1,6 @@
 # Node / tooling
 node_modules/
+*.tsbuildinfo
 build/
 dist/
 .artifacts/

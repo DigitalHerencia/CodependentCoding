@@ -1,19 +1,19 @@
 {
   "schemaVersion": 2,
   "status": "in-progress",
-  "currentOutcome": "LV-107 actionable doctor diagnostics and manifest-backed explain output implemented on feature/98-doctor-explain.",
-  "activeIssue": 98,
-  "activeBranch": "feature/98-doctor-explain",
-  "activePullRequest": "https://github.com/DigitalHerencia/LoadedVibes/pull/108",
-  "lastCompletedIssue": 97,
-  "lastMergedPullRequest": "https://github.com/DigitalHerencia/LoadedVibes/pull/107",
-  "nextAction": "Open and review the Issue #98 pull request, then merge when its acceptance criteria remain satisfied.",
+  "currentOutcome": "LV-108 stateless visual recipe configurator implemented on feature/99-web-configurator.",
+  "activeIssue": 99,
+  "activeBranch": "feature/99-web-configurator",
+  "activePullRequest": "https://github.com/DigitalHerencia/LoadedVibes/pull/109",
+  "lastCompletedIssue": 98,
+  "lastMergedPullRequest": "https://github.com/DigitalHerencia/LoadedVibes/pull/108",
+  "nextAction": "Open and review the Issue #99 pull request, then merge when its acceptance criteria remain satisfied.",
   "executedEvidence": [
-    "corepack pnpm exec vitest run tests/integration/diagnostics.test.ts tests/integration/add-module.test.ts (6 tests passed)",
-    "corepack pnpm typecheck",
+    "corepack pnpm exec vitest run tests/unit/web-configurator.test.ts (4 tests passed)",
+    "corepack pnpm --dir apps/web typecheck",
     "corepack pnpm lint",
-    "corepack pnpm format:check",
-    "corepack pnpm test:generated (7 tests passed)"
+    "corepack pnpm web:build (static route generated)",
+    "corepack pnpm validate (34 unit/integration tests and 7 generated CLI tests passed)"
   ],
   "blockedEvidence": [],
   "notes": [

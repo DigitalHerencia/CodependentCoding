@@ -2,9 +2,9 @@
   "schemaVersion": 2,
   "roadmap": "generator-product-roadmap",
   "status": "in_progress",
-  "activeIssue": 98,
-  "activeBranch": "feature/98-doctor-explain",
-  "completed": [92, 93, 94, 95, 96, 97],
+  "activeIssue": 99,
+  "activeBranch": "feature/99-web-configurator",
+  "completed": [92, 93, 94, 95, 96, 97, 98],
   "workItems": [
     {
       "id": "LV-101",
@@ -116,7 +116,7 @@
     {
       "id": "LV-107",
       "issue": 98,
-      "status": "implemented",
+      "status": "verified",
       "branch": "feature/98-doctor-explain",
       "pullRequest": "https://github.com/DigitalHerencia/LoadedVibes/pull/108",
       "evidence": {
@@ -126,6 +126,23 @@
           "corepack pnpm lint",
           "corepack pnpm format:check",
           "corepack pnpm test:generated (7 tests passed)"
+        ],
+        "blocked": []
+      }
+    },
+    {
+      "id": "LV-108",
+      "issue": 99,
+      "status": "implemented",
+      "branch": "feature/99-web-configurator",
+      "pullRequest": "https://github.com/DigitalHerencia/LoadedVibes/pull/109",
+      "evidence": {
+        "executed": [
+          "corepack pnpm exec vitest run tests/unit/web-configurator.test.ts (4 tests passed)",
+          "corepack pnpm --dir apps/web typecheck",
+          "corepack pnpm lint",
+          "corepack pnpm web:build (static route generated)",
+          "corepack pnpm validate (34 unit/integration tests and 7 generated CLI tests passed)"
         ],
         "blocked": []
       }
