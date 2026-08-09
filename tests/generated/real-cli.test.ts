@@ -23,6 +23,22 @@ describe('real user-facing CLI', () => {
     await expect(stat(target)).rejects.toMatchObject({ code: 'ENOENT' });
   });
 
+  it('supports the canonical create subcommand', async () => {
+    const root = await mkdtemp(path.join(os.tmpdir(), 'loaded-vibes-create-'));
+    const target = path.join(root, 'canonical-create');
+    const result = await execa('node', [
+      cli,
+      'create',
+      target,
+      '--yes',
+      '--dry-run',
+      '--no-git',
+      '--skip-install',
+    ]);
+    expect(result.stdout).toContain('Dry run complete');
+    await expect(stat(target)).rejects.toMatchObject({ code: 'ENOENT' });
+  }, 15_000);
+
   it('generates through the real CLI and reports skipped acceptance truthfully', async () => {
     const root = await mkdtemp(path.join(os.tmpdir(), 'loaded-vibes-cli-'));
     const target = path.join(root, 'Fresh App');

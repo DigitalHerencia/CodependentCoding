@@ -1,10 +1,10 @@
 {
   "schemaVersion": 2,
   "roadmap": "generator-product-roadmap",
-  "status": "in_progress",
-  "activeIssue": 100,
-  "activeBranch": "feature/100-live-preview-handoff",
-  "completed": [92, 93, 94, 95, 96, 97, 98, 99],
+  "status": "complete",
+  "activeIssue": null,
+  "activeBranch": null,
+  "completed": [92, 93, 94, 95, 96, 97, 98, 99, 100, 101],
   "workItems": [
     {
       "id": "LV-101",
@@ -150,7 +150,7 @@
     {
       "id": "LV-109",
       "issue": 100,
-      "status": "implemented",
+      "status": "verified",
       "branch": "feature/100-live-preview-handoff",
       "pullRequest": "https://github.com/DigitalHerencia/LoadedVibes/pull/110",
       "evidence": {
@@ -159,6 +159,23 @@
           "corepack pnpm --dir apps/web typecheck",
           "corepack pnpm lint",
           "corepack pnpm web:build (static route generated)"
+        ],
+        "blocked": []
+      }
+    },
+    {
+      "id": "LV-110",
+      "issue": 101,
+      "status": "verified",
+      "branch": "feature/101-release-polish",
+      "pullRequest": "https://github.com/DigitalHerencia/LoadedVibes/pull/111",
+      "evidence": {
+        "executed": [
+          "corepack pnpm typecheck",
+          "corepack pnpm lint",
+          "corepack pnpm exec vitest run tests/generated/real-cli.test.ts (8 tests passed)",
+          "corepack pnpm release:check (345 safe package entries; packed CLI B2B generation passed)",
+          "corepack pnpm validate (35 unit/integration tests, 8 generated CLI tests, static web build passed)"
         ],
         "blocked": []
       }
