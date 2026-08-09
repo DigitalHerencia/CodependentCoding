@@ -4,7 +4,7 @@
   "currentOutcome": "LV-109 representative live preview and recipe-to-CLI handoff implemented on feature/100-live-preview-handoff.",
   "activeIssue": 100,
   "activeBranch": "feature/100-live-preview-handoff",
-  "activePullRequest": null,
+  "activePullRequest": "https://github.com/DigitalHerencia/LoadedVibes/pull/110",
   "lastCompletedIssue": 99,
   "lastMergedPullRequest": "https://github.com/DigitalHerencia/LoadedVibes/pull/109",
   "nextAction": "Open and review the Issue #100 pull request, then merge when its acceptance criteria remain satisfied.",

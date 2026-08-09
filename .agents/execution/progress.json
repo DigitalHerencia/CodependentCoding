@@ -152,7 +152,7 @@
       "issue": 100,
       "status": "implemented",
       "branch": "feature/100-live-preview-handoff",
-      "pullRequest": null,
+      "pullRequest": "https://github.com/DigitalHerencia/LoadedVibes/pull/110",
       "evidence": {
         "executed": [
           "corepack pnpm exec vitest run tests/unit/web-configurator.test.ts (5 tests passed)",
