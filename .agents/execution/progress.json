@@ -100,7 +100,7 @@
       "issue": 97,
       "status": "implemented",
       "branch": "feature/97-post-generation-add",
-      "pullRequest": null,
+      "pullRequest": "https://github.com/DigitalHerencia/LoadedVibes/pull/107",
       "evidence": {
         "executed": [
           "corepack pnpm exec vitest run tests/unit/config.test.ts tests/unit/recipe-resolution.test.ts tests/integration/add-module.test.ts tests/integration/materialize.test.ts (21 tests passed)",
