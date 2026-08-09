@@ -29,7 +29,7 @@
       "issue": 93,
       "status": "implemented",
       "branch": "feature/93-presets-capability-resolver",
-      "pullRequest": null,
+      "pullRequest": "https://github.com/DigitalHerencia/LoadedVibes/pull/103",
       "evidence": {
         "executed": [
           "corepack pnpm format:check",

@@ -4,7 +4,7 @@
   "currentOutcome": "LV-102 product presets and capability dependency resolution implemented on feature/93-presets-capability-resolver.",
   "activeIssue": 93,
   "activeBranch": "feature/93-presets-capability-resolver",
-  "activePullRequest": null,
+  "activePullRequest": "https://github.com/DigitalHerencia/LoadedVibes/pull/103",
   "lastCompletedIssue": 92,
   "lastMergedPullRequest": "https://github.com/DigitalHerencia/LoadedVibes/pull/102",
   "nextAction": "Open and review the Issue #93 pull request, then merge when its acceptance criteria remain satisfied.",
