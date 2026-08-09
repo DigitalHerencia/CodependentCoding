@@ -12,8 +12,9 @@ if (result.status !== 0) throw new Error(result.stderr);
 const entries = result.stdout.split(/\r?\n/);
 for (const required of [
   'package/dist/cli.mjs',
-  'package/template/package.json',
-  'package/template/.loaded-vibes-template.json',
+  'package/templates/golden/package.json',
+  'package/templates/golden/.loaded-vibes-template.json',
+  'package/templates/modules/marketing/.loaded-vibes-module.json',
 ]) {
   if (!entries.includes(required))
     throw new Error(`Packed artifact is missing ${required}`);

@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "id": "sample-domain",
+  "requires": ["organizations", "rbac"],
+  "conflicts": [],
+  "contributions": [
+    "app/(tenant)/projects",
+    "features/dashboard/dashboard-feature.tsx",
+    "features/projects",
+    "components/projects",
+    "lib/projects",
+    "lib/actions/projectActions.ts",
+    "lib/fetchers/dashboardFetchers.ts",
+    "lib/fetchers/projectFetchers.ts",
+    "lib/db/transactions/projectTransactions.ts",
+    "lib/db/selects/project.selects.ts",
+    "lib/db/dto/project.mappers.ts",
+    "schemas/projectSchemas.ts",
+    "types/projectTypes.ts"
+  ],
+  "sourceRevision": "19e20084a8c69cc5a70f8db5f8e5d908a84d582f"
+}

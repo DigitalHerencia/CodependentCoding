@@ -2,9 +2,9 @@
   "schemaVersion": 2,
   "roadmap": "generator-product-roadmap",
   "status": "in_progress",
-  "activeIssue": 94,
-  "activeBranch": "feature/94-cli-product-flow",
-  "completed": [92, 93],
+  "activeIssue": 95,
+  "activeBranch": "feature/95-vibes-template-modules",
+  "completed": [92, 93, 94],
   "workItems": [
     {
       "id": "LV-101",
@@ -45,7 +45,7 @@
     {
       "id": "LV-103",
       "issue": 94,
-      "status": "implemented",
+      "status": "verified",
       "branch": "feature/94-cli-product-flow",
       "pullRequest": "https://github.com/DigitalHerencia/LoadedVibes/pull/104",
       "evidence": {
@@ -56,6 +56,24 @@
           "corepack pnpm exec vitest run tests/unit/cli-flow.test.ts tests/unit/config.test.ts tests/unit/recipe-resolution.test.ts (16 tests passed)",
           "corepack pnpm build",
           "corepack pnpm test:generated (5 tests passed)"
+        ],
+        "blocked": []
+      }
+    },
+    {
+      "id": "LV-104",
+      "issue": 95,
+      "status": "implemented",
+      "branch": "feature/95-vibes-template-modules",
+      "pullRequest": "https://github.com/DigitalHerencia/LoadedVibes/pull/105",
+      "evidence": {
+        "executed": [
+          "Vibes source revision verified as 19e20084a8c69cc5a70f8db5f8e5d908a84d582f",
+          "corepack pnpm exec vitest run tests/integration/materialize.test.ts (4 tests passed)",
+          "corepack pnpm typecheck",
+          "corepack pnpm lint",
+          "corepack pnpm format:check",
+          "corepack pnpm pack:check (345 safe entries)"
         ],
         "blocked": []
       }

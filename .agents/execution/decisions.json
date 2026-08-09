@@ -20,6 +20,12 @@
       "id": "LV-D-004",
       "decision": "Initial web configurator is stateless and requires no Loaded Vibes user account or database.",
       "status": "active"
+    },
+    {
+      "id": "LV-D-005",
+      "decision": "The self-contained Vibes derivative is composed from a stable golden baseline plus explicit marketing, sample-domain, and Stripe Connect overlays; presentation-only onboarding and admin examples are not promoted to production modules.",
+      "status": "active",
+      "issue": 95
     }
   ]
 }

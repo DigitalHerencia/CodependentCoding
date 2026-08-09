@@ -1,15 +1,54 @@
 param(
   [string]$Source = 'D:\.VIBES\Vibes',
-  [string]$Destination = (Join-Path $PSScriptRoot '..\template')
+  [string]$Destination = (Join-Path $PSScriptRoot '..\templates\golden')
 )
 
 $ErrorActionPreference = 'Stop'
 $sourceRoot = (Resolve-Path -LiteralPath $Source).Path
 $destinationRoot = [System.IO.Path]::GetFullPath($Destination)
 $repositoryRoot = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
+$modulesRoot = [System.IO.Path]::GetFullPath((Join-Path $repositoryRoot 'templates\modules'))
 
 if (-not ($destinationRoot.StartsWith($repositoryRoot + [System.IO.Path]::DirectorySeparatorChar, [System.StringComparison]::OrdinalIgnoreCase))) {
   throw 'Template destination must remain inside the LoadedVibes repository.'
+}
+
+if (-not ($modulesRoot.StartsWith($repositoryRoot + [System.IO.Path]::DirectorySeparatorChar, [System.StringComparison]::OrdinalIgnoreCase))) {
+  throw 'Template modules must remain inside the LoadedVibes repository.'
+}
+
+$modulePaths = [ordered]@{
+  'marketing' = @('app/(public)/pricing', 'app/(public)/faq', 'tests/e2e/public-routes.spec.ts')
+  'sample-domain' = @(
+    'app/(tenant)/projects', 'features/dashboard/dashboard-feature.tsx', 'features/projects',
+    'components/projects', 'lib/actions/projectActions.ts', 'lib/fetchers/dashboardFetchers.ts',
+    'lib/fetchers/projectFetchers.ts', 'lib/projects', 'lib/db/transactions/projectTransactions.ts',
+    'lib/db/selects/project.selects.ts', 'lib/db/dto/project.mappers.ts', 'schemas/projectSchemas.ts',
+    'types/projectTypes.ts', 'tests/unit/schemas/projectSchemas.test.ts',
+    'tests/unit/dto/projectMappers.test.ts'
+  )
+  'stripe-connect' = @(
+    'app/api/stripe/connect', 'lib/actions/connectActions.ts', 'lib/connect',
+    'lib/db/transactions/connectTransactions.ts', 'lib/fetchers/connectFetchers.ts',
+    'lib/integrations/stripe/connect.ts', 'lib/integrations/stripe/connectWebhooks.ts',
+    'lib/webhooks/connectWebhookWorkflow.ts', 'schemas/connectSchemas.ts', 'types/connectTypes.ts',
+    'tests/unit/connect', 'tests/integration/stripe-connect.test.ts',
+    'tests/contract/stripe-connect-surface.test.ts'
+  )
+}
+
+$seamPaths = @(
+  'proxy.ts', 'app/page.tsx', 'components/shells/public-shell.tsx',
+  'components/shells/tenant-shell.tsx', 'components/navigation/public-header.tsx',
+  'components/navigation/public-footer.tsx', 'components/navigation/mobile-bottom-nav.tsx',
+  'tests/contract/architecture-surface.test.ts', 'content/loadedvibes.ts'
+)
+$seamContent = @{}
+foreach ($relativePath in $seamPaths) {
+  $seamPath = Join-Path $destinationRoot $relativePath
+  if (Test-Path -LiteralPath $seamPath) {
+    $seamContent[$relativePath] = Get-Content -Raw -LiteralPath $seamPath
+  }
 }
 
 $revision = (git -C $sourceRoot rev-parse HEAD).Trim()
@@ -61,6 +100,7 @@ try {
     sourceRepository = 'https://github.com/DigitalHerencia/Vibes'
     sourceRevision = $revision
     templateRevision = "vibes-$revision"
+    composition = 'golden-plus-repository-modules'
     trackedArtifactCount = $tracked.Count
     includedArtifactCount = @($inventory | Where-Object included).Count
     excludedArtifactCount = @($inventory | Where-Object { -not $_.included }).Count
@@ -70,6 +110,42 @@ try {
   $inventoryJson = (($inventory | ConvertTo-Json -Depth 4) -replace "`r`n", "`n") + "`n"
   [System.IO.File]::WriteAllText((Join-Path $destinationRoot '.loaded-vibes-template.json'), $provenanceJson, $utf8)
   [System.IO.File]::WriteAllText((Join-Path $repositoryRoot 'template-disposition.json'), $inventoryJson, $utf8)
+
+  foreach ($moduleId in $modulePaths.Keys) {
+    $moduleRoot = Join-Path $modulesRoot $moduleId
+    if (-not (Test-Path -LiteralPath (Join-Path $moduleRoot '.loaded-vibes-module.json'))) {
+      throw "Missing repository-owned module metadata for $moduleId."
+    }
+    Get-ChildItem -LiteralPath $moduleRoot -Force |
+      Where-Object Name -ne '.loaded-vibes-module.json' |
+      Remove-Item -Recurse -Force
+
+    foreach ($relativePath in $modulePaths[$moduleId]) {
+      $sourcePath = Join-Path $destinationRoot $relativePath
+      if (-not (Test-Path -LiteralPath $sourcePath)) { continue }
+      $targetPath = Join-Path $moduleRoot $relativePath
+      $targetParent = Split-Path -Parent $targetPath
+      if (-not (Test-Path -LiteralPath $targetParent)) {
+        New-Item -ItemType Directory -Path $targetParent -Force | Out-Null
+      }
+      Move-Item -LiteralPath $sourcePath -Destination $targetPath
+    }
+
+    $metadataPath = Join-Path $moduleRoot '.loaded-vibes-module.json'
+    $metadata = Get-Content -Raw -LiteralPath $metadataPath | ConvertFrom-Json
+    $metadata.sourceRevision = $revision
+    $metadataJson = (($metadata | ConvertTo-Json -Depth 6) -replace "`r`n", "`n") + "`n"
+    [System.IO.File]::WriteAllText($metadataPath, $metadataJson, $utf8)
+  }
+
+  foreach ($relativePath in $seamContent.Keys) {
+    $seamPath = Join-Path $destinationRoot $relativePath
+    $seamParent = Split-Path -Parent $seamPath
+    if (-not (Test-Path -LiteralPath $seamParent)) {
+      New-Item -ItemType Directory -Path $seamParent -Force | Out-Null
+    }
+    [System.IO.File]::WriteAllText($seamPath, $seamContent[$relativePath], $utf8)
+  }
 } finally {
   if (Test-Path -LiteralPath $archive) { Remove-Item -LiteralPath $archive -Force }
   if (Test-Path -LiteralPath $extract) { Remove-Item -LiteralPath $extract -Recurse -Force }
