@@ -1,19 +1,20 @@
 {
   "schemaVersion": 2,
   "status": "in-progress",
-  "currentOutcome": "LV-105 product identity and semantic design personalization implemented on feature/96-design-personalization.",
-  "activeIssue": 96,
-  "activeBranch": "feature/96-design-personalization",
-  "activePullRequest": "https://github.com/DigitalHerencia/LoadedVibes/pull/106",
-  "lastCompletedIssue": 95,
-  "lastMergedPullRequest": "https://github.com/DigitalHerencia/LoadedVibes/pull/105",
-  "nextAction": "Open and review the Issue #96 pull request, then merge when its acceptance criteria remain satisfied.",
+  "currentOutcome": "LV-106 generation manifest and safe post-generation module addition implemented on feature/97-post-generation-add.",
+  "activeIssue": 97,
+  "activeBranch": "feature/97-post-generation-add",
+  "activePullRequest": null,
+  "lastCompletedIssue": 96,
+  "lastMergedPullRequest": "https://github.com/DigitalHerencia/LoadedVibes/pull/106",
+  "nextAction": "Open and review the Issue #97 pull request, then merge when its acceptance criteria remain satisfied.",
   "executedEvidence": [
-    "corepack pnpm exec vitest run tests/integration/materialize.test.ts (5 tests passed)",
+    "corepack pnpm exec vitest run tests/unit/config.test.ts tests/unit/recipe-resolution.test.ts tests/integration/add-module.test.ts tests/integration/materialize.test.ts (21 tests passed)",
     "corepack pnpm typecheck",
     "corepack pnpm lint",
     "corepack pnpm format:check",
-    "corepack pnpm test:generated (5 tests passed)"
+    "corepack pnpm test:generated (6 tests passed)",
+    "corepack pnpm pack:check (345 safe entries)"
   ],
   "blockedEvidence": [],
   "notes": [

@@ -1,9 +1,9 @@
 import { z } from 'zod';
-import { recipeSchema } from '@loaded-vibes/schema';
+import { normalizedRecipeSchema } from '@loaded-vibes/schema';
 
 export const loadedVibesConfigSchema = z
   .object({
-    recipe: recipeSchema,
+    recipe: normalizedRecipeSchema,
     targetDirectory: z.string().min(1),
     git: z
       .object({ initialize: z.boolean() })

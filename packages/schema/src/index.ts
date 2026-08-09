@@ -3,6 +3,7 @@ export {
   defaultDesign,
   designSchema,
   moduleSelectionSchema,
+  normalizedRecipeSchema,
   productPresetIds,
   productPresetSchema,
   productIdentitySchema,

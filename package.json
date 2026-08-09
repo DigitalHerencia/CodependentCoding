@@ -9,7 +9,8 @@
     "node": "24.x"
   },
   "bin": {
-    "create-loaded-vibes": "dist/cli.mjs"
+    "create-loaded-vibes": "dist/cli.mjs",
+    "loaded-vibes": "dist/cli.mjs"
   },
   "files": [
     "dist",

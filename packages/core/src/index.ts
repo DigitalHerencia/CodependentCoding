@@ -1,4 +1,10 @@
 export { createProject, type CreateOptions } from './commands/create.js';
+export {
+  applyProjectModuleAddition,
+  planProjectModuleAddition,
+  type ModuleAdditionPlan,
+  type ModuleAdditionResult,
+} from './commands/add.js';
 export { loadConfigFile } from './config/load.js';
 export { normalizeConfig, type ConfigInput } from './config/normalize.js';
 export {
@@ -7,10 +13,17 @@ export {
 } from './config/schema.js';
 export { LoadedVibesError, type LoadedVibesErrorCode } from './errors.js';
 export {
+  generatedModuleIds,
+  selectedGeneratedModuleIds,
   selectGeneratedModules,
   type GeneratedModule,
   type GeneratedModuleId,
 } from './modules.js';
+export {
+  generationManifestSchema,
+  parseGenerationManifest,
+  type GenerationManifest,
+} from './manifest.js';
 export {
   capabilityRegistry,
   resolveCapabilitySelection,

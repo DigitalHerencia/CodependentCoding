@@ -3,6 +3,11 @@
   "id": "stripe-connect",
   "requires": ["organizations", "rbac", "billing"],
   "conflicts": [],
+  "replaces": [],
+  "setup": [
+    "Configure STRIPE_CONNECT_WEBHOOK_SECRET.",
+    "Register /api/stripe/connect/webhooks in Stripe before enabling live traffic."
+  ],
   "contributions": [
     "app/api/stripe/connect",
     "lib/connect",

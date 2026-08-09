@@ -2,9 +2,11 @@ import path from 'node:path';
 import { Command } from 'commander';
 import { cancel, intro, isCancel, outro, spinner, text } from '@clack/prompts';
 import {
+  applyProjectModuleAddition,
   createProject,
   loadConfigFile,
   LoadedVibesError,
+  planProjectModuleAddition,
   resolveRecipe,
   type ConfigInput,
   type RecipeInput,
@@ -17,7 +19,7 @@ import {
 
 const program = new Command();
 program
-  .name('create-loaded-vibes')
+  .name('loaded-vibes')
   .description('Generate a complete Loaded Vibes SaaS project.')
   .version('0.1.0')
   .argument('[target-directory]')
@@ -128,6 +130,38 @@ program
         `Generated ${recipe.name}; install and acceptance validation were skipped.`,
       );
     }
+  });
+
+program
+  .command('add')
+  .description('Add a supported Loaded Vibes capability module.')
+  .argument('<module>', 'marketing, sample-domain, or stripe-connect')
+  .option('--cwd <directory>', 'generated project directory', '.')
+  .action(async (module: string, flags: { cwd: string }) => {
+    intro('Loaded Vibes add');
+    const plan = await planProjectModuleAddition(flags.cwd, module);
+    console.log(
+      [
+        `Module: ${plan.module}`,
+        `Capabilities: ${plan.addedCapabilities.join(', ')}`,
+        `Prerequisites: ${plan.prerequisites.join(', ') || 'none'}`,
+        `Files: ${plan.files.length} (${plan.replacements.length} intentional replacement${plan.replacements.length === 1 ? '' : 's'})`,
+        `Setup: ${plan.setup.length ? plan.setup.join(' ') : 'none'}`,
+      ].join('\n'),
+    );
+    const progress = spinner();
+    progress.start(`Adding ${plan.module}`);
+    let result;
+    try {
+      result = await applyProjectModuleAddition(plan);
+    } catch (error) {
+      progress.stop('Module addition stopped');
+      throw error;
+    }
+    progress.stop(`Added ${result.module}`);
+    outro(
+      `${result.filesAdded.length} files added, ${result.filesReplaced.length} updated. ${result.setup.join(' ')}`.trim(),
+    );
   });
 
 program.parseAsync().catch((error: unknown) => {
