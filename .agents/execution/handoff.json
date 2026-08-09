@@ -3,7 +3,7 @@
   "artifact": "loaded-vibes.execution.handoff",
   "authority": "execution-state-only",
   "state": "verification",
-  "currentRevision": "5b749df",
+  "currentRevision": "528d16f",
   "lastVerifiedWorkItem": "LV-012",
   "nextWorkItem": "Issue 88 review and merge",
   "readFirst": ["AGENTS.md", "context/README.md", "context/specs/README.md"],
