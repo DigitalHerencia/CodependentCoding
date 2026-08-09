@@ -1,18 +1,19 @@
 {
   "schemaVersion": 2,
   "status": "in-progress",
-  "currentOutcome": "LV-109 representative live preview and recipe-to-CLI handoff implemented on feature/100-live-preview-handoff.",
-  "activeIssue": 100,
-  "activeBranch": "feature/100-live-preview-handoff",
-  "activePullRequest": "https://github.com/DigitalHerencia/LoadedVibes/pull/110",
-  "lastCompletedIssue": 99,
-  "lastMergedPullRequest": "https://github.com/DigitalHerencia/LoadedVibes/pull/109",
-  "nextAction": "Open and review the Issue #100 pull request, then merge when its acceptance criteria remain satisfied.",
+  "currentOutcome": "LV-110 canonical package command, release smoke, and user/provider handoff documentation implemented on feature/101-release-polish.",
+  "activeIssue": 101,
+  "activeBranch": "feature/101-release-polish",
+  "activePullRequest": null,
+  "lastCompletedIssue": 100,
+  "lastMergedPullRequest": "https://github.com/DigitalHerencia/LoadedVibes/pull/110",
+  "nextAction": "Open and review the Issue #101 pull request, then merge when its acceptance criteria remain satisfied.",
   "executedEvidence": [
-    "corepack pnpm exec vitest run tests/unit/web-configurator.test.ts (5 tests passed)",
-    "corepack pnpm --dir apps/web typecheck",
+    "corepack pnpm typecheck",
     "corepack pnpm lint",
-    "corepack pnpm web:build (static route generated)"
+    "corepack pnpm exec vitest run tests/generated/real-cli.test.ts (8 tests passed)",
+    "corepack pnpm release:check (345 safe package entries; packed CLI B2B generation passed)",
+    "corepack pnpm validate (35 unit/integration tests, 8 generated CLI tests, static web build passed)"
   ],
   "blockedEvidence": [],
   "notes": [

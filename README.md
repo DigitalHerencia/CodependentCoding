@@ -1,31 +1,104 @@
 # Loaded Vibes
 
-Loaded Vibes is an opinionated SaaS project initializer. It generates the canonical, governed Hipster Stack application from the packaged `templates/golden/` baseline; it is not a stack selector or blank scaffold.
+Loaded Vibes turns a few product choices into a recognizable SaaS starting point. It combines an enjoyable CLI, a stateless visual configurator, reproducible `loadedvibes.json` recipes, and the packaged Vibes golden application—without asking you to redesign the stack.
+
+## Create a project
+
+Node.js 24 is required. Run the package without installing it globally:
 
 ```powershell
-pnpm dlx create-loaded-vibes@latest my-product
+pnpm dlx create-loaded-vibes@latest create my-product
 ```
 
-Workspace development:
+The `create-loaded-vibes my-product` form remains supported for compatibility. If you install the package, the product-oriented executable is also available:
+
+```powershell
+loaded-vibes create my-product
+```
+
+The interactive flow asks what you are building, which supported capabilities it needs, and how it should look. For a reproducible non-interactive build:
+
+```powershell
+loaded-vibes create my-product --config loadedvibes.json --yes
+```
+
+Useful create options include `--dry-run`, `--no-git`, `--skip-install`, and `--name <package-name>`.
+
+## Choose a product shape
+
+Presets are strong defaults over one generator—not separate application forks.
+
+| Preset                 | Best starting point for                                                             |
+| ---------------------- | ----------------------------------------------------------------------------------- |
+| `b2b-saas`             | Team products with onboarding, subscriptions, admin, marketing, and a sample domain |
+| `client-portal`        | Secure client workspaces with invitations, onboarding, and administration           |
+| `platform-marketplace` | Multi-sided products with subscriptions and Stripe Connect payments                 |
+| `bare-golden-app`      | The smallest auth, tenancy, RBAC, and governance foundation                         |
+
+Capability prerequisites resolve automatically. Fixed architecture choices—TypeScript, Next.js, Clerk identity, local row-backed authorization, Prisma, server workflows, provider adapters, and validation boundaries—are inherited from Vibes rather than exposed as configuration questions.
+
+## Visual configurator
+
+The responsive configurator in `apps/web` uses the same recipe core as the CLI. It previews representative dashboard, onboarding, settings, billing, detail/workflow, and marketing surfaces, then downloads `loadedvibes.json` or copies the matching CLI command.
+
+It is intentionally stateless: no Loaded Vibes account, database, remote build worker, or hosted project infrastructure is involved. To run it locally:
 
 ```powershell
 corepack pnpm install --frozen-lockfile
-corepack pnpm validate
-corepack pnpm dev -- my-product --yes
+corepack pnpm --dir apps/web dev
 ```
 
-Use `--config <path>` for versioned non-interactive JSON configuration, `--dry-run` to inspect the plan, `--no-git` to skip Git initialization, or `--skip-install` to generate without claiming acceptance validation.
+## What gets generated
 
-Generated projects include `.loadedvibes/manifest.json`. From a generated project, an installed CLI can add one explicitly supported capability overlay:
+Every project starts from a self-contained Vibes-derived Next.js application and includes:
+
+- Clerk identity with local organization, membership, and RBAC truth;
+- Prisma and Neon-ready tenant data boundaries;
+- server-first reads, validated Server Actions, workflows, and transactions;
+- optional subscription billing, Stripe Connect, onboarding, admin, marketing, and sample-project surfaces selected by the recipe;
+- semantic identity/design personalization;
+- `.loadedvibes/manifest.json` provenance for explanation and safe supported additions;
+- focused project documentation, environment examples, and validation commands.
+
+Identical supported recipes and template revisions produce equivalent source output.
+
+## After generation
+
+Run these commands inside a generated project with an installed Loaded Vibes CLI:
 
 ```powershell
+loaded-vibes explain
+loaded-vibes doctor
 loaded-vibes add marketing
 loaded-vibes add sample-domain
 loaded-vibes add stripe-connect
 ```
 
-The command resolves capability prerequisites, previews files and setup, and refuses user-modified collisions. It does not merge arbitrary template upgrades.
+`explain` summarizes what was generated and what remains. `doctor` diagnoses actionable local/provider readiness without running the entire validation suite. `add` only composes explicitly packaged capability modules; it is not an arbitrary source upgrade or merge engine.
 
-Use `loaded-vibes doctor` inside a generated project for concise local and provider-readiness actions. Use `loaded-vibes explain` to review the preset, capabilities, packaged modules, design, provider boundaries, architecture, and remaining setup recorded by the recipe and manifest. Neither command runs the project validation matrix.
+## Provider handoff
+
+Loaded Vibes creates provider-ready integration boundaries and `.env.example`; it does not create accounts, collect secrets, provision infrastructure, migrate production data, or deploy the application.
+
+| Loaded Vibes creates                                   | You still configure                                                                               |
+| ------------------------------------------------------ | ------------------------------------------------------------------------------------------------- |
+| Clerk routes, session helpers, webhook boundary        | Clerk instance, production keys, and webhook destination                                          |
+| Prisma schema, migrations, and tenant-safe data access | Neon/database project, pooled runtime URL, direct migration URL, and approved migration execution |
+| Stripe billing and optional Connect adapters           | Stripe account, prices, secrets, webhooks, and commercial policy                                  |
+| Vercel-ready Next.js project                           | Deployment project, environment variables, domains, and production promotion                      |
+
+Start with the generated `.env.example`, run `loaded-vibes doctor`, and follow the generated README. Provider-backed journeys and production deployment remain owner-controlled verification gates.
+
+## Package and repository development
+
+The npm package contains the compiled CLI plus its golden template and all supported module overlays. Normal generation does not fetch the Vibes repository.
+
+```powershell
+corepack pnpm install --frozen-lockfile
+corepack pnpm validate
+corepack pnpm release:check
+```
+
+`release:check` builds and inspects the tarball, installs that tarball in a clean temporary consumer, and generates a representative B2B SaaS through the packaged `loaded-vibes create` executable. It does not publish the package or contact providers.
 
 The canonical product and architecture sources live in [`context/`](context/README.md). Machine contracts and execution evidence live in [`.agents/`](.agents/AGENTS.md).
