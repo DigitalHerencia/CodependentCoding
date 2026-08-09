@@ -1,20 +1,19 @@
 {
   "schemaVersion": 2,
   "status": "in-progress",
-  "currentOutcome": "LV-104 Vibes-derived golden template composition and supported capability modules implemented on feature/95-vibes-template-modules.",
-  "activeIssue": 95,
-  "activeBranch": "feature/95-vibes-template-modules",
-  "activePullRequest": "https://github.com/DigitalHerencia/LoadedVibes/pull/105",
-  "lastCompletedIssue": 94,
-  "lastMergedPullRequest": "https://github.com/DigitalHerencia/LoadedVibes/pull/104",
-  "nextAction": "Open and review the Issue #95 pull request, then merge when its acceptance criteria remain satisfied.",
+  "currentOutcome": "LV-105 product identity and semantic design personalization implemented on feature/96-design-personalization.",
+  "activeIssue": 96,
+  "activeBranch": "feature/96-design-personalization",
+  "activePullRequest": "https://github.com/DigitalHerencia/LoadedVibes/pull/106",
+  "lastCompletedIssue": 95,
+  "lastMergedPullRequest": "https://github.com/DigitalHerencia/LoadedVibes/pull/105",
+  "nextAction": "Open and review the Issue #96 pull request, then merge when its acceptance criteria remain satisfied.",
   "executedEvidence": [
-    "Vibes source revision verified as 19e20084a8c69cc5a70f8db5f8e5d908a84d582f",
-    "corepack pnpm exec vitest run tests/integration/materialize.test.ts (4 tests passed)",
+    "corepack pnpm exec vitest run tests/integration/materialize.test.ts (5 tests passed)",
     "corepack pnpm typecheck",
     "corepack pnpm lint",
     "corepack pnpm format:check",
-    "corepack pnpm pack:check (345 safe entries)"
+    "corepack pnpm test:generated (5 tests passed)"
   ],
   "blockedEvidence": [],
   "notes": [

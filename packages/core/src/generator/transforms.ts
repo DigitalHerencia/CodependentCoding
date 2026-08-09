@@ -40,7 +40,32 @@ export async function applyTransforms(plan: GenerationPlan): Promise<void> {
     path.join(plan.stagingDirectory, 'loadedvibes.json'),
     `${JSON.stringify(plan.config.recipe, null, 2)}\n`,
   );
-  const capabilitiesSource = `export const loadedVibesCapabilities = ${JSON.stringify(
+  const capabilitiesSource = `export const loadedVibesProduct = ${JSON.stringify(
+    {
+      name: plan.config.recipe.identity.displayName,
+      description:
+        plan.config.recipe.identity.description ||
+        'A focused SaaS product built with Loaded Vibes.',
+    },
+    null,
+    2,
+  )} as const
+
+export type LoadedVibesDesign = {
+  theme: "obsidian" | "paper" | "electric"
+  radius: "compact" | "medium" | "rounded"
+  density: "compact" | "comfortable"
+  navigation: "sidebar" | "topbar"
+  mode: "light" | "dark" | "system"
+}
+
+export const loadedVibesDesign: LoadedVibesDesign = ${JSON.stringify(
+    plan.config.recipe.design,
+    null,
+    2,
+  )}
+
+export const loadedVibesCapabilities = ${JSON.stringify(
     {
       marketing: plan.config.recipe.modules.marketing,
       sampleDomain: plan.config.recipe.modules.sampleDomain !== false,
