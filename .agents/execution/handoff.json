@@ -4,7 +4,7 @@
   "currentOutcome": "LV-105 product identity and semantic design personalization implemented on feature/96-design-personalization.",
   "activeIssue": 96,
   "activeBranch": "feature/96-design-personalization",
-  "activePullRequest": null,
+  "activePullRequest": "https://github.com/DigitalHerencia/LoadedVibes/pull/106",
   "lastCompletedIssue": 95,
   "lastMergedPullRequest": "https://github.com/DigitalHerencia/LoadedVibes/pull/105",
   "nextAction": "Open and review the Issue #96 pull request, then merge when its acceptance criteria remain satisfied.",

@@ -83,7 +83,7 @@
       "issue": 96,
       "status": "implemented",
       "branch": "feature/96-design-personalization",
-      "pullRequest": null,
+      "pullRequest": "https://github.com/DigitalHerencia/LoadedVibes/pull/106",
       "evidence": {
         "executed": [
           "corepack pnpm exec vitest run tests/integration/materialize.test.ts (5 tests passed)",
