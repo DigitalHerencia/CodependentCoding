@@ -23,18 +23,18 @@ Prefer a small dependency surface and add a package only when it directly improv
 
 Target capabilities/dependencies:
 
-| Need | Preferred tool |
-|---|---|
-| terminal UX | `@clack/prompts` |
-| command routing | `citty` or the existing `commander` during incremental migration |
-| recipe validation | `zod` |
-| template/source acquisition when needed | `giget` |
-| package-manager detection/execution when multi-PM support is implemented | `nypm` |
-| cross-platform paths | Node `path` or `pathe` where it reduces platform branching |
-| structured JS/TS config edits | `magicast` |
-| compatibility checks | `semver` |
-| targeted file discovery | `tinyglobby` |
-| subprocesses not covered by `nypm` | existing `execa` is acceptable |
+| Need                                                                     | Preferred tool                                                   |
+| ------------------------------------------------------------------------ | ---------------------------------------------------------------- |
+| terminal UX                                                              | `@clack/prompts`                                                 |
+| command routing                                                          | `citty` or the existing `commander` during incremental migration |
+| recipe validation                                                        | `zod`                                                            |
+| template/source acquisition when needed                                  | `giget`                                                          |
+| package-manager detection/execution when multi-PM support is implemented | `nypm`                                                           |
+| cross-platform paths                                                     | Node `path` or `pathe` where it reduces platform branching       |
+| structured JS/TS config edits                                            | `magicast`                                                       |
+| compatibility checks                                                     | `semver`                                                         |
+| targeted file discovery                                                  | `tinyglobby`                                                     |
+| subprocesses not covered by `nypm`                                       | existing `execa` is acceptable                                   |
 
 Do not churn working code solely to swap dependencies. Adopt the preferred tool when the Issue needs the capability.
 
