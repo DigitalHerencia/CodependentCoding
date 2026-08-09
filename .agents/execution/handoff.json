@@ -4,7 +4,7 @@
   "currentOutcome": "LV-108 stateless visual recipe configurator implemented on feature/99-web-configurator.",
   "activeIssue": 99,
   "activeBranch": "feature/99-web-configurator",
-  "activePullRequest": null,
+  "activePullRequest": "https://github.com/DigitalHerencia/LoadedVibes/pull/109",
   "lastCompletedIssue": 98,
   "lastMergedPullRequest": "https://github.com/DigitalHerencia/LoadedVibes/pull/108",
   "nextAction": "Open and review the Issue #99 pull request, then merge when its acceptance criteria remain satisfied.",
