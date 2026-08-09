@@ -26,4 +26,6 @@ loaded-vibes add stripe-connect
 
 The command resolves capability prerequisites, previews files and setup, and refuses user-modified collisions. It does not merge arbitrary template upgrades.
 
+Use `loaded-vibes doctor` inside a generated project for concise local and provider-readiness actions. Use `loaded-vibes explain` to review the preset, capabilities, packaged modules, design, provider boundaries, architecture, and remaining setup recorded by the recipe and manifest. Neither command runs the project validation matrix.
+
 The canonical product and architecture sources live in [`context/`](context/README.md). Machine contracts and execution evidence live in [`.agents/`](.agents/AGENTS.md).

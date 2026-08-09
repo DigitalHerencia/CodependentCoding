@@ -2,9 +2,9 @@
   "schemaVersion": 2,
   "roadmap": "generator-product-roadmap",
   "status": "in_progress",
-  "activeIssue": 97,
-  "activeBranch": "feature/97-post-generation-add",
-  "completed": [92, 93, 94, 95, 96],
+  "activeIssue": 98,
+  "activeBranch": "feature/98-doctor-explain",
+  "completed": [92, 93, 94, 95, 96, 97],
   "workItems": [
     {
       "id": "LV-101",
@@ -98,7 +98,7 @@
     {
       "id": "LV-106",
       "issue": 97,
-      "status": "implemented",
+      "status": "verified",
       "branch": "feature/97-post-generation-add",
       "pullRequest": "https://github.com/DigitalHerencia/LoadedVibes/pull/107",
       "evidence": {
@@ -109,6 +109,23 @@
           "corepack pnpm format:check",
           "corepack pnpm test:generated (6 tests passed)",
           "corepack pnpm pack:check (345 safe entries)"
+        ],
+        "blocked": []
+      }
+    },
+    {
+      "id": "LV-107",
+      "issue": 98,
+      "status": "implemented",
+      "branch": "feature/98-doctor-explain",
+      "pullRequest": "https://github.com/DigitalHerencia/LoadedVibes/pull/108",
+      "evidence": {
+        "executed": [
+          "corepack pnpm exec vitest run tests/integration/diagnostics.test.ts tests/integration/add-module.test.ts (6 tests passed)",
+          "corepack pnpm typecheck",
+          "corepack pnpm lint",
+          "corepack pnpm format:check",
+          "corepack pnpm test:generated (7 tests passed)"
         ],
         "blocked": []
       }

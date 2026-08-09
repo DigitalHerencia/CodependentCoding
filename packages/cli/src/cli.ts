@@ -4,6 +4,8 @@ import { cancel, intro, isCancel, outro, spinner, text } from '@clack/prompts';
 import {
   applyProjectModuleAddition,
   createProject,
+  diagnoseProject,
+  explainProject,
   loadConfigFile,
   LoadedVibesError,
   planProjectModuleAddition,
@@ -162,6 +164,56 @@ program
     outro(
       `${result.filesAdded.length} files added, ${result.filesReplaced.length} updated. ${result.setup.join(' ')}`.trim(),
     );
+  });
+
+program
+  .command('doctor')
+  .description('Diagnose generated-project readiness and configuration.')
+  .option('--cwd <directory>', 'generated project directory', '.')
+  .action(async (flags: { cwd: string }) => {
+    intro('Loaded Vibes doctor');
+    const result = await diagnoseProject(flags.cwd);
+    for (const check of result.checks) {
+      const mark = check.status === 'pass' ? '✓' : '✗';
+      console.log(`${mark} ${check.label}: ${check.message}`);
+      if (check.action) console.log(`  ${check.action}`);
+    }
+    if (result.ok) outro('Project prerequisites are ready.');
+    else {
+      outro('Complete the actions above, then rerun loaded-vibes doctor.');
+      process.exitCode = 1;
+    }
+  });
+
+program
+  .command('explain')
+  .description('Explain a generated project and its remaining setup.')
+  .option('--cwd <directory>', 'generated project directory', '.')
+  .action(async (flags: { cwd: string }) => {
+    intro('Loaded Vibes explain');
+    const explanation = await explainProject(flags.cwd);
+    console.log(
+      [
+        explanation.product,
+        '',
+        `Preset: ${explanation.preset.label} (${explanation.preset.id})`,
+        `Capabilities: ${explanation.capabilities.join(', ')}`,
+        `Packaged modules: ${explanation.modules.join(', ') || 'none'}`,
+        `Design: ${explanation.design.join(', ')}`,
+        '',
+        'Provider boundaries',
+        ...explanation.providers.map((provider) => `  - ${provider}`),
+        '',
+        'Architecture',
+        ...explanation.architecture.map((rule) => `  - ${rule}`),
+        '',
+        'Remaining setup',
+        ...(explanation.remainingSetup.length
+          ? explanation.remainingSetup.map((item) => `  - ${item}`)
+          : ['  - none']),
+      ].join('\n'),
+    );
+    outro('Explanation complete.');
   });
 
 program.parseAsync().catch((error: unknown) => {
