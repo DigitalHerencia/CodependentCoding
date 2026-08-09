@@ -1,5 +1,5 @@
 import { UserButton } from "@clerk/nextjs"
-import { LayoutDashboard, Settings, SquareKanban } from "lucide-react"
+import { Brain, Image, LayoutDashboard, Map, Settings, SquareKanban, Users } from "lucide-react"
 import Link from "next/link"
 import type { ReactNode } from "react"
 
@@ -16,6 +16,10 @@ const navItems = [
   ...(loadedVibesCapabilities.sampleDomain
     ? [{ href: "/projects", label: "Projects", icon: SquareKanban }]
     : []),
+  { href: "/team", label: "Team", icon: Users },
+  { href: "/uploads", label: "Media", icon: Image },
+  { href: "/maps", label: "Maps", icon: Map },
+  { href: "/ai", label: "AI", icon: Brain },
   { href: "/settings", label: "Settings", icon: Settings },
 ] as const
 
@@ -70,12 +74,12 @@ export function TenantShell({ children }: TenantShellProps) {
         <main className="lv-shell-main mx-auto w-full max-w-7xl px-6 sm:px-10 lg:px-12">
           {children}
         </main>
-        <nav className="fixed inset-x-0 bottom-0 z-50 grid grid-cols-3 border-t bg-background md:hidden">
+        <nav className="fixed inset-x-0 bottom-0 z-50 flex overflow-x-auto border-t bg-background md:hidden">
           {navItems.map((item) => (
             <Link
               key={item.href}
               href={item.href}
-              className="flex min-h-16 flex-col items-center justify-center gap-1 text-xs text-muted-foreground no-underline"
+              className="flex min-h-16 min-w-20 flex-1 flex-col items-center justify-center gap-1 text-xs text-muted-foreground no-underline"
             >
               <item.icon className="size-5" />
               {item.label}

@@ -7,7 +7,7 @@ These files are issue-sized build slices for Codex. GitHub Issues are the operat
 1. LV-101 — shared recipe core and workspace
 2. LV-102 — product presets and module resolver
 3. LV-103 — CLI Express/Advanced experience
-4. LV-104 — Vibes-derived template and capability modules
+4. LV-104 — Loaded Vibes-owned master template and capability ownership
 5. LV-105 — design personalization
 6. LV-106 — generation manifest and `add`
 7. LV-107 — `doctor` and `explain`

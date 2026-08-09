@@ -37,7 +37,7 @@ export type IgnoredClerkEvent = {
 export type NormalizedClerkEvent = NormalizedClerkUserEvent | IgnoredClerkEvent
 
 export type ClaimableProviderEvent = {
-  provider: "clerk" | "stripe" | "stripe_connect"
+  provider: "clerk" | "stripe" | "stripe_connect" | "cloudinary"
   providerEventId: string
   eventType: string
   safeMetadata: Record<string, string | null>

@@ -19,6 +19,5 @@
     "lib/webhooks/connectWebhookWorkflow.ts",
     "schemas/connectSchemas.ts",
     "types/connectTypes.ts"
-  ],
-  "sourceRevision": "19e20084a8c69cc5a70f8db5f8e5d908a84d582f"
+  ]
 }

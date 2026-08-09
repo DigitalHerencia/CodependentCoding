@@ -1,4 +1,4 @@
-id: vibes.integrations
+id: white-label-application.integrations
 version: 1
 authority: current-source-contract
 providers:
@@ -23,6 +23,20 @@ providers:
       charge_model: manual-capture destination charge
       platform_liability: [stripe_fees, refunds, disputes]
       removal_gate: pnpm test:connect-removal
+  cloudinary:
+    status: code-present
+    owns: [uploads, media_delivery, transformations]
+    webhook_route: /api/cloudinary/webhooks
+    normalized_results: true
+  huggingface:
+    status: code-present
+    owns: [model_inference]
+    normalized_results: true
+  mapbox:
+    status: code-present
+    owns: [geocoding, directions, map_configuration]
+    webhook_route: null
+    normalized_results: true
 rules:
   provider_secrets_server_only: true
   browser_redirect_is_not_provider_truth: true

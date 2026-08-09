@@ -5,8 +5,8 @@ import { selectedGeneratedModuleIds } from '../modules.js';
 import type { GenerationPlan } from './plan.js';
 
 export interface TemplateProvenance {
-  templateRevision: string;
-  sourceRevision: string;
+  templateId: string;
+  templateVersion: string;
 }
 
 export async function writeRecipeArtifacts(
@@ -23,11 +23,11 @@ export async function writeRecipeArtifacts(
     path.join(directory, '.loadedvibes', 'manifest.json'),
     `${JSON.stringify(
       {
-        schemaVersion: 1,
+        schemaVersion: 2,
         generator: { name: 'create-loaded-vibes', version: '0.1.0' },
         template: {
-          revision: template.templateRevision,
-          sourceRevision: template.sourceRevision,
+          id: template.templateId,
+          version: template.templateVersion,
         },
         preset: recipe.product,
         modules: selectedGeneratedModuleIds(recipe),
@@ -50,7 +50,7 @@ async function writeProductContract(
       name: recipe.identity.displayName,
       description:
         recipe.identity.description ||
-        'A focused SaaS product built with Loaded Vibes.',
+        'A focused product for teams who need clear, useful software.',
     },
     null,
     2,
@@ -72,9 +72,18 @@ export const loadedVibesDesign: LoadedVibesDesign = ${JSON.stringify(
 
 export const loadedVibesCapabilities = ${JSON.stringify(
     {
+      organizations: recipe.modules.organizations,
+      invitations: recipe.modules.invitations,
+      rbac: recipe.modules.rbac,
+      billing: recipe.modules.billing,
+      onboarding: recipe.modules.onboarding,
+      admin: recipe.modules.admin,
       marketing: recipe.modules.marketing,
       sampleDomain: recipe.modules.sampleDomain !== false,
       stripeConnect: recipe.modules.stripeConnect,
+      uploads: true,
+      ai: true,
+      maps: true,
     },
     null,
     2,
@@ -91,6 +100,9 @@ async function writeRoutesContract(
 ): Promise<void> {
   const publicRoutes = [
     '/',
+    '/contact',
+    '/privacy',
+    '/terms',
     ...(recipe.modules.marketing ? ['/pricing', '/faq'] : []),
   ];
   const protectedRoutes = [
@@ -99,13 +111,21 @@ async function writeRoutesContract(
       ? ['/projects', '/projects/new', '/projects/[projectId]']
       : []),
     '/settings',
+    ...(recipe.modules.invitations ? ['/team'] : []),
+    '/uploads',
+    '/maps',
+    '/ai',
+    ...(recipe.modules.onboarding ? ['/onboarding'] : []),
+    ...(recipe.modules.admin ? ['/admin'] : []),
+    ...(recipe.modules.billing ? ['/checkout', '/success', '/canceled'] : []),
   ];
   const apiRoutes = [
     '/api/clerk/webhooks',
-    '/api/stripe/webhooks',
+    '/api/cloudinary/webhooks',
+    ...(recipe.modules.billing ? ['/api/stripe/webhooks'] : []),
     ...(recipe.modules.stripeConnect ? ['/api/stripe/connect/webhooks'] : []),
   ];
-  const routesContract = `id: vibes.routes
+  const routesContract = `id: white-label-application.routes
 version: 1
 authority: current-source-contract
 public: ${JSON.stringify(publicRoutes)}
@@ -157,15 +177,15 @@ export async function applyTransforms(plan: GenerationPlan): Promise<void> {
     generatorVersion: '0.1.0',
     preset: plan.config.recipe.product,
     projectName: plan.config.recipe.name,
-    templateRevision: templateMetadata.templateRevision,
-    sourceRevision: templateMetadata.sourceRevision,
+    templateId: templateMetadata.templateId,
+    templateVersion: templateMetadata.templateVersion,
   };
   await writeFile(
     path.join(plan.stagingDirectory, '.loaded-vibes.json'),
     `${JSON.stringify(provenance, null, 2)}\n`,
   );
   await writeRecipeArtifacts(plan.stagingDirectory, plan.config.recipe, {
-    templateRevision: String(templateMetadata.templateRevision),
-    sourceRevision: String(templateMetadata.sourceRevision),
+    templateId: String(templateMetadata.templateId),
+    templateVersion: String(templateMetadata.templateVersion),
   });
 }

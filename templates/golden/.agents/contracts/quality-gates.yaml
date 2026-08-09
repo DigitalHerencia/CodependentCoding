@@ -1,4 +1,4 @@
-id: vibes.quality-gates
+id: white-label-application.quality-gates
 version: 1
 authority: executable-command-contract
 credential_free:

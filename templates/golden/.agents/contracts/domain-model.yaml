@@ -1,4 +1,4 @@
-id: vibes.domain-model
+id: white-label-application.domain-model
 version: 2
 authority: current-source-contract
 current_models:
@@ -19,11 +19,14 @@ current_models:
   - ConnectPayment
   - ConnectRefund
   - ConnectRecoverySnapshot
+  - MediaAsset
+  - ProviderMediaAssetBinding
+  - LocationRecord
 identity:
   provider: clerk
   local_model: User
 authorization:
-  current_scope: organization tenant, tenant-owned Project resources, local billing entitlements, and optional Connect resources
+  current_scope: organization tenant, tenant-owned Project, billing, Connect, media, and location resources
   membership_model: Membership
   role_model: OrganizationRole
   capability_source: lib/authz/capabilities.ts
@@ -37,3 +40,4 @@ tenant:
 known_gaps:
   - live Clerk configuration and authenticated browser journeys require separate provider-backed verification
   - live Stripe products, price, portal configuration, webhook endpoint, and journeys require separate provider-backed verification
+  - live Cloudinary, Hugging Face, and Mapbox journeys require separate provider-backed verification

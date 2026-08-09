@@ -22,7 +22,7 @@ loadedvibes.json ──┘             ↓
                                ↓
                          generation plan
                                ↓
-             Vibes-derived base + module overlays
+            repository-local master template
                                ↓
                  structured personalization
                                ↓
@@ -45,8 +45,8 @@ The shared recipe core must be reusable by CLI and web. A pnpm workspace is just
 │  ├─ recipes/                # product presets
 │  └─ schema/                 # JSON schema / shared recipe artifacts
 ├─ templates/
-│  ├─ golden/                 # packaged Vibes-derived base
-│  └─ modules/                # explicit capability overlays
+│  ├─ golden/                 # canonical maximal application template
+│  └─ modules/                # local compatibility overlays pending retain/remove ownership
 ├─ tests/                     # focused generator/CLI tests
 ├─ context/
 ├─ .agents/
@@ -101,11 +101,11 @@ generated setup notes
 
 Do not build a third-party plugin framework in v1.
 
-## Vibes relationship
+## Template authority
 
-Vibes remains the upstream application reference and evidence for the generated SaaS baseline. Loaded Vibes packages a self-contained snapshot/derivative so normal CLI execution does not depend on live GitHub availability.
+Loaded Vibes owns one repository-local maximal application template. DevNotes owns the canonical Hipster Stack engineering doctrine used to maintain it. Generation and package release never acquire an application template from another repository or the network.
 
-Optional Vibes material such as Stripe Connect should become a real module only where its boundaries are clean enough to compose.
+The existing local overlays remain a narrow compatibility mechanism for current recipe/add behavior. They are part of Loaded Vibes, not a second source authority. Future work may replace overlays with retain/remove ownership metadata after the maximal template is established.
 
 ## Generated application
 

@@ -14,7 +14,8 @@
     {
       "id": "LV-D-003",
       "decision": "Vibes remains the upstream SaaS template/reference; Loaded Vibes packages a self-contained derivative for generation.",
-      "status": "active"
+      "status": "superseded",
+      "supersededBy": "LV-D-012"
     },
     {
       "id": "LV-D-004",
@@ -24,7 +25,8 @@
     {
       "id": "LV-D-005",
       "decision": "The self-contained Vibes derivative is composed from a stable golden baseline plus explicit marketing, sample-domain, and Stripe Connect overlays; presentation-only onboarding and admin examples are not promoted to production modules.",
-      "status": "active",
+      "status": "superseded",
+      "supersededBy": "LV-D-012",
       "issue": 95
     },
     {
@@ -54,7 +56,8 @@
     {
       "id": "LV-D-010",
       "decision": "Web previews are representative Vibes-aligned surface mockups bound to normalized recipe fields; unsupported capability surfaces are labeled as excluded instead of simulated as working product behavior.",
-      "status": "active",
+      "status": "superseded",
+      "supersededBy": "LV-D-012",
       "issue": 100
     },
     {
@@ -62,6 +65,11 @@
       "decision": "The canonical command is loaded-vibes create; the create-loaded-vibes package and legacy positional invocation remain compatible during the package-name transition.",
       "status": "active",
       "issue": 101
+    },
+    {
+      "id": "LV-D-012",
+      "decision": "Loaded Vibes is the sole owner and maintenance authority for one repository-local maximal white-label Hipster Stack template. DevNotes defines its engineering doctrine; no external application repository is an upstream, reference, synchronization source, or provenance dependency. Existing repository-local modules remain compatibility overlays until explicit retain-or-remove composition replaces them.",
+      "status": "active"
     }
   ]
 }

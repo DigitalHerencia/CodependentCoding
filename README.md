@@ -1,6 +1,6 @@
 # Loaded Vibes
 
-Loaded Vibes turns a few product choices into a recognizable SaaS starting point. It combines an enjoyable CLI, a stateless visual configurator, reproducible `loadedvibes.json` recipes, and the packaged Vibes golden application—without asking you to redesign the stack.
+Loaded Vibes turns a few product choices into a recognizable SaaS starting point. It combines an enjoyable CLI, a stateless visual configurator, reproducible `loadedvibes.json` recipes, and one packaged maximal white-label application template—without asking you to redesign the stack.
 
 ## Create a project
 
@@ -35,7 +35,7 @@ Presets are strong defaults over one generator—not separate application forks.
 | `platform-marketplace` | Multi-sided products with subscriptions and Stripe Connect payments                 |
 | `bare-golden-app`      | The smallest auth, tenancy, RBAC, and governance foundation                         |
 
-Capability prerequisites resolve automatically. Fixed architecture choices—TypeScript, Next.js, Clerk identity, local row-backed authorization, Prisma, server workflows, provider adapters, and validation boundaries—are inherited from Vibes rather than exposed as configuration questions.
+Capability prerequisites resolve automatically. Fixed architecture choices—TypeScript, Next.js, Clerk identity, local row-backed authorization, Prisma, server workflows, provider adapters, and validation boundaries—come from the repository-local Hipster Stack master template rather than configuration questions.
 
 ## Visual configurator
 
@@ -50,12 +50,13 @@ corepack pnpm --dir apps/web dev
 
 ## What gets generated
 
-Every project starts from a self-contained Vibes-derived Next.js application and includes:
+Every project starts from a self-contained Loaded Vibes-owned Next.js application and includes:
 
 - Clerk identity with local organization, membership, and RBAC truth;
 - Prisma and Neon-ready tenant data boundaries;
 - server-first reads, validated Server Actions, workflows, and transactions;
-- optional subscription billing, Stripe Connect, onboarding, admin, marketing, and sample-project surfaces selected by the recipe;
+- recipe-gated subscription billing, Stripe Connect, onboarding, admin, marketing, and sample-project surfaces;
+- Cloudinary media, Hugging Face inference, and Mapbox location adapters with server-side credential boundaries;
 - semantic identity/design personalization;
 - `.loadedvibes/manifest.json` provenance for explanation and safe supported additions;
 - focused project documentation, environment examples, and validation commands.
@@ -85,13 +86,15 @@ Loaded Vibes creates provider-ready integration boundaries and `.env.example`; i
 | Clerk routes, session helpers, webhook boundary        | Clerk instance, production keys, and webhook destination                                          |
 | Prisma schema, migrations, and tenant-safe data access | Neon/database project, pooled runtime URL, direct migration URL, and approved migration execution |
 | Stripe billing and optional Connect adapters           | Stripe account, prices, secrets, webhooks, and commercial policy                                  |
+| Cloudinary upload, delivery, and webhook adapters      | Cloudinary account, signed-upload credentials, and notification destination                       |
+| Hugging Face and Mapbox server adapters                | Provider tokens, model/style choices, quotas, and production usage policy                          |
 | Vercel-ready Next.js project                           | Deployment project, environment variables, domains, and production promotion                      |
 
 Start with the generated `.env.example`, run `loaded-vibes doctor`, and follow the generated README. Provider-backed journeys and production deployment remain owner-controlled verification gates.
 
 ## Package and repository development
 
-The npm package contains the compiled CLI plus its golden template and all supported module overlays. Normal generation does not fetch the Vibes repository.
+The npm package contains the compiled CLI, the canonical master template, and local compatibility overlays. Generation never fetches an application template from another repository or the network.
 
 ```powershell
 corepack pnpm install --frozen-lockfile

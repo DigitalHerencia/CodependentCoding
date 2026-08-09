@@ -14,7 +14,7 @@ Loaded Vibes is an opinionated SaaS generator that turns a small amount of produ
 
 Its primary promise is not "we installed Next.js." Its promise is:
 
-> Start with an application that already looks and behaves like the product you meant to build, while inheriting the proven Vibes/Hipster Stack baseline underneath.
+> Start with an application that already looks and behaves like the product you meant to build, while inheriting the canonical Hipster Stack baseline encoded by Loaded Vibes.
 
 ## Primary outcome
 
@@ -52,7 +52,7 @@ Presets establish useful defaults, not separate generator implementations.
 
 ## Capabilities
 
-Initial capability model should support, as cleanly as Vibes can provide them:
+The initial capability model should support:
 
 - organizations / team accounts;
 - memberships and invitations;

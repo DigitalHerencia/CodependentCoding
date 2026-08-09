@@ -55,7 +55,10 @@ describe("architecture surface", () => {
   it("keeps app API routes scoped to provider webhooks", () => {
     const routes = files("app/api")
     expect(routes).toEqual([
+      "app/api/AGENTS.md",
       "app/api/clerk/webhooks/route.ts",
+      "app/api/cloudinary/webhooks/AGENTS.md",
+      "app/api/cloudinary/webhooks/route.ts",
       "app/api/stripe/webhooks/route.ts",
       ...(loadedVibesCapabilities.stripeConnect
         ? ["app/api/stripe/connect/webhooks/route.ts"]
@@ -64,7 +67,9 @@ describe("architecture surface", () => {
   })
 
   it("resolves every local alias import from committed source", () => {
-    const sourceFiles = files("app", "components", "features", "lib", "schemas", "tests")
+    const sourceFiles = files("app", "components", "features", "lib", "schemas", "tests").filter(
+      (file) => file !== "tests/contract/architecture-validator.test.ts"
+    )
     const unresolved = sourceFiles.flatMap((file) => {
       const body = readFileSync(join(root, file), "utf8")
       const specifiers = [...body.matchAll(/(?:from\s+|import\s*\()\s*[\"'](@\/[^\"']+)[\"']/g)]

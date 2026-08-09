@@ -19,6 +19,5 @@
     "lib/db/dto/project.mappers.ts",
     "schemas/projectSchemas.ts",
     "types/projectTypes.ts"
-  ],
-  "sourceRevision": "19e20084a8c69cc5a70f8db5f8e5d908a84d582f"
+  ]
 }

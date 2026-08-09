@@ -4,6 +4,7 @@ export type LocalUserContext = {
   email: string | null
   displayName: string | null
   status: "active" | "disabled"
+  isApplicationAdmin: boolean
 }
 
 export type AuthenticatedUserContext = {

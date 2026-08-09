@@ -43,7 +43,9 @@ modules:
     - contributions
 
 generated_application:
-  upstream_reference: DigitalHerencia/Vibes
+  template_authority: repository-local-loaded-vibes
+  doctrine_authority: DigitalHerencia/DevNotes
+  external_template_acquisition: false
   preserve_application_grammar: true
   preserve_auth_tenancy_provider_boundaries: true
 

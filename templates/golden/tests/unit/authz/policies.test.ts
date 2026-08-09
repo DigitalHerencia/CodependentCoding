@@ -19,6 +19,7 @@ function context(role: OrganizationRole, organizationId = "organization_1"): Ten
       email: `${role}@example.com`,
       displayName: role,
       status: "active",
+      isApplicationAdmin: false,
     },
     organization: { id: organizationId, status: "active" },
     membership: { id: `membership_${role}`, role },

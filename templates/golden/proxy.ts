@@ -9,8 +9,12 @@ const publicRoutes = [
   "/sign-in(.*)",
   "/sign-up(.*)",
   "/api/clerk/webhooks",
-  "/api/stripe/webhooks",
+  "/api/cloudinary/webhooks",
+  "/contact(.*)",
+  "/privacy(.*)",
+  "/terms(.*)",
   ...(loadedVibesCapabilities.marketing ? ["/pricing(.*)", "/faq(.*)"] : []),
+  ...(loadedVibesCapabilities.billing ? ["/api/stripe/webhooks"] : []),
   ...(loadedVibesCapabilities.stripeConnect ? ["/api/stripe/connect/webhooks"] : []),
 ]
 

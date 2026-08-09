@@ -1,7 +1,7 @@
 {
   "name": "create-loaded-vibes",
   "version": "0.1.0",
-  "description": "Create an opinionated, product-shaped SaaS from the Vibes golden baseline.",
+  "description": "Create an opinionated, product-shaped SaaS from the Loaded Vibes master template.",
   "type": "module",
   "license": "MIT",
   "repository": {
@@ -45,7 +45,6 @@
     "pack:check": "rimraf .artifacts && node -e \"require('node:fs').mkdirSync('.artifacts')\" && pnpm build && pnpm pack --pack-destination .artifacts && node scripts/inspect-pack.mjs",
     "release:check": "pnpm pack:check && node scripts/smoke-packed-cli.mjs",
     "web:build": "pnpm --dir apps/web build",
-    "template:sync": "pwsh -NoProfile -File scripts/sync-template.ps1",
     "validate": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test && pnpm test:generated && pnpm build && pnpm web:build"
   },
   "dependencies": {

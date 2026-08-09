@@ -1,4 +1,4 @@
-# Vibes Agent Instructions
+# White-label application agent instructions
 
 This repository is an opinionated, reusable B2B SaaS application system. Apply governance in this order:
 

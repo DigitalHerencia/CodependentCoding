@@ -15,6 +15,11 @@ export type Capability =
   | "audit.read"
   | "billing.manage"
   | "connect.manage"
+  | "media.read"
+  | "media.manage"
+  | "ai.use"
+  | "map.read"
+  | "map.manage"
 
 export type TenantContext = AuthenticatedUserContext & {
   organization: {

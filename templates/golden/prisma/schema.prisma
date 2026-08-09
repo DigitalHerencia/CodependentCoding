@@ -48,6 +48,14 @@ enum WebhookProvider {
   clerk
   stripe
   stripe_connect
+  cloudinary
+}
+
+enum MediaAssetStatus {
+  pending
+  ready
+  deleted
+  failed
 }
 
 enum BillingSubscriptionStatus {
@@ -116,6 +124,7 @@ model User {
   email                     String?    @db.VarChar(320)
   displayName               String?    @db.VarChar(120)
   status                    UserStatus @default(active)
+  isApplicationAdmin        Boolean    @default(false)
   selectedOrganizationId    String?
   identityProviderUpdatedAt DateTime?
 
@@ -157,10 +166,65 @@ model Organization {
   connectRefunds                 ConnectRefund[]
   connectRecoverySnapshots       ConnectRecoverySnapshot[]
   providerConnectAccountBindings ProviderConnectAccountBinding[]
+  mediaAssets                    MediaAsset[]
+  providerMediaAssetBindings     ProviderMediaAssetBinding[]
+  locations                      LocationRecord[]
 
   @@index([status])
   @@index([updatedAt])
   @@map("organizations")
+}
+
+model MediaAsset {
+  id                String           @id @default(cuid())
+  organizationId    String
+  uploadedById      String
+  providerAssetId   String           @unique @db.VarChar(255)
+  publicId          String           @db.VarChar(255)
+  resourceType      String           @db.VarChar(40)
+  format            String?          @db.VarChar(40)
+  secureUrl         String?          @db.VarChar(1000)
+  bytes             Int?
+  width             Int?
+  height            Int?
+  status            MediaAssetStatus @default(pending)
+  providerUpdatedAt DateTime?
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId, status])
+  @@index([uploadedById])
+  @@map("media_assets")
+}
+
+model ProviderMediaAssetBinding {
+  id              String   @id @default(cuid())
+  providerAssetId String   @unique @db.VarChar(255)
+  organizationId  String
+  createdAt       DateTime @default(now())
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@map("provider_media_asset_bindings")
+}
+
+model LocationRecord {
+  id             String   @id @default(cuid())
+  organizationId String
+  label          String   @db.VarChar(200)
+  mapboxId       String?  @db.VarChar(255)
+  longitude      Decimal  @db.Decimal(9, 6)
+  latitude       Decimal  @db.Decimal(8, 6)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@map("location_records")
 }
 
 model Membership {

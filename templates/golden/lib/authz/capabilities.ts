@@ -14,6 +14,11 @@ const roleCapabilities = {
     "audit.read",
     "billing.manage",
     "connect.manage",
+    "media.read",
+    "media.manage",
+    "ai.use",
+    "map.read",
+    "map.manage",
   ],
   admin: [
     "organization.read",
@@ -25,6 +30,11 @@ const roleCapabilities = {
     "project.update",
     "project.archive",
     "audit.read",
+    "media.read",
+    "media.manage",
+    "ai.use",
+    "map.read",
+    "map.manage",
   ],
   member: [
     "organization.read",
@@ -32,8 +42,12 @@ const roleCapabilities = {
     "project.read",
     "project.create",
     "project.update",
+    "media.read",
+    "media.manage",
+    "ai.use",
+    "map.read",
   ],
-  viewer: ["organization.read", "membership.read", "project.read"],
+  viewer: ["organization.read", "membership.read", "project.read", "media.read", "map.read"],
 } as const satisfies Record<OrganizationRole, readonly Capability[]>
 
 export function capabilitiesForRole(role: OrganizationRole): readonly Capability[] {

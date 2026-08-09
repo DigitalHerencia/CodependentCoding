@@ -29,7 +29,8 @@ export const defaultConfiguratorRecipe: ConfiguratorRecipe = {
   modules: {},
   identity: {
     displayName: 'My SaaS',
-    description: 'A focused product built on the Loaded Vibes golden baseline.',
+    description:
+      'A focused product built from the Loaded Vibes master template.',
   },
   design: defaultDesign,
 };

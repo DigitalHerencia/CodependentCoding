@@ -8,13 +8,11 @@ import { LoadedVibesError } from './errors.js';
 
 export const generationManifestSchema = z
   .object({
-    schemaVersion: z.literal(1),
+    schemaVersion: z.literal(2),
     generator: z
       .object({ name: z.literal('create-loaded-vibes'), version: z.string() })
       .strict(),
-    template: z
-      .object({ revision: z.string(), sourceRevision: z.string() })
-      .strict(),
+    template: z.object({ id: z.string(), version: z.string() }).strict(),
     preset: productPresetSchema,
     modules: z.array(z.enum(generatedModuleIds)),
     recipe: normalizedRecipeSchema,

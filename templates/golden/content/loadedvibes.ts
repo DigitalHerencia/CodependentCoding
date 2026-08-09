@@ -1,6 +1,6 @@
 export const loadedVibesProduct = {
   name: "Next Stack",
-  description: "A focused SaaS product built with Loaded Vibes.",
+  description: "A focused product for teams who need clear, useful software.",
 } as const
 
 export type LoadedVibesDesign = {
@@ -20,7 +20,16 @@ export const loadedVibesDesign: LoadedVibesDesign = {
 }
 
 export const loadedVibesCapabilities = {
+  organizations: true,
+  invitations: true,
+  rbac: true,
+  billing: true,
+  onboarding: true,
+  admin: true,
   marketing: false,
   sampleDomain: false,
   stripeConnect: false,
+  uploads: true,
+  ai: true,
+  maps: true,
 } as const

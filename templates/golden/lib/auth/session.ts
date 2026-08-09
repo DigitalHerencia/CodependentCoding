@@ -14,6 +14,7 @@ function mapLocalUser(user: {
   email: string | null
   displayName: string | null
   status: "active" | "disabled"
+  isApplicationAdmin: boolean
 }): LocalUserContext {
   return {
     id: user.id,
@@ -21,6 +22,7 @@ function mapLocalUser(user: {
     email: user.email,
     displayName: user.displayName,
     status: user.status,
+    isApplicationAdmin: user.isApplicationAdmin,
   }
 }
 
@@ -37,12 +39,21 @@ export async function getCurrentUserContext(): Promise<AuthenticatedUserContext 
       email: true,
       displayName: true,
       status: true,
+      isApplicationAdmin: true,
     },
   })
 
   if (!existingUser || existingUser.status !== "active") return null
 
   return { userId, localUser: mapLocalUser(existingUser) }
+}
+
+export async function requireApplicationAdminContext(): Promise<AuthenticatedUserContext> {
+  const context = await requireCurrentUserContext()
+  if (!context?.localUser.isApplicationAdmin) {
+    throw new Error("Application administrator access required.")
+  }
+  return context
 }
 
 export async function requireCurrentUserContext(): Promise<AuthenticatedUserContext> {

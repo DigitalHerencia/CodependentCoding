@@ -4,7 +4,7 @@ This directory tells Codex what Loaded Vibes is building and why.
 
 ## Product definition
 
-Loaded Vibes is an opinionated SaaS generator focused on developer and end-user experience. It combines a fast interactive CLI, a reusable recipe engine, Vibes-derived application templates/modules, product presets, design personalization, and a stateless visual configurator.
+Loaded Vibes is an opinionated SaaS generator focused on developer and end-user experience. It combines a fast interactive CLI, a reusable recipe engine, a repository-owned maximal application template, product presets, design personalization, and a stateless visual configurator.
 
 The generator should feel much simpler than the SaaS architecture it produces.
 
@@ -18,9 +18,9 @@ The generator should feel much simpler than the SaaS architecture it produces.
 - `context/specs/` — issue-sized implementation slices
 - `.agents/contracts/` — compact machine-readable fixed boundaries
 
-## Upstream application source
+## Template and doctrine authority
 
-`DigitalHerencia/Vibes` is the current golden SaaS reference. Loaded Vibes packages and composes a self-contained derivative of that baseline rather than inventing a second application architecture.
+Loaded Vibes is the sole owner and source of its packaged application template. Canonical Hipster Stack material in DevNotes governs reusable engineering doctrine; no external application repository participates in generation, packaging, release, or maintenance.
 
 ## Working rule
 

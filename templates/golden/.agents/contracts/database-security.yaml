@@ -1,4 +1,4 @@
-id: vibes.database-security
+id: white-label-application.database-security
 version: 1
 authority: migration-and-executable-test-contract
 connections:
@@ -33,11 +33,14 @@ protected_tables:
   connect_payments: organizationId
   connect_refunds: organizationId
   connect_recovery_snapshots: organizationId
+  media_assets: organizationId
+  location_records: organizationId
 global_tables:
   users: local identity
   provider_webhook_events: provider event ledger
   provider_customer_bindings: opaque provider customer to organization locator for verified webhooks
   provider_connect_account_bindings: opaque connected account to organization locator for verified webhooks
+  provider_media_asset_bindings: opaque media asset to organization locator for verified webhooks
 policy_commands: [SELECT, INSERT, UPDATE, DELETE]
 rls:
   enabled: true

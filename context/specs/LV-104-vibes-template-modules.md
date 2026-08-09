@@ -1,20 +1,20 @@
-# LV-104 — Vibes-derived golden template and capability modules
+# LV-104 — Loaded Vibes-owned master template and capability ownership
 
 ## Outcome
 
-Turn the proven Vibes application into a composable generator source without creating a second SaaS architecture.
+Maintain one repository-local maximal Hipster Stack application template without an external application source.
 
 ## Scope
 
-- inventory the current packaged template against `DigitalHerencia/Vibes` only as needed for this change;
-- establish `templates/golden` as the self-contained packaged base;
-- extract clean optional capability overlays where Vibes evidence supports it;
+- establish `templates/golden` as the canonical, self-contained maximal application template;
+- use canonical DevNotes Hipster Stack material as engineering doctrine;
+- keep capability ownership local and explicit while retain/remove mechanics evolve;
 - prioritize marketing/onboarding/admin/sample-domain and Stripe Connect separability;
 - keep core auth/tenancy/RBAC/application grammar fixed.
 
 ## Acceptance
 
-- generated output derives from the Vibes baseline;
+- generated output derives only from Loaded Vibes-owned packaged assets;
 - optional module inclusion/exclusion is intentional and does not leave obvious broken imports/routes/config;
 - no remote GitHub fetch is required for normal generation;
-- no new application architecture is invented by the generator.
+- the template follows canonical Hipster Stack architecture from DevNotes.

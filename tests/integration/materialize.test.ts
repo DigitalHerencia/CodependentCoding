@@ -94,6 +94,8 @@ describe('createProject', () => {
     ).toMatchObject({
       projectName: 'acme-product',
       preset: 'bare-golden-app',
+      templateId: 'loaded-vibes-maximal-saas',
+      templateVersion: '1.0.0',
     });
     expect(
       JSON.parse(await readFile(path.join(target, 'loadedvibes.json'), 'utf8')),
@@ -111,6 +113,28 @@ describe('createProject', () => {
     await expect(
       stat(path.join(target, 'app', 'api', 'stripe', 'connect')),
     ).rejects.toMatchObject({ code: 'ENOENT' });
+    for (const surface of [
+      path.join('app', '(onboarding)', 'onboarding', 'page.tsx'),
+      path.join('app', '(tenant)', 'team', 'page.tsx'),
+      path.join('app', '(tenant)', 'uploads', 'page.tsx'),
+      path.join('app', '(tenant)', 'maps', 'page.tsx'),
+      path.join('app', '(tenant)', 'ai', 'page.tsx'),
+      path.join('app', '(admin)', 'admin', 'page.tsx'),
+      path.join('app', 'api', 'cloudinary', 'webhooks', 'route.ts'),
+    ]) {
+      await expect(stat(path.join(target, surface))).resolves.toBeTruthy();
+    }
+    expect(
+      JSON.parse(
+        await readFile(
+          path.join(target, '.loadedvibes', 'manifest.json'),
+          'utf8',
+        ),
+      ),
+    ).toMatchObject({
+      schemaVersion: 2,
+      template: { id: 'loaded-vibes-maximal-saas', version: '1.0.0' },
+    });
     await expect(
       readFile(
         path.join(target, '.agents', 'contracts', 'routes.yaml'),
@@ -120,7 +144,7 @@ describe('createProject', () => {
     await assertLocalImportsResolve(target);
   });
 
-  it('composes selected Vibes capability modules into one golden app', async () => {
+  it('composes selected repository-local capability modules into one application', async () => {
     const root = await mkdtemp(path.join(os.tmpdir(), 'loaded-vibes-modules-'));
     const target = path.join(root, 'marketplace');
     await createProject({
@@ -195,6 +219,7 @@ describe('createProject', () => {
     expect(generatedDesign).toContain('"density": "compact"');
     expect(generatedDesign).toContain('"navigation": "topbar"');
     expect(generatedDesign).toContain('"mode": "light"');
+    expect(generatedDesign).not.toContain('built with Loaded Vibes');
     await expect(
       readFile(path.join(target, 'app', 'layout.tsx'), 'utf8'),
     ).resolves.toContain('data-theme={loadedVibesDesign.theme}');

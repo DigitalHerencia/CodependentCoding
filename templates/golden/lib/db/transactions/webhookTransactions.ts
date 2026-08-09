@@ -89,6 +89,19 @@ export async function finalizeIgnoredWebhookTx(
   )
 }
 
+export async function finalizeProcessedWebhookTx(
+  tx: Prisma.TransactionClient,
+  claim: Extract<WebhookClaim, { kind: "claimed" }>,
+  now: Date
+) {
+  await assertClaimFinalized(
+    await tx.providerWebhookEvent.updateMany({
+      where: { id: claim.ledgerId, status: "processing", attemptCount: claim.attemptCount },
+      data: { status: "processed", processedAt: now, processingStartedAt: null },
+    })
+  )
+}
+
 export async function processClerkUserWebhookTx(
   tx: Prisma.TransactionClient,
   event: NormalizedClerkUserEvent,

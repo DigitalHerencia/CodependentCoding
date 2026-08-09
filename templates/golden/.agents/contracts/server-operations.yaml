@@ -1,4 +1,4 @@
-id: vibes.server-operations
+id: white-label-application.server-operations
 version: 1
 authority: current-source-and-validator-contract
 flow: route -> feature -> fetcher/action -> workflow -> transaction/provider
@@ -7,6 +7,9 @@ inventory:
   raw_sql: [lib/db/withTenantContext.ts]
   clerk_backend: [lib/auth, proxy.ts, app/api/clerk/webhooks]
   stripe_sdk: [lib/integrations/stripe]
+  cloudinary_http: [lib/integrations/cloudinary]
+  huggingface_http: [lib/integrations/huggingface]
+  mapbox_http: [lib/integrations/mapbox]
   server_actions: [lib/actions]
   cache_invalidation: [lib/cache/revalidate.ts]
   redirects: [lib/actions]

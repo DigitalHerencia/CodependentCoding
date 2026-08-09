@@ -47,13 +47,14 @@ const importRules = [
     reason: "routes select features and do not invoke protected operations directly",
     except: (file, specifier) =>
       specifier === "@/lib/webhooks" &&
-      /app\/api\/(?:clerk|stripe(?:\/connect)?)\/webhooks\/route\.ts$/.test(file),
+      /app\/api\/(?:clerk|cloudinary|stripe(?:\/connect)?)\/webhooks\/route\.ts$/.test(file),
   },
   {
     roots: ["app"],
     forbidden: ["@/lib/integrations"],
     reason: "only provider webhook routes may adapt provider verification",
-    except: (file) => /app\/api\/(?:clerk|stripe(?:\/connect)?)\/webhooks\/route\.ts$/.test(file),
+    except: (file) =>
+      /app\/api\/(?:clerk|cloudinary|stripe(?:\/connect)?)\/webhooks\/route\.ts$/.test(file),
   },
   {
     roots: ["schemas", "types"],

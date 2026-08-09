@@ -227,8 +227,8 @@ export async function applyProjectModuleAddition(
     });
   }
   await writeRecipeArtifacts(plan.targetDirectory, plan.nextRecipe, {
-    templateRevision: plan.manifest.template.revision,
-    sourceRevision: plan.manifest.template.sourceRevision,
+    templateId: plan.manifest.template.id,
+    templateVersion: plan.manifest.template.version,
   });
   return {
     module: plan.module,

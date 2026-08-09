@@ -22,10 +22,11 @@ The CLI and stateless web configurator configure source output. They do not beco
 
 ## Generated application boundaries
 
-Generated apps inherit the Vibes/Hipster Stack identity and authorization model:
+Generated apps use the Loaded Vibes-owned Hipster Stack identity and authorization model:
 
 - Clerk owns authentication/session identity.
 - The application database owns local users, organizations, memberships, roles/capabilities, resource policy, and workflow authority.
+- Stripe, Cloudinary, Hugging Face, and Mapbox are reached only through server-owned adapters; their credentials never become application authorization truth.
 - Stripe owns provider payment state; application workflows interpret provider state.
 - RLS is tenant containment defense in depth, not a replacement for application authorization.
 

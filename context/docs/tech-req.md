@@ -15,7 +15,7 @@ authority: source-of-truth
 - TypeScript ESM
 - Next.js/React for `apps/web`
 - Zod for recipe/runtime validation
-- Vibes as upstream generated-app reference
+- Loaded Vibes-owned maximal Hipster Stack application template
 
 ## CLI/core dependencies
 
@@ -28,7 +28,7 @@ Target capabilities/dependencies:
 | terminal UX                                                              | `@clack/prompts`                                                 |
 | command routing                                                          | `citty` or the existing `commander` during incremental migration |
 | recipe validation                                                        | `zod`                                                            |
-| template/source acquisition when needed                                  | `giget`                                                          |
+| repository-local template discovery                                      | Node `path` and packaged assets                                  |
 | package-manager detection/execution when multi-PM support is implemented | `nypm`                                                           |
 | cross-platform paths                                                     | Node `path` or `pathe` where it reduces platform branching       |
 | structured JS/TS config edits                                            | `magicast`                                                       |
@@ -85,7 +85,7 @@ Exact fields evolve through the recipe-core Issue. Unknown unsupported values sh
 ## Template/module behavior
 
 - the packaged golden template is self-contained;
-- Vibes is the upstream reference for refresh work;
+- Loaded Vibes is the sole template authority and refresh work is repository-local;
 - modules are explicit overlays/contributions, not arbitrary plugins;
 - module dependency resolution is deterministic;
 - product identity/design changes use targeted known surfaces;

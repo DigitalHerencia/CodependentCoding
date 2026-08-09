@@ -9,7 +9,8 @@ product:
   name: Loaded Vibes
   class: opinionated-saas-generator
   primary_value: time-saved-and-product-fit
-  upstream_template_reference: DigitalHerencia/Vibes
+  template_authority: DigitalHerencia/LoadedVibes
+  doctrine_authority: DigitalHerencia/DevNotes
   surfaces:
     - cli
     - web-configurator

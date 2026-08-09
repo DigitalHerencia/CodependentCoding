@@ -11,6 +11,7 @@ const user: AuthenticatedUserContext = {
     email: "owner@example.com",
     displayName: "Owner",
     status: "active",
+    isApplicationAdmin: false,
   },
 }
 

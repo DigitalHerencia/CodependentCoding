@@ -114,9 +114,9 @@ export function Configurator() {
           <em>Keep the architecture.</em>
         </h1>
         <p className="lede">
-          Build a reproducible recipe for the Vibes baseline. Loaded Vibes
-          resolves the dependencies and leaves the fixed engineering decisions
-          alone.
+          Build a reproducible recipe for the Loaded Vibes master template.
+          Loaded Vibes resolves the dependencies and leaves the fixed
+          engineering decisions alone.
         </p>
       </section>
 
