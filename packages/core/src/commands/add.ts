@@ -6,7 +6,11 @@ import type {
   NormalizedRecipe,
 } from '@loaded-vibes/schema';
 import { LoadedVibesError } from '../errors.js';
-import { generatedModuleIds, type GeneratedModuleId } from '../modules.js';
+import {
+  generatedModuleIds,
+  getAddableOwnership,
+  type GeneratedModuleId,
+} from '../ownership.js';
 import {
   parseGenerationManifest,
   type GenerationManifest,
@@ -14,13 +18,6 @@ import {
 import { resolveRecipe } from '../recipe.js';
 import { writeRecipeArtifacts } from '../generator/transforms.js';
 import { resolveTemplateDirectory } from './create.js';
-
-interface ModuleMetadata {
-  id: GeneratedModuleId;
-  contributions: string[];
-  replaces: string[];
-  setup: string[];
-}
 
 export interface ModuleAdditionPlan {
   targetDirectory: string;
@@ -78,27 +75,6 @@ async function readJson(file: string): Promise<unknown> {
   }
 }
 
-async function readModuleMetadata(
-  sourceDirectory: string,
-  expectedId: GeneratedModuleId,
-): Promise<ModuleMetadata> {
-  const value = (await readJson(
-    path.join(sourceDirectory, '.loaded-vibes-module.json'),
-  )) as Partial<ModuleMetadata>;
-  if (value.id !== expectedId || !Array.isArray(value.contributions)) {
-    throw new LoadedVibesError(
-      'MODULE_UNSUPPORTED',
-      `Packaged metadata for module "${expectedId}" is invalid.`,
-    );
-  }
-  return {
-    id: expectedId,
-    contributions: value.contributions,
-    replaces: Array.isArray(value.replaces) ? value.replaces : [],
-    setup: Array.isArray(value.setup) ? value.setup : [],
-  };
-}
-
 async function listFiles(
   directory: string,
   root = directory,
@@ -140,18 +116,19 @@ async function exists(file: string): Promise<boolean> {
 
 async function canonicalProjectionFiles(
   files: readonly string[],
-  sourceDirectory: string,
+  targetDirectory: string,
   templateDirectory: string,
 ): Promise<string[]> {
   const projections: string[] = [];
   for (const relative of files) {
-    const baseline = path.join(templateDirectory, relative);
-    if (!(await exists(baseline))) continue;
-    const [moduleBody, baselineBody] = await Promise.all([
-      readFile(path.join(sourceDirectory, relative)),
-      readFile(baseline),
+    const target = path.join(targetDirectory, relative);
+    const canonical = path.join(templateDirectory, relative);
+    if (!(await exists(target)) || !(await exists(canonical))) continue;
+    const [targetBody, canonicalBody] = await Promise.all([
+      readFile(target),
+      readFile(canonical),
     ]);
-    if (moduleBody.equals(baselineBody)) projections.push(relative);
+    if (targetBody.equals(canonicalBody)) projections.push(relative);
   }
   return projections;
 }
@@ -223,22 +200,15 @@ export async function planProjectModuleAddition(
     Object.keys(nextRecipe.modules) as CapabilityId[]
   ).filter((id) => !isEnabled(currentRecipe, id) && isEnabled(nextRecipe, id));
   const templateDirectory = await resolveTemplateDirectory();
-  const metadataDirectory = path.resolve(
-    templateDirectory,
-    '..',
-    'templates',
-    'modules',
-    module,
-  );
-  const metadata = await readModuleMetadata(metadataDirectory, module);
+  const ownership = getAddableOwnership(module);
   const sourceDirectory = templateDirectory;
   const files = await listContributionFiles(
     templateDirectory,
-    metadata.contributions,
+    ownership.add.paths,
   );
   const projectionFiles = await canonicalProjectionFiles(
     files,
-    sourceDirectory,
+    target,
     templateDirectory,
   );
   const plan: ModuleAdditionPlan = {
@@ -247,8 +217,10 @@ export async function planProjectModuleAddition(
     addedCapabilities,
     prerequisites: addedCapabilities.filter((id) => id !== capability),
     files,
-    replacements: [...new Set([...metadata.replaces, ...projectionFiles])],
-    setup: metadata.setup,
+    replacements: [
+      ...new Set([...ownership.add.replacements, ...projectionFiles]),
+    ],
+    setup: [...ownership.add.setup],
     nextRecipe,
     manifest,
     sourceDirectory,

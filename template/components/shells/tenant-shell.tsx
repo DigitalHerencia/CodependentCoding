@@ -16,7 +16,9 @@ const navItems = [
   ...(loadedVibesCapabilities.sampleDomain
     ? [{ href: "/projects", label: "Projects", icon: SquareKanban }]
     : []),
-  { href: "/team", label: "Team", icon: Users },
+  ...(loadedVibesCapabilities.invitations
+    ? [{ href: "/team", label: "Team", icon: Users }]
+    : []),
   { href: "/uploads", label: "Media", icon: Image },
   { href: "/maps", label: "Maps", icon: Map },
   { href: "/ai", label: "AI", icon: Brain },

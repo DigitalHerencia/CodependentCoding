@@ -22,11 +22,13 @@ export {
 export { LoadedVibesError, type LoadedVibesErrorCode } from './errors.js';
 export {
   generatedModuleIds,
+  getAddableOwnership,
+  optionalSurfaceOwnership,
   selectedGeneratedModuleIds,
-  selectGeneratedModules,
-  type GeneratedModule,
+  excludedOwnedPaths,
   type GeneratedModuleId,
-} from './modules.js';
+  type OptionalSurfaceOwnership,
+} from './ownership.js';
 export {
   generationManifestSchema,
   parseGenerationManifest,

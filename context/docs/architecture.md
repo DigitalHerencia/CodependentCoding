@@ -140,7 +140,7 @@ Do not duplicate owned source code into overlay module trees merely to support g
 
 ## Compatibility during migration
 
-The current repository contains `template/` as its sole application source, preset defaults in `packages/core`, and temporary capability metadata plus module-based generation behavior. The latter structures are migration inputs.
+The repository contains `template/` as its sole application source. Preset defaults and optional-surface ownership live in `packages/core`, and generation copies the template before pruning excluded owned routes and applying structured transforms.
 
 They may remain temporarily while earlier specs move source ownership and core semantics. They must not survive as unexplained parallel architecture after the final cleanup spec.
 

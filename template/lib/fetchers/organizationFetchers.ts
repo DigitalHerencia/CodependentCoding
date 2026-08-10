@@ -2,6 +2,7 @@ import "server-only"
 
 import { unstable_noStore as noStore } from "next/cache"
 
+import { loadedVibesCapabilities } from "@/content/loadedvibes"
 import { requireTenantContext } from "@/lib/auth/session"
 import { assertCapability } from "@/lib/authz/assertions"
 import { mapOrganizationSettingsDTO, mapTeamMemberDTO } from "@/lib/db/dto/organization.mappers"
@@ -52,22 +53,30 @@ export async function getIntegrationReadiness(): Promise<IntegrationReadinessDTO
       configured: configured("NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY", "CLERK_SECRET_KEY"),
       purpose: "Authentication and account identity",
     },
-    {
-      id: "stripe",
-      label: "Stripe Billing",
-      configured: configured(
-        "STRIPE_SECRET_KEY",
-        "STRIPE_WEBHOOK_SECRET",
-        "STRIPE_RECURRING_PRICE_ID"
-      ),
-      purpose: "Subscriptions and customer billing",
-    },
-    {
-      id: "stripe-connect",
-      label: "Stripe Connect",
-      configured: configured("STRIPE_SECRET_KEY", "STRIPE_CONNECT_WEBHOOK_SECRET"),
-      purpose: "Connected accounts and platform payments",
-    },
+    ...(loadedVibesCapabilities.billing
+      ? [
+          {
+            id: "stripe",
+            label: "Stripe Billing",
+            configured: configured(
+              "STRIPE_SECRET_KEY",
+              "STRIPE_WEBHOOK_SECRET",
+              "STRIPE_RECURRING_PRICE_ID"
+            ),
+            purpose: "Subscriptions and customer billing",
+          },
+        ]
+      : []),
+    ...(loadedVibesCapabilities.stripeConnect
+      ? [
+          {
+            id: "stripe-connect",
+            label: "Stripe Connect",
+            configured: configured("STRIPE_SECRET_KEY", "STRIPE_CONNECT_WEBHOOK_SECRET"),
+            purpose: "Connected accounts and platform payments",
+          },
+        ]
+      : []),
     {
       id: "cloudinary",
       label: "Cloudinary",

@@ -16,9 +16,6 @@ for (const required of [
   'package/template/.loaded-vibes-template.json',
   'package/template/.env.example',
   'package/template/prisma/schema.prisma',
-  'package/templates/modules/marketing/.loaded-vibes-module.json',
-  'package/templates/modules/sample-domain/.loaded-vibes-module.json',
-  'package/templates/modules/stripe-connect/.loaded-vibes-module.json',
 ]) {
   if (!entries.includes(required))
     throw new Error(`Packed artifact is missing ${required}`);

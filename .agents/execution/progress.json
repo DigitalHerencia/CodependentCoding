@@ -3,10 +3,10 @@
   "status": "in-progress",
   "observedRevision": "f4cd2dad89ff05d85d5887d46745dcc869b64e7b",
   "observedDate": "2026-08-09",
-  "currentOutcome": "LV-202 removes the recipes package while preserving shared preset defaults in the generator core.",
-  "activeIssue": 113,
-  "activeSpec": "context/specs/LV-202-simplify-configuration-core.md",
-  "openIssuesObserved": 6,
+  "currentOutcome": "LV-203 generates from template/ through a core-owned retain/remove catalog and structured transforms without module source or metadata trees.",
+  "activeIssue": 114,
+  "activeSpec": "context/specs/LV-203-one-template-generator.md",
+  "openIssuesObserved": 5,
   "openPullRequestsObserved": 0,
   "completedPriorRoadmap": "LV-101 through LV-110",
   "nextRoadmap": [
@@ -21,8 +21,8 @@
   "knownTransitionFacts": [
     "preset defaults are owned by packages/core",
     "template is the sole complete application source",
-    "templates/modules contains compatibility metadata only",
-    "package.json publishes template plus temporary module metadata",
+    "optional route ownership is cataloged in packages/core",
+    "package.json publishes the sole template source",
     "package.json name is create-loaded-vibes and exposes both create-loaded-vibes and loaded-vibes bins",
     "current web root route renders the configurator directly",
     "root and context governance already prohibit using DigitalHerencia/Vibes as template authority"
@@ -35,5 +35,5 @@
     "package smoke checks",
     "deployments"
   ],
-  "nextAction": "Finish LV-202 verification, open its focused pull request, and merge before starting LV-203."
+  "nextAction": "Finish LV-203 verification, open its focused pull request, and merge before starting LV-204."
 }

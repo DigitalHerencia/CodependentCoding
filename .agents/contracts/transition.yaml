@@ -13,7 +13,7 @@ current_migration_structures:
   packages_recipes: false
   templates_golden: false
   templates_modules_source: false
-  templates_modules_metadata: true
+  templates_modules_metadata: false
   root_package_name_create_loaded_vibes: true
   root_web_route_is_configurator: true
 

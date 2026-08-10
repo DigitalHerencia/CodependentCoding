@@ -19,6 +19,7 @@ When two sources conflict, do not invent a compromise. Prefer the higher authori
 ## Read by task
 
 ### Any implementation Issue
+
 Read:
 
 1. this file;
@@ -29,7 +30,9 @@ Read:
 6. the actual files being changed.
 
 ### Master template work
+
 Read:
+
 - `context/docs/template.md`
 - `context/docs/architecture.md`
 - `context/docs/repository-transition.md`
@@ -38,7 +41,9 @@ Read:
 - the relevant Hipster Stack references in DevNotes
 
 ### Generator or configuration work
+
 Read:
+
 - `context/docs/configuration.md`
 - `context/docs/generator-cli.md`
 - `context/docs/architecture.md`
@@ -46,20 +51,26 @@ Read:
 - `.agents/contracts/architecture.yaml`
 
 ### Website work
+
 Read:
+
 - `context/docs/web.md`
 - `context/docs/product.md`
 - the relevant web spec
 - `.agents/contracts/product.yaml`
 
 ### End-user documentation work
+
 Read:
+
 - `context/docs/documentation.md`
 - `context/docs/product.md`
 - the relevant docs spec
 
 ### Release and cleanup work
+
 Read:
+
 - `context/docs/repository-transition.md`
 - `context/docs/release.md`
 - `.agents/contracts/transition.yaml`
@@ -103,6 +114,7 @@ Loaded Vibes does not depend on the Vibes repository. Loaded Vibes owns the exec
 Do not ask users to choose architecture that Loaded Vibes has already decided.
 
 The fixed foundation includes the supported repository-local implementation of:
+
 - TypeScript;
 - Next.js App Router;
 - React Server Components by default;
@@ -130,6 +142,7 @@ The fixed foundation includes the supported repository-local implementation of:
 Expose a choice only when Loaded Vibes can produce the corresponding output correctly.
 
 Useful configuration may include:
+
 - project identity and destination;
 - product identity;
 - optional integrations;
@@ -164,7 +177,7 @@ LoadedVibes/
 └── AGENTS.md
 ```
 
-`packages/recipes`, `templates/golden`, and `templates/modules` are migration-era structures, not the target architecture.
+`packages/recipes`, `templates/golden`, and `templates/modules` were migration-era structures and must not be reintroduced.
 
 ## Working rules
 
@@ -186,6 +199,7 @@ LoadedVibes/
 ## Delivery
 
 For implementation work:
+
 1. create or use the GitHub Issue corresponding to the active spec;
 2. implement the Issue on a focused branch;
 3. use proportional existing verification;

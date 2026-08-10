@@ -1,13 +1,13 @@
 import path from 'node:path';
 import { randomUUID } from 'node:crypto';
 import type { LoadedVibesConfig } from '../config/schema.js';
-import { selectGeneratedModules, type GeneratedModule } from '../modules.js';
+import { excludedOwnedPaths } from '../ownership.js';
 
 export interface GenerationPlan {
   config: LoadedVibesConfig;
   templateDirectory: string;
   stagingDirectory: string;
-  modules: readonly GeneratedModule[];
+  excludedOwnedPaths: readonly string[];
   validationGates: readonly string[];
 }
 
@@ -19,7 +19,7 @@ export function createGenerationPlan(
   return {
     config,
     templateDirectory,
-    modules: selectGeneratedModules(config, templateDirectory),
+    excludedOwnedPaths: excludedOwnedPaths(config.recipe),
     stagingDirectory: path.join(
       parent,
       `.loaded-vibes-${path.basename(config.targetDirectory)}-${randomUUID()}`,
