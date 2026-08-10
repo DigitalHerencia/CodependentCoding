@@ -1,7 +1,10 @@
 import { mkdir, readFile, rename, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import type { NormalizedRecipe } from '@loaded-vibes/schema';
-import { selectedGeneratedModuleIds } from '../modules.js';
+import {
+  excludedOwnedPaths,
+  selectedGeneratedModuleIds,
+} from '../ownership.js';
 import type { GenerationPlan } from './plan.js';
 
 export interface TemplateProvenance {
@@ -28,9 +31,11 @@ export async function writeRecipeArtifacts(
         template: {
           id: template.templateId,
           version: template.templateVersion,
+          composition: 'copy-one-template-retain-remove-transform',
         },
         preset: recipe.product,
         modules: selectedGeneratedModuleIds(recipe),
+        excludedOwnedPaths: excludedOwnedPaths(recipe),
         recipe,
       },
       null,
@@ -179,6 +184,8 @@ export async function applyTransforms(plan: GenerationPlan): Promise<void> {
     projectName: plan.config.recipe.name,
     templateId: templateMetadata.templateId,
     templateVersion: templateMetadata.templateVersion,
+    composition: 'copy-one-template-retain-remove-transform',
+    excludedOwnedPaths: plan.excludedOwnedPaths,
   };
   await writeFile(
     path.join(plan.stagingDirectory, '.loaded-vibes.json'),

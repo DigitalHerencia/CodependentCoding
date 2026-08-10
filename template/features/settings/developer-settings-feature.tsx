@@ -1,9 +1,12 @@
 import { PageHero } from "@/components/blocks/page-hero"
+import { loadedVibesCapabilities } from "@/content/loadedvibes"
 
 const providerWebhooks = [
   "/api/clerk/webhooks",
-  "/api/stripe/webhooks",
-  "/api/stripe/connect/webhooks",
+  ...(loadedVibesCapabilities.billing ? ["/api/stripe/webhooks"] : []),
+  ...(loadedVibesCapabilities.stripeConnect
+    ? ["/api/stripe/connect/webhooks"]
+    : []),
   "/api/cloudinary/webhooks",
 ] as const
 

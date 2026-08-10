@@ -31,7 +31,7 @@ template/
 
 The target is singular by design.
 
-The repository-owned application lives at `template/`. Optional capability source previously duplicated under `templates/modules` has been merged into that canonical tree; only temporary ownership metadata remains there for compatibility until the core catalog migration.
+The repository-owned application lives at `template/`. Optional capability source previously duplicated under `templates/modules` has been merged into that canonical tree, and its retain/remove ownership now lives in the generator core.
 
 ## Maximal means supported, not imaginary
 

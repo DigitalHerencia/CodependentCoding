@@ -3,7 +3,7 @@ import {
   normalizedRecipeSchema,
   productPresetSchema,
 } from '@loaded-vibes/schema';
-import { generatedModuleIds } from './modules.js';
+import { generatedModuleIds } from './ownership.js';
 import { LoadedVibesError } from './errors.js';
 
 export const generationManifestSchema = z
@@ -12,9 +12,18 @@ export const generationManifestSchema = z
     generator: z
       .object({ name: z.literal('create-loaded-vibes'), version: z.string() })
       .strict(),
-    template: z.object({ id: z.string(), version: z.string() }).strict(),
+    template: z
+      .object({
+        id: z.string(),
+        version: z.string(),
+        composition: z
+          .literal('copy-one-template-retain-remove-transform')
+          .default('copy-one-template-retain-remove-transform'),
+      })
+      .strict(),
     preset: productPresetSchema,
     modules: z.array(z.enum(generatedModuleIds)),
+    excludedOwnedPaths: z.array(z.string()).default([]),
     recipe: normalizedRecipeSchema,
   })
   .strict();

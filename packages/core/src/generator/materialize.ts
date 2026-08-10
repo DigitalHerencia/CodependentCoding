@@ -6,26 +6,11 @@ import {
   rename,
   rm,
   rmdir,
-  readdir,
 } from 'node:fs/promises';
 import path from 'node:path';
 import { LoadedVibesError } from '../errors.js';
 import type { GenerationPlan } from './plan.js';
 import { applyTransforms } from './transforms.js';
-
-async function copyOverlay(source: string, destination: string): Promise<void> {
-  await mkdir(destination, { recursive: true });
-  for (const entry of await readdir(source, { withFileTypes: true })) {
-    if (entry.name === '.loaded-vibes-module.json') continue;
-    const sourcePath = path.join(source, entry.name);
-    const destinationPath = path.join(destination, entry.name);
-    if (entry.isDirectory()) await copyOverlay(sourcePath, destinationPath);
-    else
-      await cp(sourcePath, destinationPath, {
-        force: true,
-      });
-  }
-}
 
 export async function materialize(plan: GenerationPlan): Promise<void> {
   try {
@@ -49,11 +34,11 @@ export async function materialize(plan: GenerationPlan): Promise<void> {
       recursive: true,
       force: false,
     });
-    for (const module of plan.modules) {
-      await lstat(
-        path.join(module.sourceDirectory, '.loaded-vibes-module.json'),
-      );
-      await copyOverlay(module.sourceDirectory, plan.stagingDirectory);
+    for (const relative of plan.excludedOwnedPaths) {
+      await rm(path.join(plan.stagingDirectory, relative), {
+        recursive: true,
+        force: true,
+      });
     }
     await applyTransforms(plan);
     try {

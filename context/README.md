@@ -12,13 +12,13 @@ The CLI is the primary execution surface. The web app is a developer-oriented la
 
 ## Current transition
 
-The repository owns its maximal application foundation at `template/` and has no external template authority. Capability metadata remains temporarily under `templates/modules`, but no duplicate application source remains there. The remaining cleanup is structural and product-facing:
+The repository owns its maximal application foundation at `template/` and has no external template authority. Core-owned configuration now resolves explicit retain/remove ownership over that one source. The remaining cleanup is product-facing:
 
 ```text
 CURRENT MIGRATION SHAPE
 apps/web
 packages/{cli,core,schema}
-template/ + templates/modules metadata
+template/ + core ownership catalog
 legacy product-preset/module concepts
 
               ↓

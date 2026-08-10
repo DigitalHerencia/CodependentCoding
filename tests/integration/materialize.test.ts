@@ -96,6 +96,11 @@ describe('createProject', () => {
       preset: 'bare-golden-app',
       templateId: 'loaded-vibes-maximal-saas',
       templateVersion: '1.0.0',
+      composition: 'copy-one-template-retain-remove-transform',
+      excludedOwnedPaths: expect.arrayContaining([
+        'app/(public)/pricing',
+        'app/(tenant)/projects',
+      ]),
     });
     expect(
       JSON.parse(await readFile(path.join(target, 'loadedvibes.json'), 'utf8')),
@@ -106,26 +111,33 @@ describe('createProject', () => {
     });
     await expect(
       stat(path.join(target, 'app', '(public)', 'pricing')),
-    ).resolves.toBeTruthy();
+    ).rejects.toMatchObject({ code: 'ENOENT' });
     await expect(
       stat(path.join(target, 'app', '(tenant)', 'projects')),
-    ).resolves.toBeTruthy();
+    ).rejects.toMatchObject({ code: 'ENOENT' });
     await expect(
       stat(path.join(target, 'app', 'api', 'stripe', 'connect')),
-    ).resolves.toBeTruthy();
+    ).rejects.toMatchObject({ code: 'ENOENT' });
     await expect(
       readFile(path.join(target, 'content', 'loadedvibes.ts'), 'utf8'),
     ).resolves.toContain('"marketing": false');
     for (const surface of [
-      path.join('app', '(onboarding)', 'onboarding', 'page.tsx'),
-      path.join('app', '(tenant)', 'team', 'page.tsx'),
       path.join('app', '(tenant)', 'uploads', 'page.tsx'),
       path.join('app', '(tenant)', 'maps', 'page.tsx'),
       path.join('app', '(tenant)', 'ai', 'page.tsx'),
-      path.join('app', '(admin)', 'admin', 'page.tsx'),
       path.join('app', 'api', 'cloudinary', 'webhooks', 'route.ts'),
     ]) {
       await expect(stat(path.join(target, surface))).resolves.toBeTruthy();
+    }
+    for (const surface of [
+      path.join('app', '(onboarding)'),
+      path.join('app', '(tenant)', 'team'),
+      path.join('app', '(admin)'),
+      path.join('app', '(billing)'),
+    ]) {
+      await expect(stat(path.join(target, surface))).rejects.toMatchObject({
+        code: 'ENOENT',
+      });
     }
     expect(
       JSON.parse(
@@ -136,7 +148,15 @@ describe('createProject', () => {
       ),
     ).toMatchObject({
       schemaVersion: 2,
-      template: { id: 'loaded-vibes-maximal-saas', version: '1.0.0' },
+      template: {
+        id: 'loaded-vibes-maximal-saas',
+        version: '1.0.0',
+        composition: 'copy-one-template-retain-remove-transform',
+      },
+      excludedOwnedPaths: expect.arrayContaining([
+        'app/(public)/pricing',
+        'app/(tenant)/projects',
+      ]),
     });
     await expect(
       readFile(

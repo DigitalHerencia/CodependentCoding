@@ -1,22 +1,8 @@
-import { access, readFile, readdir, stat } from 'node:fs/promises';
+import { access, readFile, stat } from 'node:fs/promises';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 
 const root = process.cwd();
-
-async function files(directory: string, base = directory): Promise<string[]> {
-  return (
-    await Promise.all(
-      (await readdir(directory, { withFileTypes: true })).map(async (entry) => {
-        if (entry.name === '.loaded-vibes-module.json') return [];
-        const absolute = path.join(directory, entry.name);
-        return entry.isDirectory()
-          ? files(absolute, base)
-          : [path.relative(base, absolute)];
-      }),
-    )
-  ).flat();
-}
 
 describe('template ownership', () => {
   it('uses repository-local template identity without external source provenance', async () => {
@@ -48,13 +34,9 @@ describe('template ownership', () => {
       ).resolves.toBeTruthy();
     }
 
-    for (const moduleId of ['marketing', 'sample-domain', 'stripe-connect']) {
-      const moduleRoot = path.join(root, 'templates', 'modules', moduleId);
-      expect(await files(moduleRoot), moduleId).toEqual([]);
-      await expect(
-        stat(path.join(moduleRoot, '.loaded-vibes-module.json')),
-      ).resolves.toBeTruthy();
-    }
+    await expect(stat(path.join(root, 'templates'))).rejects.toMatchObject({
+      code: 'ENOENT',
+    });
   });
 
   it('has no external template synchronization command or script', async () => {

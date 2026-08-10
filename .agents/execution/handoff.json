@@ -2,28 +2,29 @@
   "schemaVersion": 3,
   "handoff": {
     "repository": "DigitalHerencia/LoadedVibes",
-    "branch": "feat/113-simplify-configuration-core",
-    "observedRevision": "a8593b3",
-    "activeIssue": 113,
-    "activeSpec": "context/specs/LV-202-simplify-configuration-core.md",
-    "objective": "Move useful preset defaults into core and remove the separate recipes package while preserving one shared configuration path.",
+    "branch": "feat/114-one-template-generator",
+    "observedRevision": "6131694",
+    "activeIssue": 114,
+    "activeSpec": "context/specs/LV-203-one-template-generator.md",
+    "objective": "Generate from template/ through explicit core-owned retain/remove decisions and structured transforms without duplicated module source.",
     "readFirst": [
       "AGENTS.md",
       "context/README.md",
-      "context/specs/LV-202-simplify-configuration-core.md",
-      "context/docs/product.md",
+      "context/specs/LV-203-one-template-generator.md",
+      "context/docs/template.md",
       "context/docs/configuration.md",
+      "context/docs/generator-cli.md",
       "context/docs/architecture.md",
-      ".agents/contracts/product.yaml",
       ".agents/contracts/architecture.yaml",
-      "packages/schema/src/recipe.ts",
-      "packages/core/src/recipe.ts"
+      ".agents/contracts/transition.yaml",
+      "packages/core/src/ownership.ts",
+      "packages/core/src/generator/materialize.ts"
     ],
     "doNot": [
       "reintroduce DigitalHerencia/Vibes",
-      "add imaginary capabilities",
-      "expose fixed architecture as configuration",
-      "redesign the master template",
+      "build a plugin architecture",
+      "build an arbitrary upgrade engine",
+      "invent optional surfaces",
       "add new tests or validation systems",
       "claim checks that were not run"
     ]
