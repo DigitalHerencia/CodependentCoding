@@ -9,13 +9,13 @@ baseline:
   revision: 1479a4a1ef14dccf429e9fbaf5f1097e639a2914
   observed_date: 2026-08-09
 
-current_migration_structures:
+final_repository_state:
   packages_recipes: false
   templates_golden: false
   templates_modules_source: false
   templates_modules_metadata: false
   root_package_name_create_loaded_vibes: true
-  root_web_route_is_configurator: true
+  root_web_route_is_configurator: false
 
 target:
   packages_recipes: false
@@ -25,7 +25,7 @@ target:
     - /
     - /configure
     - /docs
-  active_spec_series: LV-201-through-LV-207
+  completed_spec_series: LV-201-through-LV-207
 
 sequence:
   - LV-201
@@ -37,8 +37,11 @@ sequence:
   - LV-207
 
 rules:
-  preserve_working_implementation_during_transition: true
-  delete_dead_migration_structures_after_replacement: true
+  one_template_source: true
+  active_packages:
+    - cli
+    - core
+    - schema
   git_history_is_archive: true
   reintroduce_vibes_repository: false
-  add_new_tests_or_validation_systems: false
+  completed_specs_are_not_active_instructions: true

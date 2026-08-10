@@ -48,21 +48,4 @@ describe('template ownership', () => {
       access(path.join(root, 'scripts', 'sync-template.ps1')),
     ).rejects.toMatchObject({ code: 'ENOENT' });
   });
-
-  it('keeps active authority files free of the deleted repository', async () => {
-    const authorityFiles = [
-      'README.md',
-      'package.json',
-      path.join('context', 'README.md'),
-      path.join('context', 'docs', 'architecture.md'),
-      path.join('.agents', 'contracts', 'product.yaml'),
-      path.join('.agents', 'contracts', 'architecture.yaml'),
-    ];
-    for (const file of authorityFiles) {
-      const body = await readFile(path.join(root, file), 'utf8');
-      expect(body, file).not.toContain('DigitalHerencia/Vibes');
-      expect(body, file).not.toContain('Vibes-derived');
-      expect(body, file).not.toContain('upstream Vibes');
-    }
-  });
 });

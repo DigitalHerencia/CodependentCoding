@@ -18,13 +18,13 @@ A release is ready when the package and website describe and ship the same produ
 - the canonical `loaded-vibes` CLI surface;
 - the stateless `/configure` handoff;
 - end-user docs that match the released behavior;
-- no live or documented dependency on `DigitalHerencia/Vibes`.
+- no external application-template dependency.
 
 ## Package contents
 
 The package should include only the compiled CLI/core assets and template/configuration material required for local generation.
 
-Once migration is complete, packaging should reference `template/`, not `templates/golden` or `templates/modules`.
+Packaging references the single `template/` source.
 
 ## Naming
 

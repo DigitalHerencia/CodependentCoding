@@ -1,15 +1,15 @@
 {
   "schemaVersion": 3,
-  "status": "in-progress",
-  "observedRevision": "19093f1",
+  "status": "release-candidate-verified-locally",
+  "observedRevision": "6fa0e75",
   "observedDate": "2026-08-09",
-  "currentOutcome": "LV-206 makes loaded-vibes the canonical command and aligns CLI/package handoff language with the one-template product.",
-  "activeIssue": 117,
-  "activeSpec": "context/specs/LV-206-cli-package-polish.md",
-  "openIssuesObserved": 2,
+  "currentOutcome": "LV-201 through LV-207 are implemented: one template, shared configuration/core, deterministic generation, canonical CLI, split web surfaces, canonical docs, and coherent release governance.",
+  "activeIssue": null,
+  "activeSpec": null,
+  "openIssuesObserved": 0,
   "openPullRequestsObserved": 0,
   "completedPriorRoadmap": "LV-101 through LV-110",
-  "nextRoadmap": [
+  "completedRoadmap": [
     "LV-201",
     "LV-202",
     "LV-203",
@@ -26,15 +26,13 @@
     "package.json name is create-loaded-vibes and exposes both create-loaded-vibes and loaded-vibes bins",
     "the web root is the concise developer landing page and /configure owns the workbench",
     "docs/ is the canonical end-user source rendered by /docs",
-    "root and context governance already prohibit using DigitalHerencia/Vibes as template authority"
+    "the published npm package name remains create-loaded-vibes while loaded-vibes is the canonical command"
   ],
-  "evidenceThisArtifactDidNotExecute": [
-    "repository implementation changes",
-    "tests",
-    "validation commands",
-    "builds",
-    "package smoke checks",
-    "deployments"
+  "verification": [
+    "corepack pnpm release:check",
+    "corepack pnpm web:build",
+    "corepack pnpm exec vitest run tests/integration/template-ownership.test.ts",
+    "corepack pnpm pack:check after excluding generated template artifacts"
   ],
-  "nextAction": "Finish LV-206 package verification, open its focused pull request, and merge before starting LV-207."
+  "nextAction": "Merge LV-207 after fresh release/package and web evidence; npm publication and production deployment remain separate owner-authorized gates."
 }

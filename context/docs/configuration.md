@@ -91,7 +91,7 @@ They are not:
 
 - separate templates;
 - separate architectures;
-- a reason to maintain a separate `packages/recipes` package.
+- separate application templates.
 
 If existing presets remain useful, move their data into the schema/core boundary during migration.
 

@@ -1,32 +1,4 @@
 {
   "schemaVersion": 3,
-  "handoff": {
-    "repository": "DigitalHerencia/LoadedVibes",
-    "branch": "feat/117-cli-package-polish",
-    "observedRevision": "19093f1",
-    "activeIssue": 117,
-    "activeSpec": "context/specs/LV-206-cli-package-polish.md",
-    "objective": "Make loaded-vibes the unambiguous canonical command and align CLI, packaging, and generated handoff language with the one-template product.",
-    "readFirst": [
-      "AGENTS.md",
-      "context/README.md",
-      "context/specs/LV-206-cli-package-polish.md",
-      "context/docs/generator-cli.md",
-      "context/docs/release.md",
-      "context/docs/repository-transition.md",
-      ".agents/contracts/product.yaml",
-      ".agents/contracts/transition.yaml",
-      "packages/cli/src/cli.ts",
-      "packages/cli/src/create-flow.ts",
-      "package.json"
-    ],
-    "doNot": [
-      "reintroduce DigitalHerencia/Vibes",
-      "claim an npm rename or publication occurred",
-      "add commands for completeness",
-      "turn doctor into a validation suite",
-      "add new tests or validation systems",
-      "claim checks that were not run"
-    ]
-  }
+  "handoff": null
 }

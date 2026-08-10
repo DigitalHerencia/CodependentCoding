@@ -20,7 +20,6 @@ The template is not an example project and it is not a pile of independent templ
 
 - Loaded Vibes owns the executable template.
 - DevNotes owns the Hipster Stack engineering doctrine used to maintain it.
-- `DigitalHerencia/Vibes` is not an upstream, reference, synchronization source, provenance source, or runtime dependency.
 - Codependent Coding is not required to generate the template.
 
 ## Target location
@@ -31,7 +30,7 @@ template/
 
 The target is singular by design.
 
-The repository-owned application lives at `template/`. Optional capability source previously duplicated under `templates/modules` has been merged into that canonical tree, and its retain/remove ownership now lives in the generator core.
+The repository-owned application lives at `template/`. Retain/remove ownership for optional surfaces lives in the generator core.
 
 ## Maximal means supported, not imaginary
 
@@ -71,17 +70,3 @@ Agent guidance belongs near stable architectural boundaries when it materially h
 Use scoped `AGENTS.md` files for durable route/layer guidance. Do not litter runtime components with explanatory architecture prose that belongs in context.
 
 Generated UI should look like a product, not like documentation about the stack.
-
-## Migration rule
-
-Move first, simplify second.
-
-Do not simultaneously:
-
-- relocate the template;
-- redesign its internal application architecture;
-- rewrite optional capabilities;
-- redesign the generator;
-- redesign the website.
-
-The specs sequence these concerns so the current working implementation remains recoverable while the repository converges.

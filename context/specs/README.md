@@ -1,10 +1,10 @@
-# Loaded Vibes Active Implementation Specs
+# Loaded Vibes Implementation Specs
 
-These specs are the issue-sized roadmap for finishing the current repository migration.
+These specs record the completed issue-sized roadmap for the one-template repository migration.
 
 GitHub Issues are the operational queue. Each Issue should correspond to one spec. The spec is durable scope and acceptance context, not a second project-management system.
 
-## Active order
+## Completed order
 
 1. **LV-201** — consolidate the one repository-owned master template.
 2. **LV-202** — simplify configuration and absorb recipe ownership.
@@ -37,16 +37,7 @@ LV-204 web      LV-205 docs     LV-206 CLI/package
 
 ## Historical specs
 
-LV-101 through LV-110 belong to the completed previous generator roadmap. Once this governance replaces the active set, they should not continue to guide current implementation. Git history preserves them.
-
-## Issue creation rule
-
-For each spec:
-
-- use its `issue_title` as the starting GitHub Issue title;
-- use the full spec body or link the spec from a concise Issue body;
-- do not split the spec into artificial sub-Issues unless implementation evidence shows it cannot be completed coherently;
-- do not combine multiple specs into a giant PR.
+LV-101 through LV-110 are preserved in Git history and are not active instructions.
 
 ## Verification rule
 

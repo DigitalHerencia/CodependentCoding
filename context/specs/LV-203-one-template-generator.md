@@ -1,7 +1,7 @@
 ---
 id: LV-203
 title: Convert generation to one-template retain/remove ownership
-status: ready
+status: completed
 type: implementation-spec
 order: 3
 depends_on: [LV-201, LV-202]

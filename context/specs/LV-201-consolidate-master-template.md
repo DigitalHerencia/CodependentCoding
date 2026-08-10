@@ -1,7 +1,7 @@
 ---
 id: LV-201
 title: Consolidate the Loaded Vibes master template
-status: ready
+status: completed
 type: implementation-spec
 order: 1
 depends_on: []
