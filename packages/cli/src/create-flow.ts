@@ -63,23 +63,23 @@ export const clackCreateFlowPrompts: CreateFlowPrompts = {
         {
           value: 'express',
           label: 'Express',
-          hint: 'strong defaults and a few high-leverage choices',
+          hint: 'a starting configuration and product identity',
         },
         {
           value: 'advanced',
           label: 'Advanced',
-          hint: 'all supported product and design choices',
+          hint: 'all supported surfaces, identity, and visual choices',
         },
       ],
     }) as Promise<PromptResult<SetupMode>>,
   product: () =>
     select({
-      message: 'What are you building?',
+      message: 'Choose a starting configuration',
       options: choices(productPresetIds, (id) => getProductPreset(id).label),
     }) as Promise<PromptResult<ProductPresetId>>,
   capabilities: (initial) =>
     multiselect({
-      message: 'What should the starting product include?',
+      message: 'Which optional surfaces should be included?',
       options: choices(
         optionalCapabilities,
         (id) => capabilityRegistry[id].label,
@@ -127,7 +127,7 @@ export const clackCreateFlowPrompts: CreateFlowPrompts = {
     }) as Promise<PromptResult<Design['mode']>>,
   review: (body) => note(body, 'Build review'),
   approve: () =>
-    confirm({ message: 'Generate this project?', initialValue: true }),
+    confirm({ message: 'Generate this output?', initialValue: true }),
 };
 
 function title(value: string): string {
@@ -199,10 +199,11 @@ export function formatRecipeReview(resolved: ResolvedRecipe): string {
   return [
     `${recipe.identity.displayName}`,
     '',
-    `Product: ${summary.preset.label}`,
-    `Included: ${summary.included.join(', ')}`,
-    `Not included: ${summary.excluded.join(', ') || 'None'}`,
-    `UI: ${title(recipe.design.theme)}, ${title(recipe.design.navigation)}, ${title(recipe.design.density)}, ${title(recipe.design.mode)}`,
+    `Starting configuration: ${summary.preset.label}`,
+    'Fixed foundation: TypeScript, Next.js, Prisma, Clerk, tenant authorization',
+    `Optional surfaces: ${summary.included.filter((item) => !['Organizations', 'Local roles and authorization', 'Generated project guidance'].includes(item)).join(', ') || 'None'}`,
+    `Excluded surfaces: ${summary.excluded.join(', ') || 'None'}`,
+    `Visual direction: ${title(recipe.design.theme)}, ${title(recipe.design.navigation)}, ${title(recipe.design.density)}, ${title(recipe.design.mode)}`,
   ].join('\n');
 }
 

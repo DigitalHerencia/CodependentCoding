@@ -19,7 +19,7 @@ describe('real user-facing CLI', () => {
       '--skip-install',
     ]);
     expect(result.stdout).toContain('Build review');
-    expect(result.stdout).toContain('Bare golden app');
+    expect(result.stdout).toContain('Starting configuration: Bare golden app');
     await expect(stat(target)).rejects.toMatchObject({ code: 'ENOENT' });
   });
 
@@ -155,7 +155,7 @@ describe('real user-facing CLI', () => {
       '--cwd',
       target,
     ]);
-    expect(result.stdout).toContain('Module: marketing');
+    expect(result.stdout).toContain('Optional surface: marketing');
     expect(result.stdout).toContain('Capabilities: marketing');
     await expect(
       stat(path.join(target, 'app', '(public)', 'pricing', 'page.tsx')),
@@ -183,7 +183,7 @@ describe('real user-facing CLI', () => {
     expect(doctor.stdout).toContain('Run corepack pnpm install.');
     expect(doctor.stdout).toContain('Add the Clerk secret key to .env.local.');
     const explain = await execa('node', [cli, 'explain', '--cwd', target]);
-    expect(explain.stdout).toContain('Preset: Bare golden app');
+    expect(explain.stdout).toContain('Starting configuration: Bare golden app');
     expect(explain.stdout).toContain('Provider boundaries');
     expect(explain.stdout).toContain('Remaining setup');
   }, 15_000);

@@ -1,24 +1,24 @@
 # Loaded Vibes
 
-Loaded Vibes turns a few product choices into a recognizable SaaS starting point. It combines an enjoyable CLI, a stateless visual configurator, reproducible `loadedvibes.json` recipes, and one packaged maximal white-label application template—without asking you to redesign the stack.
+Loaded Vibes turns a bounded project configuration into a complete white-label application. It combines the canonical `loaded-vibes` CLI, a stateless visual configurator, reproducible `loadedvibes.json` contracts, and one packaged maximal template—without asking you to redesign the stack.
 
 The canonical end-user guide lives in [`docs/`](docs/index.md) and is rendered by the website under `/docs/*`. Start with [Getting started](docs/getting-started.md), then use the [configuration](docs/concepts/configuration.md) and [CLI](docs/cli/index.md) references as needed.
 
 ## Create a project
 
-Node.js 24 is required. Run the package without installing it globally:
+Node.js 24 is required. The published package is still named `create-loaded-vibes`; no npm package rename is implied. Run it without installing globally:
 
 ```powershell
 pnpm dlx create-loaded-vibes@latest create my-product
 ```
 
-The `create-loaded-vibes my-product` form remains supported for compatibility. If you install the package, the product-oriented executable is also available:
+`loaded-vibes` is the canonical command. The package also exposes `create-loaded-vibes`, including its direct `create-loaded-vibes my-product` initializer form, as a low-cost compatibility alias:
 
 ```powershell
 loaded-vibes create my-product
 ```
 
-The interactive flow asks what you are building, which supported capabilities it needs, and how it should look. For a reproducible non-interactive build:
+The interactive flow asks for a starting configuration, real optional surfaces, product identity, and visual direction. For a reproducible non-interactive build:
 
 ```powershell
 loaded-vibes create my-product --config loadedvibes.json --yes
@@ -26,9 +26,9 @@ loaded-vibes create my-product --config loadedvibes.json --yes
 
 Useful create options include `--dry-run`, `--no-git`, `--skip-install`, and `--name <package-name>`.
 
-## Choose a product shape
+## Configure generated output
 
-Presets are strong defaults over one generator—not separate application forks.
+Starting configurations are convenience defaults over one template—not separate application forks.
 
 | Preset                 | Best starting point for                                                             |
 | ---------------------- | ----------------------------------------------------------------------------------- |
@@ -77,7 +77,7 @@ loaded-vibes add sample-domain
 loaded-vibes add stripe-connect
 ```
 
-`explain` summarizes what was generated and what remains. `doctor` diagnoses actionable local/provider readiness without running the entire validation suite. `add` enables explicitly packaged compatibility projections already owned by the maximal template; it is not an arbitrary source upgrade or merge engine.
+`explain` summarizes what was generated and what remains. `doctor` diagnoses actionable local/provider readiness without running the entire validation suite. `add` enables three explicitly supported generator-owned surfaces; it is not an arbitrary source upgrade or merge engine.
 
 ## Provider handoff
 

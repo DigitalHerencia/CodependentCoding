@@ -82,8 +82,9 @@ describe('CLI product flow', () => {
     const review = formatRecipeReview(
       resolveRecipe({ name: 'review-app', product: 'client-portal' }),
     );
-    expect(review).toContain('Included:');
-    expect(review).toContain('Not included:');
+    expect(review).toContain('Fixed foundation:');
+    expect(review).toContain('Optional surfaces:');
+    expect(review).toContain('Excluded surfaces:');
     expect(review).toContain('Client portal');
   });
 });
