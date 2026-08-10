@@ -1,10 +1,11 @@
 import type { Metadata } from 'next';
+import { SiteHeader } from '@/components/site-header';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Loaded Vibes Configurator',
+  title: 'Loaded Vibes — Generate the golden prototype',
   description:
-    'Shape a production-minded SaaS recipe without choosing architecture internals.',
+    'A deterministic software factory for production-minded white-label applications.',
 };
 
 export default function RootLayout({
@@ -12,7 +13,10 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <SiteHeader />
+        {children}
+      </body>
     </html>
   );
 }

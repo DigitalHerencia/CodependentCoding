@@ -5,29 +5,14 @@ import {
   defaultConfiguratorRecipe,
   deserializeRecipe,
   resolveConfiguratorRecipe,
-  selectProductPreset,
   serializeRecipe,
   setCapability,
 } from '../../apps/web/lib/configurator.js';
 import { getPreviewSurfaces } from '../../apps/web/lib/preview.js';
 
 describe('web configurator recipe', () => {
-  it('uses the same preset resolver as the CLI', () => {
-    const draft = selectProductPreset(
-      defaultConfiguratorRecipe,
-      'client-portal',
-    );
-    const resolved = resolveConfiguratorRecipe(draft);
-    expect(resolved.recipe.product).toBe('client-portal');
-    expect(resolved.recipe.modules.invitations).toBe(true);
-    expect(resolved.recipe.modules.billing).toBe(false);
-  });
-
   it('automatically resolves capability dependencies', () => {
-    let draft = selectProductPreset(
-      defaultConfiguratorRecipe,
-      'bare-golden-app',
-    );
+    let draft = defaultConfiguratorRecipe;
     draft = setCapability(draft, 'stripeConnect', true);
     const resolved = resolveConfiguratorRecipe(draft);
     expect(resolved.recipe.modules.billing).toBe(true);
@@ -50,9 +35,7 @@ describe('web configurator recipe', () => {
   });
 
   it('exposes only preview surfaces supported by the resolved recipe', () => {
-    const bare = resolveConfiguratorRecipe(
-      selectProductPreset(defaultConfiguratorRecipe, 'bare-golden-app'),
-    ).recipe;
+    const bare = resolveConfiguratorRecipe(defaultConfiguratorRecipe).recipe;
     const surfaces = getPreviewSurfaces(bare);
     expect(
       surfaces.find((surface) => surface.id === 'dashboard')?.available,

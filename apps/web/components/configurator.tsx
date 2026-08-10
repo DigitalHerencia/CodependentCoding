@@ -1,12 +1,6 @@
 'use client';
 
-import {
-  capabilityRegistry,
-  productPresetIds,
-  productPresets,
-  type Design,
-  type ProductPresetId,
-} from '@loaded-vibes/core/browser';
+import { capabilityRegistry, type Design } from '@loaded-vibes/core/browser';
 import { useEffect, useMemo, useState } from 'react';
 import { LivePreview } from '@/components/live-preview';
 import {
@@ -15,18 +9,10 @@ import {
   defaultConfiguratorRecipe,
   deserializeRecipe,
   resolveConfiguratorRecipe,
-  selectProductPreset,
   serializeRecipe,
   setCapability,
   type ConfiguratorRecipe,
 } from '@/lib/configurator';
-
-const productNotes: Record<ProductPresetId, string> = {
-  'b2b-saas': 'Teams, subscriptions, onboarding, and an operator view.',
-  'client-portal': 'A secure shared workspace for clients and your team.',
-  'platform-marketplace': 'A multi-sided product with connected payments.',
-  'bare-golden-app': 'The smallest proven foundation, ready for your domain.',
-};
 
 const designChoices = {
   theme: ['obsidian', 'paper', 'electric'],
@@ -95,28 +81,13 @@ export function Configurator() {
   }
 
   return (
-    <main className="shell">
-      <header className="masthead">
-        <a className="wordmark" href="#top" aria-label="Loaded Vibes home">
-          <span className="mark">LV</span>
-          <span>Loaded Vibes</span>
-        </a>
-        <span className="status">
-          <i /> Stateless configurator
-        </span>
-      </header>
-
-      <section className="hero" id="top">
-        <p className="eyebrow">One golden SaaS. Shaped around your product.</p>
-        <h1>
-          Choose the product.
-          <br />
-          <em>Keep the architecture.</em>
-        </h1>
+    <main className="shell configurator-shell">
+      <section className="workbench-intro" id="top">
+        <p className="eyebrow">Configuration workbench</p>
+        <h1>Shape the product. Export the build contract.</h1>
         <p className="lede">
-          Build a reproducible recipe for the Loaded Vibes master template.
-          Loaded Vibes resolves the dependencies and leaves the fixed
-          engineering decisions alone.
+          Configure real optional surfaces, identity, and visual direction. The
+          architecture remains fixed and the result stays portable.
         </p>
       </section>
 
@@ -126,43 +97,14 @@ export function Configurator() {
             <div className="step-heading">
               <span>01</span>
               <div>
-                <h2>Product shape</h2>
-                <p>Start from intent, not infrastructure.</p>
-              </div>
-            </div>
-            <div className="preset-grid">
-              {productPresetIds.map((id) => {
-                const preset = productPresets[id];
-                return (
-                  <button
-                    className="preset-card"
-                    data-active={draft.product === id}
-                    key={id}
-                    onClick={() =>
-                      setDraft((current) => selectProductPreset(current, id))
-                    }
-                  >
-                    <span className="radio" />
-                    <strong>{preset.label}</strong>
-                    <small>{productNotes[id]}</small>
-                  </button>
-                );
-              })}
-            </div>
-          </section>
-
-          <section className="panel step">
-            <div className="step-heading">
-              <span>02</span>
-              <div>
-                <h2>Capabilities</h2>
-                <p>Dependencies are included automatically.</p>
+                <h2>Optional surfaces</h2>
+                <p>Every switch retains or removes generator-owned output.</p>
               </div>
             </div>
             <div className="foundation">
               <span>Always included</span>
               <strong>
-                Organizations · authorization · generated guidance
+                TypeScript · Next.js · Prisma · Clerk · tenant authorization
               </strong>
             </div>
             <div className="capability-list">
@@ -198,7 +140,7 @@ export function Configurator() {
 
           <section className="panel step">
             <div className="step-heading">
-              <span>03</span>
+              <span>02</span>
               <div>
                 <h2>Product identity</h2>
                 <p>Make the generated experience yours.</p>
@@ -255,7 +197,7 @@ export function Configurator() {
 
           <section className="panel step">
             <div className="step-heading">
-              <span>04</span>
+              <span>03</span>
               <div>
                 <h2>Visual direction</h2>
                 <p>Semantic choices, applied to intentional surfaces.</p>
@@ -296,7 +238,7 @@ export function Configurator() {
         >
           <div className="review-top">
             <span>Live product preview</span>
-            <span className="schema">schema v1</span>
+            <span className="schema">loadedvibes.json · schema v1</span>
           </div>
           <div className="product-preview">
             <span className="preview-mark">
@@ -312,8 +254,8 @@ export function Configurator() {
           </div>
           <LivePreview recipe={resolved.recipe} />
           <div className="summary-block">
-            <small>Starting point</small>
-            <strong>{resolved.summary.preset.label}</strong>
+            <small>Generation model</small>
+            <strong>One master template · deterministic retain/remove</strong>
           </div>
           <div className="summary-block">
             <small>
@@ -340,7 +282,7 @@ export function Configurator() {
           </details>
           <div className="actions">
             <button className="primary" onClick={downloadRecipe}>
-              Download recipe
+              Download loadedvibes.json
             </button>
             <button
               onClick={() =>
