@@ -1,7 +1,7 @@
 ---
 id: LV-202
 title: Simplify configuration and absorb recipe ownership
-status: ready
+status: completed
 type: implementation-spec
 order: 2
 depends_on: [LV-201]

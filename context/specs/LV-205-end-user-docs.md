@@ -1,7 +1,7 @@
 ---
 id: LV-205
 title: Add canonical end-user documentation
-status: ready
+status: completed
 type: implementation-spec
 order: 5
 depends_on: [LV-202, LV-203]

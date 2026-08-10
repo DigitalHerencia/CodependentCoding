@@ -1,7 +1,7 @@
 ---
 id: LV-207
 title: Remove migration debris and prepare the coherent release
-status: ready
+status: completed
 type: implementation-spec
 order: 7
 depends_on: [LV-201, LV-202, LV-203, LV-204, LV-205, LV-206]

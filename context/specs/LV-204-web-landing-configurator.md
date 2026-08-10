@@ -1,7 +1,7 @@
 ---
 id: LV-204
 title: Build the developer-tool landing page and configurator
-status: ready
+status: completed
 type: implementation-spec
 order: 4
 depends_on: [LV-202, LV-203]

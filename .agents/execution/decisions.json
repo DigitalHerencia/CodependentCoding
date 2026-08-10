@@ -50,6 +50,11 @@
       "id": "LV-D-019",
       "decision": "The migration adds no new tests or validation systems. Existing relevant checks may be run proportionally for the behavior changed by an Issue.",
       "status": "active"
+    },
+    {
+      "id": "LV-D-020",
+      "decision": "The LV-201 through LV-207 migration is complete. The final repository owns one template at template/, packages cli/core/schema, shared configuration semantics, the canonical loaded-vibes command, stateless web routes, and canonical end-user docs at docs/.",
+      "status": "active"
     }
   ]
 }

@@ -27,6 +27,7 @@ for (const forbidden of [
   '.clerk/',
   'node_modules/',
   '.git/',
+  '.tsbuildinfo',
 ]) {
   if (entries.some((entry) => entry.includes(forbidden)))
     throw new Error(

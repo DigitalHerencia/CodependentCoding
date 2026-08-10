@@ -1,7 +1,7 @@
 ---
 id: LV-206
 title: Polish the CLI and package around the final model
-status: ready
+status: completed
 type: implementation-spec
 order: 6
 depends_on: [LV-202, LV-203]
