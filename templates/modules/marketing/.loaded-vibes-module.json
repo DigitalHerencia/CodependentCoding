@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "id": "marketing",
-  "mode": "compatibility-projection",
-  "projectionOf": "templates/golden",
+  "mode": "canonical-template-ownership",
+  "projectionOf": "template",
   "requires": [],
   "conflicts": [],
   "replaces": [],

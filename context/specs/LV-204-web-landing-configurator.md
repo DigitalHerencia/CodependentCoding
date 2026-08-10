@@ -5,7 +5,7 @@ status: ready
 type: implementation-spec
 order: 4
 depends_on: [LV-202, LV-203]
-issue_title: "Split and polish the Loaded Vibes website and configurator"
+issue_title: 'Split and polish the Loaded Vibes website and configurator'
 ---
 
 # LV-204 — Build the developer-tool landing page and configurator

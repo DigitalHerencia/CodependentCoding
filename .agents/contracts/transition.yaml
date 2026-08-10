@@ -11,8 +11,9 @@ baseline:
 
 current_migration_structures:
   packages_recipes: true
-  templates_golden: true
-  templates_modules: true
+  templates_golden: false
+  templates_modules_source: false
+  templates_modules_metadata: true
   root_package_name_create_loaded_vibes: true
   root_web_route_is_configurator: true
 

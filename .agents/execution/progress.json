@@ -1,12 +1,12 @@
 {
   "schemaVersion": 3,
-  "status": "migration-ready",
-  "observedRevision": "1479a4a1ef14dccf429e9fbaf5f1097e639a2914",
+  "status": "in-progress",
+  "observedRevision": "f4cd2dad89ff05d85d5887d46745dcc869b64e7b",
   "observedDate": "2026-08-09",
-  "currentOutcome": "Loaded Vibes owns its maximal application foundation, but repository structure and active roadmap still reflect the prior recipes plus golden/module composition model.",
-  "activeIssue": null,
-  "activeSpec": null,
-  "openIssuesObserved": 0,
+  "currentOutcome": "LV-201 relocates the sole maximal application source to template/ while retaining temporary module ownership metadata for compatibility.",
+  "activeIssue": 112,
+  "activeSpec": "context/specs/LV-201-consolidate-master-template.md",
+  "openIssuesObserved": 7,
   "openPullRequestsObserved": 0,
   "completedPriorRoadmap": "LV-101 through LV-110",
   "nextRoadmap": [
@@ -20,9 +20,9 @@
   ],
   "knownTransitionFacts": [
     "packages/recipes still exists",
-    "templates/golden still exists",
-    "templates/modules still exists",
-    "package.json still publishes templates",
+    "template is the sole complete application source",
+    "templates/modules contains compatibility metadata only",
+    "package.json publishes template plus temporary module metadata",
     "package.json name is create-loaded-vibes and exposes both create-loaded-vibes and loaded-vibes bins",
     "current web root route renders the configurator directly",
     "root and context governance already prohibit using DigitalHerencia/Vibes as template authority"
@@ -35,5 +35,5 @@
     "package smoke checks",
     "deployments"
   ],
-  "nextAction": "Adopt the updated governance, create the LV-201 GitHub Issue from context/specs/LV-201-consolidate-master-template.md, and implement the roadmap one spec at a time."
+  "nextAction": "Finish LV-201 verification, open its focused pull request, and merge before starting LV-202."
 }

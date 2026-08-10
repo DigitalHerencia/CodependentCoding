@@ -17,10 +17,10 @@ export interface CreateOptions {
 export async function resolveTemplateDirectory(): Promise<string> {
   const moduleDirectory = path.dirname(fileURLToPath(import.meta.url));
   const candidates = [
-    path.resolve(moduleDirectory, '../../../../templates/golden'),
-    path.resolve(moduleDirectory, '../../../templates/golden'),
-    path.resolve(moduleDirectory, '../../templates/golden'),
-    path.resolve(moduleDirectory, '../templates/golden'),
+    path.resolve(moduleDirectory, '../../../../template'),
+    path.resolve(moduleDirectory, '../../../template'),
+    path.resolve(moduleDirectory, '../../template'),
+    path.resolve(moduleDirectory, '../template'),
   ];
   for (const candidate of candidates) {
     try {

@@ -5,7 +5,7 @@ status: ready
 type: implementation-spec
 order: 5
 depends_on: [LV-202, LV-203]
-issue_title: "Add canonical Loaded Vibes end-user docs and /docs"
+issue_title: 'Add canonical Loaded Vibes end-user docs and /docs'
 ---
 
 # LV-205 — Add canonical end-user documentation

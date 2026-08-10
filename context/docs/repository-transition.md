@@ -95,6 +95,7 @@ The final cleanup Issue may remove them from `context/specs/` after the new LV-2
 ## Prohibited regression
 
 The transition must not:
+
 - reintroduce the Vibes repository;
 - create multiple application templates;
 - make web and CLI configuration diverge;

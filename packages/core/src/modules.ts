@@ -19,7 +19,7 @@ export function selectGeneratedModules(
   config: LoadedVibesConfig,
   templateDirectory: string,
 ): GeneratedModule[] {
-  const root = path.resolve(templateDirectory, '../modules');
+  const root = path.resolve(templateDirectory, '../templates/modules');
   const selected = selectedGeneratedModuleIds(config.recipe);
   return selected.map((id) => ({ id, sourceDirectory: path.join(root, id) }));
 }

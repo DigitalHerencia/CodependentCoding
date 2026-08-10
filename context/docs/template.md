@@ -31,7 +31,7 @@ template/
 
 The target is singular by design.
 
-The current `templates/golden` directory is the migration source for the repository-owned application. The current `templates/modules` directories are migration sources that must be merged into the maximal template before their duplicated ownership is removed.
+The repository-owned application lives at `template/`. Optional capability source previously duplicated under `templates/modules` has been merged into that canonical tree; only temporary ownership metadata remains there for compatibility until the core catalog migration.
 
 ## Maximal means supported, not imaginary
 
@@ -46,6 +46,7 @@ If a provider or route surface is only proposed and not actually implemented, it
 The template should keep the canonical application grammar and core identity/tenancy/security model intact.
 
 The fixed foundation includes the supported implementation of:
+
 - application shell and root route behavior;
 - authentication boundary;
 - tenant shell;
@@ -76,6 +77,7 @@ Generated UI should look like a product, not like documentation about the stack.
 Move first, simplify second.
 
 Do not simultaneously:
+
 - relocate the template;
 - redesign its internal application architecture;
 - rewrite optional capabilities;

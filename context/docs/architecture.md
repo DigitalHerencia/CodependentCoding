@@ -64,6 +64,7 @@ loadedvibes.json ─┘                │
 Owns public configuration shapes and enums shared by the CLI, core, and web.
 
 It must not own:
+
 - file-system mutation;
 - terminal UX;
 - web components;
@@ -72,6 +73,7 @@ It must not own:
 ### `packages/core`
 
 Owns:
+
 - defaults and normalization;
 - dependency resolution;
 - template ownership catalog;
@@ -83,12 +85,14 @@ Owns:
 - shared explanations of the generated result.
 
 It must not depend on:
+
 - terminal UI;
 - Next.js web UI.
 
 ### `packages/cli`
 
 Owns:
+
 - command parsing;
 - interactive prompts;
 - terminal review and output;
@@ -100,6 +104,7 @@ It must not create a second configuration interpretation.
 ### `apps/web`
 
 Owns:
+
 - the Loaded Vibes developer website;
 - the visual configuration workbench;
 - representative preview;
@@ -121,6 +126,7 @@ The template should preserve its working internal architecture. Moving it into `
 The target generator starts from one maximal template and removes material the resolved configuration does not own.
 
 Ownership metadata may express:
+
 - capability/integration identifier;
 - files and directories owned;
 - route groups owned;
@@ -134,7 +140,7 @@ Do not duplicate owned source code into overlay module trees merely to support g
 
 ## Compatibility during migration
 
-The current repository contains `templates/golden`, `templates/modules`, `packages/recipes`, and module-based generation behavior. Those are migration inputs.
+The current repository contains `template/` as its sole application source, temporary capability metadata under `templates/modules`, `packages/recipes`, and module-based generation behavior. The latter structures are migration inputs.
 
 They may remain temporarily while earlier specs move source ownership and core semantics. They must not survive as unexplained parallel architecture after the final cleanup spec.
 
@@ -161,6 +167,7 @@ Generator internals must not leak into generated application UI.
 ## Provenance
 
 Generated projects keep minimal local provenance sufficient to explain:
+
 - generator version;
 - template revision;
 - configuration schema version;

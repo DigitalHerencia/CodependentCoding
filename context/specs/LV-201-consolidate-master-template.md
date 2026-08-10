@@ -5,7 +5,7 @@ status: ready
 type: implementation-spec
 order: 1
 depends_on: []
-issue_title: "Consolidate the one repository-owned master template"
+issue_title: 'Consolidate the one repository-owned master template'
 ---
 
 # LV-201 — Consolidate the Loaded Vibes master template

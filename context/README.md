@@ -12,13 +12,13 @@ The CLI is the primary execution surface. The web app is a developer-oriented la
 
 ## Current transition
 
-The repository already owns its maximal application foundation and no longer treats `DigitalHerencia/Vibes` as template authority. The remaining cleanup is structural and product-facing:
+The repository owns its maximal application foundation at `template/` and has no external template authority. Capability metadata remains temporarily under `templates/modules`, but no duplicate application source remains there. The remaining cleanup is structural and product-facing:
 
 ```text
 CURRENT MIGRATION SHAPE
 apps/web
 packages/{cli,core,recipes,schema}
-templates/{golden,modules}
+template/ + templates/modules metadata
 legacy product-preset/module concepts
 
               ↓
@@ -38,6 +38,7 @@ Do not throw away working implementation merely to reach the target tree. Follow
 ## Source map
 
 ### Product and architecture
+
 - `context/docs/product.md`
 - `context/docs/architecture.md`
 - `context/docs/configuration.md`
@@ -45,18 +46,22 @@ Do not throw away working implementation merely to reach the target tree. Follow
 - `context/docs/generator-cli.md`
 
 ### Product surfaces
+
 - `context/docs/web.md`
 - `context/docs/documentation.md`
 
 ### Migration and shipping
+
 - `context/docs/repository-transition.md`
 - `context/docs/release.md`
 
 ### Implementation roadmap
+
 - `context/specs/README.md`
 - `context/specs/LV-201-*.md` through `LV-207-*.md`
 
 ### Machine-readable boundaries
+
 - `.agents/contracts/product.yaml`
 - `.agents/contracts/architecture.yaml`
 - `.agents/contracts/transition.yaml`

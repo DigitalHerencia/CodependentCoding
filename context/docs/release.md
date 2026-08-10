@@ -35,6 +35,7 @@ The package-name transition from `create-loaded-vibes` should be handled deliber
 ## Provider setup
 
 Loaded Vibes may generate provider-ready boundaries and `.env.example` documentation. It does not own:
+
 - user provider accounts;
 - production credentials;
 - live webhook destinations;

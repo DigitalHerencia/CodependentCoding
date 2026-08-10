@@ -5,7 +5,7 @@ status: ready
 type: implementation-spec
 order: 2
 depends_on: [LV-201]
-issue_title: "Simplify Loaded Vibes configuration around one template"
+issue_title: 'Simplify Loaded Vibes configuration around one template'
 ---
 
 # LV-202 — Simplify configuration and absorb recipe ownership

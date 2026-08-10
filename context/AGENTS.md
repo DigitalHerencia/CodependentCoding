@@ -24,6 +24,7 @@ Scope: `context/**`.
 ## Spec rule
 
 Each active `context/specs/LV-*.md` must be usable as the basis of one focused GitHub Issue and should contain:
+
 - outcome;
 - starting state;
 - scope;
