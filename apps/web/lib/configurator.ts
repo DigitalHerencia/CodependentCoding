@@ -25,7 +25,7 @@ export interface ConfiguratorRecipe {
 export const defaultConfiguratorRecipe: ConfiguratorRecipe = {
   schemaVersion: 1,
   name: 'my-saas',
-  product: 'b2b-saas',
+  product: 'bare-golden-app',
   modules: {},
   identity: {
     displayName: 'My SaaS',
@@ -57,13 +57,6 @@ export function resolveConfiguratorRecipe(
       description: draft.identity.description.trim(),
     },
   });
-}
-
-export function selectProductPreset(
-  draft: ConfiguratorRecipe,
-  product: ProductPresetId,
-): ConfiguratorRecipe {
-  return { ...draft, product, modules: {} };
 }
 
 export function setCapability(
