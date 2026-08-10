@@ -1,6 +1,6 @@
 import { capabilityIds, type CapabilityId } from '@loaded-vibes/schema';
 import { capabilityRegistry } from '../capabilities.js';
-import { getProductPreset } from '@loaded-vibes/recipes';
+import { getProductPreset } from '../presets.js';
 import { loadGeneratedProject } from '../project.js';
 import { diagnoseProject } from './doctor.js';
 

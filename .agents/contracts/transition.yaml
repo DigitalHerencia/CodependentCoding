@@ -10,7 +10,7 @@ baseline:
   observed_date: 2026-08-09
 
 current_migration_structures:
-  packages_recipes: true
+  packages_recipes: false
   templates_golden: false
   templates_modules_source: false
   templates_modules_metadata: true

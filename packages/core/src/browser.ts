@@ -10,7 +10,7 @@ export {
   type ResolvedBuildSummary,
   type ResolvedRecipe,
 } from './recipe.js';
-export { getProductPreset, productPresets } from '@loaded-vibes/recipes';
+export { getProductPreset, productPresets } from './presets.js';
 export {
   capabilityIds,
   defaultDesign,

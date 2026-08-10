@@ -140,7 +140,7 @@ Do not duplicate owned source code into overlay module trees merely to support g
 
 ## Compatibility during migration
 
-The current repository contains `template/` as its sole application source, temporary capability metadata under `templates/modules`, `packages/recipes`, and module-based generation behavior. The latter structures are migration inputs.
+The current repository contains `template/` as its sole application source, preset defaults in `packages/core`, and temporary capability metadata plus module-based generation behavior. The latter structures are migration inputs.
 
 They may remain temporarily while earlier specs move source ownership and core semantics. They must not survive as unexplained parallel architecture after the final cleanup spec.
 

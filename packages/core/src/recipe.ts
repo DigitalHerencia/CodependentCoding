@@ -5,7 +5,7 @@ import {
   type NormalizedRecipe,
   type RecipeInput,
 } from '@loaded-vibes/schema';
-import { getProductPreset } from '@loaded-vibes/recipes';
+import { getProductPreset } from './presets.js';
 import {
   capabilityRegistry,
   resolveCapabilitySelection,
