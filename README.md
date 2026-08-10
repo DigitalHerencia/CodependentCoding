@@ -75,7 +75,7 @@ loaded-vibes add sample-domain
 loaded-vibes add stripe-connect
 ```
 
-`explain` summarizes what was generated and what remains. `doctor` diagnoses actionable local/provider readiness without running the entire validation suite. `add` only composes explicitly packaged capability modules; it is not an arbitrary source upgrade or merge engine.
+`explain` summarizes what was generated and what remains. `doctor` diagnoses actionable local/provider readiness without running the entire validation suite. `add` enables explicitly packaged compatibility projections already owned by the maximal template; it is not an arbitrary source upgrade or merge engine.
 
 ## Provider handoff
 
@@ -87,14 +87,14 @@ Loaded Vibes creates provider-ready integration boundaries and `.env.example`; i
 | Prisma schema, migrations, and tenant-safe data access | Neon/database project, pooled runtime URL, direct migration URL, and approved migration execution |
 | Stripe billing and optional Connect adapters           | Stripe account, prices, secrets, webhooks, and commercial policy                                  |
 | Cloudinary upload, delivery, and webhook adapters      | Cloudinary account, signed-upload credentials, and notification destination                       |
-| Hugging Face and Mapbox server adapters                | Provider tokens, model/style choices, quotas, and production usage policy                          |
+| Hugging Face and Mapbox server adapters                | Provider tokens, model/style choices, quotas, and production usage policy                         |
 | Vercel-ready Next.js project                           | Deployment project, environment variables, domains, and production promotion                      |
 
 Start with the generated `.env.example`, run `loaded-vibes doctor`, and follow the generated README. Provider-backed journeys and production deployment remain owner-controlled verification gates.
 
 ## Package and repository development
 
-The npm package contains the compiled CLI, the canonical master template, and local compatibility overlays. Generation never fetches an application template from another repository or the network.
+The npm package contains the compiled CLI, the complete canonical master template, and local compatibility projections used by existing recipe/add behavior. Generation never fetches an application template from another repository or the network.
 
 ```powershell
 corepack pnpm install --frozen-lockfile

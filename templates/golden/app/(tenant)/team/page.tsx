@@ -1,5 +1,5 @@
-import { InvitationFeature } from "@/features/members/invitation-feature"
+import { TeamFeature } from "@/features/members/team-feature"
 
-export default function TeamPage() {
-  return <InvitationFeature />
+export default async function TeamPage() {
+  return <TeamFeature />
 }

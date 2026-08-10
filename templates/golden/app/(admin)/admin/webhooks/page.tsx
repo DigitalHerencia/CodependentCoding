@@ -1,5 +1,5 @@
-import { AdminDashboardFeature } from "@/features/admin/admin-dashboard-feature"
+import { AdminWebhooksFeature } from "@/features/admin/admin-webhooks-feature"
 
-export default function AdminWebhooksPage() {
-  return <AdminDashboardFeature />
+export default async function AdminWebhooksPage() {
+  return <AdminWebhooksFeature />
 }

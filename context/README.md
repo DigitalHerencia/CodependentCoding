@@ -1,27 +1,76 @@
 # Loaded Vibes Context
 
-This directory tells Codex what Loaded Vibes is building and why.
+This directory tells Codex what Loaded Vibes is, what the repository is becoming, and how to finish the current migration without losing the working generator.
 
 ## Product definition
 
-Loaded Vibes is an opinionated SaaS generator focused on developer and end-user experience. It combines a fast interactive CLI, a reusable recipe engine, a repository-owned maximal application template, product presets, design personalization, and a stateless visual configurator.
+Loaded Vibes is an opinionated project initializer and deterministic software-production tool for modern TypeScript web applications built on the Hipster Stack.
 
-The generator should feel much simpler than the SaaS architecture it produces.
+Its value is the generated repository: a polished, white-label application that already contains the recurring architecture, integration boundaries, project structure, and implementation context the builder would otherwise recreate by hand.
 
-## Sources
+The CLI is the primary execution surface. The web app is a developer-oriented landing page, visual configuration workbench, and documentation surface. `loadedvibes.json` is the reproducible configuration handoff.
 
-- `context/docs/prd.md` — product outcome and scope
-- `context/docs/architecture.md` — generator architecture and repository shape
-- `context/docs/design.md` — CLI and web configurator experience
-- `context/docs/tech-req.md` — implementation baseline and dependencies
-- `context/docs/auth.md` — security/provider boundary
-- `context/specs/` — issue-sized implementation slices
-- `.agents/contracts/` — compact machine-readable fixed boundaries
+## Current transition
 
-## Template and doctrine authority
+The repository already owns its maximal application foundation and no longer treats `DigitalHerencia/Vibes` as template authority. The remaining cleanup is structural and product-facing:
 
-Loaded Vibes is the sole owner and source of its packaged application template. Canonical Hipster Stack material in DevNotes governs reusable engineering doctrine; no external application repository participates in generation, packaging, release, or maintenance.
+```text
+CURRENT MIGRATION SHAPE
+apps/web
+packages/{cli,core,recipes,schema}
+templates/{golden,modules}
+legacy product-preset/module concepts
+
+              ↓
+
+TARGET SHAPE
+apps/web
+packages/{cli,core,schema}
+template/
+docs/
+one technical configuration model
+one deterministic generator
+one CLI
+```
+
+Do not throw away working implementation merely to reach the target tree. Follow the active specs in order so ownership moves before old structures disappear.
+
+## Source map
+
+### Product and architecture
+- `context/docs/product.md`
+- `context/docs/architecture.md`
+- `context/docs/configuration.md`
+- `context/docs/template.md`
+- `context/docs/generator-cli.md`
+
+### Product surfaces
+- `context/docs/web.md`
+- `context/docs/documentation.md`
+
+### Migration and shipping
+- `context/docs/repository-transition.md`
+- `context/docs/release.md`
+
+### Implementation roadmap
+- `context/specs/README.md`
+- `context/specs/LV-201-*.md` through `LV-207-*.md`
+
+### Machine-readable boundaries
+- `.agents/contracts/product.yaml`
+- `.agents/contracts/architecture.yaml`
+- `.agents/contracts/transition.yaml`
+
+## External authority
+
+DevNotes owns canonical Hipster Stack engineering doctrine, including the architectural grammar summarized as:
+
+> Routes adapt. Features orchestrate. Components render. Fetchers read. Actions receive mutations. Schemas validate. Workflows coordinate use cases. Authorization decides. Transactions preserve database invariants. Integration adapters own provider mechanics. Webhooks reconcile external truth.
+
+Loaded Vibes owns the executable template that embodies that doctrine.
+
+Codependent Coding is a downstream adaptive implementation system. It is not part of Loaded Vibes generation.
 
 ## Working rule
 
-The roadmap exists to ship a useful generator. Governance is supporting context, not the product.
+The roadmap exists to finish and ship a useful generator/CLI/template. Governance should reduce ambiguity and repetitive work, not create a second project beside the product.

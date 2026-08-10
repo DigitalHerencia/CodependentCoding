@@ -1,24 +1,11 @@
-schema_version: 2
+schema_version: 3
 id: loaded-vibes.architecture
 authority: machine-contract
 sources:
   - context/docs/architecture.md
-  - context/docs/tech-req.md
-
-recipe_core:
-  single_schema: true
-  consumers:
-    - cli
-    - web-configurator
-    - config-file
-  owns:
-    - normalization
-    - presets
-    - module-resolution
-    - generation-plan
-  must_not_depend_on:
-    - terminal-ui
-    - nextjs-web-ui
+  - context/docs/template.md
+  - context/docs/configuration.md
+  - context/docs/generator-cli.md
 
 repository_target:
   apps:
@@ -26,31 +13,60 @@ repository_target:
   packages:
     - cli
     - core
-    - recipes
     - schema
-  templates:
-    - golden
-    - modules
+  template_path: template
+  end_user_docs_path: docs
+  maintainer_context_path: context
+  machine_governance_path: .agents
 
-modules:
-  repository_owned: true
-  third_party_plugin_framework_v1: false
-  resolve_prerequisites_automatically: true
-  required_contract:
-    - id
-    - requires
-    - conflicts
-    - contributions
+shared_configuration:
+  consumers:
+    - cli
+    - web-configurator
+    - loadedvibes-json
+  one_schema: true
+  one_normalization_path: true
+  presets_are_optional_defaults: true
+  presets_are_templates: false
+  separate_recipes_package_target: false
+
+core:
+  owns:
+    - configuration-normalization
+    - dependency-resolution
+    - template-ownership-catalog
+    - generation-plan
+    - retain-remove-materialization
+    - structured-transforms
+    - provenance
+    - shared-explanation
+  must_not_depend_on:
+    - terminal-ui
+    - nextjs-web-ui
+
+template:
+  maximal: true
+  white_label: true
+  source_count: 1
+  external_acquisition: false
+  doctrine_authority: DigitalHerencia/DevNotes
+  preserve_hipster_stack_grammar: true
+
+generation:
+  model: copy-one-template-then-retain-remove-and-transform
+  duplicate_module_source_tolerated_as_target: false
+  selectable_option_requires_real_generation_effect: true
+  collect_provider_secrets: false
+  network_template_fetch: false
+  windows_first_class: true
+  overwrite_unrelated_nonempty_target: false
+
+web:
+  stateless: true
+  uses_shared_browser_safe_core: true
 
 generated_application:
-  template_authority: repository-local-loaded-vibes
-  doctrine_authority: DigitalHerencia/DevNotes
-  external_template_acquisition: false
-  preserve_application_grammar: true
-  preserve_auth_tenancy_provider_boundaries: true
-
-safety:
-  collect_provider_secrets: false
-  overwrite_unrelated_nonempty_target: false
-  unsafe_shell_interpolation: false
-  windows_first_class: true
+  generator_internal_ui: false
+  preserve_application_layer_boundaries: true
+  preserve_auth_authz_boundaries: true
+  preserve_provider_adapter_boundaries: true

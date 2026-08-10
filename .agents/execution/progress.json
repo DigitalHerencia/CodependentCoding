@@ -1,185 +1,39 @@
 {
-  "schemaVersion": 2,
-  "roadmap": "generator-product-roadmap",
-  "status": "complete",
+  "schemaVersion": 3,
+  "status": "migration-ready",
+  "observedRevision": "1479a4a1ef14dccf429e9fbaf5f1097e639a2914",
+  "observedDate": "2026-08-09",
+  "currentOutcome": "Loaded Vibes owns its maximal application foundation, but repository structure and active roadmap still reflect the prior recipes plus golden/module composition model.",
   "activeIssue": null,
-  "activeBranch": null,
-  "completed": [92, 93, 94, 95, 96, 97, 98, 99, 100, 101],
-  "workItems": [
-    {
-      "id": "LV-101",
-      "issue": 92,
-      "status": "verified",
-      "branch": "feature/92-shared-recipe-core",
-      "pullRequest": "https://github.com/DigitalHerencia/LoadedVibes/pull/102",
-      "evidence": {
-        "executed": [
-          "corepack pnpm typecheck",
-          "corepack pnpm lint",
-          "corepack pnpm format:check",
-          "corepack pnpm exec vitest run tests/unit/config.test.ts tests/integration/materialize.test.ts",
-          "corepack pnpm build",
-          "corepack pnpm test:generated"
-        ],
-        "blocked": []
-      }
-    },
-    {
-      "id": "LV-102",
-      "issue": 93,
-      "status": "verified",
-      "branch": "feature/93-presets-capability-resolver",
-      "pullRequest": "https://github.com/DigitalHerencia/LoadedVibes/pull/103",
-      "evidence": {
-        "executed": [
-          "corepack pnpm format:check",
-          "corepack pnpm lint",
-          "corepack pnpm typecheck",
-          "corepack pnpm exec vitest run tests/unit/config.test.ts tests/unit/recipe-resolution.test.ts tests/integration/materialize.test.ts (16 tests passed)",
-          "corepack pnpm build",
-          "corepack pnpm test:generated"
-        ],
-        "blocked": []
-      }
-    },
-    {
-      "id": "LV-103",
-      "issue": 94,
-      "status": "verified",
-      "branch": "feature/94-cli-product-flow",
-      "pullRequest": "https://github.com/DigitalHerencia/LoadedVibes/pull/104",
-      "evidence": {
-        "executed": [
-          "corepack pnpm format:check",
-          "corepack pnpm lint",
-          "corepack pnpm typecheck",
-          "corepack pnpm exec vitest run tests/unit/cli-flow.test.ts tests/unit/config.test.ts tests/unit/recipe-resolution.test.ts (16 tests passed)",
-          "corepack pnpm build",
-          "corepack pnpm test:generated (5 tests passed)"
-        ],
-        "blocked": []
-      }
-    },
-    {
-      "id": "LV-104",
-      "issue": 95,
-      "status": "verified",
-      "branch": "feature/95-vibes-template-modules",
-      "pullRequest": "https://github.com/DigitalHerencia/LoadedVibes/pull/105",
-      "evidence": {
-        "executed": [
-          "Vibes source revision verified as 19e20084a8c69cc5a70f8db5f8e5d908a84d582f",
-          "corepack pnpm exec vitest run tests/integration/materialize.test.ts (4 tests passed)",
-          "corepack pnpm typecheck",
-          "corepack pnpm lint",
-          "corepack pnpm format:check",
-          "corepack pnpm pack:check (345 safe entries)"
-        ],
-        "blocked": []
-      }
-    },
-    {
-      "id": "LV-105",
-      "issue": 96,
-      "status": "verified",
-      "branch": "feature/96-design-personalization",
-      "pullRequest": "https://github.com/DigitalHerencia/LoadedVibes/pull/106",
-      "evidence": {
-        "executed": [
-          "corepack pnpm exec vitest run tests/integration/materialize.test.ts (5 tests passed)",
-          "corepack pnpm typecheck",
-          "corepack pnpm lint",
-          "corepack pnpm format:check",
-          "corepack pnpm test:generated (5 tests passed)"
-        ],
-        "blocked": []
-      }
-    },
-    {
-      "id": "LV-106",
-      "issue": 97,
-      "status": "verified",
-      "branch": "feature/97-post-generation-add",
-      "pullRequest": "https://github.com/DigitalHerencia/LoadedVibes/pull/107",
-      "evidence": {
-        "executed": [
-          "corepack pnpm exec vitest run tests/unit/config.test.ts tests/unit/recipe-resolution.test.ts tests/integration/add-module.test.ts tests/integration/materialize.test.ts (21 tests passed)",
-          "corepack pnpm typecheck",
-          "corepack pnpm lint",
-          "corepack pnpm format:check",
-          "corepack pnpm test:generated (6 tests passed)",
-          "corepack pnpm pack:check (345 safe entries)"
-        ],
-        "blocked": []
-      }
-    },
-    {
-      "id": "LV-107",
-      "issue": 98,
-      "status": "verified",
-      "branch": "feature/98-doctor-explain",
-      "pullRequest": "https://github.com/DigitalHerencia/LoadedVibes/pull/108",
-      "evidence": {
-        "executed": [
-          "corepack pnpm exec vitest run tests/integration/diagnostics.test.ts tests/integration/add-module.test.ts (6 tests passed)",
-          "corepack pnpm typecheck",
-          "corepack pnpm lint",
-          "corepack pnpm format:check",
-          "corepack pnpm test:generated (7 tests passed)"
-        ],
-        "blocked": []
-      }
-    },
-    {
-      "id": "LV-108",
-      "issue": 99,
-      "status": "verified",
-      "branch": "feature/99-web-configurator",
-      "pullRequest": "https://github.com/DigitalHerencia/LoadedVibes/pull/109",
-      "evidence": {
-        "executed": [
-          "corepack pnpm exec vitest run tests/unit/web-configurator.test.ts (4 tests passed)",
-          "corepack pnpm --dir apps/web typecheck",
-          "corepack pnpm lint",
-          "corepack pnpm web:build (static route generated)",
-          "corepack pnpm validate (34 unit/integration tests and 7 generated CLI tests passed)"
-        ],
-        "blocked": []
-      }
-    },
-    {
-      "id": "LV-109",
-      "issue": 100,
-      "status": "verified",
-      "branch": "feature/100-live-preview-handoff",
-      "pullRequest": "https://github.com/DigitalHerencia/LoadedVibes/pull/110",
-      "evidence": {
-        "executed": [
-          "corepack pnpm exec vitest run tests/unit/web-configurator.test.ts (5 tests passed)",
-          "corepack pnpm --dir apps/web typecheck",
-          "corepack pnpm lint",
-          "corepack pnpm web:build (static route generated)"
-        ],
-        "blocked": []
-      }
-    },
-    {
-      "id": "LV-110",
-      "issue": 101,
-      "status": "verified",
-      "branch": "feature/101-release-polish",
-      "pullRequest": "https://github.com/DigitalHerencia/LoadedVibes/pull/111",
-      "evidence": {
-        "executed": [
-          "corepack pnpm typecheck",
-          "corepack pnpm lint",
-          "corepack pnpm exec vitest run tests/generated/real-cli.test.ts (8 tests passed)",
-          "corepack pnpm release:check (345 safe package entries; packed CLI B2B generation passed)",
-          "corepack pnpm validate (35 unit/integration tests, 8 generated CLI tests, static web build passed)"
-        ],
-        "blocked": []
-      }
-    }
+  "activeSpec": null,
+  "openIssuesObserved": 0,
+  "openPullRequestsObserved": 0,
+  "completedPriorRoadmap": "LV-101 through LV-110",
+  "nextRoadmap": [
+    "LV-201",
+    "LV-202",
+    "LV-203",
+    "LV-204",
+    "LV-205",
+    "LV-206",
+    "LV-207"
   ],
-  "note": "GitHub Issues and the Project v2 board are the operational source for implementation progress. Do not infer completion from this file."
+  "knownTransitionFacts": [
+    "packages/recipes still exists",
+    "templates/golden still exists",
+    "templates/modules still exists",
+    "package.json still publishes templates",
+    "package.json name is create-loaded-vibes and exposes both create-loaded-vibes and loaded-vibes bins",
+    "current web root route renders the configurator directly",
+    "root and context governance already prohibit using DigitalHerencia/Vibes as template authority"
+  ],
+  "evidenceThisArtifactDidNotExecute": [
+    "repository implementation changes",
+    "tests",
+    "validation commands",
+    "builds",
+    "package smoke checks",
+    "deployments"
+  ],
+  "nextAction": "Adopt the updated governance, create the LV-201 GitHub Issue from context/specs/LV-201-consolidate-master-template.md, and implement the roadmap one spec at a time."
 }

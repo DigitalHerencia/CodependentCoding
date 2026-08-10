@@ -51,3 +51,14 @@ export type BillingDrift = {
     | "entitlement"
   )[]
 }
+
+export type BillingSettingsDTO = {
+  customerConfigured: boolean
+  entitlementActive: boolean
+  subscription: {
+    status: BillingSubscriptionStatus
+    priceId: string
+    cancelAtPeriodEnd: boolean
+    currentPeriodEnd: string | null
+  } | null
+}

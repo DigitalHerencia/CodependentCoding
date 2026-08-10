@@ -1,61 +1,66 @@
-schema_version: 2
+schema_version: 3
 id: loaded-vibes.product
 authority: machine-contract
 sources:
-  - context/docs/prd.md
-  - context/docs/design.md
+  - context/docs/product.md
+  - context/docs/web.md
+  - context/docs/documentation.md
 
 product:
   name: Loaded Vibes
-  class: opinionated-saas-generator
-  primary_value: time-saved-and-product-fit
-  template_authority: DigitalHerencia/LoadedVibes
-  doctrine_authority: DigitalHerencia/DevNotes
-  surfaces:
-    - cli
-    - web-configurator
-    - loadedvibes-json
-    - generated-application
+  class: opinionated-project-initializer
+  framing: developer-software-factory
+  primary_value: repetitive-work-removed-by-generated-project
 
-priorities:
-  - user-value
-  - cli-and-web-ux
-  - generated-product-fit
-  - maintainable-generation
-  - proportional-safety
+authorities:
+  executable_template: DigitalHerencia/LoadedVibes
+  engineering_doctrine: DigitalHerencia/DevNotes
+  downstream_adaptive_development: Codependent Coding
 
-presets:
-  required_initial:
-    - b2b-saas
-    - client-portal
-    - platform-marketplace
-    - bare-golden-app
+surfaces:
+  - master-template
+  - shared-configuration
+  - generator-core
+  - cli
+  - web-landing
+  - web-configurator
+  - end-user-docs
+  - loadedvibes-json
+  - generated-application
 
-commands:
-  target:
-    - create
-    - add
-    - doctor
-    - explain
-    - preset-validate
-    - preset-print
-    - version
+cli:
+  primary_execution_surface: true
+  canonical_command: loaded-vibes
 
 web:
-  initial_mode: stateless
+  stateless: true
   requires_auth: false
   requires_database: false
-  outputs:
-    - cli-command
-    - loadedvibes-json
+  hosted_generation_required: false
+  routes:
+    landing: /
+    configure: /configure
+    docs: /docs
+
+template:
+  count: 1
+  repository_owned: true
+  external_application_source: false
+
+configuration:
+  fixed_architecture_is_selectable: false
+  visible_options_must_change_real_output: true
+  shared_between_cli_web_and_json: true
 
 prohibited_product_drift:
   - generic-framework-generator
   - arbitrary-stack-selector
-  - enterprise-governance-platform
+  - multiple-application-template-forks
+  - provider-marketplace
+  - plugin-marketplace
   - hosted-project-control-plane
-  - plugin-marketplace-v1
-  - mandatory-telemetry
+  - configurator-account-system
+  - enterprise-governance-product
+  - validation-as-product
   - automatic-provider-secret-collection
-  - arbitrary-generated-repo-upgrade-engine
-  - validation-as-primary-product
+  - arbitrary-generated-repository-upgrade-engine

@@ -1,5 +1,6 @@
 export type AuditEventName =
   | "organization.created"
+  | "organization.updated"
   | "organization.invitation.created"
   | "organization.membership.role_changed"
   | "organization.membership.removed"

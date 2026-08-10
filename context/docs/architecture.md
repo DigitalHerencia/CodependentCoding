@@ -1,115 +1,146 @@
 ---
-title: Loaded Vibes Generator Architecture
+title: Loaded Vibes Repository and Generator Architecture
 artifact: architecture
 status: active
 product: Loaded Vibes
 authority: source-of-truth
 ---
 
-# Loaded Vibes Generator Architecture
+# Loaded Vibes Repository and Generator Architecture
 
-## Core architecture
+## Core model
 
-Loaded Vibes is a recipe compiler for SaaS projects.
+Loaded Vibes is a deterministic compiler from a bounded configuration to a filtered and personalized copy of one maximal application template.
 
 ```text
-CLI ───────────────┐
-Web Configurator ──┼─> recipe schema / normalization
-loadedvibes.json ──┘             ↓
-                         preset resolution
-                               ↓
-                        capability graph
-                               ↓
-                         generation plan
-                               ↓
-            repository-local master template
-                               ↓
-                 structured personalization
-                               ↓
-                     generated application
-                               ↓
-                        concise handoff
+Web Configurator ─┐
+CLI ──────────────┼──> shared schema + normalization
+loadedvibes.json ─┘                │
+                                   ▼
+                             configuration resolution
+                                   │
+                                   ▼
+                         template ownership catalog
+                                   │
+                                   ▼
+                       retain / remove generation plan
+                                   │
+                                   ▼
+                          one repository template/
+                                   │
+                                   ▼
+                           structured transforms
+                                   │
+                                   ▼
+                       generated white-label project
+                                   │
+                                   ▼
+                           concise user handoff
 ```
 
-## Repository target
-
-The shared recipe core must be reusable by CLI and web. A pnpm workspace is justified by that real boundary.
+## Target repository shape
 
 ```text
 /
-├─ apps/
-│  └─ web/                    # marketing + configurator + preview
-├─ packages/
-│  ├─ cli/                    # terminal UX and command adapters
-│  ├─ core/                   # recipe, resolver, planner, generation
-│  ├─ recipes/                # product presets
-│  └─ schema/                 # JSON schema / shared recipe artifacts
-├─ templates/
-│  ├─ golden/                 # canonical maximal application template
-│  └─ modules/                # local compatibility overlays pending retain/remove ownership
-├─ tests/                     # focused generator/CLI tests
-├─ context/
-├─ .agents/
-└─ AGENTS.md
+├── apps/
+│   └── web/                 # landing + /configure + /docs
+├── packages/
+│   ├── cli/                 # terminal UX and command adapters
+│   ├── core/                # resolution, planning, generation
+│   └── schema/              # shared loadedvibes.json contract
+├── template/                # one maximal white-label application
+├── docs/                    # canonical end-user docs
+├── context/                 # maintainer/Codex context
+├── .agents/                 # compact machine contracts and execution state
+├── scripts/                 # package/release utilities actually used
+├── .github/
+└── AGENTS.md
 ```
 
-Codex may migrate toward this topology incrementally. Do not rewrite working code solely to make the tree pretty.
+## Boundaries
 
-## Recipe core
+### `packages/schema`
 
-The core owns:
+Owns public configuration shapes and enums shared by the CLI, core, and web.
 
-- versioned recipe schema;
+It must not own:
+- file-system mutation;
+- terminal UX;
+- web components;
+- template implementation details beyond stable configuration identifiers.
+
+### `packages/core`
+
+Owns:
 - defaults and normalization;
-- product presets;
-- module/capability registry;
-- dependency/conflict resolution;
-- generation plan;
+- dependency resolution;
+- template ownership catalog;
+- generation planning;
+- retain/remove decisions;
+- structured personalization;
 - materialization;
+- project provenance/manifest;
+- shared explanations of the generated result.
+
+It must not depend on:
+- terminal UI;
+- Next.js web UI.
+
+### `packages/cli`
+
+Owns:
+- command parsing;
+- interactive prompts;
+- terminal review and output;
+- invoking the core;
+- user-facing local handoff.
+
+It must not create a second configuration interpretation.
+
+### `apps/web`
+
+Owns:
+- the Loaded Vibes developer website;
+- the visual configuration workbench;
+- representative preview;
+- rendering end-user documentation;
+- exporting/copying a configuration or CLI handoff.
+
+The initial web app remains stateless and does not generate projects on a hosted server.
+
+### `template/`
+
+Owns the complete maximal white-label application.
+
+It is executable application source, not a collection of generator fragments.
+
+The template should preserve its working internal architecture. Moving it into `template/` is an ownership and repository-shape cleanup, not permission to rename or reorganize every internal directory.
+
+## One-template composition
+
+The target generator starts from one maximal template and removes material the resolved configuration does not own.
+
+Ownership metadata may express:
+- capability/integration identifier;
+- files and directories owned;
+- route groups owned;
+- package or config contributions;
+- environment-example contributions;
+- schema/data contributions where safe removal is supported;
 - structured transforms;
-- generation manifest;
-- human-readable result summary.
+- dependencies between optional surfaces.
 
-The core must not depend on terminal UI or Next.js web UI.
+Do not duplicate owned source code into overlay module trees merely to support generation.
 
-## Product preset model
+## Compatibility during migration
 
-A preset is a named set of recipe defaults. It is not a forked template.
+The current repository contains `templates/golden`, `templates/modules`, `packages/recipes`, and module-based generation behavior. Those are migration inputs.
 
-```text
-preset
-  + explicit user overrides
-  → normalized recipe
-  → resolved capabilities
-```
+They may remain temporarily while earlier specs move source ownership and core semantics. They must not survive as unexplained parallel architecture after the final cleanup spec.
 
-## Capability/module model
+## Application architecture
 
-Modules are repository-owned capability packs. A module may contribute files, dependencies, environment examples, Prisma/provider pieces, docs, routes, and transforms.
-
-A module declares only what is required to compose it safely:
-
-```text
-id
-requires
-conflicts
-files/overlays
-package changes
-structured transforms
-generated setup notes
-```
-
-Do not build a third-party plugin framework in v1.
-
-## Template authority
-
-Loaded Vibes owns one repository-local maximal application template. DevNotes owns the canonical Hipster Stack engineering doctrine used to maintain it. Generation and package release never acquire an application template from another repository or the network.
-
-The existing local overlays remain a narrow compatibility mechanism for current recipe/add behavior. They are part of Loaded Vibes, not a second source authority. Future work may replace overlays with retain/remove ownership metadata after the maximal template is established.
-
-## Generated application
-
-Generated apps retain the proven architecture rather than mirroring generator internals:
+The generated project preserves the Hipster Stack grammar defined in DevNotes:
 
 ```text
 Routes adapt.
@@ -117,38 +148,33 @@ Features orchestrate.
 Components render.
 Fetchers read.
 Actions receive mutations.
+Schemas validate.
 Workflows coordinate use cases.
 Authorization decides.
 Transactions preserve database invariants.
-Integration adapters own providers.
+Integration adapters own provider mechanics.
 Webhooks reconcile external truth.
 ```
 
-## Manifest
+Generator internals must not leak into generated application UI.
 
-Generated projects keep a small machine-readable manifest containing recipe schema version, generator version, template revision, selected preset, selected modules, and normalized non-secret design/product config. Its purpose is reproducibility and safe `add` operations, not remote management.
+## Provenance
 
-## Default create lifecycle
+Generated projects keep minimal local provenance sufficient to explain:
+- generator version;
+- template revision;
+- configuration schema version;
+- normalized non-secret configuration;
+- selected optional surfaces;
+- materialization result.
 
-```text
-collect/parse intent
-→ resolve recipe
-→ show review
-→ create target safely
-→ materialize base/modules
-→ personalize
-→ install when enabled
-→ initialize git when enabled
-→ summarize setup and next actions
-```
+Provenance supports explanation and safe generator-owned follow-up. It is not remote management.
 
-A full generated-app validation suite is not part of the default product experience. Focused sanity checks may run where needed to detect a broken generation operation.
+## Safety
 
-## Safety boundaries
-
-- validate recipe input;
-- reject unsafe destination behavior;
-- do not interpolate user values into unsafe shell strings;
-- do not collect provider secrets;
-- preserve Windows path behavior;
-- keep the packaged output self-contained.
+- Never fetch an application template from another repository during generation.
+- Never collect provider secrets.
+- Reject unsafe destination behavior.
+- Avoid unsafe shell interpolation.
+- Preserve Windows path behavior.
+- Do not make network/provider calls on behalf of a generated project during basic generation.

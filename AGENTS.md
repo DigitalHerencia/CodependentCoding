@@ -1,73 +1,196 @@
-# Loaded Vibes Agent Instructions
+# Loaded Vibes Governance Directory
 
-Loaded Vibes is a product generator with a CLI and visual configurator. Its job is to get a builder from product intent to a useful, good-looking, correctly shaped SaaS starting point with as little friction as possible.
+Loaded Vibes is a developer-focused software factory: one repository-owned maximal white-label Hipster Stack template, one deterministic generation engine, one shared configuration contract, a CLI execution surface, a stateless visual configurator, and end-user documentation.
 
-## Read first
+This file is the governance directory. Read only the material relevant to the work in front of you.
 
-1. Read the GitHub Issue you are implementing.
-2. Read `context/README.md` and the relevant `context/docs/*` files.
-3. Read the matching `context/specs/LV-*.md` specification.
-4. Inspect the actual implementation and the repository-local master template you will change.
-5. Read `.agents/contracts/product.yaml` and `architecture.yaml` for fixed product boundaries.
+## Authority
 
-## Product priority
+1. The GitHub Issue defines the current unit of work.
+2. `context/specs/LV-*.md` defines the durable implementation scope for that Issue.
+3. `context/docs/*.md` defines the human-readable product and architecture contract.
+4. `.agents/contracts/*.yaml` encodes compact machine-readable boundaries derived from the controlling docs.
+5. The implementation and live repository state establish what currently exists.
+6. DevNotes is the canonical authority for Hipster Stack engineering doctrine.
+7. `.agents/execution/*.json` records decisions, progress, and handoff state. Execution state never overrides the sources above.
 
-Optimize in this order:
+When two sources conflict, do not invent a compromise. Prefer the higher authority and update stale lower-level governance as part of the same focused change when required.
 
-1. user value and time saved;
-2. clear, enjoyable CLI/web UX;
-3. generated output matching the user's intended product shape;
-4. reuse of the Loaded Vibes-owned Hipster Stack master template;
-5. maintainable generator mechanics;
-6. proportional safety and verification.
+## Read by task
 
-Do not turn Loaded Vibes into an enterprise governance platform, generic framework, provider marketplace, hosted control plane, or validation product.
+### Any implementation Issue
+Read:
+
+1. this file;
+2. `context/README.md`;
+3. the matching `context/specs/LV-*.md`;
+4. only the `context/docs/*` files named by that spec;
+5. only the `.agents/contracts/*` files named by that spec;
+6. the actual files being changed.
+
+### Master template work
+Read:
+- `context/docs/template.md`
+- `context/docs/architecture.md`
+- `context/docs/repository-transition.md`
+- `.agents/contracts/architecture.yaml`
+- `.agents/contracts/transition.yaml`
+- the relevant Hipster Stack references in DevNotes
+
+### Generator or configuration work
+Read:
+- `context/docs/configuration.md`
+- `context/docs/generator-cli.md`
+- `context/docs/architecture.md`
+- `.agents/contracts/product.yaml`
+- `.agents/contracts/architecture.yaml`
+
+### Website work
+Read:
+- `context/docs/web.md`
+- `context/docs/product.md`
+- the relevant web spec
+- `.agents/contracts/product.yaml`
+
+### End-user documentation work
+Read:
+- `context/docs/documentation.md`
+- `context/docs/product.md`
+- the relevant docs spec
+
+### Release and cleanup work
+Read:
+- `context/docs/repository-transition.md`
+- `context/docs/release.md`
+- `.agents/contracts/transition.yaml`
 
 ## Product model
 
 ```text
-CLI / Web Configurator / loadedvibes.json
-                 ↓
-            Recipe Core
-                 ↓
-      preset + capability resolver
-                 ↓
-       generation plan + modules
-                 ↓
-       Loaded Vibes master template
-                 ↓
-    identity + design personalization
-                 ↓
-          useful SaaS project
+DevNotes
+Hipster Stack doctrine
+        │
+        ▼
+Loaded Vibes
+repository-owned maximal template
+        │
+        ├──────────────┐
+        │              │
+        ▼              ▼
+shared config      website configurator
+schema/core             │
+        │               │
+        ├──────┬────────┘
+        │      │
+        ▼      ▼
+       CLI  loadedvibes.json
+        │      │
+        └──┬───┘
+           ▼
+deterministic retain/remove + transforms
+           │
+           ▼
+generated white-label application
+           │
+           ▼
+Codependent Coding may take product-specific work further
 ```
 
-The CLI is an execution surface. The web app is a visual configuration and preview surface. `loadedvibes.json` is the reproducible recipe. All three use the same core schema and resolver.
+Loaded Vibes does not depend on the Vibes repository. Loaded Vibes owns the executable template. DevNotes owns the engineering doctrine. Codependent Coding is downstream and is not a runtime or generation dependency.
 
-## Implementation rules
+## Fixed foundation
 
-- Work one Issue/spec at a time.
-- Make the smallest complete change that satisfies the user-visible outcome.
-- Preserve working implementation unless the current Issue requires restructuring it.
-- Ask users about product choices, not fixed architecture internals.
-- Express and Advanced setup modes must normalize into the same recipe model.
-- Product presets describe outcomes such as B2B SaaS, client portal, marketplace/platform, or bare golden app.
-- Capabilities resolve prerequisites automatically. Do not make users answer implementation-detail questions implied by a capability.
-- Loaded Vibes is the sole application-template authority; DevNotes owns the Hipster Stack doctrine.
-- Never inspect, fetch, synchronize from, or otherwise depend on `DigitalHerencia/Vibes`.
-- Generated apps preserve the repository-local Hipster Stack application grammar and security boundaries.
-- Never collect or print provider secrets.
-- Never overwrite an unrelated non-empty destination without an explicit user-controlled future feature.
-- Windows/PowerShell remains first-class.
+Do not ask users to choose architecture that Loaded Vibes has already decided.
 
-## Verification
+The fixed foundation includes the supported repository-local implementation of:
+- TypeScript;
+- Next.js App Router;
+- React Server Components by default;
+- pnpm;
+- Zod;
+- Prisma;
+- Neon/PostgreSQL;
+- Clerk identity/session boundaries;
+- application-owned users, organizations, memberships, roles/capabilities, and tenant authorization;
+- RLS where the template uses it for tenant containment;
+- Fetchers;
+- Server Actions;
+- Workflows;
+- Transactions;
+- Selects and DTO mappers;
+- Integration Adapters;
+- Webhook processors;
+- shadcn-compatible presentation primitives;
+- the Hipster Stack route → feature → presentation layering;
+- the auth/authz and server-operation boundaries;
+- Vercel-oriented deployment assumptions.
 
-Use proportional verification. Run checks that establish the behavior changed by the current Issue. Do not automatically run the entire repository, generated-app, provider, browser, release, or deployment matrix for ordinary work.
+## Configurable surface
 
-Release/package work may require broader proof when the Issue explicitly says so. Never claim an unrun check passed.
+Expose a choice only when Loaded Vibes can produce the corresponding output correctly.
+
+Useful configuration may include:
+- project identity and destination;
+- product identity;
+- optional integrations;
+- optional route groups or route surfaces;
+- optional reusable product capabilities;
+- bounded visual direction;
+- install and git-init behavior;
+- other configuration explicitly backed by template ownership and generator behavior.
+
+Do not create decorative toggles that only change recipe metadata.
+
+## Repository target
+
+```text
+LoadedVibes/
+├── apps/
+│   └── web/
+├── packages/
+│   ├── cli/
+│   ├── core/
+│   └── schema/
+├── template/
+├── docs/
+├── context/
+│   ├── docs/
+│   └── specs/
+├── .agents/
+│   ├── contracts/
+│   └── execution/
+├── scripts/
+├── .github/
+└── AGENTS.md
+```
+
+`packages/recipes`, `templates/golden`, and `templates/modules` are migration-era structures, not the target architecture.
+
+## Working rules
+
+- Work one GitHub Issue/spec at a time.
+- Make the smallest complete change that reaches the Issue outcome.
+- Preserve working code unless the Issue explicitly requires changing its ownership or location.
+- Do not redesign the Hipster Stack doctrine inside this repo.
+- Do not invent modules, providers, routes, or architecture that the repository does not support.
+- Do not create a generic framework generator, provider marketplace, hosted control plane, or enterprise governance product.
+- Do not create new tests or validation systems unless a future Issue explicitly asks for them.
+- Use existing checks only when they directly establish behavior changed by the current Issue.
+- Never claim a check ran if it did not.
+- Never collect, print, copy, or commit provider secrets.
+- Keep Windows/PowerShell first-class.
+- Keep the web configurator stateless unless a future product decision explicitly changes that.
+- Keep the CLI and web configurator as adapters over the same core configuration semantics.
+- Do not reintroduce `DigitalHerencia/Vibes` as an upstream, source, sync target, reference dependency, or provenance dependency.
 
 ## Delivery
 
-- Open a focused PR for the Issue.
-- Link the Issue and summarize the user-visible outcome.
-- Update governance only when the public product contract changes.
-- Do not expand scope to unrelated cleanup, architecture renovation, or test creation.
+For implementation work:
+1. create or use the GitHub Issue corresponding to the active spec;
+2. implement the Issue on a focused branch;
+3. use proportional existing verification;
+4. open a focused PR linked to the Issue;
+5. update durable governance only if the product or architecture contract changed;
+6. merge when the Issue's actual acceptance criteria are satisfied.
+
+Governance exists to help ship Loaded Vibes. It is not the product.

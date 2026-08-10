@@ -1,10 +1,5 @@
-import { SettingsSectionFeature } from "@/features/settings/settings-section-feature"
+import { IntegrationSettingsFeature } from "@/features/settings/integration-settings-feature"
 
 export default function IntegrationSettingsPage() {
-  return (
-    <SettingsSectionFeature
-      title="Integrations"
-      description="Review the provider boundaries enabled for this product."
-    />
-  )
+  return <IntegrationSettingsFeature />
 }

@@ -1,8 +1,22 @@
-import { access, readFile } from 'node:fs/promises';
+import { access, readFile, readdir, stat } from 'node:fs/promises';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 
 const root = process.cwd();
+
+async function files(directory: string, base = directory): Promise<string[]> {
+  return (
+    await Promise.all(
+      (await readdir(directory, { withFileTypes: true })).map(async (entry) => {
+        if (entry.name === '.loaded-vibes-module.json') return [];
+        const absolute = path.join(directory, entry.name);
+        return entry.isDirectory()
+          ? files(absolute, base)
+          : [path.relative(base, absolute)];
+      }),
+    )
+  ).flat();
+}
 
 describe('template ownership', () => {
   it('uses repository-local template identity without external source provenance', async () => {
@@ -16,9 +30,36 @@ describe('template ownership', () => {
       schemaVersion: 2,
       templateId: 'loaded-vibes-maximal-saas',
       templateVersion: '1.0.0',
+      composition: 'repository-local-maximal-template',
     });
     expect(metadata).not.toHaveProperty('sourceRepository');
     expect(metadata).not.toHaveProperty('sourceRevision');
+  });
+
+  it('keeps every compatibility projection in the complete golden template', async () => {
+    const golden = path.join(root, 'templates', 'golden');
+    for (const capabilityPath of [
+      path.join('app', '(public)', 'pricing', 'page.tsx'),
+      path.join('app', '(tenant)', 'projects', 'page.tsx'),
+      path.join('app', 'api', 'stripe', 'connect', 'webhooks', 'route.ts'),
+    ]) {
+      await expect(
+        stat(path.join(golden, capabilityPath)),
+      ).resolves.toBeTruthy();
+    }
+
+    for (const moduleId of ['marketing', 'sample-domain', 'stripe-connect']) {
+      const moduleRoot = path.join(root, 'templates', 'modules', moduleId);
+      for (const relative of await files(moduleRoot)) {
+        const [projection, canonical] = await Promise.all([
+          readFile(path.join(moduleRoot, relative)),
+          readFile(path.join(golden, relative)),
+        ]);
+        expect(projection.equals(canonical), `${moduleId}/${relative}`).toBe(
+          true,
+        );
+      }
+    }
   });
 
   it('has no external template synchronization command or script', async () => {

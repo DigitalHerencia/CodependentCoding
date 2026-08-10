@@ -1,6 +1,8 @@
 {
   "schemaVersion": 1,
   "id": "stripe-connect",
+  "mode": "compatibility-projection",
+  "projectionOf": "templates/golden",
   "requires": ["organizations", "rbac", "billing"],
   "conflicts": [],
   "replaces": [],

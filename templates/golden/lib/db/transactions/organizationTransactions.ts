@@ -6,6 +6,7 @@ import { recordAuditEventTx } from "@/lib/db/transactions/auditTransactions"
 import type {
   CreateOrganizationInput,
   InviteOrganizationMemberInput,
+  UpdateOrganizationInput,
   UpdateMembershipInput,
 } from "@/schemas/organizationSchemas"
 import type { OrganizationRole } from "@/types/authzTypes"
@@ -17,6 +18,28 @@ function slugify(value: string): string {
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-|-$/g, "")
     .slice(0, 96)
+}
+
+export async function updateOrganizationTx(
+  tx: Prisma.TransactionClient,
+  input: UpdateOrganizationInput & { organizationId: string; actorUserId: string }
+) {
+  const organization = await tx.organization.update({
+    where: { id: input.organizationId },
+    data: { name: input.name },
+    select: { id: true, name: true, slug: true, status: true },
+  })
+
+  await recordAuditEventTx(tx, {
+    eventName: "organization.updated",
+    actorUserId: input.actorUserId,
+    entityType: "organization",
+    entityId: organization.id,
+    organizationId: organization.id,
+    metadata: { name: organization.name },
+  })
+
+  return organization
 }
 
 export async function createOrganizationTx(

@@ -1,5 +1,5 @@
-import { AdminDashboardFeature } from "@/features/admin/admin-dashboard-feature"
+import { AdminOrganizationsFeature } from "@/features/admin/admin-organizations-feature"
 
-export default function AdminOrganizationsPage() {
-  return <AdminDashboardFeature />
+export default async function AdminOrganizationsPage() {
+  return <AdminOrganizationsFeature />
 }

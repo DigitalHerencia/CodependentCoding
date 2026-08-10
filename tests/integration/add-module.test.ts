@@ -36,7 +36,8 @@ describe('post-generation module addition', () => {
     expect(plan.addedCapabilities).toEqual(['marketing']);
     expect(plan.prerequisites).toEqual([]);
     const result = await applyProjectModuleAddition(plan);
-    expect(result.filesAdded.length).toBeGreaterThan(0);
+    expect(result.filesAdded).toEqual([]);
+    expect(result.filesReplaced.length).toBeGreaterThan(0);
     await expect(
       stat(path.join(target, 'app', '(public)', 'pricing', 'page.tsx')),
     ).resolves.toBeTruthy();

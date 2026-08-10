@@ -1,27 +1,30 @@
-# Machine Governance Instructions
+# Loaded Vibes Machine Governance
 
 Scope: `.agents/**`.
 
+Machine governance is a compact projection of the controlling Markdown context. It exists to help Codex preserve fixed boundaries while implementing Issues.
+
 ## Contracts
 
-- `.agents/contracts/*.yaml` encode enforceable subsets of the human-readable sources.
-- Contracts must reference their controlling Markdown sources.
-- Contracts may not invent product behavior absent from the controlling docs.
-- When a doc changes an enforceable boundary, update the affected contract in the same change.
-- Keep identifiers stable once referenced by tests, validators, Issues, or PRs.
+- `.agents/contracts/*.yaml` encode stable, enforceable subsets of `context/docs/*`.
+- Every contract names its controlling source documents.
+- Contracts do not invent product behavior.
+- A Markdown source-of-truth change that alters a machine boundary must update the affected contract in the same focused change.
+- Keep IDs stable while they are referenced by active specs, Issues, or implementation.
+- Do not create machine contracts for every paragraph. Encode only boundaries that materially prevent product or architecture drift.
 
 ## Execution state
 
-- `.agents/execution/*.json` records work state and evidence only.
-- Execution state never overrides docs, specs, contracts, implementation, or live evidence.
-- Record `executed`, `skipped`, `blocked`, and `inferred` distinctly.
-- Never record a check as passed unless it actually ran against the recorded revision.
-- Use `null`, an empty array, or an explicit blocked state instead of fabricating missing evidence.
-- Promote consequential implementation discoveries into controlling docs/contracts when they change durable truth.
+- `.agents/execution/decisions.json` records durable Loaded Vibes-specific decisions.
+- `.agents/execution/progress.json` records current roadmap state.
+- `.agents/execution/handoff.json` records the next coherent implementation handoff.
+- Execution files do not prove code correctness.
+- Execution files never override context, contracts, implementation, or live repository evidence.
+- Record unknown or blocked state explicitly rather than inventing evidence.
 
 ## Integrity
 
-- YAML and JSON must parse after every edit.
-- JSON remains strict JSON with no comments.
-- Do not store secrets, credentials, tokens, environment values, or provider payloads here.
-- Run governance validation after edits.
+- Keep JSON strict JSON.
+- Keep YAML simple and human-readable.
+- Never store provider secrets, tokens, credential values, or private payloads.
+- Do not introduce a new governance-validation system as part of this migration.

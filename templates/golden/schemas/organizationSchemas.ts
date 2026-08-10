@@ -9,6 +9,12 @@ export const createOrganizationSchema = z
   })
   .strict()
 
+export const updateOrganizationSchema = z
+  .object({
+    name: z.string().trim().min(2, "Name must be at least 2 characters.").max(120),
+  })
+  .strict()
+
 export const inviteOrganizationMemberSchema = z
   .object({
     email: z.string().trim().toLowerCase().pipe(z.email()),
@@ -24,5 +30,6 @@ export const updateMembershipSchema = z
   .strict()
 
 export type CreateOrganizationInput = z.infer<typeof createOrganizationSchema>
+export type UpdateOrganizationInput = z.infer<typeof updateOrganizationSchema>
 export type InviteOrganizationMemberInput = z.infer<typeof inviteOrganizationMemberSchema>
 export type UpdateMembershipInput = z.infer<typeof updateMembershipSchema>

@@ -1,18 +1,21 @@
 import "server-only"
 
 import { requireCurrentUserContext, requireTenantContext } from "@/lib/auth/session"
-import { assertCanManageMembership } from "@/lib/authz/assertions"
+import { assertCanManageMembership, assertCapability } from "@/lib/authz/assertions"
+import { revalidateOrganizationSurfaces } from "@/lib/cache/revalidate"
 import { canCreateInvitation } from "@/lib/authz/policies"
 import { withTenantContext } from "@/lib/db/withTenantContext"
 import {
   changeMembershipTx,
   createOrganizationInvitationTx,
   createOrganizationTx,
+  updateOrganizationTx,
 } from "@/lib/db/transactions/organizationTransactions"
 import {
   createOrganizationSchema,
   inviteOrganizationMemberSchema,
   updateMembershipSchema,
+  updateOrganizationSchema,
 } from "@/schemas/organizationSchemas"
 
 const invitationLifetimeMs = 7 * 24 * 60 * 60 * 1000
@@ -29,6 +32,21 @@ export async function createOrganizationWorkflow(input: unknown) {
       actorUserId: context.localUser.id,
     })
   )
+}
+
+export async function updateOrganizationWorkflow(input: unknown) {
+  const parsed = updateOrganizationSchema.parse(input)
+  const context = await requireTenantContext()
+  assertCapability(context, "organization.manage")
+  const organization = await withTenantContext(context.organization.id, (tx) =>
+    updateOrganizationTx(tx, {
+      ...parsed,
+      organizationId: context.organization.id,
+      actorUserId: context.localUser.id,
+    })
+  )
+  revalidateOrganizationSurfaces()
+  return organization
 }
 
 export async function inviteOrganizationMemberWorkflow(input: unknown) {
@@ -49,7 +67,7 @@ export async function inviteOrganizationMemberWorkflow(input: unknown) {
 export async function updateMembershipWorkflow(input: unknown) {
   const parsed = updateMembershipSchema.parse(input)
   const context = await requireTenantContext()
-  return withTenantContext(
+  const membership = await withTenantContext(
     context.organization.id,
     (tx) =>
       changeMembershipTx(
@@ -64,4 +82,6 @@ export async function updateMembershipWorkflow(input: unknown) {
       ),
     { isolationLevel: "Serializable" }
   )
+  revalidateOrganizationSurfaces()
+  return membership
 }

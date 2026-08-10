@@ -59,10 +59,10 @@ describe("architecture surface", () => {
       "app/api/clerk/webhooks/route.ts",
       "app/api/cloudinary/webhooks/AGENTS.md",
       "app/api/cloudinary/webhooks/route.ts",
-      "app/api/stripe/webhooks/route.ts",
       ...(loadedVibesCapabilities.stripeConnect
-        ? ["app/api/stripe/connect/webhooks/route.ts"]
+        ? ["app/api/stripe/connect/webhooks/AGENTS.md", "app/api/stripe/connect/webhooks/route.ts"]
         : []),
+      "app/api/stripe/webhooks/route.ts",
     ])
   })
 

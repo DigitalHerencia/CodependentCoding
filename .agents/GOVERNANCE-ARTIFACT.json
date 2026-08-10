@@ -1,0 +1,8 @@
+{
+  "artifact": "Loaded Vibes Governance Update",
+  "prepared": "2026-08-09",
+  "baseline_repository": "DigitalHerencia/LoadedVibes",
+  "baseline_revision": "1479a4a1ef14dccf429e9fbaf5f1097e639a2914",
+  "purpose": "Replacement governance and active migration specs for the one-template Loaded Vibes paradigm.",
+  "implementation_performed": false
+}

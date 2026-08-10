@@ -73,7 +73,7 @@ async function assertLocalImportsResolve(root: string): Promise<void> {
 }
 
 describe('createProject', () => {
-  it('materializes the canonical template with structured identity transforms', async () => {
+  it('materializes the complete canonical template with structured identity transforms', async () => {
     const root = await mkdtemp(path.join(os.tmpdir(), 'loaded-vibes-create-'));
     const target = path.join(root, 'Acme Product');
     const result = await createProject({
@@ -106,13 +106,16 @@ describe('createProject', () => {
     });
     await expect(
       stat(path.join(target, 'app', '(public)', 'pricing')),
-    ).rejects.toMatchObject({ code: 'ENOENT' });
+    ).resolves.toBeTruthy();
     await expect(
       stat(path.join(target, 'app', '(tenant)', 'projects')),
-    ).rejects.toMatchObject({ code: 'ENOENT' });
+    ).resolves.toBeTruthy();
     await expect(
       stat(path.join(target, 'app', 'api', 'stripe', 'connect')),
-    ).rejects.toMatchObject({ code: 'ENOENT' });
+    ).resolves.toBeTruthy();
+    await expect(
+      readFile(path.join(target, 'content', 'loadedvibes.ts'), 'utf8'),
+    ).resolves.toContain('"marketing": false');
     for (const surface of [
       path.join('app', '(onboarding)', 'onboarding', 'page.tsx'),
       path.join('app', '(tenant)', 'team', 'page.tsx'),

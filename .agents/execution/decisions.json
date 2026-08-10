@@ -1,74 +1,54 @@
 {
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "decisions": [
     {
       "id": "LV-D-001",
-      "decision": "Loaded Vibes is optimized for generator UX, user time saved, and product-fit rather than governance or validation breadth.",
+      "decision": "Loaded Vibes is optimized for developer time saved and the usefulness of the generated repository, not governance breadth.",
       "status": "active"
     },
     {
       "id": "LV-D-002",
-      "decision": "CLI, web configurator, and loadedvibes.json share one recipe core.",
+      "decision": "CLI, web configurator, and loadedvibes.json share one configuration schema and normalization path.",
       "status": "active"
-    },
-    {
-      "id": "LV-D-003",
-      "decision": "Vibes remains the upstream SaaS template/reference; Loaded Vibes packages a self-contained derivative for generation.",
-      "status": "superseded",
-      "supersededBy": "LV-D-012"
-    },
-    {
-      "id": "LV-D-004",
-      "decision": "Initial web configurator is stateless and requires no Loaded Vibes user account or database.",
-      "status": "active"
-    },
-    {
-      "id": "LV-D-005",
-      "decision": "The self-contained Vibes derivative is composed from a stable golden baseline plus explicit marketing, sample-domain, and Stripe Connect overlays; presentation-only onboarding and admin examples are not promoted to production modules.",
-      "status": "superseded",
-      "supersededBy": "LV-D-012",
-      "issue": 95
-    },
-    {
-      "id": "LV-D-006",
-      "decision": "Generated identity and design choices are exposed through one typed product contract and consumed only by metadata, brand, semantic token, density, and navigation-shell surfaces.",
-      "status": "active",
-      "issue": 96
-    },
-    {
-      "id": "LV-D-007",
-      "decision": "Post-generation add is limited to packaged repository modules, preflights every file, and permits declared replacements only while the destination still matches the golden baseline.",
-      "status": "active",
-      "issue": 97
-    },
-    {
-      "id": "LV-D-008",
-      "decision": "Doctor performs only local metadata, dependency, Prisma-client, and non-secret environment-shape checks; explain derives product meaning and remaining setup from the manifest and recipe.",
-      "status": "active",
-      "issue": 98
-    },
-    {
-      "id": "LV-D-009",
-      "decision": "The stateless configurator imports the browser-safe shared recipe resolver, persists no server data, and exports the same normalized loadedvibes.json contract consumed by the CLI.",
-      "status": "active",
-      "issue": 99
-    },
-    {
-      "id": "LV-D-010",
-      "decision": "Web previews are representative Vibes-aligned surface mockups bound to normalized recipe fields; unsupported capability surfaces are labeled as excluded instead of simulated as working product behavior.",
-      "status": "superseded",
-      "supersededBy": "LV-D-012",
-      "issue": 100
-    },
-    {
-      "id": "LV-D-011",
-      "decision": "The canonical command is loaded-vibes create; the create-loaded-vibes package and legacy positional invocation remain compatible during the package-name transition.",
-      "status": "active",
-      "issue": 101
     },
     {
       "id": "LV-D-012",
-      "decision": "Loaded Vibes is the sole owner and maintenance authority for one repository-local maximal white-label Hipster Stack template. DevNotes defines its engineering doctrine; no external application repository is an upstream, reference, synchronization source, or provenance dependency. Existing repository-local modules remain compatibility overlays until explicit retain-or-remove composition replaces them.",
+      "decision": "Loaded Vibes is the sole executable application-template authority and DevNotes is the Hipster Stack doctrine authority. DigitalHerencia/Vibes is not an upstream, reference, sync, provenance, packaging, or runtime dependency.",
+      "status": "active"
+    },
+    {
+      "id": "LV-D-013",
+      "decision": "The final repository contains one maximal white-label application at template/. Generation copies that source, resolves ownership, removes excluded material, and applies structured transforms.",
+      "status": "active"
+    },
+    {
+      "id": "LV-D-014",
+      "decision": "packages/recipes and duplicated templates/modules source are migration-era structures. Useful defaults and ownership semantics may be preserved, but the structures themselves are not the target architecture.",
+      "status": "active"
+    },
+    {
+      "id": "LV-D-015",
+      "decision": "Presets, when retained, are convenience defaults over one configuration model and never represent separate templates or architectures.",
+      "status": "active"
+    },
+    {
+      "id": "LV-D-016",
+      "decision": "A configuration option is user-selectable only when Loaded Vibes can make a real deterministic change to generated output or project lifecycle.",
+      "status": "active"
+    },
+    {
+      "id": "LV-D-017",
+      "decision": "Loaded Vibes' website is a dark developer tool with separate landing, configure, and docs surfaces. The CLI remains the primary execution surface and the web configurator remains stateless.",
+      "status": "active"
+    },
+    {
+      "id": "LV-D-018",
+      "decision": "Root docs/ is the canonical end-user documentation source. context/ remains maintainer/Codex context.",
+      "status": "active"
+    },
+    {
+      "id": "LV-D-019",
+      "decision": "The migration adds no new tests or validation systems. Existing relevant checks may be run proportionally for the behavior changed by an Issue.",
       "status": "active"
     }
   ]

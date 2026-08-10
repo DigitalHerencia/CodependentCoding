@@ -122,6 +122,24 @@ async function exists(file: string): Promise<boolean> {
   }
 }
 
+async function canonicalProjectionFiles(
+  files: readonly string[],
+  sourceDirectory: string,
+  templateDirectory: string,
+): Promise<string[]> {
+  const projections: string[] = [];
+  for (const relative of files) {
+    const baseline = path.join(templateDirectory, relative);
+    if (!(await exists(baseline))) continue;
+    const [moduleBody, baselineBody] = await Promise.all([
+      readFile(path.join(sourceDirectory, relative)),
+      readFile(baseline),
+    ]);
+    if (moduleBody.equals(baselineBody)) projections.push(relative);
+  }
+  return projections;
+}
+
 async function assertAdditionIsSafe(plan: ModuleAdditionPlan): Promise<void> {
   for (const relative of plan.files) {
     const destination = path.join(plan.targetDirectory, relative);
@@ -197,13 +215,18 @@ export async function planProjectModuleAddition(
   );
   const metadata = await readModuleMetadata(sourceDirectory, module);
   const files = await listFiles(sourceDirectory);
+  const projectionFiles = await canonicalProjectionFiles(
+    files,
+    sourceDirectory,
+    templateDirectory,
+  );
   const plan: ModuleAdditionPlan = {
     targetDirectory: target,
     module,
     addedCapabilities,
     prerequisites: addedCapabilities.filter((id) => id !== capability),
     files,
-    replacements: metadata.replaces,
+    replacements: [...new Set([...metadata.replaces, ...projectionFiles])],
     setup: metadata.setup,
     nextRecipe,
     manifest,

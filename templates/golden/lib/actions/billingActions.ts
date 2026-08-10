@@ -28,3 +28,8 @@ export async function createCheckoutRedirectAction(): Promise<void> {
   const result = await createCheckoutSessionAction()
   if (result.ok) redirect(result.data.url)
 }
+
+export async function createBillingPortalRedirectAction(): Promise<void> {
+  const result = await createBillingPortalSessionAction()
+  if (result.ok) redirect(result.data.url)
+}

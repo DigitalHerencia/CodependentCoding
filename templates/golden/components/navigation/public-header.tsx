@@ -5,7 +5,7 @@ import Link from "next/link"
 
 import { LogoLockup } from "@/components/brand/logo-lockup"
 import { Button } from "@/components/ui/button"
-import { loadedVibesCapabilities } from "@/content/loadedvibes"
+import { loadedVibesCapabilities, loadedVibesProduct } from "@/content/loadedvibes"
 
 export interface PublicHeaderNavItem {
   label: string
@@ -24,8 +24,8 @@ export const defaultPublicNavItems = [
         { label: "FAQ", href: "/faq" },
       ]
     : []),
-  { label: "Terms", href: "/legal/terms" },
-  { label: "Privacy", href: "/legal/privacy" },
+  { label: "Terms", href: "/terms" },
+  { label: "Privacy", href: "/privacy" },
 ] satisfies readonly PublicHeaderNavItem[]
 
 export function PublicHeader({
@@ -35,7 +35,11 @@ export function PublicHeader({
   return (
     <header className="sticky top-0 z-50 h-21 w-full border-b border-neutral-400 bg-black">
       <div className="mx-auto hidden h-full w-full max-w-7xl items-center justify-between px-6 sm:px-10 md:flex lg:px-12">
-        <Link href="/" aria-label="Vouch home" className="flex shrink-0 items-center">
+        <Link
+          href="/"
+          aria-label={`${loadedVibesProduct.name} home`}
+          className="flex shrink-0 items-center"
+        >
           {logo}
         </Link>
 
@@ -53,13 +57,17 @@ export function PublicHeader({
           </Button>
 
           <Button variant="primary" size="lg" className="min-w-40 sm:min-w-44 lg:min-w-48" asChild>
-            <Link href="/sign-up?return_to=/vouches/new">Get started</Link>
+            <Link href="/sign-up?return_to=/dashboard">Get started</Link>
           </Button>
         </div>
       </div>
 
       <div className="flex h-full items-center justify-center px-6 md:hidden">
-        <Link href="/" aria-label="Vouch home" className="inline-flex items-center">
+        <Link
+          href="/"
+          aria-label={`${loadedVibesProduct.name} home`}
+          className="inline-flex items-center"
+        >
           <LogoLockup />
         </Link>
       </div>

@@ -1,6 +1,8 @@
 {
   "schemaVersion": 1,
   "id": "sample-domain",
+  "mode": "compatibility-projection",
+  "projectionOf": "templates/golden",
   "requires": ["organizations", "rbac"],
   "conflicts": [],
   "replaces": ["features/dashboard/dashboard-feature.tsx"],

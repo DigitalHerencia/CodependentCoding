@@ -1,18 +1,54 @@
-# Loaded Vibes Implementation Specs
+# Loaded Vibes Active Implementation Specs
 
-These files are issue-sized build slices for Codex. GitHub Issues are the operational work queue; specs provide durable scope and acceptance context.
+These specs are the issue-sized roadmap for finishing the current repository migration.
 
-## Roadmap
+GitHub Issues are the operational queue. Each Issue should correspond to one spec. The spec is durable scope and acceptance context, not a second project-management system.
 
-1. LV-101 — shared recipe core and workspace
-2. LV-102 — product presets and module resolver
-3. LV-103 — CLI Express/Advanced experience
-4. LV-104 — Loaded Vibes-owned master template and capability ownership
-5. LV-105 — design personalization
-6. LV-106 — generation manifest and `add`
-7. LV-107 — `doctor` and `explain`
-8. LV-108 — stateless web configurator
-9. LV-109 — live preview and recipe handoff
-10. LV-110 — package/release polish
+## Active order
 
-Implement one coherent spec per PR. Acceptance criteria are user/product outcomes first. Verification should be proportional to the behavior changed.
+1. **LV-201** — consolidate the one repository-owned master template.
+2. **LV-202** — simplify configuration and absorb recipe ownership.
+3. **LV-203** — convert generation to one-template retain/remove ownership.
+4. **LV-204** — split and polish the developer-tool landing page and configurator.
+5. **LV-205** — add canonical end-user docs and `/docs`.
+6. **LV-206** — polish the CLI/package around the final model.
+7. **LV-207** — remove migration debris and prepare the coherent release.
+
+## Dependency map
+
+```text
+LV-201 template ownership
+     │
+     ├──────────────┐
+     ▼              ▼
+LV-202 config     template source ready
+     │
+     ▼
+LV-203 generator
+     │
+     ├──────────────┬──────────────┐
+     ▼              ▼              ▼
+LV-204 web      LV-205 docs     LV-206 CLI/package
+     └──────────────┴──────────────┘
+                    │
+                    ▼
+               LV-207 cleanup
+```
+
+## Historical specs
+
+LV-101 through LV-110 belong to the completed previous generator roadmap. Once this governance replaces the active set, they should not continue to guide current implementation. Git history preserves them.
+
+## Issue creation rule
+
+For each spec:
+- use its `issue_title` as the starting GitHub Issue title;
+- use the full spec body or link the spec from a concise Issue body;
+- do not split the spec into artificial sub-Issues unless implementation evidence shows it cannot be completed coherently;
+- do not combine multiple specs into a giant PR.
+
+## Verification rule
+
+The user explicitly does not want new tests or validation systems as part of this cleanup.
+
+Use existing checks only when they directly establish the behavior changed by the active Issue.

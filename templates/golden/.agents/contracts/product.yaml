@@ -12,4 +12,4 @@ principles:
   - local authorization
   - transport-safe contracts
   - provider isolation
-  - explicit implementation gaps
+  - representative capability slices

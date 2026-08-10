@@ -1,10 +1,5 @@
-import { SettingsSectionFeature } from "@/features/settings/settings-section-feature"
+import { DeveloperSettingsFeature } from "@/features/settings/developer-settings-feature"
 
 export default function DeveloperSettingsPage() {
-  return (
-    <SettingsSectionFeature
-      title="Developer"
-      description="Expose product-specific developer controls without leaking server credentials."
-    />
-  )
+  return <DeveloperSettingsFeature />
 }

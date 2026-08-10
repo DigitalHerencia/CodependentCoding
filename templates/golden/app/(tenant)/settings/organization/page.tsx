@@ -1,10 +1,5 @@
-import { SettingsSectionFeature } from "@/features/settings/settings-section-feature"
+import { OrganizationSettingsFeature } from "@/features/settings/organization-settings-feature"
 
 export default function OrganizationSettingsPage() {
-  return (
-    <SettingsSectionFeature
-      title="Organization"
-      description="Manage tenant identity and application-owned organization state."
-    />
-  )
+  return <OrganizationSettingsFeature />
 }

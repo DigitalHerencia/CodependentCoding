@@ -14,3 +14,8 @@ export function revalidateProjectSurfaces(input: { userId: string; projectId?: s
     revalidateTag(cacheTags.project(input.projectId), "max")
   }
 }
+
+export function revalidateOrganizationSurfaces() {
+  revalidatePath("/settings/organization")
+  revalidatePath("/team")
+}
