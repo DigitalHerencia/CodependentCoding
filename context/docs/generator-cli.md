@@ -34,6 +34,7 @@ Do not make ordinary generation depend on live GitHub, provider credentials, or 
 ## CLI vocabulary
 
 Prefer developer-tool language:
+
 - Configure project
 - Fixed foundation
 - Optional surfaces
@@ -43,6 +44,7 @@ Prefer developer-tool language:
 - Generated output
 
 Avoid:
+
 - Choose your stack
 - Choose your architecture
 - startup-builder marketing language
@@ -89,6 +91,7 @@ Do not promise arbitrary upgrades or merges into user-modified code.
 ## `explain`
 
 Explain should answer:
+
 - what Loaded Vibes generated;
 - which optional surfaces are present;
 - which integrations are wired;

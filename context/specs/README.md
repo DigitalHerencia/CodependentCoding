@@ -42,6 +42,7 @@ LV-101 through LV-110 belong to the completed previous generator roadmap. Once t
 ## Issue creation rule
 
 For each spec:
+
 - use its `issue_title` as the starting GitHub Issue title;
 - use the full spec body or link the spec from a concise Issue body;
 - do not split the spec into artificial sub-Issues unless implementation evidence shows it cannot be completed coherently;

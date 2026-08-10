@@ -5,7 +5,7 @@ status: ready
 type: implementation-spec
 order: 3
 depends_on: [LV-201, LV-202]
-issue_title: "Generate from one template with explicit retain/remove ownership"
+issue_title: 'Generate from one template with explicit retain/remove ownership'
 ---
 
 # LV-203 — Convert generation to one-template retain/remove ownership

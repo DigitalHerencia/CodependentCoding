@@ -5,7 +5,7 @@ status: ready
 type: implementation-spec
 order: 6
 depends_on: [LV-202, LV-203]
-issue_title: "Polish Loaded Vibes CLI and package for the one-template model"
+issue_title: 'Polish Loaded Vibes CLI and package for the one-template model'
 ---
 
 # LV-206 — Polish the CLI and package around the final model

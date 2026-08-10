@@ -37,6 +37,7 @@ No surface gets its own hidden defaults or capability semantics.
 ## Recommended configuration categories
 
 ### Project
+
 - directory;
 - package name;
 - display/product name;
@@ -45,6 +46,7 @@ No surface gets its own hidden defaults or capability semantics.
 - initialize Git.
 
 ### Product identity
+
 - brand/display name;
 - description;
 - bounded domain vocabulary when supported.
@@ -52,6 +54,7 @@ No surface gets its own hidden defaults or capability semantics.
 ### Optional application surfaces
 
 Examples may include:
+
 - marketing;
 - onboarding;
 - admin;
@@ -70,6 +73,7 @@ Expose provider integration choices only when the template has a real supported 
 ### Visual direction
 
 Keep this bounded and semantic:
+
 - color family;
 - radius;
 - density;
@@ -84,6 +88,7 @@ Loaded Vibes' own website is dark-only. That does not force generated applicatio
 Presets are optional convenience defaults over the same configuration model.
 
 They are not:
+
 - separate templates;
 - separate architectures;
 - a reason to maintain a separate `packages/recipes` package.
@@ -95,6 +100,7 @@ If existing presets remain useful, move their data into the schema/core boundary
 Do not show a toggle because it sounds useful.
 
 Every selectable option must map to one of:
+
 - a real retain/remove ownership decision;
 - a supported structured transform;
 - a supported project-lifecycle choice.

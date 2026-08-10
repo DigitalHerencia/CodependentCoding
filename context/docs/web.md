@@ -34,6 +34,7 @@ No Loaded Vibes account system, hosted project database, billing system, or remo
 ## Landing page
 
 The landing page should communicate:
+
 - Loaded Vibes is a software factory / deterministic project generator;
 - one template, not many architectures;
 - DevNotes supplies doctrine and Loaded Vibes supplies deterministic production;
@@ -50,6 +51,7 @@ Use the supplied Loaded Vibes concept imagery as the visual direction, not as a 
 Loaded Vibes itself is dark-only.
 
 Preferred characteristics:
+
 - near-black canvas;
 - restrained bordered panels;
 - electric blue, violet, and magenta accents;
@@ -84,6 +86,7 @@ The web UI must consume the browser-safe shared core rather than implementing it
 ## Output
 
 The initial web configurator exports:
+
 - `loadedvibes.json`;
 - a copyable CLI command;
 - a readable summary of what the CLI will produce.

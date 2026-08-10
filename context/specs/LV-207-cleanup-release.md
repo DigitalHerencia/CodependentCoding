@@ -5,7 +5,7 @@ status: ready
 type: implementation-spec
 order: 7
 depends_on: [LV-201, LV-202, LV-203, LV-204, LV-205, LV-206]
-issue_title: "Clean the Loaded Vibes repo and prepare the one-template release"
+issue_title: 'Clean the Loaded Vibes repo and prepare the one-template release'
 ---
 
 # LV-207 — Remove migration debris and prepare the coherent release
