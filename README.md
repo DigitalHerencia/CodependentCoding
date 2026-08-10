@@ -2,6 +2,8 @@
 
 Loaded Vibes turns a few product choices into a recognizable SaaS starting point. It combines an enjoyable CLI, a stateless visual configurator, reproducible `loadedvibes.json` recipes, and one packaged maximal white-label application template—without asking you to redesign the stack.
 
+The canonical end-user guide lives in [`docs/`](docs/index.md) and is rendered by the website under `/docs/*`. Start with [Getting started](docs/getting-started.md), then use the [configuration](docs/concepts/configuration.md) and [CLI](docs/cli/index.md) references as needed.
+
 ## Create a project
 
 Node.js 24 is required. Run the package without installing it globally:

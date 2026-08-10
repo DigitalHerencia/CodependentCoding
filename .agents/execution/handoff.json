@@ -2,28 +2,27 @@
   "schemaVersion": 3,
   "handoff": {
     "repository": "DigitalHerencia/LoadedVibes",
-    "branch": "feat/115-web-landing-configurator",
-    "observedRevision": "99df947",
-    "activeIssue": 115,
-    "activeSpec": "context/specs/LV-204-web-landing-configurator.md",
-    "objective": "Separate the concise Loaded Vibes landing page from the stateless visual configuration workbench and expose only generator-backed choices.",
+    "branch": "docs/116-end-user-docs",
+    "observedRevision": "5f9d6a0",
+    "activeIssue": 116,
+    "activeSpec": "context/specs/LV-205-end-user-docs.md",
+    "objective": "Create one canonical docs/ source for current Loaded Vibes behavior and render it under /docs without duplicating maintainer context.",
     "readFirst": [
       "AGENTS.md",
       "context/README.md",
-      "context/specs/LV-204-web-landing-configurator.md",
-      "context/docs/web.md",
+      "context/specs/LV-205-end-user-docs.md",
+      "context/docs/documentation.md",
       "context/docs/product.md",
-      "context/docs/configuration.md",
-      ".agents/contracts/product.yaml",
-      "apps/web/app/page.tsx",
-      "apps/web/app/configure/page.tsx",
-      "apps/web/components/configurator.tsx"
+      "context/docs/generator-cli.md",
+      "docs/index.md",
+      "apps/web/app/docs/[[...slug]]/page.tsx",
+      "apps/web/lib/docs.tsx"
     ],
     "doNot": [
       "reintroduce DigitalHerencia/Vibes",
-      "add accounts or server state",
-      "add hosted generation",
-      "show choices the generator cannot honor",
+      "duplicate maintainer context",
+      "document unsupported providers or commands",
+      "add a documentation CMS",
       "add new tests or validation systems",
       "claim checks that were not run"
     ]

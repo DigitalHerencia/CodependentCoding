@@ -19,6 +19,9 @@ export default function Home() {
             Configure a project
           </Link>
           <code>pnpm dlx create-loaded-vibes@latest</code>
+          <Link className="button" href="/docs/getting-started">
+            Read the docs
+          </Link>
         </div>
       </section>
 

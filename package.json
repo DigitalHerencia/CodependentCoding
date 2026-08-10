@@ -30,14 +30,15 @@
   "files": [
     "dist",
     "template",
+    "docs",
     "README.md",
     "LICENSE"
   ],
   "scripts": {
     "build": "tsdown",
     "dev": "tsx packages/cli/src/cli.ts",
-    "format": "prettier --write apps packages tests scripts context .agents package.json tsconfig.json pnpm-workspace.yaml README.md SECURITY.md CONTRIBUTING.md eslint.config.mjs prettier.config.mjs tsdown.config.ts vitest.config.ts vercel.json",
-    "format:check": "prettier --check apps packages tests scripts context .agents package.json tsconfig.json pnpm-workspace.yaml README.md SECURITY.md CONTRIBUTING.md eslint.config.mjs prettier.config.mjs tsdown.config.ts vitest.config.ts vercel.json",
+    "format": "prettier --write apps packages tests scripts context docs .agents package.json tsconfig.json pnpm-workspace.yaml README.md SECURITY.md CONTRIBUTING.md eslint.config.mjs prettier.config.mjs tsdown.config.ts vitest.config.ts vercel.json",
+    "format:check": "prettier --check apps packages tests scripts context docs .agents package.json tsconfig.json pnpm-workspace.yaml README.md SECURITY.md CONTRIBUTING.md eslint.config.mjs prettier.config.mjs tsdown.config.ts vitest.config.ts vercel.json",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test": "vitest run tests/unit tests/integration",

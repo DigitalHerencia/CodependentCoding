@@ -1,12 +1,12 @@
 {
   "schemaVersion": 3,
   "status": "in-progress",
-  "observedRevision": "99df947",
+  "observedRevision": "5f9d6a0",
   "observedDate": "2026-08-09",
-  "currentOutcome": "LV-204 separates the developer landing page from the stateless configuration workbench and presents only generator-backed options.",
-  "activeIssue": 115,
-  "activeSpec": "context/specs/LV-204-web-landing-configurator.md",
-  "openIssuesObserved": 4,
+  "currentOutcome": "LV-205 establishes docs/ as the canonical end-user source and renders it under /docs from the same Markdown files.",
+  "activeIssue": 116,
+  "activeSpec": "context/specs/LV-205-end-user-docs.md",
+  "openIssuesObserved": 3,
   "openPullRequestsObserved": 0,
   "completedPriorRoadmap": "LV-101 through LV-110",
   "nextRoadmap": [
@@ -25,6 +25,7 @@
     "package.json publishes the sole template source",
     "package.json name is create-loaded-vibes and exposes both create-loaded-vibes and loaded-vibes bins",
     "the web root is the concise developer landing page and /configure owns the workbench",
+    "docs/ is the canonical end-user source rendered by /docs",
     "root and context governance already prohibit using DigitalHerencia/Vibes as template authority"
   ],
   "evidenceThisArtifactDidNotExecute": [
@@ -35,5 +36,5 @@
     "package smoke checks",
     "deployments"
   ],
-  "nextAction": "Finish LV-204 web verification, open its focused pull request, and merge before starting LV-205."
+  "nextAction": "Finish LV-205 web verification, open its focused pull request, and merge before starting LV-206."
 }
