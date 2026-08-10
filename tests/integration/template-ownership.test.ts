@@ -22,7 +22,7 @@ describe('template ownership', () => {
   it('uses repository-local template identity without external source provenance', async () => {
     const metadata = JSON.parse(
       await readFile(
-        path.join(root, 'templates', 'golden', '.loaded-vibes-template.json'),
+        path.join(root, 'template', '.loaded-vibes-template.json'),
         'utf8',
       ),
     ) as Record<string, unknown>;
@@ -36,29 +36,24 @@ describe('template ownership', () => {
     expect(metadata).not.toHaveProperty('sourceRevision');
   });
 
-  it('keeps every compatibility projection in the complete golden template', async () => {
-    const golden = path.join(root, 'templates', 'golden');
+  it('keeps every supported capability in the canonical template', async () => {
+    const template = path.join(root, 'template');
     for (const capabilityPath of [
       path.join('app', '(public)', 'pricing', 'page.tsx'),
       path.join('app', '(tenant)', 'projects', 'page.tsx'),
       path.join('app', 'api', 'stripe', 'connect', 'webhooks', 'route.ts'),
     ]) {
       await expect(
-        stat(path.join(golden, capabilityPath)),
+        stat(path.join(template, capabilityPath)),
       ).resolves.toBeTruthy();
     }
 
     for (const moduleId of ['marketing', 'sample-domain', 'stripe-connect']) {
       const moduleRoot = path.join(root, 'templates', 'modules', moduleId);
-      for (const relative of await files(moduleRoot)) {
-        const [projection, canonical] = await Promise.all([
-          readFile(path.join(moduleRoot, relative)),
-          readFile(path.join(golden, relative)),
-        ]);
-        expect(projection.equals(canonical), `${moduleId}/${relative}`).toBe(
-          true,
-        );
-      }
+      expect(await files(moduleRoot), moduleId).toEqual([]);
+      await expect(
+        stat(path.join(moduleRoot, '.loaded-vibes-module.json')),
+      ).resolves.toBeTruthy();
     }
   });
 
@@ -78,7 +73,6 @@ describe('template ownership', () => {
       'package.json',
       path.join('context', 'README.md'),
       path.join('context', 'docs', 'architecture.md'),
-      path.join('context', 'docs', 'tech-req.md'),
       path.join('.agents', 'contracts', 'product.yaml'),
       path.join('.agents', 'contracts', 'architecture.yaml'),
     ];

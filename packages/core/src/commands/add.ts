@@ -1,4 +1,4 @@
-import { access, cp, mkdir, readFile, readdir } from 'node:fs/promises';
+import { access, cp, mkdir, readFile, readdir, stat } from 'node:fs/promises';
 import path from 'node:path';
 import type {
   CapabilityId,
@@ -113,6 +113,22 @@ async function listFiles(
   return files;
 }
 
+async function listContributionFiles(
+  templateDirectory: string,
+  contributions: readonly string[],
+): Promise<string[]> {
+  const files = await Promise.all(
+    contributions.map(async (contribution) => {
+      const source = path.join(templateDirectory, contribution);
+      const entry = await stat(source);
+      return entry.isDirectory()
+        ? listFiles(source, templateDirectory)
+        : [contribution];
+    }),
+  );
+  return files.flat();
+}
+
 async function exists(file: string): Promise<boolean> {
   try {
     await access(file);
@@ -207,14 +223,19 @@ export async function planProjectModuleAddition(
     Object.keys(nextRecipe.modules) as CapabilityId[]
   ).filter((id) => !isEnabled(currentRecipe, id) && isEnabled(nextRecipe, id));
   const templateDirectory = await resolveTemplateDirectory();
-  const sourceDirectory = path.resolve(
+  const metadataDirectory = path.resolve(
     templateDirectory,
     '..',
+    'templates',
     'modules',
     module,
   );
-  const metadata = await readModuleMetadata(sourceDirectory, module);
-  const files = await listFiles(sourceDirectory);
+  const metadata = await readModuleMetadata(metadataDirectory, module);
+  const sourceDirectory = templateDirectory;
+  const files = await listContributionFiles(
+    templateDirectory,
+    metadata.contributions,
+  );
   const projectionFiles = await canonicalProjectionFiles(
     files,
     sourceDirectory,

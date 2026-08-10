@@ -2,10 +2,10 @@
   "schemaVersion": 3,
   "handoff": {
     "repository": "DigitalHerencia/LoadedVibes",
-    "branch": "master",
-    "observedRevision": "1479a4a1ef14dccf429e9fbaf5f1097e639a2914",
-    "nextSpec": "context/specs/LV-201-consolidate-master-template.md",
-    "nextIssueTitle": "Consolidate the one repository-owned master template",
+    "branch": "feat/112-consolidate-master-template",
+    "observedRevision": "f4cd2dad89ff05d85d5887d46745dcc869b64e7b",
+    "activeIssue": 112,
+    "activeSpec": "context/specs/LV-201-consolidate-master-template.md",
     "objective": "Move the repository-owned maximal application into template/ and merge currently duplicated module-owned source into that one source before later generator simplification.",
     "readFirst": [
       "AGENTS.md",
