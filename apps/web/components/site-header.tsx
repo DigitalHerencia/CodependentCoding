@@ -9,6 +9,7 @@ export function SiteHeader() {
       </Link>
       <nav aria-label="Primary navigation">
         <Link href="/">Overview</Link>
+        <Link href="/docs">Docs</Link>
         <Link className="nav-cta" href="/configure">
           Open configurator
         </Link>
