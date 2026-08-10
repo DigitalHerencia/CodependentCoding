@@ -22,7 +22,7 @@ import {
 const program = new Command();
 program
   .name('loaded-vibes')
-  .description('Generate a complete Loaded Vibes SaaS project.')
+  .description('Generate a complete white-label application from one template.')
   .version('0.1.0');
 
 interface CreateFlags {
@@ -127,24 +127,27 @@ async function runCreate(
     },
   };
   const progress = spinner();
-  if (!flags.dryRun) progress.start('Building your product foundation');
+  if (!flags.dryRun)
+    progress.start('Generating from the Loaded Vibes template');
   let result;
   try {
     result = await createProject(input, {
       dryRun: Boolean(flags.dryRun),
     });
   } catch (error) {
-    if (!flags.dryRun) progress.stop('Generation stopped');
+    if (!flags.dryRun) progress.stop('Generated output stopped');
     throw error;
   }
-  if (!flags.dryRun) progress.stop('Product foundation generated');
+  if (!flags.dryRun) progress.stop('Generated output written');
   if (result.status === 'planned') {
     outro('Dry run complete; no files were written.');
   } else if (result.status === 'accepted') {
-    outro(`Created and acceptance-validated ${recipe.name}.`);
+    outro(
+      `Created and acceptance-validated ${recipe.name}. Next: open ${target}, then run loaded-vibes doctor.`,
+    );
   } else {
     outro(
-      `Generated ${recipe.name}; install and acceptance validation were skipped.`,
+      `Generated ${recipe.name}; install and acceptance validation were skipped. Next: open ${target}, then run corepack pnpm install.`,
     );
   }
 }
@@ -159,21 +162,23 @@ attachCreateAction(
   configureCreateCommand(
     program
       .command('create')
-      .description('Create a Loaded Vibes SaaS project.'),
+      .description(
+        'Generate a white-label application from the master template.',
+      ),
   ),
 );
 
 program
   .command('add')
-  .description('Add a supported Loaded Vibes capability module.')
-  .argument('<module>', 'marketing, sample-domain, or stripe-connect')
+  .description('Add a supported generator-owned optional surface.')
+  .argument('<surface>', 'marketing, sample-domain, or stripe-connect')
   .option('--cwd <directory>', 'generated project directory', '.')
   .action(async (module: string, flags: { cwd: string }) => {
     intro('Loaded Vibes add');
     const plan = await planProjectModuleAddition(flags.cwd, module);
     console.log(
       [
-        `Module: ${plan.module}`,
+        `Optional surface: ${plan.module}`,
         `Capabilities: ${plan.addedCapabilities.join(', ')}`,
         `Prerequisites: ${plan.prerequisites.join(', ') || 'none'}`,
         `Files: ${plan.files.length} (${plan.replacements.length} intentional replacement${plan.replacements.length === 1 ? '' : 's'})`,
@@ -225,9 +230,9 @@ program
       [
         explanation.product,
         '',
-        `Preset: ${explanation.preset.label} (${explanation.preset.id})`,
+        `Starting configuration: ${explanation.preset.label} (${explanation.preset.id})`,
         `Capabilities: ${explanation.capabilities.join(', ')}`,
-        `Packaged modules: ${explanation.modules.join(', ') || 'none'}`,
+        `Added surfaces: ${explanation.modules.join(', ') || 'none'}`,
         `Design: ${explanation.design.join(', ')}`,
         '',
         'Provider boundaries',

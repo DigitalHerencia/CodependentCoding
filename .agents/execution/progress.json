@@ -1,12 +1,12 @@
 {
   "schemaVersion": 3,
   "status": "in-progress",
-  "observedRevision": "5f9d6a0",
+  "observedRevision": "19093f1",
   "observedDate": "2026-08-09",
-  "currentOutcome": "LV-205 establishes docs/ as the canonical end-user source and renders it under /docs from the same Markdown files.",
-  "activeIssue": 116,
-  "activeSpec": "context/specs/LV-205-end-user-docs.md",
-  "openIssuesObserved": 3,
+  "currentOutcome": "LV-206 makes loaded-vibes the canonical command and aligns CLI/package handoff language with the one-template product.",
+  "activeIssue": 117,
+  "activeSpec": "context/specs/LV-206-cli-package-polish.md",
+  "openIssuesObserved": 2,
   "openPullRequestsObserved": 0,
   "completedPriorRoadmap": "LV-101 through LV-110",
   "nextRoadmap": [
@@ -36,5 +36,5 @@
     "package smoke checks",
     "deployments"
   ],
-  "nextAction": "Finish LV-205 web verification, open its focused pull request, and merge before starting LV-206."
+  "nextAction": "Finish LV-206 package verification, open its focused pull request, and merge before starting LV-207."
 }
