@@ -17,7 +17,7 @@ The repository owns its maximal application foundation at `template/` and has no
 ```text
 CURRENT MIGRATION SHAPE
 apps/web
-packages/{cli,core,recipes,schema}
+packages/{cli,core,schema}
 template/ + templates/modules metadata
 legacy product-preset/module concepts
 
