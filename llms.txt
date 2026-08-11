@@ -69,8 +69,10 @@ The CLI, web configurator, and `loadedvibes.json` share one configuration model.
 
 - [Root Package Manifest](package.json): Published package identity, binaries, scripts, toolchain requirements, dependencies, and packaged files.
 - [pnpm Workspace](pnpm-workspace.yaml): Monorepo workspace boundaries.
-- [Turbo Configuration](turbo.json): Monorepo task orchestration configuration.
-- [TypeScript Base Configuration](tsconfig.base.json): Shared TypeScript compiler defaults for repository packages and applications.
+- [TypeScript Configuration](tsconfig.json): Repository TypeScript compiler settings and workspace source coverage.
+- [Package Build Configuration](tsdown.config.ts): Build configuration for the published CLI package.
+- [Web Deployment Configuration](vercel.json): Vercel build and deployment settings for the repository web surface.
+- [Test Configuration](vitest.config.ts): Vitest configuration for repository unit, integration, and generated-project tests.
 
 ## Governance
 
@@ -87,4 +89,3 @@ The CLI, web configurator, and `loadedvibes.json` share one configuration model.
 - [Repository Transition](context/docs/repository-transition.md): Historical transition rules and constraints for moving from migration-era topology to the current one-template repository shape.
 - [Release Contract](context/docs/release.md): Maintainer release and cleanup guidance.
 - [Troubleshooting](docs/troubleshooting.md): End-user fixes for common local generation and provider-readiness problems.
-- [Changelog](CHANGELOG.md): Historical release and repository change record.
