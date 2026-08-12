@@ -1,4 +1,4 @@
-schema_version: 3
+schema_version: 4
 id: loaded-vibes.product
 authority: machine-contract
 sources:
@@ -22,8 +22,9 @@ surfaces:
   - shared-configuration
   - generator-core
   - cli
-  - web-landing
-  - web-configurator
+  - web-product
+  - web-libraries
+  - web-builder
   - end-user-docs
   - loadedvibes-json
   - generated-application
@@ -37,10 +38,22 @@ web:
   requires_auth: false
   requires_database: false
   hosted_generation_required: false
+  visual_acceptance: mockup-driven
   routes:
-    landing: /
-    configure: /configure
+    product: /
+    libraries: /libraries
+    library_detail: /libraries/[slug]
+    builder: /configure
     docs: /docs
+  navigation:
+    - Product
+    - Libraries
+    - Docs
+    - Builder
+  semantics:
+    mockups_control_presentation: true
+    shared_core_controls_configuration: true
+    fixed_foundation_is_read_only: true
 
 template:
   count: 1
