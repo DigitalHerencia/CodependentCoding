@@ -1,6 +1,6 @@
 # Loaded Vibes Governance Directory
 
-Loaded Vibes is a developer-focused software factory: one repository-owned maximal white-label Hipster Stack template, one deterministic generation engine, one shared configuration contract, a CLI execution surface, a stateless visual configurator, and end-user documentation.
+Loaded Vibes is a developer-focused software factory: one repository-owned maximal white-label Hipster Stack template, one deterministic generation engine, one shared configuration contract, a CLI execution surface, a stateless visual Builder, browsable product Libraries, and end-user documentation.
 
 This file is the governance directory. Read only the material relevant to the work in front of you.
 
@@ -29,6 +29,8 @@ Read:
 5. only the `.agents/contracts/*` files named by that spec;
 6. the actual files being changed.
 
+Do not inventory the entire repository again once the active spec identifies the relevant surface. Expand context only when an actual import, contract, failing check, or acceptance criterion requires it.
+
 ### Master template work
 
 Read:
@@ -54,10 +56,15 @@ Read:
 
 Read:
 
-- `context/docs/web.md`
-- `context/docs/product.md`
-- the relevant web spec
-- `.agents/contracts/product.yaml`
+- the matching web spec first;
+- `context/docs/web.md`;
+- `context/docs/product.md` only when the spec names it;
+- `context/docs/configuration.md` only when changing Builder semantics;
+- `.agents/contracts/product.yaml`;
+- the local `context/mockups/` subject named by the spec;
+- only the affected `apps/web` files plus directly imported core/schema files needed to verify semantics.
+
+`context/docs/web.md` already reconciles the applicable Codependent Coding / Loaded Vibes presentation and layer rules for this website. Do not repeatedly crawl CodependentCoding, DevNotes, `template/`, or unrelated generator internals during each visual Issue unless a concrete contradiction or missing semantic requires it.
 
 ### End-user documentation work
 
@@ -88,7 +95,7 @@ repository-owned maximal template
         ├──────────────┐
         │              │
         ▼              ▼
-shared config      website configurator
+shared config      website Builder
 schema/core             │
         │               │
         ├──────┬────────┘
@@ -183,7 +190,9 @@ LoadedVibes/
 
 - Work one GitHub Issue/spec at a time.
 - Make the smallest complete change that reaches the Issue outcome.
+- Treat current mockups as visual acceptance artifacts where the active web spec says so; reproduce their design faithfully while adapting literal labels/content only when required for truthful product behavior.
 - Preserve working code unless the Issue explicitly requires changing its ownership or location.
+- Delete replaced UI/CSS/helpers after their last caller is gone; do not leave parallel old/new implementations.
 - Do not redesign the Hipster Stack doctrine inside this repo.
 - Do not invent modules, providers, routes, or architecture that the repository does not support.
 - Do not create a generic framework generator, provider marketplace, hosted control plane, or enterprise governance product.
@@ -192,8 +201,8 @@ LoadedVibes/
 - Never claim a check ran if it did not.
 - Never collect, print, copy, or commit provider secrets.
 - Keep Windows/PowerShell first-class.
-- Keep the web configurator stateless unless a future product decision explicitly changes that.
-- Keep the CLI and web configurator as adapters over the same core configuration semantics.
+- Keep the web Builder stateless unless a future product decision explicitly changes that.
+- Keep the CLI and web Builder as adapters over the same core configuration semantics.
 - Do not reintroduce `DigitalHerencia/Vibes` as an upstream, source, sync target, reference dependency, or provenance dependency.
 
 ## Delivery
