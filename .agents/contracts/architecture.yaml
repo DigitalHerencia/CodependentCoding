@@ -25,17 +25,35 @@ shared_configuration:
 
 boundaries:
   web:
-    owns: [product-presentation, interactive-docs-presentation, builder-local-orchestration]
-    forbidden: [filesystem-generation, provider-secrets, duplicate-configuration-authority]
+    owns:
+      - product-presentation
+      - interactive-docs-presentation
+      - builder-local-orchestration
+    forbidden:
+      - filesystem-generation
+      - provider-secrets
+      - duplicate-configuration-authority
   cli:
     owns: [command-parsing, prompts, terminal-output, core-invocation]
     forbidden: [second-configuration-resolver]
   generator:
-    owns: [normalization, composition-resolution, generator-template-catalog, generation-plan, materialization, transforms, provenance]
+    owns:
+      - normalization
+      - composition-resolution
+      - generator-template-catalog
+      - generation-plan
+      - materialization
+      - transforms
+      - provenance
     forbidden: [nextjs-web-presentation, template-runtime-product-ui]
   template:
     standalone_application: true
-    forbidden: [generator-ownership-catalog, pruning-instructions, builder-state, cli-implementation, generation-plan]
+    forbidden:
+      - generator-ownership-catalog
+      - pruning-instructions
+      - builder-state
+      - cli-implementation
+      - generation-plan
 
 generated_application:
   preserve_codependent_coding_grammar: true
