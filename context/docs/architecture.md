@@ -13,7 +13,7 @@ authority: source-of-truth
 Loaded Vibes is a deterministic compiler from a bounded configuration to a filtered and personalized copy of one maximal application template.
 
 ```text
-Web Configurator ─┐
+Web Builder ───────┐
 CLI ──────────────┼──> shared schema + normalization
 loadedvibes.json ─┘                │
                                    ▼
@@ -43,14 +43,14 @@ loadedvibes.json ─┘                │
 ```text
 /
 ├── apps/
-│   └── web/                 # landing + /configure + /docs
+│   └── web/                 # / + /libraries/* + /configure + /docs/*
 ├── packages/
 │   ├── cli/                 # terminal UX and command adapters
 │   ├── core/                # resolution, planning, generation
 │   └── schema/              # shared loadedvibes.json contract
 ├── template/                # one maximal white-label application
 ├── docs/                    # canonical end-user docs
-├── context/                 # maintainer/Codex context
+├── context/                 # maintainer/Codex context and visual acceptance inputs
 ├── .agents/                 # compact machine contracts and execution state
 ├── scripts/                 # package/release utilities actually used
 ├── .github/
@@ -105,13 +105,16 @@ It must not create a second configuration interpretation.
 
 Owns:
 
-- the Loaded Vibes developer website;
-- the visual configuration workbench;
-- representative preview;
-- rendering end-user documentation;
-- exporting/copying a configuration or CLI handoff.
+- the Loaded Vibes Product landing page;
+- the Libraries catalog and library detail presentation metadata;
+- the stateless Builder configuration workbench;
+- a readable preview of normalized/resolved Builder output;
+- rendering canonical end-user documentation;
+- exporting/copying configuration and CLI handoff.
 
-The initial web app remains stateless and does not generate projects on a hosted server.
+`apps/web` may classify and describe product building blocks for navigation, but it must not duplicate core capability dependencies, fixed/configurable semantics, preset resolution, or recipe validation into a second rules engine.
+
+The web app remains stateless and does not generate projects on a hosted server.
 
 ### `template/`
 
