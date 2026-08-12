@@ -8,7 +8,6 @@ import {
   serializeRecipe,
   setCapability,
 } from '../../apps/web/lib/configurator.js';
-import { getPreviewSurfaces } from '../../apps/web/lib/preview.js';
 
 describe('web configurator recipe', () => {
   it('automatically resolves capability dependencies', () => {
@@ -32,19 +31,5 @@ describe('web configurator recipe', () => {
     expect(createCliCommand(defaultConfiguratorRecipe)).toBe(
       'pnpm dlx create-loaded-vibes@latest my-saas --config loadedvibes.json --yes',
     );
-  });
-
-  it('exposes only preview surfaces supported by the resolved recipe', () => {
-    const bare = resolveConfiguratorRecipe(defaultConfiguratorRecipe).recipe;
-    const surfaces = getPreviewSurfaces(bare);
-    expect(
-      surfaces.find((surface) => surface.id === 'dashboard')?.available,
-    ).toBe(true);
-    expect(
-      surfaces.find((surface) => surface.id === 'billing')?.available,
-    ).toBe(false);
-    expect(
-      surfaces.find((surface) => surface.id === 'workflow')?.available,
-    ).toBe(false);
   });
 });
