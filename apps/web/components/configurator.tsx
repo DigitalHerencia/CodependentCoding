@@ -1,10 +1,13 @@
 'use client';
 
-import { capabilityRegistry, type Design } from '@loaded-vibes/core/browser';
-import { useEffect, useMemo, useState } from 'react';
-import { LivePreview } from '@/components/live-preview';
 import {
-  configurableCapabilities,
+  capabilityRegistry,
+  productPresets,
+  type Design,
+  type ProductPresetId,
+} from '@loaded-vibes/core/browser';
+import { useEffect, useMemo, useState } from 'react';
+import {
   createCliCommand,
   defaultConfiguratorRecipe,
   deserializeRecipe,
@@ -14,6 +17,14 @@ import {
   type ConfiguratorRecipe,
 } from '@/lib/configurator';
 
+const surfaceCapabilities = [
+  'invitations',
+  'onboarding',
+  'admin',
+  'marketing',
+  'sampleDomain',
+] as const;
+const revenueCapabilities = ['billing', 'stripeConnect'] as const;
 const designChoices = {
   theme: ['obsidian', 'paper', 'electric'],
   mode: ['system', 'light', 'dark'],
@@ -21,6 +32,15 @@ const designChoices = {
   density: ['compact', 'comfortable'],
   navigation: ['sidebar', 'topbar'],
 } as const satisfies { [Key in keyof Design]: readonly Design[Key][] };
+
+const fixedStack = [
+  ['Clerk', 'Auth'],
+  ['Organizations', 'Tenancy'],
+  ['Local RBAC', 'Authorization'],
+  ['Neon/Postgres', 'Database'],
+  ['Prisma + RLS', 'Data boundary'],
+  ['Loaded Vibes', 'Architecture'],
+] as const;
 
 function title(value: string) {
   return value
@@ -55,6 +75,10 @@ export function Configurator() {
   }, []);
 
   const resolved = useMemo(() => resolveConfiguratorRecipe(draft), [draft]);
+  const normalizedJson = useMemo(
+    () => JSON.stringify(resolved.recipe, null, 2),
+    [resolved.recipe],
+  );
 
   async function copy(value: string, message: string) {
     await navigator.clipboard.writeText(value);
@@ -80,73 +104,69 @@ export function Configurator() {
     void copy(url.toString(), 'Share link copied.');
   }
 
+  function choosePreset(product: ProductPresetId) {
+    setDraft((current) => ({ ...current, product, modules: {} }));
+  }
+
   return (
-    <main className="shell configurator-shell">
-      <section className="workbench-intro" id="top">
-        <p className="eyebrow">Configuration workbench</p>
-        <h1>Shape the product. Export the build contract.</h1>
-        <p className="lede">
-          Configure real optional surfaces, identity, and visual direction. The
-          architecture remains fixed and the result stays portable.
+    <main className="builder-page">
+      <header className="builder-heading">
+        <h1>Builder</h1>
+        <p>
+          Choose your starting point, shape real product surfaces, and export a
+          reproducible build contract.
         </p>
-      </section>
+        <div className="builder-top-actions">
+          <a className="button primary" href="#builder-controls">
+            Start Config <b>↓</b>
+          </a>
+          <button
+            className="button"
+            type="button"
+            onClick={() => void copy(normalizedJson, 'Recipe copied.')}
+          >
+            Copy Recipe <b>⧉</b>
+          </button>
+        </div>
+      </header>
 
-      <div className="workspace">
-        <div className="steps">
-          <section className="panel step">
-            <div className="step-heading">
-              <span>01</span>
-              <div>
-                <h2>Optional surfaces</h2>
-                <p>Every switch retains or removes generator-owned output.</p>
-              </div>
+      <div className="builder-workspace">
+        <section className="builder-controls" id="builder-controls">
+          <fieldset className="builder-group preset-group">
+            <legend>
+              <i>A</i>
+              <span>
+                <strong>Starting point</strong>
+                <small>One template, four real presets</small>
+              </span>
+            </legend>
+            <div className="builder-options preset-options">
+              {(
+                Object.values(
+                  productPresets,
+                ) as (typeof productPresets)[ProductPresetId][]
+              ).map((preset) => (
+                <button
+                  type="button"
+                  data-active={draft.product === preset.id}
+                  key={preset.id}
+                  onClick={() => choosePreset(preset.id)}
+                >
+                  <i /> {preset.label}
+                </button>
+              ))}
             </div>
-            <div className="foundation">
-              <span>Always included</span>
-              <strong>
-                TypeScript · Next.js · Prisma · Clerk · tenant authorization
-              </strong>
-            </div>
-            <div className="capability-list">
-              {configurableCapabilities.map((id) => {
-                const enabled =
-                  id === 'sampleDomain'
-                    ? resolved.recipe.modules.sampleDomain !== false
-                    : resolved.recipe.modules[id];
-                return (
-                  <label className="capability" key={id}>
-                    <span>
-                      <strong>{capabilityRegistry[id].label}</strong>
-                      <small>
-                        {capabilityRegistry[id].requires.length
-                          ? `Requires ${capabilityRegistry[id].requires.map((item) => capabilityRegistry[item].label.toLowerCase()).join(', ')}`
-                          : 'Independent product surface'}
-                      </small>
-                    </span>
-                    <input
-                      type="checkbox"
-                      checked={enabled}
-                      onChange={(event) =>
-                        setDraft((current) =>
-                          setCapability(current, id, event.target.checked),
-                        )
-                      }
-                    />
-                  </label>
-                );
-              })}
-            </div>
-          </section>
+          </fieldset>
 
-          <section className="panel step">
-            <div className="step-heading">
-              <span>02</span>
-              <div>
-                <h2>Product identity</h2>
-                <p>Make the generated experience yours.</p>
-              </div>
-            </div>
-            <div className="field-grid">
+          <fieldset className="builder-group identity-group">
+            <legend>
+              <i>B</i>
+              <span>
+                <strong>Product identity</strong>
+                <small>Name the repository and product</small>
+              </span>
+            </legend>
+            <div className="builder-fields">
               <label>
                 <span>Package name</span>
                 <input
@@ -157,7 +177,6 @@ export function Configurator() {
                       name: packageSlug(event.target.value),
                     })
                   }
-                  placeholder="my-saas"
                 />
               </label>
               <label>
@@ -173,12 +192,11 @@ export function Configurator() {
                       },
                     })
                   }
-                  placeholder="My SaaS"
                 />
               </label>
-              <label className="wide">
+              <label className="builder-description-field">
                 <span>One-line promise</span>
-                <textarea
+                <input
                   maxLength={160}
                   value={draft.identity.description}
                   onChange={(event) =>
@@ -193,117 +211,218 @@ export function Configurator() {
                 />
               </label>
             </div>
-          </section>
+          </fieldset>
 
-          <section className="panel step">
-            <div className="step-heading">
-              <span>03</span>
-              <div>
-                <h2>Visual direction</h2>
-                <p>Semantic choices, applied to intentional surfaces.</p>
-              </div>
-            </div>
-            <div className="design-grid">
+          <CapabilityGroup
+            letter="C"
+            title="Product surfaces"
+            description="Optional routes and owned features"
+            capabilities={surfaceCapabilities}
+            setDraft={setDraft}
+            resolved={resolved.recipe.modules}
+          />
+          <CapabilityGroup
+            letter="D"
+            title="Revenue"
+            description="Billing and platform payments"
+            capabilities={revenueCapabilities}
+            setDraft={setDraft}
+            resolved={resolved.recipe.modules}
+          />
+
+          <fieldset className="builder-group design-group">
+            <legend>
+              <i>E</i>
+              <span>
+                <strong>Design</strong>
+                <small>Bounded visual direction</small>
+              </span>
+            </legend>
+            <div className="design-selects">
               {(Object.keys(designChoices) as (keyof Design)[]).map((key) => (
-                <fieldset key={key}>
-                  <legend>{title(key)}</legend>
-                  <div className="segments">
+                <label key={key}>
+                  <span>{title(key)}</span>
+                  <select
+                    value={draft.design[key]}
+                    onChange={(event) =>
+                      setDraft({
+                        ...draft,
+                        design: {
+                          ...draft.design,
+                          [key]: event.target.value,
+                        },
+                      })
+                    }
+                  >
                     {designChoices[key].map((value) => (
-                      <button
-                        type="button"
-                        data-active={draft.design[key] === value}
-                        key={value}
-                        onClick={() =>
-                          setDraft({
-                            ...draft,
-                            design: { ...draft.design, [key]: value },
-                          })
-                        }
-                      >
+                      <option value={value} key={value}>
                         {title(value)}
-                      </button>
+                      </option>
                     ))}
-                  </div>
-                </fieldset>
+                  </select>
+                </label>
+              ))}
+            </div>
+          </fieldset>
+
+          <button
+            className="builder-download"
+            type="button"
+            onClick={downloadRecipe}
+          >
+            Download Recipe <span>↓</span>
+          </button>
+        </section>
+
+        <aside className="recipe-preview">
+          <div className="recipe-preview-heading">
+            <div>
+              <strong>Recipe Preview</strong>
+              <small>{resolved.summary.preset.label}</small>
+            </div>
+            <span>schema v{resolved.recipe.schemaVersion}</span>
+          </div>
+
+          <section className="selected-stack" aria-label="Selected stack">
+            <p>Selected Stack</p>
+            <div>
+              {fixedStack.map(([name, role]) => (
+                <article key={name}>
+                  <i>✓</i>
+                  <span>
+                    <strong>{name}</strong>
+                    <small>{role}</small>
+                  </span>
+                </article>
               ))}
             </div>
           </section>
-        </div>
 
-        <aside
-          className="review"
-          data-theme={draft.design.theme}
-          data-radius={draft.design.radius}
-          data-density={draft.design.density}
-        >
-          <div className="review-top">
-            <span>Live product preview</span>
-            <span className="schema">loadedvibes.json · schema v1</span>
-          </div>
-          <div className="product-preview">
-            <span className="preview-mark">
-              {resolved.recipe.identity.displayName.slice(0, 2).toUpperCase()}
-            </span>
+          <section className="recipe-code">
             <div>
-              <h2>{resolved.recipe.identity.displayName}</h2>
-              <p>
-                {resolved.recipe.identity.description ||
-                  'Your next focused SaaS product.'}
-              </p>
+              <span>loadedvibes.json</span>
+              <button
+                type="button"
+                onClick={() => void copy(normalizedJson, 'Recipe copied.')}
+              >
+                ⧉ Copy
+              </button>
             </div>
-          </div>
-          <LivePreview recipe={resolved.recipe} />
-          <div className="summary-block">
-            <small>Generation model</small>
-            <strong>One master template · deterministic retain/remove</strong>
-          </div>
-          <div className="summary-block">
-            <small>
-              Included capabilities · {resolved.summary.included.length}
-            </small>
-            <ul>
-              {resolved.summary.included.map((item) => (
-                <li key={item}>
-                  <i />
-                  {item}
-                </li>
-              ))}
-            </ul>
-          </div>
+            <pre>{normalizedJson}</pre>
+          </section>
+
           {resolved.summary.autoIncluded.length > 0 && (
-            <div className="auto">
-              <strong>Resolved for you</strong>
-              <span>{resolved.summary.autoIncluded.join(', ')}</span>
-            </div>
+            <p className="builder-auto-included">
+              <strong>Resolved automatically:</strong>{' '}
+              {resolved.summary.autoIncluded.join(', ')}
+            </p>
           )}
-          <details>
-            <summary>Not included · {resolved.summary.excluded.length}</summary>
-            <p>{resolved.summary.excluded.join(' · ') || 'Nothing'}</p>
-          </details>
-          <div className="actions">
-            <button className="primary" onClick={downloadRecipe}>
-              Download loadedvibes.json
+
+          <section className="builder-handoff">
+            <article>
+              <strong>Includes</strong>
+              <small>
+                {resolved.summary.included.length} resolved capabilities
+              </small>
+              <span>{resolved.summary.included.slice(0, 3).join(' · ')}</span>
+            </article>
+            <article>
+              <strong>Works With</strong>
+              <small>Docs + Loaded Vibes CLI</small>
+              <span>Portable, stateless recipe</span>
+            </article>
+            <article>
+              <strong>Output</strong>
+              <small>User-owned application</small>
+              <span>One template · deterministic build</span>
+            </article>
+          </section>
+
+          <div className="builder-output-actions">
+            <button type="button" onClick={downloadRecipe}>
+              Download JSON
             </button>
             <button
+              type="button"
               onClick={() =>
                 void copy(createCliCommand(draft), 'CLI command copied.')
               }
             >
-              Copy CLI command
+              Copy CLI Command
             </button>
-            <button onClick={shareRecipe}>Copy share link</button>
+            <button type="button" onClick={shareRecipe}>
+              Copy Share URL
+            </button>
           </div>
-          <p className="privacy">
-            No account. No server state. Your choices stay in this browser until
-            you export or share them.
+          <p className="builder-privacy">
+            No account or server state. Export the recipe and generate locally.
           </p>
           {notice && (
-            <p className="notice" role="status">
+            <p className="builder-notice" role="status">
               {notice}
             </p>
           )}
         </aside>
       </div>
     </main>
+  );
+}
+
+function CapabilityGroup({
+  letter,
+  title: groupTitle,
+  description,
+  capabilities,
+  setDraft,
+  resolved,
+}: {
+  letter: string;
+  title: string;
+  description: string;
+  capabilities: readonly (
+    | 'invitations'
+    | 'billing'
+    | 'stripeConnect'
+    | 'onboarding'
+    | 'admin'
+    | 'marketing'
+    | 'sampleDomain'
+  )[];
+  setDraft: React.Dispatch<React.SetStateAction<ConfiguratorRecipe>>;
+  resolved: ReturnType<typeof resolveConfiguratorRecipe>['recipe']['modules'];
+}) {
+  return (
+    <fieldset className="builder-group capability-group">
+      <legend>
+        <i>{letter}</i>
+        <span>
+          <strong>{groupTitle}</strong>
+          <small>{description}</small>
+        </span>
+      </legend>
+      <div className="builder-options capability-options">
+        {capabilities.map((id) => {
+          const enabled =
+            id === 'sampleDomain'
+              ? resolved.sampleDomain !== false
+              : resolved[id];
+          return (
+            <label data-active={enabled} key={id}>
+              <input
+                type="checkbox"
+                checked={enabled}
+                onChange={(event) =>
+                  setDraft((current) =>
+                    setCapability(current, id, event.target.checked),
+                  )
+                }
+              />
+              <i>{enabled ? '✓' : ''}</i>
+              <span>{capabilityRegistry[id].label}</span>
+            </label>
+          );
+        })}
+      </div>
+    </fieldset>
   );
 }
