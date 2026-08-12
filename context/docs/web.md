@@ -15,7 +15,7 @@ The web app presents Loaded Vibes as a coherent developer product and gives user
 It has four jobs:
 
 1. explain the product concisely;
-2. expose the Loaded Vibes system as browsable libraries/capabilities;
+2. expose the Loaded Vibes system as browsable libraries/building blocks;
 3. let users compose a supported configuration visually;
 4. render the canonical end-user documentation from `docs/`.
 
@@ -25,38 +25,52 @@ It is not a hosted project-control product, generic stack marketplace, or market
 
 ```text
 /                    Product / landing page
-/libraries           library/capability catalog
-/libraries/[slug]    individual library/capability detail
+/libraries           library/building-block catalog
+/libraries/[slug]    individual library/building-block detail
 /docs/*              end-user Loaded Vibes documentation
 /configure            Builder visual configuration workbench
 ```
 
-The primary navigation labels are:
+Primary navigation:
 
 ```text
 Product | Libraries | Docs | Builder
 ```
 
-`Builder` links to `/configure`; the route does not need to be renamed merely to match the navigation label.
+`Builder` links to `/configure`; do not rename a working route merely to make the URL literal.
 
 No Loaded Vibes account system, hosted project database, Loaded Vibes billing system, or remote build backend is required.
 
-## Current visual acceptance inputs
+## Visual acceptance contract
 
-The current web replacement work is mockup-driven. When the following files are present in the implementation working tree, they are the visual acceptance artifacts for LV-208 through LV-210:
+The current web replacement is mockup-driven. The implementation working tree contains a local `context/mockups/` directory with four visual subjects:
 
-```text
-context/mockups/landing.png
-context/mockups/libraries.png
-context/mockups/config.png
-context/mockups/builder.png
-```
+- Product/landing page;
+- Libraries catalog;
+- individual library/configuration detail page;
+- Builder.
 
-Do not reinterpret these mockups into a different aesthetic or generic SaaS design. Match their hierarchy, density, spacing, dark surfaces, border treatment, typography scale, navigation, card composition, restrained glow, and Digital Herencia/Loaded Vibes brand placement as faithfully as practical across responsive layouts.
+Codex must inspect that directory and map the actual files by their visual content before editing. Do not assume filenames and do not continue if the required mockup subject is missing.
 
-The mockups are presentation authority, not permission to invent unsupported product semantics. If placeholder text, toggles, providers, or JSON in a mockup conflict with the shared schema/core, keep the visual treatment and bind it to real repository-supported behavior instead.
+The mockups are the design standard. Faithfully reproduce their:
 
-If a required mockup is absent from the working tree, stop rather than guessing its visual content.
+- page structure and section order;
+- visual hierarchy and information density;
+- spacing and proportions;
+- dark surfaces and border treatment;
+- typography scale and emphasis;
+- navigation placement;
+- card composition;
+- restrained teal/cyan glow;
+- Loaded Vibes and Digital Herencia brand placement;
+- desert/circuit footer treatment;
+- interaction model implied by controls and links.
+
+Do not reinterpret them into another aesthetic, generic SaaS template, or personal redesign.
+
+The mockups are **presentation authority, not semantic authority**. Apply product judgment when literal text or controls would contradict the real product. Button/control labels, JSON examples, category wording, and link targets may be adjusted to describe actual Loaded Vibes behavior. Preserve the depicted design and interaction purpose while replacing illustrative nonsense with the correct repository-supported action.
+
+Never implement a fake toggle, fake provider choice, fake recipe field, or fake output merely because it appears illustratively in a mockup. Shared schema/core and current repository behavior remain authoritative for functionality.
 
 ## Brand and visual direction
 
@@ -77,11 +91,43 @@ Use the established brand family:
 
 Avoid violet/magenta-heavy styling, beige editorial styling, startup-confetti aesthetics, excessive gradients, partner grids, decorative dashboard density, and marketing sections that do not improve product comprehension.
 
-Preserve the repository-root `public/` brand assets. Website implementation may import or otherwise consume them through the smallest build-compatible approach, but must not delete that directory or its source images.
+Preserve the repository-root `public/` brand assets and their source images. The website may consume them through the smallest build-compatible approach, but must not delete that directory merely because the Next.js app lives under `apps/web`.
+
+## Architecture and implementation method
+
+The UI replacement must remain recognizably built according to the Codependent Coding knowledge system, Hipster Stack, and Loaded Vibes WebApp Architecture. The canonical architectural grammar is:
+
+```text
+Routes adapt.
+Features orchestrate.
+Components render.
+Fetchers read.
+Actions write.
+Schemas validate.
+Authorization decides.
+Transactions preserve invariants.
+Webhooks reconcile external truth.
+```
+
+For these mostly static/product-presentation surfaces, use the applicable subset rather than ceremonial layers:
+
+```text
+route/page -> feature/presentation orchestration -> shared/domain presentation
+```
+
+- keep App Router pages/layouts thin;
+- default to Server Components;
+- create a client boundary only where browser interaction/local state requires one, chiefly Builder;
+- keep pure presentation free of protected I/O, provider SDKs, Prisma, or product authority;
+- reuse the existing browser-safe `@loaded-vibes/core` contract for Builder semantics;
+- do not add fetchers/actions/workflows when the page has no protected read or mutation just to satisfy a diagram;
+- do not turn a focused website refactor into a repository-wide architecture migration.
+
+Relevant doctrine sources are the Codependent Coding knowledge system (`docs/10-loaded-vibes-architecture.md`, `docs/11-hipster-stack-tech-map.md`, `docs/12-layer-contracts.md`, `docs/18-agent-execution.md`) and the mirrored canonical Loaded Vibes architecture source in DevNotes. Local repository governance controls when it is more specific.
 
 ## Product landing page
 
-The landing page follows `context/mockups/landing.png` and should communicate, with minimal copy:
+The landing mockup should communicate with minimal copy:
 
 - Loaded Vibes generates a serious production-minded SaaS starting point;
 - the user chooses bounded product/configuration differences rather than architecture;
@@ -94,26 +140,28 @@ The hero/product preview may summarize Builder state, but must not expose fake p
 
 ## Libraries
 
-`/libraries` is a browsable product-building-block catalog, not a package registry.
+`/libraries` is a browsable product-building-block catalog, not a package registry and not a generic technology catalog.
 
-The mockup groups concepts under a small number of categories such as Foundation, Identity, Data, Revenue, and Interface. Presentation metadata may be web-owned, but configuration truth must come from existing repository sources where available:
+The visual mockup groups concepts under a small number of categories such as Foundation, Identity, Data, Revenue, and Interface. The actual concepts and descriptions must represent the way Loaded Vibes applications are built under the Loaded Vibes architecture and Hipster Stack.
+
+Presentation metadata may be web-owned, but configuration truth comes from existing repository sources where available:
 
 - `packages/core/src/capabilities.ts` for capability labels, dependencies, and fixed/configurable status;
 - `packages/core/src/presets.ts` for real product presets;
 - `packages/schema/src/recipe.ts` for valid recipe fields;
-- the fixed-foundation governance for non-configurable architectural elements.
+- Loaded Vibes fixed-foundation governance for non-configurable architectural elements.
 
 Do not duplicate dependency/fixed semantics in a second web-only rules engine.
 
-Individual library pages should make configuration/status the primary useful content. A configurable capability may show the smallest valid `loadedvibes.json` example needed to enable it. A fixed-foundation library must be identified as fixed/included rather than exposing a decorative toggle or fake provider selector. Related-library links are presentation/navigation metadata only.
+Individual library pages make configuration/status the primary useful content. A configurable capability may show the smallest valid `loadedvibes.json` example needed to enable it. A fixed-foundation library must be identified as fixed/included rather than exposing a decorative toggle or fake provider selector. Related-library links are presentation/navigation metadata only.
 
 ## Builder
 
 `/configure` is the Builder.
 
-The Builder follows `context/mockups/builder.png`: a compact configuration panel paired with a readable recipe/result preview. It should feel like composing a supported starting point, not completing a long wizard.
+The Builder follows the Builder mockup: a compact configuration surface paired with a readable recipe/result preview. It should feel like composing a supported Loaded Vibes starting point, not completing a long wizard and not shopping for architecture.
 
-The Builder must preserve the existing stateless capabilities that are still product-valid:
+Preserve existing stateless product-valid behavior:
 
 - shared schema/core resolution;
 - real product presets;
@@ -126,7 +174,7 @@ The Builder must preserve the existing stateless capabilities that are still pro
 
 Fixed architecture and fixed capabilities may be shown as read-only selected/included items for comprehension, but never as user-switchable choices.
 
-The configuration/result panel should show actual normalized configuration and resolved inclusions. A representative generated-app preview is optional and should be removed if it no longer serves the mockup-driven Builder experience or duplicates the recipe/result preview.
+The result panel must show actual normalized configuration and resolved inclusions. A representative generated-app preview may be removed when it duplicates the mockup-driven recipe/result experience and no longer adds product value.
 
 ## Docs
 
@@ -149,8 +197,9 @@ It does not perform local generation on the hosted website.
 
 For the mockup replacement:
 
-- prefer refactoring/reusing the current app routes, shared config helpers, and browser-safe core;
-- introduce only shared components that remove real duplication across the mocked pages;
-- delete obsolete CSS/components/helpers after their final caller is removed;
-- do not add a UI framework, icon package, animation library, design-token system, or new validation harness merely to reproduce the mockups;
-- use the existing web typecheck/build and only narrowly relevant repository checks.
+- inspect first, then make the smallest complete refactor;
+- prefer reusing current routes, config helpers, and browser-safe core;
+- introduce only shared components that remove real duplication or enforce the established presentation hierarchy;
+- delete obsolete CSS/components/helpers immediately after their final caller is replaced;
+- do not add a UI framework, icon package, animation library, design-token subsystem, backend, or new validation harness merely to reproduce the mockups;
+- run only the existing web checks that directly establish the changed behavior.
