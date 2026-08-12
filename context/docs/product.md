@@ -28,7 +28,7 @@ The product should assume familiarity with tools such as Next.js, Prisma, Clerk,
 
 The success metric is the amount of repetitive project setup and foundational implementation the generated repository removes.
 
-The configurator being attractive matters. The CLI being pleasant matters. The decisive payoff is:
+The Builder being attractive matters. The CLI being pleasant matters. The decisive payoff is:
 
 > How much useful, correct application did the user receive before writing product-specific code?
 
@@ -38,9 +38,12 @@ The configurator being attractive matters. The CLI being pleasant matters. The d
 2. **Configuration contract** — the bounded project choices Loaded Vibes can actually honor.
 3. **Core generator** — deterministic resolution, retain/remove ownership, transforms, materialization, and provenance.
 4. **CLI** — primary execution surface.
-5. **Web app** — developer-oriented landing page, visual configurator, and end-user docs.
-6. **`loadedvibes.json`** — portable configuration handoff.
-7. **Generated application** — the actual product value.
+5. **Web Product page** — concise explanation and entry point at `/`.
+6. **Web Libraries** — browsable catalog and detail pages for Loaded Vibes building blocks at `/libraries/*`.
+7. **Web Builder** — stateless visual configuration workbench at `/configure`.
+8. **End-user docs** — canonical `docs/` content rendered under `/docs/*`.
+9. **`loadedvibes.json`** — portable configuration handoff.
+10. **Generated application** — the actual product value.
 
 ## Fixed foundation
 
@@ -88,6 +91,8 @@ Useful configuration categories include:
 - semantic visual direction.
 
 Presets may remain as convenience defaults if useful, but they are not separate templates and they are not the center of the product.
+
+The Libraries and Builder web surfaces may explain fixed foundation choices, but fixed choices must remain read-only rather than becoming decorative configuration.
 
 ## Non-goals
 
