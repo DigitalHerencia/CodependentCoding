@@ -1,128 +1,72 @@
 ---
-title: Loaded Vibes Product Definition
+title: Hipster Stack Product Definition
 artifact: product
 status: active
-product: Loaded Vibes
+product: Hipster Stack
 authority: source-of-truth
 ---
 
-# Loaded Vibes Product Definition
+# Hipster Stack Product Definition
 
 ## Product
 
-Loaded Vibes is an opinionated developer tool that turns a bounded technical project configuration into a complete white-label application built from one repository-owned Hipster Stack master template.
-
-A concise product statement is:
+Hipster Stack™ is an opinionated developer tool that turns a bounded application definition into a standalone white-label application derived from one repository-owned maximal template.
 
 > Generate the golden prototype. Start building the product.
 
-Loaded Vibes is not a generic stack chooser and it is not a startup-feature wizard.
+It is not a generic stack marketplace, startup-feature wizard, or hosted control plane.
 
 ## Primary user
 
-The primary user is a developer who already understands the modern TypeScript web stack and wants to stop rebuilding the same foundation, boundaries, routes, integrations, and project structure.
-
-The product should assume familiarity with tools such as Next.js, Prisma, Clerk, Stripe, Postgres, shadcn/ui, GitHub, and Vercel. It should not force the user to re-decide architectural doctrine already encoded by Loaded Vibes.
-
-## Product value
-
-The success metric is the amount of repetitive project setup and foundational implementation the generated repository removes.
-
-The Builder being attractive matters. The CLI being pleasant matters. The decisive payoff is:
-
-> How much useful, correct application did the user receive before writing product-specific code?
+The primary user is a developer who already understands the underlying technologies and wants to stop rebuilding the same architecture, boundaries, routes, integrations, and project structure.
 
 ## Product surfaces
 
-1. **Master template** — the maximal white-label application source owned by this repository.
-2. **Configuration contract** — the bounded project choices Loaded Vibes can actually honor.
-3. **Core generator** — deterministic resolution, retain/remove ownership, transforms, materialization, and provenance.
-4. **CLI** — primary execution surface.
-5. **Web Product page** — concise explanation and entry point at `/`.
-6. **Web Libraries** — browsable catalog and detail pages for Loaded Vibes building blocks at `/libraries/*`.
-7. **Web Builder** — stateless visual configuration workbench at `/configure`.
-8. **End-user docs** — canonical `docs/` content rendered under `/docs/*`.
-9. **`loadedvibes.json`** — portable configuration handoff.
-10. **Generated application** — the actual product value.
+1. maximal standalone template;
+2. shared configuration/application-definition contract;
+3. deterministic composition/generation engine;
+4. CLI;
+5. Product web page at `/`;
+6. interactive Docs at `/docs/*` combining canonical documentation with browsable building-block/configuration views;
+7. stateless Builder at `/configure`;
+8. portable configuration handoff, targeted by HS-302 as `hipsterstack.json`;
+9. generated application.
 
-## Fixed foundation
+## Opinionated foundation
 
-The stack and application grammar are Loaded Vibes decisions rather than configuration questions.
+Hipster Stack fixes the engineering method and supported architectural grammar rather than forcing users to rediscover them:
 
-The fixed foundation is the repository-supported implementation of:
+- server-owned business truth and explicit trust boundaries;
+- route → feature → presentation layering;
+- protected read/mutation boundaries;
+- runtime validation at trust boundaries;
+- explicit authorization, persistence, transaction, provider, and webhook responsibilities;
+- strong separation of concerns and narrow typed interfaces;
+- generated repositories that remain understandable to humans and agents.
 
-- TypeScript;
-- Next.js App Router;
-- React Server Components by default;
-- pnpm;
-- Zod;
-- Prisma;
-- Neon/PostgreSQL;
-- Clerk identity/session boundary;
-- application-owned users, organizations, memberships, roles/capabilities, and authorization;
-- tenant containment including RLS where the template implements it;
-- Fetchers;
-- Server Actions;
-- Workflows;
-- Transactions;
-- Selects;
-- DTO mappers;
-- Integration Adapters;
-- webhook processors;
-- shadcn-compatible UI primitives and composed presentation;
-- Vercel-oriented deployment.
+Concrete providers, route surfaces, authorization models, integrations, capabilities, and product configuration are selectable only when the shared schema and generator have deterministic support for that choice. Current implementation limitations remain authoritative until changed by an implementation Issue.
 
-Do not ask users to choose a different implementation of these within the current product.
+## Template payoff
 
-## Configuration
+The template is a maximal runnable application, not generator source code. Generator ownership/pruning metadata lives outside the template. Application-local tests, docs, CI, and agent contracts may remain when they govern the application itself.
 
-Configuration should be technical, bounded, and real.
+## Ecosystem
 
-A choice belongs in the product only when the template and generator can correctly retain, remove, configure, or personalize its owned output.
-
-Useful configuration categories include:
-
-- project name/directory/package metadata;
-- install and git-init behavior;
-- optional integration surfaces;
-- optional route groups and route surfaces;
-- optional reusable product capabilities backed by owned code;
-- product identity and bounded domain vocabulary;
-- semantic visual direction.
-
-Presets may remain as convenience defaults if useful, but they are not separate templates and they are not the center of the product.
-
-The Libraries and Builder web surfaces may explain fixed foundation choices, but fixed choices must remain read-only rather than becoming decorative configuration.
+```text
+Codependent Coding™ Knowledge System
+  canonical reusable engineering knowledge
+        ↓
+Hipster Stack™
+  deterministic golden-prototype generation
+        ↓
+Generated application
+        ↓
+Loaded Vibes™
+  adaptive specification-driven implementation
+        ↓
+Product-specific MVP
+```
 
 ## Non-goals
 
-Loaded Vibes is not:
-
-- a universal app generator;
-- an arbitrary framework selector;
-- a provider marketplace;
-- a plugin marketplace;
-- a hosted build/control plane;
-- an account-based SaaS around the configurator;
-- an enterprise policy/governance platform;
-- a validation product;
-- an autonomous arbitrary upgrade/merge engine;
-- a replacement for product-specific implementation after generation.
-
-## Relationship to other systems
-
-```text
-DevNotes
-  owns Hipster Stack knowledge
-
-Loaded Vibes
-  owns deterministic production and the executable template
-
-Generated project
-  owns the product codebase produced for the user
-
-Codependent Coding
-  may guide adaptive product-specific development after generation
-```
-
-No external application repository is a template dependency.
+Hipster Stack is not an arbitrary framework selector, provider/plugin marketplace, hosted build service, account-based configurator SaaS, autonomous upgrade/merge engine, or replacement for product-specific implementation after generation.

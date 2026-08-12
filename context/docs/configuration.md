@@ -1,108 +1,58 @@
 ---
-title: Loaded Vibes Configuration Model
+title: Hipster Stack Configuration Model
 artifact: configuration
 status: active
-product: Loaded Vibes
+product: Hipster Stack
 authority: source-of-truth
 ---
 
-# Loaded Vibes Configuration Model
+# Hipster Stack Configuration Model
 
 ## Principle
 
-Loaded Vibes does not ask users to re-decide the fixed Hipster Stack.
+Configuration describes the application to compose. It does not ask the user to reinvent the engineering method.
 
-Configuration exists for choices that materially change the generated repository and that the generator can honor deterministically.
+Expose an editable property only when Hipster Stack can produce the corresponding repository correctly and deterministically.
 
 ## Shared contract
 
-The CLI, web configurator, and `loadedvibes.json` use one schema and one normalization path.
-
 ```text
 CLI ───────────────┐
-Web ───────────────┼──> schema
-loadedvibes.json ──┘      │
-                          ▼
-                      normalize
-                          │
-                          ▼
-                  resolve dependencies
-                          │
-                          ▼
-                   generation plan
+Web Builder ───────┼──> one runtime schema
+config file ───────┘          │
+                              ▼
+                         normalize/resolve
+                              │
+                              ▼
+                         generation plan
 ```
 
-No surface gets its own hidden defaults or capability semantics.
+No interface gets hidden defaults, dependency rules, or conflicting semantics.
 
-## Recommended configuration categories
+## Configuration categories
 
-### Project
+The target model is organized around the generated application:
 
-- directory;
-- package name;
-- display/product name;
-- description;
-- install dependencies;
-- initialize Git.
+- Project: directory/package/display identity, install, Git initialization.
+- Preset: convenience defaults over the same model.
+- Routes/presentation: supported route surfaces, navigation, semantic visual direction.
+- Identity/access: supported authentication, tenancy, authorization, roles/capabilities/policies when the generator implements those choices.
+- Data/persistence: supported database/ORM/tenant-containment choices when implemented.
+- Integrations/capabilities: supported billing, payments, onboarding, admin, marketing, sample-domain, and other owned application surfaces.
+- Engineering/delivery: supported tests, context/contracts, CI/deployment lifecycle options when deterministically composable.
 
-### Product identity
+Current schema/core support is narrower than this target. Do not expose future choices ahead of generator support.
 
-- brand/display name;
-- description;
-- bounded domain vocabulary when supported.
+## Property model
 
-### Optional application surfaces
+Use a small schema-driven vocabulary where appropriate: boolean, string, single-select, multi-select/collection, mapping/tree/rule. A property may also expose whether its value is default, preset, explicit, required, disabled, or conflicted.
 
-Examples may include:
+Users configure application concepts. Generator-side ownership maps those concepts to files, dependencies, environment examples, transforms, and resources. Individual source files are not normal user-facing controls.
 
-- marketing;
-- onboarding;
-- admin;
-- billing;
-- Stripe Connect;
-- invitations/team management;
-- sample domain;
-- other real route groups present in the master template.
+## Runtime contracts
 
-A surface is configurable only when generation can retain/remove it without leaving knowingly broken imports, routes, package configuration, or setup claims.
+Zod/runtime input validation belongs in schema concerns. Compile-time interfaces/types remain distinct. UI components consume trusted resolved values and do not reinterpret configuration authority.
 
-### Integrations
+## Honesty rule
 
-Expose provider integration choices only when the template has a real supported adapter/boundary and the generator knows the files/configuration it owns.
-
-### Visual direction
-
-Keep this bounded and semantic:
-
-- color family;
-- radius;
-- density;
-- navigation treatment;
-- typography treatment;
-- supported appearance preference where appropriate for generated apps.
-
-Loaded Vibes' own website is dark-only. That does not force generated applications to be dark-only.
-
-## Presets
-
-Presets are optional convenience defaults over the same configuration model.
-
-They are not:
-
-- separate templates;
-- separate architectures;
-- separate application templates.
-
-If existing presets remain useful, move their data into the schema/core boundary during migration.
-
-## Configuration honesty
-
-Do not show a toggle because it sounds useful.
-
-Every selectable option must map to one of:
-
-- a real retain/remove ownership decision;
-- a supported structured transform;
-- a supported project-lifecycle choice.
-
-If not, hide it or label it as fixed/non-configurable until implementation exists.
+No decorative toggles. If a selectable control cannot change real generated output, keep it read-only/hidden until the engine owns that behavior.

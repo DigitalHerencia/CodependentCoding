@@ -1,72 +1,53 @@
-schema_version: 3
-id: loaded-vibes.architecture
+schema_version: 4
+id: hipster-stack.architecture
 authority: machine-contract
 sources:
   - context/docs/architecture.md
   - context/docs/template.md
   - context/docs/configuration.md
   - context/docs/generator-cli.md
+  - context/docs/web.md
 
-repository_target:
-  apps:
-    - web
-  packages:
-    - cli
-    - core
-    - schema
+current_repository:
+  apps: [web]
+  packages: [cli, core, schema]
   template_path: template
-  end_user_docs_path: docs
+  docs_path: docs
   maintainer_context_path: context
   machine_governance_path: .agents
 
 shared_configuration:
-  consumers:
-    - cli
-    - web-configurator
-    - loadedvibes-json
+  consumers: [cli, web-builder, portable-config]
   one_schema: true
-  one_normalization_path: true
-  presets_are_optional_defaults: true
-  presets_are_templates: false
-  separate_recipes_package_target: false
-
-core:
-  owns:
-    - configuration-normalization
-    - dependency-resolution
-    - template-ownership-catalog
-    - generation-plan
-    - retain-remove-materialization
-    - structured-transforms
-    - provenance
-    - shared-explanation
-  must_not_depend_on:
-    - terminal-ui
-    - nextjs-web-ui
-
-template:
-  maximal: true
-  white_label: true
-  source_count: 1
-  external_acquisition: false
-  doctrine_authority: DigitalHerencia/DevNotes
-  preserve_hipster_stack_grammar: true
-
-generation:
-  model: copy-one-template-then-retain-remove-and-transform
-  duplicate_module_source_tolerated_as_target: false
+  one_resolution_path: true
+  ui_may_duplicate_dependency_rules: false
   selectable_option_requires_real_generation_effect: true
-  collect_provider_secrets: false
-  network_template_fetch: false
-  windows_first_class: true
-  overwrite_unrelated_nonempty_target: false
 
-web:
-  stateless: true
-  uses_shared_browser_safe_core: true
+boundaries:
+  web:
+    owns: [product-presentation, interactive-docs-presentation, builder-local-orchestration]
+    forbidden: [filesystem-generation, provider-secrets, duplicate-configuration-authority]
+  cli:
+    owns: [command-parsing, prompts, terminal-output, core-invocation]
+    forbidden: [second-configuration-resolver]
+  generator:
+    owns: [normalization, composition-resolution, generator-template-catalog, generation-plan, materialization, transforms, provenance]
+    forbidden: [nextjs-web-presentation, template-runtime-product-ui]
+  template:
+    standalone_application: true
+    forbidden: [generator-ownership-catalog, pruning-instructions, builder-state, cli-implementation, generation-plan]
 
 generated_application:
-  generator_internal_ui: false
-  preserve_application_layer_boundaries: true
-  preserve_auth_authz_boundaries: true
-  preserve_provider_adapter_boundaries: true
+  preserve_codependent_coding_grammar: true
+  routes_adapt: true
+  features_orchestrate: true
+  components_render: true
+  schemas_validate: true
+  generator_internals_leak: false
+
+generation:
+  source_template_count: 1
+  network_template_fetch: false
+  collect_provider_secrets: false
+  windows_first_class: true
+  overwrite_unrelated_nonempty_target: false

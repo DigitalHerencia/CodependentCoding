@@ -1,107 +1,51 @@
 ---
-title: Loaded Vibes Generator and CLI
+title: Hipster Stack Generator and CLI
 artifact: generator-cli
 status: active
-product: Loaded Vibes
+product: Hipster Stack
 authority: source-of-truth
 ---
 
-# Loaded Vibes Generator and CLI
+# Hipster Stack Generator and CLI
 
 ## Role
 
-The generator turns a normalized configuration into a local white-label project. The CLI is its primary user-facing execution adapter.
+The generator converts a resolved application definition into a local standalone white-label project. The CLI is its primary local execution adapter.
 
-## Create lifecycle
+## Lifecycle
 
 ```text
-collect or load configuration
-→ normalize
-→ resolve dependencies
-→ present concise review
-→ ensure safe destination
-→ copy maximal template
-→ retain/remove configured ownership
-→ apply structured personalization
-→ write loadedvibes.json and provenance
+collect/load configuration
+→ runtime validate
+→ resolve defaults/dependencies/conflicts
+→ review
+→ safe destination check
+→ materialize maximal template
+→ retain/remove/transform owned artifacts
+→ write portable configuration + provenance
 → install dependencies when requested
 → initialize Git when requested
-→ show concise provider/user next steps
+→ concise handoff
 ```
 
-Do not make ordinary generation depend on live GitHub, provider credentials, or a hosted Loaded Vibes service.
+Ordinary generation must not depend on live GitHub, provider credentials, or a hosted Hipster Stack service.
 
-## CLI vocabulary
+## Naming target
 
-Prefer developer-tool language:
-
-- Configure project
-- Fixed foundation
-- Optional surfaces
-- Integrations
-- Product identity
-- Visual direction
-- Generated output
-
-Avoid:
-
-- Choose your stack
-- Choose your architecture
-- startup-builder marketing language
-- internal generator jargon in normal output
-
-## Command direction
-
-The canonical binary is:
+HS-302 owns the runtime rename. Its target public vocabulary is:
 
 ```text
-loaded-vibes
+hipster-stack create [directory]
+hipster-stack add <supported-surface>
+hipster-stack explain
+hipster-stack doctor
+hipsterstack.json
 ```
 
-Target commands remain small:
+Until HS-302 lands, existing runtime identifiers remain implementation evidence, not competing product doctrine.
 
-```text
-loaded-vibes create [directory]
-loaded-vibes add <supported-surface>
-loaded-vibes explain
-loaded-vibes doctor
-loaded-vibes version
-```
+## CLI responsibility
 
-Keep compatibility aliases only while they materially reduce migration breakage. The release cleanup spec decides what still needs to ship.
+The CLI owns command parsing, prompts, review, progress, and terminal output. It delegates all configuration meaning and generation behavior to shared code and must not create a second resolver.
 
-## `create`
-
-Interactive mode should ask only supported high-leverage configuration.
-
-Config-file mode should use the exact same normalized contract:
-
-```text
-loaded-vibes create my-app --config loadedvibes.json
-```
-
-## `add`
-
-`add` is allowed only for a generator-owned optional surface that has a safe ownership contract for modifying an already generated repository.
-
-The one-template model does not require `add` to disappear, but it does require `add` to stop depending on duplicated module source trees once retain/remove ownership becomes canonical.
-
-Do not promise arbitrary upgrades or merges into user-modified code.
-
-## `explain`
-
-Explain should answer:
-
-- what Loaded Vibes generated;
-- which optional surfaces are present;
-- which integrations are wired;
-- which setup remains user-owned;
-- what fixed architecture the project inherits.
-
-## `doctor`
-
-Doctor remains a small diagnostic helper for local setup and metadata. It should not grow into a conformance framework.
-
-## Output
-
-Terminal output should be compact, legible, and useful. Show implementation details only when they help the user act.
+Keep output concise. Complex configuration may use the portable config file or Builder rather than an absurd forest of dedicated flags.

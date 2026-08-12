@@ -1,69 +1,25 @@
 ---
-title: Loaded Vibes End-User Documentation
+title: Hipster Stack End-User Documentation
 artifact: documentation
 status: active
-product: Loaded Vibes
+product: Hipster Stack
 authority: source-of-truth
 ---
 
-# Loaded Vibes End-User Documentation
+# Hipster Stack End-User Documentation
 
 ## Canonical source
 
-End-user documentation lives at repository root:
+End-user documentation lives in root `docs/` and is rendered under `/docs/*`. Do not maintain a second technical documentation copy in web code.
 
-```text
-docs/
-```
+## Interactive presentation
 
-The website renders that content under:
+The website may augment canonical docs with browsable building-block categories, related concepts, truthful configuration/status examples, and `Open in Builder` handoffs. Those UI additions are navigation/presentation metadata; shared schema/core remains configuration authority.
 
-```text
-/docs/*
-```
+The previous `/libraries` catalog/detail experience is folded into Docs by HS-305. Preserve old URLs only through the smallest useful redirect/compatibility path.
 
-Do not maintain one documentation copy for GitHub and another copy for the website.
+## Audience and rules
 
-## Audience
+Docs are for developers using Hipster Stack, not Codex maintaining it. Maintainer context remains under `context/`. Application architectural context belongs in the standalone template/generated repository.
 
-The docs are for someone using Loaded Vibes, not for Codex maintaining Loaded Vibes.
-
-Maintainer context stays in `context/`.
-
-Generated-application architectural context stays inside `template/` and the generated repository.
-
-## Initial documentation set
-
-```text
-docs/
-├── index.md
-├── getting-started.md
-├── concepts/
-│   ├── one-template.md
-│   ├── configuration.md
-│   └── generated-project.md
-├── configuration/
-│   ├── project.md
-│   ├── optional-surfaces.md
-│   ├── integrations.md
-│   ├── identity.md
-│   └── design.md
-├── cli/
-│   ├── index.md
-│   ├── create.md
-│   ├── add.md
-│   ├── explain.md
-│   └── doctor.md
-└── troubleshooting.md
-```
-
-Add provider-specific pages only for integrations the released generator actually supports.
-
-## Documentation principles
-
-- Start from what the user is trying to accomplish.
-- Explain fixed architecture only to the degree needed to use the generated project.
-- Do not paste maintainer governance into user docs.
-- Do not claim a provider, route, command, or configuration option works unless the release supports it.
-- Keep setup instructions local and actionable.
-- Keep provider account setup explicitly user-owned.
+Document only providers, commands, routes, configuration fields, and behavior the current release actually supports. Provider account setup remains user-owned.

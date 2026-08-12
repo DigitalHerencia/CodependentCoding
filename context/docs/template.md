@@ -1,72 +1,33 @@
 ---
-title: Loaded Vibes Master Template
+title: Hipster Stack Maximal White-Label Template
 artifact: template
 status: active
-product: Loaded Vibes
+product: Hipster Stack
 authority: source-of-truth
 ---
 
-# Loaded Vibes Master Template
+# Hipster Stack Maximal White-Label Template
 
 ## Definition
 
-Loaded Vibes owns one maximal white-label application template.
+Hipster Stack owns one maximal standalone white-label application at `template/`.
 
-The template is the best reusable version of the application architecture this system repeatedly builds. It contains the supported foundation, route surfaces, integration boundaries, reusable application infrastructure, presentation, and scoped agent context.
+The template is the best reusable version of the application architecture repeatedly built from the Codependent Coding Knowledge System. It contains application routes, features, presentation, server operations, data/persistence, integrations, tests, deployment setup, and scoped application/agent context when those belong to the application itself.
 
-The template is not an example project and it is not a pile of independent templates.
+## Hard boundary
 
-## Authority
+The template is the product source, not generator machinery.
 
-- Loaded Vibes owns the executable template.
-- DevNotes owns the Hipster Stack engineering doctrine used to maintain it.
-- Codependent Coding is not required to generate the template.
+It must not contain generator ownership catalogs, retain/remove instructions, Builder state, CLI implementation, generation planning, or Hipster Stack-only metadata whose only purpose is to tell the generator how to construct it. That information belongs upstream in the generator.
 
-## Target location
+The template should remain runnable and conceptually complete if extracted from this monorepo.
 
-```text
-template/
-```
+## Maximal means supported
 
-The target is singular by design.
+A surface belongs in the maximal template only when a real working implementation exists. Proposed future providers/capabilities do not become configurable merely because governance names them.
 
-The repository-owned application lives at `template/`. Retain/remove ownership for optional surfaces lives in the generator core.
+## Application grammar
 
-## Maximal means supported, not imaginary
+The template preserves the established method and boundaries from DevNotes. Concrete optional modules/providers may become composable only when the generator has an explicit deterministic ownership contract for them.
 
-The template may contain optional surfaces only when they have real repository-owned implementation.
-
-Do not add placeholder architecture simply because a future generator could conceivably support it.
-
-If a provider or route surface is only proposed and not actually implemented, it does not become configurable merely because governance names it.
-
-## Fixed application foundation
-
-The template should keep the canonical application grammar and core identity/tenancy/security model intact.
-
-The fixed foundation includes the supported implementation of:
-
-- application shell and root route behavior;
-- authentication boundary;
-- tenant shell;
-- local application identity;
-- organizations and memberships;
-- RBAC/capability authorization;
-- database boundary and tenant containment;
-- Server Action, Fetcher, Workflow, Transaction, Select, DTO, Integration Adapter, and Webhook patterns;
-- shared presentation primitives;
-- configuration/environment boundaries.
-
-## Optional ownership
-
-Optional material may include real supported integration or route/capability surfaces such as billing, Stripe Connect, marketing, onboarding, admin, sample domain, uploads/media, inference, or mapping only to the extent the template actually contains working source for them.
-
-The generator later decides whether to retain or remove them.
-
-## Scoped agent context
-
-Agent guidance belongs near stable architectural boundaries when it materially helps future implementation.
-
-Use scoped `AGENTS.md` files for durable route/layer guidance. Do not litter runtime components with explanatory architecture prose that belongs in context.
-
-Generated UI should look like a product, not like documentation about the stack.
+Generated application UI must look like a product, not documentation about the generator.
