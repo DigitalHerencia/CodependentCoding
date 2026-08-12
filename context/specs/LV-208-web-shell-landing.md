@@ -12,17 +12,27 @@ issue_title: 'LV-208: Replace the web shell and Product landing page from mockup
 
 ## Outcome
 
-Replace the current generic website chrome and `/` page with the Loaded Vibes / Digital Herencia UI shown in `context/mockups/landing.png`, while establishing only the small shared shell needed by later Libraries and Builder work.
+Replace the current generic website chrome and `/` page with the Loaded Vibes / Digital Herencia Product/landing mockup in local `context/mockups/`, while establishing only the small shared shell needed by later Libraries and Builder work.
 
 ## Required inputs
 
-- `context/mockups/landing.png` must exist in the implementation working tree.
-- `context/docs/web.md`
-- `context/docs/product.md`
-- `.agents/contracts/product.yaml`
-- current `apps/web` implementation
+- inspect local `context/mockups/` and identify the Product/landing mockup by visual content;
+- `context/docs/web.md`;
+- `context/docs/product.md`;
+- `.agents/contracts/product.yaml`;
+- current `apps/web` implementation.
 
-If the mockup is absent, stop instead of approximating it.
+If the required mockup subject is absent, stop instead of approximating it.
+
+## Architecture guardrail
+
+Implement the affected surface using the applicable Loaded Vibes / Codependent Coding presentation grammar:
+
+```text
+route/page -> feature/presentation orchestration -> shared presentation
+```
+
+Keep pages thin, prefer Server Components, and add no client boundary unless interaction requires one. Do not create ceremonial layers with no behavior.
 
 ## Starting state
 
@@ -37,14 +47,17 @@ Expected edits are intentionally narrow:
 - `apps/web/app/globals.css`
 - `apps/web/components/site-header.tsx`
 
-Add a shared footer/brand component only if it removes real duplication needed by LV-209/LV-210. Reuse existing repository brand assets; do not delete the repository-root `public/` directory or its images.
+A focused `features/product` or equivalent presentation feature may replace page-level bulk when it keeps `app/page.tsx` thin. Add a shared footer/brand component only if it removes real duplication needed by LV-209/LV-210.
+
+Reuse existing repository brand assets. Do not delete the repository-root `public/` directory or its images.
 
 ## Scope
 
 - replace primary navigation with `Product | Libraries | Docs | Builder`;
 - keep `/` as Product and `/configure` as the Builder route;
-- reproduce the landing mockup's Loaded Vibes brand section, product hero, Builder preview treatment, three product-entry cards, three-step flow, category strip, and Digital Herencia footer/landscape hierarchy;
+- faithfully reproduce the landing mockup's section structure, hierarchy, spacing, proportions, dark surfaces, Builder-preview treatment, product-entry cards, flow/category treatment, and Digital Herencia footer/landscape treatment;
 - make CTA links functional: Builder -> `/configure`, Libraries -> `/libraries`, Docs -> `/docs`;
+- adapt literal button labels/copy when necessary so they describe real Loaded Vibes behavior without changing the depicted interaction purpose;
 - use concise product copy consistent with current product/governance rather than inventing providers or architecture choices;
 - establish reusable shell/footer/brand styling only where LV-209/LV-210 need the same treatment;
 - keep docs content/renderer intact.
@@ -59,9 +72,10 @@ Add a shared footer/brand component only if it removes real duplication needed b
 
 ## Acceptance
 
-- `/` visually follows `context/mockups/landing.png` rather than the previous page;
+- `/` faithfully reproduces the identified Product/landing mockup rather than the previous page or a reinterpretation;
 - shared header and footer match the mockup family and navigation routes correctly;
 - branding uses the existing Loaded Vibes/Digital Herencia assets and black/white/teal direction;
+- literal mockup copy is adjusted only when needed for truthful product behavior;
 - no mockup placeholder is turned into unsupported configuration/product behavior;
 - `/docs/*` still renders through the shared shell without a content redesign;
 - obsolete landing-specific markup/styles replaced by this issue are removed rather than retained in parallel.
