@@ -1,39 +1,43 @@
 # Loaded Vibes Context
 
-This directory tells Codex what Loaded Vibes is, what the repository is becoming, and how to finish the current migration without losing the working generator.
+This directory tells Codex what Loaded Vibes is, which contracts control the repository, and what active work remains.
 
 ## Product definition
 
-Loaded Vibes is an opinionated project initializer and deterministic software-production tool for modern TypeScript web applications built on the Hipster Stack.
+Loaded Vibes is an opinionated project initializer and deterministic software-production tool for modern TypeScript web applications built on the Hipster Stack and Loaded Vibes WebApp Architecture.
 
-Its value is the generated repository: a polished, white-label application that already contains the recurring architecture, integration boundaries, project structure, and implementation context the builder would otherwise recreate by hand.
+Its value is the generated repository: a polished white-label application that already contains the recurring architecture, integration boundaries, project structure, and implementation context the builder would otherwise recreate by hand.
 
-The CLI is the primary execution surface. The web app is a developer-oriented landing page, visual configuration workbench, and documentation surface. `loadedvibes.json` is the reproducible configuration handoff.
+The CLI is the primary execution surface. The web app presents the Product, browsable Libraries/building blocks, the stateless Builder, and canonical end-user Docs. `loadedvibes.json` is the reproducible configuration handoff.
 
-## Current transition
+## Current state
 
-The repository owns its maximal application foundation at `template/` and has no external template authority. Core-owned configuration now resolves explicit retain/remove ownership over that one source. The remaining cleanup is product-facing:
+The one-template repository migration is complete. The active work is a bounded replacement of the existing website UI/UX using local mockups while preserving the working generator and shared configuration semantics.
 
 ```text
-CURRENT MIGRATION SHAPE
-apps/web
+WORKING PRODUCT
 packages/{cli,core,schema}
-template/ + core ownership catalog
-legacy product-preset/module concepts
-
-              ↓
-
-TARGET SHAPE
-apps/web
-packages/{cli,core,schema}
+        +
 template/
+        +
 docs/
-one technical configuration model
-one deterministic generator
-one CLI
+        +
+apps/web current UI
+
+              ↓ LV-208..LV-210 only
+
+TARGET WEB SURFACE
+Product      /
+Libraries    /libraries/*
+Builder      /configure
+Docs         /docs/*
+
+same shared schema/core
+same one-template generator
+same CLI handoff
 ```
 
-Do not throw away working implementation merely to reach the target tree. Follow the active specs in order so ownership moves before old structures disappear.
+Do not reopen the completed generator migration during the UI refresh. Follow LV-208 through LV-210 in order and change non-web code only when a concrete existing contract requires it.
 
 ## Source map
 
@@ -49,8 +53,9 @@ Do not throw away working implementation merely to reach the target tree. Follow
 
 - `context/docs/web.md`
 - `context/docs/documentation.md`
+- local `context/mockups/` visual acceptance inputs for active web Issues
 
-### Migration and shipping
+### Release and repository history
 
 - `context/docs/repository-transition.md`
 - `context/docs/release.md`
@@ -58,7 +63,8 @@ Do not throw away working implementation merely to reach the target tree. Follow
 ### Implementation roadmap
 
 - `context/specs/README.md`
-- `context/specs/LV-201-*.md` through `LV-207-*.md`
+- completed `LV-201` through `LV-207`
+- active `LV-208` through `LV-210`
 
 ### Machine-readable boundaries
 
@@ -66,16 +72,18 @@ Do not throw away working implementation merely to reach the target tree. Follow
 - `.agents/contracts/architecture.yaml`
 - `.agents/contracts/transition.yaml`
 
-## External authority
+## Engineering doctrine
 
-DevNotes owns canonical Hipster Stack engineering doctrine, including the architectural grammar summarized as:
+DevNotes owns canonical Hipster Stack engineering doctrine. The Codependent Coding knowledge system formalizes the same Loaded Vibes WebApp Architecture, layer contracts, technology ownership, and agent-execution method used to build applications.
 
-> Routes adapt. Features orchestrate. Components render. Fetchers read. Actions receive mutations. Schemas validate. Workflows coordinate use cases. Authorization decides. Transactions preserve database invariants. Integration adapters own provider mechanics. Webhooks reconcile external truth.
+The applicable grammar is summarized as:
 
-Loaded Vibes owns the executable template that embodies that doctrine.
+> Routes adapt. Features orchestrate. Components render. Fetchers read. Actions write. Schemas validate. Authorization decides. Transactions preserve invariants. Webhooks reconcile external truth.
 
-Codependent Coding is a downstream adaptive implementation system. It is not part of Loaded Vibes generation.
+For the mostly static Loaded Vibes website surfaces, apply that doctrine proportionally. Use thin App Router routes, server-first presentation composition, and the existing client-side Builder only where local interaction is required. Do not manufacture fetchers/actions/workflows for static content merely to make the directory tree look architectural.
+
+Loaded Vibes owns the executable template and repository-local product behavior. Codependent Coding and DevNotes are doctrine/knowledge authorities, not runtime dependencies.
 
 ## Working rule
 
-The roadmap exists to finish and ship a useful generator/CLI/template. Governance should reduce ambiguity and repetitive work, not create a second project beside the product.
+The active roadmap exists to make the real product look and operate like the approved mockups with the fewest correct edits. Governance should reduce ambiguity and token use, not create a second project beside the product.
