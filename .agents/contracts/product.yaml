@@ -1,5 +1,5 @@
-schema_version: 4
-id: loaded-vibes.product
+schema_version: 5
+id: hipster-stack.product
 authority: machine-contract
 sources:
   - context/docs/product.md
@@ -7,73 +7,65 @@ sources:
   - context/docs/documentation.md
 
 product:
-  name: Loaded Vibes
+  name: Hipster Stack
   class: opinionated-project-initializer
-  framing: developer-software-factory
+  framing: deterministic-application-composition
   primary_value: repetitive-work-removed-by-generated-project
 
+ecosystem:
+  engineering_knowledge: Codependent Coding
+  generator: Hipster Stack
+  downstream_adaptive_development: Loaded Vibes
+
 authorities:
-  executable_template: DigitalHerencia/LoadedVibes
+  executable_template: this-repository
   engineering_doctrine: DigitalHerencia/DevNotes
-  downstream_adaptive_development: Codependent Coding
+  configuration_semantics: shared-schema-and-generator
 
 surfaces:
-  - master-template
+  - maximal-template
   - shared-configuration
-  - generator-core
+  - generation-engine
   - cli
   - web-product
-  - web-libraries
+  - interactive-docs
   - web-builder
-  - end-user-docs
-  - loadedvibes-json
+  - portable-config
   - generated-application
-
-cli:
-  primary_execution_surface: true
-  canonical_command: loaded-vibes
 
 web:
   stateless: true
   requires_auth: false
   requires_database: false
   hosted_generation_required: false
-  visual_acceptance: mockup-driven
   routes:
     product: /
-    libraries: /libraries
-    library_detail: /libraries/[slug]
-    builder: /configure
     docs: /docs
-  navigation:
-    - Product
-    - Libraries
-    - Docs
-    - Builder
-  semantics:
-    mockups_control_presentation: true
-    shared_core_controls_configuration: true
-    fixed_foundation_is_read_only: true
+    builder: /configure
+    legacy_libraries: redirect-to-docs
+  navigation: [Product, Docs, Builder]
+  mockups_control_presentation: true
+  shared_configuration_controls_semantics: true
+  boldkit_source_is_locally_owned: true
+  tanstack_is_interaction_reference_only: true
 
 template:
   count: 1
   repository_owned: true
-  external_application_source: false
+  standalone_application: true
+  generator_internal_metadata_allowed: false
 
 configuration:
-  fixed_architecture_is_selectable: false
+  one_contract_for_cli_web_file: true
   visible_options_must_change_real_output: true
-  shared_between_cli_web_and_json: true
+  future_options_hidden_until_generator_support: true
+  fixed_method_not_equal_fixed_provider: true
 
 prohibited_product_drift:
   - generic-framework-generator
-  - arbitrary-stack-selector
-  - multiple-application-template-forks
-  - provider-marketplace
-  - plugin-marketplace
+  - provider-or-plugin-marketplace
   - hosted-project-control-plane
   - configurator-account-system
-  - enterprise-governance-product
-  - validation-as-product
-  - automatic-provider-secret-collection
+  - duplicate-web-configuration-engine
+  - generator-machinery-inside-template
   - arbitrary-generated-repository-upgrade-engine

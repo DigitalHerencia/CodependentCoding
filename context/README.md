@@ -1,89 +1,52 @@
-# Loaded Vibes Context
+# Hipster Stack Context
 
-This directory tells Codex what Loaded Vibes is, which contracts control the repository, and what active work remains.
+This directory tells Codex what Hipster Stack™ is, which contracts control this repository, and what active work remains.
 
-## Product definition
+## Product
 
-Loaded Vibes is an opinionated project initializer and deterministic software-production tool for modern TypeScript web applications built on the Hipster Stack and Loaded Vibes WebApp Architecture.
+Hipster Stack is an opinionated project initializer and deterministic application-composition tool for modern TypeScript web applications built according to the Codependent Coding™ Knowledge System and the established WebApp architecture.
 
-Its value is the generated repository: a polished white-label application that already contains the recurring architecture, integration boundaries, project structure, and implementation context the builder would otherwise recreate by hand.
+Its payoff is a standalone white-label repository that already contains the recurring architecture, boundaries, integrations, structure, tests, and development context the user would otherwise recreate by hand.
 
-The CLI is the primary execution surface. The web app presents the Product, browsable Libraries/building blocks, the stateless Builder, and canonical end-user Docs. `loadedvibes.json` is the reproducible configuration handoff.
-
-## Current state
-
-The one-template repository migration is complete. The active work is a bounded replacement of the existing website UI/UX using local mockups while preserving the working generator and shared configuration semantics.
+The CLI is the primary local execution adapter. The web app has three coherent surfaces:
 
 ```text
-WORKING PRODUCT
-packages/{cli,core,schema}
-        +
-template/
-        +
-docs/
-        +
-apps/web current UI
-
-              ↓ LV-208..LV-210 only
-
-TARGET WEB SURFACE
-Product      /
-Libraries    /libraries/*
-Builder      /configure
-Docs         /docs/*
-
-same shared schema/core
-same one-template generator
-same CLI handoff
+Product   /
+Docs      /docs/*      # canonical docs + interactive building-block/config views
+Builder   /configure
 ```
 
-Do not reopen the completed generator migration during the UI refresh. Follow LV-208 through LV-210 in order and change non-web code only when a concrete existing contract requires it.
+The Builder, CLI, and portable configuration file must use the same shared semantics.
+
+## Ecosystem
+
+```text
+Codependent Coding Knowledge System
+        ↓
+Hipster Stack generator
+        ↓
+standalone generated application
+        ↓
+Loaded Vibes adaptive spec-driven tool
+        ↓
+product-specific MVP
+```
+
+The Knowledge System is authority, not a runtime dependency. Hipster Stack deterministically materializes the starting application. Loaded Vibes may later adapt that application through governed specifications and agents.
+
+## Current implementation versus approved direction
+
+The live repository still contains historical Loaded Vibes product/package identifiers and the completed LV-201..LV-210 implementation. HS-301..HS-307 are the approved next roadmap and intentionally reconcile that state without pretending the rename/redesign already exists.
+
+Do not reopen unrelated generator migration work during the web overhaul. Change non-web behavior only when the active HS spec explicitly requires it.
 
 ## Source map
 
-### Product and architecture
-
-- `context/docs/product.md`
-- `context/docs/architecture.md`
-- `context/docs/configuration.md`
-- `context/docs/template.md`
-- `context/docs/generator-cli.md`
-
-### Product surfaces
-
-- `context/docs/web.md`
-- `context/docs/documentation.md`
-- local `context/mockups/` visual acceptance inputs for active web Issues
-
-### Release and repository history
-
-- `context/docs/repository-transition.md`
-- `context/docs/release.md`
-
-### Implementation roadmap
-
-- `context/specs/README.md`
-- completed `LV-201` through `LV-207`
-- active `LV-208` through `LV-210`
-
-### Machine-readable boundaries
-
-- `.agents/contracts/product.yaml`
-- `.agents/contracts/architecture.yaml`
-- `.agents/contracts/transition.yaml`
-
-## Engineering doctrine
-
-DevNotes owns canonical Hipster Stack engineering doctrine. The Codependent Coding knowledge system formalizes the same Loaded Vibes WebApp Architecture, layer contracts, technology ownership, and agent-execution method used to build applications.
-
-The applicable grammar is summarized as:
-
-> Routes adapt. Features orchestrate. Components render. Fetchers read. Actions write. Schemas validate. Authorization decides. Transactions preserve invariants. Webhooks reconcile external truth.
-
-For the mostly static Loaded Vibes website surfaces, apply that doctrine proportionally. Use thin App Router routes, server-first presentation composition, and the existing client-side Builder only where local interaction is required. Do not manufacture fetchers/actions/workflows for static content merely to make the directory tree look architectural.
-
-Loaded Vibes owns the executable template and repository-local product behavior. Codependent Coding and DevNotes are doctrine/knowledge authorities, not runtime dependencies.
+- Product/architecture: `context/docs/product.md`, `architecture.md`, `configuration.md`, `template.md`, `generator-cli.md`
+- Web/docs: `context/docs/web.md`, `documentation.md`, `context/mockups/`
+- Machine boundaries: `.agents/contracts/product.yaml`, `.agents/contracts/architecture.yaml`
+- Roadmap: `context/specs/README.md` and active `HS-*` specs
 
 ## Working rule
 
-The active roadmap exists to make the real product look and operate like the approved mockups with the fewest correct edits. Governance should reduce ambiguity and token use, not create a second project beside the product.
+Make the real product look and operate like the approved mockups with the fewest correct edits. Read only active scope, preserve working semantics, remove replaced code, and do not let governance become a second software project.

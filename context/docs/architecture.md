@@ -1,190 +1,78 @@
 ---
-title: Loaded Vibes Repository and Generator Architecture
+title: Hipster Stack Repository and Generator Architecture
 artifact: architecture
 status: active
-product: Loaded Vibes
+product: Hipster Stack
 authority: source-of-truth
 ---
 
-# Loaded Vibes Repository and Generator Architecture
+# Hipster Stack Repository and Generator Architecture
 
 ## Core model
 
-Loaded Vibes is a deterministic compiler from a bounded configuration to a filtered and personalized copy of one maximal application template.
+Hipster Stack is a deterministic application-composition system:
 
 ```text
 Web Builder ───────┐
-CLI ──────────────┼──> shared schema + normalization
-loadedvibes.json ─┘                │
-                                   ▼
-                             configuration resolution
-                                   │
-                                   ▼
-                         template ownership catalog
-                                   │
-                                   ▼
-                       retain / remove generation plan
-                                   │
-                                   ▼
-                          one repository template/
-                                   │
-                                   ▼
-                           structured transforms
-                                   │
-                                   ▼
-                       generated white-label project
-                                   │
-                                   ▼
-                           concise user handoff
+CLI ───────────────┼──> shared application-definition schema
+config file ───────┘                 │
+                                     ▼
+                               resolve composition
+                                     │
+                                     ▼
+                               generation plan
+                                     │
+                          ┌──────────┴──────────┐
+                          ▼                     ▼
+                 generator-side catalog   standalone template/
+                          └──────────┬──────────┘
+                                     ▼
+                              materialize output
+                                     │
+                                     ▼
+                           generated application
 ```
 
-## Target repository shape
+The UI/CLI/config file are adapters. They do not own separate configuration semantics.
+
+## Current physical implementation
+
+The live repository currently uses:
 
 ```text
-/
-├── apps/
-│   └── web/                 # / + /libraries/* + /configure + /docs/*
-├── packages/
-│   ├── cli/                 # terminal UX and command adapters
-│   ├── core/                # resolution, planning, generation
-│   └── schema/              # shared loadedvibes.json contract
-├── template/                # one maximal white-label application
-├── docs/                    # canonical end-user docs
-├── context/                 # maintainer/Codex context and visual acceptance inputs
-├── .agents/                 # compact machine contracts and execution state
-├── scripts/                 # package/release utilities actually used
-├── .github/
-└── AGENTS.md
+apps/web
+packages/cli
+packages/core
+packages/schema
+template/
+docs/
+context/
+.agents/
 ```
+
+That is current implementation state, not permission to use `core` as an unlimited responsibility bucket. Future structural changes require their own scoped Issue; the HS web overhaul does not perform a broad generator reorganization.
 
 ## Boundaries
 
-### `packages/schema`
-
-Owns public configuration shapes and enums shared by the CLI, core, and web.
-
-It must not own:
-
-- file-system mutation;
-- terminal UX;
-- web components;
-- template implementation details beyond stable configuration identifiers.
-
-### `packages/core`
-
-Owns:
-
-- defaults and normalization;
-- dependency resolution;
-- template ownership catalog;
-- generation planning;
-- retain/remove decisions;
-- structured personalization;
-- materialization;
-- project provenance/manifest;
-- shared explanations of the generated result.
-
-It must not depend on:
-
-- terminal UI;
-- Next.js web UI.
-
-### `packages/cli`
-
-Owns:
-
-- command parsing;
-- interactive prompts;
-- terminal review and output;
-- invoking the core;
-- user-facing local handoff.
-
-It must not create a second configuration interpretation.
-
-### `apps/web`
-
-Owns:
-
-- the Loaded Vibes Product landing page;
-- the Libraries catalog and library detail presentation metadata;
-- the stateless Builder configuration workbench;
-- a readable preview of normalized/resolved Builder output;
-- rendering canonical end-user documentation;
-- exporting/copying configuration and CLI handoff.
-
-`apps/web` may classify and describe product building blocks for navigation, but it must not duplicate core capability dependencies, fixed/configurable semantics, preset resolution, or recipe validation into a second rules engine.
-
-The web app remains stateless and does not generate projects on a hosted server.
-
-### `template/`
-
-Owns the complete maximal white-label application.
-
-It is executable application source, not a collection of generator fragments.
-
-The template should preserve its working internal architecture. Moving it into `template/` is an ownership and repository-shape cleanup, not permission to rename or reorganize every internal directory.
-
-## One-template composition
-
-The target generator starts from one maximal template and removes material the resolved configuration does not own.
-
-Ownership metadata may express:
-
-- capability/integration identifier;
-- files and directories owned;
-- route groups owned;
-- package or config contributions;
-- environment-example contributions;
-- schema/data contributions where safe removal is supported;
-- structured transforms;
-- dependencies between optional surfaces.
-
-Do not duplicate owned source code into overlay module trees merely to support generation.
-
-## Compatibility during migration
-
-The repository contains `template/` as its sole application source. Preset defaults and optional-surface ownership live in `packages/core`, and generation copies the template before pruning excluded owned routes and applying structured transforms.
-
-They may remain temporarily while earlier specs move source ownership and core semantics. They must not survive as unexplained parallel architecture after the final cleanup spec.
+- Schema/configuration code owns runtime validation and public configuration shapes, not filesystem mutation or UI.
+- Composition/core code owns defaults, dependency/conflict resolution, generator-side template knowledge, generation planning, transforms, materialization, and explanation, not terminal or Next.js presentation.
+- CLI owns command parsing/prompts/output and delegates semantics.
+- Web owns Product, interactive Docs, and Builder presentation. It may own navigation/presentation metadata but not a second capability/configuration rules engine.
+- `template/` owns the standalone maximal white-label application only. Generator ownership catalogs, pruning instructions, CLI/Builder state, and generation mechanics must remain outside it.
 
 ## Application architecture
 
-The generated project preserves the Hipster Stack grammar defined in DevNotes:
+The generated project follows the Codependent Coding/Hipster Stack grammar:
 
-```text
-Routes adapt.
-Features orchestrate.
-Components render.
-Fetchers read.
-Actions receive mutations.
-Schemas validate.
-Workflows coordinate use cases.
-Authorization decides.
-Transactions preserve database invariants.
-Integration adapters own provider mechanics.
-Webhooks reconcile external truth.
-```
+> Routes adapt. Features orchestrate. Components render. Fetchers read. Actions write. Schemas validate. Authorization decides. Transactions preserve invariants. Webhooks reconcile external truth.
 
-Generator internals must not leak into generated application UI.
+Generator internals must not leak into generated application behavior or UI.
 
-## Provenance
+## Generation rules
 
-Generated projects keep minimal local provenance sufficient to explain:
-
-- generator version;
-- template revision;
-- configuration schema version;
-- normalized non-secret configuration;
-- selected optional surfaces;
-- materialization result.
-
-Provenance supports explanation and safe generator-owned follow-up. It is not remote management.
-
-## Safety
-
-- Never fetch an application template from another repository during generation.
-- Never collect provider secrets.
-- Reject unsafe destination behavior.
-- Avoid unsafe shell interpolation.
-- Preserve Windows path behavior.
-- Do not make network/provider calls on behalf of a generated project during basic generation.
+- one repository-owned maximal template;
+- no network template fetch during ordinary generation;
+- every visible selectable option must have a real deterministic generation effect;
+- generator-side metadata may map configuration to owned application artifacts without becoming part of the standalone template;
+- never collect provider secrets;
+- preserve Windows paths and safe destination behavior.
