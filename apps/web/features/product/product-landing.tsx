@@ -234,7 +234,9 @@ export function ProductLanding() {
               <b>3</b>
               <span>
                 <strong>Generate the application</strong>
-                <small>Export the portable configuration and run the CLI.</small>
+                <small>
+                  Export the portable configuration and run the CLI.
+                </small>
               </span>
             </article>
           </div>
