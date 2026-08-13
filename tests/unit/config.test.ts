@@ -1,6 +1,6 @@
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { normalizeConfig, normalizeRecipe } from '@loaded-vibes/core';
+import { normalizeConfig, normalizeRecipe } from '@hipster-stack/core';
 
 describe('normalizeConfig', () => {
   it('normalizes legacy create input into the shared versioned recipe', () => {

@@ -1,4 +1,4 @@
-import { capabilityIds, type CapabilityId } from '@loaded-vibes/schema';
+import { capabilityIds, type CapabilityId } from '@hipster-stack/schema';
 import { capabilityRegistry } from '../capabilities.js';
 import { getProductPreset } from '../presets.js';
 import { loadGeneratedProject } from '../project.js';

@@ -7,7 +7,7 @@ import { assertSafeTarget } from '../../packages/core/src/preflight/target.js';
 describe('assertSafeTarget', () => {
   it('accepts a missing destination', async () => {
     const root = await mkdtemp(
-      path.join(os.tmpdir(), 'loaded-vibes-preflight-'),
+      path.join(os.tmpdir(), 'hipster-stack-preflight-'),
     );
     await expect(
       assertSafeTarget(path.join(root, 'new-project')),
@@ -16,7 +16,7 @@ describe('assertSafeTarget', () => {
 
   it('rejects occupied destinations', async () => {
     const target = await mkdtemp(
-      path.join(os.tmpdir(), 'loaded-vibes-occupied-'),
+      path.join(os.tmpdir(), 'hipster-stack-occupied-'),
     );
     await writeFile(path.join(target, 'keep.txt'), 'keep');
     await expect(assertSafeTarget(target)).rejects.toMatchObject({
@@ -25,7 +25,9 @@ describe('assertSafeTarget', () => {
   });
 
   it('rejects destination symlinks', async () => {
-    const root = await mkdtemp(path.join(os.tmpdir(), 'loaded-vibes-symlink-'));
+    const root = await mkdtemp(
+      path.join(os.tmpdir(), 'hipster-stack-symlink-'),
+    );
     const actual = path.join(root, 'actual');
     const link = path.join(root, 'link');
     await mkdir(actual);

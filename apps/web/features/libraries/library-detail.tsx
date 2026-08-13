@@ -57,7 +57,8 @@ export function LibraryDetail({ library }: { library: LibraryItem }) {
         <section className="configuration-panel">
           <div className="configuration-panel-heading">
             <span>
-              {library.example ? 'USE IN' : 'STATUS IN'} <b>loadedvibes.json</b>
+              {library.example ? 'USE IN' : 'STATUS IN'}{' '}
+              <b>hipsterstack.json</b>
             </span>
             <strong>{library.status}</strong>
           </div>

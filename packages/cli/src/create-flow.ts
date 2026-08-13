@@ -16,7 +16,7 @@ import {
   type ProductPresetId,
   type RecipeInput,
   type ResolvedRecipe,
-} from '@loaded-vibes/core';
+} from '@hipster-stack/core';
 
 export type SetupMode = 'express' | 'advanced';
 type PromptResult<T> = T | symbol;

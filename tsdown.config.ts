@@ -6,5 +6,5 @@ export default defineConfig({
   clean: true,
   dts: false,
   banner: { js: '#!/usr/bin/env node' },
-  noExternal: [/^@clack\/prompts$/, /^@loaded-vibes\//],
+  noExternal: [/^@clack\/prompts$/, /^@hipster-stack\//],
 });

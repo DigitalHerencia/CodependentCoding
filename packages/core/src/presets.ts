@@ -1,4 +1,4 @@
-import type { ProductPresetId, ResolvedModules } from '@loaded-vibes/schema';
+import type { ProductPresetId, ResolvedModules } from '@hipster-stack/schema';
 
 export interface ProductPreset {
   id: ProductPresetId;

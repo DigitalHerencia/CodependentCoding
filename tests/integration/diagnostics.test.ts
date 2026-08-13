@@ -6,10 +6,10 @@ import {
   createProject,
   diagnoseProject,
   explainProject,
-} from '@loaded-vibes/core';
+} from '@hipster-stack/core';
 
 async function generatedProject(): Promise<string> {
-  const root = await mkdtemp(path.join(os.tmpdir(), 'loaded-vibes-doctor-'));
+  const root = await mkdtemp(path.join(os.tmpdir(), 'hipster-stack-doctor-'));
   const target = path.join(root, 'app');
   await createProject({
     name: 'diagnostic-app',

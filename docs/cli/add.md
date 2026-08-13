@@ -1,7 +1,7 @@
-# loaded-vibes add
+# hipster-stack add
 
 ```powershell
-loaded-vibes add <marketing|sample-domain|stripe-connect> [--cwd <directory>]
+hipster-stack add <marketing|sample-domain|stripe-connect> [--cwd <directory>]
 ```
 
 Add applies a safe generator-owned compatibility projection to an existing generated project. It checks provenance and collisions before writing. Intentional replacement paths are declared by the ownership contract.

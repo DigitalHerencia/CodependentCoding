@@ -7,7 +7,7 @@ import {
   type ProductIdentityInput,
   type ProductPresetId,
   type RecipeInput,
-} from '@loaded-vibes/schema';
+} from '@hipster-stack/schema';
 import { LoadedVibesError } from '../errors.js';
 import { normalizeRecipe } from '../recipe.js';
 import { loadedVibesConfigSchema, type LoadedVibesConfig } from './schema.js';

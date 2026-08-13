@@ -1,12 +1,12 @@
 ---
-title: Loaded Vibes Release Contract
+title: Hipster Stack Release Contract
 artifact: release
 status: active
-product: Loaded Vibes
+product: Hipster Stack
 authority: source-of-truth
 ---
 
-# Loaded Vibes Release Contract
+# Hipster Stack Release Contract
 
 ## Release outcome
 
@@ -15,7 +15,7 @@ A release is ready when the package and website describe and ship the same produ
 - one repository-owned maximal template;
 - one shared configuration contract;
 - deterministic generation from that template;
-- the canonical `loaded-vibes` CLI surface;
+- the canonical `hipster-stack` CLI surface;
 - the stateless `/configure` handoff;
 - end-user docs that match the released behavior;
 - no external application-template dependency.
@@ -28,13 +28,13 @@ Packaging references the single `template/` source.
 
 ## Naming
 
-`loaded-vibes` is the canonical command.
+`hipster-stack` is the canonical command and package metadata target. `hipsterstack.json` is the canonical portable configuration filename. This repository change does not claim npm publication or name reservation; publication remains a separate owner-authorized release action.
 
-The package-name transition from `create-loaded-vibes` should be handled deliberately and only when publishing constraints are known. Do not silently claim a package name has been published or reserved.
+No obsolete Loaded Vibes command/package compatibility aliases are retained because no verified published compatibility obligation exists.
 
 ## Provider setup
 
-Loaded Vibes may generate provider-ready boundaries and `.env.example` documentation. It does not own:
+Hipster Stack may generate provider-ready boundaries and `.env.example` documentation. It does not own:
 
 - user provider accounts;
 - production credentials;

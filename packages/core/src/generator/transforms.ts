@@ -1,6 +1,6 @@
 import { mkdir, readFile, rename, writeFile } from 'node:fs/promises';
 import path from 'node:path';
-import type { NormalizedRecipe } from '@loaded-vibes/schema';
+import type { NormalizedRecipe } from '@hipster-stack/schema';
 import {
   excludedOwnedPaths,
   selectedGeneratedModuleIds,
@@ -18,7 +18,7 @@ export async function writeRecipeArtifacts(
   template: TemplateProvenance,
 ): Promise<void> {
   await writeFile(
-    path.join(directory, 'loadedvibes.json'),
+    path.join(directory, 'hipsterstack.json'),
     `${JSON.stringify(recipe, null, 2)}\n`,
   );
   await mkdir(path.join(directory, '.loadedvibes'), { recursive: true });
@@ -27,7 +27,7 @@ export async function writeRecipeArtifacts(
     `${JSON.stringify(
       {
         schemaVersion: 2,
-        generator: { name: 'create-loaded-vibes', version: '0.1.0' },
+        generator: { name: 'hipster-stack', version: '0.1.0' },
         template: {
           id: template.templateId,
           version: template.templateVersion,
@@ -178,7 +178,7 @@ export async function applyTransforms(plan: GenerationPlan): Promise<void> {
   ) as Record<string, unknown>;
   const provenance = {
     schemaVersion: 1,
-    generator: 'create-loaded-vibes',
+    generator: 'hipster-stack',
     generatorVersion: '0.1.0',
     preset: plan.config.recipe.product,
     projectName: plan.config.recipe.name,
@@ -188,7 +188,7 @@ export async function applyTransforms(plan: GenerationPlan): Promise<void> {
     excludedOwnedPaths: plan.excludedOwnedPaths,
   };
   await writeFile(
-    path.join(plan.stagingDirectory, '.loaded-vibes.json'),
+    path.join(plan.stagingDirectory, '.hipster-stack.json'),
     `${JSON.stringify(provenance, null, 2)}\n`,
   );
   await writeRecipeArtifacts(plan.stagingDirectory, plan.config.recipe, {

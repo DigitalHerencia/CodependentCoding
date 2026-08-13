@@ -1,6 +1,6 @@
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
-import type { NormalizedRecipe } from '@loaded-vibes/schema';
+import type { NormalizedRecipe } from '@hipster-stack/schema';
 import { LoadedVibesError } from './errors.js';
 import {
   parseGenerationManifest,
@@ -34,12 +34,14 @@ export async function loadGeneratedProject(
     await readJson(path.join(target, '.loadedvibes', 'manifest.json')),
   );
   const recipe = resolveRecipe(
-    (await readJson(path.join(target, 'loadedvibes.json'))) as NormalizedRecipe,
+    (await readJson(
+      path.join(target, 'hipsterstack.json'),
+    )) as NormalizedRecipe,
   ).recipe;
   if (JSON.stringify(manifest.recipe) !== JSON.stringify(recipe)) {
     throw new LoadedVibesError(
       'MODULE_CONFLICT',
-      'loadedvibes.json and .loadedvibes/manifest.json disagree.',
+      'hipsterstack.json and .loadedvibes/manifest.json disagree.',
     );
   }
   return { directory: target, manifest, recipe };

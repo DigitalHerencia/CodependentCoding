@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { normalizedRecipeSchema } from '@loaded-vibes/schema';
+import { normalizedRecipeSchema } from '@hipster-stack/schema';
 
 export const loadedVibesConfigSchema = z
   .object({

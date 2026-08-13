@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { normalizeConfig, type ConfigInput } from '@loaded-vibes/core';
+import { normalizeConfig, type ConfigInput } from '@hipster-stack/core';
 import {
   createCliCommand,
   defaultConfiguratorRecipe,

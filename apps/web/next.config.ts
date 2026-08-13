@@ -1,7 +1,7 @@
 import type { NextConfig } from 'next';
 
 const config: NextConfig = {
-  transpilePackages: ['@loaded-vibes/core', '@loaded-vibes/schema'],
+  transpilePackages: ['@hipster-stack/core', '@hipster-stack/schema'],
   webpack(configuration) {
     configuration.resolve.extensionAlias = {
       '.js': ['.ts', '.tsx', '.js'],

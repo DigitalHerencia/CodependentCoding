@@ -1,18 +1,18 @@
-# Loaded Vibes
+# Hipster Stack
 
-> Loaded Vibes is an opinionated developer tool and deterministic generator that turns a bounded project configuration into a complete white-label Hipster Stack application from one repository-owned maximal template.
+> Hipster Stack is an opinionated developer tool and deterministic generator that turns a bounded project configuration into a complete white-label Hipster Stack application from one repository-owned maximal template.
 
 Use `AGENTS.md` for authority and minimal reading order. Use the matching active `context/specs/LV-*.md` as the implementation unit, `context/docs/*.md` for durable product/architecture contracts, and `docs/` for canonical end-user guidance. The live repository is organized around `packages/schema` for the shared configuration contract, `packages/core` for deterministic resolution and generation, `packages/cli` for terminal UX, `apps/web` for Product/Libraries/Builder/Docs, and `template/` as the sole executable application source.
 
-The CLI, web Builder, and `loadedvibes.json` share one configuration model. Generated projects preserve the fixed Hipster Stack / Loaded Vibes WebApp Architecture; configuration is limited to choices the template and generator can honor deterministically.
+The CLI, web Builder, and `hipsterstack.json` share one configuration model. Generated projects preserve the fixed Hipster Stack / Hipster Stack WebApp Architecture; configuration is limited to choices the template and generator can honor deterministically.
 
 ## Active Work
 
 - [Specification Index](context/specs/README.md): Current implementation order and verification rules.
 - [LV-208 Product Shell and Landing](context/specs/LV-208-web-shell-landing.md): Replace shared web chrome and `/` from the local Product mockup.
-- [LV-209 Libraries](context/specs/LV-209-web-libraries.md): Add `/libraries` and linked detail pages from the local Libraries mockups using real Loaded Vibes semantics.
+- [LV-209 Libraries](context/specs/LV-209-web-libraries.md): Add `/libraries` and linked detail pages from the local Libraries mockups using real Hipster Stack semantics.
 - [LV-210 Builder Refresh](context/specs/LV-210-web-builder-refresh.md): Replace Builder UI/UX from the local mockup while preserving the shared configuration contract and removing replaced web code.
-- [Web Surface Contract](context/docs/web.md): Mockup authority, truthful-semantic rule, brand direction, Loaded Vibes presentation architecture, Libraries model, Builder behavior, and token-conscious implementation constraints.
+- [Web Surface Contract](context/docs/web.md): Mockup authority, truthful-semantic rule, brand direction, Hipster Stack presentation architecture, Libraries model, Builder behavior, and token-conscious implementation constraints.
 
 For LV-208 through LV-210, inspect only the relevant local `context/mockups/` visual subject, the named spec/docs/contracts, the affected `apps/web` files, and directly imported core/schema semantics. Do not re-inventory the template or entire knowledge repositories without a concrete contradiction.
 

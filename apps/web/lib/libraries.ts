@@ -1,7 +1,7 @@
 import {
   capabilityRegistry,
   type CapabilityId,
-} from '@loaded-vibes/core/browser';
+} from '@hipster-stack/core/browser';
 
 export const libraryCategories = [
   'Foundation',
@@ -80,10 +80,10 @@ const libraryCopy: readonly LibraryCopy[] = [
     category: 'Foundation',
     description: 'Deterministic one-template project generation.',
     summary:
-      'The Loaded Vibes CLI resolves one portable recipe, retains supported surfaces, applies structured transforms, and creates a user-owned repository.',
+      'The Hipster Stack CLI resolves one portable recipe, retains supported surfaces, applies structured transforms, and creates a user-owned repository.',
     icon: 'generator',
     primaryAction: { label: 'Open the Builder', href: '/configure' },
-    example: 'pnpm dlx create-loaded-vibes@latest --config loadedvibes.json',
+    example: 'pnpm dlx hipster-stack@latest --config hipsterstack.json',
     highlights: [
       {
         title: 'One template',
@@ -91,7 +91,7 @@ const libraryCopy: readonly LibraryCopy[] = [
       },
       {
         title: 'Portable recipe',
-        description: 'The CLI and Builder share loadedvibes.json semantics.',
+        description: 'The CLI and Builder share hipsterstack.json semantics.',
       },
       {
         title: 'Deterministic output',
@@ -230,7 +230,7 @@ const libraryCopy: readonly LibraryCopy[] = [
     highlights: [
       {
         title: 'Real capability',
-        description: 'billing is a valid loadedvibes.json module field.',
+        description: 'billing is a valid hipsterstack.json module field.',
       },
       {
         title: 'Dependency aware',
@@ -282,7 +282,7 @@ const libraryCopy: readonly LibraryCopy[] = [
     category: 'Interface',
     description: 'Composable presentation primitives and sections.',
     summary:
-      'shadcn-compatible primitives and composed presentation follow the route → feature → presentation layering of the Loaded Vibes architecture.',
+      'shadcn-compatible primitives and composed presentation follow the route → feature → presentation layering of the Hipster Stack architecture.',
     icon: 'blocks',
     primaryAction: { label: 'Explore the Builder', href: '/configure' },
     highlights: [
@@ -307,7 +307,7 @@ const libraryCopy: readonly LibraryCopy[] = [
     slug: 'docs',
     title: 'Docs',
     category: 'Interface',
-    description: 'Canonical Loaded Vibes end-user guidance.',
+    description: 'Canonical Hipster Stack end-user guidance.',
     summary:
       'The repository-owned docs explain configuration, CLI operation, generated-project handoff, and provider setup without inventing product behavior.',
     icon: 'docs',

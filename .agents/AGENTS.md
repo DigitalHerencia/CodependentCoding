@@ -1,4 +1,4 @@
-# Loaded Vibes Machine Governance
+# Hipster Stack Machine Governance
 
 Scope: `.agents/**`.
 
@@ -15,7 +15,7 @@ Machine governance is a compact projection of the controlling Markdown context. 
 
 ## Execution state
 
-- `.agents/execution/decisions.json` records durable Loaded Vibes-specific decisions.
+- `.agents/execution/decisions.json` records durable Hipster Stack-specific decisions.
 - `.agents/execution/progress.json` records current roadmap state.
 - `.agents/execution/handoff.json` records the next coherent implementation handoff.
 - Execution files do not prove code correctness.

@@ -1,5 +1,5 @@
 {
-  "name": "@loaded-vibes/core",
+  "name": "@hipster-stack/core",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -8,7 +8,7 @@
     "./browser": "./src/browser.ts"
   },
   "dependencies": {
-    "@loaded-vibes/schema": "workspace:*",
+    "@hipster-stack/schema": "workspace:*",
     "execa": "9.6.1",
     "validate-npm-package-name": "7.0.2",
     "zod": "4.4.3"
