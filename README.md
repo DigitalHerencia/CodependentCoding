@@ -60,7 +60,7 @@ Every project starts from a self-contained Hipster Stack-owned Next.js applicati
 - recipe-gated subscription billing, Stripe Connect, onboarding, admin, marketing, and sample-project surfaces;
 - Cloudinary media, Hugging Face inference, and Mapbox location adapters with server-side credential boundaries;
 - semantic identity/design personalization;
-- `.loadedvibes/manifest.json` provenance for explanation and safe supported additions;
+- `.hipsterstack/manifest.json` provenance for explanation and safe supported additions;
 - focused project documentation, environment examples, and validation commands.
 
 Identical supported recipes and template revisions produce equivalent source output.
