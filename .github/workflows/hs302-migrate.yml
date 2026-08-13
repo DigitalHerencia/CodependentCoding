@@ -1,0 +1,90 @@
+name: HS-302 identifier migration
+
+on:
+  push:
+    branches: [issue/136-hipster-stack-identifiers]
+
+permissions:
+  contents: write
+
+jobs:
+  migrate:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: issue/136-hipster-stack-identifiers
+          fetch-depth: 0
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+      - run: corepack enable
+      - run: corepack prepare pnpm@11.1.1 --activate
+      - name: Apply scoped naming migration
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+
+          $files = @()
+          $files += Get-ChildItem apps/web -Recurse -File | Where-Object { $_.Extension -in '.ts', '.tsx', '.json' }
+          $files += Get-ChildItem packages -Recurse -File | Where-Object { $_.Extension -in '.ts', '.json' }
+          $files += Get-ChildItem tests -Recurse -File | Where-Object { $_.Extension -eq '.ts' }
+          $files += Get-ChildItem scripts -Recurse -File | Where-Object { $_.Extension -eq '.mjs' }
+          $files += Get-ChildItem docs -Recurse -File | Where-Object { $_.Extension -eq '.md' }
+          $files += Get-Item package.json, README.md, llms.txt, tsdown.config.ts, context/docs/release.md, context/AGENTS.md, .agents/AGENTS.md
+
+          foreach ($file in $files | Sort-Object FullName -Unique) {
+            $text = Get-Content -Raw -LiteralPath $file.FullName
+            $next = $text.Replace('@loaded-vibes/', '@hipster-stack/')
+            $next = $next.Replace('create-loaded-vibes', 'hipster-stack')
+            $next = $next.Replace('loadedvibes.json', 'hipsterstack.json')
+            $next = $next.Replace('loaded-vibes', 'hipster-stack')
+            $next = $next.Replace('Loaded Vibes', 'Hipster Stack')
+
+            # These are intentionally retained until the standalone-template/provenance migration.
+            $next = $next.Replace('.hipster-stack-template.json', '.loaded-vibes-template.json')
+            $next = $next.Replace('hipster-stack-maximal-saas', 'loaded-vibes-maximal-saas')
+            $next = $next.Replace('Hipster Stack Crown.png', 'Loaded Vibes Crown.png')
+
+            if ($next -ne $text) {
+              Set-Content -NoNewline -LiteralPath $file.FullName -Value $next
+            }
+          }
+
+          # Package metadata: one canonical package/bin, no unverified compatibility aliases.
+          node --input-type=module -e "import fs from 'node:fs'; const p=JSON.parse(fs.readFileSync('package.json','utf8')); p.name='hipster-stack'; p.description='Generate a complete white-label application from the Hipster Stack master template.'; p.bin={'hipster-stack':'dist/cli.mjs'}; fs.writeFileSync('package.json', JSON.stringify(p,null,2)+'\n');"
+
+          # Reconcile active governance wording after the mechanical rename.
+          $contextAgents = Get-Content -Raw context/AGENTS.md
+          $contextAgents = $contextAgents.Replace('Do not copy the full Hipster Stack corpus into Hipster Stack. Reference the canonical DevNotes material and encode only the Hipster Stack-specific consequences.', 'Do not copy the full Codependent Coding Knowledge System into Hipster Stack. Reference the canonical DevNotes material and encode only the Hipster Stack-specific consequences.')
+          $contextAgents = $contextAgents.Replace('context/specs/LV-*.md', 'context/specs/HS-*.md')
+          Set-Content -NoNewline context/AGENTS.md $contextAgents
+
+          $release = Get-Content -Raw context/docs/release.md
+          $release = $release -replace '(?s)## Naming\r?\n\r?\n.*?\r?\n\r?\n## Provider setup', "## Naming`n`n``hipster-stack`` is the canonical command and package metadata target. ``hipsterstack.json`` is the canonical portable configuration filename. This repository change does not claim npm publication or name reservation; publication remains a separate owner-authorized release action.`n`nNo obsolete Loaded Vibes command/package compatibility aliases are retained because no verified published compatibility obligation exists.`n`n## Provider setup"
+          Set-Content -NoNewline context/docs/release.md $release
+
+          $readme = Get-Content -Raw README.md
+          $readme = $readme.Replace('The published package is still named `hipster-stack`; no npm package rename is implied. Run it without installing globally:', 'Package metadata now targets `hipster-stack`; this repository change does not claim npm publication or name reservation. Run it without installing globally:')
+          $readme = $readme -replace '(?s)\r?\n`hipster-stack` is the canonical command\. The package also exposes `hipster-stack`.*?```powershell\r?\nhipster-stack create my-product\r?\n```\r?\n', "`n``hipster-stack`` is the canonical command:`n`n``````powershell`nhipster-stack create my-product`n```````n"
+          Set-Content -NoNewline README.md $readme
+
+          $cliDoc = Get-Content -Raw docs/cli/index.md
+          $cliDoc = $cliDoc.Replace('The published package is still named `hipster-stack`.', 'Package metadata targets `hipster-stack`; npm publication or reservation is not claimed by this repository change.')
+          Set-Content -NoNewline docs/cli/index.md $cliDoc
+
+      - name: Refresh lockfile and format
+        shell: pwsh
+        run: |
+          pnpm install --lockfile-only --no-frozen-lockfile
+          pnpm exec prettier --write apps packages tests scripts context/docs/release.md context/AGENTS.md .agents/AGENTS.md docs package.json README.md llms.txt tsdown.config.ts pnpm-lock.yaml
+      - name: Commit migration
+        shell: pwsh
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git rm .github/workflows/hs302-migrate.yml
+          git add -A
+          git commit -m "feat: rename generator identifiers to Hipster Stack"
+          git push origin HEAD:issue/136-hipster-stack-identifiers
