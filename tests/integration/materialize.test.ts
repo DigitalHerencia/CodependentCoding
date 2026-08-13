@@ -144,7 +144,7 @@ describe('createProject', () => {
     expect(
       JSON.parse(
         await readFile(
-          path.join(target, '.loadedvibes', 'manifest.json'),
+          path.join(target, '.hipsterstack', 'manifest.json'),
           'utf8',
         ),
       ),
