@@ -1,0 +1,32 @@
+name: Format snapshot
+
+on:
+  pull_request:
+
+jobs:
+  format:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+      - run: corepack enable
+      - run: corepack prepare pnpm@11.1.1 --activate
+      - run: pnpm install --frozen-lockfile
+      - run: >-
+          pnpm exec prettier --write
+          apps/web/app/globals.css
+          apps/web/components/configurator.tsx
+          apps/web/components/site-header.tsx
+          apps/web/features/libraries/libraries-catalog.tsx
+          apps/web/features/product/product-landing.tsx
+      - uses: actions/upload-artifact@v4
+        with:
+          name: prettier-formatted-web
+          path: |
+            apps/web/app/globals.css
+            apps/web/components/configurator.tsx
+            apps/web/components/site-header.tsx
+            apps/web/features/libraries/libraries-catalog.tsx
+            apps/web/features/product/product-landing.tsx
