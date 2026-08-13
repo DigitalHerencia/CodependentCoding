@@ -74,14 +74,6 @@ body:has(.product-landing) {
   background-color: var(--background);
 }
 
-body:has(.builder-page) {
-  background-color: var(--background);
-  background-image: url('/Digital Herencia Desert BG.png');
-  background-repeat: no-repeat;
-  background-position: center calc(100% - 4.5rem);
-  background-size: 100vw auto;
-}
-
 h1,
 h2,
 h3,
@@ -373,9 +365,9 @@ body:has(.libraries-page, .library-detail-page, .docs-shell, .builder-page)
 .preview-option,
 .recipe-code,
 .builder-fields input,
-.design-selects select,
+.design-selects button[role='combobox'],
 .preset-options button,
-.capability-options label,
+.capability-options .capability-option,
 .selected-stack article,
 .builder-handoff article,
 .builder-output-actions button {
@@ -508,7 +500,13 @@ body:has(.libraries-page, .library-detail-page, .docs-shell, .builder-page)
 
 .builder-page {
   width: min(calc(100% - 2rem), 92rem);
-  padding-bottom: clamp(16rem, 44vw, 34rem);
+  padding-bottom: 4rem;
+}
+
+.constituter-landscape {
+  display: block;
+  width: 100%;
+  height: auto;
 }
 
 .simples-landscape {
@@ -642,14 +640,14 @@ body:has(.libraries-page, .library-detail-page, .docs-shell, .builder-page)
 }
 
 .preset-options button[data-active='true'],
-.capability-options label[data-active='true'] {
+.capability-options .capability-option[data-active='true'] {
   border-color: var(--signal);
   color: var(--foreground);
   box-shadow: inset 0 0 1rem var(--signal-soft);
 }
 
 .preset-options button[data-active='true'] > i,
-.capability-options label[data-active='true'] > i {
+.capability-options .capability-option[data-active='true'] [role='switch'] {
   border-color: var(--signal);
   background: var(--signal);
 }
@@ -658,6 +656,12 @@ body:has(.libraries-page, .library-detail-page, .docs-shell, .builder-page)
   border-color: var(--signal);
   background: var(--background-strong);
   color: var(--foreground);
+}
+
+.builder-top-actions [data-icon],
+.builder-download [data-icon] {
+  width: 1rem;
+  height: 1rem;
 }
 
 .builder-auto-included {
@@ -891,7 +895,7 @@ body:has(.libraries-page, .library-detail-page, .docs-shell, .builder-page)
 
   .builder-page {
     width: min(calc(100% - 4rem), 92rem);
-    padding-bottom: clamp(20rem, 34vw, 34rem);
+    padding-bottom: 6rem;
   }
 
   .library-detail-page {

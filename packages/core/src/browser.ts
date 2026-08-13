@@ -14,6 +14,7 @@ export { getProductPreset, productPresets } from './presets.js';
 export {
   capabilityIds,
   defaultDesign,
+  designChoices,
   productPresetIds,
   recipeSchema,
   type CapabilityId,

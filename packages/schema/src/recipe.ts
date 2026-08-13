@@ -59,13 +59,21 @@ export const productIdentitySchema = z
   })
   .strict();
 
+export const designChoices = {
+  theme: ['obsidian', 'paper', 'electric'],
+  mode: ['system', 'light', 'dark'],
+  radius: ['compact', 'medium', 'rounded'],
+  density: ['compact', 'comfortable'],
+  navigation: ['sidebar', 'topbar'],
+} as const;
+
 export const designSchema = z
   .object({
-    theme: z.enum(['obsidian', 'paper', 'electric']).default('obsidian'),
-    radius: z.enum(['compact', 'medium', 'rounded']).default('medium'),
-    density: z.enum(['compact', 'comfortable']).default('comfortable'),
-    navigation: z.enum(['sidebar', 'topbar']).default('sidebar'),
-    mode: z.enum(['light', 'dark', 'system']).default('system'),
+    theme: z.enum(designChoices.theme).default('obsidian'),
+    radius: z.enum(designChoices.radius).default('medium'),
+    density: z.enum(designChoices.density).default('comfortable'),
+    navigation: z.enum(designChoices.navigation).default('sidebar'),
+    mode: z.enum(designChoices.mode).default('system'),
   })
   .strict();
 
