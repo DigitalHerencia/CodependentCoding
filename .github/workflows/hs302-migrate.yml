@@ -59,20 +59,20 @@ jobs:
           $contextAgents = Get-Content -Raw context/AGENTS.md
           $contextAgents = $contextAgents.Replace('Do not copy the full Hipster Stack corpus into Hipster Stack. Reference the canonical DevNotes material and encode only the Hipster Stack-specific consequences.', 'Do not copy the full Codependent Coding Knowledge System into Hipster Stack. Reference the canonical DevNotes material and encode only the Hipster Stack-specific consequences.')
           $contextAgents = $contextAgents.Replace('context/specs/LV-*.md', 'context/specs/HS-*.md')
-          Set-Content -NoNewline context/AGENTS.md $contextAgents
+          Set-Content -NoNewline -Path context/AGENTS.md -Value $contextAgents
 
           $release = Get-Content -Raw context/docs/release.md
           $release = $release -replace '(?s)## Naming\r?\n\r?\n.*?\r?\n\r?\n## Provider setup', "## Naming`n`n``hipster-stack`` is the canonical command and package metadata target. ``hipsterstack.json`` is the canonical portable configuration filename. This repository change does not claim npm publication or name reservation; publication remains a separate owner-authorized release action.`n`nNo obsolete Loaded Vibes command/package compatibility aliases are retained because no verified published compatibility obligation exists.`n`n## Provider setup"
-          Set-Content -NoNewline context/docs/release.md $release
+          Set-Content -NoNewline -Path context/docs/release.md -Value $release
 
           $readme = Get-Content -Raw README.md
           $readme = $readme.Replace('The published package is still named `hipster-stack`; no npm package rename is implied. Run it without installing globally:', 'Package metadata now targets `hipster-stack`; this repository change does not claim npm publication or name reservation. Run it without installing globally:')
           $readme = $readme -replace '(?s)\r?\n`hipster-stack` is the canonical command\. The package also exposes `hipster-stack`.*?```powershell\r?\nhipster-stack create my-product\r?\n```\r?\n', "`n``hipster-stack`` is the canonical command:`n`n``````powershell`nhipster-stack create my-product`n```````n"
-          Set-Content -NoNewline README.md $readme
+          Set-Content -NoNewline -Path README.md -Value $readme
 
           $cliDoc = Get-Content -Raw docs/cli/index.md
           $cliDoc = $cliDoc.Replace('The published package is still named `hipster-stack`.', 'Package metadata targets `hipster-stack`; npm publication or reservation is not claimed by this repository change.')
-          Set-Content -NoNewline docs/cli/index.md $cliDoc
+          Set-Content -NoNewline -Path docs/cli/index.md -Value $cliDoc
 
       - name: Refresh lockfile and format
         shell: pwsh
