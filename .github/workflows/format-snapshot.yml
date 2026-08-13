@@ -21,6 +21,13 @@ jobs:
           apps/web/components/site-header.tsx
           apps/web/features/libraries/libraries-catalog.tsx
           apps/web/features/product/product-landing.tsx
+      - run: >-
+          git diff --
+          apps/web/app/globals.css
+          apps/web/components/configurator.tsx
+          apps/web/components/site-header.tsx
+          apps/web/features/libraries/libraries-catalog.tsx
+          apps/web/features/product/product-landing.tsx
       - uses: actions/upload-artifact@v4
         with:
           name: prettier-formatted-web
