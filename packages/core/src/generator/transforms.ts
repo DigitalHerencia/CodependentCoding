@@ -21,9 +21,9 @@ export async function writeRecipeArtifacts(
     path.join(directory, 'hipsterstack.json'),
     `${JSON.stringify(recipe, null, 2)}\n`,
   );
-  await mkdir(path.join(directory, '.loadedvibes'), { recursive: true });
+  await mkdir(path.join(directory, '.hipsterstack'), { recursive: true });
   await writeFile(
-    path.join(directory, '.loadedvibes', 'manifest.json'),
+    path.join(directory, '.hipsterstack', 'manifest.json'),
     `${JSON.stringify(
       {
         schemaVersion: 2,
