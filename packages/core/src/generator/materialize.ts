@@ -1,11 +1,4 @@
-import {
-  cp,
-  lstat,
-  mkdir,
-  rename,
-  rm,
-  rmdir,
-} from 'node:fs/promises';
+import { cp, lstat, mkdir, rename, rm, rmdir } from 'node:fs/promises';
 import path from 'node:path';
 import { LoadedVibesError } from '../errors.js';
 import type { GenerationPlan } from './plan.js';

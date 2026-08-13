@@ -724,9 +724,9 @@ function providersFor(
         explicitlySelected.includes(provider.id),
     )
     .map((provider) => {
-      const requiredBy = required.find(
-        (candidate) => candidate.id === provider.id,
-      )?.requiredBy ?? [];
+      const requiredBy =
+        required.find((candidate) => candidate.id === provider.id)
+          ?.requiredBy ?? [];
       return {
         ...provider,
         requiredBy,
@@ -803,46 +803,46 @@ function resolveArtifactSets(
   );
   const capabilitySets = uniqueBy(sets, (entry) => entry.id).map(
     ({ id, capability }) => {
-    const ownership = (
-      optionalSurfaceOwnership as Partial<
-        Record<CapabilityId, OptionalSurfaceOwnership>
-      >
-    )[capability];
-    const artifacts = (ownership?.remove ?? []).map(
-      (path): Artifact => ({
-        path,
-        owner: `${capabilityRegistry[capability].label} module`,
-        artifactSet: id,
-        requiredBy: [capability],
-        removable: isSafelyRemovable(path),
-        generationPolicy: isSafelyRemovable(path)
-          ? (artifactOverrides[path] ?? 'INHERIT')
-          : 'LOCKED',
-        replacementPolicy: 'remove',
-        dependencies: [capability],
-        generationReason: `${capabilityRegistry[capability].label} is enabled.`,
-      }),
-    );
-    for (const artifact of artifacts) {
-      if (
-        artifactOverrides[artifact.path] === 'EXCLUDE' &&
-        !artifact.removable
-      ) {
-        throw new LoadedVibesError(
-          'UNSUPPORTED_CONFIGURATION',
-          `Artifact "${artifact.path}" is locked and cannot be excluded.`,
-        );
+      const ownership = (
+        optionalSurfaceOwnership as Partial<
+          Record<CapabilityId, OptionalSurfaceOwnership>
+        >
+      )[capability];
+      const artifacts = (ownership?.remove ?? []).map(
+        (path): Artifact => ({
+          path,
+          owner: `${capabilityRegistry[capability].label} module`,
+          artifactSet: id,
+          requiredBy: [capability],
+          removable: isSafelyRemovable(path),
+          generationPolicy: isSafelyRemovable(path)
+            ? (artifactOverrides[path] ?? 'INHERIT')
+            : 'LOCKED',
+          replacementPolicy: 'remove',
+          dependencies: [capability],
+          generationReason: `${capabilityRegistry[capability].label} is enabled.`,
+        }),
+      );
+      for (const artifact of artifacts) {
+        if (
+          artifactOverrides[artifact.path] === 'EXCLUDE' &&
+          !artifact.removable
+        ) {
+          throw new LoadedVibesError(
+            'UNSUPPORTED_CONFIGURATION',
+            `Artifact "${artifact.path}" is locked and cannot be excluded.`,
+          );
+        }
       }
-    }
       return {
-      id,
-      label: capabilityRegistry[capability].label,
-      policy: overrides[id] ?? 'INHERIT',
-      included: true,
-      requiredBy: selectedCapabilities.filter((candidate) =>
-        capabilityRegistry[candidate].artifactSets.includes(id),
-      ),
-      artifacts,
+        id,
+        label: capabilityRegistry[capability].label,
+        policy: overrides[id] ?? 'INHERIT',
+        included: true,
+        requiredBy: selectedCapabilities.filter((candidate) =>
+          capabilityRegistry[candidate].artifactSets.includes(id),
+        ),
+        artifacts,
       };
     },
   );

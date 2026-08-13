@@ -67,10 +67,16 @@ export function ConstituterPreview({
         <article>
           <strong>{application.routes.length} Routes</strong>
           <small>{application.artifactSets.length} artifact sets</small>
-          <span>{resolved.application.plan.artifacts.length} cataloged artifacts</span>
+          <span>
+            {resolved.application.plan.artifacts.length} cataloged artifacts
+          </span>
         </article>
         <article>
-          <strong>{application.status === 'valid' ? 'Ready to Constitute' : 'Setup required'}</strong>
+          <strong>
+            {application.status === 'valid'
+              ? 'Ready to Constitute'
+              : 'Setup required'}
+          </strong>
           <small>{application.environment.length} environment variables</small>
           <span>{application.setup.length} manual setup steps</span>
         </article>
@@ -81,29 +87,31 @@ export function ConstituterPreview({
         <div>
           <span>Providers, routes, permissions, files, and reasons</span>
         </div>
-        <pre>{JSON.stringify(
-          {
-            providers: application.providers.map((provider) => ({
-              id: provider.id,
-              requiredBy: provider.requiredBy,
-              reason: provider.reason,
-            })),
-            capabilities: application.reasons,
-            routes: application.routes,
-            resources: application.resources,
-            authorization: application.authorization,
-            environment: application.environment,
-            artifactSets: application.artifactSets,
-            filesRetained: resolved.application.plan.filesRetained,
-            filesOmitted: resolved.application.plan.filesOmitted,
-            dependencies: application.reasons.filter(
-              (reason) => reason.requiredBy.length > 0,
-            ),
-            propertyStates: application.propertyStates,
-          },
-          null,
-          2,
-        )}</pre>
+        <pre>
+          {JSON.stringify(
+            {
+              providers: application.providers.map((provider) => ({
+                id: provider.id,
+                requiredBy: provider.requiredBy,
+                reason: provider.reason,
+              })),
+              capabilities: application.reasons,
+              routes: application.routes,
+              resources: application.resources,
+              authorization: application.authorization,
+              environment: application.environment,
+              artifactSets: application.artifactSets,
+              filesRetained: resolved.application.plan.filesRetained,
+              filesOmitted: resolved.application.plan.filesOmitted,
+              dependencies: application.reasons.filter(
+                (reason) => reason.requiredBy.length > 0,
+              ),
+              propertyStates: application.propertyStates,
+            },
+            null,
+            2,
+          )}
+        </pre>
       </details>
 
       <section className="recipe-code">

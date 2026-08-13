@@ -163,10 +163,18 @@ async function writeRoutesContract(
         ]
       : []),
     ...(recipe.modules.organizations
-      ? [routeUrl('organization-settings', '/settings'), '/uploads', '/maps', '/ai']
+      ? [
+          routeUrl('organization-settings', '/settings'),
+          '/uploads',
+          '/maps',
+          '/ai',
+        ]
       : []),
     ...(recipe.modules.invitations
-      ? [routeUrl('team', '/team'), routeUrl('member-settings', '/settings/members')]
+      ? [
+          routeUrl('team', '/team'),
+          routeUrl('member-settings', '/settings/members'),
+        ]
       : []),
     ...(recipe.modules.onboarding
       ? [routeUrl('onboarding', '/onboarding')]
@@ -319,18 +327,24 @@ async function applyProviderSourceComposition(
     const layoutPath = path.join(plan.stagingDirectory, 'app', 'layout.tsx');
     let layout = await readFile(layoutPath, 'utf8');
     layout = layout
-      .replace('import { AppProviders } from "@/components/app/app-providers"\n', '')
+      .replace(
+        'import { AppProviders } from "@/components/app/app-providers"\n',
+        '',
+      )
       .replace('<AppProviders>{children}</AppProviders>', '{children}');
     await writeFile(layoutPath, layout);
-    await replaceInFile(
-      path.join(plan.stagingDirectory, 'app', 'page.tsx'),
+    await replaceInFile(path.join(plan.stagingDirectory, 'app', 'page.tsx'), [
+      ['href="/sign-up"', 'href="/contact"'],
+      ['Start the app', 'Contact us'],
       [
-        ['href="/sign-up"', 'href="/contact"'],
-        ['Start the app', 'Contact us'],
-        ['Clerk owns identity and session lifecycle without organizations.', 'This application is generated without an authentication provider.'],
-        ['Local Prisma rows decide whether a user can read or write a resource.', 'Public routes remain independent from authorization infrastructure.'],
+        'Clerk owns identity and session lifecycle without organizations.',
+        'This application is generated without an authentication provider.',
       ],
-    );
+      [
+        'Local Prisma rows decide whether a user can read or write a resource.',
+        'Public routes remain independent from authorization infrastructure.',
+      ],
+    ]);
     await replaceInFile(
       path.join(
         plan.stagingDirectory,
@@ -414,12 +428,20 @@ async function applyRouteComposition(plan: GenerationPlan): Promise<void> {
   )) {
     const group = route.routeGroup.startsWith('(') ? [route.routeGroup] : [];
     const segments = route.urlSegment.split('/').filter(Boolean);
-    const target = path.join(plan.stagingDirectory, 'app', ...group, ...segments);
+    const target = path.join(
+      plan.stagingDirectory,
+      'app',
+      ...group,
+      ...segments,
+    );
     await mkdir(path.dirname(target), { recursive: true });
     await rename(path.join(staged, route.id), target);
   }
   await rm(staged, { recursive: true, force: true });
-  await replaceRouteReferences(plan.stagingDirectory, plan.applicationPlan.routes);
+  await replaceRouteReferences(
+    plan.stagingDirectory,
+    plan.applicationPlan.routes,
+  );
 }
 
 async function replaceRouteReferences(
@@ -445,7 +467,8 @@ async function replaceRouteReferences(
       } =>
         entry.before !== undefined &&
         entry.beforeLabel !== undefined &&
-        (entry.before !== entry.after || entry.beforeLabel !== entry.afterLabel),
+        (entry.before !== entry.after ||
+          entry.beforeLabel !== entry.afterLabel),
     )
     .sort((left, right) => right.before.length - left.before.length);
   if (!replacements.length) return;
@@ -489,21 +512,26 @@ async function pruneEnvironmentExample(
   const source = await readFile(envPath, 'utf8');
   const excludedPrefixes = [
     ...(!providers.includes('clerk') ? ['CLERK_', 'NEXT_PUBLIC_CLERK_'] : []),
-    ...(!providers.includes('neon') ? ['DATABASE_URL=', 'DIRECT_DATABASE_URL='] : []),
+    ...(!providers.includes('neon')
+      ? ['DATABASE_URL=', 'DIRECT_DATABASE_URL=']
+      : []),
     ...(!providers.includes('stripe') ? ['STRIPE_'] : []),
     ...(!hasOrganizations
-      ? [
-          'CLOUDINARY_',
-          'HUGGINGFACE_',
-          'MAPBOX_',
-          'NEXT_PUBLIC_MAPBOX_',
-        ]
+      ? ['CLOUDINARY_', 'HUGGINGFACE_', 'MAPBOX_', 'NEXT_PUBLIC_MAPBOX_']
       : []),
   ];
   const lines = source
     .split(/\r?\n/)
-    .filter((line) => !excludedPrefixes.some((prefix) => line.startsWith(prefix)));
-  await writeFile(envPath, `${lines.join('\n').replace(/\n{3,}/g, '\n\n').trim()}\n`);
+    .filter(
+      (line) => !excludedPrefixes.some((prefix) => line.startsWith(prefix)),
+    );
+  await writeFile(
+    envPath,
+    `${lines
+      .join('\n')
+      .replace(/\n{3,}/g, '\n\n')
+      .trim()}\n`,
+  );
 }
 
 async function pruneLockfileImporter(
@@ -538,7 +566,10 @@ async function pruneLockfileImporter(
       output.push(lines[index] ?? '');
       continue;
     }
-    while (index + 1 < lines.length && /^        /.test(lines[index + 1] ?? '')) {
+    while (
+      index + 1 < lines.length &&
+      /^        /.test(lines[index + 1] ?? '')
+    ) {
       index += 1;
     }
   }
@@ -550,6 +581,7 @@ async function replaceInFile(
   replacements: readonly (readonly [string, string])[],
 ): Promise<void> {
   let source = await readFile(filePath, 'utf8');
-  for (const [before, after] of replacements) source = source.replace(before, after);
+  for (const [before, after] of replacements)
+    source = source.replace(before, after);
   await writeFile(filePath, source);
 }

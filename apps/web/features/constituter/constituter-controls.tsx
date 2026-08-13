@@ -79,7 +79,10 @@ export function ConstituterControls({
   );
   return (
     <section className="builder-controls" id="builder-controls">
-      <nav className="builder-group" aria-label="Constituter property categories">
+      <nav
+        className="builder-group"
+        aria-label="Constituter property categories"
+      >
         <Input
           aria-label="Search properties"
           placeholder="Search properties..."
@@ -210,10 +213,7 @@ export function ConstituterControls({
               }
               onValueChange={(value) =>
                 setDraft((current) =>
-                  setAuthenticationProvider(
-                    current,
-                    value as 'none' | 'clerk',
-                  ),
+                  setAuthenticationProvider(current, value as 'none' | 'clerk'),
                 )
               }
             >
@@ -367,7 +367,9 @@ export function ConstituterControls({
             <i>G</i>
             <span>
               <strong>RBAC roles</strong>
-              <small>Structured roles with capability-derived permissions</small>
+              <small>
+                Structured roles with capability-derived permissions
+              </small>
             </span>
           </legend>
           <div className="builder-options capability-options">
@@ -384,19 +386,23 @@ export function ConstituterControls({
                         aria-label={`${role.displayName}: ${permission}`}
                         onCheckedChange={(checked) =>
                           setDraft((current) => {
-                            const roles = resolved.application.resolved.authorization.roles.map(
-                              (candidate) =>
-                                candidate.name === role.name
-                                  ? {
-                                      ...candidate,
-                                      permissions: checked
-                                        ? [...candidate.permissions, permission]
-                                        : candidate.permissions.filter(
-                                            (value) => value !== permission,
-                                          ),
-                                    }
-                                  : candidate,
-                            );
+                            const roles =
+                              resolved.application.resolved.authorization.roles.map(
+                                (candidate) =>
+                                  candidate.name === role.name
+                                    ? {
+                                        ...candidate,
+                                        permissions: checked
+                                          ? [
+                                              ...candidate.permissions,
+                                              permission,
+                                            ]
+                                          : candidate.permissions.filter(
+                                              (value) => value !== permission,
+                                            ),
+                                      }
+                                    : candidate,
+                              );
                             return {
                               ...current,
                               authorization: { model: 'rbac', roles },
@@ -419,7 +425,9 @@ export function ConstituterControls({
           <i>H</i>
           <span>
             <strong>Routes</strong>
-            <small>Public URL segments, separate from route-group internals</small>
+            <small>
+              Public URL segments, separate from route-group internals
+            </small>
           </span>
         </legend>
         <div className="builder-fields">
@@ -526,7 +534,9 @@ export function ConstituterControls({
                     }))
                   }
                 >
-                  <SelectTrigger aria-label={`${title(artifactSet)} output policy`}>
+                  <SelectTrigger
+                    aria-label={`${title(artifactSet)} output policy`}
+                  >
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>

@@ -288,8 +288,7 @@ export function deserializeRecipe(value: string): ConfiguratorRecipe {
     identity: resolved.recipe.identity,
     providers: resolved.application.resolved.definition.providers,
     authorization: resolved.application.resolved.definition.authorization,
-    outputOverrides:
-      resolved.application.resolved.definition.outputOverrides,
+    outputOverrides: resolved.application.resolved.definition.outputOverrides,
     routes: resolved.application.resolved.definition.routes,
   };
 }

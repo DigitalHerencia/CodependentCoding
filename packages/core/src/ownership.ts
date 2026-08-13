@@ -231,14 +231,18 @@ export function excludedOwnedPathsForApplication(
   safelyExcludedArtifacts: readonly string[] = [],
 ): string[] {
   const capabilityPaths = Object.values(optionalSurfaceOwnership)
-    .filter(
-      (ownership) => !selectedCapabilities.includes(ownership.capability),
-    )
+    .filter((ownership) => !selectedCapabilities.includes(ownership.capability))
     .flatMap((ownership) => [...ownership.remove]);
   const providerPaths = Object.entries(providerSurfaceOwnership)
     .filter(([provider]) => !selectedProviders.includes(provider as ProviderId))
     .flatMap(([, paths]) => [...paths]);
-  return [...new Set([...capabilityPaths, ...providerPaths, ...safelyExcludedArtifacts])];
+  return [
+    ...new Set([
+      ...capabilityPaths,
+      ...providerPaths,
+      ...safelyExcludedArtifacts,
+    ]),
+  ];
 }
 
 export function selectedGeneratedModuleIds(
