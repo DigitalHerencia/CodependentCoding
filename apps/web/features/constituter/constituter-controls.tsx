@@ -479,13 +479,7 @@ function PropertyEditor({
         />
       );
     case 'outputOverrides.artifacts':
-      return (
-        <ArtifactsEditor
-          draft={draft}
-          resolved={resolved}
-          setDraft={setDraft}
-        />
-      );
+      return <ArtifactsEditor resolved={resolved} setDraft={setDraft} />;
     default:
       return (
         <ReadOnlyValue value="Derived by the shared application resolver" />
@@ -836,11 +830,9 @@ function ArtifactSetsEditor({
 }
 
 function ArtifactsEditor({
-  draft,
   resolved,
   setDraft,
 }: {
-  draft: ConfiguratorRecipe;
   resolved: ResolvedRecipe;
   setDraft: Dispatch<SetStateAction<ConfiguratorRecipe>>;
 }) {

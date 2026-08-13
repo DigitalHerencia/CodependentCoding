@@ -1297,10 +1297,3 @@ function isSafelyRemovable(path: string): boolean {
 function unique<T>(values: readonly T[]): T[] {
   return [...new Set(values)];
 }
-
-function uniqueBy<T>(values: readonly T[], key: (value: T) => string): T[] {
-  return values.filter(
-    (value, index) =>
-      values.findIndex((candidate) => key(candidate) === key(value)) === index,
-  );
-}
