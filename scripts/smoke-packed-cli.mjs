@@ -87,7 +87,7 @@ try {
   ]);
 
   const manifest = JSON.parse(
-    await readFile(path.join(target, '.loadedvibes', 'manifest.json'), 'utf8'),
+    await readFile(path.join(target, '.hipsterstack', 'manifest.json'), 'utf8'),
   );
   const product = await readFile(
     path.join(target, 'content', 'loadedvibes.ts'),
