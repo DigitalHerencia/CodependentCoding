@@ -9,7 +9,8 @@ import {
 } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 
-export interface PanelProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface PanelProps
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'title'> {
   eyebrow?: React.ReactNode;
   title?: React.ReactNode;
   description?: React.ReactNode;
