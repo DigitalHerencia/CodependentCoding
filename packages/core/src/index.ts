@@ -54,7 +54,11 @@ export {
   type CapabilityDefinition,
   type CapabilityResolution,
 } from './capabilities.js';
-export { capabilityIds, productPresetIds } from '@hipster-stack/schema';
+export {
+  capabilityIds,
+  designChoices,
+  productPresetIds,
+} from '@hipster-stack/schema';
 export {
   applicationDefinitionFromRecipe,
   normalizeRecipe,

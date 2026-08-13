@@ -1,4 +1,7 @@
-import type { ResolvedRecipe } from '@hipster-stack/core/browser';
+import {
+  capabilityRegistry,
+  type ResolvedRecipe,
+} from '@hipster-stack/core/browser';
 import { Check, Copy, Download, Share2, Terminal } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -6,6 +9,7 @@ export function ConstituterPreview({
   resolved,
   normalizedJson,
   notice,
+  invalidReason,
   onCopyRecipe,
   onDownload,
   onCopyCli,
@@ -14,12 +18,16 @@ export function ConstituterPreview({
   resolved: ResolvedRecipe;
   normalizedJson: string;
   notice: string;
+  invalidReason: string;
   onCopyRecipe: () => void;
   onDownload: () => void;
   onCopyCli: () => void;
   onShare: () => void;
 }) {
   const application = resolved.application.resolved;
+  const includedArtifactSets = application.artifactSets.filter(
+    (artifactSet) => artifactSet.included,
+  );
   return (
     <aside className="recipe-preview">
       <div className="recipe-preview-heading">
@@ -66,53 +74,178 @@ export function ConstituterPreview({
         </article>
         <article>
           <strong>{application.routes.length} Routes</strong>
-          <small>{application.artifactSets.length} artifact sets</small>
+          <small>{includedArtifactSets.length} artifact sets</small>
           <span>
             {resolved.application.plan.artifacts.length} cataloged artifacts
           </span>
         </article>
         <article>
           <strong>
-            {application.status === 'valid'
-              ? 'Ready to Constitute'
-              : 'Setup required'}
+            {invalidReason
+              ? 'Invalid configuration'
+              : application.status === 'valid'
+                ? 'Ready to Constitute'
+                : 'Setup required'}
           </strong>
           <small>{application.environment.length} environment variables</small>
           <span>{application.setup.length} manual setup steps</span>
         </article>
       </section>
 
-      <details className="recipe-code">
-        <summary>Output Explorer</summary>
-        <div>
-          <span>Providers, routes, permissions, files, and reasons</span>
+      {invalidReason && (
+        <p className="builder-notice" role="alert">
+          {invalidReason}
+        </p>
+      )}
+
+      <section className="output-explorer" aria-label="Output Explorer">
+        <div className="recipe-preview-heading">
+          <div>
+            <strong>Output Explorer</strong>
+            <small>Resolved generation consequences before generation</small>
+          </div>
+          <span>conflicts 0</span>
         </div>
-        <pre>
-          {JSON.stringify(
-            {
-              providers: application.providers.map((provider) => ({
-                id: provider.id,
-                requiredBy: provider.requiredBy,
-                reason: provider.reason,
-              })),
-              capabilities: application.reasons,
-              routes: application.routes,
-              resources: application.resources,
-              authorization: application.authorization,
-              environment: application.environment,
-              artifactSets: application.artifactSets,
-              filesRetained: resolved.application.plan.filesRetained,
-              filesOmitted: resolved.application.plan.filesOmitted,
-              dependencies: application.reasons.filter(
-                (reason) => reason.requiredBy.length > 0,
-              ),
-              propertyStates: application.propertyStates,
-            },
-            null,
-            2,
-          )}
-        </pre>
-      </details>
+
+        <details open>
+          <summary>Providers · {application.providers.length}</summary>
+          {application.providers.map((provider) => (
+            <article key={provider.id}>
+              <strong>{provider.label}</strong>
+              <small>{provider.reason}</small>
+              <span>
+                {provider.environment.length} environment variables ·{' '}
+                {application.artifactSets.find(
+                  (set) =>
+                    set.id ===
+                    (provider.id === 'clerk'
+                      ? 'authentication-clerk'
+                      : provider.id === 'neon'
+                        ? 'persistence-postgresql'
+                        : 'commerce-stripe'),
+                )?.artifacts.length ?? 0}{' '}
+                artifacts
+              </span>
+            </article>
+          ))}
+        </details>
+
+        <details>
+          <summary>Capabilities · {application.capabilities.length}</summary>
+          {application.reasons.map((reason) => (
+            <article key={reason.selection}>
+              <strong>{reason.selection}</strong>
+              <small>{reason.reason}</small>
+              <span>
+                Required by: {reason.requiredBy.join(', ') || 'user or preset'}
+              </span>
+            </article>
+          ))}
+        </details>
+
+        <details>
+          <summary>Modules · {application.modules.length}</summary>
+          {application.modules.map((module) => {
+            const requiredBy = application.capabilities.filter((capability) =>
+              capabilityRegistry[capability].modules.includes(module),
+            );
+            return (
+              <article key={module}>
+                <strong>{module}</strong>
+                <small>
+                  Required by:{' '}
+                  {requiredBy.join(', ') || 'application foundation'}
+                </small>
+              </article>
+            );
+          })}
+        </details>
+
+        <details>
+          <summary>Routes · {application.routes.length}</summary>
+          {application.routes.map((route) => (
+            <article key={route.id}>
+              <strong>{route.navigationLabel}</strong>
+              <small>{route.urlSegment}</small>
+              <span>
+                {route.routeGroup} · {route.access} ·{' '}
+                {route.capability ?? 'foundation'}
+              </span>
+            </article>
+          ))}
+        </details>
+
+        <details>
+          <summary>
+            Resources and environment ·{' '}
+            {application.resources.length + application.environment.length}
+          </summary>
+          <article>
+            <strong>Resources</strong>
+            <span>{application.resources.join(' · ') || 'None'}</span>
+          </article>
+          <article>
+            <strong>Environment</strong>
+            <span>{application.environment.join(' · ') || 'None'}</span>
+          </article>
+          <article>
+            <strong>Required packages</strong>
+            <span>
+              {resolved.application.plan.requiredPackages.join(' · ') || 'None'}
+            </span>
+          </article>
+          <article>
+            <strong>Manual setup</strong>
+            <span>{application.setup.join(' · ') || 'None'}</span>
+          </article>
+          <article>
+            <strong>Transforms</strong>
+            <span>
+              {resolved.application.plan.transforms.join(' · ') || 'None'}
+            </span>
+          </article>
+        </details>
+
+        <details>
+          <summary>
+            Artifact sets · {includedArtifactSets.length} included ·{' '}
+            {resolved.application.plan.filesRetained.length} files retained ·{' '}
+            {resolved.application.plan.filesOmitted.length} omitted
+          </summary>
+          {application.artifactSets.map((artifactSet) => (
+            <article key={artifactSet.id}>
+              <strong>
+                {artifactSet.label} ·{' '}
+                {artifactSet.included ? 'included' : 'excluded'}
+              </strong>
+              <small>
+                {artifactSet.artifacts.length} artifacts · policy{' '}
+                {artifactSet.policy}
+              </small>
+              <span>
+                {artifactSet.artifacts
+                  .slice(0, 4)
+                  .map((artifact) => artifact.path)
+                  .join(' · ')}
+                {artifactSet.artifacts.length > 4 ? ' · …' : ''}
+              </span>
+            </article>
+          ))}
+        </details>
+
+        <details>
+          <summary>
+            Authorization · {application.authorization.model.toUpperCase()}
+          </summary>
+          {application.authorization.roles.map((role) => (
+            <article key={role.name}>
+              <strong>{role.displayName}</strong>
+              <small>{role.scope}</small>
+              <span>{role.permissions.join(' · ') || 'No permissions'}</span>
+            </article>
+          ))}
+        </details>
+      </section>
 
       <section className="recipe-code">
         <div>
@@ -157,8 +290,8 @@ export function ConstituterPreview({
         <article>
           <strong>Output</strong>
           <small>
-            {application.routes.length} routes ·{' '}
-            {application.artifactSets.length} artifact sets
+            {application.routes.length} routes · {includedArtifactSets.length}{' '}
+            artifact sets
           </small>
           <span>{application.environment.length} environment requirements</span>
         </article>

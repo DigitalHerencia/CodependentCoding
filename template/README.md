@@ -102,7 +102,7 @@ Clerk user synchronization enters only through the public `/api/clerk/webhooks` 
 
 Stripe subscription billing provides one server-configured recurring plan through hosted Checkout and Customer Portal sessions. Only local owners with `billing.manage` can create those sessions; tenant, customer, price, and return URLs are server-derived. The verified `/api/stripe/webhooks` route retrieves current Stripe state, normalizes it into tenant-owned subscription/item records, and updates the local `core` entitlement atomically. Browser return pages never grant access. Drift inspection is read-only and never auto-repairs provider or local state.
 
-Stripe Connect is a built-in, recipe-gated capability separate from subscription billing. It uses Stripe-hosted onboarding and Checkout with manual-capture destination charges, server-owned amount/currency/fee/account scope, retrieve-before-settlement, full-refund transfer and application-fee reversal, and normalized tenant mirrors. The platform bears Stripe fees, refunds, and disputes for this model. See `docs/stripe-connect-reference.md`; future retain/remove mechanics may project this complete source tree into a smaller generated application.
+Stripe Connect is a built-in capability separate from subscription billing. It uses Stripe-hosted onboarding and Checkout with manual-capture destination charges, server-owned amount/currency/fee/account scope, retrieve-before-settlement, full-refund transfer and application-fee reversal, and normalized tenant mirrors. The platform bears Stripe fees, refunds, and disputes for this model. See `docs/stripe-connect-reference.md`.
 
 ## Architecture Rule
 

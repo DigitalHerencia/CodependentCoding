@@ -10,14 +10,16 @@ import {
   LoadedVibesError,
   planProjectModuleAddition,
   recipeFromApplicationDefinition,
+  resolveApplicationDefinition,
   resolveRecipe,
   type ConfigInput,
   type RecipeInput,
 } from '@hipster-stack/core';
 import {
-  collectInteractiveRecipe,
+  collectInteractiveApplicationDefinition,
+  formatApplicationReview,
   formatRecipeReview,
-  reviewRecipe,
+  reviewApplicationDefinition,
 } from './create-flow.js';
 
 const program = new Command();
@@ -121,29 +123,37 @@ async function runCreate(
     },
   };
   let recipe = baseRecipe;
+  let applicationDefinition = fileDefinition;
   const interactive = !flags.yes && !flags.config && process.stdin.isTTY;
   if (interactive) {
-    const collected = await collectInteractiveRecipe(baseRecipe);
+    const collected = await collectInteractiveApplicationDefinition(
+      resolveRecipe(baseRecipe).application.resolved.definition,
+    );
     if (!collected) {
       cancel('Creation cancelled.');
       process.exitCode = 1;
       return;
     }
-    recipe = collected;
-    if (!(await reviewRecipe(recipe))) {
+    applicationDefinition = collected;
+    recipe = recipeFromApplicationDefinition(collected);
+    if (!(await reviewApplicationDefinition(collected))) {
       cancel('Creation cancelled before files were written.');
       process.exitCode = 1;
       return;
     }
+  } else if (applicationDefinition) {
+    console.log(
+      `Build review\n\n${formatApplicationReview(
+        resolveApplicationDefinition(applicationDefinition),
+      )}`,
+    );
   } else {
     console.log(`Build review\n\n${formatRecipeReview(resolveRecipe(recipe))}`);
   }
 
   const input: ConfigInput = {
     targetDirectory: target,
-    ...(fileDefinition
-      ? { applicationDefinition: fileDefinition }
-      : { recipe }),
+    ...(applicationDefinition ? { applicationDefinition } : { recipe }),
     git: { initialize: flags.git && (fileInput.git?.initialize ?? true) },
     install: {
       enabled: !flags.skipInstall && (fileInput.install?.enabled ?? true),

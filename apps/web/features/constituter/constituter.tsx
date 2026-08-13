@@ -3,7 +3,7 @@
 import type { ProductPresetId } from '@hipster-stack/core/browser';
 import Image from 'next/image';
 import { ArrowDown, Copy } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Button, buttonVariants } from '@/components/ui/button';
 import {
   createCliCommand,
@@ -24,6 +24,9 @@ export function Constituter() {
     defaultConfiguratorRecipe,
   );
   const [notice, setNotice] = useState('');
+  const lastValid = useRef(
+    resolveConfiguratorRecipe(defaultConfiguratorRecipe),
+  );
 
   useEffect(() => {
     const encoded = new URLSearchParams(window.location.search).get('recipe');
@@ -37,10 +40,34 @@ export function Constituter() {
     }
   }, []);
 
-  const resolved = useMemo(() => resolveConfiguratorRecipe(draft), [draft]);
+  const resolution = useMemo(() => {
+    try {
+      return { resolved: resolveConfiguratorRecipe(draft), error: '' };
+    } catch (error) {
+      return {
+        resolved: undefined,
+        error:
+          error instanceof Error ? error.message : 'Invalid configuration.',
+      };
+    }
+  }, [draft]);
+  const resolved = resolution.resolved ?? lastValid.current;
+  useEffect(() => {
+    if (resolution.resolved) lastValid.current = resolution.resolved;
+  }, [resolution.resolved]);
   const normalizedJson = useMemo(
-    () => JSON.stringify(JSON.parse(serializeRecipe(draft)), null, 2),
-    [draft],
+    () =>
+      resolution.resolved
+        ? JSON.stringify(
+            {
+              applicationDefinition:
+                resolution.resolved.application.resolved.definition,
+            },
+            null,
+            2,
+          )
+        : '',
+    [resolution.resolved],
   );
 
   async function copy(value: string, message: string) {
@@ -53,6 +80,10 @@ export function Constituter() {
   }
 
   function downloadRecipe() {
+    if (resolution.error) {
+      setNotice(`Invalid configuration: ${resolution.error}`);
+      return;
+    }
     const blob = new Blob([`${serializeRecipe(draft)}\n`], {
       type: 'application/json',
     });
@@ -66,6 +97,10 @@ export function Constituter() {
   }
 
   function shareRecipe() {
+    if (resolution.error) {
+      setNotice(`Invalid configuration: ${resolution.error}`);
+      return;
+    }
     void copy(
       createShareUrl(draft, window.location.href),
       'Share link copied.',
@@ -100,7 +135,13 @@ export function Constituter() {
             <Button
               variant="outline"
               type="button"
-              onClick={() => void copy(normalizedJson, 'Recipe copied.')}
+              onClick={() => {
+                if (resolution.error) {
+                  setNotice(`Invalid configuration: ${resolution.error}`);
+                  return;
+                }
+                void copy(normalizedJson, 'Application Definition copied.');
+              }}
             >
               Copy Application Definition
               <Copy aria-hidden="true" data-icon="inline-end" />
@@ -120,11 +161,22 @@ export function Constituter() {
             resolved={resolved}
             normalizedJson={normalizedJson}
             notice={notice}
-            onCopyRecipe={() => void copy(normalizedJson, 'Recipe copied.')}
+            invalidReason={resolution.error}
+            onCopyRecipe={() => {
+              if (resolution.error) {
+                setNotice(`Invalid configuration: ${resolution.error}`);
+                return;
+              }
+              void copy(normalizedJson, 'Application Definition copied.');
+            }}
             onDownload={downloadRecipe}
-            onCopyCli={() =>
-              void copy(createCliCommand(draft), 'CLI command copied.')
-            }
+            onCopyCli={() => {
+              if (resolution.error) {
+                setNotice(`Invalid configuration: ${resolution.error}`);
+                return;
+              }
+              void copy(createCliCommand(draft), 'CLI command copied.');
+            }}
             onShare={shareRecipe}
           />
         </div>

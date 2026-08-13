@@ -1,57 +1,30 @@
 import {
-  defaultDesign,
   capabilityIds,
   capabilityRegistry,
   resolveApplicationDefinition,
-  recipeFromApplicationResolution,
   resolveRecipe,
-  type CapabilityId,
+  recipeFromApplicationResolution,
+  type ApplicationDefinition,
   type ApplicationDefinitionInput,
-  type Design,
-  type ProviderSelection,
-  type RoleDefinition,
-  type ModuleSelection,
-  type NormalizedRecipe,
+  type CapabilityId,
   type ProductPresetId,
   type RecipeInput,
   type ResolvedRecipe,
 } from '@hipster-stack/core/browser';
 
-export interface ConfiguratorRecipe {
-  schemaVersion: 1;
-  name: string;
-  product: ProductPresetId;
-  modules: ModuleSelection;
-  identity: {
-    displayName: string;
-    description: string;
-  };
-  design: Design;
-  providers: ProviderSelection;
-  authorization: {
-    model: 'rbac' | 'none';
-    roles?: RoleDefinition[];
-  };
-  outputOverrides: ApplicationDefinitionInput['outputOverrides'];
-  routes: NonNullable<ApplicationDefinitionInput['routes']>;
-}
+export type ConfiguratorRecipe = ApplicationDefinition;
 
-export const defaultConfiguratorRecipe: ConfiguratorRecipe = {
-  schemaVersion: 1,
-  name: 'my-saas',
-  product: 'bare-golden-app',
-  modules: {},
-  identity: {
-    displayName: 'My SaaS',
-    description:
-      'A focused product built from the Hipster Stack master template.',
-  },
-  design: defaultDesign,
-  providers: {},
-  authorization: { model: 'rbac' },
-  outputOverrides: { artifactSets: {}, artifacts: {} },
-  routes: [],
-};
+export const defaultConfiguratorRecipe: ConfiguratorRecipe =
+  resolveApplicationDefinition({
+    schemaVersion: 1,
+    preset: 'bare-golden-app',
+    identity: {
+      packageName: 'my-saas',
+      displayName: 'My SaaS',
+      description:
+        'A focused product built from the Hipster Stack master template.',
+    },
+  }).resolved.definition;
 
 export const configurableCapabilities = capabilityIds.filter(
   (id) => !capabilityRegistry[id].fixed,
@@ -60,34 +33,9 @@ export const configurableCapabilities = capabilityIds.filter(
 export type ConfigurableCapability = CapabilityId;
 
 export function resolveConfiguratorRecipe(
-  draft: ConfiguratorRecipe,
+  definition: ConfiguratorRecipe,
 ): ResolvedRecipe {
-  const name = draft.name.trim() || defaultConfiguratorRecipe.name;
-  const include: CapabilityId[] = [];
-  const exclude: CapabilityId[] = [];
-  for (const [id, value] of Object.entries(draft.modules) as [
-    CapabilityId,
-    ModuleSelection[CapabilityId],
-  ][]) {
-    if (value === undefined) continue;
-    if (value === false) exclude.push(id);
-    else include.push(id);
-  }
-  const application = resolveApplicationDefinition({
-    schemaVersion: 1,
-    preset: draft.product,
-    identity: {
-      packageName: name,
-      displayName: draft.identity.displayName.trim() || name,
-      description: draft.identity.description.trim(),
-    },
-    providers: draft.providers,
-    capabilities: { include, exclude },
-    authorization: draft.authorization,
-    routes: draft.routes,
-    presentation: draft.design,
-    outputOverrides: draft.outputOverrides,
-  });
+  const application = resolveApplicationDefinition(definition);
   const recipe = recipeFromApplicationResolution(application);
   const included = [...application.resolved.capabilities];
   return {
@@ -95,8 +43,8 @@ export function resolveConfiguratorRecipe(
     application,
     summary: {
       preset: {
-        id: draft.product,
-        label: draft.product
+        id: definition.preset,
+        label: definition.preset
           .split('-')
           .map((word) => word[0]?.toUpperCase() + word.slice(1))
           .join(' '),
@@ -113,11 +61,99 @@ export function resolveConfiguratorRecipe(
 }
 
 export function setCapability(
-  draft: ConfiguratorRecipe,
-  capability: (typeof configurableCapabilities)[number],
+  definition: ConfiguratorRecipe,
+  capability: ConfigurableCapability,
   enabled: boolean,
 ): ConfiguratorRecipe {
-  const requiresPersistence = [
+  const include = definition.capabilities.include.filter(
+    (candidate) => candidate !== capability,
+  );
+  const exclude = definition.capabilities.exclude.filter(
+    (candidate) => candidate !== capability,
+  );
+  if (enabled) include.push(capability);
+  else exclude.push(capability);
+
+  if (capability === 'rbac' && !enabled) {
+    for (const dependent of [
+      'admin',
+      'uploads',
+      'ai',
+      'maps',
+      'sampleDomain',
+      'stripeConnect',
+    ] as const) {
+      const includeIndex = include.indexOf(dependent);
+      if (includeIndex >= 0) include.splice(includeIndex, 1);
+      if (!exclude.includes(dependent)) exclude.push(dependent);
+    }
+  }
+
+  const requiresRbac =
+    enabled &&
+    [
+      'rbac',
+      'admin',
+      'uploads',
+      'ai',
+      'maps',
+      'sampleDomain',
+      'stripeConnect',
+    ].includes(capability);
+  return resolveApplicationDefinition({
+    ...definition,
+    capabilities: { include, exclude },
+    authorization:
+      capability === 'rbac' && !enabled
+        ? { model: 'none' }
+        : requiresRbac
+          ? { model: 'rbac' }
+          : { model: definition.authorization.model },
+    routes: [],
+    outputOverrides: { artifactSets: {}, artifacts: {} },
+  }).resolved.definition;
+}
+
+export function setAuthenticationProvider(
+  definition: ConfiguratorRecipe,
+  provider: 'none' | 'clerk',
+): ConfiguratorRecipe {
+  const disabled: readonly CapabilityId[] = [
+    'organizations',
+    'invitations',
+    'billing',
+    'stripeConnect',
+    'onboarding',
+    'admin',
+    'uploads',
+    'ai',
+    'maps',
+    'sampleDomain',
+  ];
+  const include = definition.capabilities.include.filter(
+    (capability) => provider !== 'none' || !disabled.includes(capability),
+  );
+  const exclude = [...definition.capabilities.exclude];
+  if (provider === 'none') {
+    for (const capability of disabled) {
+      if (!exclude.includes(capability)) exclude.push(capability);
+    }
+  }
+  return resolveApplicationDefinition({
+    ...definition,
+    providers: { ...definition.providers, authentication: provider },
+    capabilities: { include, exclude },
+    authorization: { model: definition.authorization.model },
+    routes: [],
+    outputOverrides: { artifactSets: {}, artifacts: {} },
+  }).resolved.definition;
+}
+
+export function setPersistenceProvider(
+  definition: ConfiguratorRecipe,
+  technology: 'none' | 'postgresql',
+): ConfiguratorRecipe {
+  const disabled: readonly CapabilityId[] = [
     'organizations',
     'invitations',
     'rbac',
@@ -125,126 +161,43 @@ export function setCapability(
     'stripeConnect',
     'onboarding',
     'admin',
+    'uploads',
+    'ai',
+    'maps',
     'sampleDomain',
-  ].includes(capability);
-  const requiresAuthentication = [
-    'organizations',
-    'invitations',
-    'billing',
-    'stripeConnect',
-    'onboarding',
-    'sampleDomain',
-  ].includes(capability);
-  const modules = {
-    ...draft.modules,
-    [capability]:
-      capability === 'sampleDomain'
-        ? enabled
-          ? ('projects' as const)
-          : false
-        : enabled,
-  };
-  if (capability === 'rbac' && !enabled) {
-    modules.admin = false;
-    modules.sampleDomain = false;
-    modules.stripeConnect = false;
-  }
-  const providers = { ...draft.providers };
-  if (enabled && requiresAuthentication) providers.authentication = 'clerk';
-  if (enabled && requiresPersistence) {
-    providers.persistence = {
-      technology: 'postgresql',
-      provider: 'neon',
-    };
-  }
-  if (enabled && ['billing', 'stripeConnect'].includes(capability)) {
-    delete providers.commerce;
-  }
-  return {
-    ...draft,
-    routes: [],
-    outputOverrides: { artifactSets: {}, artifacts: {} },
-    providers,
-    authorization:
-      capability === 'rbac' && !enabled
-        ? { model: 'none' }
-        : enabled &&
-            ['rbac', 'admin', 'sampleDomain', 'stripeConnect'].includes(
-              capability,
-            )
-          ? { model: 'rbac' }
-          : { model: draft.authorization.model },
-    modules,
-  };
-}
-
-export function setAuthenticationProvider(
-  draft: ConfiguratorRecipe,
-  provider: 'none' | 'clerk',
-): ConfiguratorRecipe {
-  const modules = { ...draft.modules };
-  if (provider === 'none') {
-    for (const id of [
-      'organizations',
-      'invitations',
-      'billing',
-      'stripeConnect',
-      'onboarding',
-      'admin',
-      'sampleDomain',
-    ] as const)
-      modules[id] = false;
-  }
-  return {
-    ...draft,
-    routes: [],
-    outputOverrides: { artifactSets: {}, artifacts: {} },
-    modules,
-    authorization: { model: draft.authorization.model },
-    providers: { ...draft.providers, authentication: provider },
-  };
-}
-
-export function setPersistenceProvider(
-  draft: ConfiguratorRecipe,
-  technology: 'none' | 'postgresql',
-): ConfiguratorRecipe {
-  const modules = { ...draft.modules };
+  ];
+  const include = definition.capabilities.include.filter(
+    (capability) => technology !== 'none' || !disabled.includes(capability),
+  );
+  const exclude = [...definition.capabilities.exclude];
   if (technology === 'none') {
-    for (const id of [
-      'organizations',
-      'invitations',
-      'rbac',
-      'billing',
-      'stripeConnect',
-      'onboarding',
-      'admin',
-      'sampleDomain',
-    ] as const)
-      modules[id] = false;
+    for (const capability of disabled) {
+      if (!exclude.includes(capability)) exclude.push(capability);
+    }
   }
-  return {
-    ...draft,
-    routes: [],
-    outputOverrides: { artifactSets: {}, artifacts: {} },
-    modules,
+  return resolveApplicationDefinition({
+    ...definition,
+    capabilities: { include, exclude },
     authorization:
-      technology === 'none' ? { model: 'none' } : draft.authorization,
+      technology === 'none'
+        ? { model: 'none' }
+        : { model: definition.authorization.model },
     providers: {
-      ...draft.providers,
+      ...definition.providers,
       persistence:
         technology === 'none'
           ? { technology: 'none', provider: 'none' }
           : { technology: 'postgresql', provider: 'neon' },
-      ...(technology === 'none' ? { commerce: 'none' as const } : {}),
     },
-  };
+    routes: [],
+    outputOverrides: { artifactSets: {}, artifacts: {} },
+  }).resolved.definition;
 }
 
-export function serializeRecipe(recipe: ConfiguratorRecipe): string {
+export function serializeRecipe(definition: ConfiguratorRecipe): string {
   return JSON.stringify({
     applicationDefinition:
-      resolveConfiguratorRecipe(recipe).application.resolved.definition,
+      resolveApplicationDefinition(definition).resolved.definition,
   });
 }
 
@@ -255,68 +208,39 @@ export function deserializeRecipe(value: string): ConfiguratorRecipe {
     parsed !== null &&
     'applicationDefinition' in parsed
   ) {
-    const application = resolveApplicationDefinition(
+    return resolveApplicationDefinition(
       (parsed as { applicationDefinition: ApplicationDefinitionInput })
         .applicationDefinition,
     ).resolved.definition;
-    const modules: ModuleSelection = {};
-    for (const id of application.capabilities.include) {
-      if (id === 'sampleDomain') modules.sampleDomain = 'projects';
-      else modules[id] = true;
-    }
-    for (const id of application.capabilities.exclude) modules[id] = false;
-    return {
-      schemaVersion: 1,
-      name: application.identity.packageName,
-      product: application.preset,
-      modules,
-      identity: {
-        displayName: application.identity.displayName,
-        description: application.identity.description,
-      },
-      design: application.presentation,
-      providers: application.providers,
-      authorization: application.authorization,
-      outputOverrides: application.outputOverrides,
-      routes: application.routes,
-    };
   }
   const resolved = resolveRecipe(parsed as RecipeInput);
-  return {
-    ...resolved.recipe,
-    modules: resolved.recipe.modules,
-    identity: resolved.recipe.identity,
-    providers: resolved.application.resolved.definition.providers,
-    authorization: resolved.application.resolved.definition.authorization,
-    outputOverrides: resolved.application.resolved.definition.outputOverrides,
-    routes: resolved.application.resolved.definition.routes,
-  };
+  return resolved.application.resolved.definition;
 }
 
-export function createCliCommand(recipe: ConfiguratorRecipe): string {
-  const normalized: NormalizedRecipe = resolveConfiguratorRecipe(recipe).recipe;
-  return `pnpm dlx hipster-stack@latest ${normalized.name} --config hipsterstack.json --yes`;
+export function createCliCommand(definition: ConfiguratorRecipe): string {
+  return `pnpm dlx hipster-stack@latest ${definition.identity.packageName} --config hipsterstack.json --yes`;
 }
 
 export function selectProductPreset(
-  recipe: ConfiguratorRecipe,
-  product: ProductPresetId,
+  definition: ConfiguratorRecipe,
+  preset: ProductPresetId,
 ): ConfiguratorRecipe {
-  return {
-    ...recipe,
-    product,
-    modules: {},
+  return resolveApplicationDefinition({
+    ...definition,
+    preset,
     providers: {},
+    capabilities: { include: [], exclude: [] },
     authorization: { model: 'rbac' },
     routes: [],
-  };
+    outputOverrides: { artifactSets: {}, artifacts: {} },
+  }).resolved.definition;
 }
 
 export function createShareUrl(
-  recipe: ConfiguratorRecipe,
+  definition: ConfiguratorRecipe,
   currentUrl: string,
 ): string {
   const url = new URL(currentUrl);
-  url.searchParams.set('recipe', serializeRecipe(recipe));
+  url.searchParams.set('recipe', serializeRecipe(definition));
   return url.toString();
 }

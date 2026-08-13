@@ -1,39 +1,56 @@
-import { UserButton } from "@clerk/nextjs"
-import { Brain, Image, LayoutDashboard, Map, Settings, SquareKanban, Users } from "lucide-react"
-import Link from "next/link"
-import type { ReactNode } from "react"
+import { UserButton } from '@clerk/nextjs';
+import {
+  Brain,
+  Image,
+  LayoutDashboard,
+  Map,
+  Settings,
+  SquareKanban,
+  Users,
+} from 'lucide-react';
+import Link from 'next/link';
+import type { ReactNode } from 'react';
 
-import { Wordmark } from "@/components/brand/wordmark"
-import { Button } from "@/components/ui/button"
-import { loadedVibesCapabilities, loadedVibesDesign } from "@/content/loadedvibes"
+import { Wordmark } from '@/components/brand/wordmark';
+import { Button } from '@/components/ui/button';
+import {
+  loadedVibesCapabilities,
+  loadedVibesDesign,
+} from '@/content/loadedvibes';
 
 type TenantShellProps = {
-  children: ReactNode
-}
+  children: ReactNode;
+};
 
 const navItems = [
-  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   ...(loadedVibesCapabilities.sampleDomain
-    ? [{ href: "/projects", label: "Projects", icon: SquareKanban }]
+    ? [{ href: '/projects', label: 'Projects', icon: SquareKanban }]
     : []),
   ...(loadedVibesCapabilities.invitations
-    ? [{ href: "/team", label: "Team", icon: Users }]
+    ? [{ href: '/team', label: 'Team', icon: Users }]
     : []),
-  { href: "/uploads", label: "Media", icon: Image },
-  { href: "/maps", label: "Maps", icon: Map },
-  { href: "/ai", label: "AI", icon: Brain },
-  { href: "/settings", label: "Settings", icon: Settings },
-] as const
+  ...(loadedVibesCapabilities.uploads
+    ? [{ href: '/uploads', label: 'Media', icon: Image }]
+    : []),
+  ...(loadedVibesCapabilities.maps
+    ? [{ href: '/maps', label: 'Maps', icon: Map }]
+    : []),
+  ...(loadedVibesCapabilities.ai
+    ? [{ href: '/ai', label: 'AI', icon: Brain }]
+    : []),
+  { href: '/settings', label: 'Settings', icon: Settings },
+] as const;
 
 export function TenantShell({ children }: TenantShellProps) {
-  const sidebar = loadedVibesDesign.navigation === "sidebar"
+  const sidebar = loadedVibesDesign.navigation === 'sidebar';
 
   return (
     <div
       className={
         sidebar
-          ? "min-h-dvh pb-20 md:grid md:grid-cols-[15rem_1fr] md:pb-0"
-          : "min-h-dvh pb-20 md:pb-0"
+          ? 'min-h-dvh pb-20 md:grid md:grid-cols-[15rem_1fr] md:pb-0'
+          : 'min-h-dvh pb-20 md:pb-0'
       }
     >
       {sidebar ? (
@@ -41,7 +58,12 @@ export function TenantShell({ children }: TenantShellProps) {
           <Wordmark />
           <nav className="grid gap-2">
             {navItems.map((item) => (
-              <Button key={item.href} asChild variant="ghost" className="justify-start">
+              <Button
+                key={item.href}
+                asChild
+                variant="ghost"
+                className="justify-start"
+              >
                 <Link href={item.href}>
                   <item.icon className="size-4" />
                   {item.label}
@@ -56,7 +78,7 @@ export function TenantShell({ children }: TenantShellProps) {
       ) : null}
       <div className="min-w-0">
         <header
-          className={`sticky top-0 z-40 border-b bg-background/90 backdrop-blur ${sidebar ? "md:hidden" : ""}`}
+          className={`sticky top-0 z-40 border-b bg-background/90 backdrop-blur ${sidebar ? 'md:hidden' : ''}`}
         >
           <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-6 sm:px-10 lg:px-12">
             <Wordmark />
@@ -90,5 +112,5 @@ export function TenantShell({ children }: TenantShellProps) {
         </nav>
       </div>
     </div>
-  )
+  );
 }

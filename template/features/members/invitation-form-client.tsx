@@ -1,17 +1,28 @@
-"use client"
+'use client';
 
-import { useActionState } from "react"
+import { useActionState } from 'react';
 
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { inviteOrganizationMemberAction } from "@/lib/actions/organizationActions"
-import type { ActionResult } from "@/types/actionResultTypes"
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { inviteOrganizationMemberAction } from '@/lib/actions/organizationActions';
+import type { ActionResult } from '@/types/actionResultTypes';
+import {
+  defaultInvitationRole,
+  invitationRoles,
+  organizationRoleLabels,
+} from '@/types/authzTypes';
 
-const initialState: ActionResult<{ id: string }> = { ok: true, data: { id: "" } }
+const initialState: ActionResult<{ id: string }> = {
+  ok: true,
+  data: { id: '' },
+};
 
 export function InvitationFormClient() {
-  const [state, action, pending] = useActionState(inviteOrganizationMemberAction, initialState)
+  const [state, action, pending] = useActionState(
+    inviteOrganizationMemberAction,
+    initialState,
+  );
   return (
     <form action={action} className="grid max-w-lg gap-4">
       <Label htmlFor="invite-email">Email</Label>
@@ -21,17 +32,23 @@ export function InvitationFormClient() {
         id="invite-role"
         name="role"
         className="h-10 border bg-background px-3"
-        defaultValue="member"
+        defaultValue={defaultInvitationRole}
       >
-        <option value="admin">Admin</option>
-        <option value="member">Member</option>
-        <option value="viewer">Viewer</option>
+        {invitationRoles.map((role) => (
+          <option key={role} value={role}>
+            {organizationRoleLabels[role]}
+          </option>
+        ))}
       </select>
-      {!state.ok ? <p className="text-sm text-destructive">{state.formError}</p> : null}
+      {!state.ok ? (
+        <p className="text-sm text-destructive">{state.formError}</p>
+      ) : null}
       {state.ok && state.data.id ? (
         <p className="text-sm text-primary">Invitation recorded.</p>
       ) : null}
-      <Button disabled={pending}>{pending ? "Inviting..." : "Invite member"}</Button>
+      <Button disabled={pending}>
+        {pending ? 'Inviting...' : 'Invite member'}
+      </Button>
     </form>
-  )
+  );
 }

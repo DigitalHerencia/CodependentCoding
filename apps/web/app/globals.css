@@ -561,6 +561,19 @@ body:has(.libraries-page, .library-detail-page, .docs-shell, .builder-page)
   gap: 1rem;
 }
 
+.builder-property-editor {
+  min-width: 0;
+}
+
+.builder-property-state {
+  grid-column: 1;
+  margin: 0;
+  color: var(--signal);
+  font-family: var(--type-code);
+  font-size: 0.65rem;
+  text-transform: uppercase;
+}
+
 .builder-group {
   grid-template-columns: 1fr;
 }
@@ -614,6 +627,41 @@ body:has(.libraries-page, .library-detail-page, .docs-shell, .builder-page)
 .builder-auto-included {
   border-color: var(--signal-border);
   background: var(--signal-soft);
+}
+
+.output-explorer {
+  display: grid;
+  gap: 0.5rem;
+  padding-block: 0.75rem;
+  border-bottom: 1px solid var(--signal-border);
+}
+
+.output-explorer details {
+  border: 1px solid var(--signal-border);
+  border-radius: 0.35rem;
+  background: color-mix(in srgb, var(--background-strong) 80%, transparent);
+}
+
+.output-explorer summary {
+  padding: 0.7rem;
+  color: var(--signal);
+  cursor: pointer;
+  font-family: var(--type-code);
+  font-size: 0.72rem;
+}
+
+.output-explorer article {
+  display: grid;
+  gap: 0.25rem;
+  padding: 0.65rem 0.75rem;
+  border-top: 1px solid var(--signal-border);
+}
+
+.output-explorer article small,
+.output-explorer article span {
+  color: var(--foreground-muted);
+  font-size: 0.68rem;
+  overflow-wrap: anywhere;
 }
 
 .builder-auto-included strong,
@@ -720,6 +768,10 @@ body:has(.libraries-page, .library-detail-page, .docs-shell, .builder-page)
   .builder-options,
   .builder-fields,
   .design-selects {
+    grid-column: 2;
+  }
+
+  .builder-property-state {
     grid-column: 2;
   }
 
@@ -848,7 +900,36 @@ body:has(.libraries-page, .library-detail-page, .docs-shell, .builder-page)
   }
 
   .builder-workspace {
-    grid-template-columns: minmax(0, 0.9fr) minmax(35rem, 1.1fr);
+    grid-template-columns: minmax(0, 1.45fr) minmax(30rem, 1fr);
+  }
+
+  .builder-controls {
+    display: grid;
+    grid-template-columns: 12rem minmax(0, 1fr);
+    gap: 0 1rem;
+  }
+
+  .builder-controls > nav {
+    position: sticky;
+    top: 5rem;
+    display: block;
+    grid-column: 1;
+    align-self: start;
+    border-bottom: 0;
+  }
+
+  .builder-controls > nav .builder-options {
+    display: grid;
+    grid-template-columns: 1fr;
+    margin-top: 0.75rem;
+  }
+
+  .builder-property-editor {
+    grid-column: 2;
+  }
+
+  .builder-download {
+    grid-column: 1 / -1;
   }
 
   .design-selects {

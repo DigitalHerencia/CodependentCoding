@@ -16,6 +16,7 @@ import {
   excludedOwnedPaths,
   selectedGeneratedModuleIds,
 } from '../ownership.js';
+import { capabilityRegistry } from '../capabilities.js';
 import type { GenerationPlan } from './plan.js';
 import { canonicalTemplateMetadata } from '../template-metadata.js';
 
@@ -30,19 +31,6 @@ export async function writeRecipeArtifacts(
   template: TemplateProvenance,
   applicationDefinition?: ApplicationDefinition,
 ): Promise<void> {
-  const routeUrl = (id: string, fallback: string) => {
-    const direct = applicationDefinition?.routes.find(
-      (route) => route.id === id,
-    )?.urlSegment;
-    if (direct) return direct;
-    const settings = applicationDefinition?.routes.find(
-      (route) => route.id === 'organization-settings',
-    )?.urlSegment;
-    if (settings && (id === 'member-settings' || id === 'billing')) {
-      return `${settings}/${id === 'member-settings' ? 'members' : 'billing'}`;
-    }
-    return fallback;
-  };
   await writeFile(
     path.join(directory, 'hipsterstack.json'),
     `${JSON.stringify(
@@ -117,9 +105,9 @@ export const loadedVibesCapabilities = ${JSON.stringify(
       marketing: recipe.modules.marketing,
       sampleDomain: recipe.modules.sampleDomain !== false,
       stripeConnect: recipe.modules.stripeConnect,
-      uploads: recipe.modules.organizations,
-      ai: recipe.modules.organizations,
-      maps: recipe.modules.organizations,
+      uploads: recipe.modules.uploads,
+      ai: recipe.modules.ai,
+      maps: recipe.modules.maps,
     },
     null,
     2,
@@ -135,6 +123,19 @@ async function writeRoutesContract(
   recipe: NormalizedRecipe,
   applicationDefinition?: ApplicationDefinition,
 ): Promise<void> {
+  const routeUrl = (id: string, fallback: string) => {
+    const direct = applicationDefinition?.routes.find(
+      (route) => route.id === id,
+    )?.urlSegment;
+    if (direct) return direct;
+    const settings = applicationDefinition?.routes.find(
+      (route) => route.id === 'organization-settings',
+    )?.urlSegment;
+    if (settings && (id === 'member-settings' || id === 'billing')) {
+      return `${settings}/${id === 'member-settings' ? 'members' : 'billing'}`;
+    }
+    return fallback;
+  };
   const hasClerk = applicationDefinition
     ? applicationDefinition.providers.authentication !== 'none' &&
       (applicationDefinition.providers.authentication === 'clerk' ||
@@ -163,13 +164,11 @@ async function writeRoutesContract(
         ]
       : []),
     ...(recipe.modules.organizations
-      ? [
-          routeUrl('organization-settings', '/settings'),
-          '/uploads',
-          '/maps',
-          '/ai',
-        ]
+      ? [routeUrl('organization-settings', '/settings')]
       : []),
+    ...(recipe.modules.uploads ? [routeUrl('uploads', '/uploads')] : []),
+    ...(recipe.modules.maps ? [routeUrl('maps', '/maps')] : []),
+    ...(recipe.modules.ai ? [routeUrl('ai', '/ai')] : []),
     ...(recipe.modules.invitations
       ? [
           routeUrl('team', '/team'),
@@ -191,7 +190,7 @@ async function writeRoutesContract(
   ];
   const apiRoutes = [
     ...(hasClerk ? ['/api/clerk/webhooks'] : []),
-    ...(recipe.modules.organizations ? ['/api/cloudinary/webhooks'] : []),
+    ...(recipe.modules.uploads ? ['/api/cloudinary/webhooks'] : []),
     ...(recipe.modules.billing ? ['/api/stripe/webhooks'] : []),
     ...(recipe.modules.stripeConnect
       ? [`${routeUrl('connect', '/api/stripe/connect')}/webhooks`]
@@ -223,10 +222,6 @@ reference_catalog:
 }
 
 export async function applyTransforms(plan: GenerationPlan): Promise<void> {
-  await rename(
-    path.join(plan.stagingDirectory, 'gitignore.template'),
-    path.join(plan.stagingDirectory, '.gitignore'),
-  );
   const packagePath = path.join(plan.stagingDirectory, 'package.json');
   const packageJson = JSON.parse(await readFile(packagePath, 'utf8')) as Record<
     string,
@@ -319,10 +314,11 @@ async function applyProviderSourceComposition(
   await pruneEnvironmentExample(
     plan.stagingDirectory,
     providers,
-    plan.applicationPlan.selectedCapabilities.includes('organizations'),
+    plan.applicationPlan.selectedCapabilities,
   );
   await pruneLockfileImporter(plan.stagingDirectory, providers);
   await applyRouteComposition(plan);
+  await applyAuthorizationComposition(plan);
   if (!providers.includes('clerk')) {
     const layoutPath = path.join(plan.stagingDirectory, 'app', 'layout.tsx');
     let layout = await readFile(layoutPath, 'utf8');
@@ -362,6 +358,178 @@ async function applyProviderSourceComposition(
   }
 }
 
+async function applyAuthorizationComposition(
+  plan: GenerationPlan,
+): Promise<void> {
+  const authorization = plan.resolvedApplication.authorization;
+  if (authorization.model !== 'rbac') return;
+
+  const roles = authorization.roles;
+  const roleNames = roles.map((role) => role.name);
+  const primaryRole = roleNames[0];
+  const defaultRole = roleNames.at(-1);
+  if (!primaryRole || !defaultRole) return;
+  const invitationRoles = roleNames.slice(1);
+  const defaultInvitationRole = roleNames[2] ?? invitationRoles[0];
+  if (!defaultInvitationRole) return;
+
+  await replaceLegacyRoleLiterals(path.join(plan.stagingDirectory, 'tests'), {
+    owner: primaryRole,
+    admin: roleNames[1] ?? defaultRole,
+    member: roleNames[2] ?? defaultRole,
+    viewer: defaultRole,
+  });
+
+  const roleLabels = Object.fromEntries(
+    roles.map((role) => [role.name, role.displayName]),
+  );
+  const permissionVocabulary = [
+    ...new Set(
+      Object.values(capabilityRegistry).flatMap(
+        (capability) => capability.permissions,
+      ),
+    ),
+  ];
+  const capabilityType = permissionVocabulary.length
+    ? permissionVocabulary
+        .map((permission) => JSON.stringify(permission))
+        .join(' | ')
+    : 'never';
+  const authzTypes = `import type { AuthenticatedUserContext } from "@/types/authTypes"
+
+export const organizationRoles = ${JSON.stringify(roleNames)} as const
+export type OrganizationRole = (typeof organizationRoles)[number]
+
+export const organizationRoleLabels = ${JSON.stringify(roleLabels, null, 2)} as const satisfies Record<OrganizationRole, string>
+
+// Role order is semantic: the first role is primary and the last is the default.
+export const primaryOrganizationRole: OrganizationRole = ${JSON.stringify(primaryRole)}
+export const defaultOrganizationRole: OrganizationRole = ${JSON.stringify(defaultRole)}
+export const invitationRoles = ${JSON.stringify(invitationRoles)} as const satisfies readonly OrganizationRole[]
+export const defaultInvitationRole: OrganizationRole = ${JSON.stringify(defaultInvitationRole)}
+
+export type Capability = ${capabilityType}
+
+export type TenantContext = AuthenticatedUserContext & {
+  organization: {
+    id: string
+    status: "active" | "suspended"
+  }
+  membership: {
+    id: string
+    role: OrganizationRole
+  }
+  capabilities: readonly Capability[]
+}
+`;
+  await writeFile(
+    path.join(plan.stagingDirectory, 'types', 'authzTypes.ts'),
+    authzTypes,
+  );
+
+  const roleCapabilities = Object.fromEntries(
+    roles.map((role) => [role.name, role.permissions]),
+  );
+  const capabilitySource = `import type { Capability, OrganizationRole } from "@/types/authzTypes"
+
+const roleCapabilities = ${JSON.stringify(roleCapabilities, null, 2)} as const satisfies Record<OrganizationRole, readonly Capability[]>
+
+export function capabilitiesForRole(role: OrganizationRole): readonly Capability[] {
+  return roleCapabilities[role]
+}
+
+export function hasCapability(role: OrganizationRole, capability: Capability): boolean {
+  return capabilitiesForRole(role).some((candidate) => candidate === capability)
+}
+`;
+  await writeFile(
+    path.join(plan.stagingDirectory, 'lib', 'authz', 'capabilities.ts'),
+    capabilitySource,
+  );
+
+  const prismaPath = path.join(
+    plan.stagingDirectory,
+    'prisma',
+    'schema.prisma',
+  );
+  let prisma = await readFile(prismaPath, 'utf8');
+  prisma = prisma
+    .replace(
+      /enum OrganizationRole \{[\s\S]*?\}/,
+      `enum OrganizationRole {\n${roleNames.map((role) => `  ${role}`).join('\n')}\n}`,
+    )
+    .replaceAll('@default(viewer)', `@default(${defaultRole})`);
+  await writeFile(prismaPath, prisma);
+
+  const migrationPath = path.join(
+    plan.stagingDirectory,
+    'prisma',
+    'migrations',
+    '20260804062000_tenant_rls_baseline',
+    'migration.sql',
+  );
+  let migration = await readFile(migrationPath, 'utf8');
+  migration = migration
+    .replace(
+      /CREATE TYPE "OrganizationRole" AS ENUM \([^;]+\);/,
+      `CREATE TYPE "OrganizationRole" AS ENUM (${roleNames.map((role) => `'${role}'`).join(', ')});`,
+    )
+    .replaceAll("DEFAULT 'viewer'", `DEFAULT '${defaultRole}'`);
+  await writeFile(migrationPath, migration);
+}
+
+async function replaceLegacyRoleLiterals(
+  directory: string,
+  replacements: Readonly<
+    Record<'owner' | 'admin' | 'member' | 'viewer', string>
+  >,
+): Promise<void> {
+  let entries;
+  try {
+    entries = await readdir(directory, { withFileTypes: true });
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === 'ENOENT') return;
+    throw error;
+  }
+  for (const entry of entries) {
+    const absolute = path.join(directory, entry.name);
+    if (entry.isDirectory()) {
+      await replaceLegacyRoleLiterals(absolute, replacements);
+      continue;
+    }
+    if (!['.ts', '.tsx'].includes(path.extname(entry.name))) continue;
+    let source = await readFile(absolute, 'utf8');
+    const original = source;
+    for (const [index, role] of [
+      'owner',
+      'admin',
+      'member',
+      'viewer',
+    ].entries()) {
+      source = source
+        .replaceAll(`"${role}"`, `"__HIPSTER_ROLE_${index}__"`)
+        .replaceAll(`'${role}'`, `'__HIPSTER_ROLE_${index}__'`);
+    }
+    for (const [index, role] of [
+      'owner',
+      'admin',
+      'member',
+      'viewer',
+    ].entries()) {
+      source = source
+        .replaceAll(
+          `"__HIPSTER_ROLE_${index}__"`,
+          JSON.stringify(replacements[role as keyof typeof replacements]),
+        )
+        .replaceAll(
+          `'__HIPSTER_ROLE_${index}__'`,
+          `'${replacements[role as keyof typeof replacements]}'`,
+        );
+    }
+    if (source !== original) await writeFile(absolute, source);
+  }
+}
+
 const routeSourcePaths = {
   application: ['(tenant)', 'dashboard'],
   'organization-settings': ['(tenant)', 'settings'],
@@ -372,6 +540,9 @@ const routeSourcePaths = {
   connect: ['api', 'stripe', 'connect'],
   onboarding: ['(onboarding)', 'onboarding'],
   admin: ['(admin)', 'admin'],
+  uploads: ['(tenant)', 'uploads'],
+  ai: ['(tenant)', 'ai'],
+  maps: ['(tenant)', 'maps'],
   marketing: ['(public)', 'pricing'],
   projects: ['(tenant)', 'projects'],
 } as const;
@@ -386,6 +557,9 @@ const defaultRouteUrls = {
   connect: '/api/stripe/connect',
   onboarding: '/onboarding',
   admin: '/admin',
+  uploads: '/uploads',
+  ai: '/ai',
+  maps: '/maps',
   marketing: '/pricing',
   projects: '/projects',
 } as const;
@@ -400,6 +574,9 @@ const defaultRouteLabels = {
   connect: 'Connect',
   onboarding: 'Onboarding',
   admin: 'Admin',
+  uploads: 'Uploads',
+  ai: 'AI',
+  maps: 'Maps',
   marketing: 'Pricing',
   projects: 'Projects',
 } as const;
@@ -506,7 +683,7 @@ async function replaceRouteReferences(
 async function pruneEnvironmentExample(
   directory: string,
   providers: readonly ProviderId[],
-  hasOrganizations: boolean,
+  capabilities: GenerationPlan['applicationPlan']['selectedCapabilities'],
 ): Promise<void> {
   const envPath = path.join(directory, '.env.example');
   const source = await readFile(envPath, 'utf8');
@@ -516,8 +693,10 @@ async function pruneEnvironmentExample(
       ? ['DATABASE_URL=', 'DIRECT_DATABASE_URL=']
       : []),
     ...(!providers.includes('stripe') ? ['STRIPE_'] : []),
-    ...(!hasOrganizations
-      ? ['CLOUDINARY_', 'HUGGINGFACE_', 'MAPBOX_', 'NEXT_PUBLIC_MAPBOX_']
+    ...(!capabilities.includes('uploads') ? ['CLOUDINARY_'] : []),
+    ...(!capabilities.includes('ai') ? ['HUGGINGFACE_'] : []),
+    ...(!capabilities.includes('maps')
+      ? ['MAPBOX_', 'NEXT_PUBLIC_MAPBOX_']
       : []),
   ];
   const lines = source
@@ -561,15 +740,12 @@ async function pruneLockfileImporter(
   const lines = (await readFile(lockPath, 'utf8')).split(/\r?\n/);
   const output: string[] = [];
   for (let index = 0; index < lines.length; index += 1) {
-    const match = lines[index]?.match(/^      ('?)([^']+?)\1:\s*$/);
+    const match = lines[index]?.match(/^ {6}('?)([^']+?)\1:\s*$/);
     if (!match || !removed.has(match[2] ?? '')) {
       output.push(lines[index] ?? '');
       continue;
     }
-    while (
-      index + 1 < lines.length &&
-      /^        /.test(lines[index + 1] ?? '')
-    ) {
+    while (index + 1 < lines.length && /^ {8}/.test(lines[index + 1] ?? '')) {
       index += 1;
     }
   }

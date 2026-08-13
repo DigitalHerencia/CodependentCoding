@@ -9,9 +9,14 @@ import {
 import {
   capabilityRegistry,
   capabilityIds,
+  applicationProperties,
+  designChoices,
   getProductPreset,
   productPresetIds,
+  resolveApplicationDefinition,
   resolveRecipe,
+  type ApplicationDefinitionInput,
+  type ApplicationResolution,
   type CapabilityId,
   type Design,
   type ProductPresetId,
@@ -30,6 +35,15 @@ export interface CreateFlowPrompts {
   mode(): Promise<PromptResult<SetupMode>>;
   product(): Promise<PromptResult<ProductPresetId>>;
   capabilities(initial: CapabilityId[]): Promise<PromptResult<CapabilityId[]>>;
+  authentication?(
+    initial: 'none' | 'clerk',
+  ): Promise<PromptResult<'none' | 'clerk'>>;
+  persistence?(
+    initial: 'none' | 'postgresql',
+  ): Promise<PromptResult<'none' | 'postgresql'>>;
+  authorization?(
+    initial: 'none' | 'rbac',
+  ): Promise<PromptResult<'none' | 'rbac'>>;
   displayName(initial: string): Promise<PromptResult<string>>;
   description(initial: string): Promise<PromptResult<string>>;
   theme(initial: Design['theme']): Promise<PromptResult<Design['theme']>>;
@@ -82,6 +96,36 @@ export const clackCreateFlowPrompts: CreateFlowPrompts = {
       initialValues: initial,
       required: false,
     }) as Promise<PromptResult<CapabilityId[]>>,
+  authentication: (initial) =>
+    select({
+      message: 'Authentication provider',
+      initialValue: initial,
+      options: choices(
+        propertyValues('providers.authentication', ['none', 'clerk']),
+        title,
+      ),
+    }) as Promise<PromptResult<'none' | 'clerk'>>,
+  persistence: (initial) =>
+    select({
+      message: 'Persistence',
+      initialValue: initial,
+      options: choices(
+        propertyValues('providers.persistence.technology', [
+          'none',
+          'postgresql',
+        ]),
+        title,
+      ),
+    }) as Promise<PromptResult<'none' | 'postgresql'>>,
+  authorization: (initial) =>
+    select({
+      message: 'Authorization model',
+      initialValue: initial,
+      options: choices(
+        propertyValues('authorizationModel', ['none', 'rbac']),
+        (value) => value.toUpperCase(),
+      ),
+    }) as Promise<PromptResult<'none' | 'rbac'>>,
   displayName: (initial) =>
     text({ message: 'Product name', initialValue: initial }),
   description: (initial) =>
@@ -94,36 +138,46 @@ export const clackCreateFlowPrompts: CreateFlowPrompts = {
     select({
       message: 'Visual direction',
       initialValue: initial,
-      options: choices(['obsidian', 'paper', 'electric'] as const, title),
+      options: choices(designChoices.theme, title),
     }) as Promise<PromptResult<Design['theme']>>,
   radius: (initial) =>
     select({
       message: 'Corner style',
       initialValue: initial,
-      options: choices(['compact', 'medium', 'rounded'] as const, title),
+      options: choices(designChoices.radius, title),
     }) as Promise<PromptResult<Design['radius']>>,
   density: (initial) =>
     select({
       message: 'Interface density',
       initialValue: initial,
-      options: choices(['compact', 'comfortable'] as const, title),
+      options: choices(designChoices.density, title),
     }) as Promise<PromptResult<Design['density']>>,
   navigation: (initial) =>
     select({
       message: 'Navigation shell',
       initialValue: initial,
-      options: choices(['sidebar', 'topbar'] as const, title),
+      options: choices(designChoices.navigation, title),
     }) as Promise<PromptResult<Design['navigation']>>,
   colorMode: (initial) =>
     select({
       message: 'Color mode',
       initialValue: initial,
-      options: choices(['light', 'dark', 'system'] as const, title),
+      options: choices(designChoices.mode, title),
     }) as Promise<PromptResult<Design['mode']>>,
   review: (body) => note(body, 'Build review'),
   approve: () =>
     confirm({ message: 'Generate this output?', initialValue: true }),
 };
+
+function propertyValues<T extends string>(
+  id: string,
+  fallback: readonly T[],
+): readonly T[] {
+  return (
+    (applicationProperties.find((property) => property.id === id)
+      ?.allowedValues as readonly T[] | undefined) ?? fallback
+  );
+}
 
 function title(value: string): string {
   return value.charAt(0).toUpperCase() + value.slice(1);
@@ -187,6 +241,149 @@ export async function collectInteractiveRecipe(
     };
   }
   return recipe;
+}
+
+export async function collectInteractiveApplicationDefinition(
+  base: ApplicationDefinitionInput,
+  prompts: CreateFlowPrompts = clackCreateFlowPrompts,
+): Promise<ApplicationDefinitionInput | null> {
+  const mode = await prompts.mode();
+  if (cancelled(mode)) return null;
+  const product = await prompts.product();
+  if (cancelled(product)) return null;
+  const current = resolveApplicationDefinition({ ...base, preset: product });
+  const displayName = await prompts.displayName(
+    current.resolved.definition.identity.displayName,
+  );
+  if (cancelled(displayName)) return null;
+  if (mode === 'express') {
+    return {
+      ...base,
+      preset: product,
+      identity: {
+        ...current.resolved.definition.identity,
+        displayName,
+      },
+    };
+  }
+
+  const selected = await prompts.capabilities(
+    optionalCapabilities.filter((id) =>
+      current.resolved.capabilities.includes(id),
+    ),
+  );
+  if (cancelled(selected)) return null;
+  const authentication = prompts.authentication
+    ? await prompts.authentication(
+        current.resolved.providers.some((provider) => provider.id === 'clerk')
+          ? 'clerk'
+          : 'none',
+      )
+    : undefined;
+  if (authentication !== undefined && cancelled(authentication)) return null;
+  const persistence = prompts.persistence
+    ? await prompts.persistence(
+        current.resolved.providers.some((provider) => provider.id === 'neon')
+          ? 'postgresql'
+          : 'none',
+      )
+    : undefined;
+  if (persistence !== undefined && cancelled(persistence)) return null;
+  const authorization = prompts.authorization
+    ? await prompts.authorization(current.resolved.authorization.model)
+    : undefined;
+  if (authorization !== undefined && cancelled(authorization)) return null;
+  const description = await prompts.description(
+    current.resolved.definition.identity.description,
+  );
+  if (cancelled(description)) return null;
+  const theme = await prompts.theme(
+    current.resolved.definition.presentation.theme,
+  );
+  if (cancelled(theme)) return null;
+  const radius = await prompts.radius(
+    current.resolved.definition.presentation.radius,
+  );
+  if (cancelled(radius)) return null;
+  const density = await prompts.density(
+    current.resolved.definition.presentation.density,
+  );
+  if (cancelled(density)) return null;
+  const navigation = await prompts.navigation(
+    current.resolved.definition.presentation.navigation,
+  );
+  if (cancelled(navigation)) return null;
+  const colorMode = await prompts.colorMode(
+    current.resolved.definition.presentation.mode,
+  );
+  if (cancelled(colorMode)) return null;
+  const selectedSet = new Set(selected);
+  return {
+    schemaVersion: 1,
+    preset: product,
+    identity: {
+      packageName: current.resolved.definition.identity.packageName,
+      displayName,
+      description,
+    },
+    providers: {
+      ...(authentication !== undefined ? { authentication } : {}),
+      ...(persistence !== undefined
+        ? {
+            persistence:
+              persistence === 'none'
+                ? { technology: 'none' as const, provider: 'none' as const }
+                : {
+                    technology: 'postgresql' as const,
+                    provider: 'neon' as const,
+                  },
+          }
+        : {}),
+    },
+    capabilities: {
+      include: optionalCapabilities.filter((id) => selectedSet.has(id)),
+      exclude: optionalCapabilities.filter((id) => !selectedSet.has(id)),
+    },
+    authorization: {
+      model: authorization ?? current.resolved.authorization.model,
+    },
+    routes: [],
+    presentation: {
+      theme,
+      radius,
+      density,
+      navigation,
+      mode: colorMode,
+    },
+    outputOverrides: { artifactSets: {}, artifacts: {} },
+  };
+}
+
+export function formatApplicationReview(
+  application: ApplicationResolution,
+): string {
+  const resolved = application.resolved;
+  return [
+    resolved.definition.identity.displayName,
+    '',
+    `Starting configuration: ${getProductPreset(resolved.definition.preset).label}`,
+    `Providers: ${resolved.providers.map((provider) => provider.label).join(', ') || 'None'}`,
+    `Authorization: ${resolved.authorization.model.toUpperCase()}`,
+    `Capabilities: ${resolved.capabilities.map((id) => capabilityRegistry[id].label).join(', ') || 'None'}`,
+    `Resolved output: ${resolved.routes.length} routes, ${resolved.artifactSets.length} artifact sets, ${application.plan.filesRetained.length} files`,
+    `Setup: ${resolved.setup.length} steps, ${resolved.environment.length} environment requirements`,
+  ].join('\n');
+}
+
+export async function reviewApplicationDefinition(
+  definition: ApplicationDefinitionInput,
+  prompts: CreateFlowPrompts = clackCreateFlowPrompts,
+): Promise<boolean> {
+  prompts.review(
+    formatApplicationReview(resolveApplicationDefinition(definition)),
+  );
+  const approval = await prompts.approve();
+  return !cancelled(approval) && approval;
 }
 
 export function formatRecipeReview(resolved: ResolvedRecipe): string {

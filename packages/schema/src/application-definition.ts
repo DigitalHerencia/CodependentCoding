@@ -55,6 +55,10 @@ export const artifactSetIds = [
   'authentication-clerk',
   'persistence-postgresql',
   'commerce-stripe',
+  'playwright',
+  'vitest',
+  'github-actions',
+  'vercel',
   'organizations',
   'invitations',
   'rbac',
@@ -62,6 +66,9 @@ export const artifactSetIds = [
   'stripe-connect',
   'onboarding',
   'admin',
+  'uploads',
+  'ai',
+  'maps',
   'marketing',
   'sample-domain',
   'governance',
@@ -107,6 +114,8 @@ export const capabilityDefinitionSchema = z
     routes: z.array(z.string()),
     modules: z.array(z.string()),
     artifactSets: z.array(artifactSetIdSchema),
+    environment: z.array(z.string()),
+    setup: z.array(z.string()),
     fixed: z.boolean(),
   })
   .strict();
@@ -121,7 +130,12 @@ export const resourceDefinitionSchema = z
 
 export const roleDefinitionSchema = z
   .object({
-    name: z.string().min(1),
+    name: z
+      .string()
+      .regex(
+        /^[a-z][a-z0-9_]*$/,
+        'Role names must start with a lowercase letter and contain only lowercase letters, numbers, and underscores.',
+      ),
     displayName: z.string().min(1),
     scope: z.enum(['application', 'organization']),
     permissions: z.array(z.string()),
@@ -240,9 +254,31 @@ export const providerSelectionSchema = z
 export const authorizationSelectionSchema = z
   .object({
     model: z.enum(['rbac', 'none']).default('rbac'),
-    roles: z.array(roleDefinitionSchema).optional(),
+    roles: z.array(roleDefinitionSchema).min(2).optional(),
   })
-  .strict();
+  .strict()
+  .superRefine((value, context) => {
+    if (!value.roles) return;
+    const names = new Set<string>();
+    for (const [index, role] of value.roles.entries()) {
+      if (names.has(role.name)) {
+        context.addIssue({
+          code: 'custom',
+          path: ['roles', index, 'name'],
+          message: `Role name "${role.name}" must be unique.`,
+        });
+      }
+      names.add(role.name);
+      if (role.scope !== 'organization') {
+        context.addIssue({
+          code: 'custom',
+          path: ['roles', index, 'scope'],
+          message:
+            'Application-scoped roles are not supported by this architecture version.',
+        });
+      }
+    }
+  });
 
 export const routeOverrideSchema = z
   .object({

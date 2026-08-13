@@ -1,6 +1,6 @@
 [
   {
-    "path": "gitignore.template",
+    "path": ".gitignore",
     "disposition": "generator",
     "included": true,
     "reason": "Pack-safe source transformed to generated .gitignore by the initializer."

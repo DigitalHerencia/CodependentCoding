@@ -1,5 +1,4 @@
 import path from 'node:path';
-import { randomUUID } from 'node:crypto';
 import type { LoadedVibesConfig } from '../config/schema.js';
 import {
   resolveApplicationDefinition,
@@ -37,7 +36,7 @@ export function createGenerationPlan(
     ),
     stagingDirectory: path.join(
       parent,
-      `.hipster-stack-${path.basename(config.targetDirectory)}-${randomUUID()}`,
+      `.hipster-stack-${path.basename(config.targetDirectory)}-staging`,
     ),
     validationGates: application.plan.validationRequirements,
     applicationDefinition: application.resolved.definition,

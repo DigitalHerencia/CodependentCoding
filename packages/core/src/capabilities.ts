@@ -19,6 +19,8 @@ export interface CapabilityDefinition extends Omit<
   | 'routes'
   | 'modules'
   | 'artifactSets'
+  | 'environment'
+  | 'setup'
 > {
   requires: readonly CapabilityId[];
   conflicts: readonly CapabilityId[];
@@ -28,6 +30,8 @@ export interface CapabilityDefinition extends Omit<
   routes: readonly string[];
   modules: readonly string[];
   artifactSets: readonly ArtifactSetId[];
+  environment: readonly string[];
+  setup: readonly string[];
 }
 
 type CapabilityConsequences = {
@@ -38,6 +42,8 @@ type CapabilityConsequences = {
   routes?: readonly string[];
   modules?: readonly string[];
   artifactSets?: readonly ArtifactSetId[];
+  environment?: readonly string[];
+  setup?: readonly string[];
 };
 
 export const capabilityRegistry = {
@@ -75,14 +81,7 @@ export const capabilityRegistry = {
     description: 'Local role and permission evaluation independent of auth.',
     providers: ['neon'],
     resources: ['role', 'permission'],
-    permissions: [
-      'audit.read',
-      'media.read',
-      'media.manage',
-      'ai.use',
-      'map.read',
-      'map.manage',
-    ],
+    permissions: ['audit.read'],
     modules: ['authorization-rbac'],
     artifactSets: ['rbac'],
   }),
@@ -141,6 +140,59 @@ export const capabilityRegistry = {
     modules: ['admin'],
     artifactSets: ['admin'],
   }),
+  uploads: definition(
+    'uploads',
+    'Media uploads',
+    ['organizations', 'rbac'],
+    [],
+    false,
+    {
+      description: 'Tenant-scoped signed uploads and media delivery.',
+      resources: ['cloudinary-cloud', 'media-asset'],
+      permissions: ['media.read', 'media.manage'],
+      routes: ['uploads'],
+      modules: ['uploads', 'cloudinary-adapter'],
+      artifactSets: ['uploads'],
+      environment: [
+        'CLOUDINARY_CLOUD_NAME',
+        'CLOUDINARY_API_KEY',
+        'CLOUDINARY_API_SECRET',
+        'CLOUDINARY_SIGNATURE_ALGORITHM',
+      ],
+      setup: ['Configure a Cloudinary cloud and signed upload credentials.'],
+    },
+  ),
+  ai: definition('ai', 'AI inference', ['organizations', 'rbac'], [], false, {
+    description: 'Tenant-scoped inference through the supported adapter.',
+    resources: ['huggingface-model'],
+    permissions: ['ai.use'],
+    routes: ['ai'],
+    modules: ['ai-inference', 'huggingface-adapter'],
+    artifactSets: ['ai'],
+    environment: ['HUGGINGFACE_TOKEN', 'HUGGINGFACE_MODEL'],
+    setup: ['Configure the Hugging Face inference token and model.'],
+  }),
+  maps: definition(
+    'maps',
+    'Maps and geocoding',
+    ['organizations', 'rbac'],
+    [],
+    false,
+    {
+      description: 'Tenant-scoped location search and map rendering.',
+      resources: ['mapbox-map', 'mapbox-geocoder'],
+      permissions: ['map.read', 'map.manage'],
+      routes: ['maps'],
+      modules: ['maps', 'mapbox-adapter'],
+      artifactSets: ['maps'],
+      environment: [
+        'MAPBOX_ACCESS_TOKEN',
+        'NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN',
+        'NEXT_PUBLIC_MAPBOX_STYLE_URL',
+      ],
+      setup: ['Configure Mapbox server and public access tokens.'],
+    },
+  ),
   marketing: definition('marketing', 'Marketing site', [], [], false, {
     description: 'Public pricing and frequently asked questions surfaces.',
     routes: ['marketing'],
@@ -205,6 +257,8 @@ function definition(
     routes: [...(consequences.routes ?? [])],
     modules: [...(consequences.modules ?? [])],
     artifactSets: [...(consequences.artifactSets ?? [])],
+    environment: [...(consequences.environment ?? [])],
+    setup: [...(consequences.setup ?? [])],
     fixed,
   };
 }
@@ -239,6 +293,9 @@ export function resolveCapabilitySelection(
     stripeConnect: overrides.stripeConnect ?? presetModules.stripeConnect,
     onboarding: overrides.onboarding ?? presetModules.onboarding,
     admin: overrides.admin ?? presetModules.admin,
+    uploads: overrides.uploads ?? presetModules.uploads,
+    ai: overrides.ai ?? presetModules.ai,
+    maps: overrides.maps ?? presetModules.maps,
     marketing: overrides.marketing ?? presetModules.marketing,
     sampleDomain: overrides.sampleDomain ?? presetModules.sampleDomain,
     governance: overrides.governance ?? presetModules.governance,
