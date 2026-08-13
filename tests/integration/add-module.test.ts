@@ -26,7 +26,7 @@ describe('post-generation module addition', () => {
     const target = await createBareProject('hipster-stack-add-marketing-');
     const initialManifest = JSON.parse(
       await readFile(
-        path.join(target, '.loadedvibes', 'manifest.json'),
+        path.join(target, '.hipsterstack', 'manifest.json'),
         'utf8',
       ),
     ) as { modules: string[] };
@@ -42,7 +42,7 @@ describe('post-generation module addition', () => {
     ).resolves.toBeTruthy();
     const updatedManifest = JSON.parse(
       await readFile(
-        path.join(target, '.loadedvibes', 'manifest.json'),
+        path.join(target, '.hipsterstack', 'manifest.json'),
         'utf8',
       ),
     ) as { modules: string[]; recipe: { modules: { marketing: boolean } } };
