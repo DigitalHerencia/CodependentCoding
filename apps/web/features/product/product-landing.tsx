@@ -217,10 +217,7 @@ export function ProductLanding() {
                 <strong>{entry.title}</strong>
                 <small>{entry.description}</small>
               </span>
-              <ArrowRight
-                aria-hidden="true"
-                className="product-entry-arrow"
-              />
+              <ArrowRight aria-hidden="true" className="product-entry-arrow" />
             </Link>
           ))}
         </section>
