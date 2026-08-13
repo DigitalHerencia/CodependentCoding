@@ -1,0 +1,52 @@
+name: HS-303 finalize web foundation
+
+on:
+  push:
+    branches: [issue/137-boldkit-web-foundation]
+
+permissions:
+  contents: write
+
+jobs:
+  finalize:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: issue/137-boldkit-web-foundation
+          fetch-depth: 0
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+      - run: corepack enable
+      - run: corepack prepare pnpm@11.1.1 --activate
+      - name: Expose locked muted token to Tailwind
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $path = 'apps/web/app/globals.css'
+          $css = Get-Content -Raw -LiteralPath $path
+          $needle = '  --color-foreground: var(--foreground);'
+          $addition = '  --color-foreground-muted: var(--foreground-muted);'
+          if (-not $css.Contains($addition)) {
+            if (-not $css.Contains($needle)) { throw 'Expected Tailwind foreground token was not found.' }
+            $css = $css.Replace($needle, "$needle`n$addition")
+            Set-Content -NoNewline -LiteralPath $path -Value $css
+          }
+      - name: Install, format, and verify focused web surface
+        shell: pwsh
+        run: |
+          pnpm install --no-frozen-lockfile
+          pnpm exec prettier --write apps/web/components.json apps/web/components/ui apps/web/components/blocks apps/web/lib/utils.ts apps/web/app/globals.css apps/web/package.json pnpm-lock.yaml
+          pnpm --dir apps/web typecheck
+          pnpm --dir apps/web build
+      - name: Commit finalized foundation
+        shell: pwsh
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git rm .github/workflows/hs303-finalize.yml
+          git add apps/web pnpm-lock.yaml
+          git commit -m "feat(web): establish BoldKit design foundation"
+          git push origin HEAD:issue/137-boldkit-web-foundation
