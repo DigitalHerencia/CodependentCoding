@@ -78,11 +78,12 @@ describe('CLI product flow', () => {
     });
   });
 
-  it('formats a review with included and excluded capabilities', () => {
+  it('formats a review with resolved providers and capabilities', () => {
     const review = formatRecipeReview(
       resolveRecipe({ name: 'review-app', product: 'client-portal' }),
     );
-    expect(review).toContain('Fixed foundation:');
+    expect(review).toContain('Providers: Clerk, Neon PostgreSQL');
+    expect(review).toContain('Authorization: RBAC');
     expect(review).toContain('Optional surfaces:');
     expect(review).toContain('Excluded surfaces:');
     expect(review).toContain('Client portal');

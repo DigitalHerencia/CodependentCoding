@@ -1,12 +1,12 @@
 ---
-title: Hipster Stack Website, Simples, and Constituter
+title: Hipster Stack Website, Simples, and The Constituter
 artifact: web
 status: active
 product: Hipster Stack
 authority: source-of-truth
 ---
 
-# Hipster Stack Website, Simples, and Constituter
+# Hipster Stack Website, Simples, and The Constituter
 
 ## Product role
 
@@ -16,10 +16,10 @@ The web app is a stateless developer tool with four coherent surfaces:
 /              Product
 /libraries/*   Simples™
 /docs/*        canonical Docs
-/configure     Constituter™
+/configure     The Constituter™
 ```
 
-`Simples™` and `Constituter™` are branded presentation names over existing routes. Do not infer a second domain model or change route paths merely for vocabulary. No account system, hosted project database, billing product, or remote generation backend is required.
+`Simples™` and `The Constituter™` are branded presentation names over existing routes. Do not infer a second domain model or change route paths merely for vocabulary. No account system, hosted project database, billing product, or remote generation backend is required.
 
 ## Visual acceptance
 
@@ -62,7 +62,7 @@ Esoteric by design.
 No Ordinary Objects™
 ```
 
-### Constituter
+### The Constituter™
 
 ```text
 No, Simples™ cannot be composed "Hipster-Wise".
@@ -101,9 +101,9 @@ Simples preserves the existing `/libraries/*` catalog/detail route family. It ex
 
 Root `docs/` remains canonical end-user documentation rendered under `/docs/*`. Do not duplicate canonical technical content into Simples metadata.
 
-## Constituter
+## The Constituter™
 
-Constituter follows `builder.png`: dense two-panel workbench, schema-backed controls left, inspectable resolved configuration/output right. Preserve current working resolver/serialization/download/copy/share behavior through the HS-302 identifier rename. Only actual supported properties are editable.
+The Constituter™ follows `builder.png`: dense two-panel workbench, schema-backed controls left, inspectable resolved configuration/output right. Preserve current working resolver/serialization/download/copy/share behavior through the HS-302 identifier rename. Only actual supported properties are editable.
 
 ## Implementation economy
 

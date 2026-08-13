@@ -2,15 +2,6 @@ import type { ResolvedRecipe } from '@hipster-stack/core/browser';
 import { Check, Copy, Download, Share2, Terminal } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-const fixedStack = [
-  ['Clerk', 'Auth'],
-  ['Organizations', 'Tenancy'],
-  ['Local RBAC', 'Authorization'],
-  ['Neon/Postgres', 'Database'],
-  ['Prisma + RLS', 'Data boundary'],
-  ['Hipster Stack', 'Architecture'],
-] as const;
-
 export function ConstituterPreview({
   resolved,
   normalizedJson,
@@ -28,6 +19,7 @@ export function ConstituterPreview({
   onCopyCli: () => void;
   onShare: () => void;
 }) {
+  const application = resolved.application.resolved;
   return (
     <aside className="recipe-preview">
       <div className="recipe-preview-heading">
@@ -41,30 +33,41 @@ export function ConstituterPreview({
       <section className="selected-stack" aria-label="Constituted system">
         <p>Constituted System</p>
         <div>
-          {fixedStack.map(([name, role]) => (
-            <article key={name}>
+          {application.providers.map((provider) => (
+            <article key={provider.id}>
               <i>
                 <Check aria-hidden="true" />
               </i>
               <span>
-                <strong>{name}</strong>
-                <small>{role}</small>
+                <strong>{provider.label}</strong>
+                <small>
+                  {provider.slot} · required by {provider.requiredBy.length}
+                </small>
               </span>
             </article>
           ))}
+          <article>
+            <i>
+              <Check aria-hidden="true" />
+            </i>
+            <span>
+              <strong>{application.authorization.model.toUpperCase()}</strong>
+              <small>Authorization · independent from authentication</small>
+            </span>
+          </article>
         </div>
       </section>
 
       <section className="recipe-code">
         <div>
-          <span>hipsterstack.json</span>
+          <span>Application Definition · hipsterstack.json</span>
           <Button
             variant="ghost"
             size="sm"
             type="button"
             onClick={onCopyRecipe}
           >
-            <Copy aria-hidden="true" /> Copy
+            <Copy aria-hidden="true" /> Copy definition
           </Button>
         </div>
         <pre>{normalizedJson}</pre>
@@ -73,7 +76,12 @@ export function ConstituterPreview({
       {resolved.summary.autoIncluded.length > 0 && (
         <p className="builder-auto-included">
           <strong>Resolved automatically:</strong>{' '}
-          {resolved.summary.autoIncluded.join(', ')}
+          {application.reasons
+            .filter((reason) =>
+              application.autoIncluded.includes(reason.selection),
+            )
+            .map((reason) => reason.reason)
+            .join(' ')}
         </p>
       )}
 
@@ -88,18 +96,21 @@ export function ConstituterPreview({
         <article>
           <strong>Works With</strong>
           <small>Docs + CLI</small>
-          <span>Portable, stateless recipe</span>
+          <span>One portable Application Definition</span>
         </article>
         <article>
           <strong>Output</strong>
-          <small>User-owned application</small>
-          <span>One template · deterministic build</span>
+          <small>
+            {application.routes.length} routes ·{' '}
+            {application.artifactSets.length} artifact sets
+          </small>
+          <span>{application.environment.length} environment requirements</span>
         </article>
       </section>
 
       <div className="builder-output-actions">
         <Button size="sm" type="button" onClick={onDownload}>
-          <Download aria-hidden="true" /> Download JSON
+          <Download aria-hidden="true" /> Download definition
         </Button>
         <Button variant="outline" size="sm" type="button" onClick={onCopyCli}>
           <Terminal aria-hidden="true" /> Copy CLI Command

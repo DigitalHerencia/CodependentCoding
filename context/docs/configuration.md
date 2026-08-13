@@ -43,11 +43,33 @@ The target model is organized around the generated application:
 
 Current schema/core support is narrower than this target. Do not expose future choices ahead of generator support.
 
+## Canonical entities
+
+The shared domain explicitly represents Application Definition, Preset, Property,
+Provider, Capability, Dependency, Constraint, Resource, Authorization Model, Role,
+Route Surface, Artifact Set, Artifact, and Generation Plan. Interfaces must not
+infer these relationships independently.
+
 ## Property model
 
-Use a small schema-driven vocabulary where appropriate: boolean, string, single-select, multi-select/collection, mapping/tree/rule. A property may also expose whether its value is default, preset, explicit, required, disabled, or conflicted.
+Properties use the machine-readable mechanisms `text`, `toggle`, `select`,
+`multi-select`, `relation`, `rollup`, `derived`, `structured`, and `reorderable`.
+Metadata declares allowed values, visibility, enablement, requirements, conflicts,
+derivation, effects, and validation. Resolved provenance uses `DEFAULT`, `PRESET`,
+`USER`, `DERIVED`, `REQUIRED`, and `LOCKED`.
 
 Users configure application concepts. Generator-side ownership maps those concepts to files, dependencies, environment examples, transforms, and resources. Individual source files are not normal user-facing controls.
+
+Presets seed the same Application Definition. The definition stores user intent;
+providers, resources, effective permissions, routes, artifact ownership,
+environment requirements, and setup instructions are derived by the shared
+resolver and are not redundantly serialized.
+
+Resolution proceeds deterministically through normalization, preset seeding,
+explicit overrides, dependency and constraint resolution, provider/resource and
+route resolution, artifact ownership, and safe output policies. The resulting
+Generation Plan is the authority for both The Constituter™ preview and filesystem
+materialization.
 
 ## Runtime contracts
 

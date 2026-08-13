@@ -17,7 +17,7 @@ type IconName =
 
 const productEntries = [
   {
-    title: 'Constituter™',
+    title: 'The Constituter™',
     description:
       'Arrange the supported application system and export a reproducible constitution.',
     href: '/configure',
@@ -110,7 +110,7 @@ function ConstituterPreview() {
   return (
     <div className="product-builder-preview" aria-label="Constituter preview">
       <div className="preview-window-bar">
-        <span>Constituter</span>
+        <span>The Constituter™</span>
         <small>portable configuration</small>
         <Link className="preview-open" href="/configure">
           Open
@@ -185,7 +185,7 @@ export function ProductLanding() {
                 className={buttonVariants({ variant: 'default' })}
                 href="/configure"
               >
-                Open the Constituter
+                Open The Constituter™
                 <ArrowRight aria-hidden="true" data-icon="inline-end" />
               </Link>
               <Link

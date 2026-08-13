@@ -1,50 +1,192 @@
 import {
   capabilityIds,
+  type ArtifactSetId,
+  type CapabilityDefinition as CanonicalCapabilityDefinition,
   type CapabilityId,
   type ModuleSelection,
+  type ProviderId,
   type ResolvedModules,
 } from '@hipster-stack/schema';
 import { LoadedVibesError } from './errors.js';
 
-export interface CapabilityDefinition {
-  id: CapabilityId;
-  label: string;
+export interface CapabilityDefinition extends Omit<
+  CanonicalCapabilityDefinition,
+  | 'requires'
+  | 'conflicts'
+  | 'providers'
+  | 'resources'
+  | 'permissions'
+  | 'routes'
+  | 'modules'
+  | 'artifactSets'
+> {
   requires: readonly CapabilityId[];
   conflicts: readonly CapabilityId[];
-  fixed: boolean;
+  providers: readonly ProviderId[];
+  resources: readonly string[];
+  permissions: readonly string[];
+  routes: readonly string[];
+  modules: readonly string[];
+  artifactSets: readonly ArtifactSetId[];
 }
 
+type CapabilityConsequences = {
+  description: string;
+  providers?: readonly ProviderId[];
+  resources?: readonly string[];
+  permissions?: readonly string[];
+  routes?: readonly string[];
+  modules?: readonly string[];
+  artifactSets?: readonly ArtifactSetId[];
+};
+
 export const capabilityRegistry = {
-  organizations: definition('organizations', 'Organizations', [], [], true),
-  invitations: definition('invitations', 'Membership invitations', [
-    'organizations',
-  ]),
+  organizations: definition('organizations', 'Organizations', [], [], true, {
+    description: 'Tenant organizations, memberships, and active context.',
+    providers: ['clerk', 'neon'],
+    resources: ['user', 'organization', 'membership'],
+    permissions: [
+      'organization.read',
+      'organization.manage',
+      'membership.read',
+      'membership.manage',
+    ],
+    routes: ['application', 'organization-settings'],
+    modules: ['organizations'],
+    artifactSets: ['organizations'],
+  }),
+  invitations: definition(
+    'invitations',
+    'Membership invitations',
+    ['organizations'],
+    [],
+    false,
+    {
+      description: 'Invite and reconcile organization memberships.',
+      providers: ['clerk', 'neon'],
+      resources: ['invitation', 'membership'],
+      permissions: ['invitation.manage'],
+      routes: ['team', 'member-settings'],
+      modules: ['invitations'],
+      artifactSets: ['invitations'],
+    },
+  ),
   rbac: definition(
     'rbac',
     'Local roles and authorization',
     ['organizations'],
     [],
     true,
+    {
+      description: 'Local role and permission evaluation independent of auth.',
+      providers: ['neon'],
+      resources: ['role', 'permission'],
+      permissions: [
+        'audit.read',
+        'media.read',
+        'media.manage',
+        'ai.use',
+        'map.read',
+        'map.manage',
+      ],
+      modules: ['authorization-rbac'],
+      artifactSets: ['rbac'],
+    },
   ),
-  billing: definition('billing', 'Subscription billing', ['organizations']),
+  billing: definition(
+    'billing',
+    'Subscription billing',
+    ['organizations'],
+    [],
+    false,
+    {
+      description: 'Subscription lifecycle, checkout, and customer portal.',
+      providers: ['stripe', 'neon'],
+      resources: ['stripe-customer', 'subscription', 'price'],
+      permissions: ['billing.manage'],
+      routes: ['billing', 'checkout'],
+      modules: ['billing', 'stripe-webhooks'],
+      artifactSets: ['billing'],
+    },
+  ),
   stripeConnect: definition(
     'stripeConnect',
     'Stripe Connect platform payments',
     ['organizations', 'rbac', 'billing'],
+    [],
+    false,
+    {
+      description: 'Connected-account onboarding and payment reconciliation.',
+      providers: ['stripe', 'neon'],
+      resources: ['connected-account', 'transfer'],
+      permissions: ['connect.manage'],
+      routes: ['connect'],
+      modules: ['stripe-connect'],
+      artifactSets: ['stripe-connect'],
+    },
   ),
-  onboarding: definition('onboarding', 'Product onboarding', ['organizations']),
-  admin: definition('admin', 'Administrative surface', ['rbac']),
-  marketing: definition('marketing', 'Marketing site'),
-  sampleDomain: definition('sampleDomain', 'Sample projects domain', [
-    'organizations',
-    'rbac',
-  ]),
+  onboarding: definition(
+    'onboarding',
+    'Product onboarding',
+    ['organizations'],
+    [],
+    false,
+    {
+      description: 'Guided authenticated product setup.',
+      providers: ['clerk', 'neon'],
+      resources: ['onboarding-progress'],
+      routes: ['onboarding'],
+      modules: ['onboarding'],
+      artifactSets: ['onboarding'],
+    },
+  ),
+  admin: definition('admin', 'Administrative surface', ['rbac'], [], false, {
+    description: 'Authorized application administration.',
+    providers: ['neon'],
+    permissions: ['admin.access'],
+    routes: ['admin'],
+    modules: ['admin'],
+    artifactSets: ['admin'],
+  }),
+  marketing: definition('marketing', 'Marketing site', [], [], false, {
+    description: 'Public pricing and frequently asked questions surfaces.',
+    routes: ['marketing'],
+    modules: ['marketing'],
+    artifactSets: ['marketing'],
+  }),
+  sampleDomain: definition(
+    'sampleDomain',
+    'Sample projects domain',
+    ['organizations', 'rbac'],
+    [],
+    false,
+    {
+      description: 'A complete tenant-scoped projects example domain.',
+      providers: ['neon'],
+      resources: ['project'],
+      permissions: [
+        'project.read',
+        'project.create',
+        'project.update',
+        'project.archive',
+      ],
+      routes: ['projects'],
+      modules: ['sample-projects'],
+      artifactSets: ['sample-domain'],
+    },
+  ),
   governance: definition(
     'governance',
     'Generated project guidance',
     [],
     [],
     true,
+    {
+      description:
+        'Application-local agent context and architecture contracts.',
+      modules: ['agent-governance'],
+      artifactSets: ['governance'],
+    },
   ),
 } satisfies Record<CapabilityId, CapabilityDefinition>;
 
@@ -54,8 +196,24 @@ function definition(
   requires: readonly CapabilityId[] = [],
   conflicts: readonly CapabilityId[] = [],
   fixed = false,
+  consequences: CapabilityConsequences = {
+    description: 'A supported Hipster Stack application capability.',
+  },
 ): CapabilityDefinition {
-  return { id, label, requires, conflicts, fixed };
+  return {
+    id,
+    label,
+    description: consequences.description,
+    requires: [...requires],
+    conflicts: [...conflicts],
+    providers: [...(consequences.providers ?? [])],
+    resources: [...(consequences.resources ?? [])],
+    permissions: [...(consequences.permissions ?? [])],
+    routes: [...(consequences.routes ?? [])],
+    modules: [...(consequences.modules ?? [])],
+    artifactSets: [...(consequences.artifactSets ?? [])],
+    fixed,
+  };
 }
 
 function isEnabled(selection: ResolvedModules, id: CapabilityId): boolean {
@@ -72,6 +230,7 @@ function enable(selection: ResolvedModules, id: CapabilityId): void {
 export interface CapabilityResolution {
   modules: ResolvedModules;
   autoIncluded: CapabilityId[];
+  requiredBy: Partial<Record<CapabilityId, (CapabilityId | 'architecture')[]>>;
 }
 
 export function resolveCapabilitySelection(
@@ -92,8 +251,13 @@ export function resolveCapabilitySelection(
     governance: overrides.governance ?? presetModules.governance,
   };
   const autoIncluded = new Set<CapabilityId>();
+  const requiredBy: Partial<
+    Record<CapabilityId, (CapabilityId | 'architecture')[]>
+  > = {};
   for (const id of capabilityIds) {
-    if (!registry[id].fixed || isEnabled(modules, id)) continue;
+    if (!registry[id].fixed) continue;
+    requiredBy[id] = ['architecture'];
+    if (isEnabled(modules, id)) continue;
     enable(modules, id);
     autoIncluded.add(id);
   }
@@ -103,6 +267,8 @@ export function resolveCapabilitySelection(
     for (const id of capabilityIds) {
       if (!isEnabled(modules, id)) continue;
       for (const requirement of registry[id].requires) {
+        const current = requiredBy[requirement] ?? [];
+        if (!current.includes(id)) requiredBy[requirement] = [...current, id];
         if (isEnabled(modules, requirement)) continue;
         enable(modules, requirement);
         autoIncluded.add(requirement);
@@ -124,5 +290,5 @@ export function resolveCapabilitySelection(
     }
   }
 
-  return { modules, autoIncluded: [...autoIncluded] };
+  return { modules, autoIncluded: [...autoIncluded], requiredBy };
 }

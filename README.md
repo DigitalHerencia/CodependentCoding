@@ -1,6 +1,6 @@
 # Hipster Stack
 
-Hipster Stack turns a bounded project configuration into a complete white-label application. It combines the canonical `hipster-stack` CLI, a stateless visual configurator, reproducible `hipsterstack.json` contracts, and one packaged maximal template—without asking you to redesign the stack.
+Hipster Stack turns a bounded Application Definition into a complete white-label application. It combines the canonical `hipster-stack` CLI, the stateless application-definition workbench **The Constituter™**, reproducible `hipsterstack.json` contracts, and one packaged maximal template—without asking you to redesign the stack.
 
 The canonical end-user guide lives in [`docs/`](docs/index.md) and is rendered by the website under `/docs/*`. Start with [Getting started](docs/getting-started.md), then use the [configuration](docs/concepts/configuration.md) and [CLI](docs/cli/index.md) references as needed.
 
@@ -41,7 +41,7 @@ Capability prerequisites resolve automatically. Fixed architecture choices—Typ
 
 ## Visual configurator
 
-The responsive configurator in `apps/web` uses the same recipe core as the CLI. It previews representative dashboard, onboarding, settings, billing, detail/workflow, and marketing surfaces, then downloads `hipsterstack.json` or copies the matching CLI command.
+The Constituter™ web app uses the same Application Definition resolver as the CLI. It previews resolved capabilities, providers, routes, artifact sets, and environment consequences, then downloads `hipsterstack.json` or copies the matching CLI command.
 
 It is intentionally stateless: no Hipster Stack account, database, remote build worker, or hosted project infrastructure is involved. To run it locally:
 

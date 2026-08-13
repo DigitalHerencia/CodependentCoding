@@ -17,7 +17,7 @@ export function SiteHeader() {
         <Link href="/libraries">Simples</Link>
         <Link href="/docs">Docs</Link>
         <Link className="nav-cta" href="/configure">
-          Constituter
+          The Constituter™
           <span>
             <ArrowRight aria-hidden="true" />
           </span>

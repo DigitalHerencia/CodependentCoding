@@ -39,8 +39,8 @@ export function Constituter() {
 
   const resolved = useMemo(() => resolveConfiguratorRecipe(draft), [draft]);
   const normalizedJson = useMemo(
-    () => JSON.stringify(resolved.recipe, null, 2),
-    [resolved.recipe],
+    () => JSON.stringify(JSON.parse(serializeRecipe(draft)), null, 2),
+    [draft],
   );
 
   async function copy(value: string, message: string) {
@@ -80,7 +80,7 @@ export function Constituter() {
     <>
       <main className="builder-page">
         <header className="builder-heading">
-          <h1>Constituter™</h1>
+          <h1>The Constituter™</h1>
           <p>
             No, Simples™ cannot be composed &quot;Hipster-Wise&quot;. They are
             simply a dynamic system arranged in a configuration that is
@@ -102,7 +102,7 @@ export function Constituter() {
               type="button"
               onClick={() => void copy(normalizedJson, 'Recipe copied.')}
             >
-              Copy Recipe
+              Copy Application Definition
               <Copy aria-hidden="true" data-icon="inline-end" />
             </Button>
           </div>

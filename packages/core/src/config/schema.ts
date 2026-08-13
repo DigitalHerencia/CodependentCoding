@@ -1,8 +1,12 @@
 import { z } from 'zod';
-import { normalizedRecipeSchema } from '@hipster-stack/schema';
+import {
+  applicationDefinitionSchema,
+  normalizedRecipeSchema,
+} from '@hipster-stack/schema';
 
 export const loadedVibesConfigSchema = z
   .object({
+    applicationDefinition: applicationDefinitionSchema,
     recipe: normalizedRecipeSchema,
     targetDirectory: z.string().min(1),
     git: z

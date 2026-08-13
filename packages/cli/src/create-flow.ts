@@ -8,6 +8,7 @@ import {
 } from '@clack/prompts';
 import {
   capabilityRegistry,
+  capabilityIds,
   getProductPreset,
   productPresetIds,
   resolveRecipe,
@@ -21,15 +22,9 @@ import {
 export type SetupMode = 'express' | 'advanced';
 type PromptResult<T> = T | symbol;
 
-const optionalCapabilities = [
-  'invitations',
-  'billing',
-  'stripeConnect',
-  'onboarding',
-  'admin',
-  'marketing',
-  'sampleDomain',
-] as const satisfies readonly CapabilityId[];
+const optionalCapabilities = capabilityIds.filter(
+  (id) => !capabilityRegistry[id].fixed,
+);
 
 export interface CreateFlowPrompts {
   mode(): Promise<PromptResult<SetupMode>>;
@@ -196,14 +191,17 @@ export async function collectInteractiveRecipe(
 
 export function formatRecipeReview(resolved: ResolvedRecipe): string {
   const { recipe, summary } = resolved;
+  const application = resolved.application.resolved;
   return [
     `${recipe.identity.displayName}`,
     '',
     `Starting configuration: ${summary.preset.label}`,
-    'Fixed foundation: TypeScript, Next.js, Prisma, Clerk, tenant authorization',
+    `Providers: ${application.providers.map((provider) => provider.label).join(', ') || 'None'}`,
+    `Authorization: ${application.authorization.model.toUpperCase()}`,
     `Optional surfaces: ${summary.included.filter((item) => !['Organizations', 'Local roles and authorization', 'Generated project guidance'].includes(item)).join(', ') || 'None'}`,
     `Excluded surfaces: ${summary.excluded.join(', ') || 'None'}`,
     `Visual direction: ${title(recipe.design.theme)}, ${title(recipe.design.navigation)}, ${title(recipe.design.density)}, ${title(recipe.design.mode)}`,
+    `Resolved output: ${application.routes.length} routes, ${application.artifactSets.length} artifact sets, ${application.environment.length} environment requirements`,
   ].join('\n');
 }
 

@@ -1,18 +1,22 @@
 import path from 'node:path';
 import { z } from 'zod';
 import {
+  applicationDefinitionSchema,
   recipeSchema,
+  type ApplicationDefinitionInput,
   type DesignInput,
   type ModuleSelection,
   type ProductIdentityInput,
   type ProductPresetId,
   type RecipeInput,
 } from '@hipster-stack/schema';
+import { resolveApplicationDefinition } from '../application-definition.js';
 import { LoadedVibesError } from '../errors.js';
-import { normalizeRecipe } from '../recipe.js';
+import { recipeFromApplicationResolution, resolveRecipe } from '../recipe.js';
 import { loadedVibesConfigSchema, type LoadedVibesConfig } from './schema.js';
 
 export interface ConfigInput {
+  applicationDefinition?: ApplicationDefinitionInput;
   recipe?: RecipeInput;
   schemaVersion?: 1;
   name?: string;
@@ -31,6 +35,7 @@ export interface ConfigInput {
 
 const configInputSchema = z
   .object({
+    applicationDefinition: applicationDefinitionSchema.optional(),
     recipe: recipeSchema.partial().optional(),
     schemaVersion: z.literal(1).optional(),
     name: z.string().optional(),
@@ -59,6 +64,7 @@ export function normalizeConfig(
     parsedInput.data.targetDirectory ?? '',
   );
   const suppliedNames = [
+    parsedInput.data.applicationDefinition?.identity.packageName,
     parsedInput.data.recipe?.name,
     parsedInput.data.name,
     parsedInput.data.projectName,
@@ -66,36 +72,60 @@ export function normalizeConfig(
   if (new Set(suppliedNames).size > 1) {
     throw new LoadedVibesError(
       'INVALID_CONFIG',
-      'Recipe name, name, and legacy projectName must agree when combined.',
+      'Application Definition package name and legacy recipe names must agree when combined.',
+    );
+  }
+  const legacyDefinitionFields = [
+    parsedInput.data.recipe,
+    parsedInput.data.schemaVersion,
+    parsedInput.data.name,
+    parsedInput.data.product,
+    parsedInput.data.modules,
+    parsedInput.data.identity,
+    parsedInput.data.design,
+    parsedInput.data.projectName,
+    parsedInput.data.preset,
+  ];
+  if (
+    parsedInput.data.applicationDefinition &&
+    legacyDefinitionFields.some((value) => value !== undefined)
+  ) {
+    throw new LoadedVibesError(
+      'INVALID_CONFIG',
+      'applicationDefinition cannot be combined with legacy recipe fields.',
     );
   }
   const name = suppliedNames[0] ?? path.basename(targetDirectory).toLowerCase();
-  const recipe = normalizeRecipe({
-    ...parsedInput.data.recipe,
-    schemaVersion:
-      parsedInput.data.recipe?.schemaVersion ??
-      parsedInput.data.schemaVersion ??
-      1,
-    name,
-    product:
-      parsedInput.data.recipe?.product ??
-      parsedInput.data.product ??
-      'bare-golden-app',
-    modules: {
-      ...parsedInput.data.recipe?.modules,
-      ...parsedInput.data.modules,
-    },
-    identity: {
-      ...parsedInput.data.recipe?.identity,
-      ...parsedInput.data.identity,
-    },
-    design: {
-      ...parsedInput.data.recipe?.design,
-      ...parsedInput.data.design,
-    },
-  });
+  const applicationResolution = parsedInput.data.applicationDefinition
+    ? resolveApplicationDefinition(parsedInput.data.applicationDefinition)
+    : resolveRecipe({
+        ...parsedInput.data.recipe,
+        schemaVersion:
+          parsedInput.data.recipe?.schemaVersion ??
+          parsedInput.data.schemaVersion ??
+          1,
+        name,
+        product:
+          parsedInput.data.recipe?.product ??
+          parsedInput.data.product ??
+          'bare-golden-app',
+        modules: {
+          ...parsedInput.data.recipe?.modules,
+          ...parsedInput.data.modules,
+        },
+        identity: {
+          ...parsedInput.data.recipe?.identity,
+          ...parsedInput.data.identity,
+        },
+        design: {
+          ...parsedInput.data.recipe?.design,
+          ...parsedInput.data.design,
+        },
+      }).application;
+  const recipe = recipeFromApplicationResolution(applicationResolution);
 
   const result = loadedVibesConfigSchema.safeParse({
+    applicationDefinition: applicationResolution.resolved.definition,
     recipe,
     targetDirectory,
     git: { initialize: parsedInput.data.git?.initialize ?? true },

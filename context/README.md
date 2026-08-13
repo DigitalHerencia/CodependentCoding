@@ -14,10 +14,10 @@ The CLI is the primary local execution adapter. The web app has four coherent br
 Product      /
 Simples™     /libraries/*
 Docs         /docs/*
-Constituter™ /configure
+The Constituter™ /configure
 ```
 
-Simples and Constituter are presentation vocabulary over existing route/application semantics. Constituter, CLI, and the portable configuration file must continue to use the same shared configuration authority.
+Simples and The Constituter are presentation vocabulary over existing route/application semantics. The Constituter, CLI, and the portable configuration file must continue to use the same shared configuration authority.
 
 ## Ecosystem
 
@@ -37,7 +37,7 @@ The Knowledge System is authority, not a runtime dependency. Hipster Stack deter
 
 ## Current implementation versus approved direction
 
-The repository contains historical Loaded Vibes product/package identifiers that HS-302 will rename deliberately. The owner has already locked the pre-Codex web brand baseline: Product/Simples/Docs/Constituter vocabulary, semantic Tailwind v4 color/type tokens, mobile-first responsive overrides, supplied Crown/Banner/Desert assets, and required public copy. HS-303..HS-307 complete the mockup-faithful implementation without reopening unrelated generator migration work.
+Historical Loaded Vibes identifiers remain only where they are legitimate downstream or provenance references. The owner has locked the Product/Simples/Docs/The Constituter™ vocabulary, semantic Tailwind v4 color/type tokens, mobile-first responsive overrides, supplied Crown/Banner/Desert assets, and required public copy.
 
 ## Source map
 

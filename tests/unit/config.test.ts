@@ -9,6 +9,24 @@ describe('normalizeConfig', () => {
       'C:\\work',
     );
     expect(config).toEqual({
+      applicationDefinition: {
+        schemaVersion: 1,
+        preset: 'bare-golden-app',
+        identity: {
+          packageName: 'acme-saas',
+          displayName: 'acme-saas',
+          description: '',
+        },
+        capabilities: { include: [], exclude: [] },
+        presentation: {
+          theme: 'obsidian',
+          radius: 'medium',
+          density: 'comfortable',
+          navigation: 'sidebar',
+          mode: 'system',
+        },
+        outputOverrides: { artifactSets: {} },
+      },
       recipe: {
         schemaVersion: 1,
         name: 'acme-saas',
@@ -49,6 +67,35 @@ describe('normalizeConfig', () => {
       identity: { displayName: 'shared-recipe', description: '' },
       design: expect.objectContaining({ theme: 'obsidian' }),
     });
+  });
+
+  it('accepts a canonical Application Definition without legacy recipe fields', () => {
+    const config = normalizeConfig(
+      {
+        applicationDefinition: {
+          identity: { packageName: 'definition-app' },
+          capabilities: { include: ['billing'], exclude: [] },
+        },
+        targetDirectory: 'definition-app',
+      },
+      'D:/work',
+    );
+
+    expect(config.applicationDefinition.identity.packageName).toBe(
+      'definition-app',
+    );
+    expect(config.recipe.modules.billing).toBe(true);
+  });
+
+  it('rejects ambiguous canonical and legacy configuration fields', () => {
+    expect(() =>
+      normalizeConfig({
+        applicationDefinition: {
+          identity: { packageName: 'definition-app' },
+        },
+        name: 'legacy-app',
+      }),
+    ).toThrowError(expect.objectContaining({ code: 'INVALID_CONFIG' }));
   });
 
   it('rejects unknown recipe fields', () => {
