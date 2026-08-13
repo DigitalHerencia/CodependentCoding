@@ -74,8 +74,6 @@ body:has(.product-landing) {
   background-color: var(--background);
 }
 
-body:has(.libraries-page),
-body:has(.library-detail-page),
 body:has(.builder-page) {
   background-color: var(--background);
   background-image: url('/Digital Herencia Desert BG.png');
@@ -503,10 +501,20 @@ body:has(.libraries-page, .library-detail-page, .docs-shell, .builder-page)
 }
 
 .libraries-page,
-.library-detail-page,
+.library-detail-page {
+  width: min(calc(100% - 2rem), 92rem);
+  padding-bottom: 4rem;
+}
+
 .builder-page {
   width: min(calc(100% - 2rem), 92rem);
   padding-bottom: clamp(16rem, 44vw, 34rem);
+}
+
+.simples-landscape {
+  display: block;
+  width: 100%;
+  height: auto;
 }
 
 .libraries-page {
@@ -563,6 +571,12 @@ body:has(.libraries-page, .library-detail-page, .docs-shell, .builder-page)
 
 .library-detail-sidebar {
   padding-top: 0;
+}
+
+.library-detail-actions [data-icon],
+.related-panel .related-arrow {
+  width: 1rem;
+  height: 1rem;
 }
 
 .configuration-panel-heading,
@@ -870,7 +884,11 @@ body:has(.libraries-page, .library-detail-page, .docs-shell, .builder-page)
     font-size: 1.35rem;
   }
 
-  .libraries-page,
+  .libraries-page {
+    width: min(calc(100% - 4rem), 92rem);
+    padding-bottom: 6rem;
+  }
+
   .builder-page {
     width: min(calc(100% - 4rem), 92rem);
     padding-bottom: clamp(20rem, 34vw, 34rem);
