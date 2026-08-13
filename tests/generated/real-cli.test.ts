@@ -8,7 +8,7 @@ const cli = path.resolve('dist/cli.mjs');
 
 describe('real user-facing CLI', () => {
   it('supports dry-run without writing a target', async () => {
-    const root = await mkdtemp(path.join(os.tmpdir(), 'loaded-vibes-dry-'));
+    const root = await mkdtemp(path.join(os.tmpdir(), 'hipster-stack-dry-'));
     const target = path.join(root, 'dry-project');
     const result = await execa('node', [
       cli,
@@ -24,7 +24,7 @@ describe('real user-facing CLI', () => {
   });
 
   it('supports the canonical create subcommand', async () => {
-    const root = await mkdtemp(path.join(os.tmpdir(), 'loaded-vibes-create-'));
+    const root = await mkdtemp(path.join(os.tmpdir(), 'hipster-stack-create-'));
     const target = path.join(root, 'canonical-create');
     const result = await execa('node', [
       cli,
@@ -40,7 +40,7 @@ describe('real user-facing CLI', () => {
   }, 15_000);
 
   it('generates through the real CLI and reports skipped acceptance truthfully', async () => {
-    const root = await mkdtemp(path.join(os.tmpdir(), 'loaded-vibes-cli-'));
+    const root = await mkdtemp(path.join(os.tmpdir(), 'hipster-stack-cli-'));
     const target = path.join(root, 'Fresh App');
     const result = await execa('node', [
       cli,
@@ -64,9 +64,9 @@ describe('real user-facing CLI', () => {
   });
 
   it('normalizes a strict non-interactive config file through the real CLI', async () => {
-    const root = await mkdtemp(path.join(os.tmpdir(), 'loaded-vibes-config-'));
+    const root = await mkdtemp(path.join(os.tmpdir(), 'hipster-stack-config-'));
     const target = path.join(root, 'Configured App');
-    const config = path.join(root, 'loaded-vibes.json');
+    const config = path.join(root, 'hipster-stack.json');
     await writeFile(
       config,
       JSON.stringify({
@@ -86,7 +86,7 @@ describe('real user-facing CLI', () => {
 
   it('rejects an occupied destination without changing it', async () => {
     const target = await mkdtemp(
-      path.join(os.tmpdir(), 'loaded-vibes-occupied-cli-'),
+      path.join(os.tmpdir(), 'hipster-stack-occupied-cli-'),
     );
     const marker = path.join(target, 'keep.txt');
     await writeFile(marker, 'keep');
@@ -102,7 +102,7 @@ describe('real user-facing CLI', () => {
 
   it('produces equivalent source for identical supported configuration', async () => {
     const root = await mkdtemp(
-      path.join(os.tmpdir(), 'loaded-vibes-determinism-'),
+      path.join(os.tmpdir(), 'hipster-stack-determinism-'),
     );
     const targets = [path.join(root, 'first'), path.join(root, 'second')];
     for (const target of targets) {
@@ -137,7 +137,9 @@ describe('real user-facing CLI', () => {
   }, 15_000);
 
   it('adds a supported module through the real CLI', async () => {
-    const root = await mkdtemp(path.join(os.tmpdir(), 'loaded-vibes-add-cli-'));
+    const root = await mkdtemp(
+      path.join(os.tmpdir(), 'hipster-stack-add-cli-'),
+    );
     const target = path.join(root, 'add-app');
     await execa('node', [
       cli,
@@ -164,7 +166,7 @@ describe('real user-facing CLI', () => {
 
   it('diagnoses and explains a generated project without running validation suites', async () => {
     const root = await mkdtemp(
-      path.join(os.tmpdir(), 'loaded-vibes-diagnostics-cli-'),
+      path.join(os.tmpdir(), 'hipster-stack-diagnostics-cli-'),
     );
     const target = path.join(root, 'diagnostic-app');
     await execa('node', [

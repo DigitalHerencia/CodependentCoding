@@ -22,4 +22,4 @@ export {
   type NormalizedRecipe,
   type ProductPresetId,
   type RecipeInput,
-} from '@loaded-vibes/schema';
+} from '@hipster-stack/schema';

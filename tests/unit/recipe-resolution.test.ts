@@ -3,7 +3,7 @@ import {
   capabilityRegistry,
   resolveCapabilitySelection,
   resolveRecipe,
-} from '@loaded-vibes/core';
+} from '@hipster-stack/core';
 
 describe('recipe resolution', () => {
   it.each([

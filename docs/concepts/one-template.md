@@ -1,6 +1,6 @@
 # One template
 
-Loaded Vibes owns one maximal Hipster Stack application template. Presets and configuration do not select alternate architectures.
+Hipster Stack owns one maximal Hipster Stack application template. Presets and configuration do not select alternate architectures.
 
 Generation copies that template once, removes excluded generator-owned paths, applies structured identity and design transforms, writes provenance, and optionally installs dependencies and initializes Git.
 

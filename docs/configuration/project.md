@@ -1,6 +1,6 @@
 # Project configuration
 
-`loaded-vibes create [directory]` controls the destination. The recipe `name` controls package identity, while `identity.displayName` controls visible product naming.
+`hipster-stack create [directory]` controls the destination. The recipe `name` controls package identity, while `identity.displayName` controls visible product naming.
 
 Lifecycle flags:
 

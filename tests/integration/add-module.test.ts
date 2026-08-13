@@ -6,7 +6,7 @@ import {
   applyProjectModuleAddition,
   createProject,
   planProjectModuleAddition,
-} from '@loaded-vibes/core';
+} from '@hipster-stack/core';
 
 async function createBareProject(prefix: string): Promise<string> {
   const root = await mkdtemp(path.join(os.tmpdir(), prefix));
@@ -23,10 +23,10 @@ async function createBareProject(prefix: string): Promise<string> {
 
 describe('post-generation module addition', () => {
   it('records a manifest and adds a supported module with updated provenance', async () => {
-    const target = await createBareProject('loaded-vibes-add-marketing-');
+    const target = await createBareProject('hipster-stack-add-marketing-');
     const initialManifest = JSON.parse(
       await readFile(
-        path.join(target, '.loadedvibes', 'manifest.json'),
+        path.join(target, '.hipsterstack', 'manifest.json'),
         'utf8',
       ),
     ) as { modules: string[] };
@@ -42,7 +42,7 @@ describe('post-generation module addition', () => {
     ).resolves.toBeTruthy();
     const updatedManifest = JSON.parse(
       await readFile(
-        path.join(target, '.loadedvibes', 'manifest.json'),
+        path.join(target, '.hipsterstack', 'manifest.json'),
         'utf8',
       ),
     ) as { modules: string[]; recipe: { modules: { marketing: boolean } } };
@@ -57,7 +57,7 @@ describe('post-generation module addition', () => {
   });
 
   it('resolves capability prerequisites and reports setup before applying', async () => {
-    const target = await createBareProject('loaded-vibes-add-connect-');
+    const target = await createBareProject('hipster-stack-add-connect-');
     const plan = await planProjectModuleAddition(target, 'stripe-connect');
     expect(plan.addedCapabilities).toEqual(['billing', 'stripeConnect']);
     expect(plan.prerequisites).toEqual(['billing']);
@@ -68,7 +68,7 @@ describe('post-generation module addition', () => {
   });
 
   it('refuses to overwrite a user-modified intentional replacement', async () => {
-    const target = await createBareProject('loaded-vibes-add-conflict-');
+    const target = await createBareProject('hipster-stack-add-conflict-');
     const dashboard = path.join(
       target,
       'features',

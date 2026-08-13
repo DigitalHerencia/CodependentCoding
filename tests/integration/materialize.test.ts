@@ -2,7 +2,7 @@ import { mkdir, mkdtemp, readFile, readdir, stat } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { createProject } from '@loaded-vibes/core';
+import { createProject } from '@hipster-stack/core';
 
 const sourceExtensions = ['.ts', '.tsx', '.js', '.jsx', '.mjs', '.cjs'];
 
@@ -74,7 +74,7 @@ async function assertLocalImportsResolve(root: string): Promise<void> {
 
 describe('createProject', () => {
   it('materializes the complete canonical template with structured identity transforms', async () => {
-    const root = await mkdtemp(path.join(os.tmpdir(), 'loaded-vibes-create-'));
+    const root = await mkdtemp(path.join(os.tmpdir(), 'hipster-stack-create-'));
     const target = path.join(root, 'Acme Product');
     const result = await createProject({
       projectName: 'acme-product',
@@ -89,7 +89,7 @@ describe('createProject', () => {
     expect(packageJson.name).toBe('acme-product');
     expect(
       JSON.parse(
-        await readFile(path.join(target, '.loaded-vibes.json'), 'utf8'),
+        await readFile(path.join(target, '.hipster-stack.json'), 'utf8'),
       ),
     ).toMatchObject({
       projectName: 'acme-product',
@@ -103,7 +103,9 @@ describe('createProject', () => {
       ]),
     });
     expect(
-      JSON.parse(await readFile(path.join(target, 'loadedvibes.json'), 'utf8')),
+      JSON.parse(
+        await readFile(path.join(target, 'hipsterstack.json'), 'utf8'),
+      ),
     ).toMatchObject({
       schemaVersion: 1,
       name: 'acme-product',
@@ -142,7 +144,7 @@ describe('createProject', () => {
     expect(
       JSON.parse(
         await readFile(
-          path.join(target, '.loadedvibes', 'manifest.json'),
+          path.join(target, '.hipsterstack', 'manifest.json'),
           'utf8',
         ),
       ),
@@ -168,7 +170,9 @@ describe('createProject', () => {
   });
 
   it('composes selected repository-local capability modules into one application', async () => {
-    const root = await mkdtemp(path.join(os.tmpdir(), 'loaded-vibes-modules-'));
+    const root = await mkdtemp(
+      path.join(os.tmpdir(), 'hipster-stack-modules-'),
+    );
     const target = path.join(root, 'marketplace');
     await createProject({
       name: 'marketplace',
@@ -209,7 +213,7 @@ describe('createProject', () => {
   });
 
   it('wires product identity and semantic design choices into known surfaces', async () => {
-    const root = await mkdtemp(path.join(os.tmpdir(), 'loaded-vibes-design-'));
+    const root = await mkdtemp(path.join(os.tmpdir(), 'hipster-stack-design-'));
     const target = path.join(root, 'signal-desk');
     await createProject({
       name: 'signal-desk',
@@ -242,7 +246,7 @@ describe('createProject', () => {
     expect(generatedDesign).toContain('"density": "compact"');
     expect(generatedDesign).toContain('"navigation": "topbar"');
     expect(generatedDesign).toContain('"mode": "light"');
-    expect(generatedDesign).not.toContain('built with Loaded Vibes');
+    expect(generatedDesign).not.toContain('built with Hipster Stack');
     await expect(
       readFile(path.join(target, 'app', 'layout.tsx'), 'utf8'),
     ).resolves.toContain('data-theme={loadedVibesDesign.theme}');
@@ -262,7 +266,7 @@ describe('createProject', () => {
 
   it('does not attempt to recreate an existing filesystem-root parent', async () => {
     const root = await mkdtemp(
-      path.join(os.tmpdir(), 'loaded-vibes-root-parent-'),
+      path.join(os.tmpdir(), 'hipster-stack-root-parent-'),
     );
     const target = path.join(root, 'root-child');
     await expect(
@@ -277,7 +281,7 @@ describe('createProject', () => {
 
   it('promotes safely into an existing empty destination', async () => {
     const root = await mkdtemp(
-      path.join(os.tmpdir(), 'loaded-vibes-empty-target-'),
+      path.join(os.tmpdir(), 'hipster-stack-empty-target-'),
     );
     const target = path.join(root, 'empty-target');
     await mkdir(target);

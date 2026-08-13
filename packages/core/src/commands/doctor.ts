@@ -1,6 +1,6 @@
 import { access, readFile } from 'node:fs/promises';
 import path from 'node:path';
-import type { NormalizedRecipe } from '@loaded-vibes/schema';
+import type { NormalizedRecipe } from '@hipster-stack/schema';
 import { loadGeneratedProject } from '../project.js';
 
 export type DiagnosticStatus = 'pass' | 'fail';
@@ -135,7 +135,7 @@ export async function diagnoseProject(directory = '.'): Promise<DoctorResult> {
           status: 'fail',
           owner: 'local',
           message: `Node ${process.versions.node} is unsupported.`,
-          action: 'Install Node.js 24 and rerun loaded-vibes doctor.',
+          action: 'Install Node.js 24 and rerun hipster-stack doctor.',
         },
   );
 
@@ -157,7 +157,8 @@ export async function diagnoseProject(directory = '.'): Promise<DoctorResult> {
       status: 'fail',
       owner: 'generator',
       message: error instanceof Error ? error.message : String(error),
-      action: 'Run this command from an intact Loaded Vibes generated project.',
+      action:
+        'Run this command from an intact Hipster Stack generated project.',
     });
   }
 

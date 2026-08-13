@@ -12,7 +12,7 @@ import {
   resolveRecipe,
   type ConfigInput,
   type RecipeInput,
-} from '@loaded-vibes/core';
+} from '@hipster-stack/core';
 import {
   collectInteractiveRecipe,
   formatRecipeReview,
@@ -21,7 +21,7 @@ import {
 
 const program = new Command();
 program
-  .name('loaded-vibes')
+  .name('hipster-stack')
   .description('Generate a complete white-label application from one template.')
   .version('0.1.0');
 
@@ -49,7 +49,7 @@ async function runCreate(
   targetDirectory: string | undefined,
   flags: CreateFlags,
 ) {
-  intro('Loaded Vibes');
+  intro('Hipster Stack');
   const fileInput = flags.config ? await loadConfigFile(flags.config) : {};
   let target = targetDirectory ?? fileInput.targetDirectory;
   if (!target && !flags.yes && process.stdin.isTTY) {
@@ -128,7 +128,7 @@ async function runCreate(
   };
   const progress = spinner();
   if (!flags.dryRun)
-    progress.start('Generating from the Loaded Vibes template');
+    progress.start('Generating from the Hipster Stack template');
   let result;
   try {
     result = await createProject(input, {
@@ -143,7 +143,7 @@ async function runCreate(
     outro('Dry run complete; no files were written.');
   } else if (result.status === 'accepted') {
     outro(
-      `Created and acceptance-validated ${recipe.name}. Next: open ${target}, then run loaded-vibes doctor.`,
+      `Created and acceptance-validated ${recipe.name}. Next: open ${target}, then run hipster-stack doctor.`,
     );
   } else {
     outro(
@@ -174,7 +174,7 @@ program
   .argument('<surface>', 'marketing, sample-domain, or stripe-connect')
   .option('--cwd <directory>', 'generated project directory', '.')
   .action(async (module: string, flags: { cwd: string }) => {
-    intro('Loaded Vibes add');
+    intro('Hipster Stack add');
     const plan = await planProjectModuleAddition(flags.cwd, module);
     console.log(
       [
@@ -205,7 +205,7 @@ program
   .description('Diagnose generated-project readiness and configuration.')
   .option('--cwd <directory>', 'generated project directory', '.')
   .action(async (flags: { cwd: string }) => {
-    intro('Loaded Vibes doctor');
+    intro('Hipster Stack doctor');
     const result = await diagnoseProject(flags.cwd);
     for (const check of result.checks) {
       const mark = check.status === 'pass' ? '✓' : '✗';
@@ -214,7 +214,7 @@ program
     }
     if (result.ok) outro('Project prerequisites are ready.');
     else {
-      outro('Complete the actions above, then rerun loaded-vibes doctor.');
+      outro('Complete the actions above, then rerun hipster-stack doctor.');
       process.exitCode = 1;
     }
   });
@@ -224,7 +224,7 @@ program
   .description('Explain a generated project and its remaining setup.')
   .option('--cwd <directory>', 'generated project directory', '.')
   .action(async (flags: { cwd: string }) => {
-    intro('Loaded Vibes explain');
+    intro('Hipster Stack explain');
     const explanation = await explainProject(flags.cwd);
     console.log(
       [

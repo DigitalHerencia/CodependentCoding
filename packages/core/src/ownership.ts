@@ -1,4 +1,4 @@
-import type { CapabilityId, NormalizedRecipe } from '@loaded-vibes/schema';
+import type { CapabilityId, NormalizedRecipe } from '@hipster-stack/schema';
 
 export const generatedModuleIds = [
   'marketing',

@@ -4,7 +4,7 @@ import {
   recipeSchema,
   type NormalizedRecipe,
   type RecipeInput,
-} from '@loaded-vibes/schema';
+} from '@hipster-stack/schema';
 import { getProductPreset } from './presets.js';
 import {
   capabilityRegistry,

@@ -4,7 +4,7 @@ import {
   formatRecipeReview,
   type CreateFlowPrompts,
 } from '../../packages/cli/src/create-flow.js';
-import { resolveRecipe } from '@loaded-vibes/core';
+import { resolveRecipe } from '@hipster-stack/core';
 
 function prompts(
   overrides: Partial<CreateFlowPrompts> = {},

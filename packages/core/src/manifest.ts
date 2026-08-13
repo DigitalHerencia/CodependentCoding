@@ -2,7 +2,7 @@ import { z } from 'zod';
 import {
   normalizedRecipeSchema,
   productPresetSchema,
-} from '@loaded-vibes/schema';
+} from '@hipster-stack/schema';
 import { generatedModuleIds } from './ownership.js';
 import { LoadedVibesError } from './errors.js';
 
@@ -10,7 +10,7 @@ export const generationManifestSchema = z
   .object({
     schemaVersion: z.literal(2),
     generator: z
-      .object({ name: z.literal('create-loaded-vibes'), version: z.string() })
+      .object({ name: z.literal('hipster-stack'), version: z.string() })
       .strict(),
     template: z
       .object({
@@ -35,7 +35,7 @@ export function parseGenerationManifest(value: unknown): GenerationManifest {
   if (!result.success) {
     throw new LoadedVibesError(
       'PROJECT_NOT_GENERATED',
-      'The Loaded Vibes manifest is missing or invalid.',
+      'The Hipster Stack manifest is missing or invalid.',
       result.error,
     );
   }

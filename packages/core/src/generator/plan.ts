@@ -22,7 +22,7 @@ export function createGenerationPlan(
     excludedOwnedPaths: excludedOwnedPaths(config.recipe),
     stagingDirectory: path.join(
       parent,
-      `.loaded-vibes-${path.basename(config.targetDirectory)}-${randomUUID()}`,
+      `.hipster-stack-${path.basename(config.targetDirectory)}-${randomUUID()}`,
     ),
     validationGates: [
       'pnpm install --frozen-lockfile',

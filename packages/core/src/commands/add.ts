@@ -4,7 +4,7 @@ import type {
   CapabilityId,
   ModuleSelection,
   NormalizedRecipe,
-} from '@loaded-vibes/schema';
+} from '@hipster-stack/schema';
 import { LoadedVibesError } from '../errors.js';
 import {
   generatedModuleIds,
@@ -157,7 +157,7 @@ async function assertAdditionIsSafe(plan: ModuleAdditionPlan): Promise<void> {
     if (!currentBody.equals(baselineBody)) {
       throw new LoadedVibesError(
         'MODULE_CONFLICT',
-        `${relative} has changed since generation. Loaded Vibes will not overwrite it.`,
+        `${relative} has changed since generation. Hipster Stack will not overwrite it.`,
       );
     }
   }
@@ -170,15 +170,17 @@ export async function planProjectModuleAddition(
   const target = path.resolve(targetDirectory);
   const module = parseModuleId(requestedModule);
   const manifest = parseGenerationManifest(
-    await readJson(path.join(target, '.loadedvibes', 'manifest.json')),
+    await readJson(path.join(target, '.hipsterstack', 'manifest.json')),
   );
   const currentRecipe = resolveRecipe(
-    (await readJson(path.join(target, 'loadedvibes.json'))) as NormalizedRecipe,
+    (await readJson(
+      path.join(target, 'hipsterstack.json'),
+    )) as NormalizedRecipe,
   ).recipe;
   if (JSON.stringify(manifest.recipe) !== JSON.stringify(currentRecipe)) {
     throw new LoadedVibesError(
       'MODULE_CONFLICT',
-      'loadedvibes.json and .loadedvibes/manifest.json disagree. Reconcile them before adding a module.',
+      'hipsterstack.json and .hipsterstack/manifest.json disagree. Reconcile them before adding a module.',
     );
   }
   const capability = moduleCapabilities[module];

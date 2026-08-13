@@ -8,7 +8,7 @@ import {
   type ProductPresetId,
   type RecipeInput,
   type ResolvedRecipe,
-} from '@loaded-vibes/core/browser';
+} from '@hipster-stack/core/browser';
 
 export interface ConfiguratorRecipe {
   schemaVersion: 1;
@@ -30,7 +30,7 @@ export const defaultConfiguratorRecipe: ConfiguratorRecipe = {
   identity: {
     displayName: 'My SaaS',
     description:
-      'A focused product built from the Loaded Vibes master template.',
+      'A focused product built from the Hipster Stack master template.',
   },
   design: defaultDesign,
 };
@@ -93,5 +93,5 @@ export function deserializeRecipe(value: string): ConfiguratorRecipe {
 
 export function createCliCommand(recipe: ConfiguratorRecipe): string {
   const normalized: NormalizedRecipe = resolveConfiguratorRecipe(recipe).recipe;
-  return `pnpm dlx create-loaded-vibes@latest ${normalized.name} --config loadedvibes.json --yes`;
+  return `pnpm dlx hipster-stack@latest ${normalized.name} --config hipsterstack.json --yes`;
 }

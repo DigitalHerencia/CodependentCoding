@@ -1,6 +1,6 @@
-# Loaded Vibes documentation
+# Hipster Stack documentation
 
-Loaded Vibes generates a complete white-label application from one repository-owned master template and a bounded configuration.
+Hipster Stack generates a complete white-label application from one repository-owned master template and a bounded configuration.
 
 ## Start here
 
@@ -11,4 +11,4 @@ Loaded Vibes generates a complete white-label application from one repository-ow
 - [Generated project handoff](/docs/concepts/generated-project)
 - [Troubleshooting](/docs/troubleshooting)
 
-The CLI runs generation locally. The visual configurator creates the same portable `loadedvibes.json` contract; it does not upload or build your project.
+The CLI runs generation locally. The visual configurator creates the same portable `hipsterstack.json` contract; it does not upload or build your project.

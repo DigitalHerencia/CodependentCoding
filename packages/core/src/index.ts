@@ -41,7 +41,7 @@ export {
   type CapabilityDefinition,
   type CapabilityResolution,
 } from './capabilities.js';
-export { capabilityIds, productPresetIds } from '@loaded-vibes/schema';
+export { capabilityIds, productPresetIds } from '@hipster-stack/schema';
 export {
   normalizeRecipe,
   resolveRecipe,
@@ -59,4 +59,4 @@ export type {
   ProductIdentityInput,
   ProductPresetId,
   RecipeInput,
-} from '@loaded-vibes/schema';
+} from '@hipster-stack/schema';

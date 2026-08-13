@@ -3,7 +3,7 @@ import {
   type CapabilityId,
   type ModuleSelection,
   type ResolvedModules,
-} from '@loaded-vibes/schema';
+} from '@hipster-stack/schema';
 import { LoadedVibesError } from './errors.js';
 
 export interface CapabilityDefinition {

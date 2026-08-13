@@ -17,10 +17,10 @@ const artifactName = (await readdir('.artifacts')).find((name) =>
 if (!artifactName) throw new Error('No packed release artifact was found.');
 
 const artifact = path.resolve('.artifacts', artifactName);
-const root = await mkdtemp(path.join(os.tmpdir(), 'loaded-vibes-release-'));
+const root = await mkdtemp(path.join(os.tmpdir(), 'hipster-stack-release-'));
 const consumer = path.join(root, 'consumer');
 const target = path.join(root, 'generated-app');
-const recipePath = path.join(root, 'loadedvibes.json');
+const recipePath = path.join(root, 'hipsterstack.json');
 const pnpmCli = process.env.npm_execpath;
 if (!pnpmCli) throw new Error('pnpm did not expose its executable path.');
 
@@ -49,7 +49,7 @@ try {
   await mkdir(consumer);
   await writeFile(
     path.join(consumer, 'package.json'),
-    JSON.stringify({ name: 'loaded-vibes-release-smoke', private: true }),
+    JSON.stringify({ name: 'hipster-stack-release-smoke', private: true }),
   );
   await writeFile(
     recipePath,
@@ -76,7 +76,7 @@ try {
     '--dir',
     consumer,
     'exec',
-    'loaded-vibes',
+    'hipster-stack',
     'create',
     target,
     '--config',
@@ -87,7 +87,7 @@ try {
   ]);
 
   const manifest = JSON.parse(
-    await readFile(path.join(target, '.loadedvibes', 'manifest.json'), 'utf8'),
+    await readFile(path.join(target, '.hipsterstack', 'manifest.json'), 'utf8'),
   );
   const product = await readFile(
     path.join(target, 'content', 'loadedvibes.ts'),

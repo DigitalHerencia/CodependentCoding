@@ -5,7 +5,7 @@ import {
   productPresets,
   type Design,
   type ProductPresetId,
-} from '@loaded-vibes/core/browser';
+} from '@hipster-stack/core/browser';
 import { useEffect, useMemo, useState } from 'react';
 import {
   createCliCommand,
@@ -92,10 +92,10 @@ export function Configurator() {
     const href = URL.createObjectURL(blob);
     const anchor = document.createElement('a');
     anchor.href = href;
-    anchor.download = 'loadedvibes.json';
+    anchor.download = 'hipsterstack.json';
     anchor.click();
     URL.revokeObjectURL(href);
-    setNotice('loadedvibes.json downloaded.');
+    setNotice('hipsterstack.json downloaded.');
   }
 
   function shareRecipe() {
@@ -304,7 +304,7 @@ export function Configurator() {
 
           <section className="recipe-code">
             <div>
-              <span>loadedvibes.json</span>
+              <span>hipsterstack.json</span>
               <button
                 type="button"
                 onClick={() => void copy(normalizedJson, 'Recipe copied.')}

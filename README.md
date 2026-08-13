@@ -1,27 +1,27 @@
-# Loaded Vibes
+# Hipster Stack
 
-Loaded Vibes turns a bounded project configuration into a complete white-label application. It combines the canonical `loaded-vibes` CLI, a stateless visual configurator, reproducible `loadedvibes.json` contracts, and one packaged maximal template—without asking you to redesign the stack.
+Hipster Stack turns a bounded project configuration into a complete white-label application. It combines the canonical `hipster-stack` CLI, a stateless visual configurator, reproducible `hipsterstack.json` contracts, and one packaged maximal template—without asking you to redesign the stack.
 
 The canonical end-user guide lives in [`docs/`](docs/index.md) and is rendered by the website under `/docs/*`. Start with [Getting started](docs/getting-started.md), then use the [configuration](docs/concepts/configuration.md) and [CLI](docs/cli/index.md) references as needed.
 
 ## Create a project
 
-Node.js 24 is required. The published package is still named `create-loaded-vibes`; no npm package rename is implied. Run it without installing globally:
+Node.js 24 is required. Package metadata now targets `hipster-stack`; this repository change does not claim npm publication or name reservation. Run it without installing globally:
 
 ```powershell
-pnpm dlx create-loaded-vibes@latest create my-product
+pnpm dlx hipster-stack@latest create my-product
 ```
 
-`loaded-vibes` is the canonical command. The package also exposes `create-loaded-vibes`, including its direct `create-loaded-vibes my-product` initializer form, as a low-cost compatibility alias:
+`hipster-stack` is the canonical command:
 
 ```powershell
-loaded-vibes create my-product
+hipster-stack create my-product
 ```
 
 The interactive flow asks for a starting configuration, real optional surfaces, product identity, and visual direction. For a reproducible non-interactive build:
 
 ```powershell
-loaded-vibes create my-product --config loadedvibes.json --yes
+hipster-stack create my-product --config hipsterstack.json --yes
 ```
 
 Useful create options include `--dry-run`, `--no-git`, `--skip-install`, and `--name <package-name>`.
@@ -41,9 +41,9 @@ Capability prerequisites resolve automatically. Fixed architecture choices—Typ
 
 ## Visual configurator
 
-The responsive configurator in `apps/web` uses the same recipe core as the CLI. It previews representative dashboard, onboarding, settings, billing, detail/workflow, and marketing surfaces, then downloads `loadedvibes.json` or copies the matching CLI command.
+The responsive configurator in `apps/web` uses the same recipe core as the CLI. It previews representative dashboard, onboarding, settings, billing, detail/workflow, and marketing surfaces, then downloads `hipsterstack.json` or copies the matching CLI command.
 
-It is intentionally stateless: no Loaded Vibes account, database, remote build worker, or hosted project infrastructure is involved. To run it locally:
+It is intentionally stateless: no Hipster Stack account, database, remote build worker, or hosted project infrastructure is involved. To run it locally:
 
 ```powershell
 corepack pnpm install --frozen-lockfile
@@ -52,7 +52,7 @@ corepack pnpm --dir apps/web dev
 
 ## What gets generated
 
-Every project starts from a self-contained Loaded Vibes-owned Next.js application and includes:
+Every project starts from a self-contained Hipster Stack-owned Next.js application and includes:
 
 - Clerk identity with local organization, membership, and RBAC truth;
 - Prisma and Neon-ready tenant data boundaries;
@@ -60,30 +60,30 @@ Every project starts from a self-contained Loaded Vibes-owned Next.js applicatio
 - recipe-gated subscription billing, Stripe Connect, onboarding, admin, marketing, and sample-project surfaces;
 - Cloudinary media, Hugging Face inference, and Mapbox location adapters with server-side credential boundaries;
 - semantic identity/design personalization;
-- `.loadedvibes/manifest.json` provenance for explanation and safe supported additions;
+- `.hipsterstack/manifest.json` provenance for explanation and safe supported additions;
 - focused project documentation, environment examples, and validation commands.
 
 Identical supported recipes and template revisions produce equivalent source output.
 
 ## After generation
 
-Run these commands inside a generated project with an installed Loaded Vibes CLI:
+Run these commands inside a generated project with an installed Hipster Stack CLI:
 
 ```powershell
-loaded-vibes explain
-loaded-vibes doctor
-loaded-vibes add marketing
-loaded-vibes add sample-domain
-loaded-vibes add stripe-connect
+hipster-stack explain
+hipster-stack doctor
+hipster-stack add marketing
+hipster-stack add sample-domain
+hipster-stack add stripe-connect
 ```
 
 `explain` summarizes what was generated and what remains. `doctor` diagnoses actionable local/provider readiness without running the entire validation suite. `add` enables three explicitly supported generator-owned surfaces; it is not an arbitrary source upgrade or merge engine.
 
 ## Provider handoff
 
-Loaded Vibes creates provider-ready integration boundaries and `.env.example`; it does not create accounts, collect secrets, provision infrastructure, migrate production data, or deploy the application.
+Hipster Stack creates provider-ready integration boundaries and `.env.example`; it does not create accounts, collect secrets, provision infrastructure, migrate production data, or deploy the application.
 
-| Loaded Vibes creates                                   | You still configure                                                                               |
+| Hipster Stack creates                                  | You still configure                                                                               |
 | ------------------------------------------------------ | ------------------------------------------------------------------------------------------------- |
 | Clerk routes, session helpers, webhook boundary        | Clerk instance, production keys, and webhook destination                                          |
 | Prisma schema, migrations, and tenant-safe data access | Neon/database project, pooled runtime URL, direct migration URL, and approved migration execution |
@@ -92,7 +92,7 @@ Loaded Vibes creates provider-ready integration boundaries and `.env.example`; i
 | Hugging Face and Mapbox server adapters                | Provider tokens, model/style choices, quotas, and production usage policy                         |
 | Vercel-ready Next.js project                           | Deployment project, environment variables, domains, and production promotion                      |
 
-Start with the generated `.env.example`, run `loaded-vibes doctor`, and follow the generated README. Provider-backed journeys and production deployment remain owner-controlled verification gates.
+Start with the generated `.env.example`, run `hipster-stack doctor`, and follow the generated README. Provider-backed journeys and production deployment remain owner-controlled verification gates.
 
 ## Package and repository development
 
@@ -104,6 +104,6 @@ corepack pnpm validate
 corepack pnpm release:check
 ```
 
-`release:check` builds and inspects the tarball, installs that tarball in a clean temporary consumer, and generates a representative B2B SaaS through the packaged `loaded-vibes create` executable. It does not publish the package or contact providers.
+`release:check` builds and inspects the tarball, installs that tarball in a clean temporary consumer, and generates a representative B2B SaaS through the packaged `hipster-stack create` executable. It does not publish the package or contact providers.
 
 The canonical product and architecture sources live in [`context/`](context/README.md). Machine contracts and execution evidence live in [`.agents/`](.agents/AGENTS.md).

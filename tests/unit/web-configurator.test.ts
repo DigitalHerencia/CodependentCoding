@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { normalizeConfig, type ConfigInput } from '@loaded-vibes/core';
+import { normalizeConfig, type ConfigInput } from '@hipster-stack/core';
 import {
   createCliCommand,
   defaultConfiguratorRecipe,
@@ -27,9 +27,9 @@ describe('web configurator recipe', () => {
     ).toBe('my-saas');
   });
 
-  it('provides a self-contained package command', () => {
+  it('provides the canonical Hipster Stack package command', () => {
     expect(createCliCommand(defaultConfiguratorRecipe)).toBe(
-      'pnpm dlx create-loaded-vibes@latest my-saas --config loadedvibes.json --yes',
+      'pnpm dlx hipster-stack@latest my-saas --config hipsterstack.json --yes',
     );
   });
 });

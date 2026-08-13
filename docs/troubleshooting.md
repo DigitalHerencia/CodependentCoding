@@ -2,7 +2,7 @@
 
 ## The destination is not empty
 
-Choose an empty directory. Loaded Vibes will not overwrite an existing project.
+Choose an empty directory. Hipster Stack will not overwrite an existing project.
 
 ## Installation was skipped or failed
 

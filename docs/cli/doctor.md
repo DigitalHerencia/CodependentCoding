@@ -1,7 +1,7 @@
-# loaded-vibes doctor
+# hipster-stack doctor
 
 ```powershell
-loaded-vibes doctor [--cwd <directory>]
+hipster-stack doctor [--cwd <directory>]
 ```
 
 Doctor checks generated-project metadata, local prerequisites, and actionable configuration readiness. A failed check includes the action to take before rerunning it.
