@@ -1,13 +1,13 @@
 {
   "schemaVersion": 3,
-  "status": "ready-for-review",
+  "status": "in-review",
   "observedRevision": "617c980",
   "observedDate": "2026-08-13",
   "currentOutcome": "HS-308 is establishing the canonical Application Definition, typed property metadata, and shared deterministic resolver for The Constituter™, CLI, config, and generator planning.",
   "activeIssue": 154,
   "activeSpec": "context/specs/HS-308-application-definition-foundation.md",
   "openIssuesObserved": 1,
-  "openPullRequestsObserved": 0,
+  "openPullRequestsObserved": 1,
   "completedRoadmap": [
     "HS-301",
     "HS-302",
@@ -31,5 +31,5 @@
     "PASS: apps/web node_modules/.bin/next.CMD build --webpack (31 static routes)",
     "PASS: CI=1 corepack pnpm release:check (470 safe packed entries and packed CLI smoke)"
   ],
-  "nextAction": "Open the Issue #154 linked pull request and move the Project item to In Review."
+  "nextAction": "Wait for PR #155 checks, address any focused failure, then leave the production-triggering merge for owner approval."
 }

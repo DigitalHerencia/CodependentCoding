@@ -2,9 +2,11 @@
   "schemaVersion": 3,
   "handoff": {
     "issue": 154,
+    "pullRequest": 155,
     "spec": "context/specs/HS-308-application-definition-foundation.md",
     "branch": "feat/154-application-definition",
-    "status": "ready-for-review",
+    "status": "in-review",
+    "implementationCommit": "c8ac9ae",
     "scope": "Canonical Application Definition entities, property metadata, deterministic resolver, compatibility adapters, generation-plan preview, and The Constituter™ naming.",
     "verification": [
       "node_modules/.bin/tsc.CMD --noEmit",
