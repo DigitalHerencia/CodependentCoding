@@ -24,7 +24,7 @@ export async function resolveTemplateDirectory(): Promise<string> {
   ];
   for (const candidate of candidates) {
     try {
-      await access(path.join(candidate, '.loaded-vibes-template.json'));
+      await access(path.join(candidate, 'package.json'));
       return candidate;
     } catch {
       // Try the source-tree or packed-package layout next.

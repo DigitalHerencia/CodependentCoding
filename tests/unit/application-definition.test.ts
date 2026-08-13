@@ -79,7 +79,7 @@ describe('Application Definition resolution', () => {
     expect(result.plan.environmentRequirements).toContain('STRIPE_SECRET_KEY');
     expect(result.plan.routes.map((route) => route.id)).toContain('billing');
     expect(result.plan.artifactSets.map((set) => set.id)).toContain('billing');
-    expect(result.resolved.definition).not.toHaveProperty('providers');
+    expect(result.resolved.definition.providers).toEqual({});
     expect(result.resolved.definition).not.toHaveProperty('routes');
     expect(result.resolved.definition).not.toHaveProperty('resources');
   });

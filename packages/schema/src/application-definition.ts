@@ -35,6 +35,15 @@ export const propertyStateSchema = z.enum(propertyStateIds);
 export const providerIds = ['clerk', 'neon', 'stripe'] as const;
 export const providerIdSchema = z.enum(providerIds);
 
+export const authenticationProviderIds = ['none', 'clerk'] as const;
+export const authenticationProviderSchema = z.enum(authenticationProviderIds);
+export const databaseTechnologyIds = ['none', 'postgresql'] as const;
+export const databaseTechnologySchema = z.enum(databaseTechnologyIds);
+export const postgresqlProviderIds = ['none', 'neon'] as const;
+export const postgresqlProviderSchema = z.enum(postgresqlProviderIds);
+export const commerceProviderIds = ['none', 'stripe'] as const;
+export const commerceProviderSchema = z.enum(commerceProviderIds);
+
 export const authorizationModelIds = ['rbac', 'abac', 'none'] as const;
 export const authorizationModelIdSchema = z.enum(authorizationModelIds);
 
@@ -42,6 +51,10 @@ export const outputPolicyIds = ['INHERIT', 'INCLUDE', 'EXCLUDE'] as const;
 export const outputPolicySchema = z.enum(outputPolicyIds);
 
 export const artifactSetIds = [
+  'application-shell',
+  'authentication-clerk',
+  'persistence-postgresql',
+  'commerce-stripe',
   'organizations',
   'invitations',
   'rbac',
@@ -119,6 +132,8 @@ export const routeSurfaceDefinitionSchema = z
   .object({
     id: z.string().min(1),
     urlSegment: z.string(),
+    routeGroup: z.string().min(1),
+    navigationLabel: z.string().min(1),
     access: z.enum(['public', 'authenticated', 'authorized']),
     capability: z.enum(capabilityIds).optional(),
   })
@@ -131,6 +146,9 @@ export const artifactDefinitionSchema = z
     artifactSet: artifactSetIdSchema,
     requiredBy: z.array(z.enum(capabilityIds)),
     removable: z.boolean(),
+    generationPolicy: z.enum(['INHERIT', 'INCLUDE', 'EXCLUDE', 'LOCKED']),
+    replacementPolicy: z.enum(['retain', 'remove', 'transform']),
+    dependencies: z.array(z.string()),
     generationReason: z.string().min(1),
   })
   .strict();
@@ -189,6 +207,51 @@ export const applicationIdentitySchema = z
   })
   .strict();
 
+export const providerSelectionSchema = z
+  .object({
+    authentication: authenticationProviderSchema.optional(),
+    persistence: z
+      .object({
+        technology: databaseTechnologySchema,
+        provider: postgresqlProviderSchema,
+      })
+      .strict()
+      .optional(),
+    commerce: commerceProviderSchema.optional(),
+  })
+  .strict()
+  .superRefine((value, context) => {
+    if (!value.persistence) return;
+    const validPersistence =
+      (value.persistence.technology === 'none' &&
+        value.persistence.provider === 'none') ||
+      (value.persistence.technology === 'postgresql' &&
+        value.persistence.provider === 'neon');
+    if (!validPersistence) {
+      context.addIssue({
+        code: 'custom',
+        path: ['persistence'],
+        message:
+          'Persistence must be either none/none or PostgreSQL backed by Neon.',
+      });
+    }
+  });
+
+export const authorizationSelectionSchema = z
+  .object({
+    model: z.enum(['rbac', 'none']).default('rbac'),
+    roles: z.array(roleDefinitionSchema).optional(),
+  })
+  .strict();
+
+export const routeOverrideSchema = z
+  .object({
+    id: z.string().min(1),
+    urlSegment: z.string().startsWith('/'),
+    navigationLabel: z.string().min(1).optional(),
+  })
+  .strict();
+
 export const applicationDefinitionSchema = z
   .object({
     schemaVersion: z
@@ -196,25 +259,35 @@ export const applicationDefinitionSchema = z
       .default(applicationDefinitionSchemaVersion),
     preset: productPresetSchema.default('bare-golden-app'),
     identity: applicationIdentitySchema,
+    providers: providerSelectionSchema.default({}),
     capabilities: capabilityOverridesSchema.default({
       include: [],
       exclude: [],
     }),
     presentation: designSchema.default(defaultDesign),
+    authorization: authorizationSelectionSchema.default({ model: 'rbac' }),
+    routes: z.array(routeOverrideSchema).default([]),
     outputOverrides: z
       .object({
         artifactSets: z
           .partialRecord(artifactSetIdSchema, outputPolicySchema)
           .default({}),
+        artifacts: z.record(z.string(), outputPolicySchema).default({}),
       })
       .strict()
-      .default({ artifactSets: {} }),
+      .default({ artifactSets: {}, artifacts: {} }),
   })
   .strict();
 
 export type PropertyMechanism = z.infer<typeof propertyMechanismSchema>;
 export type PropertyState = z.infer<typeof propertyStateSchema>;
 export type ProviderId = z.infer<typeof providerIdSchema>;
+export type AuthenticationProvider = z.infer<
+  typeof authenticationProviderSchema
+>;
+export type DatabaseTechnology = z.infer<typeof databaseTechnologySchema>;
+export type PostgresqlProvider = z.infer<typeof postgresqlProviderSchema>;
+export type CommerceProvider = z.infer<typeof commerceProviderSchema>;
 export type AuthorizationModelId = z.infer<typeof authorizationModelIdSchema>;
 export type OutputPolicy = z.infer<typeof outputPolicySchema>;
 export type ArtifactSetId = z.infer<typeof artifactSetIdSchema>;
@@ -230,6 +303,11 @@ export type RouteSurfaceDefinition = z.infer<
 export type Artifact = z.infer<typeof artifactDefinitionSchema>;
 export type ArtifactSet = z.infer<typeof artifactSetDefinitionSchema>;
 export type PropertyDefinition = z.infer<typeof propertyDefinitionSchema>;
+export type ProviderSelection = z.infer<typeof providerSelectionSchema>;
+export type AuthorizationSelection = z.infer<
+  typeof authorizationSelectionSchema
+>;
+export type RouteOverride = z.infer<typeof routeOverrideSchema>;
 export type ApplicationDefinitionInput = z.input<
   typeof applicationDefinitionSchema
 >;

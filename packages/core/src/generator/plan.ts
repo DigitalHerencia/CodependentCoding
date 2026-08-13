@@ -6,7 +6,7 @@ import {
   type ApplicationGenerationPlan,
   type ResolvedApplicationDefinition,
 } from '../application-definition.js';
-import { excludedOwnedPaths } from '../ownership.js';
+import { excludedOwnedPathsForApplication } from '../ownership.js';
 
 export interface GenerationPlan {
   config: LoadedVibesConfig;
@@ -30,16 +30,16 @@ export function createGenerationPlan(
   return {
     config,
     templateDirectory,
-    excludedOwnedPaths: excludedOwnedPaths(config.recipe),
+    excludedOwnedPaths: excludedOwnedPathsForApplication(
+      application.plan.selectedCapabilities,
+      application.plan.selectedProviders,
+      application.plan.filesOmitted,
+    ),
     stagingDirectory: path.join(
       parent,
       `.hipster-stack-${path.basename(config.targetDirectory)}-${randomUUID()}`,
     ),
-    validationGates: [
-      'pnpm install --frozen-lockfile',
-      'pnpm db:generate',
-      'pnpm validate:ci',
-    ],
+    validationGates: application.plan.validationRequirements,
     applicationDefinition: application.resolved.definition,
     resolvedApplication: application.resolved,
     applicationPlan: application.plan,

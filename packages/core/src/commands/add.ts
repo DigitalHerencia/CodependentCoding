@@ -244,10 +244,15 @@ export async function applyProjectModuleAddition(
       errorOnExist: !plan.replacements.includes(relative),
     });
   }
-  await writeRecipeArtifacts(plan.targetDirectory, plan.nextRecipe, {
-    templateId: plan.manifest.template.id,
-    templateVersion: plan.manifest.template.version,
-  });
+  await writeRecipeArtifacts(
+    plan.targetDirectory,
+    plan.nextRecipe,
+    {
+      templateId: plan.manifest.template.id,
+      templateVersion: plan.manifest.template.version,
+    },
+    resolveRecipe(plan.nextRecipe).application.resolved.definition,
+  );
   return {
     module: plan.module,
     addedCapabilities: plan.addedCapabilities,

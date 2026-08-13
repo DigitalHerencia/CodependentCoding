@@ -5,21 +5,16 @@ import { describe, expect, it } from 'vitest';
 const root = process.cwd();
 
 describe('template ownership', () => {
-  it('uses repository-local template identity without external source provenance', async () => {
-    const metadata = JSON.parse(
-      await readFile(
-        path.join(root, 'template', '.loaded-vibes-template.json'),
+  it('keeps generator metadata outside the standalone template', async () => {
+    await expect(
+      access(path.join(root, 'template', '.loaded-vibes-template.json')),
+    ).rejects.toMatchObject({ code: 'ENOENT' });
+    await expect(
+      readFile(
+        path.join(root, 'packages', 'core', 'src', 'template-metadata.ts'),
         'utf8',
       ),
-    ) as Record<string, unknown>;
-    expect(metadata).toMatchObject({
-      schemaVersion: 2,
-      templateId: 'loaded-vibes-maximal-saas',
-      templateVersion: '1.0.0',
-      composition: 'repository-local-maximal-template',
-    });
-    expect(metadata).not.toHaveProperty('sourceRepository');
-    expect(metadata).not.toHaveProperty('sourceRevision');
+    ).resolves.toContain("templateId: 'loaded-vibes-maximal-saas'");
   });
 
   it('keeps every supported capability in the canonical template', async () => {

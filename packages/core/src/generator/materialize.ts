@@ -2,7 +2,6 @@ import {
   cp,
   lstat,
   mkdir,
-  readFile,
   rename,
   rm,
   rmdir,
@@ -15,10 +14,6 @@ import { applyTransforms } from './transforms.js';
 export async function materialize(plan: GenerationPlan): Promise<void> {
   try {
     await lstat(path.join(plan.templateDirectory, 'package.json'));
-    await readFile(
-      path.join(plan.templateDirectory, '.loaded-vibes-template.json'),
-      'utf8',
-    );
   } catch (error) {
     throw new LoadedVibesError(
       'TEMPLATE_INVALID',

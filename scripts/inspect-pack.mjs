@@ -13,7 +13,6 @@ const entries = result.stdout.split(/\r?\n/);
 for (const required of [
   'package/dist/cli.mjs',
   'package/template/package.json',
-  'package/template/.loaded-vibes-template.json',
   'package/template/.env.example',
   'package/template/prisma/schema.prisma',
 ]) {

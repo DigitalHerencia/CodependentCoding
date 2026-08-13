@@ -37,6 +37,8 @@ export {
   optionalSurfaceOwnership,
   selectedGeneratedModuleIds,
   excludedOwnedPaths,
+  excludedOwnedPathsForApplication,
+  providerSurfaceOwnership,
   type GeneratedModuleId,
   type OptionalSurfaceOwnership,
 } from './ownership.js';
@@ -86,6 +88,7 @@ export type {
   ProductPresetId,
   ProviderDefinition,
   ProviderId,
+  ProviderSelection,
   RecipeInput,
   ResourceDefinition,
   RoleDefinition,

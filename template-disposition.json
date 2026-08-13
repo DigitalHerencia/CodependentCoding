@@ -1488,12 +1488,6 @@
     "reason": "Canonical application, governance, validation, or delivery source."
   },
   {
-    "path": "public/TEMPLATE-MANIFEST.md",
-    "disposition": "core",
-    "included": true,
-    "reason": "Canonical application, governance, validation, or delivery source."
-  },
-  {
     "path": "public/icon.svg",
     "disposition": "core",
     "included": true,

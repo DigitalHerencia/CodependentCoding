@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import {
+  applicationDefinitionSchema,
   normalizedRecipeSchema,
   productPresetSchema,
 } from '@hipster-stack/schema';
@@ -24,6 +25,7 @@ export const generationManifestSchema = z
     preset: productPresetSchema,
     modules: z.array(z.enum(generatedModuleIds)),
     excludedOwnedPaths: z.array(z.string()).default([]),
+    applicationDefinition: applicationDefinitionSchema.optional(),
     recipe: normalizedRecipeSchema,
   })
   .strict();

@@ -57,6 +57,7 @@ export {
   type ProductPresetId,
   type ProviderDefinition,
   type ProviderId,
+  type ProviderSelection,
   type RecipeInput,
   type ResourceDefinition,
   type RoleDefinition,

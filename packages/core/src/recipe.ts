@@ -84,8 +84,11 @@ export function applicationDefinitionFromRecipe(
       description: recipe.identity.description,
     },
     capabilities: { include, exclude },
+    authorization: {
+      model: recipe.modules.rbac === false ? 'none' : 'rbac',
+    },
     presentation: recipe.design,
-    outputOverrides: { artifactSets: {} },
+    outputOverrides: { artifactSets: {}, artifacts: {} },
   };
 }
 

@@ -25,7 +25,10 @@ describe('normalizeConfig', () => {
           navigation: 'sidebar',
           mode: 'system',
         },
-        outputOverrides: { artifactSets: {} },
+        providers: {},
+        authorization: { model: 'rbac' },
+        routes: [],
+        outputOverrides: { artifactSets: {}, artifacts: {} },
       },
       recipe: {
         schemaVersion: 1,

@@ -41,7 +41,7 @@ type CapabilityConsequences = {
 };
 
 export const capabilityRegistry = {
-  organizations: definition('organizations', 'Organizations', [], [], true, {
+  organizations: definition('organizations', 'Organizations', [], [], false, {
     description: 'Tenant organizations, memberships, and active context.',
     providers: ['clerk', 'neon'],
     resources: ['user', 'organization', 'membership'],
@@ -74,9 +74,9 @@ export const capabilityRegistry = {
   rbac: definition(
     'rbac',
     'Local roles and authorization',
-    ['organizations'],
     [],
-    true,
+    [],
+    false,
     {
       description: 'Local role and permission evaluation independent of auth.',
       providers: ['neon'],

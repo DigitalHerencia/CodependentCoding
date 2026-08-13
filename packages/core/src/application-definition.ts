@@ -14,6 +14,7 @@ import {
   type PropertyState,
   type ProviderDefinition,
   type ProviderId,
+  type ProviderSelection,
   type ResolvedModules,
   type RoleDefinition,
   type RouteSurfaceDefinition,
@@ -23,7 +24,10 @@ import {
   resolveCapabilitySelection,
 } from './capabilities.js';
 import { LoadedVibesError } from './errors.js';
-import { optionalSurfaceOwnership } from './ownership.js';
+import {
+  optionalSurfaceOwnership,
+  providerSurfaceOwnership,
+} from './ownership.js';
 import type { OptionalSurfaceOwnership } from './ownership.js';
 import { getProductPreset } from './presets.js';
 
@@ -81,6 +85,34 @@ export const applicationProperties = [
     affects: ['generated-package', 'product-contract'],
   }),
   property({
+    id: 'providers.authentication',
+    label: 'Authentication provider',
+    description: 'Select Clerk or generate without authentication.',
+    type: 'select',
+    category: 'Identity',
+    allowedValues: ['none', 'clerk'],
+    affects: ['packages', 'environment', 'routes', 'artifact-sets'],
+  }),
+  property({
+    id: 'providers.persistence.technology',
+    label: 'Database technology',
+    description: 'Select PostgreSQL or generate without persistence.',
+    type: 'select',
+    category: 'Data',
+    allowedValues: ['none', 'postgresql'],
+    affects: ['provider', 'resources', 'packages', 'artifact-sets'],
+  }),
+  property({
+    id: 'providers.persistence.provider',
+    label: 'PostgreSQL provider',
+    description: 'Neon is the supported PostgreSQL provider.',
+    type: 'select',
+    category: 'Data',
+    allowedValues: ['none', 'neon'],
+    visibleWhen: ['providers.persistence.technology=postgresql'],
+    affects: ['environment', 'setup', 'artifact-sets'],
+  }),
+  property({
     id: 'capabilities',
     label: 'Enabled capabilities',
     description:
@@ -110,21 +142,30 @@ export const applicationProperties = [
     id: 'authorizationModel',
     label: 'Authorization model',
     description: 'Authorization is resolved independently from authentication.',
-    type: 'derived',
+    type: 'select',
     category: 'Identity & Access',
-    allowedValues: ['rbac'],
-    derivedFrom: ['capabilities.rbac'],
+    allowedValues: ['rbac', 'none'],
     affects: ['roles', 'permissions', 'artifact-sets.rbac'],
   }),
   property({
     id: 'roles',
     label: 'Roles',
     description: 'Structured RBAC roles and their effective permissions.',
-    type: 'structured',
+    type: 'reorderable',
     category: 'Identity & Access',
     visibleWhen: ['authorizationModel=rbac'],
     derivedFrom: ['authorizationModel', 'capabilities'],
     affects: ['effectivePermissions'],
+  }),
+  property({
+    id: 'permissions',
+    label: 'Role permissions',
+    description: 'Capability-derived permission vocabulary assigned to roles.',
+    type: 'multi-select',
+    category: 'Identity & Access',
+    visibleWhen: ['authorizationModel=rbac'],
+    derivedFrom: ['capabilities'],
+    affects: ['roles', 'authorization'],
   }),
   property({
     id: 'routes',
@@ -143,6 +184,16 @@ export const applicationProperties = [
     category: 'Output',
     allowedValues: ['INHERIT', 'INCLUDE', 'EXCLUDE'],
     requires: ['valid-capability-dependencies'],
+    affects: ['generation-plan'],
+  }),
+  property({
+    id: 'outputOverrides.artifacts',
+    label: 'Advanced artifact policy',
+    description: 'Safe leaf-level overrides for independently removable files.',
+    type: 'structured',
+    category: 'Output',
+    allowedValues: ['INHERIT', 'INCLUDE', 'EXCLUDE'],
+    requires: ['artifact.removable=true'],
     affects: ['generation-plan'],
   }),
 ] as const satisfies readonly PropertyDefinition[];
@@ -284,9 +335,35 @@ function route(
   access: RouteSurfaceDefinition['access'],
   capability?: CapabilityId,
 ): RouteSurfaceDefinition {
-  return capability
-    ? { id, urlSegment, access, capability }
-    : { id, urlSegment, access };
+  const base = {
+    id,
+    urlSegment,
+    routeGroup:
+      id === 'connect'
+        ? 'root'
+        : id === 'checkout'
+          ? '(billing)'
+          : id === 'onboarding'
+            ? '(onboarding)'
+            : id === 'admin'
+              ? '(admin)'
+              : access === 'public'
+                ? '(public)'
+                : '(tenant)',
+    navigationLabel:
+      id === 'application'
+        ? 'Dashboard'
+        : id === 'organization-settings'
+          ? 'Settings'
+          : id === 'marketing'
+            ? 'Pricing'
+            : id
+                .split('-')
+                .map((word) => `${word[0]?.toUpperCase()}${word.slice(1)}`)
+                .join(' '),
+    access,
+  };
+  return capability ? { ...base, capability } : base;
 }
 
 export interface ResolutionReason {
@@ -299,6 +376,7 @@ export interface ResolvedArtifactSet {
   id: ArtifactSetId;
   label: string;
   policy: OutputPolicy;
+  included: boolean;
   requiredBy: readonly CapabilityId[];
   artifacts: readonly Artifact[];
 }
@@ -311,6 +389,7 @@ export interface ResolvedApplicationDefinition {
   autoIncluded: readonly CapabilityId[];
   providers: readonly (ProviderDefinition & {
     requiredBy: readonly CapabilityId[];
+    reason: string;
   })[];
   resources: readonly string[];
   authorization: {
@@ -340,6 +419,11 @@ export interface ApplicationGenerationPlan {
   artifacts: readonly Artifact[];
   environmentRequirements: readonly string[];
   setupInstructions: readonly string[];
+  requiredPackages: readonly string[];
+  filesRetained: readonly string[];
+  filesOmitted: readonly string[];
+  transforms: readonly string[];
+  validationRequirements: readonly string[];
 }
 
 export interface ApplicationResolution {
@@ -355,9 +439,21 @@ export function resolveApplicationDefinition(
     throw new LoadedVibesError('INVALID_CONFIG', parsed.error.message);
   }
   assertPackageName(parsed.data.identity.packageName);
+  if (
+    parsed.data.authorization.model === 'rbac' &&
+    parsed.data.capabilities.exclude.includes('rbac')
+  ) {
+    throw new LoadedVibesError(
+      'UNSUPPORTED_CONFIGURATION',
+      'RBAC cannot be excluded while the authorization model is "rbac".',
+    );
+  }
 
   const preset = getProductPreset(parsed.data.preset);
-  const overrides = capabilityOverrides(parsed.data.capabilities);
+  const overrides = capabilityOverrides(
+    parsed.data.capabilities,
+    parsed.data.authorization.model,
+  );
   const capabilityResolution = resolveCapabilitySelection(
     preset.modules,
     overrides,
@@ -365,6 +461,22 @@ export function resolveApplicationDefinition(
   const selectedCapabilities = capabilityIds.filter((id) =>
     enabled(capabilityResolution.modules, id),
   );
+  if (
+    parsed.data.authorization.model === 'none' &&
+    selectedCapabilities.includes('rbac')
+  ) {
+    const dependents = selectedCapabilities.filter((id) =>
+      capabilityRegistry[id].requires.includes('rbac'),
+    );
+    throw new LoadedVibesError(
+      'UNSUPPORTED_CONFIGURATION',
+      `Authorization model "none" cannot satisfy ${
+        dependents.length
+          ? dependents.map((id) => capabilityRegistry[id].label).join(', ')
+          : 'the selected RBAC capability'
+      }.`,
+    );
+  }
   const propertyStates = resolvePropertyStates(
     parsed.data,
     preset.modules,
@@ -385,22 +497,36 @@ export function resolveApplicationDefinition(
           .join(', ')}.`
       : `${capabilityRegistry[selection].label} was selected by the preset or user.`,
   }));
-  const providers = providersFor(selectedCapabilities);
+  const providers = providersFor(selectedCapabilities, parsed.data.providers);
   const resources = unique(
     selectedCapabilities.flatMap((id) => capabilityRegistry[id].resources),
   );
   const permissions = unique(
     selectedCapabilities.flatMap((id) => capabilityRegistry[id].permissions),
   );
-  const routes = unique(
-    selectedCapabilities.flatMap((id) => capabilityRegistry[id].routes),
-  ).map((id) => routeRegistry[id] ?? route(id, `/${id}`, 'authorized'));
+  const routes = applyRouteOverrides(
+    unique(
+      selectedCapabilities.flatMap((id) => capabilityRegistry[id].routes),
+    ).map((id) => routeRegistry[id] ?? route(id, `/${id}`, 'authorized')),
+    parsed.data.routes,
+  );
+  if (
+    parsed.data.providers.authentication === 'none' &&
+    routes.some((route) => route.access !== 'public')
+  ) {
+    throw new LoadedVibesError(
+      'UNSUPPORTED_CONFIGURATION',
+      'Authentication provider "none" cannot be combined with authenticated or authorized routes.',
+    );
+  }
   const modules = unique(
     selectedCapabilities.flatMap((id) => capabilityRegistry[id].modules),
   );
   const artifactSets = resolveArtifactSets(
     selectedCapabilities,
+    providers,
     parsed.data.outputOverrides.artifactSets,
+    parsed.data.outputOverrides.artifacts,
   );
   const environment = unique(
     providers.flatMap((provider) => provider.environment),
@@ -422,7 +548,9 @@ export function resolveApplicationDefinition(
     resources,
     authorization: {
       model: selectedCapabilities.includes('rbac') ? 'rbac' : 'none',
-      roles: selectedCapabilities.includes('rbac') ? roleRegistry : [],
+      roles: selectedCapabilities.includes('rbac')
+        ? resolveRoles(parsed.data.authorization.roles, permissions)
+        : [],
       permissions,
     },
     routes,
@@ -448,6 +576,39 @@ export function resolveApplicationDefinition(
       artifacts: artifactSets.flatMap((artifactSet) => artifactSet.artifacts),
       environmentRequirements: environment,
       setupInstructions: setup,
+      requiredPackages: packagesFor(providers.map((provider) => provider.id)),
+      filesRetained: artifactSets
+        .flatMap((artifactSet) => artifactSet.artifacts)
+        .filter((artifact) => artifact.generationPolicy !== 'EXCLUDE')
+        .map((artifact) => artifact.path),
+      filesOmitted: artifactSets
+        .flatMap((artifactSet) => artifactSet.artifacts)
+        .filter((artifact) => artifact.generationPolicy === 'EXCLUDE')
+        .map((artifact) => artifact.path)
+        .concat(
+          Object.values(optionalSurfaceOwnership)
+            .filter(
+              (ownership) =>
+                !selectedCapabilities.includes(ownership.capability),
+            )
+            .flatMap((ownership) => [...ownership.remove]),
+          Object.entries(providerSurfaceOwnership)
+            .filter(
+              ([provider]) =>
+                !providers.some((candidate) => candidate.id === provider),
+            )
+            .flatMap(([, paths]) => [...paths]),
+        ),
+      transforms: [
+        ...providers.map(
+          (provider) => `Compose ${provider.label} in ${provider.slot} slot`,
+        ),
+        ...parsed.data.routes.map(
+          (route) => `Map ${route.id} to ${route.urlSegment}`,
+        ),
+        'Rewrite package, environment, route, and product contracts',
+      ],
+      validationRequirements: ['typecheck', 'targeted capability contracts'],
     },
   };
 }
@@ -466,6 +627,7 @@ function assertPackageName(packageName: string): void {
 
 function capabilityOverrides(
   selection: ApplicationDefinition['capabilities'],
+  authorizationModel: ApplicationDefinition['authorization']['model'],
 ): ModuleSelection {
   const overrides: ModuleSelection = {};
   for (const id of selection.include) {
@@ -473,6 +635,7 @@ function capabilityOverrides(
     else overrides[id] = true;
   }
   for (const id of selection.exclude) overrides[id] = false;
+  overrides.rbac = authorizationModel === 'rbac';
   return overrides;
 }
 
@@ -490,8 +653,8 @@ function resolvePropertyStates(
     identity: 'USER',
     presentation: 'USER',
     requiredProviders: 'DERIVED',
-    authorizationModel: 'DERIVED',
-    roles: 'DERIVED',
+    authorizationModel: 'USER',
+    roles: definition.authorization.roles ? 'USER' : 'DERIVED',
     routes: 'DERIVED',
   };
   for (const id of capabilityIds) {
@@ -508,13 +671,26 @@ function resolvePropertyStates(
             ? 'PRESET'
             : 'DEFAULT';
   }
+  states['providers.authentication'] = definition.providers.authentication
+    ? 'USER'
+    : 'DERIVED';
+  states['providers.persistence'] = definition.providers.persistence
+    ? 'USER'
+    : 'DERIVED';
+  states['providers.commerce'] = definition.providers.commerce
+    ? 'USER'
+    : 'DERIVED';
   return states;
 }
 
 function providersFor(
   capabilities: readonly CapabilityId[],
-): (ProviderDefinition & { requiredBy: CapabilityId[] })[] {
-  return Object.values(providerRegistry)
+  selection: ProviderSelection,
+): (ProviderDefinition & {
+  requiredBy: CapabilityId[];
+  reason: string;
+})[] {
+  const required = Object.values(providerRegistry)
     .map((provider) => ({
       ...provider,
       requiredBy: capabilities.filter((id) =>
@@ -522,26 +698,96 @@ function providersFor(
       ),
     }))
     .filter((provider) => provider.requiredBy.length > 0);
+  assertProviderSelection('clerk', selection.authentication, required);
+  assertProviderSelection('neon', selection.persistence?.provider, required);
+  assertProviderSelection('stripe', selection.commerce, required);
+
+  if (
+    selection.commerce === 'stripe' &&
+    !required.some((provider) => provider.id === 'stripe')
+  ) {
+    throw new LoadedVibesError(
+      'UNSUPPORTED_CONFIGURATION',
+      'Stripe must be selected through Billing or Stripe Connect.',
+    );
+  }
+
+  const explicitlySelected: ProviderId[] = [
+    ...(selection.authentication === 'clerk' ? (['clerk'] as const) : []),
+    ...(selection.persistence?.provider === 'neon' ? (['neon'] as const) : []),
+    ...(selection.commerce === 'stripe' ? (['stripe'] as const) : []),
+  ];
+  return Object.values(providerRegistry)
+    .filter(
+      (provider) =>
+        required.some((candidate) => candidate.id === provider.id) ||
+        explicitlySelected.includes(provider.id),
+    )
+    .map((provider) => {
+      const requiredBy = required.find(
+        (candidate) => candidate.id === provider.id,
+      )?.requiredBy ?? [];
+      return {
+        ...provider,
+        requiredBy,
+        reason: requiredBy.length
+          ? `Required by ${requiredBy.map((id) => capabilityRegistry[id].label).join(', ')}.`
+          : 'Selected explicitly by the user.',
+      };
+    });
+}
+
+function assertProviderSelection(
+  provider: ProviderId,
+  selection: string | undefined,
+  required: readonly { id: ProviderId; requiredBy: CapabilityId[] }[],
+): void {
+  const requirement = required.find((candidate) => candidate.id === provider);
+  if (!requirement || selection === undefined || selection === provider) return;
+  throw new LoadedVibesError(
+    'UNSUPPORTED_CONFIGURATION',
+    `${providerRegistry[provider].label} is required by ${requirement.requiredBy.map((id) => capabilityRegistry[id].label).join(', ')}; the ${providerRegistry[provider].slot} slot cannot be "none".`,
+  );
 }
 
 function resolveArtifactSets(
   selectedCapabilities: readonly CapabilityId[],
+  providers: readonly (ProviderDefinition & {
+    requiredBy: readonly CapabilityId[];
+  })[],
   overrides: Partial<Record<ArtifactSetId, OutputPolicy>>,
+  artifactOverrides: Record<string, OutputPolicy>,
 ): ResolvedArtifactSet[] {
   for (const [artifactSet, policy] of Object.entries(overrides) as [
     ArtifactSetId,
     OutputPolicy,
   ][]) {
-    const requiredBy = selectedCapabilities.filter((id) =>
-      capabilityRegistry[id].artifactSets.includes(artifactSet),
-    );
-    if (policy === 'EXCLUDE' && requiredBy.length) {
+    if (artifactSet === 'application-shell' && policy === 'EXCLUDE') {
       throw new LoadedVibesError(
         'UNSUPPORTED_CONFIGURATION',
-        `Artifact set "${artifactSet}" cannot be excluded because it is required by ${requiredBy.join(', ')}.`,
+        'The application shell is architecture-critical and cannot be excluded.',
       );
     }
-    if (policy === 'INCLUDE' && !requiredBy.length) {
+    const provider = providers.find(
+      (candidate) => providerArtifactSet(candidate.id) === artifactSet,
+    );
+    const requiredBy = provider
+      ? [...provider.requiredBy]
+      : selectedCapabilities.filter((id) =>
+          capabilityRegistry[id].artifactSets.includes(artifactSet),
+        );
+    if (policy === 'EXCLUDE' && (requiredBy.length || provider)) {
+      throw new LoadedVibesError(
+        'UNSUPPORTED_CONFIGURATION',
+        `Artifact set "${artifactSet}" cannot be excluded because it is required by ${requiredBy.length ? requiredBy.join(', ') : provider?.label}.`,
+      );
+    }
+    if (
+      policy === 'INCLUDE' &&
+      !requiredBy.length &&
+      !provider &&
+      artifactSet !== 'application-shell'
+    ) {
       throw new LoadedVibesError(
         'UNSUPPORTED_CONFIGURATION',
         `Artifact set "${artifactSet}" cannot be included without its owning capability.`,
@@ -555,7 +801,8 @@ function resolveArtifactSets(
       capability,
     })),
   );
-  return uniqueBy(sets, (entry) => entry.id).map(({ id, capability }) => {
+  const capabilitySets = uniqueBy(sets, (entry) => entry.id).map(
+    ({ id, capability }) => {
     const ownership = (
       optionalSurfaceOwnership as Partial<
         Record<CapabilityId, OptionalSurfaceOwnership>
@@ -567,20 +814,237 @@ function resolveArtifactSets(
         owner: `${capabilityRegistry[capability].label} module`,
         artifactSet: id,
         requiredBy: [capability],
-        removable: false,
+        removable: isSafelyRemovable(path),
+        generationPolicy: isSafelyRemovable(path)
+          ? (artifactOverrides[path] ?? 'INHERIT')
+          : 'LOCKED',
+        replacementPolicy: 'remove',
+        dependencies: [capability],
         generationReason: `${capabilityRegistry[capability].label} is enabled.`,
       }),
     );
-    return {
+    for (const artifact of artifacts) {
+      if (
+        artifactOverrides[artifact.path] === 'EXCLUDE' &&
+        !artifact.removable
+      ) {
+        throw new LoadedVibesError(
+          'UNSUPPORTED_CONFIGURATION',
+          `Artifact "${artifact.path}" is locked and cannot be excluded.`,
+        );
+      }
+    }
+      return {
       id,
       label: capabilityRegistry[capability].label,
       policy: overrides[id] ?? 'INHERIT',
+      included: true,
       requiredBy: selectedCapabilities.filter((candidate) =>
         capabilityRegistry[candidate].artifactSets.includes(id),
       ),
       artifacts,
+      };
+    },
+  );
+  const shellArtifacts = [
+    'app/layout.tsx',
+    'app/page.tsx',
+    'app/globals.css',
+    'components/ui',
+    'components/brand',
+    'content',
+    'public',
+    'package.json',
+  ].map(
+    (path): Artifact => ({
+      path,
+      owner: 'Application shell',
+      artifactSet: 'application-shell',
+      requiredBy: [],
+      removable: false,
+      generationPolicy: 'LOCKED',
+      replacementPolicy: 'transform',
+      dependencies: [],
+      generationReason: 'Required by the standalone application architecture.',
+    }),
+  );
+  const providerSets = providers.map((provider): ResolvedArtifactSet => {
+    const artifactSet =
+      provider.id === 'clerk'
+        ? 'authentication-clerk'
+        : provider.id === 'neon'
+          ? 'persistence-postgresql'
+          : 'commerce-stripe';
+    const artifacts = providerSurfaceOwnership[provider.id].map(
+      (path): Artifact => ({
+        path,
+        owner: `${provider.label} provider module`,
+        artifactSet,
+        requiredBy: [...provider.requiredBy],
+        removable: isSafelyRemovable(path),
+        generationPolicy: isSafelyRemovable(path)
+          ? (artifactOverrides[path] ?? 'INHERIT')
+          : 'LOCKED',
+        replacementPolicy: 'remove',
+        dependencies: [provider.id],
+        generationReason: provider.requiredBy.length
+          ? `${provider.label} is required by ${provider.requiredBy.join(', ')}.`
+          : `${provider.label} was selected explicitly.`,
+      }),
+    );
+    return {
+      id: artifactSet,
+      label: `${provider.label} provider`,
+      policy: overrides[artifactSet] ?? 'INHERIT',
+      included: true,
+      requiredBy: [...provider.requiredBy],
+      artifacts,
     };
   });
+  const resolvedSets: ResolvedArtifactSet[] = [
+    {
+      id: 'application-shell',
+      label: 'Application shell',
+      policy: 'INHERIT',
+      included: true,
+      requiredBy: [],
+      artifacts: shellArtifacts,
+    },
+    ...providerSets,
+    ...capabilitySets,
+  ];
+  for (const [path, policy] of Object.entries(artifactOverrides)) {
+    const artifact = resolvedSets
+      .flatMap((set) => set.artifacts)
+      .find((candidate) => candidate.path === path);
+    if (!artifact) {
+      throw new LoadedVibesError(
+        'UNSUPPORTED_CONFIGURATION',
+        `Artifact "${path}" is not generated by the selected application.`,
+      );
+    }
+    if (policy === 'EXCLUDE' && !artifact.removable) {
+      throw new LoadedVibesError(
+        'UNSUPPORTED_CONFIGURATION',
+        `Artifact "${path}" is locked and cannot be excluded.`,
+      );
+    }
+  }
+  return resolvedSets;
+}
+
+function providerArtifactSet(provider: ProviderId): ArtifactSetId {
+  return provider === 'clerk'
+    ? 'authentication-clerk'
+    : provider === 'neon'
+      ? 'persistence-postgresql'
+      : 'commerce-stripe';
+}
+
+function applyRouteOverrides(
+  routes: RouteSurfaceDefinition[],
+  overrides: ApplicationDefinition['routes'],
+): RouteSurfaceDefinition[] {
+  for (const override of overrides) {
+    if (!routes.some((route) => route.id === override.id)) {
+      throw new LoadedVibesError(
+        'UNSUPPORTED_CONFIGURATION',
+        `Route "${override.id}" cannot be configured because its capability is not enabled.`,
+      );
+    }
+  }
+  const directlyResolved = routes.map((route) => {
+    const override = overrides.find((candidate) => candidate.id === route.id);
+    return override
+      ? {
+          ...route,
+          urlSegment: override.urlSegment,
+          navigationLabel: override.navigationLabel ?? route.navigationLabel,
+        }
+      : route;
+  });
+  const settings = directlyResolved.find(
+    (route) => route.id === 'organization-settings',
+  );
+  const resolved = directlyResolved.map((route) => {
+    if (
+      settings &&
+      !overrides.some((override) => override.id === route.id) &&
+      (route.id === 'member-settings' || route.id === 'billing')
+    ) {
+      return {
+        ...route,
+        urlSegment: `${settings.urlSegment}/${
+          route.id === 'member-settings' ? 'members' : 'billing'
+        }`,
+      };
+    }
+    return route;
+  });
+  const duplicates = resolved.filter(
+    (route, index) =>
+      resolved.findIndex(
+        (candidate) => candidate.urlSegment === route.urlSegment,
+      ) !== index,
+  );
+  if (duplicates.length) {
+    throw new LoadedVibesError(
+      'UNSUPPORTED_CONFIGURATION',
+      `Route URL segments must be unique: ${duplicates.map((route) => route.urlSegment).join(', ')}.`,
+    );
+  }
+  return resolved;
+}
+
+function resolveRoles(
+  configured: ApplicationDefinition['authorization']['roles'],
+  availablePermissions: readonly string[],
+): readonly RoleDefinition[] {
+  if (!configured) {
+    return roleRegistry.map((role) => ({
+      ...role,
+      permissions: role.permissions.filter((permission) =>
+        availablePermissions.includes(permission),
+      ),
+    }));
+  }
+  for (const role of configured) {
+    const dangling = role.permissions.filter(
+      (permission) => !availablePermissions.includes(permission),
+    );
+    if (dangling.length) {
+      throw new LoadedVibesError(
+        'UNSUPPORTED_CONFIGURATION',
+        `Role "${role.displayName}" contains unavailable permissions: ${dangling.join(', ')}.`,
+      );
+    }
+  }
+  return configured;
+}
+
+function packagesFor(providers: readonly ProviderId[]): string[] {
+  return unique(
+    providers.flatMap((provider) =>
+      provider === 'clerk'
+        ? ['@clerk/nextjs']
+        : provider === 'neon'
+          ? [
+              '@neondatabase/serverless',
+              '@prisma/adapter-neon',
+              '@prisma/client',
+              'prisma',
+            ]
+          : ['stripe'],
+    ),
+  );
+}
+
+function isSafelyRemovable(path: string): boolean {
+  return (
+    path.startsWith('tests/') ||
+    path.startsWith('docs/') ||
+    path.endsWith('/AGENTS.md')
+  );
 }
 
 function unique<T>(values: readonly T[]): T[] {
