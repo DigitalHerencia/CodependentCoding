@@ -1,15 +1,10 @@
 import type { Metadata } from 'next';
-import {
-  Big_Shoulders_Display,
-  Cinzel,
-  Fira_Code,
-  JetBrains_Mono,
-} from 'next/font/google';
+import { Cinzel, Fira_Code, JetBrains_Mono, Oswald } from 'next/font/google';
 import { SiteFooter } from '@/components/site-footer';
 import { SiteHeader } from '@/components/site-header';
 import './globals.css';
 
-const bigShouldersDisplay = Big_Shoulders_Display({
+const heritageDisplay = Oswald({
   subsets: ['latin'],
   variable: '--font-big-shoulders-display',
 });
@@ -41,7 +36,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${bigShouldersDisplay.variable} ${copperplateFallback.variable} ${jetBrainsMono.variable} ${firaCode.variable}`}
+        className={`${heritageDisplay.variable} ${copperplateFallback.variable} ${jetBrainsMono.variable} ${firaCode.variable}`}
       >
         <SiteHeader />
         {children}
