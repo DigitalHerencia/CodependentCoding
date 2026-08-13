@@ -1,4 +1,4 @@
-schema_version: 5
+schema_version: 6
 id: hipster-stack.product
 authority: machine-contract
 sources:
@@ -9,7 +9,7 @@ sources:
 product:
   name: Hipster Stack
   class: opinionated-project-initializer
-  framing: deterministic-application-composition
+  framing: deterministic-application-constitution
   primary_value: repetitive-work-removed-by-generated-project
 
 ecosystem:
@@ -28,8 +28,9 @@ surfaces:
   - generation-engine
   - cli
   - web-product
-  - interactive-docs
-  - web-builder
+  - web-simples
+  - web-docs
+  - web-constituter
   - portable-config
   - generated-application
 
@@ -40,14 +41,20 @@ web:
   hosted_generation_required: false
   routes:
     product: /
+    simples: /libraries
+    simple_detail: /libraries/[slug]
     docs: /docs
-    builder: /configure
-    legacy_libraries: redirect-to-docs
-  navigation: [Product, Docs, Builder]
+    constituter: /configure
+  navigation: [Product, Simples, Docs, Constituter]
+  branded_names_do_not_change_route_semantics: true
   mockups_control_presentation: true
   shared_configuration_controls_semantics: true
   boldkit_source_is_locally_owned: true
   tanstack_is_interaction_reference_only: true
+  visual_tokens:
+    background: ['#000000', '#05030b']
+    foreground: ['#ffffff', '#2f7a8d']
+    signal: '#2f7a8d'
 
 template:
   count: 1

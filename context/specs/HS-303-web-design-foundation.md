@@ -12,19 +12,28 @@ issue: 137
 
 ## Outcome
 
-Create the minimal reusable presentation foundation required by the approved mockups using locally owned BoldKit source and the Hipster Stack/Digital Herencia brand family.
+Finish the minimal reusable presentation foundation required by the approved mockups using locally owned BoldKit source without undoing the owner-approved brand/tokens already landed before Codex execution.
 
 ## Required inputs
 
 Read this spec, Issue #137, `context/docs/web.md`, all four mockups for cross-page consistency, current `apps/web` package/CSS/header/footer, Vouch `components.json` only for the existing `@boldkit` registry precedent, and only BoldKit source needed for the approved primitives/blocks.
 
-## Design lock
+## Locked baseline
 
-- near-black canvas, white text, primary cyan approximately `#48c8c8`;
-- Big Shoulders Display heavy/condensed wordmark/display treatment or closest build-safe equivalent; clean sans body/UI;
-- thin hard-edged dark panels and restrained glow;
-- Digital Herencia Desert BG used as a controlled lower-page horizon with fade/crop;
+Treat the current pre-Codex implementation as approved unless a concrete accessibility/build problem requires a focused correction:
+
+- canvases `#000000` and `#05030b`;
+- primary text white; signal/underline/glow `#2f7a8d`;
+- Tailwind CSS v4 CSS-first semantic tokens and mobile-first breakpoints in `apps/web/app/globals.css`;
+- Copperplate Gothic Bold stack for headings/titles and Hipster Stack wordmark, with bundled build-safe fallback;
+- JetBrains Mono body/UI; Fira Code code; Big Shoulders Display for Digital Herencia;
+- Hipster Stack™ / `Constituted not Composable` wordmark treatment;
+- Digital Herencia / `A Data Cartel` wordmark treatment;
+- `Digital Herencia Banner.png` on Product and `Digital Herencia Desert BG.png` on Simples/Constituter;
+- `Loaded Vibes Crown.png` retained as the approved landing crown motif;
 - mockups remain visual authority.
+
+Do not reintroduce the retired cyan/violet/magenta system or replace these brand decisions with stock BoldKit defaults.
 
 ## BoldKit
 
@@ -36,7 +45,7 @@ Primitives and blocks are pure presentation. They do not own configuration resol
 
 ## Non-goals
 
-No Product/Docs/Builder full-page implementation, generator changes, animation framework, or new validation system.
+No Product/Simples/Docs/Constituter full-page rewrite, generator changes, animation framework, or new validation system.
 
 ## Verification
 

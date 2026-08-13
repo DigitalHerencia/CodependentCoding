@@ -39,7 +39,7 @@ const fixedStack = [
   ['Local RBAC', 'Authorization'],
   ['Neon/Postgres', 'Database'],
   ['Prisma + RLS', 'Data boundary'],
-  ['Loaded Vibes', 'Architecture'],
+  ['Hipster Stack', 'Architecture'],
 ] as const;
 
 function title(value: string) {
@@ -111,11 +111,15 @@ export function Configurator() {
   return (
     <main className="builder-page">
       <header className="builder-heading">
-        <h1>Builder</h1>
+        <h1>Constituter™</h1>
         <p>
-          Choose your starting point, shape real product surfaces, and export a
-          reproducible build contract.
+          No, Simples™ cannot be composed &quot;Hipster-Wise&quot;. They are
+          simply a dynamic system arranged in a configuration that is
+          Hipster-ing™.
         </p>
+        <small className="builder-nihilism">
+          Mereological sums remain outside the supported configuration model.
+        </small>
         <div className="builder-top-actions">
           <a className="button primary" href="#builder-controls">
             Start Config <b>↓</b>
@@ -277,14 +281,14 @@ export function Configurator() {
         <aside className="recipe-preview">
           <div className="recipe-preview-heading">
             <div>
-              <strong>Recipe Preview</strong>
+              <strong>Constitution Preview</strong>
               <small>{resolved.summary.preset.label}</small>
             </div>
             <span>schema v{resolved.recipe.schemaVersion}</span>
           </div>
 
-          <section className="selected-stack" aria-label="Selected stack">
-            <p>Selected Stack</p>
+          <section className="selected-stack" aria-label="Constituted system">
+            <p>Constituted System</p>
             <div>
               {fixedStack.map(([name, role]) => (
                 <article key={name}>
@@ -328,7 +332,7 @@ export function Configurator() {
             </article>
             <article>
               <strong>Works With</strong>
-              <small>Docs + Loaded Vibes CLI</small>
+              <small>Docs + CLI</small>
               <span>Portable, stateless recipe</span>
             </article>
             <article>

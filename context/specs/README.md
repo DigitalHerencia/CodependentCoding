@@ -9,20 +9,23 @@ HS-301 governance + ecosystem boundary
         ↓
 HS-302 active product/runtime rename
         ↓
-HS-303 BoldKit + brand/design foundation
-        ├───────────────┐
-        ▼               ▼
-HS-304 Product       HS-306 Builder
-        │               │
-        └──────┬────────┘
-               ▼
-         HS-305 interactive Docs
-               │
-               ▼
-         HS-307 cleanup/conformance
+HS-303 BoldKit + locked brand/design foundation
+        ├───────────────────────┐
+        ▼                       ▼
+HS-304 Product landing       HS-306 Constituter
+        │                       │
+        ▼                       │
+HS-305 Simples catalog/detail  │
+        └───────────┬───────────┘
+                    ▼
+          HS-307 cleanup/conformance
 ```
 
-HS-304 and HS-306 may proceed in parallel after their dependencies are satisfied. HS-305 consumes the shared shell/design and shared Builder/configuration presentation. HS-307 is final cleanup only.
+HS-304 and HS-306 may proceed in parallel after their dependencies are satisfied. HS-305 keeps Simples as the `/libraries/*` browse/detail surface while Docs remains canonical. HS-307 is final cleanup only.
+
+## Pre-Codex brand baseline
+
+Before HS-303 implementation begins, the owner locked the site vocabulary, semantic color/typography tokens, mobile-first responsive foundation, public hero/Simples/Constituter copy, wordmarks, and bottom background asset treatment. Active specs must preserve that baseline unless a concrete build/accessibility defect requires a focused correction.
 
 ## Visual authority
 

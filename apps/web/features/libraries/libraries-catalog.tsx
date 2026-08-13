@@ -6,10 +6,18 @@ export function LibrariesCatalog() {
   return (
     <main className="libraries-page">
       <header className="libraries-heading">
-        <h1>Libraries</h1>
-        <p>Composable product building blocks for the Loaded Vibes system.</p>
+        <h1>Simples™</h1>
+        <p>
+          <span>An ontological survey of idiolectal semantics.</span>
+          <span>Esoteric by design.</span>
+          <span>No Ordinary Objects™</span>
+        </p>
+        <small className="simples-joke">
+          If you insist this is a collection of composite objects, the
+          mereological nihilists would like a word.
+        </small>
       </header>
-      <section className="library-columns" aria-label="Loaded Vibes libraries">
+      <section className="library-columns" aria-label="Hipster Stack Simples">
         {libraryCategories.map((category) => (
           <div className="library-category" key={category}>
             <h2>{category}</h2>

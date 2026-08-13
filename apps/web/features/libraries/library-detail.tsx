@@ -72,8 +72,8 @@ export function LibraryDetail({ library }: { library: LibraryItem }) {
                 </strong>
                 <small>
                   {isFixed
-                    ? 'No provider selector or decorative toggle. Loaded Vibes owns this supported foundation.'
-                    : 'Use the canonical Loaded Vibes destination for this product surface.'}
+                    ? 'No provider selector or decorative toggle. Hipster Stack owns this supported foundation.'
+                    : 'Use the canonical Hipster Stack destination for this product surface.'}
                 </small>
               </span>
             </div>
@@ -97,7 +97,7 @@ export function LibraryDetail({ library }: { library: LibraryItem }) {
       </div>
 
       <aside className="library-detail-sidebar">
-        <RelatedList title="Related Libraries" libraries={related} />
+        <RelatedList title="Related Simples" libraries={related} />
         <RelatedList title="Works With" libraries={worksWith} />
       </aside>
     </main>
