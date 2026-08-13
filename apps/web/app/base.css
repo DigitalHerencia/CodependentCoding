@@ -132,11 +132,6 @@ body:has(.libraries-page, .library-detail-page)
   place-items: center;
   margin-top: -30px;
 }
-.landing-brand-banner {
-  width: min(1120px, 108vw);
-  height: auto;
-  object-fit: contain;
-}
 .product-shell {
   max-width: 1200px;
   margin: auto;
@@ -182,33 +177,6 @@ body:has(.libraries-page, .library-detail-page)
   display: flex;
   gap: 10px;
   margin-top: 28px;
-}
-.button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 18px;
-  min-height: 42px;
-  padding: 0 18px;
-  color: var(--ink);
-  text-decoration: none;
-  border: 1px solid var(--line);
-  border-radius: 5px;
-  background: #071017;
-  font-size: 11px;
-  font-weight: 700;
-}
-.button.primary {
-  border-color: #4eb6cc;
-  background: #2e8194;
-  box-shadow: 0 0 24px #2e81943b;
-}
-.button b {
-  color: var(--acid);
-  font-size: 15px;
-}
-.button.primary b {
-  color: white;
 }
 .product-builder-preview {
   overflow: hidden;
@@ -484,18 +452,6 @@ body:has(.libraries-page, .library-detail-page)
   border-top: 1px solid #0e232b;
   background: #02050a;
 }
-.heritage-landscape {
-  overflow: hidden;
-  max-width: 1536px;
-  height: clamp(260px, 24vw, 340px);
-  margin: auto;
-}
-.heritage-landscape > img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
 .footer-bar {
   display: grid;
   grid-template-columns: 1fr auto 1fr;
@@ -636,9 +592,6 @@ body:has(.libraries-page, .library-detail-page)
   display: flex;
   gap: 14px;
   margin-top: 22px;
-}
-.library-detail-actions .button {
-  min-width: 168px;
 }
 .configuration-panel {
   overflow: hidden;
@@ -908,12 +861,6 @@ body:has(.builder-page) .site-header nav a:nth-child(4)::after {
   width: min(1480px, calc(100% - 64px));
   margin: auto;
   padding: 34px 0 24px;
-}
-body:has(.builder-page) .heritage-landscape {
-  height: 170px;
-}
-body:has(.builder-page) .heritage-landscape > img {
-  object-position: center 66%;
 }
 .builder-heading h1 {
   margin: 0;
@@ -1422,10 +1369,6 @@ body:has(.builder-page) .heritage-landscape > img {
     height: 250px;
     margin-top: -12px;
   }
-  .landing-brand-banner {
-    width: 122vw;
-    max-width: none;
-  }
   .product-copy h1 {
     font-size: 50px;
   }
@@ -1457,11 +1400,6 @@ body:has(.builder-page) .heritage-landscape > img {
   .foundation-strip article:nth-child(2n) {
     border-right: 0;
     border-bottom: 1px solid var(--line);
-  }
-  .heritage-landscape > img {
-    width: 150%;
-    max-width: none;
-    transform: translateX(-16.7%);
   }
   .footer-bar {
     grid-template-columns: 1fr auto;

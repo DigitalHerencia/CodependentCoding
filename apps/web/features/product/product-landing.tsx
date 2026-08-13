@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { buttonVariants } from '@/components/ui/button';
 import digitalHerenciaBanner from '../../../../public/Digital Herencia Banner.png';
-import loadedVibesCrown from '../../../../public/Loaded Vibes Crown.png';
+import hipsterStackCrown from '../../../../public/Hipster Stack Crown.webp';
 
 type IconName =
   | 'builder'
@@ -164,17 +164,11 @@ export function ProductLanding() {
       <section className="landing-brand" aria-label="Hipster Stack">
         <Image
           className="landing-crown"
-          src={loadedVibesCrown}
-          alt=""
-          aria-hidden="true"
+          src={hipsterStackCrown}
+          alt="The Hipster Stack. Constituted not composed."
           priority
           sizes="100vw"
         />
-        <div className="landing-hero-copy">
-          <p>When epistemologies fail, The Stack still governs.</p>
-          <h1>The Hipster Stack™</h1>
-          <span>Constituted not Composable</span>
-        </div>
       </section>
 
       <div className="product-shell">

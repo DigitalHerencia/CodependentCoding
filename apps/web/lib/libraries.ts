@@ -82,7 +82,7 @@ const libraryCopy: readonly LibraryCopy[] = [
     summary:
       'The Hipster Stack CLI resolves one portable recipe, retains supported surfaces, applies structured transforms, and creates a user-owned repository.',
     icon: 'generator',
-    primaryAction: { label: 'Open the Builder', href: '/configure' },
+    primaryAction: { label: 'Open the Constituter', href: '/configure' },
     example: 'pnpm dlx hipster-stack@latest --config hipsterstack.json',
     highlights: [
       {
@@ -91,7 +91,8 @@ const libraryCopy: readonly LibraryCopy[] = [
       },
       {
         title: 'Portable recipe',
-        description: 'The CLI and Builder share hipsterstack.json semantics.',
+        description:
+          'The CLI and Constituter share hipsterstack.json semantics.',
       },
       {
         title: 'Deterministic output',
@@ -284,7 +285,7 @@ const libraryCopy: readonly LibraryCopy[] = [
     summary:
       'shadcn-compatible primitives and composed presentation follow the route → feature → presentation layering of the Hipster Stack architecture.',
     icon: 'blocks',
-    primaryAction: { label: 'Explore the Builder', href: '/configure' },
+    primaryAction: { label: 'Explore the Constituter', href: '/configure' },
     highlights: [
       {
         title: 'Composable UI',

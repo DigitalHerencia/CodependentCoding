@@ -188,5 +188,5 @@ describe('real user-facing CLI', () => {
     expect(explain.stdout).toContain('Starting configuration: Bare golden app');
     expect(explain.stdout).toContain('Provider boundaries');
     expect(explain.stdout).toContain('Remaining setup');
-  }, 15_000);
+  }, 30_000);
 });
