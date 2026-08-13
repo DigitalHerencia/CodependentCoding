@@ -31,7 +31,7 @@ export async function loadGeneratedProject(
 ): Promise<GeneratedProject> {
   const target = path.resolve(directory);
   const manifest = parseGenerationManifest(
-    await readJson(path.join(target, '.loadedvibes', 'manifest.json')),
+    await readJson(path.join(target, '.hipsterstack', 'manifest.json')),
   );
   const recipe = resolveRecipe(
     (await readJson(
@@ -41,7 +41,7 @@ export async function loadGeneratedProject(
   if (JSON.stringify(manifest.recipe) !== JSON.stringify(recipe)) {
     throw new LoadedVibesError(
       'MODULE_CONFLICT',
-      'hipsterstack.json and .loadedvibes/manifest.json disagree.',
+      'hipsterstack.json and .hipsterstack/manifest.json disagree.',
     );
   }
   return { directory: target, manifest, recipe };
