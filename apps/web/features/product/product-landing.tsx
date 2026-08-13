@@ -195,7 +195,10 @@ export function ProductLanding() {
           <ConstituterPreview />
         </section>
 
-        <section className="product-entry-grid" aria-label="Explore Hipster Stack">
+        <section
+          className="product-entry-grid"
+          aria-label="Explore Hipster Stack"
+        >
           {productEntries.map((entry) => (
             <Link href={entry.href} key={entry.title}>
               <ProductIcon name={entry.icon} />
@@ -237,7 +240,10 @@ export function ProductLanding() {
           </div>
         </section>
 
-        <section className="foundation-strip" aria-labelledby="foundation-title">
+        <section
+          className="foundation-strip"
+          aria-labelledby="foundation-title"
+        >
           <p id="foundation-title">The governed foundation</p>
           <div>
             {foundations.map(([title, description, icon]) => (

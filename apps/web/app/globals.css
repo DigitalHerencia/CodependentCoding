@@ -10,7 +10,8 @@
   --signal-border: color-mix(in srgb, var(--signal) 62%, transparent);
   --foreground-muted: color-mix(in srgb, var(--foreground) 68%, transparent);
   --type-heading:
-    'Copperplate Gothic Bold', Copperplate, var(--font-copperplate-fallback), serif;
+    'Copperplate Gothic Bold', Copperplate, var(--font-copperplate-fallback),
+    serif;
   --type-body:
     var(--font-jetbrains-mono), 'JetBrains Mono', ui-monospace, SFMono-Regular,
     Menlo, Monaco, Consolas, monospace;

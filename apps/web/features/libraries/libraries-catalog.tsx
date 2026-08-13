@@ -13,8 +13,8 @@ export function LibrariesCatalog() {
           <span>No Ordinary Objects™</span>
         </p>
         <small className="simples-joke">
-          If you insist this is a collection of composite objects, the mereological
-          nihilists would like a word.
+          If you insist this is a collection of composite objects, the
+          mereological nihilists would like a word.
         </small>
       </header>
       <section className="library-columns" aria-label="Hipster Stack Simples">

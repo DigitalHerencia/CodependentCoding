@@ -3,7 +3,11 @@ import Link from 'next/link';
 export function SiteHeader() {
   return (
     <header className="site-header">
-      <Link className="wordmark hipster-wordmark" href="/" aria-label="Hipster Stack home">
+      <Link
+        className="wordmark hipster-wordmark"
+        href="/"
+        aria-label="Hipster Stack home"
+      >
         <strong>The Hipster Stack™</strong>
         <small>Constituted not Composable</small>
       </Link>

@@ -113,8 +113,9 @@ export function Configurator() {
       <header className="builder-heading">
         <h1>Constituter™</h1>
         <p>
-          No, Simples™ cannot be composed &quot;Hipster-Wise&quot;. They are simply a
-          dynamic system arranged in a configuration that is Hipster-ing™.
+          No, Simples™ cannot be composed &quot;Hipster-Wise&quot;. They are
+          simply a dynamic system arranged in a configuration that is
+          Hipster-ing™.
         </p>
         <small className="builder-nihilism">
           Mereological sums remain outside the supported configuration model.
