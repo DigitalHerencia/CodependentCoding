@@ -1,6 +1,6 @@
-import Image, { type StaticImageData } from 'next/image';
+import Image from 'next/image';
 import Link from 'next/link';
-import loadedVibesBanner from '../../../../public/Loaded Vibes Banner.png';
+import loadedVibesCrown from '../../../../public/Loaded Vibes Crown.png';
 
 type IconName =
   | 'builder'
@@ -14,22 +14,22 @@ type IconName =
 
 const productEntries = [
   {
-    title: 'Builder',
+    title: 'Constituter™',
     description:
-      'Compose your stack and generate a real, working starting point.',
+      'Arrange the supported application system and export a reproducible constitution.',
     href: '/configure',
     icon: 'builder' as const,
   },
   {
-    title: 'Libraries',
+    title: 'Simples™',
     description:
-      'Explore the building blocks for the apps you actually want to build.',
+      'An ontological survey of the things we refuse to call composable objects.',
     href: '/libraries',
     icon: 'libraries' as const,
   },
   {
     title: 'Docs',
-    description: 'Clear guidance and API references, built for shipping.',
+    description: 'Canonical guidance for using the generator and its output.',
     href: '/docs',
     icon: 'docs' as const,
   },
@@ -103,19 +103,19 @@ function ProductIcon({ name }: { name: IconName }) {
   );
 }
 
-function BuilderPreview() {
+function ConstituterPreview() {
   return (
-    <div className="product-builder-preview" aria-label="Builder preview">
+    <div className="product-builder-preview" aria-label="Constituter preview">
       <div className="preview-window-bar">
-        <span>Builder</span>
-        <small>loadedvibes.json</small>
+        <span>Constituter</span>
+        <small>portable configuration</small>
         <button type="button" disabled>
-          Export recipe
+          Export
         </button>
       </div>
       <div className="preview-columns">
         <div>
-          <small>01 / Product shape</small>
+          <small>01 / Starting point</small>
           <div className="preview-select">
             B2B SaaS <span>⌄</span>
           </div>
@@ -128,7 +128,7 @@ function BuilderPreview() {
           ))}
         </div>
         <div>
-          <small>03 / Selected stack</small>
+          <small>03 / Constituted system</small>
           {['Clerk', 'Neon + Prisma', 'Local RBAC', 'Stripe Billing'].map(
             (label) => (
               <div className="preview-stack" key={label}>
@@ -149,56 +149,53 @@ function BuilderPreview() {
       </div>
       <div className="preview-window-footer">
         <span>One template · deterministic output</span>
-        <span>Browser-safe core</span>
+        <span>No ordinary objects detected</span>
       </div>
     </div>
-  );
-}
-
-function BrandBanner({ image }: { image: StaticImageData }) {
-  return (
-    <Image
-      className="landing-brand-banner"
-      src={image}
-      alt="Loaded Vibes — Bad vibes, clean code"
-      priority
-      sizes="100vw"
-    />
   );
 }
 
 export function ProductLanding() {
   return (
     <main className="product-landing">
-      <section className="landing-brand" aria-label="Loaded Vibes">
-        <BrandBanner image={loadedVibesBanner} />
+      <section className="landing-brand" aria-label="Hipster Stack">
+        <Image
+          className="landing-crown"
+          src={loadedVibesCrown}
+          alt=""
+          aria-hidden="true"
+          priority
+          sizes="100vw"
+        />
+        <div className="landing-hero-copy">
+          <p>When epistemologies fail, The Stack still governs.</p>
+          <h1>The Hipster Stack™</h1>
+          <span>Constituted not Composable</span>
+        </div>
       </section>
 
       <div className="product-shell">
         <section className="product-intro">
           <div className="product-copy">
-            <p>Serious starts. No toy scaffolds.</p>
-            <h1>Generate a serious SaaS starting point</h1>
+            <p>Constitution before composition.</p>
+            <h2>Generate a serious SaaS starting point</h2>
             <span>
-              Loaded Vibes gives you a production-grade foundation so you can
-              ship faster, with confidence.
+              Finally, a technology stack with provenance that won&apos;t rust.
+              Nothing to borrow. We&apos;ve already checked.
             </span>
             <div className="product-actions">
               <Link className="button primary" href="/configure">
-                Launch the Builder <b>→</b>
+                Open the Constituter <b>→</b>
               </Link>
               <Link className="button" href="/libraries">
-                Explore Libraries <b>→</b>
+                Survey the Simples <b>→</b>
               </Link>
             </div>
           </div>
-          <BuilderPreview />
+          <ConstituterPreview />
         </section>
 
-        <section
-          className="product-entry-grid"
-          aria-label="Explore Loaded Vibes"
-        >
+        <section className="product-entry-grid" aria-label="Explore Hipster Stack">
           {productEntries.map((entry) => (
             <Link href={entry.href} key={entry.title}>
               <ProductIcon name={entry.icon} />
@@ -212,41 +209,36 @@ export function ProductLanding() {
         </section>
 
         <section className="product-flow" aria-labelledby="product-flow-title">
-          <p id="product-flow-title">From idea to shipped product</p>
+          <p id="product-flow-title">From intent to constituted application</p>
           <div>
             <article>
               <b>1</b>
               <span>
-                <strong>Choose your foundation</strong>
-                <small>Pick your product shape and real capabilities.</small>
+                <strong>Choose a starting point</strong>
+                <small>Select a real preset and supported capabilities.</small>
               </span>
             </article>
             <i>→</i>
             <article>
               <b>2</b>
               <span>
-                <strong>Compose your stack</strong>
-                <small>
-                  Review the included foundation and optional surfaces.
-                </small>
+                <strong>Constitute the system</strong>
+                <small>Resolve the actual relationships and constraints.</small>
               </span>
             </article>
             <i>→</i>
             <article>
               <b>3</b>
               <span>
-                <strong>Generate a real starting point</strong>
-                <small>Use a portable recipe with the Loaded Vibes CLI.</small>
+                <strong>Generate the application</strong>
+                <small>Export the portable configuration and run the CLI.</small>
               </span>
             </article>
           </div>
         </section>
 
-        <section
-          className="foundation-strip"
-          aria-labelledby="foundation-title"
-        >
-          <p id="foundation-title">Built for teams that ship</p>
+        <section className="foundation-strip" aria-labelledby="foundation-title">
+          <p id="foundation-title">The governed foundation</p>
           <div>
             {foundations.map(([title, description, icon]) => (
               <article key={title}>
@@ -259,6 +251,14 @@ export function ProductLanding() {
             ))}
           </div>
         </section>
+
+        <aside className="nihilism-note">
+          <span>
+            Mereological nihilism update: still no composite objects. The Stack
+            remains suspiciously effective anyway.
+          </span>
+          <b>Fuck NeoVim, btw... · Fuck Arch, btw...</b>
+        </aside>
       </div>
     </main>
   );

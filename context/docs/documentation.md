@@ -12,11 +12,11 @@ authority: source-of-truth
 
 End-user documentation lives in root `docs/` and is rendered under `/docs/*`. Do not maintain a second technical documentation copy in web code.
 
-## Interactive presentation
+## Relationship to Simples
 
-The website may augment canonical docs with browsable building-block categories, related concepts, truthful configuration/status examples, and `Open in Builder` handoffs. Those UI additions are navigation/presentation metadata; shared schema/core remains configuration authority.
+Simples™ remains the browsable `/libraries/*` product surface for supported building blocks, relationships, fixed/configurable status, and focused examples. It may link into canonical Docs and the Constituter, but it is not a second documentation source and does not own configuration semantics.
 
-The previous `/libraries` catalog/detail experience is folded into Docs by HS-305. Preserve old URLs only through the smallest useful redirect/compatibility path.
+Web-owned Simples metadata may organize categories, relationships, and presentation. Shared schema/core remains configuration authority.
 
 ## Audience and rules
 

@@ -1,4 +1,4 @@
-schema_version: 4
+schema_version: 5
 id: hipster-stack.architecture
 authority: machine-contract
 sources:
@@ -17,7 +17,7 @@ current_repository:
   machine_governance_path: .agents
 
 shared_configuration:
-  consumers: [cli, web-builder, portable-config]
+  consumers: [cli, web-constituter, portable-config]
   one_schema: true
   one_resolution_path: true
   ui_may_duplicate_dependency_rules: false
@@ -27,8 +27,9 @@ boundaries:
   web:
     owns:
       - product-presentation
-      - interactive-docs-presentation
-      - builder-local-orchestration
+      - simples-presentation
+      - docs-presentation
+      - constituter-local-orchestration
     forbidden:
       - filesystem-generation
       - provider-secrets
@@ -39,7 +40,7 @@ boundaries:
   generator:
     owns:
       - normalization
-      - composition-resolution
+      - constitution-resolution
       - generator-template-catalog
       - generation-plan
       - materialization
@@ -51,7 +52,7 @@ boundaries:
     forbidden:
       - generator-ownership-catalog
       - pruning-instructions
-      - builder-state
+      - constituter-state
       - cli-implementation
       - generation-plan
 

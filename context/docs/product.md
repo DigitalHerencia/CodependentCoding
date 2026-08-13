@@ -24,13 +24,16 @@ The primary user is a developer who already understands the underlying technolog
 
 1. maximal standalone template;
 2. shared configuration/application-definition contract;
-3. deterministic composition/generation engine;
+3. deterministic constitution/generation engine;
 4. CLI;
 5. Product web page at `/`;
-6. interactive Docs at `/docs/*` combining canonical documentation with browsable building-block/configuration views;
-7. stateless Builder at `/configure`;
-8. portable configuration handoff, targeted by HS-302 as `hipsterstack.json`;
-9. generated application.
+6. Simples™ at `/libraries/*`, a browsable survey of supported building blocks and their relationships;
+7. canonical Docs at `/docs/*`;
+8. stateless Constituter™ at `/configure`;
+9. portable configuration handoff, targeted by HS-302 as `hipsterstack.json`;
+10. generated application.
+
+The branded web vocabulary is presentation language. `Simples™` does not imply independently composable packages, and `Constituter™` does not create a second configuration model. Shared schema/core remains semantic authority.
 
 ## Opinionated foundation
 

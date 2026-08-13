@@ -1,12 +1,38 @@
 import type { Metadata } from 'next';
+import {
+  Big_Shoulders_Display,
+  Cinzel,
+  Fira_Code,
+  JetBrains_Mono,
+} from 'next/font/google';
 import { SiteFooter } from '@/components/site-footer';
 import { SiteHeader } from '@/components/site-header';
 import './globals.css';
 
+const bigShouldersDisplay = Big_Shoulders_Display({
+  subsets: ['latin'],
+  variable: '--font-big-shoulders-display',
+});
+
+const copperplateFallback = Cinzel({
+  subsets: ['latin'],
+  variable: '--font-copperplate-fallback',
+});
+
+const jetBrainsMono = JetBrains_Mono({
+  subsets: ['latin'],
+  variable: '--font-jetbrains-mono',
+});
+
+const firaCode = Fira_Code({
+  subsets: ['latin'],
+  variable: '--font-fira-code',
+});
+
 export const metadata: Metadata = {
-  title: 'Loaded Vibes — Generate the golden prototype',
+  title: 'Hipster Stack™ — Constituted not Composable',
   description:
-    'A deterministic software factory for production-minded white-label applications.',
+    'A deterministic application constitution system for production-minded TypeScript web applications.',
 };
 
 export default function RootLayout({
@@ -14,7 +40,9 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body>
+      <body
+        className={`${bigShouldersDisplay.variable} ${copperplateFallback.variable} ${jetBrainsMono.variable} ${firaCode.variable}`}
+      >
         <SiteHeader />
         {children}
         <SiteFooter />

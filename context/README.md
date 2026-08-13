@@ -4,19 +4,20 @@ This directory tells Codex what Hipster Stack™ is, which contracts control thi
 
 ## Product
 
-Hipster Stack is an opinionated project initializer and deterministic application-composition tool for modern TypeScript web applications built according to the Codependent Coding™ Knowledge System and the established WebApp architecture.
+Hipster Stack is an opinionated project initializer and deterministic application-constitution tool for modern TypeScript web applications built according to the Codependent Coding™ Knowledge System and the established WebApp architecture.
 
 Its payoff is a standalone white-label repository that already contains the recurring architecture, boundaries, integrations, structure, tests, and development context the user would otherwise recreate by hand.
 
-The CLI is the primary local execution adapter. The web app has three coherent surfaces:
+The CLI is the primary local execution adapter. The web app has four coherent branded surfaces:
 
 ```text
-Product   /
-Docs      /docs/*      # canonical docs + interactive building-block/config views
-Builder   /configure
+Product      /
+Simples™     /libraries/*
+Docs         /docs/*
+Constituter™ /configure
 ```
 
-The Builder, CLI, and portable configuration file must use the same shared semantics.
+Simples and Constituter are presentation vocabulary over existing route/application semantics. Constituter, CLI, and the portable configuration file must continue to use the same shared configuration authority.
 
 ## Ecosystem
 
@@ -36,9 +37,7 @@ The Knowledge System is authority, not a runtime dependency. Hipster Stack deter
 
 ## Current implementation versus approved direction
 
-The live repository still contains historical Loaded Vibes product/package identifiers and the completed LV-201..LV-210 implementation. HS-301..HS-307 are the approved next roadmap and intentionally reconcile that state without pretending the rename/redesign already exists.
-
-Do not reopen unrelated generator migration work during the web overhaul. Change non-web behavior only when the active HS spec explicitly requires it.
+The repository contains historical Loaded Vibes product/package identifiers that HS-302 will rename deliberately. The owner has already locked the pre-Codex web brand baseline: Product/Simples/Docs/Constituter vocabulary, semantic Tailwind v4 color/type tokens, mobile-first responsive overrides, supplied Crown/Banner/Desert assets, and required public copy. HS-303..HS-307 complete the mockup-faithful implementation without reopening unrelated generator migration work.
 
 ## Source map
 
@@ -49,4 +48,4 @@ Do not reopen unrelated generator migration work during the web overhaul. Change
 
 ## Working rule
 
-Make the real product look and operate like the approved mockups with the fewest correct edits. Read only active scope, preserve working semantics, remove replaced code, and do not let governance become a second software project.
+Make the real product look and operate like the approved mockups with the fewest correct edits. Read only active scope, preserve working semantics and the owner-approved brand baseline, remove replaced code, and do not let governance become a second software project.

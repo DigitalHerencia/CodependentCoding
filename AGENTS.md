@@ -1,6 +1,6 @@
 # Hipster Stack Governance Directory
 
-Hipster Stack™ is the opinionated project initializer implemented in this repository: one repository-owned maximal white-label application, one deterministic composition/generation engine, one shared configuration contract, a CLI execution surface, a stateless visual Builder, and interactive end-user documentation.
+Hipster Stack™ is the opinionated project initializer implemented in this repository: one repository-owned maximal white-label application, one deterministic constitution/generation engine, one shared configuration contract, a CLI execution surface, and a stateless public web app.
 
 This file is the governance directory. Read only the material relevant to the active Issue.
 
@@ -24,7 +24,7 @@ Codependent Coding Knowledge System
         │
         ▼
 Hipster Stack
-  deterministic application composition
+  deterministic application constitution
         │
         ▼
 standalone generated application
@@ -47,7 +47,7 @@ The generated application and this repository follow the applicable subset of th
 
 Apply the grammar proportionally. Static website presentation does not need ceremonial fetchers/actions/workflows.
 
-## Fixed method, configurable composition
+## Fixed method, configurable constitution
 
 The opinionated foundation is the engineering method, responsibility boundaries, trust model, and supported architecture. Concrete providers, modules, capabilities, route surfaces, or policies become editable only when the shared schema and generator can produce the corresponding repository correctly.
 
@@ -57,7 +57,7 @@ Never expose a decorative option that only changes metadata. Current implementat
 
 `template/` is the standalone maximal white-label application. It must make sense if extracted from this monorepo.
 
-Generator-specific ownership catalogs, pruning rules, Builder state, CLI implementation, and generation instructions belong outside `template/`. Application-local context, tests, CI, and agent contracts may remain when they govern the standalone application itself.
+Generator-specific ownership catalogs, pruning rules, Constituter state, CLI implementation, and generation instructions belong outside `template/`. Application-local context, tests, CI, and agent contracts may remain when they govern the standalone application itself.
 
 ## Read by task
 
@@ -89,10 +89,13 @@ Read `context/docs/template.md`, `context/docs/architecture.md`, the relevant ma
 
 - Current mockups in `context/mockups/` are visual acceptance artifacts.
 - Reproduce their structure, hierarchy, density, spacing, and Hipster Stack/Digital Herencia aesthetic faithfully; adapt literal labels only when needed for truthful behavior.
-- Primary navigation target is `Product | Docs | Builder`; the old Libraries surface folds into interactive Docs with minimal compatibility redirects.
+- Primary navigation vocabulary is `Product | Simples | Docs | Constituter`; keep current routes `/`, `/libraries/*`, `/docs/*`, and `/configure` unless a future explicit product decision changes them.
+- The pre-Codex brand baseline in `context/docs/web.md` is locked: black/`#05030b`, white, `#2f7a8d`, approved typography/wordmarks, supplied Crown/Banner/Desert assets, required public copy, and mobile-first Tailwind v4 semantic tokens.
+- Simples™ is the browsable building-block surface. It does not mean the items are independently composable packages and does not own configuration rules.
+- Docs remains canonical end-user technical content.
+- Constituter™ is the stateless visual configuration workbench over the same shared semantics as CLI/config file.
 - Use actual locally owned BoldKit source for UI primitives and selected blocks; BoldKit is an implementation source, not visual authority.
 - TanStack may inform compact interaction hierarchy, inspectable configuration, and generated-plan ergonomics only. Do not copy its visual design or introduce unrelated TanStack technology.
-- Keep the Builder stateless and over the same shared configuration semantics as CLI/config file.
 - Delete replaced UI/CSS/helpers after their final caller is gone.
 - Do not add a backend, CMS, hosted generator, analytics project, visual-regression harness, or broad design-system abstraction merely to reproduce the mockups.
 
