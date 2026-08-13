@@ -1,8 +1,10 @@
 import * as React from 'react';
 import { cn } from '@/lib/utils';
 
-export interface PageHeroProps
-  extends Omit<React.HTMLAttributes<HTMLElement>, 'title'> {
+export interface PageHeroProps extends Omit<
+  React.HTMLAttributes<HTMLElement>,
+  'title'
+> {
   eyebrow?: React.ReactNode;
   title: React.ReactNode;
   description?: React.ReactNode;

@@ -41,6 +41,7 @@
   --color-background: var(--background);
   --color-background-strong: var(--background-strong);
   --color-foreground: var(--foreground);
+  --color-foreground-muted: var(--foreground-muted);
   --color-signal: var(--signal);
   --color-signal-soft: var(--signal-soft);
   --color-signal-border: var(--signal-border);
