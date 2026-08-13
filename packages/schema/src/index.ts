@@ -1,6 +1,7 @@
 export {
   capabilityIds,
   defaultDesign,
+  designChoices,
   designSchema,
   moduleSelectionSchema,
   normalizedRecipeSchema,

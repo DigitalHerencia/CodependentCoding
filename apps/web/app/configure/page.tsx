@@ -1,5 +1,5 @@
-import { Configurator } from '@/components/configurator';
+import { Constituter } from '@/features/constituter/constituter';
 
 export default function ConfigurePage() {
-  return <Configurator />;
+  return <Constituter />;
 }

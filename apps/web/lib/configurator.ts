@@ -45,6 +45,8 @@ export const configurableCapabilities = [
   'sampleDomain',
 ] as const satisfies readonly CapabilityId[];
 
+export type ConfigurableCapability = (typeof configurableCapabilities)[number];
+
 export function resolveConfiguratorRecipe(
   draft: ConfiguratorRecipe,
 ): ResolvedRecipe {
@@ -94,4 +96,20 @@ export function deserializeRecipe(value: string): ConfiguratorRecipe {
 export function createCliCommand(recipe: ConfiguratorRecipe): string {
   const normalized: NormalizedRecipe = resolveConfiguratorRecipe(recipe).recipe;
   return `pnpm dlx hipster-stack@latest ${normalized.name} --config hipsterstack.json --yes`;
+}
+
+export function selectProductPreset(
+  recipe: ConfiguratorRecipe,
+  product: ProductPresetId,
+): ConfiguratorRecipe {
+  return { ...recipe, product, modules: {} };
+}
+
+export function createShareUrl(
+  recipe: ConfiguratorRecipe,
+  currentUrl: string,
+): string {
+  const url = new URL(currentUrl);
+  url.searchParams.set('recipe', serializeRecipe(recipe));
+  return url.toString();
 }
