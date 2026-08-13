@@ -243,13 +243,16 @@ body:has(.libraries-page, .library-detail-page)
   flex: 1;
   color: #5d747a;
 }
-.preview-window-bar button {
+.preview-window-bar .preview-open {
+  display: inline-flex;
+  align-items: center;
   padding: 7px 10px;
   border: 1px solid #26444c;
   border-radius: 4px;
   background: #102029;
   color: #809398;
   font-size: 8px;
+  text-decoration: none;
 }
 .preview-columns {
   display: grid;
@@ -395,9 +398,10 @@ body:has(.libraries-page, .library-detail-page)
   font-size: 8px;
   line-height: 1.45;
 }
-.product-entry-grid > a > b {
+.product-entry-grid .product-entry-arrow {
+  width: 16px;
+  height: 16px;
   color: var(--acid);
-  font-weight: 400;
 }
 .product-entry-grid > a:hover {
   border-color: #397483;

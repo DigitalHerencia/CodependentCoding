@@ -1,5 +1,8 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import { ArrowRight } from 'lucide-react';
+import { buttonVariants } from '@/components/ui/button';
+import digitalHerenciaBanner from '../../../../public/Digital Herencia Banner.png';
 import loadedVibesCrown from '../../../../public/Loaded Vibes Crown.png';
 
 type IconName =
@@ -109,9 +112,9 @@ function ConstituterPreview() {
       <div className="preview-window-bar">
         <span>Constituter</span>
         <small>portable configuration</small>
-        <button type="button" disabled>
-          Export
-        </button>
+        <Link className="preview-open" href="/configure">
+          Open
+        </Link>
       </div>
       <div className="preview-columns">
         <div>
@@ -184,11 +187,19 @@ export function ProductLanding() {
               Nothing to borrow. We&apos;ve already checked.
             </span>
             <div className="product-actions">
-              <Link className="button primary" href="/configure">
-                Open the Constituter <b>→</b>
+              <Link
+                className={buttonVariants({ variant: 'default' })}
+                href="/configure"
+              >
+                Open the Constituter
+                <ArrowRight aria-hidden="true" data-icon="inline-end" />
               </Link>
-              <Link className="button" href="/libraries">
-                Survey the Simples <b>→</b>
+              <Link
+                className={buttonVariants({ variant: 'outline' })}
+                href="/libraries"
+              >
+                Survey the Simples
+                <ArrowRight aria-hidden="true" data-icon="inline-end" />
               </Link>
             </div>
           </div>
@@ -206,7 +217,10 @@ export function ProductLanding() {
                 <strong>{entry.title}</strong>
                 <small>{entry.description}</small>
               </span>
-              <b>→</b>
+              <ArrowRight
+                aria-hidden="true"
+                className="product-entry-arrow"
+              />
             </Link>
           ))}
         </section>
@@ -221,7 +235,9 @@ export function ProductLanding() {
                 <small>Select a real preset and supported capabilities.</small>
               </span>
             </article>
-            <i>→</i>
+            <i aria-hidden="true">
+              <ArrowRight />
+            </i>
             <article>
               <b>2</b>
               <span>
@@ -229,7 +245,9 @@ export function ProductLanding() {
                 <small>Resolve the actual relationships and constraints.</small>
               </span>
             </article>
-            <i>→</i>
+            <i aria-hidden="true">
+              <ArrowRight />
+            </i>
             <article>
               <b>3</b>
               <span>
@@ -268,6 +286,14 @@ export function ProductLanding() {
           <b>Fuck NeoVim, btw... · Fuck Arch, btw...</b>
         </aside>
       </div>
+
+      <Image
+        className="product-landscape"
+        src={digitalHerenciaBanner}
+        alt=""
+        aria-hidden="true"
+        sizes="100vw"
+      />
     </main>
   );
 }

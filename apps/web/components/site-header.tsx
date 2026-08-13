@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { ArrowRight } from 'lucide-react';
 
 export function SiteHeader() {
   return (
@@ -16,7 +17,10 @@ export function SiteHeader() {
         <Link href="/libraries">Simples</Link>
         <Link href="/docs">Docs</Link>
         <Link className="nav-cta" href="/configure">
-          Constituter <span>→</span>
+          Constituter
+          <span>
+            <ArrowRight aria-hidden="true" />
+          </span>
         </Link>
       </nav>
     </header>
