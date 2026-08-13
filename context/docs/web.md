@@ -39,7 +39,7 @@ Mockups are not semantic authority. Correct illustrative labels/options when the
 - Hipster Stack tagline is `Constituted not Composable` in JetBrains Mono;
 - Digital Herencia wordmark uses Big Shoulders Display Bold or the closest build-safe equivalent; its `A Data Cartel` tagline uses the Copperplate heading stack;
 - header/footer are black; navigation uses the Copperplate stack, white text, a small scale-up hover, and `#2f7a8d` active underline/glow;
-- the landing page uses `public/Loaded Vibes Crown.png` for the crown motif and `public/Digital Herencia Banner.png` as the full-width bottom background treatment;
+- the landing page uses `public/Hipster Stack Crown.webp` for the complete brand hero and `public/Digital Herencia Banner.png` as the full-width bottom background treatment;
 - Simples, Simples details, and Constituter use `public/Digital Herencia Desert BG.png` as the full-width bottom background treatment;
 - background art stays anchored to the bottom of the page while the black footer sits above it cleanly;
 - design tokens belong in the Tailwind CSS v4 CSS-first theme layer and responsive overrides are mobile-first.

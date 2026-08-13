@@ -243,40 +243,10 @@ body:has(.libraries-page, .library-detail-page, .docs-shell, .builder-page)
 }
 
 .landing-crown {
-  position: absolute;
-  inset: 0;
   width: min(68rem, 142vw);
   height: 100%;
   margin: auto;
   object-fit: contain;
-  opacity: 0.9;
-  pointer-events: none;
-}
-
-.landing-hero-copy {
-  position: relative;
-  z-index: 1;
-  width: min(94vw, 64rem);
-  margin-top: 4.5rem;
-  text-align: center;
-}
-
-.landing-hero-copy > p,
-.landing-hero-copy > span {
-  margin: 0;
-  color: var(--foreground);
-  font-family: var(--type-body);
-  font-size: clamp(0.55rem, 1.8vw, 0.8rem);
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-shadow: var(--brand-glow);
-  text-transform: uppercase;
-}
-
-.landing-hero-copy h1 {
-  margin: 0.6rem 0;
-  font-size: clamp(2.35rem, 9vw, 6rem);
-  line-height: 0.95;
 }
 
 .product-shell {
@@ -320,29 +290,6 @@ body:has(.libraries-page, .library-detail-page, .docs-shell, .builder-page)
 .product-actions {
   align-items: stretch;
   flex-direction: column;
-}
-
-.button {
-  border-color: var(--signal-border);
-  background: var(--background-strong);
-  color: var(--foreground);
-  font-family: var(--type-body);
-  transition:
-    border-color 160ms ease,
-    box-shadow 160ms ease,
-    transform 160ms ease;
-}
-
-.button:hover {
-  border-color: var(--signal);
-  box-shadow: 0 0 1.1rem var(--signal-soft);
-  transform: scale(1.02);
-}
-
-.button.primary {
-  border-color: var(--signal);
-  background: var(--signal);
-  box-shadow: 0 0 1.25rem var(--signal-soft);
 }
 
 .product-builder-preview,
@@ -716,10 +663,6 @@ body:has(.libraries-page, .library-detail-page, .docs-shell, .builder-page)
     min-height: 31rem;
   }
 
-  .landing-hero-copy {
-    margin-top: 6rem;
-  }
-
   .product-actions,
   .builder-top-actions,
   .library-detail-actions {
@@ -840,10 +783,6 @@ body:has(.libraries-page, .library-detail-page, .docs-shell, .builder-page)
 
   .landing-crown {
     width: min(74rem, 84vw);
-  }
-
-  .landing-hero-copy {
-    margin-top: 8rem;
   }
 
   .product-shell {
