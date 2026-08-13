@@ -6,12 +6,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/DigitalHerencia/LoadedVibes.git"
+    "url": "git+https://github.com/DigitalHerencia/TheHipsterStack.git"
   },
   "bugs": {
-    "url": "https://github.com/DigitalHerencia/LoadedVibes/issues"
+    "url": "https://github.com/DigitalHerencia/TheHipsterStack/issues"
   },
-  "homepage": "https://github.com/DigitalHerencia/LoadedVibes#readme",
+  "homepage": "https://github.com/DigitalHerencia/TheHipsterStack#readme",
   "keywords": [
     "saas",
     "generator",

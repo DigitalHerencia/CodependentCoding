@@ -55,6 +55,11 @@
       "id": "LV-D-020",
       "decision": "The LV-201 through LV-207 migration is complete. The final repository owns one template at template/, packages cli/core/schema, shared configuration semantics, the canonical loaded-vibes command, stateless web routes, and canonical end-user docs at docs/.",
       "status": "active"
+    },
+    {
+      "id": "HS-D-001",
+      "decision": "The owner-approved 2026-08-13 Constituter redesign supersedes older fixed-composition governance: architecture remains opinionated while providers, capabilities, authorization, routes, resources, and safe output policy move behind one canonical Application Definition and resolver. The web workbench is named The Constituter™.",
+      "status": "active"
     }
   ]
 }

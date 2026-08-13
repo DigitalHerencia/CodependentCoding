@@ -1,38 +1,35 @@
 {
   "schemaVersion": 3,
-  "status": "release-candidate-verified-locally",
-  "observedRevision": "6fa0e75",
-  "observedDate": "2026-08-09",
-  "currentOutcome": "LV-201 through LV-207 are implemented: one template, shared configuration/core, deterministic generation, canonical CLI, split web surfaces, canonical docs, and coherent release governance.",
-  "activeIssue": null,
-  "activeSpec": null,
-  "openIssuesObserved": 0,
+  "status": "ready-for-review",
+  "observedRevision": "617c980",
+  "observedDate": "2026-08-13",
+  "currentOutcome": "HS-308 is establishing the canonical Application Definition, typed property metadata, and shared deterministic resolver for The Constituter™, CLI, config, and generator planning.",
+  "activeIssue": 154,
+  "activeSpec": "context/specs/HS-308-application-definition-foundation.md",
+  "openIssuesObserved": 1,
   "openPullRequestsObserved": 0,
-  "completedPriorRoadmap": "LV-101 through LV-110",
   "completedRoadmap": [
-    "LV-201",
-    "LV-202",
-    "LV-203",
-    "LV-204",
-    "LV-205",
-    "LV-206",
-    "LV-207"
+    "HS-301",
+    "HS-302",
+    "HS-303",
+    "HS-304",
+    "HS-305",
+    "HS-306",
+    "HS-307"
   ],
   "knownTransitionFacts": [
-    "preset defaults are owned by packages/core",
-    "template is the sole complete application source",
-    "optional route ownership is cataloged in packages/core",
-    "package.json publishes the sole template source",
-    "package.json name is create-loaded-vibes and exposes both create-loaded-vibes and loaded-vibes bins",
-    "the web root is the concise developer landing page and /configure owns the workbench",
-    "docs/ is the canonical end-user source rendered by /docs",
-    "the published npm package name remains create-loaded-vibes while loaded-vibes is the canonical command"
+    "template/ remains the sole standalone executable application source",
+    "the repository and GitHub repository are named The Hipster Stack",
+    "the web application-definition workbench is named The Constituter™",
+    "the existing recipe surface is a temporary compatibility adapter over the canonical Application Definition resolver"
   ],
   "verification": [
-    "corepack pnpm release:check",
-    "corepack pnpm web:build",
-    "corepack pnpm exec vitest run tests/integration/template-ownership.test.ts",
-    "corepack pnpm pack:check after excluding generated template artifacts"
+    "PASS: node_modules/.bin/tsc.CMD --noEmit",
+    "PASS: targeted ESLint on changed TypeScript and TSX files",
+    "PASS: node_modules/.bin/vitest.CMD run tests/unit/application-definition.test.ts tests/unit/recipe-resolution.test.ts tests/unit/config.test.ts tests/unit/web-configurator.test.ts (27 tests)",
+    "PASS: node_modules/.bin/tsdown.CMD",
+    "PASS: apps/web node_modules/.bin/next.CMD build --webpack (31 static routes)",
+    "PASS: CI=1 corepack pnpm release:check (470 safe packed entries and packed CLI smoke)"
   ],
-  "nextAction": "Merge LV-207 after fresh release/package and web evidence; npm publication and production deployment remain separate owner-authorized gates."
+  "nextAction": "Open the Issue #154 linked pull request and move the Project item to In Review."
 }

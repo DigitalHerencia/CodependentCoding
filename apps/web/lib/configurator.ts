@@ -1,7 +1,11 @@
 import {
   defaultDesign,
+  capabilityIds,
+  capabilityRegistry,
+  resolveApplicationDefinition,
   resolveRecipe,
   type CapabilityId,
+  type ApplicationDefinitionInput,
   type Design,
   type ModuleSelection,
   type NormalizedRecipe,
@@ -35,17 +39,11 @@ export const defaultConfiguratorRecipe: ConfiguratorRecipe = {
   design: defaultDesign,
 };
 
-export const configurableCapabilities = [
-  'invitations',
-  'billing',
-  'stripeConnect',
-  'onboarding',
-  'admin',
-  'marketing',
-  'sampleDomain',
-] as const satisfies readonly CapabilityId[];
+export const configurableCapabilities = capabilityIds.filter(
+  (id) => !capabilityRegistry[id].fixed,
+) as CapabilityId[];
 
-export type ConfigurableCapability = (typeof configurableCapabilities)[number];
+export type ConfigurableCapability = CapabilityId;
 
 export function resolveConfiguratorRecipe(
   draft: ConfiguratorRecipe,
@@ -81,11 +79,42 @@ export function setCapability(
 }
 
 export function serializeRecipe(recipe: ConfiguratorRecipe): string {
-  return JSON.stringify(resolveConfiguratorRecipe(recipe).recipe);
+  return JSON.stringify({
+    applicationDefinition:
+      resolveConfiguratorRecipe(recipe).application.resolved.definition,
+  });
 }
 
 export function deserializeRecipe(value: string): ConfiguratorRecipe {
-  const resolved = resolveRecipe(JSON.parse(value) as RecipeInput);
+  const parsed = JSON.parse(value) as unknown;
+  if (
+    typeof parsed === 'object' &&
+    parsed !== null &&
+    'applicationDefinition' in parsed
+  ) {
+    const application = resolveApplicationDefinition(
+      (parsed as { applicationDefinition: ApplicationDefinitionInput })
+        .applicationDefinition,
+    ).resolved.definition;
+    const modules: ModuleSelection = {};
+    for (const id of application.capabilities.include) {
+      if (id === 'sampleDomain') modules.sampleDomain = 'projects';
+      else modules[id] = true;
+    }
+    for (const id of application.capabilities.exclude) modules[id] = false;
+    return {
+      schemaVersion: 1,
+      name: application.identity.packageName,
+      product: application.preset,
+      modules,
+      identity: {
+        displayName: application.identity.displayName,
+        description: application.identity.description,
+      },
+      design: application.presentation,
+    };
+  }
+  const resolved = resolveRecipe(parsed as RecipeInput);
   return {
     ...resolved.recipe,
     modules: resolved.recipe.modules,

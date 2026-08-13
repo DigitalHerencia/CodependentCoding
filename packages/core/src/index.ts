@@ -20,6 +20,17 @@ export {
   type LoadedVibesConfig,
 } from './config/schema.js';
 export { LoadedVibesError, type LoadedVibesErrorCode } from './errors.js';
+export { createGenerationPlan, type GenerationPlan } from './generator/plan.js';
+export {
+  applicationProperties,
+  providerRegistry,
+  resolveApplicationDefinition,
+  type ApplicationGenerationPlan,
+  type ApplicationResolution,
+  type ResolutionReason,
+  type ResolvedApplicationDefinition,
+  type ResolvedArtifactSet,
+} from './application-definition.js';
 export {
   generatedModuleIds,
   getAddableOwnership,
@@ -43,20 +54,40 @@ export {
 } from './capabilities.js';
 export { capabilityIds, productPresetIds } from '@hipster-stack/schema';
 export {
+  applicationDefinitionFromRecipe,
   normalizeRecipe,
+  recipeFromApplicationDefinition,
+  recipeFromApplicationResolution,
   resolveRecipe,
   type ResolvedBuildSummary,
   type ResolvedRecipe,
 } from './recipe.js';
 export { getProductPreset, productPresets } from './presets.js';
 export type {
+  ApplicationDefinition,
+  ApplicationDefinitionInput,
+  Artifact,
+  ArtifactSet,
+  ArtifactSetId,
+  AuthorizationModelId,
   CapabilityId,
+  Constraint,
+  Dependency,
   Design,
   DesignInput,
   ModuleSelection,
   NormalizedRecipe,
+  OutputPolicy,
+  PropertyDefinition,
+  PropertyMechanism,
+  PropertyState,
   ProductIdentity,
   ProductIdentityInput,
   ProductPresetId,
+  ProviderDefinition,
+  ProviderId,
   RecipeInput,
+  ResourceDefinition,
+  RoleDefinition,
+  RouteSurfaceDefinition,
 } from '@hipster-stack/schema';

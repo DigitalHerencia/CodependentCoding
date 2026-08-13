@@ -9,6 +9,7 @@ import {
   loadConfigFile,
   LoadedVibesError,
   planProjectModuleAddition,
+  recipeFromApplicationDefinition,
   resolveRecipe,
   type ConfigInput,
   type RecipeInput,
@@ -51,6 +52,19 @@ async function runCreate(
 ) {
   intro('Hipster Stack');
   const fileInput = flags.config ? await loadConfigFile(flags.config) : {};
+  const fileDefinition = fileInput.applicationDefinition
+    ? {
+        ...fileInput.applicationDefinition,
+        identity: {
+          ...fileInput.applicationDefinition.identity,
+          packageName:
+            flags.name ?? fileInput.applicationDefinition.identity.packageName,
+        },
+      }
+    : undefined;
+  const definitionRecipe = fileDefinition
+    ? recipeFromApplicationDefinition(fileDefinition)
+    : undefined;
   let target = targetDirectory ?? fileInput.targetDirectory;
   if (!target && !flags.yes && process.stdin.isTTY) {
     const answer = await text({
@@ -80,21 +94,28 @@ async function runCreate(
         }),
     name:
       flags.name ??
+      definitionRecipe?.name ??
       fileInput.recipe?.name ??
       fileInput.name ??
       fileInput.projectName ??
       path.basename(path.resolve(target)).toLowerCase(),
     product:
-      fileInput.recipe?.product ?? fileInput.product ?? 'bare-golden-app',
+      definitionRecipe?.product ??
+      fileInput.recipe?.product ??
+      fileInput.product ??
+      'bare-golden-app',
     modules: {
+      ...definitionRecipe?.modules,
       ...fileInput.recipe?.modules,
       ...fileInput.modules,
     },
     identity: {
+      ...definitionRecipe?.identity,
       ...fileInput.recipe?.identity,
       ...fileInput.identity,
     },
     design: {
+      ...definitionRecipe?.design,
       ...fileInput.recipe?.design,
       ...fileInput.design,
     },
@@ -120,7 +141,9 @@ async function runCreate(
 
   const input: ConfigInput = {
     targetDirectory: target,
-    recipe,
+    ...(fileDefinition
+      ? { applicationDefinition: fileDefinition }
+      : { recipe }),
     git: { initialize: flags.git && (fileInput.git?.initialize ?? true) },
     install: {
       enabled: !flags.skipInstall && (fileInput.install?.enabled ?? true),
