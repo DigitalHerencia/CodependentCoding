@@ -78,7 +78,7 @@ jobs:
         shell: pwsh
         run: |
           pnpm install --lockfile-only --no-frozen-lockfile
-          pnpm exec prettier --write apps packages tests scripts context/docs/release.md context/AGENTS.md .agents/AGENTS.md docs package.json README.md llms.txt tsdown.config.ts pnpm-lock.yaml
+          pnpm exec prettier --write apps packages tests scripts context/docs/release.md context/AGENTS.md .agents/AGENTS.md docs package.json README.md tsdown.config.ts pnpm-lock.yaml
       - name: Commit migration
         shell: pwsh
         run: |
