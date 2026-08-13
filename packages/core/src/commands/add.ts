@@ -81,7 +81,7 @@ async function listFiles(
 ): Promise<string[]> {
   const files: string[] = [];
   for (const entry of await readdir(directory, { withFileTypes: true })) {
-    if (entry.name === '.hipster-stack-module.json') continue;
+    if (entry.name === '.loaded-vibes-module.json') continue;
     const absolute = path.join(directory, entry.name);
     if (entry.isDirectory()) files.push(...(await listFiles(absolute, root)));
     else files.push(path.relative(root, absolute));
@@ -170,7 +170,7 @@ export async function planProjectModuleAddition(
   const target = path.resolve(targetDirectory);
   const module = parseModuleId(requestedModule);
   const manifest = parseGenerationManifest(
-    await readJson(path.join(target, '.loadedvibes', 'manifest.json')),
+    await readJson(path.join(target, '.hipsterstack', 'manifest.json')),
   );
   const currentRecipe = resolveRecipe(
     (await readJson(
@@ -180,7 +180,7 @@ export async function planProjectModuleAddition(
   if (JSON.stringify(manifest.recipe) !== JSON.stringify(currentRecipe)) {
     throw new LoadedVibesError(
       'MODULE_CONFLICT',
-      'hipsterstack.json and .loadedvibes/manifest.json disagree. Reconcile them before adding a module.',
+      'hipsterstack.json and .hipsterstack/manifest.json disagree. Reconcile them before adding a module.',
     );
   }
   const capability = moduleCapabilities[module];
