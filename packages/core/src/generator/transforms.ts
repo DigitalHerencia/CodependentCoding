@@ -625,28 +625,33 @@ async function replaceRouteReferences(
   directory: string,
   routes: GenerationPlan['applicationPlan']['routes'],
 ): Promise<void> {
-  const replacements = routes
-    .map((route) => ({
-      before: defaultRouteUrls[route.id as keyof typeof defaultRouteUrls],
-      after: route.urlSegment,
-      beforeLabel:
-        defaultRouteLabels[route.id as keyof typeof defaultRouteLabels],
-      afterLabel: route.navigationLabel,
-    }))
-    .filter(
-      (
-        entry,
-      ): entry is {
-        before: string;
-        after: string;
-        beforeLabel: string;
-        afterLabel: string;
-      } =>
-        entry.before !== undefined &&
-        entry.beforeLabel !== undefined &&
-        (entry.before !== entry.after ||
-          entry.beforeLabel !== entry.afterLabel),
-    )
+  const replacements: Array<{
+    before: string;
+    after: string;
+    beforeLabel: string;
+    afterLabel: string;
+  }> = routes
+    .flatMap((route) => {
+      const before =
+        defaultRouteUrls[route.id as keyof typeof defaultRouteUrls];
+      const beforeLabel =
+        defaultRouteLabels[route.id as keyof typeof defaultRouteLabels];
+      if (
+        before === undefined ||
+        beforeLabel === undefined ||
+        (before === route.urlSegment && beforeLabel === route.navigationLabel)
+      ) {
+        return [];
+      }
+      return [
+        {
+          before,
+          after: route.urlSegment,
+          beforeLabel,
+          afterLabel: route.navigationLabel,
+        },
+      ];
+    })
     .sort((left, right) => right.before.length - left.before.length);
   if (!replacements.length) return;
   const extensions = new Set(['.ts', '.tsx', '.js', '.mjs', '.md', '.yaml']);

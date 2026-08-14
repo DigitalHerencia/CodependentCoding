@@ -43,7 +43,7 @@ describe('web configurator recipe', () => {
     );
     const selected = selectProductPreset(customized, 'client-portal');
 
-    expect(selected.modules).toEqual({});
+    expect(selected.capabilities).toEqual({ include: [], exclude: [] });
     expect(resolveConfiguratorRecipe(selected).summary.preset.id).toBe(
       'client-portal',
     );
