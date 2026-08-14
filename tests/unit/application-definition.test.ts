@@ -39,7 +39,7 @@ describe('Application Definition resolution', () => {
       preset: 'bare-golden-app',
       capabilities: {
         include: ['stripeConnect'],
-        exclude: ['organizations', 'rbac', 'billing'],
+        exclude: [],
       },
     });
 
@@ -51,11 +51,9 @@ describe('Application Definition resolution', () => {
         'stripeConnect',
       ]),
     );
-    expect(result.resolved.autoIncluded).toEqual(
-      expect.arrayContaining(['organizations', 'rbac', 'billing']),
-    );
+    expect(result.resolved.autoIncluded).toEqual(['billing']);
     expect(result.resolved.propertyStates).toMatchObject({
-      'capabilities.organizations': 'LOCKED',
+      'capabilities.organizations': 'PRESET',
       'capabilities.billing': 'REQUIRED',
       requiredProviders: 'DERIVED',
     });
@@ -80,7 +78,7 @@ describe('Application Definition resolution', () => {
     expect(result.plan.routes.map((route) => route.id)).toContain('billing');
     expect(result.plan.artifactSets.map((set) => set.id)).toContain('billing');
     expect(result.resolved.definition.providers).toEqual({});
-    expect(result.resolved.definition).not.toHaveProperty('routes');
+    expect(result.resolved.definition.routes).toEqual([]);
     expect(result.resolved.definition).not.toHaveProperty('resources');
   });
 

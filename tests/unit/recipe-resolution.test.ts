@@ -27,8 +27,6 @@ describe('recipe resolution', () => {
       name: 'payments-platform',
       product: 'bare-golden-app',
       modules: {
-        organizations: false,
-        rbac: false,
         billing: false,
         stripeConnect: true,
       },
@@ -39,21 +37,17 @@ describe('recipe resolution', () => {
       billing: true,
       stripeConnect: true,
     });
-    expect(result.summary.autoIncluded).toEqual([
-      'Organizations',
-      'Local roles and authorization',
-      'Subscription billing',
-    ]);
+    expect(result.summary.autoIncluded).toEqual(['Subscription billing']);
   });
 
-  it('preserves the fixed golden architecture when overrides disable it', () => {
+  it('keeps only fixed governance when configurable foundations are disabled', () => {
     const result = resolveRecipe({
       name: 'fixed-foundation',
       modules: { organizations: false, rbac: false, governance: false },
     });
     expect(result.recipe.modules).toMatchObject({
-      organizations: true,
-      rbac: true,
+      organizations: false,
+      rbac: false,
       governance: true,
     });
   });

@@ -1,12 +1,15 @@
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
-import type { NormalizedRecipe } from '@hipster-stack/schema';
+import type {
+  ApplicationDefinitionInput,
+  NormalizedRecipe,
+} from '@hipster-stack/schema';
 import { LoadedVibesError } from './errors.js';
 import {
   parseGenerationManifest,
   type GenerationManifest,
 } from './manifest.js';
-import { resolveRecipe } from './recipe.js';
+import { recipeFromApplicationDefinition, resolveRecipe } from './recipe.js';
 
 export interface GeneratedProject {
   directory: string;
@@ -33,11 +36,16 @@ export async function loadGeneratedProject(
   const manifest = parseGenerationManifest(
     await readJson(path.join(target, '.hipsterstack', 'manifest.json')),
   );
-  const recipe = resolveRecipe(
-    (await readJson(
-      path.join(target, 'hipsterstack.json'),
-    )) as NormalizedRecipe,
-  ).recipe;
+  const saved = await readJson(path.join(target, 'hipsterstack.json'));
+  const recipe =
+    typeof saved === 'object' &&
+    saved !== null &&
+    'applicationDefinition' in saved
+      ? recipeFromApplicationDefinition(
+          (saved as { applicationDefinition: ApplicationDefinitionInput })
+            .applicationDefinition,
+        )
+      : resolveRecipe(saved as NormalizedRecipe).recipe;
   if (JSON.stringify(manifest.recipe) !== JSON.stringify(recipe)) {
     throw new LoadedVibesError(
       'MODULE_CONFLICT',

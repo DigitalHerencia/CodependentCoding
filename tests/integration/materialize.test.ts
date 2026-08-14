@@ -131,7 +131,9 @@ describe('createProject', () => {
       path.join('app', '(tenant)', 'ai', 'page.tsx'),
       path.join('app', 'api', 'cloudinary', 'webhooks', 'route.ts'),
     ]) {
-      await expect(stat(path.join(target, surface))).resolves.toBeTruthy();
+      await expect(stat(path.join(target, surface))).rejects.toMatchObject({
+        code: 'ENOENT',
+      });
     }
     for (const surface of [
       path.join('app', '(onboarding)'),
@@ -317,7 +319,7 @@ describe('createProject', () => {
         path.join(target, 'components', 'shells', 'tenant-shell.tsx'),
         'utf8',
       ),
-    ).resolves.toContain('loadedVibesDesign.navigation === "sidebar"');
+    ).resolves.toContain("loadedVibesDesign.navigation === 'sidebar'");
     await expect(
       readFile(path.join(target, 'content', 'site.ts'), 'utf8'),
     ).resolves.toContain('name: loadedVibesProduct.name');

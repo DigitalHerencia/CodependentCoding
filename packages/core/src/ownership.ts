@@ -60,6 +60,7 @@ export const optionalSurfaceOwnership = {
     'lib/actions/billingActions.ts',
     'lib/billing',
     'lib/fetchers/billingFetchers.ts',
+    'lib/db/transactions/billingTransactions.ts',
     'types/billingTypes.ts',
   ]),
   stripeConnect: surface(
@@ -67,6 +68,9 @@ export const optionalSurfaceOwnership = {
     [
       'app/api/stripe/connect',
       'tests/unit/connect/connect-webhook-route.test.ts',
+      'lib/actions/connectActions.ts',
+      'lib/fetchers/connectFetchers.ts',
+      'lib/db/transactions/connectTransactions.ts',
     ],
     {
       id: 'stripe-connect',
