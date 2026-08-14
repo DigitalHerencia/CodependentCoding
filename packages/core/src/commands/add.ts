@@ -11,11 +11,9 @@ import {
   getAddableOwnership,
   type GeneratedModuleId,
 } from '../ownership.js';
-import {
-  parseGenerationManifest,
-  type GenerationManifest,
-} from '../manifest.js';
+import type { GenerationManifest } from '../manifest.js';
 import { resolveRecipe } from '../recipe.js';
+import { loadGeneratedProject } from '../project.js';
 import { writeRecipeArtifacts } from '../generator/transforms.js';
 import { resolveTemplateDirectory } from './create.js';
 
@@ -61,18 +59,6 @@ function parseModuleId(value: string): GeneratedModuleId {
     'MODULE_UNSUPPORTED',
     `Unsupported module "${value}". Supported modules: ${generatedModuleIds.join(', ')}.`,
   );
-}
-
-async function readJson(file: string): Promise<unknown> {
-  try {
-    return JSON.parse(await readFile(file, 'utf8')) as unknown;
-  } catch (error) {
-    throw new LoadedVibesError(
-      'PROJECT_NOT_GENERATED',
-      `Unable to read generated project metadata at ${file}.`,
-      error,
-    );
-  }
 }
 
 async function listFiles(
@@ -169,20 +155,8 @@ export async function planProjectModuleAddition(
 ): Promise<ModuleAdditionPlan> {
   const target = path.resolve(targetDirectory);
   const module = parseModuleId(requestedModule);
-  const manifest = parseGenerationManifest(
-    await readJson(path.join(target, '.hipsterstack', 'manifest.json')),
-  );
-  const currentRecipe = resolveRecipe(
-    (await readJson(
-      path.join(target, 'hipsterstack.json'),
-    )) as NormalizedRecipe,
-  ).recipe;
-  if (JSON.stringify(manifest.recipe) !== JSON.stringify(currentRecipe)) {
-    throw new LoadedVibesError(
-      'MODULE_CONFLICT',
-      'hipsterstack.json and .hipsterstack/manifest.json disagree. Reconcile them before adding a module.',
-    );
-  }
+  const { manifest, recipe: currentRecipe } =
+    await loadGeneratedProject(target);
   const capability = moduleCapabilities[module];
   if (isEnabled(currentRecipe, capability)) {
     throw new LoadedVibesError(

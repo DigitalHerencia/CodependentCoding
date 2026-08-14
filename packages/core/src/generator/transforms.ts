@@ -319,6 +319,7 @@ async function applyProviderSourceComposition(
   await pruneLockfileImporter(plan.stagingDirectory, providers);
   await applyRouteComposition(plan);
   await applyAuthorizationComposition(plan);
+  await applyCapabilityWorkflowComposition(plan);
   if (!providers.includes('clerk')) {
     const layoutPath = path.join(plan.stagingDirectory, 'app', 'layout.tsx');
     let layout = await readFile(layoutPath, 'utf8');
@@ -355,7 +356,136 @@ async function applyProviderSourceComposition(
         ['Get started', 'Explore'],
       ],
     );
+    await replaceInFile(
+      path.join(
+        plan.stagingDirectory,
+        'components',
+        'navigation',
+        'mobile-bottom-nav.tsx',
+      ),
+      [
+        [
+          'href: "/sign-in", label: "Sign"',
+          'href: "/contact", label: "Contact"',
+        ],
+        [
+          "href: '/sign-in', label: 'Sign'",
+          "href: '/contact', label: 'Contact'",
+        ],
+      ],
+    );
   }
+}
+
+async function applyCapabilityWorkflowComposition(
+  plan: GenerationPlan,
+): Promise<void> {
+  const selected = new Set(plan.applicationPlan.selectedCapabilities);
+  const uploads = selected.has('uploads');
+  const ai = selected.has('ai');
+  const maps = selected.has('maps');
+  const file = path.join(
+    plan.stagingDirectory,
+    'lib',
+    'capabilities',
+    'workflows',
+    'capabilityWorkflows.ts',
+  );
+  if (!uploads && !ai && !maps) {
+    await rm(file, { force: true });
+    return;
+  }
+
+  const transactionImports = [
+    ...(maps ? ['createLocationTx'] : []),
+    ...(uploads ? ['recordMediaAssetTx'] : []),
+  ];
+  const schemaImports = [
+    ...(ai ? ['inferenceSchema'] : []),
+    ...(maps ? ['locationSearchSchema', 'saveLocationSchema'] : []),
+    ...(uploads ? ['mediaUploadSchema'] : []),
+  ];
+  const source = [
+    `import "server-only"`,
+    '',
+    `import { requireTenantContext } from "@/lib/auth/session"`,
+    `import { assertCapability } from "@/lib/authz/assertions"`,
+    ...(transactionImports.length
+      ? [
+          `import { ${transactionImports.join(', ')} } from "@/lib/db/transactions/capabilityTransactions"`,
+        ]
+      : []),
+    ...(uploads || maps
+      ? [`import { withTenantContext } from "@/lib/db/withTenantContext"`]
+      : []),
+    ...(ai
+      ? [
+          `import { runHuggingFaceInference } from "@/lib/integrations/huggingface/inference"`,
+        ]
+      : []),
+    ...(maps
+      ? [
+          `import { geocodeLocation } from "@/lib/integrations/mapbox/geocoding"`,
+        ]
+      : []),
+    ...(uploads
+      ? [
+          `import { uploadToCloudinary } from "@/lib/integrations/cloudinary/uploads"`,
+        ]
+      : []),
+    `import { ${schemaImports.join(', ')} } from "@/schemas/capabilitySchemas"`,
+    '',
+    ...(uploads
+      ? [
+          `export async function uploadMediaWorkflow(input: unknown) {
+  const parsed = mediaUploadSchema.parse(input)
+  const context = await requireTenantContext()
+  assertCapability(context, "media.manage")
+  const uploaded = await uploadToCloudinary(parsed.file)
+  return withTenantContext(context.organization.id, (tx) =>
+    recordMediaAssetTx(tx, {
+      ...uploaded,
+      organizationId: context.organization.id,
+      uploadedById: context.localUser.id,
+    })
+  )
+}`,
+          '',
+        ]
+      : []),
+    ...(ai
+      ? [
+          `export async function runInferenceWorkflow(input: unknown) {
+  const parsed = inferenceSchema.parse(input)
+  const context = await requireTenantContext()
+  assertCapability(context, "ai.use")
+  return runHuggingFaceInference(parsed.prompt)
+}`,
+          '',
+        ]
+      : []),
+    ...(maps
+      ? [
+          `export async function searchLocationsWorkflow(input: unknown) {
+  const parsed = locationSearchSchema.parse(input)
+  const context = await requireTenantContext()
+  assertCapability(context, "map.read")
+  return geocodeLocation(parsed.query)
+}`,
+          '',
+          `export async function saveLocationWorkflow(input: unknown) {
+  const parsed = saveLocationSchema.parse(input)
+  const context = await requireTenantContext()
+  assertCapability(context, "map.manage")
+  return withTenantContext(context.organization.id, (tx) =>
+    createLocationTx(tx, { ...parsed, organizationId: context.organization.id })
+  )
+}`,
+          '',
+        ]
+      : []),
+  ].join('\n');
+  await writeFile(file, source);
 }
 
 async function applyAuthorizationComposition(
