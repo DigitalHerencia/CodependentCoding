@@ -391,8 +391,15 @@ async function applyCapabilityWorkflowComposition(
     'workflows',
     'capabilityWorkflows.ts',
   );
+  const actionFile = path.join(
+    plan.stagingDirectory,
+    'lib',
+    'actions',
+    'capabilityActions.ts',
+  );
   if (!uploads && !ai && !maps) {
     await rm(file, { force: true });
+    await rm(actionFile, { force: true });
     return;
   }
 
@@ -486,6 +493,105 @@ async function applyCapabilityWorkflowComposition(
       : []),
   ].join('\n');
   await writeFile(file, source);
+
+  const workflowImports = [
+    ...(ai ? ['runInferenceWorkflow'] : []),
+    ...(maps ? ['saveLocationWorkflow', 'searchLocationsWorkflow'] : []),
+    ...(uploads ? ['uploadMediaWorkflow'] : []),
+  ];
+  const resultTypeImports = [
+    ...(ai ? ['InferenceResult'] : []),
+    ...(maps ? ['LocationResult'] : []),
+  ];
+  const actionSource = [
+    `"use server"`,
+    '',
+    `import { ZodError } from "zod"`,
+    '',
+    `import { ${workflowImports.join(', ')} } from "@/lib/capabilities/workflows/capabilityWorkflows"`,
+    `import { actionFailure, actionSuccess, type ActionResult } from "@/types/actionResultTypes"`,
+    ...(resultTypeImports.length
+      ? [
+          `import type { ${resultTypeImports.join(', ')} } from "@/types/capabilityTypes"`,
+        ]
+      : []),
+    '',
+    ...(ai || maps
+      ? [
+          `function formString(formData: FormData, key: string): string {
+  const value = formData.get(key)
+  return typeof value === "string" ? value : ""
+}`,
+          '',
+        ]
+      : []),
+    `function invalid(error: unknown): ActionResult<never> {
+  if (error instanceof ZodError)
+    return actionFailure(
+      "INVALID_INPUT",
+      "Check the submitted values.",
+      error.flatten().fieldErrors
+    )
+  throw error
+}`,
+    '',
+    ...(uploads
+      ? [
+          `export async function uploadMediaAction(
+  _state: ActionResult<{ id: string }>,
+  formData: FormData
+): Promise<ActionResult<{ id: string }>> {
+  try {
+    const asset = await uploadMediaWorkflow({ file: formData.get("file") })
+    return actionSuccess({ id: asset.id })
+  } catch (error) {
+    return invalid(error)
+  }
+}`,
+          '',
+        ]
+      : []),
+    ...(ai
+      ? [
+          `export async function runInferenceAction(
+  _state: ActionResult<InferenceResult>,
+  formData: FormData
+): Promise<ActionResult<InferenceResult>> {
+  try {
+    return actionSuccess(await runInferenceWorkflow({ prompt: formString(formData, "prompt") }))
+  } catch (error) {
+    return invalid(error)
+  }
+}`,
+          '',
+        ]
+      : []),
+    ...(maps
+      ? [
+          `export async function searchLocationsAction(
+  _state: ActionResult<LocationResult[]>,
+  formData: FormData
+): Promise<ActionResult<LocationResult[]>> {
+  try {
+    return actionSuccess(await searchLocationsWorkflow({ query: formString(formData, "query") }))
+  } catch (error) {
+    return invalid(error)
+  }
+}`,
+          '',
+          `export async function saveLocationAction(formData: FormData): Promise<void> {
+  await saveLocationWorkflow({
+    label: formString(formData, "label"),
+    mapboxId: formString(formData, "mapboxId") || undefined,
+    longitude: formString(formData, "longitude"),
+    latitude: formString(formData, "latitude"),
+  })
+}`,
+          '',
+        ]
+      : []),
+  ].join('\n');
+  await writeFile(actionFile, actionSource);
 }
 
 async function applyAuthorizationComposition(
