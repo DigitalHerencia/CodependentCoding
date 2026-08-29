@@ -11,12 +11,11 @@
     "plan": "context/01-codex/segment-09-plan.md",
     "checkpoint": "context/01-codex/segment-09-checkpoint.md",
     "verification": [
-      "PASS: focused Prettier check for delivery files",
-      "PASS: corepack pnpm typecheck",
-      "PASS: corepack pnpm --dir apps/web typecheck",
+      "PASS: corepack pnpm validate",
       "PASS: staged publication secret and file-size review",
       "PASS: origin/main verified before stale master removal",
-      "PASS: Vercel production build and deployment dpl_7nTPsSUH4MXJUfyUbUsHiWY1pzgX",
+      "PASS: GitHub Actions CI run 33236265215",
+      "PASS: Vercel production build and deployment dpl_45zqwvepPiRbQL9jq6ntAB9u8ixV",
       "PASS: production alias HTTP 200 and no recent runtime errors"
     ],
     "blocked": [],

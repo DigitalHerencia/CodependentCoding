@@ -31,7 +31,9 @@
     "PASS: Landing Mockup native 894x1600 visual and geometry comparison",
     "PASS: publication scan found no tracked credential or private-key matches and no oversized files",
     "PASS: GitHub main and origin/main verified at 1a117656fc8cbedd2a61f08a6c8937a0668f68e0 before deployment",
-    "PASS: Vercel production deployment dpl_7nTPsSUH4MXJUfyUbUsHiWY1pzgX reached READY",
+    "PASS: corepack pnpm validate completed formatting, lint, typecheck, 48 unit/integration tests, 8 generated tests, package build, and 67-page web build",
+    "PASS: GitHub Actions CI run 33236265215 passed for 20aab577f1f31155667ed55b59d45d433001c687",
+    "PASS: Vercel production deployment dpl_45zqwvepPiRbQL9jq6ntAB9u8ixV reached READY for 20aab577f1f31155667ed55b59d45d433001c687",
     "PASS: https://codependentcoding.vercel.app returned HTTP 200 with the canonical landing page",
     "PASS: Vercel one-hour runtime-error scan returned no errors"
   ],

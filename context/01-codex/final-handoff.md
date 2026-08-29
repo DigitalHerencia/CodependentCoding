@@ -49,7 +49,9 @@ Ontology → resolved Virgule → Anthimeria preview → generation plan
 - Representative HTTP checks for `/`, `/ontologies`, Ontology detail, `/anthimeria`, `/maximal`, and docs — all 200.
 - Publication scan — PASS; no tracked credential/private-key matches or oversized files.
 - GitHub repository initialization and `main` publication — PASS.
-- Vercel production build and deployment — PASS; deployment `dpl_7nTPsSUH4MXJUfyUbUsHiWY1pzgX` reached `READY`.
+- Complete root `corepack pnpm validate` chain — PASS after aligning formatting/lint boundaries with byte-preserved authority, historical migration evidence, and the first-class Loaded Vibes package validators.
+- GitHub Actions CI — PASS; run `33236265215` completed the same validation chain for commit `20aab577f1f31155667ed55b59d45d433001c687`.
+- Vercel production build and deployment — PASS; deployment `dpl_45zqwvepPiRbQL9jq6ntAB9u8ixV` reached `READY` for commit `20aab577f1f31155667ed55b59d45d433001c687`.
 - Production alias check — PASS; `https://codependentcoding.vercel.app` returned the canonical landing page with HTTP 200.
 - Post-deploy runtime-error scan — PASS; no errors found in the selected one-hour range.
 
@@ -57,7 +59,6 @@ Ontology → resolved Virgule → Anthimeria preview → generation plan
 
 - Live provider, database, and PowerShell installer execution.
 - Pixel-level browser automation after final edits.
-- The complete root `pnpm validate` chain was not rerun for the delivery-only record/config edits; focused formatting and TypeScript checks plus the Vercel production build were executed.
 
 ## Blocked
 
