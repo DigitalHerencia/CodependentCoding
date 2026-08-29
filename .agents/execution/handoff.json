@@ -3,19 +3,28 @@
   "handoff": {
     "issue": null,
     "pullRequest": null,
-    "branch": null,
+    "branch": "main",
     "status": "complete",
     "spec": "context/00-governance/04-Segmented-Build-Spec.md",
     "segment": 9,
     "scope": "Consolidation cleanup and final local validation audit.",
     "plan": "context/01-codex/segment-09-plan.md",
     "checkpoint": "context/01-codex/segment-09-checkpoint.md",
-    "verification": [],
+    "verification": [
+      "PASS: focused Prettier check for delivery files",
+      "PASS: corepack pnpm typecheck",
+      "PASS: corepack pnpm --dir apps/web typecheck",
+      "PASS: staged publication secret and file-size review",
+      "PASS: origin/main verified before stale master removal",
+      "PASS: Vercel production build and deployment dpl_7nTPsSUH4MXJUfyUbUsHiWY1pzgX",
+      "PASS: production alias HTTP 200 and no recent runtime errors"
+    ],
     "blocked": [],
     "externalWork": {
-      "remoteCreation": "deferred",
-      "push": "deferred",
-      "deployment": "deferred"
+      "repository": "DigitalHerencia/CodependentCoding",
+      "push": "complete",
+      "deployment": "complete",
+      "productionUrl": "https://codependentcoding.vercel.app"
     }
   }
 }

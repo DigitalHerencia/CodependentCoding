@@ -85,6 +85,12 @@
       "id": "CC-D-003",
       "decision": "The consolidation workspace is local implementation evidence, not a repository identity. Remote creation, push, publication, deployment, and credential provisioning remain deferred until owner acceptance.",
       "status": "active"
+    },
+    {
+      "id": "CC-D-004",
+      "decision": "Owner acceptance on 2026-08-28 authorized publication of the completed consolidation build to DigitalHerencia/CodependentCoding and production deployment through the existing digital-herencia/codependent-coding Vercel project at codependentcoding.vercel.app.",
+      "status": "active",
+      "supersedes": ["CC-D-003"]
     }
   ]
 }

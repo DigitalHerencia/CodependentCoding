@@ -2,22 +2,24 @@
   "schemaVersion": 4,
   "status": "complete",
   "observedDate": "2026-08-28",
-  "currentOutcome": "Segments 0-2 are complete: canonical workspace wiring and shell, Landing mockup composition, and a source-backed paired TypeScripture reader are implemented and verified.",
+  "currentOutcome": "Segments 0-9 are complete, and the accepted canonical build is published from DigitalHerencia/CodependentCoding main to the existing Vercel production project at codependentcoding.vercel.app.",
   "authority": "context/00-governance/04-Segmented-Build-Spec.md",
   "currentSegment": 9,
   "activeIssue": null,
   "activePullRequest": null,
-  "remoteAndDeploymentWork": "deferred-by-owner",
+  "remoteAndDeploymentWork": "complete",
   "completedSegments": [0, 1, 2, 3, 4, 5, 6, 7, 8],
   "currentPlan": "context/01-codex/segment-09-plan.md",
   "currentCheckpoint": "context/01-codex/segment-09-checkpoint.md",
   "knownTransitionFacts": [
-    "the workspace is not currently a Git repository",
+    "the workspace is the main branch of DigitalHerencia/CodependentCoding",
+    "the prior disposable master history was removed after main was verified",
+    "the Vercel project is digital-herencia/codependent-coding",
+    "the production alias is https://codependentcoding.vercel.app",
     "the active web source is apps/web",
     "the active Hipster Stack packages are packages/schema, packages/core, and packages/cli",
     "the active web shell uses Ontologies, Simples, Anthimeria, and Maximal navigation",
-    "the ten owner-supplied visual references are available under docs/mockups",
-    "no remote creation, push, publication, or deployment is authorized"
+    "the ten owner-supplied visual references are available under docs/mockups"
   ],
   "verification": [
     "PASS: corepack pnpm install --frozen-lockfile",
@@ -26,7 +28,12 @@
     "PASS: targeted ESLint and Prettier",
     "PASS: corepack pnpm --dir apps/web build (25 generated pages)",
     "PASS: desktop and narrow browser route/layout smoke with no console warnings or errors",
-    "PASS: Landing Mockup native 894x1600 visual and geometry comparison"
+    "PASS: Landing Mockup native 894x1600 visual and geometry comparison",
+    "PASS: publication scan found no tracked credential or private-key matches and no oversized files",
+    "PASS: GitHub main and origin/main verified at 1a117656fc8cbedd2a61f08a6c8937a0668f68e0 before deployment",
+    "PASS: Vercel production deployment dpl_7nTPsSUH4MXJUfyUbUsHiWY1pzgX reached READY",
+    "PASS: https://codependentcoding.vercel.app returned HTTP 200 with the canonical landing page",
+    "PASS: Vercel one-hour runtime-error scan returned no errors"
   ],
-  "nextAction": "Owner review; remote/repository creation and deployment remain deferred."
+  "nextAction": "Normal main-branch maintenance; production delivery is complete."
 }
