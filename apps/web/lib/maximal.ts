@@ -8,7 +8,7 @@ export async function maximalSnapshot() {
     .map((entry) => entry.name)
     .sort();
   const candidate = path.join(root, 'README.md');
-  let preview = '';
+  let preview: string;
   try {
     preview = await readFile(candidate, 'utf8');
   } catch {

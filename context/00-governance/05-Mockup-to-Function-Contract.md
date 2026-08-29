@@ -4,18 +4,18 @@ The ten supplied mockups are **visual and interaction references**, not literal 
 
 All mockups already exist in the workspace under `context/mockups/`.
 
-| Mockup | Target surface | Functional adaptation |
-|---|---|---|
-| `Landing Mockup.jpg` | `/` | Codependent Coding home. Primary nav: Ontologies, Simples, Anthimeria, Maximal. CTAs must link to real surfaces. |
-| `Ontology Mockup.jpg` | `/ontologies` + detail/explorer | Replace example-only CRM data with the nine canonical Ontologies. Tabs select real normalized definitions. File tree/code preview reads real mapped source. Copy/download are functional. |
-| `Simples 1 Mockup.jpg` | `/simples` / BusinessLogic family | Present Simples hierarchy and BusinessLogic family without implying every constituent is a Simple. |
-| `Simples 2 Mockup.jpg` | `/simples` / PureUI family | Present PureUI family and normalized block inventory; primitives remain constituents. |
-| `Business Blocks Mockup.jpg` | BusinessLogic Workflow detail | `Blocks`, `Docs`, `Builder Preset`, `Start Config`, source/code and output cards become real. Start Config selects a compatible Ontology/config context; it does not let users recompose workflow internals. |
-| `Docs Mockup.jpg` | detail Docs tab / TypeScripture deep link | Render canonical doctrine relevant to the selected item. Do not make old Hipster Stack docs a competing authority. |
-| `UI Blocks 1 Mockup.jpg` | PureUI catalog/examples | Use real reusable blocks such as error/system states. |
-| `UI Blocks 2 Mockup.jpg` | PureUI catalog/examples | Use real onboarding/block variants and compatible configurable presentation inputs. |
-| `Anthimeria Mockup.jpg` | `/anthimeria` | Replace four illustrative presets with nine Ontologies. Left navigation reflects actual property groups. Output is resolved Virgule/plan. |
-| `Template Mockup.jpg` | `/maximal` | Source explorer/live demo over one authoritative Maximal Template; not a separate fork. |
+| Mockup                       | Target surface                            | Functional adaptation                                                                                                                                                                                        |
+| ---------------------------- | ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `Landing Mockup.jpg`         | `/`                                       | Codependent Coding home. Primary nav: Ontologies, Simples, Anthimeria, Maximal. CTAs must link to real surfaces.                                                                                             |
+| `Ontology Mockup.jpg`        | `/ontologies` + detail/explorer           | Replace example-only CRM data with the nine canonical Ontologies. Tabs select real normalized definitions. File tree/code preview reads real mapped source. Copy/download are functional.                    |
+| `Simples 1 Mockup.jpg`       | `/simples` / BusinessLogic family         | Present Simples hierarchy and BusinessLogic family without implying every constituent is a Simple.                                                                                                           |
+| `Simples 2 Mockup.jpg`       | `/simples` / PureUI family                | Present PureUI family and normalized block inventory; primitives remain constituents.                                                                                                                        |
+| `Business Blocks Mockup.jpg` | BusinessLogic Workflow detail             | `Blocks`, `Docs`, `Builder Preset`, `Start Config`, source/code and output cards become real. Start Config selects a compatible Ontology/config context; it does not let users recompose workflow internals. |
+| `Docs Mockup.jpg`            | detail Docs tab / TypeScripture deep link | Render canonical doctrine relevant to the selected item. Do not make old Hipster Stack docs a competing authority.                                                                                           |
+| `UI Blocks 1 Mockup.jpg`     | PureUI catalog/examples                   | Use real reusable blocks such as error/system states.                                                                                                                                                        |
+| `UI Blocks 2 Mockup.jpg`     | PureUI catalog/examples                   | Use real onboarding/block variants and compatible configurable presentation inputs.                                                                                                                          |
+| `Anthimeria Mockup.jpg`      | `/anthimeria`                             | Replace four illustrative presets with nine Ontologies. Left navigation reflects actual property groups. Output is resolved Virgule/plan.                                                                    |
+| `Template Mockup.jpg`        | `/maximal`                                | Source explorer/live demo over one authoritative Maximal Template; not a separate fork.                                                                                                                      |
 
 ## Visual Vibes requirements
 

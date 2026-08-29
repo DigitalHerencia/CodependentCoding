@@ -19,16 +19,16 @@ If an older file uses an old name and the newer authority provides the replaceme
 
 Examples:
 
-| Older / transitional wording | Current canonical wording / disposition |
-|---|---|
-| `Codependent Coding™ Knowledge System` as the documentation authority | **TypeScripture™ Canonical Doctrine** |
-| `Loaded Vibes™ WebApp Architecture` | **Codependent Coding™ Web App Architecture** |
-| Loaded Vibes as generator/materializer | **The Hipster Stack™** owns resolver/generation/materialization; **Loaded Vibes™** is post-generation Codex operations/enforcement |
-| `The Constituter™` | **The Anthimeria™ Workbench** |
-| public `Libraries` surface | **Simples™**; Ontologies are a separate first-class surface |
-| four generic product presets as canonical defaults | **nine Ontology™ Normalized Defaults** |
-| Maximal Template `main` + `demo` as separate long-lived products | consolidate into **one authoritative Maximal Template™ Domain Library** plus any demo/explorer surface over that source |
-| Codebase Context Utility as standalone product | reuse its file-tree/code-preview capabilities inside the Codependent Coding product where useful; do not preserve a competing standalone app by default |
+| Older / transitional wording                                          | Current canonical wording / disposition                                                                                                                 |
+| --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Codependent Coding™ Knowledge System` as the documentation authority | **TypeScripture™ Canonical Doctrine**                                                                                                                   |
+| `Loaded Vibes™ WebApp Architecture`                                   | **Codependent Coding™ Web App Architecture**                                                                                                            |
+| Loaded Vibes as generator/materializer                                | **The Hipster Stack™** owns resolver/generation/materialization; **Loaded Vibes™** is post-generation Codex operations/enforcement                      |
+| `The Constituter™`                                                    | **The Anthimeria™ Workbench**                                                                                                                           |
+| public `Libraries` surface                                            | **Simples™**; Ontologies are a separate first-class surface                                                                                             |
+| four generic product presets as canonical defaults                    | **nine Ontology™ Normalized Defaults**                                                                                                                  |
+| Maximal Template `main` + `demo` as separate long-lived products      | consolidate into **one authoritative Maximal Template™ Domain Library** plus any demo/explorer surface over that source                                 |
+| Codebase Context Utility as standalone product                        | reuse its file-tree/code-preview capabilities inside the Codependent Coding product where useful; do not preserve a competing standalone app by default |
 
 ## 3. Semantic conflict rule
 

@@ -6,19 +6,19 @@ Summarize the final local system state in one paragraph.
 
 ## Canonical owners
 
-| Entity | Final source owner/path |
-|---|---|
-| TypeScripture™ | |
-| Codependent Coding web app | |
-| Hipster Stack schema/core/CLI | |
-| Ontology defaults | |
-| Simples catalog | |
-| Maximal Template | |
-| Anthimeria | |
-| Virgule schema/resolver | |
-| Arrangement materializer/provenance | |
-| Loaded Vibes | |
-| Visual Vibes | |
+| Entity                              | Final source owner/path |
+| ----------------------------------- | ----------------------- |
+| TypeScripture™                      |                         |
+| Codependent Coding web app          |                         |
+| Hipster Stack schema/core/CLI       |                         |
+| Ontology defaults                   |                         |
+| Simples catalog                     |                         |
+| Maximal Template                    |                         |
+| Anthimeria                          |                         |
+| Virgule schema/resolver             |                         |
+| Arrangement materializer/provenance |                         |
+| Loaded Vibes                        |                         |
+| Visual Vibes                        |                         |
 
 ## Migration summary
 
@@ -51,25 +51,25 @@ Ontology
 
 ## Executed
 
-- 
+-
 
 ## Skipped
 
-- 
+-
 
 ## Blocked
 
-- 
+-
 
 ## Inferred
 
-- 
+-
 
 ## Remaining risks / deliberate deferrals
 
 - new remote/repository creation: deferred by owner
 - deployment: deferred by owner
-- 
+-
 
 ## Ready-for-new-repository assessment
 

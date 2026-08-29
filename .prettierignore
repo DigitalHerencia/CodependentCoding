@@ -1,2 +1,10 @@
 apps/web/.next
 apps/web/next-env.d.ts
+
+# Canonical/imported source and generated package evidence is byte-preserved.
+apps/web/content/
+context/10-authority/
+context/20-reference/
+context/90-superseded-source/
+packages/loaded-vibes/
+.agents/Loaded-Vibes-Codex-Plugin-v0.1.0/
