@@ -1,0 +1,5 @@
+.next/
+generated/prisma/
+node_modules/
+pnpm-lock.yaml
+tsconfig.tsbuildinfo

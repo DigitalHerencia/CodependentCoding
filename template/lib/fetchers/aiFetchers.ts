@@ -1,0 +1,56 @@
+import "server-only";
+
+import { Prisma } from "../../generated/prisma/client";
+
+import { assertPermission } from "../authz/permissions";
+import { toAiGenerationDTO, toAiUsageSummaryDTO } from "../db/dto/ai.dto";
+import { aiGenerationSelect } from "../db/selects/ai.selects";
+import { withTemplateReadTransaction } from "../db/tenant";
+
+export async function getMyAiGenerations(limit = 50) {
+  return withTemplateReadTransaction(async (tx, access) => {
+    assertPermission(access, "ai:read");
+
+    const rows = await tx.aiGeneration.findMany({
+      where: {
+        organizationId: access.organizationId,
+        userId: access.userId,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+      take: Math.min(Math.max(limit, 1), 100),
+      select: aiGenerationSelect,
+    });
+
+    return rows.map(toAiGenerationDTO);
+  });
+}
+
+export async function getMyAiUsage() {
+  return withTemplateReadTransaction(async (tx, access) => {
+    assertPermission(access, "ai:read");
+
+    const aggregate = await tx.aiUsageLedger.aggregate({
+      where: {
+        organizationId: access.organizationId,
+        userId: access.userId,
+      },
+      _sum: {
+        inputTokens: true,
+        outputTokens: true,
+        cost: true,
+      },
+      _count: {
+        _all: true,
+      },
+    });
+
+    return toAiUsageSummaryDTO({
+      inputTokens: aggregate._sum.inputTokens ?? 0,
+      outputTokens: aggregate._sum.outputTokens ?? 0,
+      cost: aggregate._sum.cost?.toString() ?? new Prisma.Decimal(0).toString(),
+      generationCount: aggregate._count._all,
+    });
+  });
+}

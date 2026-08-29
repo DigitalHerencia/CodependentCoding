@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 4,
+  "status": "complete",
+  "observedDate": "2026-08-28",
+  "currentOutcome": "Segments 0-2 are complete: canonical workspace wiring and shell, Landing mockup composition, and a source-backed paired TypeScripture reader are implemented and verified.",
+  "authority": "context/00-governance/04-Segmented-Build-Spec.md",
+  "currentSegment": 9,
+  "activeIssue": null,
+  "activePullRequest": null,
+  "remoteAndDeploymentWork": "deferred-by-owner",
+  "completedSegments": [0, 1, 2, 3, 4, 5, 6, 7, 8],
+  "currentPlan": "context/01-codex/segment-09-plan.md",
+  "currentCheckpoint": "context/01-codex/segment-09-checkpoint.md",
+  "knownTransitionFacts": [
+    "the workspace is not currently a Git repository",
+    "the active web source is apps/web",
+    "the active Hipster Stack packages are packages/schema, packages/core, and packages/cli",
+    "the active web shell uses Ontologies, Simples, Anthimeria, and Maximal navigation",
+    "the ten owner-supplied visual references are available under docs/mockups",
+    "no remote creation, push, publication, or deployment is authorized"
+  ],
+  "verification": [
+    "PASS: corepack pnpm install --frozen-lockfile",
+    "PASS: corepack pnpm typecheck",
+    "PASS: corepack pnpm --dir apps/web typecheck",
+    "PASS: targeted ESLint and Prettier",
+    "PASS: corepack pnpm --dir apps/web build (25 generated pages)",
+    "PASS: desktop and narrow browser route/layout smoke with no console warnings or errors",
+    "PASS: Landing Mockup native 894x1600 visual and geometry comparison"
+  ],
+  "nextAction": "Owner review; remote/repository creation and deployment remain deferred."
+}

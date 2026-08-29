@@ -1,0 +1,81 @@
+schema_version: 6
+id: codependent-coding.architecture
+authority: machine-contract
+sources:
+  - context/00-governance/02-Canonical-System-Manifest.md
+  - context/00-governance/03-Repository-Reconciliation-Contract.md
+  - context/00-governance/04-Segmented-Build-Spec.md
+
+current_repository:
+  apps: [web]
+  packages: [cli, core, schema]
+  web_path: apps/web
+  maximal_template_path: template
+  maximal_template_status: segment-5-pending
+  docs_authority_path: context/10-authority/typescripture
+  maintainer_context_path: context
+  machine_governance_path: .agents
+
+shared_definition:
+  input: Application Definition
+  resolved: Virgule
+  consumers: [cli, anthimeria, portable-config, generation-plan, materializer]
+  one_schema: true
+  one_resolution_path: true
+  ui_may_duplicate_dependency_rules: false
+  selectable_option_requires_real_generation_effect: true
+
+boundaries:
+  web:
+    owns:
+      - codependent-coding-product-presentation
+      - ontology-presentation
+      - simples-presentation
+      - typescripture-docs-presentation
+      - anthimeria-local-orchestration
+      - maximal-source-explorer-presentation
+    forbidden:
+      - filesystem-generation
+      - provider-secrets
+      - duplicate-configuration-authority
+      - workflow-constituent-authority
+  cli:
+    owns: [command-parsing, prompts, terminal-output, core-invocation]
+    forbidden: [second-configuration-resolver]
+  generator:
+    owns:
+      - normalization
+      - dependency-closure
+      - maximal-template-catalog
+      - generation-plan
+      - materialization
+      - transforms
+      - provenance
+    forbidden: [nextjs-web-presentation, template-runtime-product-ui]
+  maximal_template:
+    standalone_application: true
+    source_count: 1
+    forbidden:
+      - generator-ownership-catalog
+      - pruning-instructions
+      - anthimeria-state
+      - cli-implementation
+      - generation-plan
+  loaded_vibes:
+    phase: post-generation
+    forbidden:
+      - virgule-normalization
+      - maximal-template-pruning
+      - arrangement-materialization
+
+generated_application:
+  name: Arrangement
+  standalone: true
+  preserve_codependent_coding_grammar: true
+  generator_internals_leak: false
+
+generation:
+  source_template_count: 1
+  network_template_fetch: false
+  collect_provider_secrets: false
+  overwrite_unrelated_nonempty_target: false

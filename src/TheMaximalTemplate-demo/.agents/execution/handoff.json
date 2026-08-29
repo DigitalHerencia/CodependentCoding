@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "artifact": "generated-project.execution.handoff",
+  "authority": "execution-state-only",
+  "state": "ready_for_product_specification",
+  "activeImplementation": null,
+  "executedEvidence": [],
+  "blockers": []
+}

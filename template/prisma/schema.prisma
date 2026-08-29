@@ -1,0 +1,554 @@
+generator client {
+  provider   = "prisma-client"
+  output     = "./generated/prisma"
+  engineType = "client"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserStatus {
+  active
+  disabled
+}
+
+enum ProjectStatus {
+  active
+  archived
+}
+
+enum OrganizationStatus {
+  active
+  suspended
+}
+
+enum OrganizationRole {
+  owner
+  admin
+  member
+  viewer
+}
+
+enum InvitationStatus {
+  pending
+  accepted
+  revoked
+  expired
+}
+
+enum AuditActorType {
+  user
+  system
+  clerk
+  stripe
+}
+
+enum WebhookProvider {
+  clerk
+  stripe
+  stripe_connect
+  cloudinary
+}
+
+enum MediaAssetStatus {
+  pending
+  ready
+  deleted
+  failed
+}
+
+enum BillingSubscriptionStatus {
+  trialing
+  active
+  incomplete
+  incomplete_expired
+  past_due
+  canceled
+  unpaid
+  paused
+}
+
+enum ConnectAccountStatus {
+  pending
+  restricted
+  ready
+}
+
+enum ConnectPaymentStatus {
+  checkout_pending
+  requires_payment_method
+  requires_confirmation
+  requires_action
+  processing
+  requires_capture
+  succeeded
+  canceled
+}
+
+enum ConnectRefundStatus {
+  pending
+  requires_action
+  succeeded
+  failed
+  canceled
+}
+
+enum ConnectRecoveryOperation {
+  onboarding
+  readiness
+  authorization
+  capture
+  cancel
+  refund
+  webhook
+}
+
+enum ConnectRecoveryOutcome {
+  synchronized
+  recovery_required
+  ignored
+}
+
+enum ProviderWebhookStatus {
+  received
+  processing
+  processed
+  ignored
+  failed
+}
+
+model User {
+  id                        String     @id @default(cuid())
+  clerkUserId               String     @unique
+  email                     String?    @db.VarChar(320)
+  displayName               String?    @db.VarChar(120)
+  status                    UserStatus @default(active)
+  isApplicationAdmin        Boolean    @default(false)
+  selectedOrganizationId    String?
+  identityProviderUpdatedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  selectedOrganization Organization?            @relation("SelectedOrganization", fields: [selectedOrganizationId], references: [id], onDelete: SetNull)
+  memberships          Membership[]
+  invitationsSent      OrganizationInvitation[] @relation("InvitationSender")
+  ownedProjects        Project[]                @relation("ProjectOwner")
+  auditEvents          AuditEvent[]             @relation("AuditActorUser")
+
+  @@index([status])
+  @@index([email])
+  @@index([selectedOrganizationId])
+  @@map("users")
+}
+
+model Organization {
+  id     String             @id @default(cuid())
+  name   String             @db.VarChar(120)
+  slug   String             @unique @db.VarChar(140)
+  status OrganizationStatus @default(active)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  selectedByUsers                User[]                          @relation("SelectedOrganization")
+  memberships                    Membership[]
+  invitations                    OrganizationInvitation[]
+  projects                       Project[]
+  auditEvents                    AuditEvent[]
+  billingCustomer                BillingCustomer?
+  billingSubscription            BillingSubscription?
+  billingEntitlements            BillingEntitlement[]
+  providerCustomerBindings       ProviderCustomerBinding[]
+  connectAccount                 ConnectAccount?
+  connectPayments                ConnectPayment[]
+  connectRefunds                 ConnectRefund[]
+  connectRecoverySnapshots       ConnectRecoverySnapshot[]
+  providerConnectAccountBindings ProviderConnectAccountBinding[]
+  mediaAssets                    MediaAsset[]
+  providerMediaAssetBindings     ProviderMediaAssetBinding[]
+  locations                      LocationRecord[]
+
+  @@index([status])
+  @@index([updatedAt])
+  @@map("organizations")
+}
+
+model MediaAsset {
+  id                String           @id @default(cuid())
+  organizationId    String
+  uploadedById      String
+  providerAssetId   String           @unique @db.VarChar(255)
+  publicId          String           @db.VarChar(255)
+  resourceType      String           @db.VarChar(40)
+  format            String?          @db.VarChar(40)
+  secureUrl         String?          @db.VarChar(1000)
+  bytes             Int?
+  width             Int?
+  height            Int?
+  status            MediaAssetStatus @default(pending)
+  providerUpdatedAt DateTime?
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId, status])
+  @@index([uploadedById])
+  @@map("media_assets")
+}
+
+model ProviderMediaAssetBinding {
+  id              String   @id @default(cuid())
+  providerAssetId String   @unique @db.VarChar(255)
+  organizationId  String
+  createdAt       DateTime @default(now())
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@map("provider_media_asset_bindings")
+}
+
+model LocationRecord {
+  id             String   @id @default(cuid())
+  organizationId String
+  label          String   @db.VarChar(200)
+  mapboxId       String?  @db.VarChar(255)
+  longitude      Decimal  @db.Decimal(9, 6)
+  latitude       Decimal  @db.Decimal(8, 6)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@map("location_records")
+}
+
+model Membership {
+  id             String           @id @default(cuid())
+  organizationId String
+  userId         String
+  role           OrganizationRole @default(viewer)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  user         User         @relation(fields: [userId], references: [id], onDelete: Restrict)
+
+  @@unique([organizationId, userId])
+  @@index([organizationId])
+  @@index([userId])
+  @@index([role])
+  @@map("memberships")
+}
+
+model OrganizationInvitation {
+  id              String           @id @default(cuid())
+  organizationId  String
+  email           String           @db.VarChar(320)
+  role            OrganizationRole @default(viewer)
+  status          InvitationStatus @default(pending)
+  invitedByUserId String
+  expiresAt       DateTime
+  acceptedAt      DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  invitedBy    User         @relation("InvitationSender", fields: [invitedByUserId], references: [id], onDelete: Restrict)
+
+  @@unique([organizationId, email, status])
+  @@index([invitedByUserId])
+  @@index([status, expiresAt])
+  @@map("organization_invitations")
+}
+
+model Project {
+  id             String @id @default(cuid())
+  organizationId String
+  ownerId        String
+
+  name        String        @db.VarChar(120)
+  slug        String        @unique @db.VarChar(140)
+  description String?       @db.VarChar(500)
+  status      ProjectStatus @default(active)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  owner        User         @relation("ProjectOwner", fields: [ownerId], references: [id], onDelete: Restrict)
+  auditEvents  AuditEvent[]
+
+  @@index([organizationId])
+  @@index([ownerId])
+  @@index([status])
+  @@index([updatedAt])
+  @@map("projects")
+}
+
+model AuditEvent {
+  id String @id @default(cuid())
+
+  eventName   String
+  actorType   AuditActorType
+  actorUserId String?
+
+  entityType String
+  entityId   String
+
+  organizationId String?
+  projectId      String?
+  requestId      String?
+  metadata       Json?
+
+  createdAt DateTime @default(now())
+
+  actorUser    User?         @relation("AuditActorUser", fields: [actorUserId], references: [id], onDelete: SetNull)
+  organization Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+  project      Project?      @relation(fields: [projectId], references: [id], onDelete: SetNull)
+
+  @@index([eventName])
+  @@index([actorType])
+  @@index([actorUserId])
+  @@index([entityType, entityId])
+  @@index([organizationId, createdAt])
+  @@index([projectId, createdAt])
+  @@index([createdAt])
+  @@map("audit_events")
+}
+
+model ProviderWebhookEvent {
+  id String @id @default(cuid())
+
+  provider        WebhookProvider
+  providerEventId String          @db.VarChar(255)
+  eventType       String          @db.VarChar(120)
+
+  status       ProviderWebhookStatus @default(received)
+  attemptCount Int                   @default(0)
+
+  receivedAt          DateTime  @default(now())
+  lastAttemptAt       DateTime?
+  processingStartedAt DateTime?
+  processedAt         DateTime?
+
+  processingError String? @db.VarChar(500)
+  safeMetadata    Json?
+
+  @@unique([provider, providerEventId])
+  @@index([provider])
+  @@index([providerEventId])
+  @@index([eventType])
+  @@index([status])
+  @@index([status, processingStartedAt])
+  @@index([receivedAt])
+  @@map("provider_webhook_events")
+}
+
+model BillingCustomer {
+  id               String @id @default(cuid())
+  organizationId   String @unique
+  stripeCustomerId String @unique @db.VarChar(255)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  organization Organization         @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  subscription BillingSubscription?
+
+  @@index([organizationId])
+  @@map("billing_customers")
+}
+
+model ProviderCustomerBinding {
+  id                 String          @id @default(cuid())
+  provider           WebhookProvider
+  providerCustomerId String          @db.VarChar(255)
+  organizationId     String
+
+  createdAt DateTime @default(now())
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerCustomerId])
+  @@index([organizationId])
+  @@map("provider_customer_bindings")
+}
+
+model BillingSubscription {
+  id                   String                    @id @default(cuid())
+  organizationId       String                    @unique
+  billingCustomerId    String                    @unique
+  stripeSubscriptionId String                    @unique @db.VarChar(255)
+  status               BillingSubscriptionStatus
+  stripePriceId        String                    @db.VarChar(255)
+  currentPeriodEnd     DateTime?
+  cancelAtPeriodEnd    Boolean                   @default(false)
+  providerCreatedAt    DateTime
+  providerUpdatedAt    DateTime
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  organization    Organization              @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  billingCustomer BillingCustomer           @relation(fields: [billingCustomerId], references: [id], onDelete: Cascade)
+  items           BillingSubscriptionItem[]
+  entitlements    BillingEntitlement[]
+
+  @@index([organizationId])
+  @@index([status])
+  @@map("billing_subscriptions")
+}
+
+model BillingSubscriptionItem {
+  id                       String @id @default(cuid())
+  billingSubscriptionId    String
+  stripeSubscriptionItemId String @unique @db.VarChar(255)
+  stripePriceId            String @db.VarChar(255)
+  quantity                 Int    @default(1)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  subscription BillingSubscription @relation(fields: [billingSubscriptionId], references: [id], onDelete: Cascade)
+
+  @@index([billingSubscriptionId])
+  @@map("billing_subscription_items")
+}
+
+model BillingEntitlement {
+  id                    String  @id @default(cuid())
+  organizationId        String
+  billingSubscriptionId String?
+  key                   String  @db.VarChar(80)
+  active                Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  organization Organization         @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  subscription BillingSubscription? @relation(fields: [billingSubscriptionId], references: [id], onDelete: SetNull)
+
+  @@unique([organizationId, key])
+  @@index([organizationId, active])
+  @@index([billingSubscriptionId])
+  @@map("billing_entitlements")
+}
+
+model ConnectAccount {
+  id                   String               @id @default(cuid())
+  organizationId       String               @unique
+  stripeAccountId      String               @unique @db.VarChar(255)
+  country              String               @db.VarChar(2)
+  status               ConnectAccountStatus @default(pending)
+  detailsSubmitted     Boolean              @default(false)
+  chargesEnabled       Boolean              @default(false)
+  payoutsEnabled       Boolean              @default(false)
+  requirementsDueCount Int                  @default(0)
+  disabledReason       String?              @db.VarChar(160)
+  providerUpdatedAt    DateTime
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  organization      Organization              @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  payments          ConnectPayment[]
+  recoverySnapshots ConnectRecoverySnapshot[]
+
+  @@index([organizationId])
+  @@index([status])
+  @@map("connect_accounts")
+}
+
+model ProviderConnectAccountBinding {
+  id                String @id @default(cuid())
+  providerAccountId String @unique @db.VarChar(255)
+  organizationId    String
+
+  createdAt DateTime @default(now())
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@map("provider_connect_account_bindings")
+}
+
+model ConnectPayment {
+  id                      String               @id @default(cuid())
+  organizationId          String
+  connectAccountId        String
+  reference               String               @db.VarChar(120)
+  stripeCheckoutSessionId String?              @unique @db.VarChar(255)
+  stripePaymentIntentId   String?              @unique @db.VarChar(255)
+  latestChargeId          String?              @db.VarChar(255)
+  amountMinor             Int
+  currency                String               @db.VarChar(3)
+  platformFeeMinor        Int
+  status                  ConnectPaymentStatus @default(checkout_pending)
+  amountCapturableMinor   Int                  @default(0)
+  amountReceivedMinor     Int                  @default(0)
+  refundedAmountMinor     Int                  @default(0)
+  providerUpdatedAt       DateTime
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  organization      Organization              @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  connectAccount    ConnectAccount            @relation(fields: [connectAccountId], references: [id], onDelete: Restrict)
+  refunds           ConnectRefund[]
+  recoverySnapshots ConnectRecoverySnapshot[]
+
+  @@unique([organizationId, reference])
+  @@index([organizationId, status])
+  @@index([connectAccountId])
+  @@map("connect_payments")
+}
+
+model ConnectRefund {
+  id                String              @id @default(cuid())
+  organizationId    String
+  connectPaymentId  String
+  stripeRefundId    String              @unique @db.VarChar(255)
+  amountMinor       Int
+  status            ConnectRefundStatus
+  providerUpdatedAt DateTime
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  organization Organization   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  payment      ConnectPayment @relation(fields: [connectPaymentId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId, status])
+  @@index([connectPaymentId])
+  @@map("connect_refunds")
+}
+
+model ConnectRecoverySnapshot {
+  id               String                   @id @default(cuid())
+  organizationId   String
+  connectAccountId String?
+  connectPaymentId String?
+  operation        ConnectRecoveryOperation
+  outcome          ConnectRecoveryOutcome
+  providerObjectId String                   @db.VarChar(255)
+  providerStatus   String                   @db.VarChar(80)
+  safeMetadata     Json?
+
+  createdAt DateTime @default(now())
+
+  organization   Organization    @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  connectAccount ConnectAccount? @relation(fields: [connectAccountId], references: [id], onDelete: Cascade)
+  connectPayment ConnectPayment? @relation(fields: [connectPaymentId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId, createdAt])
+  @@index([connectAccountId])
+  @@index([connectPaymentId])
+  @@map("connect_recovery_snapshots")
+}

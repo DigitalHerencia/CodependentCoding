@@ -1,0 +1,4 @@
+interface:
+  display_name: "Loaded Vibes Classify"
+  short_description: "Classify code into Arrangement boundaries"
+  default_prompt: "Use $loaded-vibes-classify to decide where this code belongs in the Arrangement architecture."

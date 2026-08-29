@@ -1,0 +1,4 @@
+interface:
+  display_name: "Loaded Vibes Verify"
+  short_description: "Run proportional Arrangement verification"
+  default_prompt: "Use $loaded-vibes-verify to run the right checks and report fresh evidence."

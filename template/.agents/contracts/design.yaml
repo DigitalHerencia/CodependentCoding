@@ -1,0 +1,115 @@
+schema_version: 1
+file: .agents/contracts/design.yaml
+product: The Maximal Template
+status: active
+purpose: Deterministic design-system and presentation constraints derived from context/docs/design.md and context/docs/architecture.md.
+
+authority:
+  type: machine_interpretation
+  human_sources:
+    - context/docs/design.md
+    - context/docs/architecture.md
+  may_override_human_sources: false
+
+theme:
+  mode: dark_only
+  light_theme_supported: false
+  root_defaults_to_dark: true
+
+character:
+  required:
+    - industrial
+    - technical
+    - dense
+    - deliberate
+    - sharp
+    - bold
+    - modern
+    - mature
+  forbidden:
+    - cartoonish
+    - toy_like
+    - candy_colored
+    - pastel_rainbow
+    - birthday_party_palette
+    - bouncy_default_motion
+
+palette:
+  base:
+    - near_black
+    - charcoal
+    - off_white
+  accent_count_target: 1_to_2
+  simultaneous_multi_neon_palette: forbidden
+  semantic_tokens_required: true
+
+geometry:
+  strong_borders: true
+  square_or_minimal_radius: true
+  hard_shadow_allowed: restrained
+  excessive_pills: discouraged
+
+motion:
+  character: mechanical
+  reduced_motion_required: true
+  decorative_bounce_default: forbidden
+
+tokens:
+  strategy: css_custom_properties
+  required_categories:
+    - background
+    - foreground
+    - surfaces
+    - muted
+    - borders
+    - primary_accent
+    - secondary_accent
+    - success
+    - warning
+    - danger
+    - info
+    - focus
+    - shadow
+    - radius
+    - spacing
+    - typography
+    - motion
+
+presentation_layers:
+  normal:
+    - components/ui
+    - components/blocks
+    - features
+    - app
+  react_hook_form_exception:
+    direct_ui_primitive_import_from_form_feature: allowed
+    form_block_required: false
+
+blocks:
+  organization: presentation_category
+  filename_style: lowercase_kebab_case
+  named_export_style: PascalCase
+  grouped_variations_preferred: true
+  pure_ui: required
+  forbidden_import_categories:
+    - database
+    - fetchers
+    - actions
+    - auth_server
+    - authz
+    - provider_sdk
+    - workflows
+    - react_hook_form
+
+accessibility:
+  semantic_html: required
+  keyboard_navigation: required
+  visible_focus: required
+  sufficient_contrast: required
+  reduced_motion: required
+  non_color_only_status: required
+
+public_positioning:
+  primary_goal: explore_the_application_factory
+  signup_funnel_as_primary_frame: forbidden
+  sign_in_and_sign_up_as_capability_examples: allowed

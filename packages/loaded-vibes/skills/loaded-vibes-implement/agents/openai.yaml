@@ -1,0 +1,4 @@
+interface:
+  display_name: "Loaded Vibes Implement"
+  short_description: "Implement changes without architecture drift"
+  default_prompt: "Use $loaded-vibes-implement to make this scoped Arrangement change without architecture drift."

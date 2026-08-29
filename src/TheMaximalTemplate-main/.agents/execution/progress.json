@@ -1,0 +1,82 @@
+{
+  "schema_version": "1.0.0",
+  "file": ".agents/execution/progress.json",
+  "product": "The Maximal Template",
+  "purpose": "Machine-readable tracker for the canonical eight-spec Maximal Template repair/build sequence.",
+  "updated_at": "2026-08-15T00:00:00-06:00",
+  "status_values": [
+    "not_started",
+    "in_progress",
+    "blocked",
+    "complete",
+    "deferred"
+  ],
+  "current_phase": "complete",
+  "implementation_started": true,
+  "specs": [
+    {
+      "id": "00",
+      "priority": "P0",
+      "title": "Fix the architectural contract",
+      "path": "context/specs/00.architectural-contract.md",
+      "status": "complete"
+    },
+    {
+      "id": "01",
+      "priority": "P1",
+      "title": "Repair route topology and public-demo information architecture",
+      "path": "context/specs/01.route-topology-public-demo.md",
+      "status": "complete"
+    },
+    {
+      "id": "02",
+      "priority": "P2",
+      "title": "Make the design system dark-only and mature neo-brutalist",
+      "path": "context/specs/02.design-system.md",
+      "status": "complete"
+    },
+    {
+      "id": "03",
+      "priority": "P3",
+      "title": "Rebuild the block library around categories and variations",
+      "path": "context/specs/03.block-library.md",
+      "status": "complete"
+    },
+    {
+      "id": "04",
+      "priority": "P4",
+      "title": "Normalize CRM contacts as the golden vertical slice",
+      "path": "context/specs/04.crm-golden-vertical-slice.md",
+      "status": "complete"
+    },
+    {
+      "id": "05",
+      "priority": "P5",
+      "title": "Normalize application library, types, schemas, and webhook persistence boundaries",
+      "path": "context/specs/05.application-library-normalization.md",
+      "status": "complete"
+    },
+    {
+      "id": "06",
+      "priority": "P6",
+      "title": "Turn the application shell into the Maximal Template explorer",
+      "path": "context/specs/06.maximal-template-explorer.md",
+      "status": "complete"
+    },
+    {
+      "id": "07",
+      "priority": "P7",
+      "title": "Finish external-provider configuration and demo surfaces",
+      "path": "context/specs/07.provider-integrations.md",
+      "status": "complete"
+    }
+  ],
+  "governance_package": {
+    "status": "applied",
+    "applied_to_repository": true,
+    "validation": {
+      "yaml_json_parse": "passed_2026-08-15",
+      "repository_runtime_checks": "passed_2026-08-15"
+    }
+  }
+}

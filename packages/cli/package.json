@@ -1,0 +1,11 @@
+{
+  "name": "@hipster-stack/cli",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@clack/prompts": "1.0.0-alpha.5",
+    "@hipster-stack/core": "workspace:*",
+    "commander": "14.0.3"
+  }
+}

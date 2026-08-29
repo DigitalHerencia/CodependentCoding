@@ -1,0 +1,4 @@
+interface:
+  display_name: "Loaded Vibes Deliver"
+  short_description: "Prepare evidence-backed GitHub delivery"
+  default_prompt: "Use $loaded-vibes-deliver to prepare and verify the requested Git/GitHub delivery."

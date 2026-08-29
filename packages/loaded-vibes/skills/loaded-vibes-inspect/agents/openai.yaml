@@ -1,0 +1,4 @@
+interface:
+  display_name: "Loaded Vibes Inspect"
+  short_description: "Inspect Arrangement context before changes"
+  default_prompt: "Use $loaded-vibes-inspect to map this Arrangement before we change it."

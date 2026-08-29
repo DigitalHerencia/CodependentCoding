@@ -1,0 +1,32 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "loaded-vibes",
+  "description": "Codex execution derivative of the Codependent Coding WebApp Architecture for inspecting, changing, reviewing, verifying, and delivering Arrangement generated applications without architecture drift.",
+  "version": "0.1.0",
+  "author": {
+    "name": "Digital Herencia"
+  },
+  "keywords": [
+    "codex",
+    "codependent-coding",
+    "arrangement",
+    "nextjs",
+    "architecture",
+    "saas"
+  ],
+  "extensions": {
+    "com.digitalherencia.loaded-vibes": {
+      "skills": [
+        "./skills/loaded-vibes-inspect/",
+        "./skills/loaded-vibes-classify/",
+        "./skills/loaded-vibes-implement/",
+        "./skills/loaded-vibes-review/",
+        "./skills/loaded-vibes-verify/",
+        "./skills/loaded-vibes-deliver/"
+      ],
+      "projectAgentAssets": "./assets/arrangement-project/.codex/agents/",
+      "projectEnvironmentAssets": "./assets/arrangement-project/",
+      "validators": "./validators/"
+    }
+  }
+}

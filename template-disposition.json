@@ -1,0 +1,1994 @@
+[
+  {
+    "path": ".gitignore",
+    "disposition": "generator",
+    "included": true,
+    "reason": "Pack-safe source transformed to generated .gitignore by the initializer."
+  },
+  {
+    "path": ".agents/contracts/README.md",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": ".agents/contracts/architecture-boundaries.yml",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": ".agents/contracts/database-security.yaml",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": ".agents/contracts/domain-model.yaml",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": ".agents/contracts/integrations.yaml",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": ".agents/contracts/product.yaml",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": ".agents/contracts/quality-gates.yaml",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": ".agents/contracts/routes.yaml",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": ".agents/contracts/server-operations.yaml",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": ".editorconfig",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": ".env.example",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": ".gitattributes",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": ".github/workflows/pull-request-validation.yml",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": ".github/workflows/secret-scan.yml",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": ".gitignore",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": ".node-version",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": ".prettierignore",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "AGENTS.md",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "README.md",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "SECURITY.md",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "app/(auth)/(presentation)/D1/page.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "app/(auth)/(presentation)/layout.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "app/(auth)/layout.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "app/(auth)/sign-in/[[...sign-in]]/page.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "app/(auth)/sign-up/[[...sign-up]]/page.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "app/(presentation)/auth-forms/page.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "app/(presentation)/catalog/page.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "app/(presentation)/config-page/page.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "app/(presentation)/cta-section/page.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "app/(presentation)/error-pages/page.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "app/(presentation)/error.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "app/(presentation)/faq-section/page.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "app/(presentation)/feature-grid/page.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "app/(presentation)/hero-section/page.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "app/(presentation)/invoice/page.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "app/(presentation)/layout.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "app/(presentation)/loading.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "app/(presentation)/onboarding-flow/page.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "app/(presentation)/process-panel/page.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "app/(presentation)/settings-page/page.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "app/(presentation)/stats-section/page.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "app/(presentation)/status/page.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "app/(public)/(presentation)/layout.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "app/(public)/(presentation)/pA/page.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "app/(public)/(presentation)/pB/page.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "app/(public)/(presentation)/pC/page.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "app/(public)/faq/page.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "app/(public)/layout.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "app/(public)/pricing/page.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "app/(tenant)/(presentation)/layout.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "app/(tenant)/(presentation)/tA/page.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "app/(tenant)/(presentation)/tB/page.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "app/(tenant)/(presentation)/tC/page.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "app/(tenant)/dashboard/page.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "app/(tenant)/layout.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "app/(tenant)/projects/[projectId]/page.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "app/(tenant)/projects/new/page.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "app/(tenant)/projects/page.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "app/(tenant)/settings/page.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "app/api/clerk/webhooks/route.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "app/api/stripe/connect/webhooks/route.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "app/api/stripe/webhooks/route.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "app/global-error.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "app/globals.css",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "app/layout.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "app/loading.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "app/not-found.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "app/page.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "components.json",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "components/(presentation)/catalog-browser.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "components/(presentation)/presentation-header.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "components/(presentation)/presentation-shell.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "components/(presentation)/presentationOperations.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "components/app/app-providers.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "components/blocks/auth-forms.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "components/blocks/auth-formsFeature.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "components/blocks/auth-formsFeatureClient.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "components/blocks/cta-section.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "components/blocks/cta-sectionFeature.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "components/blocks/cta-sectionFeatureClient.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "components/blocks/error-pages.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "components/blocks/error-pagesFeature.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "components/blocks/error-pagesFeatureClient.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "components/blocks/faq-section.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "components/blocks/faq-sectionFeature.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "components/blocks/faq-sectionFeatureClient.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "components/blocks/feature-grid.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "components/blocks/feature-gridFeature.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "components/blocks/hero-section.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "components/blocks/hero-sectionFeature.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "components/blocks/invoice.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "components/blocks/invoiceFeature.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "components/blocks/invoiceFeatureClient.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "components/blocks/onboarding-flow.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "components/blocks/onboarding-flowFeature.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "components/blocks/onboarding-flowFeatureClient.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "components/blocks/page-hero.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "components/blocks/process-panel.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "components/blocks/process-panelFeature.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "components/blocks/settings-page.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "components/blocks/settings-pageFeature.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "components/blocks/settings-pageFeatureClient.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "components/blocks/stat-grid.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "components/blocks/stats-section.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "components/blocks/stats-sectionFeature.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "components/blocks/status.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "components/blocks/statusFeatureClient.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "components/brand/logo-lockup.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "components/brand/wordmark.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "components/navigation/auth-footer.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "components/navigation/auth-header.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "components/navigation/auth-shell.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "components/navigation/mobile-bottom-nav.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "components/navigation/presentation-header.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "components/navigation/presentation-shell.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "components/navigation/public-footer.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "components/navigation/public-header.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "components/navigation/public-shell.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "components/navigation/user-menu.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "components/projects/project-card.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "components/projects/project-form.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "components/shells/auth-shell.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "components/shells/public-shell.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "components/shells/tenant-shell.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "components/ui/accordion.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "components/ui/alert.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "components/ui/avatar.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "components/ui/badge.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "components/ui/button.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "components/ui/card.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "components/ui/checkbox.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "components/ui/dialog.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "components/ui/dropdown-menu.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "components/ui/empty-state.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "components/ui/field.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "components/ui/input.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "components/ui/label.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "components/ui/marquee.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "components/ui/progress.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "components/ui/separator.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "components/ui/sheet.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "components/ui/skeleton.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "components/ui/switch.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "components/ui/tabs.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "components/ui/textarea.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "components/ui/timeline.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "content/auth.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "content/presentation/registry.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "content/site.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "context/docs/architecture-governance.md",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "context/instructions/agent-architecture-rules.md",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "docs/adr/README.md",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "docs/adr/adr-0001-layer-ownership.md",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "docs/adr/adr-0002-tenant-abstraction-and-naming.md",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "docs/adr/adr-0003-local-rbac.md",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "docs/adr/adr-0004-postgresql-rls-roles-and-context.md",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "docs/adr/adr-0005-clerk-identity-boundary.md",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "docs/adr/adr-0006-shared-webhook-ledger.md",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "docs/adr/adr-0007-stripe-subscription-billing.md",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "docs/adr/adr-0008-optional-stripe-connect.md",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "docs/adr/adr-0009-presentation-catalog-isolation.md",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "docs/adr/adr-0010-ci-and-vercel-ownership.md",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "docs/evidence/README.md",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "docs/evidence/archive/2026-08-03/README.md",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "docs/evidence/archive/2026-08-03/artifact-inventory.md",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "docs/evidence/archive/2026-08-03/current-state-baseline.md",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "docs/evidence/archive/2026-08-03/execution/architecture-standard.json",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "docs/evidence/archive/2026-08-03/execution/backlog.json",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "docs/evidence/archive/2026-08-03/execution/decisions.json",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "docs/evidence/archive/2026-08-03/execution/handoff.json",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "docs/evidence/archive/2026-08-03/execution/progress.json",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "docs/evidence/archive/2026-08-03/execution/validation.json",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "docs/evidence/archive/2026-08-03/plans/2026-08-03-clean-clone-tooling.md",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "docs/runbooks/credential-incident.md",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "docs/stripe-connect-reference.md",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "eslint.config.mjs",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "features/dashboard/dashboard-feature.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "features/dashboard/dashboard-skeleton.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "features/presentation/catalog-feature.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "features/presentation/status-feature.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "features/projects/new-project-feature.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "features/projects/project-detail-feature.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "features/projects/projects-feature.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "features/projects/projects-skeleton.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "features/settings/settings-feature.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "lib/actions/billingActions.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "lib/actions/connectActions.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "lib/actions/projectActions.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "lib/auth/session.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "lib/authz/assertions.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "lib/authz/capabilities.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "lib/authz/policies.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "lib/authz/tenant.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "lib/billing/billingState.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "lib/billing/entitlements.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "lib/billing/workflows/billingWorkflows.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "lib/cache/cache-tags.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "lib/cache/revalidate.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "lib/connect/policy.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "lib/connect/status.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "lib/connect/workflows/connectWorkflows.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "lib/db/dto/project.mappers.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "lib/db/prisma.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "lib/db/selects/project.selects.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "lib/db/transactions/auditTransactions.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "lib/db/transactions/billingTransactions.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "lib/db/transactions/connectTransactions.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "lib/db/transactions/organizationTransactions.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "lib/db/transactions/projectTransactions.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "lib/db/transactions/webhookTransactions.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "lib/db/withTenantContext.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "lib/env.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "lib/errors/expectedActionError.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "lib/fetchers/billingFetchers.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "lib/fetchers/connectFetchers.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "lib/fetchers/dashboardFetchers.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "lib/fetchers/projectFetchers.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "lib/integrations/clerk/webhooks.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "lib/integrations/stripe/billing.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "lib/integrations/stripe/client.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "lib/integrations/stripe/connect.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "lib/integrations/stripe/connectWebhooks.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "lib/integrations/stripe/subscriptionStatus.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "lib/integrations/stripe/webhooks.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "lib/organizations/workflows/organizationWorkflows.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "lib/presentation/catalogAccess.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "lib/projects/workflows/projectWorkflows.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "lib/utils.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "lib/webhooks/clerkWebhookWorkflow.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "lib/webhooks/connectWebhookWorkflow.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "lib/webhooks/stripeWebhookWorkflow.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "next-env.d.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "next.config.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "package.json",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "playwright.config.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "pnpm-lock.yaml",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "pnpm-workspace.yaml",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "postcss.config.mjs",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "prettier.config.mjs",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "prisma.config.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "prisma/migrations/20260804062000_tenant_rls_baseline/migration.sql",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "prisma/migrations/20260804065000_shared_webhook_claims/migration.sql",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "prisma/migrations/20260804072000_stripe_subscription_billing/migration.sql",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "prisma/migrations/20260804074500_stripe_connect_reference/migration.sql",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "prisma/migrations/migration_lock.toml",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "prisma/schema.prisma",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "proxy.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "public/icon.svg",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "reference-implementations/README.md",
+    "disposition": "reference",
+    "included": true,
+    "reason": "Production-isolated reference evidence is preserved without becoming canonical runtime architecture."
+  },
+  {
+    "path": "reference-implementations/vouch/.agents/contracts/domain-model.yaml",
+    "disposition": "reference",
+    "included": true,
+    "reason": "Production-isolated reference evidence is preserved without becoming canonical runtime architecture."
+  },
+  {
+    "path": "reference-implementations/vouch/.agents/contracts/integrations.yaml",
+    "disposition": "reference",
+    "included": true,
+    "reason": "Production-isolated reference evidence is preserved without becoming canonical runtime architecture."
+  },
+  {
+    "path": "reference-implementations/vouch/.agents/contracts/product.yaml",
+    "disposition": "reference",
+    "included": true,
+    "reason": "Production-isolated reference evidence is preserved without becoming canonical runtime architecture."
+  },
+  {
+    "path": "reference-implementations/vouch/.agents/contracts/quality-gates.yaml",
+    "disposition": "reference",
+    "included": true,
+    "reason": "Production-isolated reference evidence is preserved without becoming canonical runtime architecture."
+  },
+  {
+    "path": "reference-implementations/vouch/.agents/contracts/routes.yaml",
+    "disposition": "reference",
+    "included": true,
+    "reason": "Production-isolated reference evidence is preserved without becoming canonical runtime architecture."
+  },
+  {
+    "path": "reference-implementations/vouch/README.md",
+    "disposition": "reference",
+    "included": true,
+    "reason": "Production-isolated reference evidence is preserved without becoming canonical runtime architecture."
+  },
+  {
+    "path": "reference-implementations/vouch/context/docs/architecture.md",
+    "disposition": "reference",
+    "included": true,
+    "reason": "Production-isolated reference evidence is preserved without becoming canonical runtime architecture."
+  },
+  {
+    "path": "reference-implementations/vouch/context/docs/design-system-standards.md",
+    "disposition": "reference",
+    "included": true,
+    "reason": "Production-isolated reference evidence is preserved without becoming canonical runtime architecture."
+  },
+  {
+    "path": "reference-implementations/vouch/context/docs/launch-checklist.md",
+    "disposition": "reference",
+    "included": true,
+    "reason": "Production-isolated reference evidence is preserved without becoming canonical runtime architecture."
+  },
+  {
+    "path": "reference-implementations/vouch/context/docs/legal-and-copy.md",
+    "disposition": "reference",
+    "included": true,
+    "reason": "Production-isolated reference evidence is preserved without becoming canonical runtime architecture."
+  },
+  {
+    "path": "reference-implementations/vouch/context/docs/product-doctrine.md",
+    "disposition": "reference",
+    "included": true,
+    "reason": "Production-isolated reference evidence is preserved without becoming canonical runtime architecture."
+  },
+  {
+    "path": "reference-implementations/vouch/context/docs/ui-inventory.md",
+    "disposition": "reference",
+    "included": true,
+    "reason": "Production-isolated reference evidence is preserved without becoming canonical runtime architecture."
+  },
+  {
+    "path": "reference-implementations/vouch/context/instructions/audit.agents.md",
+    "disposition": "reference",
+    "included": true,
+    "reason": "Production-isolated reference evidence is preserved without becoming canonical runtime architecture."
+  },
+  {
+    "path": "reference-implementations/vouch/context/instructions/implementation.agents.md",
+    "disposition": "reference",
+    "included": true,
+    "reason": "Production-isolated reference evidence is preserved without becoming canonical runtime architecture."
+  },
+  {
+    "path": "reference-implementations/vouch/context/instructions/validation.agents.md",
+    "disposition": "reference",
+    "included": true,
+    "reason": "Production-isolated reference evidence is preserved without becoming canonical runtime architecture."
+  },
+  {
+    "path": "reference-implementations/vouch/presentation-content.ts",
+    "disposition": "reference",
+    "included": true,
+    "reason": "Production-isolated reference evidence is preserved without becoming canonical runtime architecture."
+  },
+  {
+    "path": "reference-implementations/vouch/presentation-fixtures.ts",
+    "disposition": "reference",
+    "included": true,
+    "reason": "Production-isolated reference evidence is preserved without becoming canonical runtime architecture."
+  },
+  {
+    "path": "schemas/clerkWebhookSchemas.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "schemas/connectSchemas.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "schemas/organizationSchemas.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "schemas/projectSchemas.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "schemas/stripeWebhookSchemas.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "scripts/Invoke-SecretScan.ps1",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "scripts/Test-ConnectRemoval.ps1",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "scripts/Test-PostgresRls.ps1",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "scripts/Test-RepositorySecurity.ps1",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "scripts/Test-SecretScanner.ps1",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "scripts/validate-architecture.mjs",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "scripts/validate-contracts.mjs",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "spec/spec-process-cicd-pull-request-validation.md",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "tests/contract/architecture-surface.test.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "tests/contract/architecture-validator.test.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "tests/contract/clerk-webhook-surface.test.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "tests/contract/database-security-surface.test.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "tests/contract/governance.test.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "tests/contract/presentation-catalog.test.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "tests/contract/pull-request-workflow.test.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "tests/contract/stripe-billing-surface.test.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "tests/contract/stripe-connect-surface.test.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "tests/contract/tenancy-surface.test.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "tests/e2e/fixtures/authenticated.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "tests/e2e/presentation-catalog.spec.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "tests/e2e/public-routes.spec.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "tests/helpers/server-only.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "tests/integration/postgres-rls.test.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "tests/integration/stripe-billing.test.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "tests/integration/stripe-connect.test.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "tests/integration/webhook-processing.test.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "tests/unit/actions/expected-action-errors.test.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "tests/unit/authz/capabilities.test.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "tests/unit/authz/policies.test.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "tests/unit/authz/tenant-context.test.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "tests/unit/billing/billing-state.test.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "tests/unit/billing/stripe-mapping.test.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "tests/unit/billing/stripe-webhook-route.test.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "tests/unit/billing/subscription-status.test.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "tests/unit/connect/connect-mapping.test.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "tests/unit/connect/connect-policy.test.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "tests/unit/connect/connect-provider-operations.test.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "tests/unit/connect/connect-webhook-mapping.test.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "tests/unit/connect/connect-webhook-route.test.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "tests/unit/dto/projectMappers.test.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "tests/unit/presentation/catalog-browser.test.tsx",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "tests/unit/schemas/organizationSchemas.test.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "tests/unit/schemas/projectSchemas.test.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "tests/unit/utils.test.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "tests/unit/webhooks/clerk-webhook-mapping.test.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "tests/unit/webhooks/clerk-webhook-route.test.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "tsconfig.json",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "types/actionResultTypes.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "types/auditTypes.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "types/authTypes.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "types/authzTypes.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "types/billingTypes.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "types/connectTypes.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "types/presentationCatalogTypes.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "types/presentationPreviewTypes.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "types/projectTypes.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "types/webhookTypes.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "vitest.config.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "vitest.integration.config.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  },
+  {
+    "path": "vitest.setup.ts",
+    "disposition": "core",
+    "included": true,
+    "reason": "Canonical application, governance, validation, or delivery source."
+  }
+]

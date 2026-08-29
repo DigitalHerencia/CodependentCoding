@@ -1,0 +1,19 @@
+# Merge deliberately into an existing project/user Codex config.
+# Do not overwrite unrelated settings, plugins, permissions, or MCP servers.
+
+project_root_markers = [".git"]
+project_doc_max_bytes = 32768
+
+[agents]
+max_threads = 4
+max_depth = 1
+
+# Project-scoped custom agents are supplied in .codex/agents/*.toml.
+# Add MCP servers only when the repository/user is authorized to use them.
+# Example shape:
+# [mcp_servers.example]
+# command = "example-mcp"
+# args = ["--stdio"]
+#
+# Plugin installation/availability is managed separately by the Codex/plugin surface;
+# preserve any existing plugin configuration rather than replacing it from a template.

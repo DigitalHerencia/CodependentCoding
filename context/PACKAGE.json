@@ -1,0 +1,16 @@
+{
+  "package": "Codependent-Coding-Codex-Handoff-Governance",
+  "version": "0.1.0",
+  "prepared": "2026-08-28",
+  "files": 108,
+  "authority_precedence": [
+    "current handoff",
+    "TypeScripture",
+    "canonical domain packages",
+    "workspace implementation",
+    "mockups",
+    "historical"
+  ],
+  "segments": 10,
+  "remote_deployment": "deferred"
+}

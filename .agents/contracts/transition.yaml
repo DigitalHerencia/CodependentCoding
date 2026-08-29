@@ -1,0 +1,47 @@
+schema_version: 1
+id: loaded-vibes.transition
+authority: machine-contract
+sources:
+  - context/docs/repository-transition.md
+  - context/specs/README.md
+
+baseline:
+  revision: 1479a4a1ef14dccf429e9fbaf5f1097e639a2914
+  observed_date: 2026-08-09
+
+final_repository_state:
+  packages_recipes: false
+  templates_golden: false
+  templates_modules_source: false
+  templates_modules_metadata: false
+  root_package_name_create_loaded_vibes: true
+  root_web_route_is_configurator: false
+
+target:
+  packages_recipes: false
+  template_path: template
+  duplicate_template_module_source: false
+  web_routes:
+    - /
+    - /configure
+    - /docs
+  completed_spec_series: LV-201-through-LV-207
+
+sequence:
+  - LV-201
+  - LV-202
+  - LV-203
+  - LV-204
+  - LV-205
+  - LV-206
+  - LV-207
+
+rules:
+  one_template_source: true
+  active_packages:
+    - cli
+    - core
+    - schema
+  git_history_is_archive: true
+  reintroduce_vibes_repository: false
+  completed_specs_are_not_active_instructions: true

@@ -1,0 +1,14 @@
+# Loaded Vibes / Codex local state
+.codex/.credentials.json
+.codex/log/
+.codex/history.jsonl
+.loaded-vibes-local/
+
+# Common local secrets
+.env
+.env.local
+.env.*.local
+
+# Generated diagnostics
+loaded-vibes-report.json
+loaded-vibes-report.md

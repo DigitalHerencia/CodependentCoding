@@ -1,0 +1,49 @@
+id: white-label-application.integrations
+version: 1
+authority: current-source-contract
+providers:
+  clerk:
+    status: code-present
+    owns: [identity, session, account_ui]
+    webhook_route: /api/clerk/webhooks
+    webhook_verifier: "@clerk/nextjs/webhooks.verifyWebhook"
+    normalized_events: [user.created, user.updated, user.deleted]
+    authorization_metadata: forbidden
+  neon:
+    status: code-present
+    owns: [postgresql_service]
+  stripe:
+    status: code-present
+    owns: [hosted_checkout, customer_portal, subscription_truth]
+    webhook_route: /api/stripe/webhooks
+    subscription_plan_count: 1
+    connect:
+      status: code-present-optional
+      webhook_route: /api/stripe/connect/webhooks
+      charge_model: manual-capture destination charge
+      platform_liability: [stripe_fees, refunds, disputes]
+      removal_gate: pnpm test:connect-removal
+  cloudinary:
+    status: code-present
+    owns: [uploads, media_delivery, transformations]
+    webhook_route: /api/cloudinary/webhooks
+    normalized_results: true
+  huggingface:
+    status: code-present
+    owns: [model_inference]
+    normalized_results: true
+  mapbox:
+    status: code-present
+    owns: [geocoding, directions, map_configuration]
+    webhook_route: null
+    normalized_results: true
+rules:
+  provider_secrets_server_only: true
+  browser_redirect_is_not_provider_truth: true
+  webhook_reconciliation_required: true
+  webhook_states: [received, processing, processed, ignored, failed]
+  terminal_duplicate_acknowledged: true
+  failed_and_stale_claims_retryable: true
+  redirect_grants_entitlement: false
+  reconciliation_auto_repair: false
+  live_configuration_requires_separate_verification: true

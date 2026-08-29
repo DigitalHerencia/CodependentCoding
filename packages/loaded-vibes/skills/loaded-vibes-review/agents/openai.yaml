@@ -1,0 +1,4 @@
+interface:
+  display_name: "Loaded Vibes Review"
+  short_description: "Review Arrangement architecture and security"
+  default_prompt: "Use $loaded-vibes-review to review this Arrangement change for architecture and security drift."

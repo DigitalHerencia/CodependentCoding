@@ -1,0 +1,15 @@
+id: white-label-application.product
+version: 1
+authority: current-source-contract
+definition: opinionated reusable B2B SaaS application system
+default_tenant_term: Organization
+sample_domain:
+  name: Project
+  removable: true
+  tenant_boundary: false
+principles:
+  - server-owned operations
+  - local authorization
+  - transport-safe contracts
+  - provider isolation
+  - representative capability slices

@@ -1,0 +1,190 @@
+{
+	"servers": {
+		"playwright": {
+			"type": "stdio",
+			"command": "npx",
+			"args": [
+				"@playwright/mcp@latest"
+			],
+			"gallery": true
+		},
+		"github": {
+			"type": "http",
+			"url": "https://api.githubcopilot.com/mcp/",
+			"gallery": true
+		},
+		"markitdown": {
+			"type": "stdio",
+			"command": "uvx",
+			"args": [
+				"markitdown-mcp"
+			],
+			"gallery": true
+		},
+		"context7": {
+			"type": "stdio",
+			"command": "npx",
+			"args": [
+				"-y",
+				"@upstash/context7-mcp@latest"
+			],
+			"gallery": true
+		},
+		"sequentialthinking": {
+			"type": "stdio",
+			"command": "npx",
+			"args": [
+				"-y",
+				"@modelcontextprotocol/server-sequential-thinking@latest"
+			],
+			"gallery": true
+		},
+		"memory": {
+			"type": "stdio",
+			"command": "npx",
+			"args": [
+				"-y",
+				"@modelcontextprotocol/server-memory@latest"
+			],
+			"gallery": true
+		},
+        "neon": {
+            "type": "stdio",
+            "command": "npx",
+            "args": [
+                "-y",
+                "@neondatabase/mcp-server-neon",
+                "start",
+                "${input:NEON_API_KEY}"
+            ],
+            "env": {
+                "DATABASE_URL": "${input:DATABASE_URL}"
+            }
+        },
+		"prisma-postgres": {
+			"type": "http",
+			"url": "https://mcp.prisma.io/mcp",
+			"gallery": true
+		},
+		"everything": {
+			"command": "npx",
+			"args": [
+				"-y",
+				"@modelcontextprotocol/server-everything"
+			],
+			"type": "stdio"
+		},
+		"time": {
+			"command": "uvx",
+			"args": [
+				"mcp-server-time"
+			],
+			"type": "stdio"
+		},
+		"git": {
+			"command": "uvx",
+			"args": [
+				"mcp-server-git"
+			],
+			"type": "stdio"
+		},
+		"ESLint": {
+			"type": "stdio",
+			"command": "npx",
+			"args": ["@eslint/mcp@latest"]
+		},
+		"filesystem": {
+			"command": "npx",
+			"args": [
+				"-y",
+				"@modelcontextprotocol/server-filesystem",
+				"${input:workspaceFolder}"
+			],
+			"type": "stdio"
+			
+		},
+		"clerk": {
+            "type": "stdio",
+            "command": "npx",
+            "args": [
+                "-y",
+                "@clerk/agent-toolkit",
+                "-p",
+                "local-mcp",
+                "--secret-key",
+                "${input:CLERK_SECRET_KEY}"
+            ],
+            "env": {
+                "CLERK_API_KEY": "${input:CLERK_SECRET_KEY}"
+			}
+		}
+	},
+	"inputs": [
+		{
+			"id": "TIMEZONE",
+			"type": "promptString",
+			"description": "IANA timezone (e.g., America/Denver)",
+			"password": false
+		},
+		{
+			"id": "GH_TOKEN",
+			"type": "promptString",
+			"description": "GitHub PAT for repo manager",
+			"password": true
+		},
+		{
+			"id": "GH_DEFAULT_OWNER",
+			"type": "promptString",
+			"description": "Default GitHub owner/org",
+			"password": false
+		},
+		{
+			"id": "GH_DEFAULT_REPO",
+			"type": "promptString",
+			"description": "Default GitHub repository",
+			"password": false
+		},
+		{
+			"id": "GITHUB_REPOSITORY",
+			"type": "promptString",
+			"description": "owner/repo for GitHub MCP",
+			"password": false
+		},
+		{
+			"id": "NEON_API_KEY",
+			"type": "promptString",
+			"description": "Neon API key",
+			"password": true
+		},
+		{
+			"id": "DATABASE_URL",
+			"type": "promptString",
+			"description": "Neon Database URL",
+			"password": true
+		},
+		{
+			"id": "CLERK_SECRET_KEY",
+			"type": "promptString",
+			"description": "Clerk secret key",
+			"password": true
+		},
+		{
+			"id": "CLERK_PUBLISHABLE",
+			"type": "promptString",
+			"description": "Clerk publishable key",
+			"password": false
+		},
+		{
+			"id": "VITEST_PROJECT_DIR",
+			"type": "promptString",
+			"description": "Absolute path to vitest project root",
+			"password": false
+		},
+		{
+			"id": "workspaceFolder",
+			"type": "promptString",
+			"description": "Absolute path to the workspace folder",
+			"password": false
+		}
+	]
+}
