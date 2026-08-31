@@ -7,7 +7,7 @@ The site is dark-mode only, neo-brutalist, technical, theatrical, and deliberate
 # 2. Visual Tokens
 
 | **Token**          | **Value / Rule**                                                                      |
-|--------------------|---------------------------------------------------------------------------------------|
+| ------------------ | ------------------------------------------------------------------------------------- |
 | Primary background | black and \#05030b                                                                    |
 | Primary foreground | white                                                                                 |
 | Brand cyan         | approximately \#2f7a8d                                                                |
@@ -44,7 +44,7 @@ The supplied public/ assets are authoritative for logos, wordmarks, banner artwo
 # 6. Page Background Artwork
 
 | **Surface**                     | **Asset / Behavior**                                                                                           |
-|---------------------------------|----------------------------------------------------------------------------------------------------------------|
+| ------------------------------- | -------------------------------------------------------------------------------------------------------------- |
 | Landing                         | Digital Herencia Banner.png; full viewport width; bottom anchored; automatic height; \#05030b page background. |
 | Anthimeria                      | Digital Herencia Desert BG.png; full width; bottom anchored; footer overlays correctly.                        |
 | Simples                         | Digital Herencia Desert BG.png; same behavior.                                                                 |
@@ -126,7 +126,7 @@ The supplied public/ assets are authoritative for logos, wordmarks, banner artwo
 # 15. Interaction States
 
 | **State**       | **Treatment**                                                                          |
-|-----------------|----------------------------------------------------------------------------------------|
+| --------------- | -------------------------------------------------------------------------------------- |
 | Default         | White/cyan text on near-black surface.                                                 |
 | Hover           | Small scale/brightness increase; border/glow intensification where appropriate.        |
 | Active/Selected | Cyan underline, border, fill, checkmark, or explicit selected state.                   |
@@ -186,3 +186,9 @@ The following supplied mockups are the visual reference set. They are included h
 **Template Mockup**
 
 ![Template Mockup](assets/mockups/template-mockup.jpg)
+
+# Current public-site visual authority (2026-08-31)
+
+The public canvas is black / `#05030b`; visible foreground is white with restrained `#2f7a8d` cyan emphasis and glow. Main textual titles use Archivo Black, subheadings use Copperplate Gothic Bold or a safe system fallback, body copy uses JetBrains Mono, and code/Monaco use Fira Code.
+
+The shared bottom framing is the literal `public/Digital Herencia Desert BG.jpg` asset with preserved aspect ratio. Brand and product identities use the current literal `.jpg` assets under `public/`; layout-diagram cyan regions are never rendered as giant cyan panels.

@@ -18,7 +18,7 @@ inspect actual state
 - Routes own URL/HTTP boundaries.
 - Features orchestrate application capabilities.
 - `components/blocks` is pure reusable presentation.
-- `components/ui` is the lowest presentation primitive layer; Features may compose compatible Blocks/Primitives without acquiring business authority.
+- `components/ui` is raw presentation primitives; normal features consume Blocks. React Hook Form feature forms are the explicit direct-primitive exception.
 - Every persisted application read belongs in `lib/fetchers`.
 - Ordinary persisted CRUD mutation boundaries belong in `lib/actions`.
 - Business/application logic is constituted in `lib/workflows/{domain}` from existing server operations/helpers.

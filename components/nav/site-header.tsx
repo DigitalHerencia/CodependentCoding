@@ -1,12 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
-
-const navigation = [
-  { href: '/ontologies', label: 'Ontologies' },
-  { href: '/simples', label: 'Simples' },
-  { href: '/anthimeria', label: 'Anthimeria' },
-  { href: '/maximal', label: 'Maximal' },
-] as const;
+import { SimplesNavigation } from './simples-navigation';
 
 export function SiteHeader() {
   return (
@@ -25,11 +19,16 @@ export function SiteHeader() {
         />
       </Link>
       <nav aria-label="Primary navigation">
-        {navigation.map((item) => (
-          <Link href={item.href} key={item.href}>
-            {item.label}
-          </Link>
-        ))}
+        <Link className="nav-link" href="/ontologies">
+          ONTOLOGIES
+        </Link>
+        <SimplesNavigation />
+        <Link className="nav-link" href="/anthimeria">
+          ANTHIMERIA
+        </Link>
+        <Link className="nav-link" href="/maximal-template">
+          MAXIMAL
+        </Link>
       </nav>
     </header>
   );

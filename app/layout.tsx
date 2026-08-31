@@ -1,10 +1,15 @@
 import type { Metadata } from 'next';
-import { Cinzel, Fira_Code, JetBrains_Mono, Oswald } from 'next/font/google';
-import { SiteFooter } from '@/components/site-footer';
-import { SiteHeader } from '@/components/site-header';
+import {
+  Archivo_Black,
+  Cinzel,
+  Fira_Code,
+  JetBrains_Mono,
+} from 'next/font/google';
+import { SiteShell } from '@/components/shells/site-shell';
 import './globals.css';
 
-const heritageDisplay = Oswald({
+const heritageDisplay = Archivo_Black({
+  weight: '400',
   subsets: ['latin'],
   variable: '--font-big-shoulders-display',
 });
@@ -38,9 +43,7 @@ export default function RootLayout({
       <body
         className={`${heritageDisplay.variable} ${copperplateFallback.variable} ${jetBrainsMono.variable} ${firaCode.variable}`}
       >
-        <SiteHeader />
-        {children}
-        <SiteFooter />
+        <SiteShell>{children}</SiteShell>
       </body>
     </html>
   );

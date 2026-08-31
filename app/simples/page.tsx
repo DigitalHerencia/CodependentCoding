@@ -1,5 +1,5 @@
-import { redirect } from 'next/navigation';
+import { SimplesCatalog } from '@/components/blocks/custom/simples-catalog';
 
 export default function LegacyLibrariesPage() {
-  redirect('/simples');
+  return <SimplesCatalog />;
 }

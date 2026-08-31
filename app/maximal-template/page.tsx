@@ -1,30 +1,31 @@
-import { maximalSnapshot } from '@/lib/maximal';
+import Image from 'next/image';
+import { MaximalBrowser } from '@/components/blocks/custom/maximal-browser';
+import { maximalTree, readMaximalSource } from '@/lib/maximal';
 
 export default async function MaximalPage() {
-  const snapshot = await maximalSnapshot();
+  const tree = await maximalTree();
+  const initialPath = 'README.md';
+  const initialSource = await readMaximalSource(initialPath);
   return (
     <main className="maximal-page">
-      <p className="surface-eyebrow">The</p>
-      <h1>Maximal Template™</h1>
-      <p className="maximal-subtitle">
-        One authoritative runnable source superset
+      <Image
+        src="/Maximal Template Logo.jpg"
+        alt="Maximal Template"
+        width={1200}
+        height={350}
+      />
+      <p className="eyebrow">One authoritative runnable source superset</p>
+      <h1>Inspect the real implementation.</h1>
+      <p>
+        The source browser is bounded to repository-owned files under{' '}
+        <code>template/</code>. The Maximal application itself remains
+        unchanged.
       </p>
-      <section className="maximal-explorer">
-        <aside>
-          <strong>File Explorer</strong>
-          <code>{snapshot.root}</code>
-          {snapshot.entries.map((entry) => (
-            <span key={entry}>◈ {entry}</span>
-          ))}
-        </aside>
-        <article>
-          <header>
-            <strong>{snapshot.source}README.md</strong>
-            <span>Source-backed preview</span>
-          </header>
-          <pre>{snapshot.preview}</pre>
-        </article>
-      </section>
+      <MaximalBrowser
+        tree={tree}
+        initialPath={initialPath}
+        initialSource={initialSource}
+      />
     </main>
   );
 }

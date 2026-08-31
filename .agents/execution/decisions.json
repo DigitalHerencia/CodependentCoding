@@ -108,6 +108,34 @@
       "status": "active",
       "decision": "The .yaml contracts use the YAML 1.2 JSON-compatible subset so repository-owned Node scripts can parse them with JSON.parse and no additional YAML runtime dependency.",
       "rationale": "Keeps machine contracts deterministic, dependency-free, and valid YAML."
+    },
+    {
+      "id": "CC-WEB-001",
+      "category": "public-site-architecture",
+      "status": "active",
+      "decision": "The public root website uses UI Primitive to Block to optional Page Template to Page and has no mandatory Feature orchestration, database, authentication, tenant state, or provider mutation.",
+      "rationale": "The public product renders repository-owned architecture content and local demonstrations; this scoped exception does not alter template/ application orchestration."
+    },
+    {
+      "id": "CC-WEB-002",
+      "category": "site-shell",
+      "status": "active",
+      "decision": "SiteShell owns universal outer geometry, header, footer, near-black canvas, and the Digital Herencia desert horizon. Specialized route families own only their inner topology.",
+      "rationale": "One shared geometry system prevents route-specific framing drift."
+    },
+    {
+      "id": "CC-WEB-003",
+      "category": "surface-topology",
+      "status": "active",
+      "decision": "Ontologies use BlogTemplate information topology, PureUI details use ProductTemplate information topology, TypeScripture uses DocsTemplate information topology, and Anthimeria uses DashboardTemplate workbench topology without inheriting BoldKit styling.",
+      "rationale": "Reuses established page structures while preserving Codependent Coding visual identity."
+    },
+    {
+      "id": "CC-GEN-001",
+      "category": "generation",
+      "status": "active",
+      "decision": "Direct Arrangement ZIP remains unavailable until the shared CLI materializer can generate real standalone output in the target runtime; the website exposes truthful Virgule and CLI handoff instead.",
+      "rationale": "The 2026-08-31 real CLI audit reached the shared resolver and plan but materialization failed with COPY_FAILED, so a web-only or JSON-disguised ZIP would be false."
     }
   ],
   "history": [
@@ -202,9 +230,7 @@
       "id": "CC-D-002",
       "decision": "Nine Ontology normalized defaults replace the four generic presets as canonical starters; Simples contains only PureUI Blocks and BusinessLogic Blocks or Workflows; one shared resolver remains authoritative for CLI, config, Anthimeria preview, planning, and materialization.",
       "status": "superseded",
-      "supersedes": [
-        "LV-D-015"
-      ],
+      "supersedes": ["LV-D-015"],
       "supersededBy": "CC-APP-004"
     },
     {
@@ -217,9 +243,7 @@
       "id": "CC-D-004",
       "decision": "Owner acceptance on 2026-08-28 authorized publication of the completed consolidation build to DigitalHerencia/CodependentCoding and production deployment through the existing digital-herencia/codependent-coding Vercel project at codependentcoding.vercel.app.",
       "status": "historical",
-      "supersedes": [
-        "CC-D-003"
-      ],
+      "supersedes": ["CC-D-003"],
       "supersededBy": "CC-GOV-011"
     }
   ]

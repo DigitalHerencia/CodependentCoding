@@ -1,102 +1,58 @@
 {
   "$schema": "codependent-coding://execution/progress/v1",
   "schemaVersion": 1,
-  "updatedAt": "2026-08-31T03:40:21.387363Z",
-  "status": "governance-package-complete-implementation-conformance-debt-detected",
-  "scope": "Consolidate supplied Codependent Coding context into three machine-readable contracts, three execution records, a root AGENTS.md documentation directory, and contract-driven governance scripts.",
+  "updatedAt": "2026-08-31T14:00:00Z",
+  "status": "public-website-reconstruction-implemented-and-verified-with-recorded-blockers",
+  "scope": "Reconstruct the root Codependent Coding public website while preserving template/ application semantics.",
   "completed": [
-    "Inspected the supplied repository archive plus context/docs, context/specs, both 24-chapter TypeScripture books, and the current implementation topology.",
-    "Reconciled root public web application vs template/ Maximal Template responsibilities.",
-    "Reconciled Codependent Coding vs Loaded Vibes authority and made packages/loaded-vibes the package source with an identical .agents mirror.",
-    "Reconciled current Feature \u2192 UI Primitive doctrine and corrected the stale root ESLint/Loaded Vibes block-only rule.",
-    "Created application.yaml, design.yaml, validation.yaml using the YAML 1.2 JSON-compatible subset.",
-    "Rebuilt decisions.json, progress.json, and handoff.json around current state instead of migration-era execution history.",
-    "Replaced root AGENTS.md with an authority directory covering all context docs/specs, both TypeScripture books, mockups, machine contracts, and governance commands.",
-    "Added contract, structure, architecture, report, and conservative fix scripts under scripts/governance plus package.json command entry points.",
-    "Updated Loaded Vibes layer-contract derivatives and validator behavior to the current TypeScripture layer matrix.",
-    "Added validator fixture coverage proving Feature \u2192 UI Primitive is accepted and Action \u2192 DB is rejected."
+    "Reconciled the public website versus Maximal Template architecture boundary in explanatory and machine contracts.",
+    "Added SiteShell, centralized outer geometry, global artwork, header, footer, and root framework states.",
+    "Repaired landing composition with literal crown, Digital Herencia, and desert assets.",
+    "Replaced Ontology source-dump UX with a nine-Ontology discovery catalog and useful details.",
+    "Implemented one Simples inventory across hover discovery, modal catalog, and direct route with exactly PureUI and BusinessLogic families.",
+    "Migrated PureUI and Workflow details into explicit demonstration topologies and removed root presentation-only Features.",
+    "Implemented a 48-source TypeScripture reader, safe real Maximal tree with read-only Monaco, and a stateless nine-stage Anthimeria workbench.",
+    "Added website-scoped governance rules and corrected repository governance script paths/root resolution."
   ],
-  "observedRepository": {
-    "rootApplication": "Next.js App Router public architecture/documentation/configuration application",
-    "maximalTemplate": "template/",
-    "ontologyDefaultsObserved": 9,
-    "typescriptureChapters": {
-      "knowledge": 24,
-      "implementation": 24
-    },
-    "mockupCount": 10,
-    "loadedVibesMirrorsInitiallyIdentical": true,
-    "transitionalFacts": [
-      "template workflows are currently under template/lib/workflows/<domain> rather than the newer TypeScripture lib/<domain>/workflows placement",
-      "Maximal Template Server Actions still contain direct DB/select/DTO/transaction behavior instead of delegating mutation use cases to Workflows",
-      "several Maximal Template Features and presentation surfaces still import provider/integration/Workflow responsibilities directly"
-    ]
+  "generator": {
+    "cli": "partially verified: bundle built and create/add/doctor/explain commands are present; real materialization tests failed",
+    "resolver": "partially verified: real CLI resolved presets, providers, capabilities, routes, artifact sets, and environment requirements",
+    "materializer": "blocked: real CLI returned COPY_FAILED while materializing template source",
+    "arrangementGeneration": "blocked by materializer failure",
+    "directZip": "not implemented; truthful Virgule download and CLI handoff retained"
   },
   "verification": [
+    { "state": "EXECUTED", "command": "pnpm cli:build", "result": "pass" },
     {
-      "check": "Node syntax: scripts/governance/*.mjs",
-      "state": "executed",
-      "result": "pass",
-      "evidence": "all governance .mjs files passed node --check"
+      "state": "EXECUTED",
+      "command": "pnpm vitest run tests/generated/real-cli.test.ts",
+      "result": "3 pass, 5 fail with COPY_FAILED"
     },
     {
-      "check": "Contract parsing and source-manifest integrity",
-      "state": "executed",
-      "result": "pass",
-      "evidence": "validate-contracts.mjs: 0 errors"
+      "state": "EXECUTED",
+      "command": "pnpm governance:check",
+      "result": "contracts pass; structure passes with one transitional template workflow-placement warning; architecture fails on 49 existing template boundary violations"
     },
     {
-      "check": "YAML compatibility",
-      "state": "executed",
-      "result": "pass",
-      "evidence": "contracts parse as JSON and PyYAML 6.0.3 is available for independent YAML 1.2-compatible parsing check"
+      "state": "EXECUTED",
+      "command": "pnpm typecheck",
+      "result": "fail with broad pre-existing template/import/dependency conformance errors; changed website files were filtered and produced no remaining direct diagnostics"
     },
     {
-      "check": "Repository structure",
-      "state": "executed",
-      "result": "pass-with-warning",
-      "evidence": "0 errors; one warning for transitional template/lib/workflows placement; Loaded Vibes mirror byte-identical"
+      "state": "EXECUTED",
+      "command": "browser route and screenshot checkpoints",
+      "result": "all ten requested public surfaces returned expected 200/404 states; desktop and mobile compositions were visually inspected"
     },
     {
-      "check": "Architecture mechanical conformance",
-      "state": "executed",
-      "result": "fail",
-      "evidence": "49 deterministic violations across 19 files: ARCH-005=38, ARCH-003=8, ARCH-002=2, ARCH-001=1"
-    },
-    {
-      "check": "Loaded Vibes architecture validator fixture tests",
-      "state": "executed",
-      "result": "pass",
-      "evidence": "clean fixture accepts Feature \u2192 UI Primitive; negative fixtures detect fetcher mutation and Action \u2192 DB"
-    },
-    {
-      "check": "Loaded Vibes package validation",
-      "state": "executed",
-      "result": "pass",
-      "evidence": "package validator reports 6 Codex skills"
-    },
-    {
-      "check": "Safe fixer dry run",
-      "state": "executed",
-      "result": "pass-with-warning",
-      "evidence": "no safe mechanical correction currently required; semantic workflow relocation remains plan-only"
-    },
-    {
-      "check": "Full pnpm repository suite",
-      "state": "blocked",
-      "result": "not-run",
-      "evidence": "sandbox has no cached pnpm 11.1.1 and outbound registry access is unavailable; corepack cannot fetch pnpm"
+      "state": "EXECUTED",
+      "command": "pnpm validate",
+      "result": "stopped at format:check because 588 repository files are outside the formatter baseline; later lint, typecheck, tests, e2e, and build stages were skipped by command short-circuit"
     }
   ],
   "remaining": [
-    "Refactor the 19 Maximal Template files reported by validate-architecture.mjs if full conformance is the next implementation objective; the 49 findings are intentionally not auto-fixed.",
-    "Migrate template/lib/workflows/<domain> to the newer domain-owned lib/<domain>/workflows topology only as a scoped import-safe change.",
-    "Run the normal pnpm lint/typecheck/test/e2e/build suite in the repository owner environment where pnpm 11.1.1 is available."
+    "Review the final diff, commit, and perform the one authorized final push."
   ],
-  "externalChanges": {
-    "git": false,
-    "github": false,
-    "deployment": false,
-    "credentials": false
-  }
+  "outOfScope": [
+    "Known template/ action, feature, provider, and transitional workflow-placement debt."
+  ]
 }

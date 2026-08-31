@@ -1,61 +1,36 @@
 {
   "$schema": "codependent-coding://execution/handoff/v1",
   "schemaVersion": 1,
-  "updatedAt": "2026-08-31T03:40:21.387363Z",
-  "status": "ready-with-known-maximal-template-architecture-debt",
+  "updatedAt": "2026-08-31T14:00:00Z",
+  "status": "implemented-verified-awaiting-final-git-delivery",
   "repository": "Codependent Coding",
-  "branchObserved": "archive snapshot; no external mutation performed",
-  "authorityOrder": [
-    "current owner instruction",
-    "TypeScripture Book of Knowledge",
-    "TypeScripture Book of Implementation",
-    "context/docs + context/specs",
-    "repository implementation evidence",
-    "historical material"
-  ],
-  "readFirst": [
-    "AGENTS.md",
-    ".agents/contracts/application.yaml",
-    ".agents/contracts/validation.yaml",
-    ".agents/contracts/design.yaml"
-  ],
-  "executionState": [
-    ".agents/execution/decisions.json",
-    ".agents/execution/progress.json",
-    ".agents/execution/handoff.json"
-  ],
-  "governanceCommands": {
-    "check": "pnpm governance:check",
-    "report": "pnpm governance:report",
-    "fixDryRun": "pnpm governance:fix",
-    "fixWrite": "pnpm governance:fix:write"
-  },
-  "rules": [
-    "Do not invent a new architecture layer for an already named responsibility.",
-    "Do not treat .agents/LoadedVibesCodexPlugin as a second Loaded Vibes source authority.",
-    "Do not blindly move transitional workflows; produce a scoped import-safe migration.",
-    "Do not make semantic/security PASS claims from static import checks.",
-    "For changes to doctrine or product authority, update explanatory source first and then synchronize machine contracts."
-  ],
-  "verification": [
-    "contracts: PASS",
-    "structure: PASS_WITH_WARNINGS (workflow placement transition only)",
-    "Loaded Vibes package/fixture tests: PASS",
-    "architecture: FAIL with 49 deterministic findings across 19 Maximal Template files",
-    "pnpm full suite: BLOCKED in sandbox because pnpm 11.1.1 is not cached and registry access is unavailable"
+  "branchObserved": "main",
+  "activePackage": "Public website architecture and product reconstruction",
+  "implemented": [
+    "SiteShell and framework states",
+    "landing repair",
+    "Ontology discovery/details",
+    "Simples navigation/catalog",
+    "PureUI and Workflow demonstrations",
+    "TypeScripture reader",
+    "safe Monaco Maximal browser",
+    "stateless Anthimeria workbench",
+    "website governance rules"
   ],
   "blocked": [
     {
-      "id": "ARCH-DEBT-001",
-      "kind": "implementation-conformance",
-      "detail": "49 current deterministic layer-boundary violations: 38 Action\u2192DB/integration imports, 8 Feature\u2192Workflow/integration/provider imports, 2 Component\u2192provider imports, 1 Layout\u2192provider import.",
-      "command": "node scripts/governance/validate-architecture.mjs --json"
+      "id": "GEN-001",
+      "detail": "Real CLI materialization fails with COPY_FAILED; direct Arrangement ZIP is therefore not exposed."
     },
     {
-      "id": "ENV-001",
-      "kind": "verification-environment",
-      "detail": "Full pnpm repository validation could not run because pnpm 11.1.1 is not present in the sandbox and Corepack cannot reach the npm registry."
+      "id": "TEMPLATE-DEBT",
+      "detail": "Known Maximal Template architecture/type conformance debt remains out of scope."
     }
   ],
-  "nextAction": "Use validate-architecture.mjs findings as the scoped refactor queue: move mutation/use-case logic from Actions into domain Workflows first, then remove direct provider/integration authority from Features/presentation, and rerun governance:check before normal repository validation."
+  "verification": {
+    "browser": "Requested routes and desktop/mobile screenshots verified.",
+    "governance": "Contracts pass; mirror synchronized; existing template architecture debt remains.",
+    "fullValidation": "Executed once and stopped at the pre-existing 588-file formatting baseline failure."
+  },
+  "nextAction": "Review diff and artifacts, create the final commit, and perform the one authorized push."
 }

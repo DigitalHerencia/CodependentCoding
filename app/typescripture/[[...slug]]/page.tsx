@@ -39,7 +39,7 @@ export async function generateMetadata({
 }
 
 function chapterHref(book: TypeScriptureBookId, chapter: string) {
-  return `/docs/${book}/${chapter}`;
+  return `/typescripture/${book}/${chapter}`;
 }
 
 function TypeScriptureNavigation({
@@ -53,7 +53,7 @@ function TypeScriptureNavigation({
 
   return (
     <aside className="docs-navigation">
-      <Link className="docs-mark" href="/docs">
+      <Link className="docs-mark" href="/typescripture">
         <span>The</span>
         <strong>TypeScripture™</strong>
         <small>Canonical Doctrine</small>
@@ -229,7 +229,7 @@ export default async function DocumentationPage({
               </span>
             </Link>
           ) : (
-            <Link href="/docs">
+            <Link href="/typescripture">
               <small>Complete</small>
               <span>Return to the paired map</span>
             </Link>

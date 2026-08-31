@@ -64,6 +64,7 @@ feature
 └── BusinessLogic Workflow
 └── server operations + helpers + contracts + integrations
 ```
+
 A feature is the user-facing orchestration boundary. PureUI Blocks do not acquire business authority merely because a feature renders them. Workflows do not become presentation components merely because their state is displayed.
 
 # 5. Workflow Constitution
@@ -79,6 +80,7 @@ Integration ────┤──► BUSINESSLOGIC WORKFLOW
 Transaction ────┤
 Helpers ────────┘
 ```
+
 The workflow is the folded business-logic form of those constituents. Unfolding the workflow exposes its constituents; it does not imply the business meaning ceased to exist.
 
 # 6. PureUI Constitution
@@ -91,6 +93,7 @@ UI Primitive
 ↓
 PureUI Block
 ```
+
 PureUI Blocks are reusable presentation constitutions. They may expose compatible variants to Anthimeria, but they do not own authorization, persistence, provider credentials, or domain invariants.
 
 # 7. Ontology Architecture
@@ -123,6 +126,7 @@ Virgule™ Application Definition
 ↓
 Hipster Stack generator / CLI
 ```
+
 Anthimeria is not the generator. Its durable output is the portable definition. The generator consumes that definition through the same normalization and validation contract used by other supported entry points.
 
 # 9. Generation Architecture
@@ -144,6 +148,7 @@ Arrangement™
 ↓
 Install / validate / handoff
 ```
+
 - Generation must be deterministic for the same supported inputs and repository version.
 - Unsupported state fails explicitly.
 - Generated output is an ordinary standalone application, not a runtime dependency on the configurator.
@@ -165,6 +170,7 @@ repository loader / metadata
 ↓
 documentation UI
 ```
+
 - Canonical content remains repository-owned.
 - The website is a renderer/navigator, not a second conflicting knowledge authority.
 - Provenance and traceability material may link architecture claims to implementation evidence.
@@ -208,6 +214,7 @@ Public assets
 ↓
 Presentation only
 ```
+
 - Lower-level presentation primitives do not import product features.
 - Server-only modules do not import Client Components.
 - Canonical domain definitions do not depend on page rendering.
@@ -217,7 +224,7 @@ Presentation only
 # 13. Error Architecture
 
 | **Failure**                    | **Required Behavior**                                                       |
-|--------------------------------|-----------------------------------------------------------------------------|
+| ------------------------------ | --------------------------------------------------------------------------- |
 | Unknown route/slug             | Not-found response with navigation back to a valid catalog.                 |
 | Invalid application definition | Schema/contract error with actionable field-level information where safe.   |
 | Unsupported combination        | Explicit unsupported-state error; no silent fallback.                       |
@@ -243,7 +250,7 @@ Presentation only
 # 15. Current Repository Mapping
 
 | **Current Path**   | **Architectural Role**                                                                              |
-|--------------------|-----------------------------------------------------------------------------------------------------|
+| ------------------ | --------------------------------------------------------------------------------------------------- |
 | app/               | Next.js route shells and route handlers.                                                            |
 | components/ui/     | UI primitives.                                                                                      |
 | components/blocks/ | PureUI Block implementations.                                                                       |
@@ -258,3 +265,11 @@ Presentation only
 # 16. Migration Rule
 
 The repository is mid-normalization. Existing names and paths may temporarily lag canonical terminology. Implementation should rename or redirect ordinary references as part of scoped work rather than treating a stale name as a new architecture. Where two artifacts conflict, the newer explicit authoritative specification governs unless repository-local implementation evidence proves a required compatibility constraint.
+
+# Public website reconstruction boundary (2026-08-31)
+
+The root application is a public, unprotected, repository-content and presentation product. It performs no application database reads or writes and requires no Clerk, tenant state, provider mutation, or application RBAC. Its presentation flow is `UI Primitive → PureUI Block → optional Page Template → Page`; presentation-only Feature wrappers are not required. This exception does not alter the Maximal Template application architecture under `template/`.
+
+`SiteShell` owns the universal header, footer, near-black canvas, responsive outer gutters, shared content maximum width, and `Digital Herencia Desert BG.jpg` horizon. TypeScripture, Maximal Template, and Anthimeria add only their own inner documentation, source-browser, and workbench topologies.
+
+Surface topology mapping is: BlogTemplate information topology for Ontology discovery, ProductTemplate information topology for PureUI details, DocsTemplate information topology for TypeScripture, and DashboardTemplate information topology for Anthimeria. These mappings reuse structure, not BoldKit visual identity.

@@ -1,8 +1,8 @@
 import { notFound } from 'next/navigation';
-import { ontologyCatalog } from '@hipster-stack/core';
-import { OntologyCatalog } from '@/components/ontology-catalog';
+import { OntologyDetailBlock } from '@/components/blocks/custom/ontology-surfaces';
+import { getOntology, ontologies } from '@/lib/public-catalog';
 export function generateStaticParams() {
-  return Object.keys(ontologyCatalog).map((slug) => ({ slug }));
+  return ontologies.map(({ id }) => ({ slug: id }));
 }
 export default async function Page({
   params,
@@ -10,6 +10,7 @@ export default async function Page({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  if (!(slug in ontologyCatalog)) notFound();
-  return <OntologyCatalog selectedId={slug as keyof typeof ontologyCatalog} />;
+  const ontology = getOntology(slug);
+  if (!ontology) notFound();
+  return <OntologyDetailBlock ontology={ontology} />;
 }

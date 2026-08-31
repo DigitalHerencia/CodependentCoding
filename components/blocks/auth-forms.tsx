@@ -1,25 +1,44 @@
 /* eslint-disable react-refresh/only-export-components */
-import * as React from 'react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Checkbox } from '@/components/ui/checkbox'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { cn, safeHref } from '@/lib/utils'
-import { Eye, EyeOff, Mail, Lock, User, ArrowRight, Github, Chrome } from 'lucide-react'
+import * as React from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Checkbox } from '@/components/ui/checkbox';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { cn, safeHref } from '@/lib/utils';
+import {
+  Eye,
+  EyeOff,
+  Mail,
+  Lock,
+  User,
+  ArrowRight,
+  GitBranch as Github,
+  Circle as Chrome,
+} from 'lucide-react';
 
 // ============================================================================
 // AUTH VARIANT 1: Login Form
 // ============================================================================
 export interface LoginFormProps {
-  logo?: React.ReactNode
-  title?: string
-  description?: string
-  onSubmit?: (data: { email: string; password: string; remember: boolean }) => void
-  onForgotPassword?: () => void
-  onSignUp?: () => void
-  socialProviders?: Array<'google' | 'github'>
-  className?: string
+  logo?: React.ReactNode;
+  title?: string;
+  description?: string;
+  onSubmit?: (data: {
+    email: string;
+    password: string;
+    remember: boolean;
+  }) => void;
+  onForgotPassword?: () => void;
+  onSignUp?: () => void;
+  socialProviders?: Array<'google' | 'github'>;
+  className?: string;
 }
 
 export function LoginForm({
@@ -36,13 +55,13 @@ export function LoginForm({
     email: '',
     password: '',
     remember: false,
-  })
-  const [showPassword, setShowPassword] = React.useState(false)
+  });
+  const [showPassword, setShowPassword] = React.useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    onSubmit?.(formData)
-  }
+    e.preventDefault();
+    onSubmit?.(formData);
+  };
 
   return (
     <div className={cn('w-full max-w-md mx-auto', className)}>
@@ -50,7 +69,9 @@ export function LoginForm({
         <CardHeader className="space-y-4 text-center">
           {logo && <div className="mx-auto">{logo}</div>}
           <div>
-            <CardTitle className="text-2xl font-black uppercase">{title}</CardTitle>
+            <CardTitle className="text-2xl font-black uppercase">
+              {title}
+            </CardTitle>
             <CardDescription className="mt-2">{description}</CardDescription>
           </div>
         </CardHeader>
@@ -69,7 +90,9 @@ export function LoginForm({
                   placeholder="you@example.com"
                   className="pl-10"
                   value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, email: e.target.value })
+                  }
                   required
                 />
               </div>
@@ -88,7 +111,9 @@ export function LoginForm({
                   placeholder="Enter your password"
                   className="pl-10 pr-10"
                   value={formData.password}
-                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, password: e.target.value })
+                  }
                   required
                 />
                 <button
@@ -97,7 +122,11 @@ export function LoginForm({
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                 >
-                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  {showPassword ? (
+                    <EyeOff className="h-4 w-4" />
+                  ) : (
+                    <Eye className="h-4 w-4" />
+                  )}
                 </button>
               </div>
             </div>
@@ -111,7 +140,10 @@ export function LoginForm({
                     setFormData({ ...formData, remember: checked as boolean })
                   }
                 />
-                <Label htmlFor="remember" className="text-sm font-medium cursor-pointer">
+                <Label
+                  htmlFor="remember"
+                  className="text-sm font-medium cursor-pointer"
+                >
                   Remember me
                 </Label>
               </div>
@@ -177,22 +209,27 @@ export function LoginForm({
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }
 
 // ============================================================================
 // AUTH VARIANT 2: Sign Up Form
 // ============================================================================
 export interface SignUpFormProps {
-  logo?: React.ReactNode
-  title?: string
-  description?: string
-  onSubmit?: (data: { name: string; email: string; password: string; terms: boolean }) => void
-  onSignIn?: () => void
-  socialProviders?: Array<'google' | 'github'>
-  termsUrl?: string
-  privacyUrl?: string
-  className?: string
+  logo?: React.ReactNode;
+  title?: string;
+  description?: string;
+  onSubmit?: (data: {
+    name: string;
+    email: string;
+    password: string;
+    terms: boolean;
+  }) => void;
+  onSignIn?: () => void;
+  socialProviders?: Array<'google' | 'github'>;
+  termsUrl?: string;
+  privacyUrl?: string;
+  className?: string;
 }
 
 export function SignUpForm({
@@ -211,19 +248,19 @@ export function SignUpForm({
     email: '',
     password: '',
     terms: false,
-  })
-  const [showPassword, setShowPassword] = React.useState(false)
-  const [termsError, setTermsError] = React.useState('')
+  });
+  const [showPassword, setShowPassword] = React.useState(false);
+  const [termsError, setTermsError] = React.useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     if (!formData.terms) {
-      setTermsError('You must accept the terms to continue')
-      return
+      setTermsError('You must accept the terms to continue');
+      return;
     }
-    setTermsError('')
-    onSubmit?.(formData)
-  }
+    setTermsError('');
+    onSubmit?.(formData);
+  };
 
   return (
     <div className={cn('w-full max-w-md mx-auto', className)}>
@@ -231,7 +268,9 @@ export function SignUpForm({
         <CardHeader className="space-y-4 text-center">
           {logo && <div className="mx-auto">{logo}</div>}
           <div>
-            <CardTitle className="text-2xl font-black uppercase">{title}</CardTitle>
+            <CardTitle className="text-2xl font-black uppercase">
+              {title}
+            </CardTitle>
             <CardDescription className="mt-2">{description}</CardDescription>
           </div>
         </CardHeader>
@@ -250,14 +289,19 @@ export function SignUpForm({
                   placeholder="John Doe"
                   className="pl-10"
                   value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, name: e.target.value })
+                  }
                   required
                 />
               </div>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="signup-email" className="font-bold uppercase text-xs">
+              <Label
+                htmlFor="signup-email"
+                className="font-bold uppercase text-xs"
+              >
                 Email
               </Label>
               <div className="relative">
@@ -269,14 +313,19 @@ export function SignUpForm({
                   placeholder="you@example.com"
                   className="pl-10"
                   value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, email: e.target.value })
+                  }
                   required
                 />
               </div>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="signup-password" className="font-bold uppercase text-xs">
+              <Label
+                htmlFor="signup-password"
+                className="font-bold uppercase text-xs"
+              >
                 Password
               </Label>
               <div className="relative">
@@ -288,7 +337,9 @@ export function SignUpForm({
                   placeholder="Create a password"
                   className="pl-10 pr-10"
                   value={formData.password}
-                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, password: e.target.value })
+                  }
                   required
                 />
                 <button
@@ -297,10 +348,16 @@ export function SignUpForm({
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                 >
-                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  {showPassword ? (
+                    <EyeOff className="h-4 w-4" />
+                  ) : (
+                    <Eye className="h-4 w-4" />
+                  )}
                 </button>
               </div>
-              <p className="text-xs text-muted-foreground">Must be at least 8 characters</p>
+              <p className="text-xs text-muted-foreground">
+                Must be at least 8 characters
+              </p>
             </div>
 
             <div className="space-y-1">
@@ -309,23 +366,34 @@ export function SignUpForm({
                   id="terms"
                   checked={formData.terms}
                   onCheckedChange={(checked) => {
-                    setFormData({ ...formData, terms: checked as boolean })
-                    if (checked) setTermsError('')
+                    setFormData({ ...formData, terms: checked as boolean });
+                    if (checked) setTermsError('');
                   }}
                 />
-                <Label htmlFor="terms" className="text-sm leading-tight cursor-pointer">
+                <Label
+                  htmlFor="terms"
+                  className="text-sm leading-tight cursor-pointer"
+                >
                   I agree to the{' '}
-                  <a href={safeHref(termsUrl)} className="font-bold text-primary hover:underline">
+                  <a
+                    href={safeHref(termsUrl)}
+                    className="font-bold text-primary hover:underline"
+                  >
                     Terms of Service
                   </a>{' '}
                   and{' '}
-                  <a href={safeHref(privacyUrl)} className="font-bold text-primary hover:underline">
+                  <a
+                    href={safeHref(privacyUrl)}
+                    className="font-bold text-primary hover:underline"
+                  >
                     Privacy Policy
                   </a>
                 </Label>
               </div>
               {termsError && (
-                <p className="text-xs text-destructive font-medium">{termsError}</p>
+                <p className="text-xs text-destructive font-medium">
+                  {termsError}
+                </p>
               )}
             </div>
 
@@ -380,19 +448,19 @@ export function SignUpForm({
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }
 
 // ============================================================================
 // AUTH VARIANT 3: Forgot Password Form
 // ============================================================================
 export interface ForgotPasswordFormProps {
-  logo?: React.ReactNode
-  title?: string
-  description?: string
-  onSubmit?: (email: string) => void
-  onBackToLogin?: () => void
-  className?: string
+  logo?: React.ReactNode;
+  title?: string;
+  description?: string;
+  onSubmit?: (email: string) => void;
+  onBackToLogin?: () => void;
+  className?: string;
 }
 
 export function ForgotPasswordForm({
@@ -403,14 +471,14 @@ export function ForgotPasswordForm({
   onBackToLogin,
   className,
 }: ForgotPasswordFormProps) {
-  const [email, setEmail] = React.useState('')
-  const [submitted, setSubmitted] = React.useState(false)
+  const [email, setEmail] = React.useState('');
+  const [submitted, setSubmitted] = React.useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    onSubmit?.(email)
-    setSubmitted(true)
-  }
+    e.preventDefault();
+    onSubmit?.(email);
+    setSubmitted(true);
+  };
 
   if (submitted) {
     return (
@@ -427,7 +495,11 @@ export function ForgotPasswordForm({
                 <span className="font-bold text-foreground">{email}</span>
               </p>
             </div>
-            <Button variant="outline" className="w-full" onClick={onBackToLogin}>
+            <Button
+              variant="outline"
+              className="w-full"
+              onClick={onBackToLogin}
+            >
               Back to login
             </Button>
             <p className="text-xs text-muted-foreground">
@@ -443,7 +515,7 @@ export function ForgotPasswordForm({
           </CardContent>
         </Card>
       </div>
-    )
+    );
   }
 
   return (
@@ -452,14 +524,19 @@ export function ForgotPasswordForm({
         <CardHeader className="space-y-4 text-center">
           {logo && <div className="mx-auto">{logo}</div>}
           <div>
-            <CardTitle className="text-2xl font-black uppercase">{title}</CardTitle>
+            <CardTitle className="text-2xl font-black uppercase">
+              {title}
+            </CardTitle>
             <CardDescription className="mt-2">{description}</CardDescription>
           </div>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="reset-email" className="font-bold uppercase text-xs">
+              <Label
+                htmlFor="reset-email"
+                className="font-bold uppercase text-xs"
+              >
                 Email
               </Label>
               <div className="relative">
@@ -495,22 +572,22 @@ export function ForgotPasswordForm({
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }
 
 // ============================================================================
 // AUTH VARIANT 4: OTP Verification Form
 // ============================================================================
 export interface OTPVerificationFormProps {
-  logo?: React.ReactNode
-  title?: string
-  description?: string
-  email?: string
-  length?: number
-  onSubmit?: (otp: string) => void
-  onResend?: () => void
-  onBackToLogin?: () => void
-  className?: string
+  logo?: React.ReactNode;
+  title?: string;
+  description?: string;
+  email?: string;
+  length?: number;
+  onSubmit?: (otp: string) => void;
+  onResend?: () => void;
+  onBackToLogin?: () => void;
+  className?: string;
 }
 
 export function OTPVerificationForm({
@@ -524,53 +601,59 @@ export function OTPVerificationForm({
   onBackToLogin,
   className,
 }: OTPVerificationFormProps) {
-  const [otp, setOtp] = React.useState<string[]>(new Array(length).fill(''))
-  const inputRefs = React.useRef<HTMLInputElement[]>([])
-  const hasSubmitted = React.useRef(false)
+  const [otp, setOtp] = React.useState<string[]>(new Array(length).fill(''));
+  const inputRefs = React.useRef<HTMLInputElement[]>([]);
+  const hasSubmitted = React.useRef(false);
 
   const handleChange = (index: number, value: string) => {
-    if (!/^\d*$/.test(value)) return
+    if (!/^\d*$/.test(value)) return;
 
-    const newOtp = [...otp]
-    newOtp[index] = value.slice(-1)
-    setOtp(newOtp)
+    const newOtp = [...otp];
+    newOtp[index] = value.slice(-1);
+    setOtp(newOtp);
 
     // Reset guard so user can re-submit after editing a filled OTP
-    hasSubmitted.current = false
+    hasSubmitted.current = false;
 
     if (value && index < length - 1) {
-      inputRefs.current[index + 1]?.focus()
+      inputRefs.current[index + 1]?.focus();
     }
 
     // Use local newOtp (not stale hasSubmitted.current) to check auto-submit
-    if (newOtp.every((digit) => digit !== '') && newOtp.join('').length === length) {
-      hasSubmitted.current = true
-      onSubmit?.(newOtp.join(''))
+    if (
+      newOtp.every((digit) => digit !== '') &&
+      newOtp.join('').length === length
+    ) {
+      hasSubmitted.current = true;
+      onSubmit?.(newOtp.join(''));
     }
-  }
+  };
 
-  const handleKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyDown = (
+    index: number,
+    e: React.KeyboardEvent<HTMLInputElement>,
+  ) => {
     if (e.key === 'Backspace' && !otp[index] && index > 0) {
-      inputRefs.current[index - 1]?.focus()
+      inputRefs.current[index - 1]?.focus();
     }
-  }
+  };
 
   const handlePaste = (e: React.ClipboardEvent) => {
-    e.preventDefault()
-    const pastedData = e.clipboardData.getData('text').slice(0, length)
-    if (!/^\d+$/.test(pastedData)) return
+    e.preventDefault();
+    const pastedData = e.clipboardData.getData('text').slice(0, length);
+    if (!/^\d+$/.test(pastedData)) return;
 
-    const newOtp = [...otp]
+    const newOtp = [...otp];
     pastedData.split('').forEach((char, index) => {
-      if (index < length) newOtp[index] = char
-    })
-    setOtp(newOtp)
+      if (index < length) newOtp[index] = char;
+    });
+    setOtp(newOtp);
 
     if (newOtp.every((digit) => digit !== '') && !hasSubmitted.current) {
-      hasSubmitted.current = true
-      onSubmit?.(newOtp.join(''))
+      hasSubmitted.current = true;
+      onSubmit?.(newOtp.join(''));
     }
-  }
+  };
 
   return (
     <div className={cn('w-full max-w-md mx-auto', className)}>
@@ -578,7 +661,9 @@ export function OTPVerificationForm({
         <CardHeader className="space-y-4 text-center">
           {logo && <div className="mx-auto">{logo}</div>}
           <div>
-            <CardTitle className="text-2xl font-black uppercase">{title}</CardTitle>
+            <CardTitle className="text-2xl font-black uppercase">
+              {title}
+            </CardTitle>
             <CardDescription className="mt-2">
               {description ||
                 `We sent a ${length}-digit code to ${email || 'your email'}. Enter it below.`}
@@ -590,7 +675,9 @@ export function OTPVerificationForm({
             {otp.map((digit, index) => (
               <Input
                 key={`otp-digit-${index}`}
-                ref={(el) => { if (el) inputRefs.current[index] = el }}
+                ref={(el) => {
+                  if (el) inputRefs.current[index] = el;
+                }}
                 type="text"
                 inputMode="numeric"
                 maxLength={1}
@@ -609,8 +696,8 @@ export function OTPVerificationForm({
             size="lg"
             onClick={() => {
               if (!hasSubmitted.current) {
-                hasSubmitted.current = true
-                onSubmit?.(otp.join(''))
+                hasSubmitted.current = true;
+                onSubmit?.(otp.join(''));
               }
             }}
             disabled={otp.some((digit) => digit === '')}
@@ -641,18 +728,18 @@ export function OTPVerificationForm({
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }
 
 // ============================================================================
 // AUTH VARIANT 5: Split Auth Layout
 // ============================================================================
 export interface AuthSplitLayoutProps {
-  children: React.ReactNode
-  brandContent?: React.ReactNode
-  brandBackground?: string
-  position?: 'left' | 'right'
-  className?: string
+  children: React.ReactNode;
+  brandContent?: React.ReactNode;
+  brandBackground?: string;
+  position?: 'left' | 'right';
+  className?: string;
 }
 
 export function AuthSplitLayout({
@@ -668,7 +755,7 @@ export function AuthSplitLayout({
         <div
           className={cn(
             'hidden lg:flex lg:w-1/2 flex-col justify-center p-12',
-            brandBackground
+            brandBackground,
           )}
         >
           {brandContent}
@@ -683,14 +770,14 @@ export function AuthSplitLayout({
         <div
           className={cn(
             'hidden lg:flex lg:w-1/2 flex-col justify-center p-12',
-            brandBackground
+            brandBackground,
           )}
         >
           {brandContent}
         </div>
       )}
     </div>
-  )
+  );
 }
 
 // ============================================================================
@@ -702,4 +789,4 @@ export const AuthForms = {
   ForgotPassword: ForgotPasswordForm,
   OTPVerification: OTPVerificationForm,
   SplitLayout: AuthSplitLayout,
-}
+};

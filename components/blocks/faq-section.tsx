@@ -1,29 +1,29 @@
 /* eslint-disable react-refresh/only-export-components */
-import * as React from 'react'
+import * as React from 'react';
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from '@/components/ui/accordion'
-import { cn } from '@/lib/utils'
-import { HelpCircle, MessageCircle } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+} from '@/components/ui/accordion';
+import { cn } from '@/lib/utils';
+import { HelpCircle, MessageCircle } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 export interface FAQItem {
-  question: string
-  answer: string
+  question: string;
+  answer: string;
 }
 
 // ============================================================================
 // FAQ VARIANT 1: Simple Accordion
 // ============================================================================
 export interface FAQAccordionProps {
-  title?: string
-  subtitle?: string
-  description?: string
-  items: FAQItem[]
-  className?: string
+  title?: string;
+  subtitle?: string;
+  description?: string;
+  items: FAQItem[];
+  className?: string;
 }
 
 export function FAQAccordion({
@@ -74,29 +74,27 @@ export function FAQAccordion({
         </Accordion>
       </div>
     </section>
-  )
+  );
 }
 
 // ============================================================================
 // FAQ VARIANT 2: Two Columns
 // ============================================================================
 export interface FAQTwoColumnsProps {
-  title?: string
-  items: FAQItem[]
-  className?: string
+  title?: string;
+  items: FAQItem[];
+  className?: string;
 }
 
-export function FAQTwoColumns({
-  title,
-  items,
-  className,
-}: FAQTwoColumnsProps) {
-  const midpoint = Math.ceil(items.length / 2)
-  const leftColumn = items.slice(0, midpoint)
-  const rightColumn = items.slice(midpoint)
+export function FAQTwoColumns({ title, items, className }: FAQTwoColumnsProps) {
+  const midpoint = Math.ceil(items.length / 2);
+  const leftColumn = items.slice(0, midpoint);
+  const rightColumn = items.slice(midpoint);
 
   return (
-    <section className={cn('py-16 px-4 md:px-8 lg:px-16 bg-muted/30', className)}>
+    <section
+      className={cn('py-16 px-4 md:px-8 lg:px-16 bg-muted/30', className)}
+    >
       <div className="max-w-6xl mx-auto">
         {title && (
           <h2 className="text-3xl md:text-4xl font-black uppercase tracking-tight text-center mb-12">
@@ -112,27 +110,31 @@ export function FAQTwoColumns({
           </div>
           <div className="space-y-6">
             {rightColumn.map((item, index) => (
-              <FAQCard key={item.question} item={item} index={midpoint + index} />
+              <FAQCard
+                key={item.question}
+                item={item}
+                index={midpoint + index}
+              />
             ))}
           </div>
         </div>
       </div>
     </section>
-  )
+  );
 }
 
 // ============================================================================
 // FAQ VARIANT 3: With Categories
 // ============================================================================
 export interface FAQCategory {
-  name: string
-  items: FAQItem[]
+  name: string;
+  items: FAQItem[];
 }
 
 export interface FAQWithCategoriesProps {
-  title?: string
-  categories: FAQCategory[]
-  className?: string
+  title?: string;
+  categories: FAQCategory[];
+  className?: string;
 }
 
 export function FAQWithCategories({
@@ -140,9 +142,9 @@ export function FAQWithCategories({
   categories,
   className,
 }: FAQWithCategoriesProps) {
-  const [activeCategory, setActiveCategory] = React.useState(0)
+  const [activeCategory, setActiveCategory] = React.useState(0);
 
-  if (!categories.length) return null
+  if (!categories.length) return null;
 
   return (
     <section className={cn('py-16 px-4 md:px-8 lg:px-16', className)}>
@@ -165,8 +167,13 @@ export function FAQWithCategories({
           ))}
         </div>
 
-        <Accordion type="single" collapsible className="space-y-4" key={activeCategory}>
-          {categories[activeCategory].items.map((item, index) => (
+        <Accordion
+          type="single"
+          collapsible
+          className="space-y-4"
+          key={activeCategory}
+        >
+          {categories[activeCategory]!.items.map((item, index) => (
             <AccordionItem
               key={item.question}
               value={`item-${index}`}
@@ -183,25 +190,25 @@ export function FAQWithCategories({
         </Accordion>
       </div>
     </section>
-  )
+  );
 }
 
 // ============================================================================
 // FAQ VARIANT 4: With Contact CTA
 // ============================================================================
 export interface FAQWithContactProps {
-  title?: string
-  items: FAQItem[]
-  contactTitle?: string
-  contactDescription?: string
-  contactAction?: { label: string; onClick?: () => void }
-  className?: string
+  title?: string;
+  items: FAQItem[];
+  contactTitle?: string;
+  contactDescription?: string;
+  contactAction?: { label: string; onClick?: () => void };
+  className?: string;
 }
 
 export function FAQWithContact({
   title,
   items,
-  contactTitle = "Still have questions?",
+  contactTitle = 'Still have questions?',
   contactDescription = "Can't find the answer you're looking for? Please reach out to our friendly team.",
   contactAction,
   className,
@@ -247,25 +254,23 @@ export function FAQWithContact({
         </div>
       </div>
     </section>
-  )
+  );
 }
 
 // ============================================================================
 // FAQ VARIANT 5: Simple List
 // ============================================================================
 export interface FAQSimpleListProps {
-  title?: string
-  items: FAQItem[]
-  className?: string
+  title?: string;
+  items: FAQItem[];
+  className?: string;
 }
 
-export function FAQSimpleList({
-  title,
-  items,
-  className,
-}: FAQSimpleListProps) {
+export function FAQSimpleList({ title, items, className }: FAQSimpleListProps) {
   return (
-    <section className={cn('py-16 px-4 md:px-8 lg:px-16 bg-muted/30', className)}>
+    <section
+      className={cn('py-16 px-4 md:px-8 lg:px-16 bg-muted/30', className)}
+    >
       <div className="max-w-3xl mx-auto">
         {title && (
           <h2 className="text-3xl md:text-4xl font-black uppercase tracking-tight text-center mb-12">
@@ -283,7 +288,7 @@ export function FAQSimpleList({
         </div>
       </div>
     </section>
-  )
+  );
 }
 
 // ============================================================================
@@ -302,7 +307,7 @@ function FAQCard({ item, index }: { item: FAQItem; index: number }) {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 // ============================================================================
@@ -314,4 +319,4 @@ export const FAQSection = {
   WithCategories: FAQWithCategories,
   WithContact: FAQWithContact,
   SimpleList: FAQSimpleList,
-}
+};

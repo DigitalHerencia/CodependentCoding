@@ -30,7 +30,8 @@
     "brandCyanApprox": "#2f7a8d",
     "glowUnderline": "#2f7a8d",
     "typography": {
-      "heading": "Copperplate Gothic Bold or supplied wordmark asset",
+      "mainTitle": "Archivo Black or supplied wordmark asset",
+      "subheading": "Copperplate Gothic Bold with a safe system fallback",
       "body": "JetBrains Mono",
       "code": "Fira Code"
     },
@@ -110,19 +111,29 @@
       "decorative circuit/landscape never obstructs links"
     ],
     "backgroundArtwork": {
-      "landing": {
-        "asset": "public/Digital Herencia Banner.png",
-        "behavior": "full viewport width, bottom anchored, auto height, #05030b page"
-      },
-      "anthimeria": {
-        "asset": "public/Digital Herencia Desert BG.png",
-        "behavior": "full width, bottom anchored, footer overlays correctly"
-      },
-      "simples": {
-        "asset": "public/Digital Herencia Desert BG.png",
-        "behavior": "same landscape language"
+      "sharedPublicSite": {
+        "asset": "public/Digital Herencia Desert BG.jpg",
+        "behavior": "preserve aspect ratio, remain recognizable near the page bottom, and frame the readable footer"
       }
-    }
+    },
+    "brandAssets": [
+      "public/Anthimeria Logo.jpg",
+      "public/Arrangement Logo.jpg",
+      "public/BusinnesLogic Logo.jpg",
+      "public/Codependent Coding Crown.jpg",
+      "public/Codependent Coding Logo.jpg",
+      "public/Digital Herencia Banner.jpg",
+      "public/Digital Herencia Desert BG.jpg",
+      "public/Digital Herencia Logo.jpg",
+      "public/Digital Herencia.jpg",
+      "public/Loaded Vibes Logo.jpg",
+      "public/Maximal Template Logo.jpg",
+      "public/Ontology Logo.jpg",
+      "public/PureUI Logo.jpg",
+      "public/Simples Logo.jpg",
+      "public/Virgule Logo.jpg",
+      "public/Visual Vibes Logo.jpg"
+    ]
   },
   "surfaces": {
     "landing": {
@@ -140,13 +151,9 @@
     "ontologies": {
       "required": [
         "THE ONTOLOGY™ / NORMALIZED DEFAULTS identity",
-        "wrapped Ontology selector",
-        "selected cyan underline/state",
-        "bordered tree + source/definition viewer",
-        "description/capability material below viewer",
-        "COPY PAGE and DOWNLOAD in upper-right action area",
-        "wide desktop code composition",
-        "safe stacked mobile viewer"
+        "discovery-first nine-Ontology catalog using BlogTemplate information topology",
+        "useful domain purpose, surfaces, workflows, integrations, and Explore actions",
+        "definition/source inspection remains secondary"
       ]
     },
     "simplesOverview": {
@@ -325,8 +332,8 @@
       "path": "context/docs/Design.md",
       "role": "design-specification",
       "authority": "design-authority",
-      "sha256": "c0041deab9ac94b8fac1d4085f2aa57d4a1b6acb97c7b8403b33132a0a056556",
-      "bytes": 10078
+      "sha256": "0ff797b889667f422b308b7b62d9ea2a468c4764ca951393d458eedac31015ca",
+      "bytes": 10688
     }
   ]
 }

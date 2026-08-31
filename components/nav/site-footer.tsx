@@ -18,9 +18,9 @@ export function SiteFooter() {
           />
         </Link>
         <nav aria-label="Footer navigation">
-          <Link href="/docs">FAQ</Link>
-          <span>Terms</span>
-          <span>Privacy</span>
+          <Link href="/simples/pure-ui/faq-section">FAQ</Link>
+          <Link href="/terms">TERMS</Link>
+          <Link href="/privacy">PRIVACY</Link>
         </nav>
       </div>
     </footer>

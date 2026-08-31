@@ -74,6 +74,12 @@
       "conflict": "packages/loaded-vibes and .agents/LoadedVibesCodexPlugin/loaded-vibes are duplicate trees.",
       "resolution": "packages/loaded-vibes is the executable/package source authority; the .agents copy is a managed byte-identical mirror only and must not drift into a second source authority.",
       "status": "resolved"
+    },
+    {
+      "id": "REC-005",
+      "conflict": "Canonical application architecture requires Feature orchestration, while the public website is repository-content presentation without application behavior.",
+      "resolution": "The public website uses UI Primitive to Block to optional Page Template to Page. This exception does not alter Maximal Template orchestration.",
+      "status": "resolved"
     }
   ],
   "productFamily": {
@@ -332,6 +338,37 @@
       "architecture/contract checks"
     ]
   },
+  "publicWebsite": {
+    "access": "public and unprotected",
+    "applicationDatabaseReads": false,
+    "applicationDatabaseWrites": false,
+    "authenticationRequired": false,
+    "presentationFlow": [
+      "UI primitives",
+      "PureUI Blocks",
+      "optional Page Templates",
+      "Pages/Routes"
+    ],
+    "siteShellOwns": [
+      "global header",
+      "global footer",
+      "page canvas",
+      "responsive outer gutters",
+      "content maximum width",
+      "Digital Herencia desert framing"
+    ],
+    "specializedInnerShells": {
+      "typescripture": "DocsTemplate documentation navigation and reader",
+      "maximal-template": "file tree and read-only Monaco workspace",
+      "anthimeria": "DashboardTemplate presentation workbench"
+    },
+    "surfaceTemplateMapping": {
+      "ontologies": "BlogTemplate topology",
+      "pureUiSimple": "ProductTemplate topology",
+      "typescripture": "DocsTemplate topology",
+      "anthimeria": "DashboardTemplate topology"
+    }
+  },
   "repository": {
     "applicationRoot": ".",
     "requiredTopLevelPaths": [
@@ -433,7 +470,7 @@
       "committed",
       "transport-safe"
     ],
-    "presentationFlow": [
+    "maximalTemplatePresentationFlow": [
       "UI primitives",
       "PureUI Blocks",
       "Features",
@@ -995,15 +1032,15 @@
       "path": "context/docs/Architecture.md",
       "role": "product-document",
       "authority": "product-authority",
-      "sha256": "4be490433fa14a3aa0baf9cd52db8f781700ed38133dcca0611001d41389455b",
-      "bytes": 9859
+      "sha256": "b4d239979b5838cfd2e7e1031843bd5281f4c32d5ba4dcff4f9b59de87fb18f9",
+      "bytes": 11002
     },
     {
       "path": "context/docs/Design.md",
       "role": "product-document",
       "authority": "product-authority",
-      "sha256": "c0041deab9ac94b8fac1d4085f2aa57d4a1b6acb97c7b8403b33132a0a056556",
-      "bytes": 10078
+      "sha256": "0ff797b889667f422b308b7b62d9ea2a468c4764ca951393d458eedac31015ca",
+      "bytes": 10688
     },
     {
       "path": "context/docs/PRD.md",

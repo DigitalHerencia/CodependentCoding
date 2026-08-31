@@ -159,6 +159,68 @@
   ],
   "architectureRules": [
     {
+      "id": "WEB-001",
+      "severity": "error",
+      "scope": [
+        "app/**/page.*",
+        "app/**/layout.*",
+        "app/error.*",
+        "app/global-error.*",
+        "app/not-found.*",
+        "app/loading.*"
+      ],
+      "description": "Public website route/framework files compose shells, templates, blocks, or safe content loaders rather than raw UI primitives.",
+      "forbiddenImports": [
+        "@/components/ui/**"
+      ]
+    },
+    {
+      "id": "WEB-002",
+      "severity": "error",
+      "scope": [
+        "components/blocks/**"
+      ],
+      "description": "Public website Blocks remain presentation-only.",
+      "forbiddenImports": [
+        "@/features/**",
+        "@/lib/workflows/**",
+        "@/lib/db/**",
+        "@/lib/auth/**",
+        "@/lib/authz/**",
+        "@prisma/**",
+        "stripe",
+        "@clerk/**"
+      ]
+    },
+    {
+      "id": "WEB-003",
+      "severity": "error",
+      "scope": [
+        "app/layout.*"
+      ],
+      "description": "The root layout uses the canonical SiteShell.",
+      "requiredImports": [
+        "@/components/shells/site-shell"
+      ]
+    },
+    {
+      "id": "WEB-004",
+      "severity": "error",
+      "scope": [
+        "app/**",
+        "components/**",
+        "features/**",
+        "lib/**"
+      ],
+      "description": "The public website cannot gain application persistence, Clerk, or Stripe without a future authority change.",
+      "forbiddenImports": [
+        "@prisma/**",
+        "@prisma/client",
+        "@clerk/**",
+        "stripe"
+      ]
+    },
+    {
       "id": "ARCH-001",
       "severity": "error",
       "scope": [
@@ -467,8 +529,8 @@
       "path": "context/docs/Architecture.md",
       "role": "architecture-specification",
       "authority": "product-authority",
-      "sha256": "4be490433fa14a3aa0baf9cd52db8f781700ed38133dcca0611001d41389455b",
-      "bytes": 9859
+      "sha256": "b4d239979b5838cfd2e7e1031843bd5281f4c32d5ba4dcff4f9b59de87fb18f9",
+      "bytes": 11002
     },
     {
       "path": "context/specs/loaded-vibes/Loaded-Vibes.Authoritative-Plugin-Spec.md",
