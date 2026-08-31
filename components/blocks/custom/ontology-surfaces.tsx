@@ -1,11 +1,12 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import type { Ontology } from '@/lib/public-catalog';
+import { OntologyDefinitionEditor } from './ontology-definition-editor';
 
 export function OntologyCatalogBlock({
   ontologies,
 }: {
-  ontologies: Ontology[];
+  ontologies: readonly Ontology[];
 }) {
   return (
     <main className="ontology-catalog-page">
@@ -113,6 +114,7 @@ export function OntologyDetailBlock({ ontology }: { ontology: Ontology }) {
           </p>
         </section>
       </div>
+      <OntologyDefinitionEditor source={JSON.stringify(ontology, null, 2)} />
     </main>
   );
 }

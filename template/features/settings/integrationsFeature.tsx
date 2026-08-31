@@ -2,10 +2,10 @@ import {
   IntegrationStatusGridBlock,
   PageHeaderBlock,
 } from "@/components/blocks/application-sections";
-import { getProviderStatuses } from "@/lib/integrations/status";
+import { getIntegrationStatuses } from "@/lib/fetchers/integrationFetchers";
 
 export function IntegrationsFeature() {
-  const integrations = getProviderStatuses();
+  const integrations = getIntegrationStatuses();
   return (
     <>
       <PageHeaderBlock

@@ -1,5 +1,12 @@
 import type { NextConfig } from "next";
 
-// Framework configuration governs the entire application.
-const nextConfig: NextConfig = {};
+const nextConfig: NextConfig = {
+  reactStrictMode: true,
+  typedRoutes: true,
+  poweredByHeader: false,
+  images: {
+    formats: ["image/avif", "image/webp"],
+  },
+};
+
 export default nextConfig;

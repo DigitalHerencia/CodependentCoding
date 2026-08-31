@@ -28,7 +28,16 @@ export async function materialize(plan: GenerationPlan): Promise<void> {
         force: true,
       });
     }
-    await applyTransforms(plan);
+    try {
+      await applyTransforms(plan);
+    } catch (error) {
+      const detail = error instanceof Error ? ` ${error.message}` : '';
+      throw new LoadedVibesError(
+        'TRANSFORM_FAILED',
+        `Failed to compose the generated application.${detail}`,
+        error,
+      );
+    }
     try {
       await rmdir(plan.config.targetDirectory);
     } catch (error) {

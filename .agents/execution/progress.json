@@ -15,11 +15,11 @@
     "Added website-scoped governance rules and corrected repository governance script paths/root resolution."
   ],
   "generator": {
-    "cli": "partially verified: bundle built and create/add/doctor/explain commands are present; real materialization tests failed",
-    "resolver": "partially verified: real CLI resolved presets, providers, capabilities, routes, artifact sets, and environment requirements",
-    "materializer": "blocked: real CLI returned COPY_FAILED while materializing template source",
-    "arrangementGeneration": "blocked by materializer failure",
-    "directZip": "not implemented; truthful Virgule download and CLI handoff retained"
+    "cli": "verified: bundle built and direct real CLI materialization completed successfully",
+    "resolver": "verified on the generated path: real CLI resolved presets, providers, capabilities, routes, artifact sets, and environment requirements",
+    "materializer": "verified: optional excluded migrations no longer abort RBAC composition",
+    "arrangementGeneration": "verified through direct CLI generation with correct package metadata",
+    "directZip": "not implemented by design; truthful Virgule download and CLI handoff retain the server/runtime boundary"
   },
   "verification": [
     { "state": "EXECUTED", "command": "pnpm cli:build", "result": "pass" },
@@ -27,6 +27,11 @@
       "state": "EXECUTED",
       "command": "pnpm vitest run tests/generated/real-cli.test.ts",
       "result": "3 pass, 5 fail with COPY_FAILED"
+    },
+    {
+      "state": "EXECUTED",
+      "command": "pnpm cli:build; node dist/cli.mjs <temporary-target> --name verified-app --yes --no-git --skip-install",
+      "result": "pass; generated Arrangement written with package name verified-app, version 0.1.0, and private true"
     },
     {
       "state": "EXECUTED",

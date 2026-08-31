@@ -19,10 +19,6 @@
   ],
   "blocked": [
     {
-      "id": "GEN-001",
-      "detail": "Real CLI materialization fails with COPY_FAILED; direct Arrangement ZIP is therefore not exposed."
-    },
-    {
       "id": "TEMPLATE-DEBT",
       "detail": "Known Maximal Template architecture/type conformance debt remains out of scope."
     }
@@ -30,6 +26,7 @@
   "verification": {
     "browser": "Requested routes and desktop/mobile screenshots verified.",
     "governance": "Contracts pass; mirror synchronized; existing template architecture debt remains.",
+    "generator": "Real CLI materialization directly verified after fixing optional migration composition; generated package metadata is correct.",
     "fullValidation": "Executed once and stopped at the pre-existing 588-file formatting baseline failure."
   },
   "nextAction": "Review diff and artifacts, create the final commit, and perform the one authorized push."

@@ -7,6 +7,7 @@ import {
   auditEventSelect,
 } from "../db/selects/admin.selects";
 import { withTemplateReadTransaction } from "../db/tenant";
+import { classifyAuditEvent } from "../workflows/admin/classifyAuditEvent";
 
 export async function getAuditEvents(limit = 100) {
   return withTemplateReadTransaction(async (tx, access) => {
@@ -25,6 +26,16 @@ export async function getAuditEvents(limit = 100) {
 
     return rows.map(toAuditEventDTO);
   });
+}
+
+export async function getDisplayAuditEvents(limit = 100) {
+  const events = await getAuditEvents(limit);
+  return events.map((event) => ({
+    id: event.id,
+    action: `${event.action} · ${classifyAuditEvent(event.action)}`,
+    resource: `${event.resourceType}${event.resourceId ? ` · ${event.resourceId}` : ""}`,
+    timestamp: new Date(event.createdAt).toLocaleString(),
+  }));
 }
 
 export async function getAdminMemberships() {

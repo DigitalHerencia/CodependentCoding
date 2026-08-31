@@ -1,9 +1,11 @@
 import { config } from "dotenv";
 
-import { defineConfig, env } from "prisma/config";
+import { defineConfig } from "prisma/config";
 
 config({ path: ".env.local", quiet: true });
 config({ quiet: true });
+
+const directDatabaseUrl = process.env.DIRECT_DATABASE_URL?.trim();
 
 export default defineConfig({
   schema: "prisma/schema.prisma",
@@ -11,8 +13,9 @@ export default defineConfig({
     path: "prisma/migrations",
     seed: "tsx prisma/seed.ts",
   },
-  datasource: {
-    // Neon recommends a direct/non-pooled connection for migrations.
-    url: env("DATABASE_NO_POOLING"),
-  },
+  // Generate and static tooling do not require database credentials. Prisma
+  // migration commands still fail explicitly when the direct URL is absent.
+  ...(directDatabaseUrl
+    ? { datasource: { url: directDatabaseUrl } }
+    : {}),
 });

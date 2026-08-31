@@ -6,6 +6,15 @@ import { assertPermission } from "../authz/permissions";
 import { toAiGenerationDTO, toAiUsageSummaryDTO } from "../db/dto/ai.dto";
 import { aiGenerationSelect } from "../db/selects/ai.selects";
 import { withTemplateReadTransaction } from "../db/tenant";
+import { isHuggingFaceConfigured } from "../integrations/hugging-face/client";
+import { getConfiguredHuggingFaceModel } from "../integrations/hugging-face/inference";
+
+export function getAiPlaygroundConfiguration() {
+  return {
+    configured: isHuggingFaceConfigured(),
+    model: getConfiguredHuggingFaceModel(),
+  };
+}
 
 export async function getMyAiGenerations(limit = 50) {
   return withTemplateReadTransaction(async (tx, access) => {

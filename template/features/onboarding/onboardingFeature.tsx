@@ -1,6 +1,5 @@
-import { Show, SignInButton } from "@clerk/nextjs";
-
 import { Button } from "@/components/ui/button";
+import { SignedInControl, SignedOutControl, SignInButtonControl } from "@/lib/auth/components";
 
 // Features orchestrate blocks and lib helpers; they never import raw UI primitives.
 export function OnboardingFeature() {
@@ -17,21 +16,21 @@ export function OnboardingFeature() {
         </p>
       </header>
       <div className="border-3 border-foreground bg-card p-5">
-        <Show when="signed-out">
+        <SignedOutControl>
           <p className="mb-4 text-sm text-muted-foreground">
             The template remains publicly browsable. Sign in only to exercise
             authenticated application behavior.
           </p>
-          <SignInButton mode="modal">
+          <SignInButtonControl>
             <Button type="button">Sign in</Button>
-          </SignInButton>
-        </Show>
-        <Show when="signed-in">
+          </SignInButtonControl>
+        </SignedOutControl>
+        <SignedInControl>
           <p className="text-sm">
             Your application-owned workspace is resolved from your local
             membership after authentication.
           </p>
-        </Show>
+        </SignedInControl>
       </div>
     </section>
   );
