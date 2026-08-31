@@ -1,7 +1,6 @@
 import { verifyWebhook } from "@clerk/nextjs/webhooks";
 import type { NextRequest } from "next/server";
 
-import { projectClerkUser } from "@/lib/auth/clerkWebhook";
 import { withProviderTransaction } from "@/lib/db/provider";
 import {
   anonymizeClerkUserTx,
@@ -12,6 +11,7 @@ import {
   completeWebhookEventTx,
   failWebhookEventTx,
 } from "@/lib/db/transactions/webhook-event.tx";
+import { projectClerkUser } from "@/lib/integrations/clerk/webhook";
 
 export async function POST(request: NextRequest) {
   let webhookEventId: string | null = null;

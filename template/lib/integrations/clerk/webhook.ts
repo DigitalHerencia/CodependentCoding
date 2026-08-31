@@ -18,6 +18,7 @@ export function projectClerkUser(
     data.email_addresses.find(
       (address) => address.id === data.primary_email_address_id,
     )?.email_address ?? null;
+
   return {
     clerkUserId: data.id,
     email,

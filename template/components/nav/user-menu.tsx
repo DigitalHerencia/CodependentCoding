@@ -2,7 +2,7 @@
 
 "use client";
 
-import { UserButtonControl } from "@/lib/auth/components";
+import { UserButton } from "@clerk/nextjs";
 
 export type UserMenuProps = Readonly<{
   size?: "default" | "compact";
@@ -14,7 +14,7 @@ export function UserMenu({ size = "default" }: UserMenuProps) {
   const avatarSize = isCompact ? "size-8" : "size-10";
 
   return (
-    <UserButtonControl
+    <UserButton
       appearance={{
         elements: {
           userButtonTrigger: [

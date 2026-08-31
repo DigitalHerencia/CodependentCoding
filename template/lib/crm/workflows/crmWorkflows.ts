@@ -6,7 +6,7 @@ import {
   updateCrmDealStageSchema,
 } from "../../../schemas/crmSchemas";
 
-import { requireIdentity } from "../../auth/identity";
+import { requireIdentity } from "../../auth/AUTH";
 import { authorizeOwnedOrAssignedWrite } from "../../authz/authorize";
 import { assertPermission } from "../../authz/permissions";
 import { toCrmContactDTO, toCrmDealDTO } from "../../db/dto/crmDto";

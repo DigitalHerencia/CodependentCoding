@@ -3,7 +3,7 @@ import {
   updateSupportTicketStatusSchema,
 } from "../../../schemas/supportSchemas";
 
-import { requireIdentity } from "../../auth/identity";
+import { requireIdentity } from "../../auth/AUTH";
 import { assertPermission } from "../../authz/permissions";
 import { toSupportTicketDTO } from "../../db/dto/support.dto";
 import { supportTicketSelect } from "../../db/selects/support.selects";

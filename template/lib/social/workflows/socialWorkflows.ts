@@ -3,7 +3,7 @@ import {
   scheduleSocialPostSchema,
 } from "../../../schemas/socialSchemas";
 
-import { requireIdentity } from "../../auth/identity";
+import { requireIdentity } from "../../auth/AUTH";
 import { assertPermission } from "../../authz/permissions";
 import { toSocialPostDTO } from "../../db/dto/social.dto";
 import { socialPostSelect } from "../../db/selects/social.selects";
