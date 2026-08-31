@@ -1,16 +1,76 @@
 {
   "compilerOptions": {
-    "target": "ES2023",
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
+    "target": "ES2022",
+    "lib": ["dom", "dom.iterable", "esnext"],
+
+    "allowJs": false,
+    "skipLibCheck": true,
     "strict": true,
+    "noEmit": true,
+
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true,
+    "forceConsistentCasingInFileNames": true,
+
     "esModuleInterop": true,
-    "skipLibCheck": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
     "resolveJsonModule": true,
-    "types": ["node", "vitest/globals"],
-    "outDir": "dist"
+    "isolatedModules": true,
+
+    "jsx": "react-jsx",
+    "incremental": true,
+
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+
+    "paths": {
+      "@/*": ["./*"]
+    },
+
+    "types": ["node"]
   },
-  "include": ["packages/**/*.ts", "tests/**/*.ts", "tsdown.config.ts"]
+  "include": [
+    "next-env.d.ts",
+
+    "app/**/*.ts",
+    "app/**/*.tsx",
+
+    "components/**/*.ts",
+    "components/**/*.tsx",
+
+    "features/**/*.ts",
+    "features/**/*.tsx",
+
+    "lib/**/*.ts",
+    "lib/**/*.tsx",
+
+    "packages/**/*.ts",
+    "packages/**/*.tsx",
+
+    "scripts/**/*.ts",
+    "scripts/**/*.tsx",
+
+    "tests/**/*.ts",
+    "tests/**/*.tsx",
+
+    "*.ts",
+    "*.mts",
+
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    ".next",
+    "dist",
+    "build",
+    "coverage",
+    "template",
+    "packages/loaded-vibes",
+    ".agents"
+  ]
 }

@@ -1,10 +1,34 @@
-apps/web/.next
-apps/web/next-env.d.ts
+# Dependencies
+node_modules/
 
-# Canonical/imported source and generated package evidence is byte-preserved.
-apps/web/content/
+# Next.js
+.next/
+out/
+next-env.d.ts
+
+# Build output
+build/
+dist/
+.artifacts/
+coverage/
+.cache/
+
+# Generated package-manager state
+pnpm-lock.yaml
+
+# Vercel
+.vercel/
+
+# Canonical/imported source kept byte-stable
+content/
 context/10-authority/
 context/20-reference/
 context/90-superseded-source/
+
+# Bundled/generated agent assets
 packages/loaded-vibes/
 .agents/Loaded-Vibes-Codex-Plugin-v0.1.0/
+
+playwright-report/
+test-results/
+blob-report/

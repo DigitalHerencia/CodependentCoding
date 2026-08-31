@@ -1,43 +1,38 @@
-import { PageHero } from "@/components/blocks/page-hero"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { FAQTwoColumns } from "@/components/blocks/faq-sections";
+import { HeroSection } from "@/components/blocks/hero-sections";
 
-const questions = [
-  {
-    question: "Does this use Clerk organizations?",
-    answer: "No. Clerk identifies users. Local Prisma rows authorize access to resources.",
-  },
-  {
-    question: "Where do mutations live?",
-    answer:
-      "Internal app writes use Server Actions under lib/actions. API routes are reserved for webhooks.",
-  },
-  {
-    question: "Can public pages compose components directly?",
-    answer:
-      "Yes, static public pages can compose blocks directly when they do not call backend operations.",
-  },
-]
-
-export default function FaqPage() {
+export default function Page() {
   return (
-    <div className="grid gap-8">
-      <PageHero
-        eyebrow="Architecture FAQ"
-        title="Boundaries before features."
-        description="This starter keeps the default decisions explicit so implementation work lands in the right layer."
+    <>
+      <HeroSection.Minimal
+        title="Frequently asked questions"
+        description="How the maximal application, recipes, and protected capabilities fit together."
       />
-      <section className="grid gap-3">
-        {questions.map((item) => (
-          <Card key={item.question}>
-            <CardHeader>
-              <CardTitle>{item.question}</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground">{item.answer}</p>
-            </CardContent>
-          </Card>
-        ))}
-      </section>
-    </div>
-  )
+      <FAQTwoColumns
+        title="Architecture and access"
+        items={[
+          {
+            question: "Do I need to sign in to explore?",
+            answer:
+              "No. Seeded demonstration surfaces are browsable while signed out.",
+          },
+          {
+            question: "Can signed-out visitors change data?",
+            answer:
+              "No. Protected writes retain authentication, authorization, scope, and validation checks.",
+          },
+          {
+            question: "Is each recipe a separate application?",
+            answer:
+              "No. Every recipe is a coherent subset of one maximal application.",
+          },
+          {
+            question: "Are providers required to browse the demo?",
+            answer:
+              "No. Optional integrations report their configuration state without breaking unrelated routes.",
+          },
+        ]}
+      />
+    </>
+  );
 }

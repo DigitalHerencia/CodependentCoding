@@ -1,5 +1,6 @@
-import { SettingsFeature } from "@/features/settings/settings-feature"
+import { ProfileFeature } from "@/features/settings/profileFeature";
 
-export default function ProfileSettingsPage() {
-  return <SettingsFeature />
+// URL ownership stops here; orchestration is delegated to the feature.
+export default function Page() {
+  return <ProfileFeature />;
 }

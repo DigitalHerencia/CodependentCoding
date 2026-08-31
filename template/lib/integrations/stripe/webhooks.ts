@@ -1,54 +1,13 @@
-import "server-only"
+import "server-only";
 
-import {
-  stripeSubscriptionTriggerSchema,
-  stripeWebhookEnvelopeSchema,
-} from "@/schemas/stripeWebhookSchemas"
-import type { StripeWebhookTrigger } from "@/types/billingTypes"
+import { getStripeClient } from "./client";
 
-export type StripeWebhookMappingResult =
-  | { ok: true; event: StripeWebhookTrigger }
-  | { ok: false; reason: "malformed_payload" }
-
-export function mapVerifiedStripeWebhook(value: unknown): StripeWebhookMappingResult {
-  const envelope = stripeWebhookEnvelopeSchema.safeParse(value)
-  if (!envelope.success) return { ok: false, reason: "malformed_payload" }
-
-  const supported = stripeSubscriptionTriggerSchema.safeParse(value)
-  if (!supported.success) {
-    if (
-      envelope.data.type === "customer.subscription.created" ||
-      envelope.data.type === "customer.subscription.updated" ||
-      envelope.data.type === "customer.subscription.deleted"
-    ) {
-      return { ok: false, reason: "malformed_payload" }
-    }
-    return {
-      ok: true,
-      event: {
-        provider: "stripe",
-        providerEventId: envelope.data.id,
-        eventType: envelope.data.type,
-        disposition: "ignore",
-        safeMetadata: {
-          resource_type: envelope.data.type.split(".")[1]?.slice(0, 80) ?? "unknown",
-        },
-      },
-    }
-  }
-
-  return {
-    ok: true,
-    event: {
-      provider: "stripe",
-      providerEventId: supported.data.id,
-      eventType: supported.data.type,
-      disposition: "process",
-      subscriptionId: supported.data.data.object.id,
-      safeMetadata: {
-        resource_type: "subscription",
-        stripe_subscription_id: supported.data.data.object.id,
-      },
-    },
-  }
+export function verifyStripeWebhook(payload: string, signature: string | null) {
+  const secret = process.env.STRIPE_WEBHOOK_SECRET;
+  if (!secret)
+    throw new Error(
+      "Stripe webhooks are not configured. Add STRIPE_WEBHOOK_SECRET to .env.local.",
+    );
+  if (!signature) throw new Error("The Stripe-Signature header is required.");
+  return getStripeClient().webhooks.constructEvent(payload, signature, secret);
 }

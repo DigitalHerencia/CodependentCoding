@@ -1,12 +1,27 @@
-import { PageHero } from "@/components/blocks/page-hero"
-import { marketingContent } from "@/content/marketing"
+import { Mail, MessageSquareText } from "lucide-react";
 
-export default function ContactPage() {
+import { ContactWithCards } from "@/components/blocks/contact-sections";
+
+export default function Page() {
   return (
-    <PageHero
-      eyebrow="Contact"
-      title="Talk with our team."
-      description={`Reach us at ${marketingContent.contactEmail}.`}
+    <ContactWithCards
+      title="Talk through your application shape"
+      description="Choose a direct channel; no inert contact form or fake submission path."
+      contactMethods={[
+        {
+          icon: <Mail className="size-6" />,
+          title: "Email",
+          description: "Send product and implementation questions.",
+          action: { label: "Write an email", href: "mailto:hello@example.com" },
+        },
+        {
+          icon: <MessageSquareText className="size-6" />,
+          title: "Application demo",
+          description:
+            "Inspect a concrete recipe before choosing a configuration.",
+          action: { label: "Explore dashboard", href: "/dashboard" },
+        },
+      ]}
     />
-  )
+  );
 }

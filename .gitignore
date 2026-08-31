@@ -1,38 +1,58 @@
-# Node / tooling
+# Dependencies
 node_modules/
+.pnpm-store/
+
+# TypeScript
 *.tsbuildinfo
+
+# Next.js
+.next/
+out/
+
+# Build output
 build/
 dist/
 .artifacts/
+coverage/
+.nyc_output/
+.cache/
 temp/
-/.agent_work
-.env
-.env.local
 
-# VS Code / workspace
-.vscode/*.code-workspace
-.vscode/.history
-.history/
-.DS_Store
-Thumbs.db
+# Vercel
+.vercel/
+.now/
+
+# Environment
+.env
+.evn.local
+.env.*
+!.env.example
+
+# Agent / generated working state
+/.agent_work/
+.loaded-vibes/logs/
 
 # Logs
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-.loaded-vibes/logs/
+pnpm-debug.log*
 
-# Coverage
-coverage/
-.nyc_output/
-
-# State backups
+# Backups
 *.backup
 
-# Next.js
-.next/
-out/
-.cache/
-.vercel/
-.now/
+# VS Code / workspace
+.vscode/*.code-workspace
+.vscode/.history/
+.history/
+
+# Operating system
+.DS_Store
+Thumbs.db
+
+# Playwright
+playwright-report/
+test-results/
+blob-report/
+playwright/.cache/

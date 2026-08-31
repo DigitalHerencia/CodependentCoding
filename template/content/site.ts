@@ -1,6 +1,3 @@
-import { loadedVibesProduct } from "@/content/loadedvibes"
+import { applicationProduct } from "./application";
 
-export const site = {
-  name: loadedVibesProduct.name,
-  description: loadedVibesProduct.description,
-}
+export const site = applicationProduct;

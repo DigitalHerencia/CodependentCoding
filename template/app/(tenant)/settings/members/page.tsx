@@ -1,5 +1,6 @@
-import { TeamFeature } from "@/features/members/team-feature"
+import { MembersFeature } from "@/features/settings/membersFeature";
 
-export default async function MemberSettingsPage() {
-  return <TeamFeature />
+// URL ownership stops here; orchestration is delegated to the feature.
+export default function Page() {
+  return <MembersFeature />;
 }

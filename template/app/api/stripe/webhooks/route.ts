@@ -1,39 +1,60 @@
-import { NextResponse } from "next/server"
+import {
+  withProviderOrganizationTransaction,
+  withProviderTransaction,
+} from "@/lib/db/provider";
+import {
+  claimWebhookEventTx,
+  completeWebhookEventTx,
+  failWebhookEventTx,
+} from "@/lib/db/transactions/webhook-event.tx";
+import { getBillingSubscriptionInputFromEvent } from "@/lib/integrations/stripe/subscriptions";
+import { verifyStripeWebhook } from "@/lib/integrations/stripe/webhooks";
 
-import { getOptionalEnv } from "@/lib/env"
-import { constructStripeWebhookEvent } from "@/lib/integrations/stripe/billing"
-import { mapVerifiedStripeWebhook } from "@/lib/integrations/stripe/webhooks"
-import { reconcileStripeWebhook } from "@/lib/webhooks/stripeWebhookWorkflow"
+export async function POST(request: Request) {
+  let webhookEventId: string | null = null;
+  try {
+    const payload = await request.text();
+    const event = verifyStripeWebhook(
+      payload,
+      request.headers.get("stripe-signature"),
+    );
+    const input = getBillingSubscriptionInputFromEvent(event);
+    const organizationId = input?.organizationId ?? null;
+    webhookEventId = await withProviderTransaction((tx) =>
+      claimWebhookEventTx(tx, {
+        provider: "stripe",
+        eventId: event.id,
+        type: event.type,
+        payload,
+        organizationId,
+      }),
+    );
+    if (!webhookEventId)
+      return Response.json({ received: true, duplicate: true });
 
-type HandlerDependencies = {
-  verify: (payload: string, signature: string, secret: string) => unknown
-  reconcile: typeof reconcileStripeWebhook
-}
-
-export function createStripeWebhookPostHandler(dependencies: HandlerDependencies) {
-  return async function stripeWebhookPost(request: Request) {
-    const secret = getOptionalEnv("STRIPE_WEBHOOK_SECRET")
-    const signature = request.headers.get("stripe-signature")
-    if (!secret) return NextResponse.json({ error: "Webhook is not configured." }, { status: 503 })
-    if (!signature) return NextResponse.json({ error: "Invalid webhook request." }, { status: 400 })
-
-    let verified: unknown
-    try {
-      verified = dependencies.verify(await request.text(), signature, secret)
-    } catch {
-      return NextResponse.json({ error: "Invalid webhook request." }, { status: 400 })
+    if (input) {
+      await withProviderOrganizationTransaction(input.organizationId, (tx) =>
+        tx.billingSubscription.upsert({
+          where: { organizationId: input.organizationId },
+          create: input,
+          update: input,
+        }),
+      );
     }
-
-    const mapped = mapVerifiedStripeWebhook(verified)
-    if (!mapped.ok) {
-      return NextResponse.json({ error: "Malformed webhook payload." }, { status: 400 })
-    }
-    const result = await dependencies.reconcile(mapped.event)
-    return NextResponse.json(result, { status: result.ok ? 200 : 500 })
+    await withProviderTransaction((tx) =>
+      completeWebhookEventTx(tx, webhookEventId!),
+    );
+    return Response.json({ received: true });
+  } catch (cause) {
+    const message =
+      cause instanceof Error ? cause.message : "Stripe webhook failed.";
+    if (webhookEventId)
+      await withProviderTransaction((tx) =>
+        failWebhookEventTx(tx, webhookEventId!, message),
+      );
+    return Response.json(
+      { error: message },
+      { status: webhookEventId ? 500 : 400 },
+    );
   }
 }
-
-export const POST = createStripeWebhookPostHandler({
-  verify: constructStripeWebhookEvent,
-  reconcile: reconcileStripeWebhook,
-})

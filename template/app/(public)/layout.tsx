@@ -1,7 +1,7 @@
-import type { ReactNode } from "react"
+import type { ReactNode } from "react";
 
-import { PublicShell } from "@/components/shells/public-shell"
+import { PublicShell } from "@/components/shells/public-shell";
 
 export default function PublicLayout({ children }: { children: ReactNode }) {
-  return <PublicShell>{children}</PublicShell>
+  return <PublicShell>{children}</PublicShell>;
 }

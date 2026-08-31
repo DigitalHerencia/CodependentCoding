@@ -1,0 +1,509 @@
+{
+  "$schema": "codependent-coding://contracts/validation/v1",
+  "contractVersion": 1,
+  "kind": "validation-contract",
+  "serialization": "yaml-1.2-json-subset",
+  "generatedAt": "2026-08-30T21:26:00-06:00",
+  "principles": [
+    "Evidence is proportional to the claim and close to the failure mode.",
+    "A validator proves only the property it actually checks.",
+    "Documentation inspection cannot prove runtime behavior.",
+    "Mocked tests cannot prove real PostgreSQL RLS, provider semantics, deployment state, or browser behavior.",
+    "Never report a check as passing unless it was actually executed.",
+    "Static/mechanical rules may be automated; semantic ownership and business correctness require review/runtime evidence."
+  ],
+  "evidenceStates": [
+    "executed",
+    "skipped",
+    "blocked",
+    "inferred"
+  ],
+  "evidenceRecordRequiredFields": [
+    "command_or_review",
+    "revision",
+    "environment",
+    "result",
+    "limits"
+  ],
+  "completionLanguage": [
+    "implemented",
+    "tested",
+    "validated",
+    "working",
+    "shippable",
+    "shipped",
+    "finished are distinct claims"
+  ],
+  "profiles": {
+    "governance": {
+      "commands": [
+        "node scripts/governance/governance.mjs check"
+      ],
+      "proves": [
+        "contract parseability/cross-contract invariants",
+        "required governance/context topology",
+        "mechanical import/placement rules",
+        "Loaded Vibes mirror drift"
+      ],
+      "doesNotProve": [
+        "semantic business correctness",
+        "complete security correctness",
+        "runtime provider behavior"
+      ]
+    },
+    "repository": {
+      "commands": [
+        "pnpm format:check",
+        "pnpm lint",
+        "pnpm typecheck",
+        "pnpm test",
+        "pnpm test:generated",
+        "pnpm test:e2e",
+        "pnpm build"
+      ],
+      "scriptAuthority": "package.json",
+      "ciRule": "CI calls repository scripts rather than redefining validation logic in workflow YAML."
+    },
+    "protectedTenantData": {
+      "requiredEvidence": [
+        "real PostgreSQL under production-equivalent restricted runtime credentials",
+        "cross-tenant SELECT/INSERT/UPDATE/DELETE attempts",
+        "RLS enabled/forced and runtime role not owner/BYPASSRLS"
+      ],
+      "mockOnlyInsufficient": true
+    },
+    "providerMutation": {
+      "requiredEvidence": [
+        "provider sandbox where material",
+        "idempotency/reconciliation tests",
+        "recovery-path evidence"
+      ],
+      "networkInsideDbTransaction": false
+    },
+    "browserCriticalPaths": {
+      "requiredEvidence": [
+        "navigation",
+        "workbench state",
+        "copy/download feedback",
+        "responsive layout",
+        "critical error states",
+        "keyboard accessibility for critical controls"
+      ]
+    },
+    "delivery": {
+      "whenShipping": [
+        "production build",
+        "deployment evidence",
+        "post-deploy verification"
+      ],
+      "humanAuthorityRequiredFor": [
+        "production authority",
+        "destructive changes",
+        "secrets",
+        "legal/compliance choices",
+        "irreversible migration risk"
+      ]
+    }
+  },
+  "structureRules": [
+    {
+      "id": "STR-001",
+      "severity": "error",
+      "rule": "required-paths",
+      "source": "application.repository.requiredTopLevelPaths",
+      "fixable": true
+    },
+    {
+      "id": "STR-002",
+      "severity": "error",
+      "rule": "context-required-files",
+      "source": "application.repository.contextRequired",
+      "fixable": false
+    },
+    {
+      "id": "STR-003",
+      "severity": "error",
+      "rule": "typescripture-paired-24-chapters",
+      "fixable": false
+    },
+    {
+      "id": "STR-004",
+      "severity": "error",
+      "rule": "single-loaded-vibes-source-with-identical-agent-mirror",
+      "canonical": "packages/loaded-vibes",
+      "mirror": ".agents/LoadedVibesCodexPlugin/loaded-vibes",
+      "fixable": true
+    },
+    {
+      "id": "STR-005",
+      "severity": "warning",
+      "rule": "workflow-placement-transition",
+      "preferred": "template/lib/<domain>/workflows",
+      "observedLegacy": "template/lib/workflows/<domain>",
+      "fixable": "plan-only"
+    },
+    {
+      "id": "STR-006",
+      "severity": "error",
+      "rule": "no-competing-contract-extension-aliases",
+      "paths": [
+        ".agents/contracts/application.yaml",
+        ".agents/contracts/design.yaml",
+        ".agents/contracts/validation.yaml"
+      ],
+      "forbidSiblingExtensions": [
+        ".yml"
+      ],
+      "fixable": true
+    }
+  ],
+  "architectureRules": [
+    {
+      "id": "ARCH-001",
+      "severity": "error",
+      "scope": [
+        "app/**/page.*",
+        "app/**/layout.*"
+      ],
+      "description": "Routes stay thin and cannot directly own protected application/data/provider behavior.",
+      "forbiddenImports": [
+        "@/lib/actions/**",
+        "@/lib/fetchers/**",
+        "@/lib/workflows/**",
+        "@/lib/db/**",
+        "@prisma/**",
+        "@prisma/client",
+        "stripe",
+        "@clerk/**",
+        "@clerk/nextjs/server",
+        "cloudinary",
+        "@neondatabase/**"
+      ]
+    },
+    {
+      "id": "ARCH-002",
+      "severity": "error",
+      "scope": [
+        "components/**"
+      ],
+      "description": "Presentation cannot own protected I/O, authz, persistence, provider mechanics, workflows, routes, or feature orchestration.",
+      "forbiddenImports": [
+        "@/lib/actions/**",
+        "@/lib/fetchers/**",
+        "@/lib/db/**",
+        "@/lib/auth/**",
+        "@/lib/authz/**",
+        "@/lib/integrations/**",
+        "@/lib/workflows/**",
+        "@/app/**",
+        "@/features/**",
+        "@prisma/**",
+        "@prisma/client",
+        "stripe",
+        "cloudinary",
+        "@clerk/**"
+      ]
+    },
+    {
+      "id": "ARCH-003",
+      "severity": "error",
+      "scope": [
+        "features/**"
+      ],
+      "description": "Features may compose Fetchers, action references, Blocks and compatible UI Primitives; they do not own Prisma/provider mechanics, call Workflows directly, or depend upward on routes.",
+      "forbiddenImports": [
+        "@/lib/db/**",
+        "@/lib/integrations/**",
+        "@/lib/workflows/**",
+        "@/app/**",
+        "@prisma/**",
+        "@prisma/client",
+        "stripe",
+        "cloudinary",
+        "@neondatabase/**"
+      ],
+      "allowedNote": "UI primitives are permitted by current doctrine/product requirements; use Blocks when reuse/constitution semantics justify them."
+    },
+    {
+      "id": "ARCH-004",
+      "severity": "error",
+      "scope": [
+        "template/lib/fetchers/**"
+      ],
+      "description": "Fetchers are server-only read boundaries.",
+      "requireText": [
+        "server-only"
+      ],
+      "forbidMutationMethods": [
+        "create",
+        "createMany",
+        "update",
+        "updateMany",
+        "upsert",
+        "delete",
+        "deleteMany"
+      ],
+      "forbiddenImports": [
+        "next/cache",
+        "next/navigation",
+        "stripe",
+        "cloudinary",
+        "@vercel/blob",
+        "@huggingface/**"
+      ]
+    },
+    {
+      "id": "ARCH-005",
+      "severity": "error",
+      "scope": [
+        "template/lib/actions/**"
+      ],
+      "description": "Server Actions are thin mutation adapters: schema + auth/actor + Workflow + result/invalidation. No DB/provider/integration/transaction implementation.",
+      "requireText": [
+        "use server"
+      ],
+      "forbiddenImports": [
+        "@/lib/db/**",
+        "@/lib/integrations/**",
+        "@prisma/**",
+        "@prisma/client",
+        "stripe",
+        "cloudinary",
+        "@vercel/blob",
+        "@huggingface/**",
+        "@clerk/**",
+        "@neondatabase/**"
+      ]
+    },
+    {
+      "id": "ARCH-006",
+      "severity": "error",
+      "scope": [
+        "template/lib/workflows/**",
+        "template/lib/*/workflows/**"
+      ],
+      "description": "Workflows own business use-case orchestration but not framework effects or provider SDK mechanics.",
+      "forbiddenImports": [
+        "next/cache",
+        "next/navigation",
+        "react",
+        "react-dom",
+        "@prisma/**",
+        "@prisma/client",
+        "stripe",
+        "cloudinary",
+        "@vercel/blob",
+        "@huggingface/**"
+      ]
+    },
+    {
+      "id": "ARCH-007",
+      "severity": "error",
+      "scope": [
+        "template/lib/db/transactions/**"
+      ],
+      "description": "Transactions preserve atomic DB invariants only.",
+      "forbidText": [
+        "fetch("
+      ],
+      "forbiddenImports": [
+        "stripe",
+        "cloudinary",
+        "@vercel/blob",
+        "@huggingface/**",
+        "next/cache",
+        "next/navigation"
+      ]
+    },
+    {
+      "id": "ARCH-008",
+      "severity": "error",
+      "scope": [
+        "template/lib/integrations/**"
+      ],
+      "description": "Integrations own provider mechanics, not product authorization or presentation.",
+      "forbiddenImports": [
+        "@/lib/authz/**",
+        "react",
+        "react-dom",
+        "next/navigation"
+      ]
+    },
+    {
+      "id": "ARCH-009",
+      "severity": "error",
+      "scope": [
+        "packages/schema/**"
+      ],
+      "description": "Schema/domain authority must not depend on CLI shell.",
+      "forbiddenImports": [
+        "@hipster-stack/cli",
+        "../cli/**",
+        "../../cli/**"
+      ]
+    },
+    {
+      "id": "ARCH-010",
+      "severity": "error",
+      "scope": [
+        "packages/core/**"
+      ],
+      "description": "Generator core may depend on schema but not web page rendering.",
+      "forbiddenImports": [
+        "@/app/**",
+        "@/features/**",
+        "next/navigation",
+        "next/cache"
+      ]
+    }
+  ],
+  "securityRules": [
+    {
+      "id": "SEC-001",
+      "kind": "mechanical",
+      "severity": "error",
+      "description": "No obvious secret files inside public/context/content or generated/downloadable definition directories.",
+      "forbiddenNamePatterns": [
+        "*.pem",
+        "*.key",
+        ".env",
+        ".env.*"
+      ],
+      "allowedExceptions": [
+        ".env.example"
+      ]
+    },
+    {
+      "id": "SEC-002",
+      "kind": "semantic-runtime",
+      "severity": "review",
+      "description": "Authorization must be explicit/server-determined before protected effects; client visibility is not enforcement."
+    },
+    {
+      "id": "SEC-003",
+      "kind": "runtime",
+      "severity": "required-when-applicable",
+      "description": "Protected tenant data requires real PostgreSQL RLS cross-tenant tests under restricted runtime credentials."
+    },
+    {
+      "id": "SEC-004",
+      "kind": "semantic-runtime",
+      "severity": "review",
+      "description": "Provider objects/IDs, prices, roles, organization IDs and client claims do not establish authority."
+    },
+    {
+      "id": "SEC-005",
+      "kind": "mechanical",
+      "severity": "error",
+      "description": "Browser/public artifacts must not contain provider secrets/database credentials/deployment tokens."
+    }
+  ],
+  "generationRules": [
+    {
+      "id": "GEN-001",
+      "severity": "error",
+      "description": "Only dependency-closed Virgule is materialization authority."
+    },
+    {
+      "id": "GEN-002",
+      "severity": "error",
+      "description": "Unsupported combinations fail explicitly; no silent fallback."
+    },
+    {
+      "id": "GEN-003",
+      "severity": "error",
+      "description": "Preview and generation consume equivalent normalized semantics; no hidden adapter state."
+    },
+    {
+      "id": "GEN-004",
+      "severity": "error",
+      "description": "Generated Arrangement is standalone and owns resulting source."
+    },
+    {
+      "id": "GEN-005",
+      "severity": "error",
+      "description": "Capability support requires definition + implementation + resolver closure + ownership + materialization + validation."
+    }
+  ],
+  "fixPolicy": {
+    "default": "dry-run",
+    "writeFlag": "--write",
+    "safeAutomaticFixes": [
+      "create missing governance directories",
+      "remove competing .yml aliases only when identical to canonical .yaml",
+      "synchronize the non-authoritative Loaded Vibes .agents mirror from packages/loaded-vibes",
+      "normalize generated governance report directories"
+    ],
+    "planOnly": [
+      "move workflows into a newer canonical domain-owned path",
+      "relocate application code based on semantic responsibility",
+      "rewrite imports after a move",
+      "delete non-empty implementation directories"
+    ],
+    "neverAutomatic": [
+      "weaken auth/authz/RLS",
+      "destructive data migration",
+      "change provider money movement",
+      "rewrite product authority",
+      "expose/modify secrets"
+    ]
+  },
+  "sourceManifest": [
+    {
+      "path": "context/docs/tech-requirements.md",
+      "role": "technical-requirements",
+      "authority": "product-authority",
+      "sha256": "83a496d6aa7cdb1623de9ca2340c066238fe5b9c104821e3c6358deeedaf6395",
+      "bytes": 6961
+    },
+    {
+      "path": "context/docs/AUTH.md",
+      "role": "security-requirements",
+      "authority": "product-authority",
+      "sha256": "0c00b8b1829ab74f3b16e050da49100d53369fb4ff57bd818097bd800d196bc7",
+      "bytes": 4296
+    },
+    {
+      "path": "context/docs/Architecture.md",
+      "role": "architecture-specification",
+      "authority": "product-authority",
+      "sha256": "4be490433fa14a3aa0baf9cd52db8f781700ed38133dcca0611001d41389455b",
+      "bytes": 9859
+    },
+    {
+      "path": "context/specs/loaded-vibes/Loaded-Vibes.Authoritative-Plugin-Spec.md",
+      "role": "agent-validation-boundary",
+      "authority": "product-authority",
+      "sha256": "859db8811e0e83ca28c5b9ad03b79b4d12a0da2f4f5b1f3997c37ec2f338c82b",
+      "bytes": 9187
+    },
+    {
+      "path": "content/TypeScripture_The-Book-of-Knowledge/Chapter-13.Validation-Contract.md",
+      "role": "validation-doctrine",
+      "authority": "doctrine-authority",
+      "sha256": "849d64dde071d1026513c20fc2d507cb53bae1615e0b4ef85d7bbba761532f71",
+      "bytes": 932
+    },
+    {
+      "path": "content/TypeScripture_The-Book-of-Implementation/Chapter-13.Validation-Contract.md",
+      "role": "validation-realization",
+      "authority": "doctrine-authority",
+      "sha256": "80ee22648b6b2206ef7c36838b81b3274ae0eff519235c951aa7e225ca33d5f2",
+      "bytes": 761
+    },
+    {
+      "path": "content/TypeScripture_The-Book-of-Implementation/Chapter-03.Architecture-Contract.md",
+      "role": "architecture-machine-contract-ancestor",
+      "authority": "doctrine-authority",
+      "sha256": "f19c9cadbcd4d4e94bfd665cda57736d7d17dbc808cb8108014f12665be141d3",
+      "bytes": 1102
+    },
+    {
+      "path": "content/TypeScripture_The-Book-of-Implementation/Chapter-11.Layer-Contract.md",
+      "role": "layer-contract",
+      "authority": "doctrine-authority",
+      "sha256": "0b418add94d94df39668bdb59394db5ea94abd3e88106beb9ffedc6f30d33cf2",
+      "bytes": 1077
+    }
+  ]
+}

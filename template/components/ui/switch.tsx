@@ -1,21 +1,26 @@
-import * as React from "react"
-import * as SwitchPrimitive from "@radix-ui/react-switch"
+import * as React from "react";
+import * as SwitchPrimitives from "@radix-ui/react-switch";
+import { cn } from "@/lib/utils";
 
-import { cn } from "@/lib/utils"
-
-export const Switch = React.forwardRef<
-  React.ComponentRef<typeof SwitchPrimitive.Root>,
-  React.ComponentPropsWithoutRef<typeof SwitchPrimitive.Root>
+const Switch = React.forwardRef<
+  React.ElementRef<typeof SwitchPrimitives.Root>,
+  React.ComponentPropsWithoutRef<typeof SwitchPrimitives.Root>
 >(({ className, ...props }, ref) => (
-  <SwitchPrimitive.Root
-    ref={ref}
+  <SwitchPrimitives.Root
     className={cn(
-      "inline-flex h-6 w-11 items-center border border-border bg-muted data-[state=checked]:bg-primary",
-      className
+      "peer inline-flex h-7 w-12 shrink-0 cursor-pointer items-center border-3 border-foreground bg-muted shadow-[4px_4px_0px_hsl(var(--shadow-color))] bk-interactive focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary hover:translate-x-[4px] hover:translate-y-[4px] hover:shadow-none active:translate-x-[4px] active:translate-y-[4px] active:shadow-none",
+      className,
     )}
     {...props}
+    ref={ref}
   >
-    <SwitchPrimitive.Thumb className="block size-5 bg-background transition-transform data-[state=checked]:translate-x-5" />
-  </SwitchPrimitive.Root>
-))
-Switch.displayName = SwitchPrimitive.Root.displayName
+    <SwitchPrimitives.Thumb
+      className={cn(
+        "pointer-events-none block h-5 w-5 border-2 border-foreground bg-background shadow-sm bk-interactive data-[state=checked]:translate-x-5 data-[state=unchecked]:translate-x-0.5",
+      )}
+    />
+  </SwitchPrimitives.Root>
+));
+Switch.displayName = SwitchPrimitives.Root.displayName;
+
+export { Switch };

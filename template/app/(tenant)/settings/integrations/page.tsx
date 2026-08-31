@@ -1,5 +1,6 @@
-import { IntegrationSettingsFeature } from "@/features/settings/integration-settings-feature"
+import { IntegrationsFeature } from "@/features/settings/integrationsFeature";
 
-export default function IntegrationSettingsPage() {
-  return <IntegrationSettingsFeature />
+// URL ownership stops here; orchestration is delegated to the feature.
+export default function Page() {
+  return <IntegrationsFeature />;
 }

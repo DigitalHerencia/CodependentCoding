@@ -1,9 +1,5 @@
-.next
-coverage
-node_modules
-next-env.d.ts
-out
-playwright-report
-test-results
-prisma/generated
+.next/
+generated/prisma/
+node_modules/
 pnpm-lock.yaml
+tsconfig.tsbuildinfo

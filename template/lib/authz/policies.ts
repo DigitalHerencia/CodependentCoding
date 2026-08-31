@@ -1,107 +1,60 @@
-import {
-  primaryOrganizationRole,
-  type Capability,
-  type OrganizationRole,
-  type TenantContext,
-} from '@/types/authzTypes';
+import type { AccessContext } from "../../types/access";
 
-type ProjectAccessRecord = {
-  organizationId: string;
-  status: 'active' | 'archived';
-};
+import type { ResourceAccessDescriptor } from "./resources";
+import { isPrivilegedRole } from "./roles";
 
-type MembershipAccessRecord = {
-  organizationId: string;
-  role: OrganizationRole;
-};
-
-function hasTenantCapability(
-  context: TenantContext,
-  capability: Capability,
+export function isSameTenant(
+  context: AccessContext,
+  resource: ResourceAccessDescriptor,
 ): boolean {
-  return (
-    context.organization.status === 'active' &&
-    context.capabilities.some((candidate) => candidate === capability)
-  );
+  return context.organizationId === resource.organizationId;
 }
 
-function isCurrentTenant(
-  context: TenantContext,
-  organizationId: string,
+export function ownsResource(
+  context: AccessContext,
+  resource: ResourceAccessDescriptor,
 ): boolean {
-  return context.organization.id === organizationId;
+  return resource.ownerMembershipId === context.membershipId;
 }
 
-export function canReadProject(
-  context: TenantContext,
-  project: ProjectAccessRecord,
+export function isAssignedResource(
+  context: AccessContext,
+  resource: ResourceAccessDescriptor,
 ): boolean {
-  return (
-    isCurrentTenant(context, project.organizationId) &&
-    hasTenantCapability(context, 'project.read')
-  );
+  return resource.assigneeMembershipId === context.membershipId;
 }
 
-export function canCreateProject(context: TenantContext): boolean {
-  return hasTenantCapability(context, 'project.create');
-}
-
-export function canUpdateProject(
-  context: TenantContext,
-  project: ProjectAccessRecord,
+export function canReadResource(
+  context: AccessContext,
+  resource: ResourceAccessDescriptor,
 ): boolean {
-  return (
-    project.status === 'active' &&
-    isCurrentTenant(context, project.organizationId) &&
-    hasTenantCapability(context, 'project.update')
-  );
-}
-
-export function canTransitionProjectStatus(
-  context: TenantContext,
-  project: ProjectAccessRecord,
-  nextStatus: ProjectAccessRecord['status'],
-): boolean {
-  if (!isCurrentTenant(context, project.organizationId)) return false;
-  if (!hasTenantCapability(context, 'project.archive')) return false;
-
-  return (
-    (project.status === 'active' && nextStatus === 'archived') ||
-    (project.status === 'archived' && nextStatus === 'active')
-  );
-}
-
-export function canManageMembership(
-  context: TenantContext,
-  target: MembershipAccessRecord,
-  ownerCount: number,
-  nextRole: OrganizationRole | null,
-): boolean {
-  if (!isCurrentTenant(context, target.organizationId)) return false;
-  if (!hasTenantCapability(context, 'membership.manage')) return false;
-  if (
-    target.role === primaryOrganizationRole &&
-    context.membership.role !== primaryOrganizationRole
-  )
+  if (!isSameTenant(context, resource)) {
     return false;
-  if (
-    nextRole === primaryOrganizationRole &&
-    context.membership.role !== primaryOrganizationRole
-  )
-    return false;
+  }
 
-  const removesOwner =
-    target.role === primaryOrganizationRole &&
-    nextRole !== primaryOrganizationRole;
-  return !removesOwner || ownerCount > 1;
+  if (context.role !== "CLIENT") {
+    return true;
+  }
+
+  return (
+    resource.clientVisible === true ||
+    ownsResource(context, resource) ||
+    isAssignedResource(context, resource)
+  );
 }
 
-export function canCreateInvitation(
-  context: TenantContext,
-  role: OrganizationRole,
+export function canManageOwnedOrAssignedResource(
+  context: AccessContext,
+  resource: ResourceAccessDescriptor,
 ): boolean {
+  if (!isSameTenant(context, resource)) {
+    return false;
+  }
+
   return (
-    role !== primaryOrganizationRole &&
-    hasTenantCapability(context, 'invitation.manage')
+    isPrivilegedRole(context.role) ||
+    context.role === "MANAGER" ||
+    ownsResource(context, resource) ||
+    isAssignedResource(context, resource)
   );
 }

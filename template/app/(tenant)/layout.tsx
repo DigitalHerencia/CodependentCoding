@@ -1,7 +1,10 @@
-import type { ReactNode } from "react"
+import type { ReactNode } from "react";
 
-import { TenantShell } from "@/components/shells/tenant-shell"
+import { TenantShell } from "@/components/shells/tenant-shell";
 
-export default function TenantLayout({ children }: { children: ReactNode }) {
-  return <TenantShell>{children}</TenantShell>
+/** Template recipe surfaces are public so the superset can be inspected without auth. */
+export default function TenantLayout({
+  children,
+}: Readonly<{ children: ReactNode }>) {
+  return <TenantShell>{children}</TenantShell>;
 }

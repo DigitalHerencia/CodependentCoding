@@ -1,7 +1,0 @@
-{
-  "schemaVersion": 1,
-  "artifact": "generated-project.execution.decisions",
-  "authority": "execution-state-only",
-  "decisions": [],
-  "executedEvidence": []
-}

@@ -1,40 +1,24 @@
-export type AdminUserDTO = {
-  id: string
-  displayName: string
-  email: string | null
-  status: "active" | "disabled"
-  isApplicationAdmin: boolean
-  createdAt: string
+export interface AdminMembershipDTO {
+  id: string;
+  role: string;
+  status: string;
+  user: { id: string; displayName: string | null; email: string | null };
+  createdAt: string;
 }
-
-export type AdminOrganizationDTO = {
-  id: string
-  name: string
-  slug: string
-  status: "active" | "suspended"
-  memberCount: number
-  projectCount: number
-  createdAt: string
+export interface AdminRecordSummaryDTO {
+  resource: string;
+  count: number;
 }
-
-export type AdminBillingDTO = {
-  id: string
-  organizationName: string
-  organizationSlug: string
-  status: string
-  priceId: string
-  cancelAtPeriodEnd: boolean
-  currentPeriodEnd: string | null
-  updatedAt: string
-}
-
-export type AdminWebhookDTO = {
-  id: string
-  provider: string
-  eventType: string
-  status: string
-  attemptCount: number
-  receivedAt: string
-  processedAt: string | null
-  processingError: string | null
+export interface AuditEventDTO {
+  id: string;
+  action: string;
+  resourceType: string;
+  resourceId: string | null;
+  metadata: unknown;
+  actor: {
+    id: string;
+    displayName: string | null;
+    email: string | null;
+  } | null;
+  createdAt: string;
 }

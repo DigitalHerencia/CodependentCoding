@@ -1,8 +1,6 @@
-import { BillingSettingsFeature } from "@/features/billing/billing-settings-feature"
-import { loadedVibesCapabilities } from "@/content/loadedvibes"
-import { notFound } from "next/navigation"
+import { BillingFeature } from "@/features/settings/billingFeature";
 
-export default function BillingSettingsPage() {
-  if (!loadedVibesCapabilities.billing) notFound()
-  return <BillingSettingsFeature />
+// URL ownership stops here; orchestration is delegated to the feature.
+export default function Page() {
+  return <BillingFeature />;
 }

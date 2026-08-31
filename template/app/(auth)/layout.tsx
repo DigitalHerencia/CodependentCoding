@@ -1,7 +1,9 @@
-import type { ReactNode } from "react"
+import type { ReactNode } from "react";
+import { AuthShell } from "@/components/shells/auth-shell";
 
-import { AuthShell } from "@/components/shells/auth-shell"
-
-export default function AuthLayout({ children }: { children: ReactNode }) {
-  return <AuthShell>{children}</AuthShell>
+// Auth routes share a frame; Clerk behavior remains under lib/auth.
+export default function AuthLayout({
+  children,
+}: Readonly<{ children: ReactNode }>) {
+  return <AuthShell>{children}</AuthShell>;
 }

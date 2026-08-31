@@ -1,73 +1,84 @@
-import "server-only"
+import "server-only";
 
-import { unstable_noStore as noStore } from "next/cache"
-
-import { requireApplicationAdminContext } from "@/lib/auth/session"
+import { assertPermission } from "../authz/permissions";
+import { toAdminMembershipDTO, toAuditEventDTO } from "../db/dto/admin.dto";
 import {
-  mapAdminBillingDTO,
-  mapAdminOrganizationDTO,
-  mapAdminUserDTO,
-  mapAdminWebhookDTO,
-} from "@/lib/db/dto/admin.mappers"
-import { getPrisma } from "@/lib/db/prisma"
-import {
-  adminBillingSelect,
-  adminOrganizationSelect,
-  adminUserSelect,
-  adminWebhookSelect,
-} from "@/lib/db/selects/admin.selects"
+  adminMembershipSelect,
+  auditEventSelect,
+} from "../db/selects/admin.selects";
+import { withTemplateReadTransaction } from "../db/tenant";
 
-export async function getAdminOverview() {
-  noStore()
-  await requireApplicationAdminContext()
-  const prisma = getPrisma()
-  const [users, webhooks] = await Promise.all([
-    prisma.user.count(),
-    prisma.providerWebhookEvent.count({ where: { status: { in: ["received", "failed"] } } }),
-  ])
-  return { users, webhooks }
+export async function getAuditEvents(limit = 100) {
+  return withTemplateReadTransaction(async (tx, access) => {
+    assertPermission(access, "admin:audit");
+
+    const rows = await tx.auditEvent.findMany({
+      where: {
+        organizationId: access.organizationId,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+      take: Math.min(Math.max(limit, 1), 250),
+      select: auditEventSelect,
+    });
+
+    return rows.map(toAuditEventDTO);
+  });
 }
 
-export async function getAdminUsers() {
-  noStore()
-  await requireApplicationAdminContext()
-  const users = await getPrisma().user.findMany({
-    orderBy: { createdAt: "desc" },
-    take: 50,
-    select: adminUserSelect,
-  })
-  return users.map(mapAdminUserDTO)
+export async function getAdminMemberships() {
+  return withTemplateReadTransaction(async (tx, access) => {
+    assertPermission(access, "admin:users");
+    const rows = await tx.membership.findMany({
+      where: { organizationId: access.organizationId },
+      orderBy: { createdAt: "asc" },
+      select: adminMembershipSelect,
+    });
+    return rows.map(toAdminMembershipDTO);
+  });
 }
 
-export async function getAdminOrganizations() {
-  noStore()
-  await requireApplicationAdminContext()
-  const organizations = await getPrisma().organization.findMany({
-    orderBy: { createdAt: "desc" },
-    take: 50,
-    select: adminOrganizationSelect,
-  })
-  return organizations.map(mapAdminOrganizationDTO)
-}
-
-export async function getAdminBilling() {
-  noStore()
-  await requireApplicationAdminContext()
-  const subscriptions = await getPrisma().billingSubscription.findMany({
-    orderBy: { updatedAt: "desc" },
-    take: 50,
-    select: adminBillingSelect,
-  })
-  return subscriptions.map(mapAdminBillingDTO)
-}
-
-export async function getAdminWebhooks() {
-  noStore()
-  await requireApplicationAdminContext()
-  const webhooks = await getPrisma().providerWebhookEvent.findMany({
-    orderBy: { receivedAt: "desc" },
-    take: 50,
-    select: adminWebhookSelect,
-  })
-  return webhooks.map(mapAdminWebhookDTO)
+export async function getAdminRecordSummary() {
+  return withTemplateReadTransaction(async (tx, access) => {
+    assertPermission(access, "admin:records");
+    const [
+      contacts,
+      projects,
+      tickets,
+      campaigns,
+      invoices,
+      socialPosts,
+      generations,
+      documents,
+    ] = await Promise.all([
+      tx.crmContact.count({ where: { organizationId: access.organizationId } }),
+      tx.project.count({ where: { organizationId: access.organizationId } }),
+      tx.supportTicket.count({
+        where: { organizationId: access.organizationId },
+      }),
+      tx.campaign.count({ where: { organizationId: access.organizationId } }),
+      tx.invoice.count({ where: { organizationId: access.organizationId } }),
+      tx.socialPost.count({ where: { organizationId: access.organizationId } }),
+      tx.aiGeneration.count({
+        where: { organizationId: access.organizationId },
+      }),
+      tx.portalDocument.count({
+        where: { organizationId: access.organizationId },
+      }),
+    ]);
+    return [
+      ["CRM contacts", contacts],
+      ["Projects", projects],
+      ["Support tickets", tickets],
+      ["Campaigns", campaigns],
+      ["Invoices", invoices],
+      ["Social posts", socialPosts],
+      ["AI generations", generations],
+      ["Portal documents", documents],
+    ].map(([resource, count]) => ({
+      resource: String(resource),
+      count: Number(count),
+    }));
+  });
 }

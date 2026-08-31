@@ -1,10 +1,19 @@
 * text=auto eol=lf
 
+# Windows-native scripts
 *.ps1 text eol=crlf
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Binary assets
 *.png binary
 *.jpg binary
 *.jpeg binary
 *.gif binary
+*.webp binary
+*.avif binary
 *.ico binary
 *.woff binary
 *.woff2 binary
+*.pdf binary
+*.zip binary

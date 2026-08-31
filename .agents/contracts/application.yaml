@@ -1,0 +1,1576 @@
+{
+  "$schema": "codependent-coding://contracts/application/v1",
+  "contractVersion": 1,
+  "kind": "application-contract",
+  "serialization": "yaml-1.2-json-subset",
+  "generatedAt": "2026-08-30T21:26:00-06:00",
+  "identity": {
+    "organization": "Digital Herencia",
+    "product": "Codependent Coding™ WebApp Architecture",
+    "repositoryClass": "single-product-monorepo",
+    "purpose": "Unified public documentation, architecture, catalog, configuration, demonstration, generation, distribution, and agent-tooling surface.",
+    "governingPrinciple": "You should only have to mean something once.",
+    "productGoal": "Make the architecture understandable, inspectable, configurable, demonstrable, and usable from one interface."
+  },
+  "authority": {
+    "singleSemanticOwnerPerConcept": true,
+    "precedence": [
+      {
+        "rank": 1,
+        "source": "current explicit owner instruction",
+        "owns": "task intent, approval, risk acceptance, production authority"
+      },
+      {
+        "rank": 2,
+        "source": "content/TypeScripture_The-Book-of-Knowledge",
+        "owns": "canonical doctrine: meaning, authority, definitions, relationships, invariants, decision rules, evidence semantics"
+      },
+      {
+        "rank": 3,
+        "source": "content/TypeScripture_The-Book-of-Implementation",
+        "owns": "canonical doctrine realization: placement, interfaces, schemas, workflows, configuration, executable validation"
+      },
+      {
+        "rank": 4,
+        "source": "context/docs + context/specs",
+        "owns": "Codependent Coding product-specific requirements, domain/generation definitions, design, security, catalogs"
+      },
+      {
+        "rank": 5,
+        "source": "current repository implementation",
+        "owns": "compatibility evidence and actual current state, not doctrine by itself"
+      },
+      {
+        "rank": 6,
+        "source": "explicitly superseded/historical material",
+        "owns": "provenance only"
+      }
+    ],
+    "conflictRule": "Prefer the newer explicit authority at the same conceptual level; preserve compatibility constraints as evidence rather than inventing parallel concepts.",
+    "derivativeRule": ".agents/contracts are deterministic operational derivatives. They enforce authority but do not silently replace explanatory doctrine/specifications.",
+    "executionRule": ".agents/execution is temporary operational evidence and must not become durable architecture."
+  },
+  "reconciliations": [
+    {
+      "id": "REC-001",
+      "conflict": "Legacy machine material names Loaded Vibes as the architecture.",
+      "resolution": "Codependent Coding is the WebApp Architecture; Loaded Vibes is the post-generation Codex operations/enforcement layer.",
+      "status": "resolved"
+    },
+    {
+      "id": "REC-002",
+      "conflict": "Older Loaded Vibes validators forbid every Feature → UI Primitive import.",
+      "resolution": "Current doctrine/product requirements allow Features to compose Blocks and UI Primitives; database/provider/server authority remains forbidden.",
+      "status": "resolved"
+    },
+    {
+      "id": "REC-003",
+      "conflict": "Current Maximal Template stores workflows under template/lib/workflows/<domain>, while the newest TypeScripture realization prefers lib/<domain>/workflows.",
+      "resolution": "Treat template/lib/workflows/<domain> as transitional implementation evidence. New domain workflow placement follows TypeScripture unless a compatibility requirement is documented.",
+      "status": "transitional"
+    },
+    {
+      "id": "REC-004",
+      "conflict": "packages/loaded-vibes and .agents/LoadedVibesCodexPlugin/loaded-vibes are duplicate trees.",
+      "resolution": "packages/loaded-vibes is the executable/package source authority; the .agents copy is a managed byte-identical mirror only and must not drift into a second source authority.",
+      "status": "resolved"
+    }
+  ],
+  "productFamily": {
+    "typescripture": {
+      "role": "canonical engineering doctrine",
+      "runtimeDependency": false
+    },
+    "hipsterStack": {
+      "role": "technology constitution, shared Application Definition schema, normalization, dependency closure, generation planning, artifact ownership, transforms, materializer, CLI",
+      "packageRoots": [
+        "packages/schema",
+        "packages/core",
+        "packages/cli"
+      ]
+    },
+    "maximalTemplate": {
+      "role": "single runnable superset application containing every currently supported implementation",
+      "path": "template",
+      "rule": "one-template"
+    },
+    "ontologies": {
+      "role": "nine normalized default application presets over one shared foundation and Maximal Template",
+      "count": 9,
+      "defaults": [
+        {
+          "id": "crm-pipeline-tracker",
+          "label": "CRM / Pipeline Tracker",
+          "primary_surfaces": [
+            "pipeline",
+            "contacts",
+            "accounts",
+            "analytics"
+          ],
+          "common_integrations": [
+            "email",
+            "optional Stripe"
+          ]
+        },
+        {
+          "id": "project-management-task-tracker",
+          "label": "Project Management / Task Tracker",
+          "primary_surfaces": [
+            "projects",
+            "backlog",
+            "task detail",
+            "timeline",
+            "my tasks"
+          ],
+          "common_integrations": [
+            "Blob",
+            "Cloudinary",
+            "email"
+          ]
+        },
+        {
+          "id": "customer-support-ticketing",
+          "label": "Customer Support / Ticketing",
+          "primary_surfaces": [
+            "inbox",
+            "ticket workspace",
+            "knowledge base",
+            "SLA analytics"
+          ],
+          "common_integrations": [
+            "email",
+            "Blob",
+            "Cloudinary"
+          ]
+        },
+        {
+          "id": "marketing-automation-analytics",
+          "label": "Marketing Automation & Analytics",
+          "primary_surfaces": [
+            "campaigns",
+            "audiences",
+            "analytics"
+          ],
+          "common_integrations": [
+            "email",
+            "Cloudinary",
+            "analytics providers"
+          ]
+        },
+        {
+          "id": "invoicing-expense-tracker",
+          "label": "Invoicing & Expense Tracker",
+          "primary_surfaces": [
+            "invoices",
+            "invoice editor",
+            "expenses",
+            "billing"
+          ],
+          "common_integrations": [
+            "Stripe",
+            "Blob",
+            "optional OCR"
+          ]
+        },
+        {
+          "id": "social-media-scheduler",
+          "label": "Social Media Scheduler",
+          "primary_surfaces": [
+            "calendar",
+            "composer",
+            "media"
+          ],
+          "common_integrations": [
+            "Cloudinary",
+            "Blob",
+            "social providers"
+          ]
+        },
+        {
+          "id": "ai-powered-wrapper",
+          "label": "AI-Powered Wrapper / Micro-SaaS",
+          "primary_surfaces": [
+            "generation",
+            "playground",
+            "usage"
+          ],
+          "common_integrations": [
+            "Hugging Face",
+            "optional model providers",
+            "Stripe"
+          ]
+        },
+        {
+          "id": "b2b-client-portal",
+          "label": "B2B Client Portal",
+          "primary_surfaces": [
+            "shared dashboard",
+            "documents",
+            "billing"
+          ],
+          "common_integrations": [
+            "Blob",
+            "Cloudinary",
+            "Stripe",
+            "email"
+          ]
+        },
+        {
+          "id": "internal-tools-admin-portal",
+          "label": "Internal Tools / Admin Portal",
+          "primary_surfaces": [
+            "records",
+            "users",
+            "audit"
+          ],
+          "common_integrations": [
+            "provider admin surfaces as required"
+          ]
+        }
+      ]
+    },
+    "simples": {
+      "role": "normalized domain-library building blocks",
+      "exactTopLevelFamilies": [
+        "PureUI Blocks™",
+        "BusinessLogic Blocks™ / Domain Workflows"
+      ],
+      "notTopLevelSimples": [
+        "routes",
+        "features",
+        "UI primitives",
+        "actions",
+        "fetchers",
+        "schemas",
+        "types",
+        "integrations",
+        "templates",
+        "shells"
+      ]
+    },
+    "anthimeria": {
+      "role": "stateless visual configuration workbench",
+      "configures": "bounded presentation constitution",
+      "mustNotArbitrarilyConfigure": [
+        "BusinessLogic Blocks",
+        "workflow membership",
+        "actions",
+        "fetchers",
+        "auth",
+        "authz",
+        "transactions",
+        "Prisma selects",
+        "DTO mappers",
+        "schemas",
+        "types",
+        "provider mechanics",
+        "cache mechanics",
+        "behavioral invariants",
+        "persistence rules",
+        "authorization rules",
+        "dependency closure"
+      ]
+    },
+    "virgule": {
+      "role": "portable normalized application definition",
+      "states": [
+        "draft",
+        "normalized",
+        "validated",
+        "dependency-closed"
+      ],
+      "materializationAuthority": "dependency-closed",
+      "provenanceStates": [
+        "DEFAULT",
+        "PRESET",
+        "USER",
+        "DERIVED",
+        "REQUIRED",
+        "LOCKED"
+      ]
+    },
+    "arrangement": {
+      "role": "generated standalone white-label application",
+      "runtimeDependencyOnConfigurator": false,
+      "postGenerationOwnership": "application owner"
+    },
+    "loadedVibes": {
+      "role": "post-generation Codex architecture enforcement and software operations",
+      "canonicalSource": "packages/loaded-vibes",
+      "agentMirror": ".agents/LoadedVibesCodexPlugin/loaded-vibes",
+      "operatesOn": "Arrangement"
+    },
+    "visualVibes": {
+      "role": "shared visual language and design system",
+      "contract": ".agents/contracts/design.yaml"
+    }
+  },
+  "productFlow": [
+    "UNDERSTAND: TypeScripture / Docs",
+    "DISCOVER: Ontologies + Simples",
+    "CONFIGURE: Anthimeria",
+    "DEFINE: Virgule",
+    "GENERATE: Hipster Stack",
+    "ARRANGE: Arrangement",
+    "DEVELOP: Loaded Vibes"
+  ],
+  "runtime": {
+    "framework": "Next.js App Router",
+    "language": "TypeScript strict",
+    "rendering": {
+      "default": "React Server Components",
+      "clientComponents": "only for browser interaction, local UI state, or browser APIs"
+    },
+    "packageManager": "pnpm@11.1.1",
+    "node": "24.x",
+    "deployment": "Vercel-compatible Next.js",
+    "content": "repository-owned Markdown plus structured TypeScript/JSON data",
+    "styling": "existing CSS/token system with shadcn/ui-compatible primitives",
+    "tests": [
+      "Vitest",
+      "Playwright",
+      "architecture/contract checks"
+    ]
+  },
+  "repository": {
+    "applicationRoot": ".",
+    "requiredTopLevelPaths": [
+      "app",
+      "components",
+      "features",
+      "lib",
+      "content",
+      "context",
+      "public",
+      "tests",
+      "packages",
+      "template",
+      ".agents",
+      "scripts",
+      "AGENTS.md",
+      "package.json",
+      "pnpm-lock.yaml",
+      "tsconfig.json",
+      "next.config.ts",
+      "eslint.config.mjs",
+      "playwright.config.ts",
+      "vitest.config.ts"
+    ],
+    "pathRoles": {
+      "app": "Next.js route shells, layouts, route handlers, metadata, HTTP/framework outcomes",
+      "components/ui": "domain-agnostic UI primitives",
+      "components/blocks": "PureUI Block implementations",
+      "features": "server-first user-facing orchestration",
+      "lib": "shared loaders/domain/configuration utilities and bounded supporting code for the public architecture site",
+      "content": "TypeScripture and rendered repository-owned canonical knowledge",
+      "context/docs": "product requirements, architecture, auth/security, design, technical requirements",
+      "context/specs": "authoritative product-family/domain/generation specifications and catalogs",
+      "context/mockups": "visual reference plates",
+      "public": "brand identity and static assets",
+      "packages": "separately consumable Hipster Stack and Loaded Vibes package concerns",
+      "template": "Maximal Template runnable application source",
+      ".agents/contracts": "deterministic machine-readable governance derivatives",
+      ".agents/execution": "temporary decisions/progress/handoff execution state",
+      ".agents/LoadedVibesCodexPlugin/loaded-vibes": "managed non-authoritative mirror of packages/loaded-vibes",
+      "scripts/governance": "repository governance inspection, validation, and conservative correction scripts"
+    },
+    "contextRequired": {
+      "docs": [
+        "context/docs/Architecture.md",
+        "context/docs/AUTH.md",
+        "context/docs/Design.md",
+        "context/docs/PRD.md",
+        "context/docs/tech-requirements.md"
+      ],
+      "mockups": [
+        "context/mockups/Anthimeria Mockup.jpg",
+        "context/mockups/Business Blocks Mockup.jpg",
+        "context/mockups/Docs Mockup.jpg",
+        "context/mockups/Landing Mockup.jpg",
+        "context/mockups/Ontology Mockup.jpg",
+        "context/mockups/Simples 1 Mockup.jpg",
+        "context/mockups/Simples 2 Mockup.jpg",
+        "context/mockups/Template Mockup.jpg",
+        "context/mockups/UI Blocks 1 Mockup.jpg",
+        "context/mockups/UI Blocks 2 Mockup.jpg"
+      ],
+      "specAuthorityRoots": [
+        "context/specs/anthimeria",
+        "context/specs/generation",
+        "context/specs/loaded-vibes",
+        "context/specs/ontologies",
+        "context/specs/simples"
+      ]
+    },
+    "typescripture": {
+      "knowledgeBook": "content/TypeScripture_The-Book-of-Knowledge",
+      "implementationBook": "content/TypeScripture_The-Book-of-Implementation",
+      "pairedChapterCount": 24,
+      "pairingRule": "Chapter numbers pair meaning with realization; conceptual classifications do not require directory facets."
+    }
+  },
+  "architecture": {
+    "grammar": [
+      "Routes adapt",
+      "Features orchestrate",
+      "Components render",
+      "Fetchers read",
+      "Actions write",
+      "Schemas validate",
+      "Authorization decides",
+      "Workflows coordinate use cases",
+      "Transactions preserve invariants",
+      "Integration adapters own provider semantics",
+      "Webhooks reconcile external truth"
+    ],
+    "trustProgression": [
+      "untrusted",
+      "runtime-valid",
+      "authenticated",
+      "authorized",
+      "domain-valid",
+      "persistence-ready",
+      "committed",
+      "transport-safe"
+    ],
+    "presentationFlow": [
+      "UI primitives",
+      "PureUI Blocks",
+      "Features",
+      "Pages/Routes"
+    ],
+    "readFlow": [
+      "Page",
+      "Feature",
+      "Fetcher",
+      "auth/authz",
+      "RLS-scoped DB read",
+      "select",
+      "DTO mapper",
+      "Feature",
+      "Block"
+    ],
+    "writeFlow": [
+      "Client intent",
+      "Server Action",
+      "Schema",
+      "Actor",
+      "Workflow",
+      "Transaction/Integration",
+      "Result",
+      "invalidation adapter"
+    ],
+    "providerFlow": [
+      "Provider",
+      "Route Handler",
+      "signature verification",
+      "durable inbox",
+      "reconciliation",
+      "local state"
+    ],
+    "dependencyDirection": "Framework/presentation depends inward on stable application/data/provider boundaries; data/domain/integration code never depends upward on routes/features/presentation.",
+    "layers": {
+      "route": {
+        "owns": [
+          "URL/request adaptation",
+          "route params",
+          "metadata",
+          "HTTP/framework outcomes",
+          "rendering features/presentation"
+        ],
+        "mustNotOwn": [
+          "protected reads",
+          "mutations",
+          "Prisma",
+          "provider SDKs",
+          "business orchestration"
+        ]
+      },
+      "feature": {
+        "owns": [
+          "user-facing use-case orchestration",
+          "composition of Fetchers, action references, Blocks and compatible UI Primitives",
+          "server-first page state"
+        ],
+        "mustNotOwn": [
+          "Prisma runtime",
+          "provider SDK mechanics",
+          "tenant authority from client state"
+        ]
+      },
+      "pureUiBlock": {
+        "path": "components/blocks/**",
+        "owns": [
+          "reusable presentation composition",
+          "variants",
+          "presentation-safe props",
+          "semantic tokens"
+        ],
+        "mustNotOwn": [
+          "protected I/O",
+          "authorization",
+          "persistence",
+          "provider behavior",
+          "transactions",
+          "domain calculations"
+        ]
+      },
+      "uiPrimitive": {
+        "path": "components/ui/**",
+        "owns": [
+          "lowest reusable domain-agnostic presentation units"
+        ]
+      },
+      "fetcher": {
+        "canonicalPath": "lib/fetchers/<domain>/<verb>-<representation>.fetcher.ts",
+        "owns": [
+          "server-only protected read use case",
+          "criteria validation",
+          "trusted actor/scope resolution",
+          "RLS-scoped read",
+          "explicit select",
+          "DTO mapping"
+        ],
+        "mustNotOwn": [
+          "writes",
+          "provider calls",
+          "framework navigation/cache",
+          "unbounded reads",
+          "page-state orchestration"
+        ]
+      },
+      "serverAction": {
+        "canonicalPath": "lib/actions/<domain>/<imperative>.action.ts",
+        "owns": [
+          "mutation transport adapter",
+          "schema validation",
+          "actor resolution",
+          "workflow call",
+          "result mapping",
+          "framework invalidation/navigation adapter"
+        ],
+        "mustNotOwn": [
+          "Prisma",
+          "provider SDK",
+          "transaction implementation"
+        ]
+      },
+      "workflow": {
+        "canonicalPath": "lib/<domain>/workflows/**",
+        "transitionalObservedPath": "template/lib/workflows/<domain>/**",
+        "owns": [
+          "named application use case",
+          "resource/transition authorization",
+          "current authoritative facts",
+          "lifecycle/readiness",
+          "local atomic phases",
+          "external phases",
+          "idempotency/recovery coordination",
+          "framework-neutral result"
+        ],
+        "mustNotOwn": [
+          "React",
+          "Next navigation/cache",
+          "raw HTTP/signature adaptation",
+          "provider SDK mechanics",
+          "network calls inside DB transaction"
+        ]
+      },
+      "auth": {
+        "canonicalPath": "lib/auth/**",
+        "owns": [
+          "external identity/session to local Actor adaptation"
+        ]
+      },
+      "authz": {
+        "canonicalPath": "lib/authz/**",
+        "owns": [
+          "membership",
+          "capabilities",
+          "resource scopes",
+          "named policies",
+          "access decisions"
+        ]
+      },
+      "transaction": {
+        "canonicalPath": "lib/db/transactions/**",
+        "owns": [
+          "atomic database invariants",
+          "RLS-scoped transaction runner",
+          "conditional concurrency predicates"
+        ],
+        "mustNotOwn": [
+          "provider/network calls",
+          "framework effects"
+        ]
+      },
+      "select": {
+        "canonicalPath": "lib/db/selects/**",
+        "owns": [
+          "explicit Prisma projections"
+        ]
+      },
+      "dto": {
+        "canonicalPath": "lib/db/dto/**",
+        "owns": [
+          "transport-safe DTO shapes and mappers"
+        ]
+      },
+      "integration": {
+        "canonicalPath": "lib/integrations/<provider>/**",
+        "owns": [
+          "provider mechanics",
+          "provider SDK",
+          "provider retrieval/normalization"
+        ],
+        "mustNotOwn": [
+          "product authorization",
+          "React"
+        ]
+      },
+      "webhook": {
+        "canonicalPaths": [
+          "app/api/<provider>/**/route.ts",
+          "lib/webhooks/**"
+        ],
+        "owns": [
+          "raw request/signature lifecycle",
+          "durable receipt/claim/finalize",
+          "event dispatch",
+          "reconciliation",
+          "idempotent local settlement"
+        ]
+      },
+      "schema": {
+        "canonicalPath": "schemas/**",
+        "owns": [
+          "runtime trust-boundary validation"
+        ]
+      },
+      "type": {
+        "canonicalPath": "types/**",
+        "owns": [
+          "shared compile-time transport/application contracts"
+        ]
+      }
+    },
+    "noCanonicalLayers": [
+      "generic Query layer",
+      "generic Command layer",
+      "generic service layer",
+      "mandatory Feature Loader layer",
+      "lib/application catch-all"
+    ]
+  },
+  "publicWebApplication": {
+    "routes": [
+      {
+        "path": "/",
+        "purpose": "umbrella landing page",
+        "public": true
+      },
+      {
+        "path": "/ontologies",
+        "purpose": "normalized Ontology catalog",
+        "public": true
+      },
+      {
+        "path": "/ontologies/[slug]",
+        "purpose": "Ontology detail",
+        "public": true
+      },
+      {
+        "path": "/simples",
+        "purpose": "Simples catalog",
+        "public": true
+      },
+      {
+        "path": "/simples/[slug]",
+        "purpose": "Simple detail",
+        "public": true
+      },
+      {
+        "path": "/anthimeria",
+        "purpose": "stateless visual configuration workbench",
+        "public": true
+      },
+      {
+        "path": "/maximal-template",
+        "purpose": "Maximal Template/domain library surface",
+        "public": true
+      },
+      {
+        "path": "/typescripture/[[...slug]]",
+        "purpose": "canonical doctrine/documentation",
+        "public": true
+      },
+      {
+        "path": "app/(presentation)/**",
+        "purpose": "real PureUI/template demonstration routes",
+        "public": true
+      }
+    ],
+    "authenticationDefault": "not required for public architecture/product/docs/catalog/configuration surfaces",
+    "futureAuthTrigger": [
+      "user-owned persistent state",
+      "organization-owned private state",
+      "billing",
+      "saved configurations",
+      "collaboration",
+      "account management",
+      "private artifacts"
+    ]
+  },
+  "security": {
+    "authentication": "Establish identity; public documentation does not require it.",
+    "authorization": "Server-determined and explicit whenever protected state exists; deny by default when required context is absent.",
+    "tenantModel": {
+      "referenceTenant": "Organization",
+      "participation": "Membership",
+      "membershipRole": "one Role",
+      "roleAggregates": "Capabilities",
+      "actor": "tenant-neutral until active membership/scope is resolved"
+    },
+    "stateOwners": {
+      "authentication": "Clerk/external identity truth where the Maximal Template uses Clerk",
+      "application": "PostgreSQL local state, memberships, RBAC, normalized entitlement state",
+      "paymentProvider": "Stripe provider payment truth where enabled",
+      "interpretation": "Workflows own legal application transitions"
+    },
+    "rls": "Tenant-owned protected rows use explicit tenant keys, SQL-producing tenant/resource predicates, transaction-local RLS context, and restricted non-owning runtime credentials; RLS contains rows but does not replace product authorization.",
+    "untrustedClientAuthority": [
+      "user IDs",
+      "role strings",
+      "capabilities",
+      "organization IDs",
+      "prices",
+      "provider customer/account IDs",
+      "return URLs",
+      "provider metadata"
+    ],
+    "secrets": [
+      "server-side only",
+      "never in public/",
+      "never in Markdown/examples/downloadable definitions/screenshots/client bundles",
+      "only explicitly public env vars may reach browser"
+    ],
+    "anthimeria": [
+      "configuration input is untrusted and schema-validated",
+      "downloaded definitions contain no secrets",
+      "no arbitrary user code execution in preview"
+    ]
+  },
+  "maximalTemplate": {
+    "path": "template",
+    "class": "production-oriented server-first multi-tenant B2B SaaS superset",
+    "oneTemplateRule": true,
+    "sharedFoundation": [
+      "public/product surfaces",
+      "authentication",
+      "onboarding",
+      "navigation/shells",
+      "settings",
+      "organization/membership",
+      "authorization",
+      "database foundation",
+      "validation",
+      "error/loading infrastructure",
+      "optional shared capabilities"
+    ],
+    "domainFamilies": [
+      "CRM",
+      "Project Management",
+      "Customer Support",
+      "Marketing Automation",
+      "Invoicing / Expenses",
+      "Social Media Scheduling",
+      "AI / Micro-SaaS",
+      "B2B Client Portal",
+      "Internal / Admin Tools"
+    ],
+    "canonicalTopologies": {
+      "presentation": [
+        "components/ui",
+        "components/blocks",
+        "features",
+        "app"
+      ],
+      "server": [
+        "lib/fetchers",
+        "lib/actions",
+        "lib/<domain>/workflows",
+        "lib/auth",
+        "lib/authz",
+        "lib/db/selects",
+        "lib/db/dto",
+        "lib/db/transactions",
+        "lib/db/internal",
+        "lib/cache",
+        "lib/config",
+        "lib/observability",
+        "lib/integrations",
+        "lib/webhooks",
+        "schemas",
+        "types",
+        "prisma"
+      ]
+    },
+    "transportRules": [
+      "Persistence records stay inside data boundaries",
+      "DTOs cross into Features/Components/clients",
+      "Provider objects stay inside integrations/webhooks",
+      "Dates serialize explicitly",
+      "Money uses integer minor units plus currency",
+      "Big/decimal values use explicit transport forms"
+    ]
+  },
+  "simples": {
+    "families": {
+      "pureUiBlocks": {
+        "path": "template/components/blocks",
+        "constitution": [
+          "UI Primitive",
+          "Primitive variant",
+          "Semantic Design Token",
+          "bounded composition"
+        ],
+        "canonicalCatalogCount": 28
+      },
+      "businessLogicBlocks": {
+        "conceptualUnit": "named domain Workflow constitution",
+        "canonicalPath": "lib/<domain>/workflows",
+        "transitionalObservedPath": "template/lib/workflows/<domain>",
+        "constituents": [
+          "Actions",
+          "Fetchers",
+          "Auth/Authz",
+          "Integrations",
+          "Transactions",
+          "Selects/DTOs",
+          "Schemas/Types",
+          "Cache/Constants/Utils"
+        ],
+        "canonicalCatalogCount": 74
+      }
+    },
+    "catalogCounts": {
+      "pureUiBlockPaths": 28,
+      "uiPrimitivePaths": 46,
+      "semanticDesignTokens": 52,
+      "businessLogicWorkflows": 74,
+      "businessLogicConstituentFiles": 185
+    },
+    "statusSemantics": [
+      "IMPLEMENTED",
+      "STUB — BUILD",
+      "SHARED / REUSED",
+      "OPTIONAL",
+      "REQUIRED",
+      "DERIVED"
+    ],
+    "supportTruth": "Catalog normalization is not implementation proof. Generator support requires Ontology + Simples + Maximal Template implementation + resolver closure + ownership metadata + materialization + validation."
+  },
+  "generation": {
+    "equation": [
+      "Shared Foundation",
+      "Ontology",
+      "supported optional capabilities",
+      "presentation configuration",
+      "required dependency closure",
+      "=",
+      "dependency-closed Virgule"
+    ],
+    "materializationEquation": [
+      "dependency-closed Virgule",
+      "Hipster Stack generator semantics",
+      "Maximal Template source",
+      "=",
+      "Arrangement"
+    ],
+    "pipeline": [
+      "Ontology selected",
+      "draft Virgule",
+      "normalize",
+      "normalized Virgule",
+      "validate",
+      "validated Virgule",
+      "resolve dependency closure",
+      "dependency-closed Virgule",
+      "generation plan",
+      "materialize",
+      "Arrangement",
+      "install/validate/handoff"
+    ],
+    "authorityHandoffs": [
+      {
+        "from": "Ontology",
+        "to": "Virgule",
+        "rule": "Ontology owns normalized behavioral constitution; Virgule records resolved behavior plus supported presentation and closure."
+      },
+      {
+        "from": "Anthimeria",
+        "to": "Virgule",
+        "rule": "Anthimeria owns visual configuration UX, not unique configuration semantics."
+      },
+      {
+        "from": "CLI",
+        "to": "Virgule",
+        "rule": "CLI collects/loads/reviews configuration, not unique dependency rules."
+      },
+      {
+        "from": "Virgule",
+        "to": "Hipster Stack",
+        "rule": "Dependency-closed Virgule is generation input authority."
+      },
+      {
+        "from": "Hipster Stack",
+        "to": "Maximal Template",
+        "rule": "Generator resolves ownership/dependencies against real source."
+      },
+      {
+        "from": "Maximal Template",
+        "to": "Arrangement",
+        "rule": "Template supplies implementation that survives/transforms into generated repository."
+      },
+      {
+        "from": "Arrangement",
+        "to": "Owner",
+        "rule": "Arrangement becomes an independently owned application repository."
+      }
+    ],
+    "invariants": [
+      "one configuration semantics model",
+      "one Maximal Template source",
+      "nine canonical default Ontologies",
+      "presentation configuration cannot rewrite normalized behavior",
+      "dependency closure precedes generation",
+      "generator knows artifact ownership",
+      "shared required constituents are preserved",
+      "materialization uses real source",
+      "Arrangement is standalone",
+      "no hidden hosted control plane is required",
+      "provider setup remains owner-controlled",
+      "Loaded Vibes is post-generation support, not materializer"
+    ],
+    "failureSemantics": {
+      "input": "invalid schema / unsupported value",
+      "normalize": "unknown Ontology or illegal representation",
+      "validate": "constraint/conflict violation",
+      "dependencyClosure": "unresolved provider/artifact/Workflow dependency",
+      "destination": "unsafe/conflicting target",
+      "materialize": "template invalid/copy/transform failure",
+      "acceptance": "generated output fails required checks",
+      "setup": "provider credentials/infrastructure pending"
+    },
+    "determinism": "Same supported inputs plus repository version produce the same generation plan/output semantics; unsupported state fails explicitly.",
+    "portability": "Generated application runtime does not depend on Anthimeria, the website, or Hipster Stack to serve normal traffic."
+  },
+  "implementationEvidence": {
+    "ontologyImplementation": "packages/core/src/ontologies.ts",
+    "applicationDefinitionSchema": "packages/schema/src/application-definition.ts",
+    "maximalTemplateCounts": {
+      "features": 51,
+      "pureUiBlockFiles": 18,
+      "uiPrimitiveFiles": 96,
+      "workflowFilesObserved": 24,
+      "integrationFiles": 18
+    },
+    "rootWebCounts": {
+      "features": 26,
+      "pureUiBlockFiles": 20,
+      "uiPrimitiveFiles": 76
+    },
+    "loadedVibesCanonicalSource": "packages/loaded-vibes",
+    "loadedVibesMirror": ".agents/LoadedVibesCodexPlugin/loaded-vibes"
+  },
+  "sourceManifest": [
+    {
+      "path": "context/docs/AUTH.md",
+      "role": "product-document",
+      "authority": "product-authority",
+      "sha256": "0c00b8b1829ab74f3b16e050da49100d53369fb4ff57bd818097bd800d196bc7",
+      "bytes": 4296
+    },
+    {
+      "path": "context/docs/Architecture.md",
+      "role": "product-document",
+      "authority": "product-authority",
+      "sha256": "4be490433fa14a3aa0baf9cd52db8f781700ed38133dcca0611001d41389455b",
+      "bytes": 9859
+    },
+    {
+      "path": "context/docs/Design.md",
+      "role": "product-document",
+      "authority": "product-authority",
+      "sha256": "c0041deab9ac94b8fac1d4085f2aa57d4a1b6acb97c7b8403b33132a0a056556",
+      "bytes": 10078
+    },
+    {
+      "path": "context/docs/PRD.md",
+      "role": "product-document",
+      "authority": "product-authority",
+      "sha256": "b620ced359c666b8eaad2fe0fcaef5432f124473932721d7e77f1707a226f082",
+      "bytes": 10023
+    },
+    {
+      "path": "context/docs/tech-requirements.md",
+      "role": "product-document",
+      "authority": "product-authority",
+      "sha256": "83a496d6aa7cdb1623de9ca2340c066238fe5b9c104821e3c6358deeedaf6395",
+      "bytes": 6961
+    },
+    {
+      "path": "context/specs/anthimeria/Anthimeria.Authoritative-Source-Spec.md",
+      "role": "canonical-product-specification",
+      "authority": "product-authority",
+      "sha256": "486eb686f2f46bf114e54ec5111054c6c259994d4ef3e9432e2eea993022dc14",
+      "bytes": 29046
+    },
+    {
+      "path": "context/specs/anthimeria/Anthimeria.Canonical-Catalog.md",
+      "role": "canonical-product-specification",
+      "authority": "product-authority",
+      "sha256": "ccfabb5128d652e3b3a486ce88de29f73566dd7e3deefb8e019b8f1354e2d3f4",
+      "bytes": 17907
+    },
+    {
+      "path": "context/specs/anthimeria/Anthimeria.Generic-Reference-Implementation.md",
+      "role": "canonical-product-specification",
+      "authority": "product-authority",
+      "sha256": "fccb2a6ba788c688b629ccc56025b984e8fc3459c25acbad82fd2052c78d0f3f",
+      "bytes": 21328
+    },
+    {
+      "path": "context/specs/anthimeria/README.md",
+      "role": "canonical-product-specification",
+      "authority": "product-authority",
+      "sha256": "2296fd2d21833826ded055ff78bea9d87f0ff9c5ae3e74037ea79e63242efd9b",
+      "bytes": 1552
+    },
+    {
+      "path": "context/specs/generation/GenerationPipeline/Generation-Pipeline.Authoritative-Integration-Spec.md",
+      "role": "canonical-product-specification",
+      "authority": "product-authority",
+      "sha256": "2ce0686b408586850b26762c2b834e9647d9777489d8f7363a2d7a49e1bb337e",
+      "bytes": 6166
+    },
+    {
+      "path": "context/specs/generation/GenerationPipeline/Generation-Pipeline.Codex-Reference-Implementation.md",
+      "role": "canonical-product-specification",
+      "authority": "product-authority",
+      "sha256": "beec3aa92c1c2f22af0aa88b614accc2f58dca2a515dd3de7a22b6545a33be34",
+      "bytes": 3032
+    },
+    {
+      "path": "context/specs/generation/GenerationPipeline/Generation-Pipeline.State-and-Authority-Matrix.md",
+      "role": "canonical-product-specification",
+      "authority": "product-authority",
+      "sha256": "65b243d9e4e3abc519e6f847145c8c7a0acadd4cd2624e0877cc9b426657d5fa",
+      "bytes": 2711
+    },
+    {
+      "path": "context/specs/generation/GenerationPipeline/README.md",
+      "role": "canonical-product-specification",
+      "authority": "product-authority",
+      "sha256": "5b3f6d8e3161e02c7a366679431e051f012083a52e5a5065f2c59c0e3a0c5184",
+      "bytes": 355
+    },
+    {
+      "path": "context/specs/generation/HipsterStack/Hipster-Stack.Authoritative-Source-Spec.md",
+      "role": "canonical-product-specification",
+      "authority": "product-authority",
+      "sha256": "4d034f0f875ed48d1fd5c915f13029bbf3dc183c2a90d03363b2192b7e991030",
+      "bytes": 17446
+    },
+    {
+      "path": "context/specs/generation/HipsterStack/Hipster-Stack.CLI-Generator-Contract.md",
+      "role": "canonical-product-specification",
+      "authority": "product-authority",
+      "sha256": "26c50786b2cfff337b516fd6e515fd70b096b37aebb66ee3bdbbf791ed3044b8",
+      "bytes": 4250
+    },
+    {
+      "path": "context/specs/generation/HipsterStack/Hipster-Stack.Virgule-Application-Definition.md",
+      "role": "canonical-product-specification",
+      "authority": "product-authority",
+      "sha256": "c382f454ee424990e8421cdde425a10f27d5054ce6b8dd527a711291b7b4a495",
+      "bytes": 7074
+    },
+    {
+      "path": "context/specs/generation/HipsterStack/README.md",
+      "role": "canonical-product-specification",
+      "authority": "product-authority",
+      "sha256": "9535231a4fb3904a58052e3dcb0d7c42f05ec9d3d7045dc30df4a8fce6da56bc",
+      "bytes": 834
+    },
+    {
+      "path": "context/specs/generation/MaximalTemplateArrangement/Arrangement.Generated-Artifact-Contract.md",
+      "role": "canonical-product-specification",
+      "authority": "product-authority",
+      "sha256": "00c4624145c6c26d16ea7582c1b46e26ad1daebf34781f97f993409999d1508f",
+      "bytes": 5948
+    },
+    {
+      "path": "context/specs/generation/MaximalTemplateArrangement/Maximal-Template-Arrangement.Materialization-and-Ownership.md",
+      "role": "canonical-product-specification",
+      "authority": "product-authority",
+      "sha256": "b16297f35741ef566ad2afdb287bc947ad573e7776b36cc1ea15be9ab2b430da",
+      "bytes": 3487
+    },
+    {
+      "path": "context/specs/generation/MaximalTemplateArrangement/Maximal-Template.Authoritative-Domain-Library-Spec.md",
+      "role": "canonical-product-specification",
+      "authority": "product-authority",
+      "sha256": "2cee67a991439038651583e6e1a94c30797a786eac73a2ebbbbc9129525e2856",
+      "bytes": 9933
+    },
+    {
+      "path": "context/specs/generation/MaximalTemplateArrangement/README.md",
+      "role": "canonical-product-specification",
+      "authority": "product-authority",
+      "sha256": "1ee04741bb5984789521ed2195904af8aacaf422c0cf906767ddbe77f9c2e693",
+      "bytes": 417
+    },
+    {
+      "path": "context/specs/generation/README.md",
+      "role": "canonical-product-specification",
+      "authority": "product-authority",
+      "sha256": "e2941de4589f6b2c16d011772e6ba111f0d3ce86c0ef21b5afa2bb63b5d186f4",
+      "bytes": 1484
+    },
+    {
+      "path": "context/specs/loaded-vibes/Loaded-Vibes.Authoritative-Plugin-Spec.md",
+      "role": "canonical-product-specification",
+      "authority": "product-authority",
+      "sha256": "859db8811e0e83ca28c5b9ad03b79b4d12a0da2f4f5b1f3997c37ec2f338c82b",
+      "bytes": 9187
+    },
+    {
+      "path": "context/specs/loaded-vibes/Loaded-Vibes.Package-Manifest.md",
+      "role": "canonical-product-specification",
+      "authority": "product-authority",
+      "sha256": "f75229de8b8ee7ef4c367608652f858a3a3ee4db919e52363de260c45a3eaf25",
+      "bytes": 2000
+    },
+    {
+      "path": "context/specs/loaded-vibes/README.md",
+      "role": "canonical-product-specification",
+      "authority": "product-authority",
+      "sha256": "e1a6ea443c0363fd0dbcdca28126a39fd7003be8320ea3faf57f8d9ac09d849e",
+      "bytes": 4737
+    },
+    {
+      "path": "context/specs/loaded-vibes/SOURCE-NOTES.md",
+      "role": "canonical-product-specification",
+      "authority": "product-authority",
+      "sha256": "f8eb323921fd9cb388a25e1dbdd5da5daf7efd3cd58aa7ef77e177542aa5e65f",
+      "bytes": 1011
+    },
+    {
+      "path": "context/specs/loaded-vibes/plugin.json",
+      "role": "canonical-product-specification",
+      "authority": "product-authority",
+      "sha256": "21b54e64fcd146ea39afa5e8d08d34abb9cd6605a0ff9a8566965d842dcb6ae8",
+      "bytes": 1047
+    },
+    {
+      "path": "context/specs/ontologies/Ontologies.Authoritative-Source-Spec.md",
+      "role": "canonical-product-specification",
+      "authority": "product-authority",
+      "sha256": "68a4243a267cfef15ee1636f68c358e6e09032a6dac4bcd89f1505a1dc5849a6",
+      "bytes": 10971
+    },
+    {
+      "path": "context/specs/ontologies/Ontologies.Canonical-Catalog.md",
+      "role": "canonical-product-specification",
+      "authority": "product-authority",
+      "sha256": "605b4f336f239b25b1db322baba987de0f6af367f60c8fc6b55098b8e23be4a0",
+      "bytes": 50505
+    },
+    {
+      "path": "context/specs/ontologies/Ontologies.Generic-Reference-Implementation.md",
+      "role": "canonical-product-specification",
+      "authority": "product-authority",
+      "sha256": "24b8be6390bf7c6ebe0fe0d158676134a5a7177bc911dafcc6fcef08bda0c7c1",
+      "bytes": 5614
+    },
+    {
+      "path": "context/specs/ontologies/README.md",
+      "role": "canonical-product-specification",
+      "authority": "product-authority",
+      "sha256": "88b8b06a94f83c01a2a7ef31e15ad553224bb91139dbd66c434bbdb26e293ecc",
+      "bytes": 1894
+    },
+    {
+      "path": "context/specs/simples/README.md",
+      "role": "canonical-product-specification",
+      "authority": "product-authority",
+      "sha256": "5dc591bb9f79ea670a4e3a9093f5e576c534e45390ed480d5857d1ccf9d070db",
+      "bytes": 1386
+    },
+    {
+      "path": "context/specs/simples/Simples.Authoritative-Source-Spec.md",
+      "role": "canonical-product-specification",
+      "authority": "product-authority",
+      "sha256": "58b1dd0fc945c6ca394bd46b9bfe566c1ae3c27abdf36c70ba7dac5857ff1993",
+      "bytes": 14922
+    },
+    {
+      "path": "context/specs/simples/Simples.Canonical-Catalog.md",
+      "role": "canonical-product-specification",
+      "authority": "product-authority",
+      "sha256": "c0a081cbc38c745e258da4833c0d084c1d61ff63324a8ae2cc9c8f12a964fa7e",
+      "bytes": 17315
+    },
+    {
+      "path": "context/specs/simples/Simples.Generic-Reference-Implementation.md",
+      "role": "canonical-product-specification",
+      "authority": "product-authority",
+      "sha256": "f0f784dc564e385354d8d8d3d9f95655d685aec0f4e1f6490253024d0005301e",
+      "bytes": 6191
+    },
+    {
+      "path": "content/TypeScripture_The-Book-of-Knowledge/Chapter-01.Engineering-Practice-Descriptive-Model.md",
+      "role": "canonical-doctrine-meaning",
+      "authority": "doctrine-authority",
+      "sha256": "313dbf554500425d3c57a13bc5b44a5f234adac3e1bd2893164704d3d3341ba5",
+      "bytes": 1695
+    },
+    {
+      "path": "content/TypeScripture_The-Book-of-Knowledge/Chapter-02.Engineering-Practice-The-Stupid-Lesson.md",
+      "role": "canonical-doctrine-meaning",
+      "authority": "doctrine-authority",
+      "sha256": "f35b9f8976dd27946deff85613baa8582ff28c06a3511ff7b09f20eba5129c71",
+      "bytes": 1550
+    },
+    {
+      "path": "content/TypeScripture_The-Book-of-Knowledge/Chapter-03.Architecture-Contract.md",
+      "role": "canonical-doctrine-meaning",
+      "authority": "doctrine-authority",
+      "sha256": "1457e564f617992097e41d310647e89bcdcd9dce14bf6bee18379035d274e75c",
+      "bytes": 1857
+    },
+    {
+      "path": "content/TypeScripture_The-Book-of-Knowledge/Chapter-04.Engineering-System-Definition.md",
+      "role": "canonical-doctrine-meaning",
+      "authority": "doctrine-authority",
+      "sha256": "5e63628ccee7b20e726861c6e2a0691e9bef6434f4b66acfd34f242f6416ca3a",
+      "bytes": 1512
+    },
+    {
+      "path": "content/TypeScripture_The-Book-of-Knowledge/Chapter-05.Ontology-Contract.md",
+      "role": "canonical-doctrine-meaning",
+      "authority": "doctrine-authority",
+      "sha256": "c5ad28975dbc21eda3c427115a1e71cdfd9e29974a4ce244cae523001b3d207b",
+      "bytes": 1432
+    },
+    {
+      "path": "content/TypeScripture_The-Book-of-Knowledge/Chapter-06.Knowledge-Modeling-Ontology-and-Taxonomy.md",
+      "role": "canonical-doctrine-meaning",
+      "authority": "doctrine-authority",
+      "sha256": "95aa576827d7d9463d4bc854e153bfb976537ff2ac10c2a16ba7cf593f5c435a",
+      "bytes": 1102
+    },
+    {
+      "path": "content/TypeScripture_The-Book-of-Knowledge/Chapter-07.Knowledge-System-Definition.md",
+      "role": "canonical-doctrine-meaning",
+      "authority": "doctrine-authority",
+      "sha256": "6c68ece4051b82e4db2ed912245f9044aa73e61a274ac1b572b5e7fef4ee4a82",
+      "bytes": 1300
+    },
+    {
+      "path": "content/TypeScripture_The-Book-of-Knowledge/Chapter-08.System-Architecture-Terminology.md",
+      "role": "canonical-doctrine-meaning",
+      "authority": "doctrine-authority",
+      "sha256": "c641a22d193cbb9eedebc772e8e51e632730be787df7a35350dd4e7734fd813d",
+      "bytes": 2033
+    },
+    {
+      "path": "content/TypeScripture_The-Book-of-Knowledge/Chapter-09.Pattern-Catalog.md",
+      "role": "canonical-doctrine-meaning",
+      "authority": "doctrine-authority",
+      "sha256": "aafae329f4c74df4f2ea33f4fad005ef94922af7f1f94a595b510f7c23ad6f62",
+      "bytes": 1447
+    },
+    {
+      "path": "content/TypeScripture_The-Book-of-Knowledge/Chapter-10.Product-Contract.md",
+      "role": "canonical-doctrine-meaning",
+      "authority": "doctrine-authority",
+      "sha256": "b248ffdda03e8fc65fb86363f621d182b06caace9b6a71af9850fde17ec2af7e",
+      "bytes": 841
+    },
+    {
+      "path": "content/TypeScripture_The-Book-of-Knowledge/Chapter-11.Layer-Contract.md",
+      "role": "canonical-doctrine-meaning",
+      "authority": "doctrine-authority",
+      "sha256": "f8605b84adb433e05efa46cc7d0c252a52b4533774bf13fe0333bc033b3c03dd",
+      "bytes": 1315
+    },
+    {
+      "path": "content/TypeScripture_The-Book-of-Knowledge/Chapter-12.Execution-Contract.md",
+      "role": "canonical-doctrine-meaning",
+      "authority": "doctrine-authority",
+      "sha256": "b47ead4b93d0b3f4010c210203c9ac41c0907dae4b76d3630b05aa6e0de055bf",
+      "bytes": 1106
+    },
+    {
+      "path": "content/TypeScripture_The-Book-of-Knowledge/Chapter-13.Validation-Contract.md",
+      "role": "canonical-doctrine-meaning",
+      "authority": "doctrine-authority",
+      "sha256": "849d64dde071d1026513c20fc2d507cb53bae1615e0b4ef85d7bbba761532f71",
+      "bytes": 932
+    },
+    {
+      "path": "content/TypeScripture_The-Book-of-Knowledge/Chapter-14.Application-Workflow.md",
+      "role": "canonical-doctrine-meaning",
+      "authority": "doctrine-authority",
+      "sha256": "795d375ec50ebea7ade7f3e308e2963c53de9c1b70b839cb626888d73407d2db",
+      "bytes": 1045
+    },
+    {
+      "path": "content/TypeScripture_The-Book-of-Knowledge/Chapter-15.Authentication-Authorization-and-Policy.md",
+      "role": "canonical-doctrine-meaning",
+      "authority": "doctrine-authority",
+      "sha256": "aed8e3a4bef7a5ddd48f40d31d9c2ff03772c2d4f36ecc9ff9ec4d773e5021b6",
+      "bytes": 1405
+    },
+    {
+      "path": "content/TypeScripture_The-Book-of-Knowledge/Chapter-16.Fetcher.md",
+      "role": "canonical-doctrine-meaning",
+      "authority": "doctrine-authority",
+      "sha256": "1f88930d9d72c0a48608f5bd3b62f163bf8336e22717e8d300eb584a665e7d1b",
+      "bytes": 1114
+    },
+    {
+      "path": "content/TypeScripture_The-Book-of-Knowledge/Chapter-17.Governance-System.md",
+      "role": "canonical-doctrine-meaning",
+      "authority": "doctrine-authority",
+      "sha256": "733a387cde4fbeab300fd74b51a15561b32d47059c880be5e857eb169a496947",
+      "bytes": 1212
+    },
+    {
+      "path": "content/TypeScripture_The-Book-of-Knowledge/Chapter-18.Server-Action.md",
+      "role": "canonical-doctrine-meaning",
+      "authority": "doctrine-authority",
+      "sha256": "ecf6883dbfd4c89d785e7c8ce473173b18ae5b4d9d3f41dc69f180b636b25982",
+      "bytes": 1038
+    },
+    {
+      "path": "content/TypeScripture_The-Book-of-Knowledge/Chapter-19.System-Lifecycle.md",
+      "role": "canonical-doctrine-meaning",
+      "authority": "doctrine-authority",
+      "sha256": "4cdd4e52cb5829b61ef6818b47400a09a2a1a8e09eca10e743475a247b458b5b",
+      "bytes": 1068
+    },
+    {
+      "path": "content/TypeScripture_The-Book-of-Knowledge/Chapter-20.Transaction-Helper.md",
+      "role": "canonical-doctrine-meaning",
+      "authority": "doctrine-authority",
+      "sha256": "d2f234f88c969881e77b456783397a4df87d017c5bdb458a235908d686c22c4f",
+      "bytes": 1007
+    },
+    {
+      "path": "content/TypeScripture_The-Book-of-Knowledge/Chapter-21.Webhook-Processor.md",
+      "role": "canonical-doctrine-meaning",
+      "authority": "doctrine-authority",
+      "sha256": "664cd78bf9b1df858be5b9ec0c909a6b20b173ab27d7741ff22c5bb71656af72",
+      "bytes": 1206
+    },
+    {
+      "path": "content/TypeScripture_The-Book-of-Knowledge/Chapter-22.Knowledge-System-Map.md",
+      "role": "canonical-doctrine-meaning",
+      "authority": "doctrine-authority",
+      "sha256": "cda4958e1da096f0bc051adf83616148fc96200399e7e733d24044b9a2387e63",
+      "bytes": 1325
+    },
+    {
+      "path": "content/TypeScripture_The-Book-of-Knowledge/Chapter-23.Tech-Stack-Map.md",
+      "role": "canonical-doctrine-meaning",
+      "authority": "doctrine-authority",
+      "sha256": "d38f765e0df09d533c7befc894ad93a49ce6f3c64b14f3775c2675de36bbacc3",
+      "bytes": 1271
+    },
+    {
+      "path": "content/TypeScripture_The-Book-of-Knowledge/Chapter-24.Route-and-Feature-Orchestration.md",
+      "role": "canonical-doctrine-meaning",
+      "authority": "doctrine-authority",
+      "sha256": "2e75a38785bd0795bd28ed2e4e144365a6ad667aed585efa7df1a18ca4b3eea0",
+      "bytes": 1624
+    },
+    {
+      "path": "content/TypeScripture_The-Book-of-Implementation/Chapter-01.Engineering-Practice-Descriptive-Model.md",
+      "role": "canonical-doctrine-realization",
+      "authority": "doctrine-authority",
+      "sha256": "08da5b7aee00b409a7fe17055f190ccb91bc5b6b5ccef16ceaa7483cf5c26129",
+      "bytes": 1088
+    },
+    {
+      "path": "content/TypeScripture_The-Book-of-Implementation/Chapter-02.Engineering-Practice-The-Stupid-Lesson.md",
+      "role": "canonical-doctrine-realization",
+      "authority": "doctrine-authority",
+      "sha256": "7461eb8fe938f25cbcf360201cf1a6691fda7f3d34182bc7ae1b3d49ab6aab0e",
+      "bytes": 993
+    },
+    {
+      "path": "content/TypeScripture_The-Book-of-Implementation/Chapter-03.Architecture-Contract.md",
+      "role": "canonical-doctrine-realization",
+      "authority": "doctrine-authority",
+      "sha256": "f19c9cadbcd4d4e94bfd665cda57736d7d17dbc808cb8108014f12665be141d3",
+      "bytes": 1102
+    },
+    {
+      "path": "content/TypeScripture_The-Book-of-Implementation/Chapter-04.Engineering-System-Definition.md",
+      "role": "canonical-doctrine-realization",
+      "authority": "doctrine-authority",
+      "sha256": "97b8459d4629cc22030415fdf3dbb3fc3dacc729d5977292231af0801871a0f3",
+      "bytes": 2141
+    },
+    {
+      "path": "content/TypeScripture_The-Book-of-Implementation/Chapter-05.Ontology-Contract.md",
+      "role": "canonical-doctrine-realization",
+      "authority": "doctrine-authority",
+      "sha256": "f07ac5874d7a7324ce265618915d9fef20954ae31ac6fdd0d860a62616c21f9c",
+      "bytes": 937
+    },
+    {
+      "path": "content/TypeScripture_The-Book-of-Implementation/Chapter-06.Knowledge-Modeling-Ontology-and-Taxonomy.md",
+      "role": "canonical-doctrine-realization",
+      "authority": "doctrine-authority",
+      "sha256": "59aba2960fea1bab93ecf1883d5db5907cc2b852e859e0e69f92f054c5791419",
+      "bytes": 731
+    },
+    {
+      "path": "content/TypeScripture_The-Book-of-Implementation/Chapter-07.Knowledge-System-Definition.md",
+      "role": "canonical-doctrine-realization",
+      "authority": "doctrine-authority",
+      "sha256": "503a0a74912bd98899e0e2bf941f06832cbcd4f6c406f5c1a618bcdb82d5351b",
+      "bytes": 746
+    },
+    {
+      "path": "content/TypeScripture_The-Book-of-Implementation/Chapter-08.System-Architecture-Terminology.md",
+      "role": "canonical-doctrine-realization",
+      "authority": "doctrine-authority",
+      "sha256": "0096ce93f9b678ac6dabe5b9a1da356a5cc3aecb7e9b0581e808d69e468917ab",
+      "bytes": 862
+    },
+    {
+      "path": "content/TypeScripture_The-Book-of-Implementation/Chapter-09.Pattern-Catalog.md",
+      "role": "canonical-doctrine-realization",
+      "authority": "doctrine-authority",
+      "sha256": "078f1b1618628ec77bcc5046c048c4b2b61c69773668e1f017d4c9f33b265a85",
+      "bytes": 633
+    },
+    {
+      "path": "content/TypeScripture_The-Book-of-Implementation/Chapter-10.Product-Contract.md",
+      "role": "canonical-doctrine-realization",
+      "authority": "doctrine-authority",
+      "sha256": "9e83f9a4946e31a2fd1b0e172c16427d9cff4b173ed4ef5a4c3082fd962840ce",
+      "bytes": 719
+    },
+    {
+      "path": "content/TypeScripture_The-Book-of-Implementation/Chapter-11.Layer-Contract.md",
+      "role": "canonical-doctrine-realization",
+      "authority": "doctrine-authority",
+      "sha256": "0b418add94d94df39668bdb59394db5ea94abd3e88106beb9ffedc6f30d33cf2",
+      "bytes": 1077
+    },
+    {
+      "path": "content/TypeScripture_The-Book-of-Implementation/Chapter-12.Execution-Contract.md",
+      "role": "canonical-doctrine-realization",
+      "authority": "doctrine-authority",
+      "sha256": "491176808bb5eb380d93dbacf8e712474f7b2a4be12f7dff00edeec17841ae46",
+      "bytes": 643
+    },
+    {
+      "path": "content/TypeScripture_The-Book-of-Implementation/Chapter-13.Validation-Contract.md",
+      "role": "canonical-doctrine-realization",
+      "authority": "doctrine-authority",
+      "sha256": "80ee22648b6b2206ef7c36838b81b3274ae0eff519235c951aa7e225ca33d5f2",
+      "bytes": 761
+    },
+    {
+      "path": "content/TypeScripture_The-Book-of-Implementation/Chapter-14.Application-Workflow.md",
+      "role": "canonical-doctrine-realization",
+      "authority": "doctrine-authority",
+      "sha256": "913455072f8ca8a7099002d77f9d68dfad63f7859ef3f0254a4000acb5319515",
+      "bytes": 1188
+    },
+    {
+      "path": "content/TypeScripture_The-Book-of-Implementation/Chapter-15.Authentication-Authorization-and-Policy.md",
+      "role": "canonical-doctrine-realization",
+      "authority": "doctrine-authority",
+      "sha256": "1ec4002602ce8e42968dbba3b266de8f5612549449a6c235465b25f8abf9b719",
+      "bytes": 1271
+    },
+    {
+      "path": "content/TypeScripture_The-Book-of-Implementation/Chapter-16.Fetcher.md",
+      "role": "canonical-doctrine-realization",
+      "authority": "doctrine-authority",
+      "sha256": "70a857d54055fd4cf05b4af0b4d5da7c0b62b453514b8f54e3eb1eab42c3ed31",
+      "bytes": 1219
+    },
+    {
+      "path": "content/TypeScripture_The-Book-of-Implementation/Chapter-17.Governance-System.md",
+      "role": "canonical-doctrine-realization",
+      "authority": "doctrine-authority",
+      "sha256": "49119c868309d289d27f53b4726e3ff75b270d2f083a1ef73b17424dd472ee44",
+      "bytes": 897
+    },
+    {
+      "path": "content/TypeScripture_The-Book-of-Implementation/Chapter-18.Server-Action.md",
+      "role": "canonical-doctrine-realization",
+      "authority": "doctrine-authority",
+      "sha256": "2c5050565a00b77c9be69b2f7b121a26c9db802acd35f903ba14cda1c6908dea",
+      "bytes": 900
+    },
+    {
+      "path": "content/TypeScripture_The-Book-of-Implementation/Chapter-19.System-Lifecycle.md",
+      "role": "canonical-doctrine-realization",
+      "authority": "doctrine-authority",
+      "sha256": "12c82be9b696e18f362e65c8681bbca98b2b218befaed9328c13ca2b0ce9327a",
+      "bytes": 901
+    },
+    {
+      "path": "content/TypeScripture_The-Book-of-Implementation/Chapter-20.Transaction-Helper.md",
+      "role": "canonical-doctrine-realization",
+      "authority": "doctrine-authority",
+      "sha256": "16fa5795e7b86c4d9d78ceeaecd1bd63ee441a0456a2892e5114d27cf03e03fd",
+      "bytes": 1067
+    },
+    {
+      "path": "content/TypeScripture_The-Book-of-Implementation/Chapter-21.Webhook-Processor.md",
+      "role": "canonical-doctrine-realization",
+      "authority": "doctrine-authority",
+      "sha256": "93e3443aab3ec0d36046562cc9f5efb3f2a029a576361fc525784cc93da6cead",
+      "bytes": 945
+    },
+    {
+      "path": "content/TypeScripture_The-Book-of-Implementation/Chapter-22.Knowledge-System-Map.md",
+      "role": "canonical-doctrine-realization",
+      "authority": "doctrine-authority",
+      "sha256": "d6ab2c2df5e8d2b95ba94cc5fa8ce8ab6f318ecd86452ef1577156eae972a30d",
+      "bytes": 580
+    },
+    {
+      "path": "content/TypeScripture_The-Book-of-Implementation/Chapter-23.Tech-Stack-Map.md",
+      "role": "canonical-doctrine-realization",
+      "authority": "doctrine-authority",
+      "sha256": "c3f060d308454fc4abf4fafda8ceba8ae7cd0cc9106892a3fbee1a88021bd8ce",
+      "bytes": 1243
+    },
+    {
+      "path": "content/TypeScripture_The-Book-of-Implementation/Chapter-24.Route-and-Feature-Orchestration.md",
+      "role": "canonical-doctrine-realization",
+      "authority": "doctrine-authority",
+      "sha256": "9ed3db5b297ab154859d3733cd19e8bfea8228b7b7803ef07d35e48d24e5a3df",
+      "bytes": 1419
+    },
+    {
+      "path": "content/README.md",
+      "role": "typescripture-book-boundary",
+      "authority": "doctrine-authority",
+      "sha256": "4d0aaccef5f60212df045b49f76d11f5266a21258e49745214af1174ea742ae9",
+      "bytes": 996
+    }
+  ]
+}

@@ -1,5 +1,6 @@
 # Environment and provider-local state
 .env*
+.env.local
 !.env.example
 **/.env*
 !**/.env.example
@@ -33,7 +34,7 @@
 *.7z
 *.rar
 
-# Framework, test, and package output
+# Framework, package, test, and generated output
 .next/
 coverage/
 dist/
@@ -41,6 +42,18 @@ node_modules/
 out/
 playwright-report/
 test-results/
-prisma/generated/
+generated/prisma/
+.pnpm-store/
 *.tsbuildinfo
 
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS / editor-local noise
+.DS_Store
+Thumbs.db
+.idea/

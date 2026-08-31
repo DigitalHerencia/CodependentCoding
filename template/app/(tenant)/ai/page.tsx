@@ -1,5 +1,6 @@
-import { InferenceFeature } from "@/features/ai/inference-feature"
+import { GenerationFeature } from "@/features/ai/generationFeature";
 
-export default function AiPage() {
-  return <InferenceFeature />
+// URL ownership stops here; orchestration is delegated to the feature.
+export default function Page() {
+  return <GenerationFeature />;
 }

@@ -1,54 +1,5 @@
-import type { NextConfig } from "next"
+import type { NextConfig } from "next";
 
-const securityHeaders = [
-  {
-    key: "X-DNS-Prefetch-Control",
-    value: "on",
-  },
-  {
-    key: "X-Frame-Options",
-    value: "DENY",
-  },
-  {
-    key: "X-Content-Type-Options",
-    value: "nosniff",
-  },
-  {
-    key: "Referrer-Policy",
-    value: "strict-origin-when-cross-origin",
-  },
-]
-
-const nextConfig: NextConfig = {
-  typedRoutes: true,
-  reactCompiler: true,
-  poweredByHeader: false,
-  compress: true,
-  allowedDevOrigins: ["127.0.0.1", "localhost"],
-
-  typescript: {
-    ignoreBuildErrors: false,
-    tsconfigPath: "tsconfig.json",
-  },
-
-  images: {
-    localPatterns: [
-      {
-        pathname: "/**",
-        search: "",
-      },
-    ],
-    remotePatterns: [],
-  },
-
-  async headers() {
-    return [
-      {
-        source: "/:path*",
-        headers: securityHeaders,
-      },
-    ]
-  },
-}
-
-export default nextConfig
+// Framework configuration governs the entire application.
+const nextConfig: NextConfig = {};
+export default nextConfig;

@@ -1,16 +1,28 @@
-import { PageHero } from "@/components/blocks/page-hero"
+import { FAQSimpleList } from "@/components/blocks/faq-sections";
+import { HeroSection } from "@/components/blocks/hero-sections";
 
-export default function PrivacyPage() {
+export default function Page() {
   return (
-    <div className="grid gap-6">
-      <PageHero
-        eyebrow="Legal"
-        title="Privacy"
-        description="Replace this white-label policy with counsel-approved product terms before launch."
+    <>
+      <HeroSection.Minimal
+        title="Privacy template"
+        description="Generic demonstration content for applications generated from The Maximal Template™."
       />
-      <p className="text-muted-foreground">
-        The application template does not make legal or compliance decisions for your product.
-      </p>
-    </div>
-  )
+      <FAQSimpleList
+        title="Template notice"
+        items={[
+          {
+            question: "Is this a production privacy policy?",
+            answer:
+              "No. Replace this demonstration content with a policy approved for the generated product before publication.",
+          },
+          {
+            question: "What does this route demonstrate?",
+            answer:
+              "A static public privacy-information surface without application data access or mutation behavior.",
+          },
+        ]}
+      />
+    </>
+  );
 }

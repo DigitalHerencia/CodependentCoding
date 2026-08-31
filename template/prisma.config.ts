@@ -1,13 +1,9 @@
-import { config } from "dotenv"
-import { defineConfig } from "prisma/config"
+import { config } from "dotenv";
 
-if (process.env.VIBES_SKIP_DOTENV !== "1") {
-  config({ path: ".env" })
-  config({ path: ".env.local", override: true })
-}
+import { defineConfig, env } from "prisma/config";
 
-const migrationDatabaseUrl =
-  process.env.DIRECT_DATABASE_URL ?? process.env.DATABASE_URL_UNPOOLED ?? process.env.DATABASE_URL
+config({ path: ".env.local", quiet: true });
+config({ quiet: true });
 
 export default defineConfig({
   schema: "prisma/schema.prisma",
@@ -15,14 +11,8 @@ export default defineConfig({
     path: "prisma/migrations",
     seed: "tsx prisma/seed.ts",
   },
-  ...(migrationDatabaseUrl
-    ? {
-        datasource: {
-          url: migrationDatabaseUrl,
-          ...(process.env.SHADOW_DATABASE_URL
-            ? { shadowDatabaseUrl: process.env.SHADOW_DATABASE_URL }
-            : {}),
-        },
-      }
-    : {}),
-})
+  datasource: {
+    // Neon recommends a direct/non-pooled connection for migrations.
+    url: env("DATABASE_NO_POOLING"),
+  },
+});

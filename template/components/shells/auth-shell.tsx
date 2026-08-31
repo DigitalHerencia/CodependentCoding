@@ -1,10 +1,10 @@
-import type { ReactNode } from "react"
+import type { ReactNode } from "react";
 
-import { Wordmark } from "@/components/brand/wordmark"
+import { Wordmark } from "@/components/brand/wordmark";
 
 type AuthShellProps = {
-  children: ReactNode
-}
+  children: ReactNode;
+};
 
 export function AuthShell({ children }: AuthShellProps) {
   return (
@@ -12,10 +12,13 @@ export function AuthShell({ children }: AuthShellProps) {
       <section className="hidden border-r bg-background p-8 md:flex md:flex-col md:justify-between">
         <Wordmark />
         <div className="max-w-xl space-y-4">
-          <p className="eyebrow text-sm text-primary">Server-owned auth boundary</p>
+          <p className="eyebrow text-sm text-primary">
+            Server-owned auth boundary
+          </p>
           <h1>Access stays accountable.</h1>
           <p className="text-muted-foreground">
-            Clerk identifies the user. Local tables authorize row-level reads and writes.
+            Clerk identifies the user. Local tables authorize row-level reads
+            and writes.
           </p>
         </div>
       </section>
@@ -23,5 +26,5 @@ export function AuthShell({ children }: AuthShellProps) {
         {children}
       </section>
     </main>
-  )
+  );
 }

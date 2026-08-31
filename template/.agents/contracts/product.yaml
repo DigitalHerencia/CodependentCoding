@@ -1,15 +1,179 @@
-id: white-label-application.product
-version: 1
-authority: current-source-contract
-definition: opinionated reusable B2B SaaS application system
-default_tenant_term: Organization
-sample_domain:
-  name: Project
-  removable: true
-  tenant_boundary: false
-principles:
-  - server-owned operations
-  - local authorization
-  - transport-safe contracts
-  - provider isolation
-  - representative capability slices
+schema_version: 1
+file: .agents/contracts/product.yaml
+product: The Maximal Template
+status: active
+purpose: Deterministic product and architecture constraints derived from context/docs and the active Maximal Template doctrine.
+
+authority:
+  type: machine_interpretation
+  human_sources:
+    - context/docs/prd.md
+    - context/docs/tech-requirements.md
+    - context/docs/architecture.md
+    - context/docs/auth.md
+  active_specs_root: context/specs
+  may_override_human_sources: false
+
+product_model:
+  category: maximal_superset_application_template
+  generator_source: true
+  public_demo: true
+  one_coherent_application: true
+  independent_recipe_apps: forbidden
+
+public_demo:
+  browse_requires_authentication: false
+  auth_is_demo_capability: true
+  signed_out_seeded_read_surfaces_allowed: true
+  public_visibility_grants_mutation_permission: false
+  protected_mutations_require:
+    - server_authentication
+    - application_authorization
+    - tenant_or_resource_scope
+    - runtime_validation
+    - rls_where_applicable
+
+domains:
+  canonical:
+    - crm
+    - projects
+    - support
+    - marketing
+    - invoicing
+    - social
+    - ai
+    - portal
+    - admin
+    - user
+    - common
+  marketing_definition: marketing_automation_and_analytics_business_domain
+  static_public_content_is_marketing_domain: false
+
+route_surfaces:
+  static_public_group: app/(public)
+  auth_group: app/(auth)
+  tenant_group: app/(tenant)
+  api_root: app/api
+  required_real_segments:
+    admin: /admin
+    crm: /crm
+    projects: /projects
+    support: /support
+    marketing: /marketing
+    invoicing: /invoicing
+    social: /social
+    ai: /ai
+    portal: /portal
+
+static_public_pages:
+  feature_wrapper_required: false
+  compose_blocks_directly_when_no_orchestration: true
+  example_paths:
+    - /
+    - /features
+    - /pricing
+    - /faq
+    - /contact
+    - /terms
+
+presentation:
+  normal_flow:
+    - components/ui
+    - components/blocks
+    - features
+    - app
+  form_feature_exception:
+    framework: react_hook_form
+    feature_may_import_ui_primitives_directly: true
+    form_blocks_required: false
+  blocks:
+    grouped_by: presentation_category
+    pure_ui: true
+    forbidden_responsibilities:
+      - persisted_reads
+      - persisted_writes
+      - authentication
+      - authorization
+      - provider_behavior
+      - business_workflows
+      - react_hook_form_state
+
+architecture_classifier:
+  persisted_read: lib/fetchers
+  ordinary_crud_write: lib/actions
+  prisma_select: lib/db/selects
+  dto_mapper: lib/db/dto
+  transaction_helper: lib/db/transactions
+  authentication: lib/auth
+  authorization: lib/authz
+  provider_specific_behavior: lib/integrations/{provider}
+  webhook_http_lifecycle: app/api/{provider}/.../route.ts
+  remaining_domain_logic: lib/workflows/{domain}
+  cache: lib/cache
+  constant: lib/constants
+  utility: lib/utils
+  orchestration: features
+  raw_ui_primitive: components/ui
+  reusable_ui_composition: components/blocks
+  navigation: components/nav
+  shell: components/shells
+  runtime_schema: schemas
+  shared_types: types
+
+library_invariants:
+  fetchers_read_only: true
+  actions_crud_only: true
+  workflows_shallow: true
+  generic_service_layer: forbidden
+  unnecessary_intermediate_directories: forbidden
+
+provider_exceptions:
+  Clerk: lib/auth
+  Neon: lib/db
+  Prisma:
+    runtime: lib/db
+    lifecycle: prisma
+
+tenancy:
+  provider: application_database
+  reference_entities:
+    - User
+    - Organization
+    - Membership
+  clerk_organizations_required: false
+  rls_is_defense_in_depth: true
+  application_authz_required_even_with_rls: true
+
+providers:
+  intended:
+    - clerk
+    - neon
+    - prisma
+    - stripe
+    - vercel_blob
+    - cloudinary
+    - sendgrid
+    - hugging_face
+  optional_provider_missing_secret_must_not_break_unrelated_public_pages: true
+
+build_order:
+  - context/specs/00.architectural-contract.md
+  - context/specs/01.route-topology-public-demo.md
+  - context/specs/02.design-system.md
+  - context/specs/03.block-library.md
+  - context/specs/04.crm-golden-vertical-slice.md
+  - context/specs/05.application-library-normalization.md
+  - context/specs/06.maximal-template-explorer.md
+  - context/specs/07.provider-integrations.md
+
+prohibited_assumptions:
+  - public_static_pages_are_marketing_domain
+  - every_page_requires_feature
+  - every_feature_is_forbidden_from_ui_primitives
+  - route_group_creates_admin_url_segment
+  - public_demo_requires_sign_in
+  - public_visibility_implies_public_write_permission
+  - clerk_metadata_owns_product_roles
+  - clerk_organizations_own_application_tenancy
+  - webhook_delivery_is_exactly_once
+  - provider_stub_means_provider_is_configured

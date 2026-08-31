@@ -1,70 +1,192 @@
 {
-  "schemaVersion": 3,
-  "decisions": [
+  "$schema": "codependent-coding://execution/decisions/v1",
+  "schemaVersion": 1,
+  "updatedAt": "2026-08-31T03:40:21.387363Z",
+  "authority": "current owner intent + canonical doctrine/product specifications",
+  "active": [
+    {
+      "id": "CC-GOV-001",
+      "category": "authority",
+      "status": "active",
+      "decision": "TypeScripture owns canonical engineering doctrine; context/docs and context/specs own Codependent Coding product-specific requirements; .agents/contracts are deterministic operational derivatives rather than a competing prose authority.",
+      "rationale": "Preserves the paired-book doctrine boundary while giving product-specific specs explicit ownership."
+    },
+    {
+      "id": "CC-APP-001",
+      "category": "system-boundary",
+      "status": "active",
+      "decision": "Codependent Coding is the WebApp Architecture. Loaded Vibes is the post-generation Codex enforcement/operations layer and is not the generator, materializer, or architecture identity.",
+      "rationale": "Reconciles current product/generation specifications with legacy naming."
+    },
+    {
+      "id": "CC-APP-002",
+      "category": "repository",
+      "status": "active",
+      "decision": "The repository root is the public architecture/product/generator workspace. template/ is the single runnable Maximal Template superset application. Validators must not require template-only SaaS infrastructure from the public documentation/configuration site.",
+      "rationale": "Prevents root-site and generated-application responsibilities from being conflated."
+    },
+    {
+      "id": "CC-APP-003",
+      "category": "public-surface",
+      "status": "active",
+      "decision": "Public architecture, Ontology, Simples, Anthimeria, Maximal Template, TypeScripture, and Loaded Vibes documentation surfaces are public by default. Identity becomes required only for future user/organization-owned persistent or private capabilities.",
+      "rationale": "Matches the current auth/trust-boundary specification."
+    },
+    {
+      "id": "CC-APP-004",
+      "category": "domain-model",
+      "status": "active",
+      "decision": "There is one Maximal Template, nine canonical Ontology defaults, and exactly two top-level Simples families: PureUI Blocks and BusinessLogic Blocks/Workflows. Ontologies normalize behavior; Anthimeria configures compatible presentation.",
+      "rationale": "Prevents presets, constituent files, and UI controls from becoming parallel architectures."
+    },
+    {
+      "id": "CC-APP-005",
+      "category": "generation",
+      "status": "active",
+      "decision": "The dependency-closed Virgule is the single resolved materialization authority. Hipster Stack plans/materializes against real Maximal Template source into a standalone Arrangement.",
+      "rationale": "Preserves the generation authority handoff and portability boundary."
+    },
+    {
+      "id": "CC-APP-006",
+      "category": "configuration",
+      "status": "active",
+      "decision": "Anthimeria, CLI, and serialized configuration adapters share one normalization/validation/dependency-closure semantics model; no adapter may create hidden generation-relevant state.",
+      "rationale": "Prevents UX or CLI adapters from becoming competing configuration authorities."
+    },
+    {
+      "id": "CC-ARCH-001",
+      "category": "architecture",
+      "status": "active",
+      "decision": "Routes adapt; Features orchestrate; Components render; Fetchers read; Actions write; Schemas validate; Authorization decides; Workflows coordinate use cases; Transactions preserve invariants; integrations own provider mechanics; webhooks reconcile external truth.",
+      "rationale": "Canonical engineering grammar from TypeScripture."
+    },
+    {
+      "id": "CC-ARCH-002",
+      "category": "architecture",
+      "status": "active",
+      "decision": "Features may compose compatible UI Primitives as well as PureUI Blocks. The older Loaded Vibes block-only Feature import rule is superseded; DB/provider/server authority remains forbidden in Features.",
+      "rationale": "Reconciles current TypeScripture and product technical requirements."
+    },
+    {
+      "id": "CC-ARCH-003",
+      "category": "workflow-placement",
+      "status": "active",
+      "decision": "New domain-owned workflow placement follows lib/<domain>/workflows. The existing template/lib/workflows/<domain> layout is transitional evidence and should be migrated only through a scoped import-safe change, not an automatic blind move.",
+      "rationale": "Newest TypeScripture realization is more recent than the older Loaded Vibes placement while the current template still requires compatibility."
+    },
+    {
+      "id": "CC-SEC-001",
+      "category": "security",
+      "status": "active",
+      "decision": "Protected authorization is server-determined; tenant-owned rows use explicit tenant predicates plus transaction-local PostgreSQL RLS under restricted runtime credentials. Client IDs/roles/prices/provider identifiers do not establish authority.",
+      "rationale": "Combines TypeScripture auth/authz/RLS doctrine with current public-site trust boundaries."
+    },
+    {
+      "id": "CC-LV-001",
+      "category": "loaded-vibes",
+      "status": "active",
+      "decision": "packages/loaded-vibes is the canonical package source. .agents/LoadedVibesCodexPlugin/loaded-vibes is a non-authoritative managed mirror and must remain byte-identical when present.",
+      "rationale": "Keeps the requested agent-local package available without allowing duplicate source authority drift."
+    },
+    {
+      "id": "CC-GOV-010",
+      "category": "validation",
+      "status": "active",
+      "decision": "Repository governance uses contract-driven mechanical validators and conservative fixers. They enforce only properties static inspection can prove and explicitly label semantic/runtime obligations as review or runtime evidence.",
+      "rationale": "Avoids both unenforced architecture and fake omniscient validators."
+    },
+    {
+      "id": "CC-GOV-011",
+      "category": "execution",
+      "status": "active",
+      "decision": "The old segmented consolidation/deployment execution records are historical. Current .agents/execution files describe the present governance-contract consolidation and subsequent handoff only.",
+      "rationale": "Execution state is temporary evidence, not a museum exhibit with write permissions."
+    },
+    {
+      "id": "CC-GOV-012",
+      "category": "serialization",
+      "status": "active",
+      "decision": "The .yaml contracts use the YAML 1.2 JSON-compatible subset so repository-owned Node scripts can parse them with JSON.parse and no additional YAML runtime dependency.",
+      "rationale": "Keeps machine contracts deterministic, dependency-free, and valid YAML."
+    }
+  ],
+  "history": [
     {
       "id": "LV-D-001",
       "decision": "Loaded Vibes is optimized for developer time saved and the usefulness of the generated repository, not governance breadth.",
-      "status": "active"
+      "status": "superseded",
+      "supersededBy": "CC-GOV-010"
     },
     {
       "id": "LV-D-002",
       "decision": "CLI, web configurator, and loadedvibes.json share one configuration schema and normalization path.",
-      "status": "active"
+      "status": "superseded",
+      "supersededBy": "CC-APP-006"
     },
     {
       "id": "LV-D-012",
       "decision": "Loaded Vibes is the sole executable application-template authority and DevNotes is the Hipster Stack doctrine authority. DigitalHerencia/Vibes is not an upstream, reference, sync, provenance, packaging, or runtime dependency.",
-      "status": "active"
+      "status": "superseded",
+      "supersededBy": "CC-APP-001"
     },
     {
       "id": "LV-D-013",
       "decision": "The final repository contains one maximal white-label application at template/. Generation copies that source, resolves ownership, removes excluded material, and applies structured transforms.",
-      "status": "active"
+      "status": "superseded",
+      "supersededBy": "CC-APP-005"
     },
     {
       "id": "LV-D-014",
       "decision": "packages/recipes and duplicated templates/modules source are migration-era structures. Useful defaults and ownership semantics may be preserved, but the structures themselves are not the target architecture.",
-      "status": "active"
+      "status": "superseded",
+      "supersededBy": "CC-APP-005"
     },
     {
       "id": "LV-D-015",
       "decision": "Presets, when retained, are convenience defaults over one configuration model and never represent separate templates or architectures.",
-      "status": "active"
+      "status": "superseded",
+      "supersededBy": "CC-APP-004"
     },
     {
       "id": "LV-D-016",
       "decision": "A configuration option is user-selectable only when Loaded Vibes can make a real deterministic change to generated output or project lifecycle.",
-      "status": "active"
+      "status": "superseded",
+      "supersededBy": "CC-APP-006"
     },
     {
       "id": "LV-D-017",
       "decision": "Loaded Vibes' website is a dark developer tool with separate landing, configure, and docs surfaces. The CLI remains the primary execution surface and the web configurator remains stateless.",
-      "status": "active"
+      "status": "superseded",
+      "supersededBy": "CC-APP-003"
     },
     {
       "id": "LV-D-018",
       "decision": "Root docs/ is the canonical end-user documentation source. context/ remains maintainer/Codex context.",
-      "status": "active"
+      "status": "superseded",
+      "supersededBy": "CC-GOV-001"
     },
     {
       "id": "LV-D-019",
       "decision": "The migration adds no new tests or validation systems. Existing relevant checks may be run proportionally for the behavior changed by an Issue.",
-      "status": "active"
+      "status": "superseded",
+      "supersededBy": "CC-GOV-010"
     },
     {
       "id": "LV-D-020",
       "decision": "The LV-201 through LV-207 migration is complete. The final repository owns one template at template/, packages cli/core/schema, shared configuration semantics, the canonical loaded-vibes command, stateless web routes, and canonical end-user docs at docs/.",
-      "status": "active"
+      "status": "superseded",
+      "supersededBy": "CC-GOV-011"
     },
     {
       "id": "HS-D-001",
-      "decision": "The owner-approved 2026-08-13 Constituter redesign supersedes older fixed-composition governance: architecture remains opinionated while providers, capabilities, authorization, routes, resources, and safe output policy move behind one canonical Application Definition and resolver. The web workbench is named The Constituter™.",
-      "status": "active"
+      "decision": "The owner-approved 2026-08-13 Constituter redesign supersedes older fixed-composition governance: architecture remains opinionated while providers, capabilities, authorization, routes, resources, and safe output policy move behind one canonical Application Definition and resolver. The web workbench is named The Constituter\u2122.",
+      "status": "superseded",
+      "supersededBy": "CC-APP-004"
     },
     {
       "id": "CC-D-001",
       "decision": "The 2026-08-28 handoff authority establishes TypeScripture as doctrine, Codependent Coding as the Web App Architecture, Hipster Stack as the resolver/generator/CLI technology, Anthimeria as the stateless workbench, Virgule as the dependency-closed definition, Arrangement as generated output, and Loaded Vibes as post-generation Codex operations.",
-      "status": "active",
+      "status": "superseded",
       "supersedes": [
         "LV-D-001",
         "LV-D-002",
@@ -73,24 +195,32 @@
         "LV-D-017",
         "LV-D-020",
         "HS-D-001"
-      ]
+      ],
+      "supersededBy": "CC-APP-001"
     },
     {
       "id": "CC-D-002",
       "decision": "Nine Ontology normalized defaults replace the four generic presets as canonical starters; Simples contains only PureUI Blocks and BusinessLogic Blocks or Workflows; one shared resolver remains authoritative for CLI, config, Anthimeria preview, planning, and materialization.",
-      "status": "active",
-      "supersedes": ["LV-D-015"]
+      "status": "superseded",
+      "supersedes": [
+        "LV-D-015"
+      ],
+      "supersededBy": "CC-APP-004"
     },
     {
       "id": "CC-D-003",
       "decision": "The consolidation workspace is local implementation evidence, not a repository identity. Remote creation, push, publication, deployment, and credential provisioning remain deferred until owner acceptance.",
-      "status": "active"
+      "status": "superseded",
+      "supersededBy": "CC-GOV-011"
     },
     {
       "id": "CC-D-004",
       "decision": "Owner acceptance on 2026-08-28 authorized publication of the completed consolidation build to DigitalHerencia/CodependentCoding and production deployment through the existing digital-herencia/codependent-coding Vercel project at codependentcoding.vercel.app.",
-      "status": "active",
-      "supersedes": ["CC-D-003"]
+      "status": "historical",
+      "supersedes": [
+        "CC-D-003"
+      ],
+      "supersededBy": "CC-GOV-011"
     }
   ]
 }

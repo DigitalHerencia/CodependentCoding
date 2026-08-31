@@ -1,17 +1,68 @@
-import type { ReactNode } from "react"
+import * as React from "react";
+import { cn } from "@/lib/utils";
+import { Label } from "@/components/ui/label";
 
-import { cn } from "@/lib/utils"
+/** A vertical stack of related fields. */
+const FieldGroup = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <div ref={ref} className={cn("flex flex-col gap-5", className)} {...props} />
+));
+FieldGroup.displayName = "FieldGroup";
 
-type FieldProps = {
-  children: ReactNode
-  className?: string
-}
+/** A single form field: groups a label, control, description and error. */
+const Field = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={cn("flex flex-col gap-1.5", className)}
+    {...props}
+  />
+));
+Field.displayName = "Field";
 
-export function Field({ children, className }: FieldProps) {
-  return <div className={cn("grid gap-2", className)}>{children}</div>
-}
+const FieldLabel = React.forwardRef<
+  React.ElementRef<typeof Label>,
+  React.ComponentPropsWithoutRef<typeof Label>
+>(({ className, ...props }, ref) => (
+  <Label ref={ref} className={cn("text-xs", className)} {...props} />
+));
+FieldLabel.displayName = "FieldLabel";
 
-export function FieldError({ children }: { children?: ReactNode }) {
-  if (!children) return null
-  return <p className="text-sm text-destructive">{children}</p>
-}
+const FieldDescription = React.forwardRef<
+  HTMLParagraphElement,
+  React.HTMLAttributes<HTMLParagraphElement>
+>(({ className, ...props }, ref) => (
+  <p
+    ref={ref}
+    className={cn("text-xs font-medium text-muted-foreground", className)}
+    {...props}
+  />
+));
+FieldDescription.displayName = "FieldDescription";
+
+const FieldError = React.forwardRef<
+  HTMLParagraphElement,
+  React.HTMLAttributes<HTMLParagraphElement>
+>(({ className, children, ...props }, ref) => {
+  if (!children) return null;
+  return (
+    <p
+      ref={ref}
+      role="alert"
+      className={cn(
+        "text-xs font-bold uppercase tracking-wide text-destructive",
+        className,
+      )}
+      {...props}
+    >
+      {children}
+    </p>
+  );
+});
+FieldError.displayName = "FieldError";
+
+export { Field, FieldGroup, FieldLabel, FieldDescription, FieldError };

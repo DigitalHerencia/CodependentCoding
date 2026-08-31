@@ -1,33 +1,60 @@
-import { PageHero } from "@/components/blocks/page-hero"
-import { ProcessPanel } from "@/components/blocks/process-panel"
+import { FAQTwoColumns } from "@/components/blocks/faq-sections";
+import { PricingSection } from "@/components/blocks/pricing-sections";
 
-export default function PricingPage() {
+const tiers = [
+  {
+    name: "Foundation",
+    price: "$0",
+    period: "project",
+    description: "Evaluate the canonical architecture locally.",
+    features: ["Shared application core", "One recipe", "Local development"],
+    cta: "Explore dashboard",
+    ctaHref: "/dashboard",
+  },
+  {
+    name: "Product",
+    price: "$49",
+    period: "month",
+    description: "Configure a focused SaaS application from the superset.",
+    features: ["All recipes", "Tenant boundaries", "Provider selections"],
+    cta: "Inspect CRM",
+    ctaHref: "/crm/contacts",
+    featured: true,
+  },
+  {
+    name: "Team",
+    price: "$149",
+    period: "month",
+    description: "Shared delivery for multiple products and collaborators.",
+    features: ["Team workspaces", "Reusable definitions", "Priority support"],
+    cta: "Contact us",
+    ctaHref: "/contact",
+  },
+];
+
+export default function Page() {
   return (
-    <div className="grid gap-10">
-      <PageHero
-        eyebrow="Template economics"
-        title="Bring your pricing model."
-        description="The starter includes a tenant-owned Stripe subscription foundation for one server-configured recurring plan."
+    <>
+      <PricingSection
+        title="Pricing without architecture tax"
+        subtitle="Choose an operating tier; the application contracts stay intact."
+        tiers={tiers}
       />
-      <ProcessPanel
-        title="Billing boundaries"
-        steps={[
+      <FAQTwoColumns
+        title="Pricing questions"
+        items={[
           {
-            title: "Hosted billing",
-            description: "Checkout and subscription management stay on Stripe-hosted surfaces.",
+            question: "Does each recipe become a separate application?",
+            answer:
+              "No. Recipes select coherent slices from one maximal implementation.",
           },
           {
-            title: "Provider isolated",
-            description:
-              "Stripe SDK calls stay behind provider adapters, never in pages or components.",
-          },
-          {
-            title: "State first",
-            description:
-              "Verified webhooks normalize local subscription and entitlement state; redirects grant nothing.",
+            question: "Are provider charges included?",
+            answer:
+              "Provider usage is billed by each selected provider and remains explicit.",
           },
         ]}
       />
-    </div>
-  )
+    </>
+  );
 }

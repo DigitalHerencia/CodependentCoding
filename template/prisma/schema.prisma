@@ -1,554 +1,1072 @@
 generator client {
-  provider   = "prisma-client"
-  output     = "./generated/prisma"
-  engineType = "client"
+  provider = "prisma-client"
+  output   = "../generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
 }
 
-enum UserStatus {
-  active
-  disabled
+enum MembershipRole {
+  OWNER
+  ADMIN
+  MANAGER
+  MEMBER
+  BILLING
+  SUPPORT
+  CLIENT
+  VIEWER
+}
+
+enum MembershipStatus {
+  INVITED
+  ACTIVE
+  SUSPENDED
+  REVOKED
+}
+
+enum SubscriptionStatus {
+  TRIALING
+  ACTIVE
+  PAST_DUE
+  PAUSED
+  CANCELED
+}
+
+enum CrmAccountStatus {
+  PROSPECT
+  ACTIVE
+  INACTIVE
+  ARCHIVED
+}
+
+enum CrmContactStatus {
+  LEAD
+  ACTIVE
+  INACTIVE
+  ARCHIVED
+}
+
+enum CrmDealStage {
+  LEAD
+  QUALIFIED
+  PROPOSAL
+  NEGOTIATION
+  WON
+  LOST
 }
 
 enum ProjectStatus {
-  active
-  archived
+  PLANNED
+  ACTIVE
+  ON_HOLD
+  COMPLETED
+  CANCELED
+  ARCHIVED
 }
 
-enum OrganizationStatus {
-  active
-  suspended
+enum ProjectMemberRole {
+  OWNER
+  MANAGER
+  CONTRIBUTOR
+  VIEWER
 }
 
-enum OrganizationRole {
-  owner
-  admin
-  member
-  viewer
+enum TaskStatus {
+  BACKLOG
+  TODO
+  IN_PROGRESS
+  BLOCKED
+  DONE
+  CANCELED
 }
 
-enum InvitationStatus {
-  pending
-  accepted
-  revoked
-  expired
+enum TaskPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
 }
 
-enum AuditActorType {
-  user
-  system
-  clerk
-  stripe
+enum TicketStatus {
+  OPEN
+  IN_PROGRESS
+  WAITING_ON_CUSTOMER
+  WAITING_ON_INTERNAL
+  RESOLVED
+  CLOSED
 }
 
-enum WebhookProvider {
-  clerk
-  stripe
-  stripe_connect
-  cloudinary
+enum TicketPriority {
+  LOW
+  NORMAL
+  HIGH
+  URGENT
 }
 
-enum MediaAssetStatus {
-  pending
-  ready
-  deleted
-  failed
+enum KnowledgeArticleStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
 }
 
-enum BillingSubscriptionStatus {
-  trialing
-  active
-  incomplete
-  incomplete_expired
-  past_due
-  canceled
-  unpaid
-  paused
+enum AudienceStatus {
+  DRAFT
+  ACTIVE
+  ARCHIVED
 }
 
-enum ConnectAccountStatus {
-  pending
-  restricted
-  ready
+enum CampaignStatus {
+  DRAFT
+  SCHEDULED
+  ACTIVE
+  PAUSED
+  COMPLETED
+  CANCELED
 }
 
-enum ConnectPaymentStatus {
-  checkout_pending
-  requires_payment_method
-  requires_confirmation
-  requires_action
-  processing
-  requires_capture
-  succeeded
-  canceled
+enum CampaignStepType {
+  EMAIL
+  WAIT
+  WEBHOOK
+  CONDITION
 }
 
-enum ConnectRefundStatus {
-  pending
-  requires_action
-  succeeded
-  failed
-  canceled
+enum InvoiceStatus {
+  DRAFT
+  OPEN
+  PAID
+  VOID
+  OVERDUE
 }
 
-enum ConnectRecoveryOperation {
-  onboarding
-  readiness
-  authorization
-  capture
-  cancel
-  refund
-  webhook
+enum ExpenseStatus {
+  DRAFT
+  SUBMITTED
+  APPROVED
+  REJECTED
+  REIMBURSED
 }
 
-enum ConnectRecoveryOutcome {
-  synchronized
-  recovery_required
-  ignored
+enum SocialProvider {
+  LINKEDIN
+  X
+  FACEBOOK
+  INSTAGRAM
+  OTHER
 }
 
-enum ProviderWebhookStatus {
-  received
-  processing
-  processed
-  ignored
-  failed
+enum SocialPostStatus {
+  DRAFT
+  SCHEDULED
+  PUBLISHING
+  PUBLISHED
+  PARTIALLY_FAILED
+  FAILED
+  CANCELED
+}
+
+enum SocialVariantStatus {
+  DRAFT
+  SCHEDULED
+  PUBLISHED
+  FAILED
+}
+
+enum AiGenerationStatus {
+  PENDING
+  RUNNING
+  SUCCEEDED
+  FAILED
+  CANCELED
+}
+
+enum PortalDocumentStatus {
+  DRAFT
+  IN_REVIEW
+  APPROVED
+  REJECTED
+  ARCHIVED
+}
+
+enum ApprovalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum WebhookStatus {
+  RECEIVED
+  PROCESSING
+  PROCESSED
+  FAILED
+}
+
+enum IdempotencyState {
+  STARTED
+  COMPLETED
+  FAILED
 }
 
 model User {
-  id                        String     @id @default(cuid())
-  clerkUserId               String     @unique
-  email                     String?    @db.VarChar(320)
-  displayName               String?    @db.VarChar(120)
-  status                    UserStatus @default(active)
-  isApplicationAdmin        Boolean    @default(false)
-  selectedOrganizationId    String?
-  identityProviderUpdatedAt DateTime?
+  id          String  @id @default(uuid()) @db.Uuid
+  clerkUserId String  @unique
+  email       String?
+  displayName String?
+  imageUrl    String?
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  memberships             Membership[]
+  supportTicketsRequested SupportTicket[] @relation("SupportRequester")
+  aiGenerations           AiGeneration[]  @relation("AiGenerationUser")
+  aiUsage                 AiUsageLedger[] @relation("AiUsageUser")
+  auditEvents             AuditEvent[]    @relation("AuditActor")
 
-  selectedOrganization Organization?            @relation("SelectedOrganization", fields: [selectedOrganizationId], references: [id], onDelete: SetNull)
-  memberships          Membership[]
-  invitationsSent      OrganizationInvitation[] @relation("InvitationSender")
-  ownedProjects        Project[]                @relation("ProjectOwner")
-  auditEvents          AuditEvent[]             @relation("AuditActorUser")
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
 
-  @@index([status])
   @@index([email])
-  @@index([selectedOrganizationId])
-  @@map("users")
 }
 
 model Organization {
-  id     String             @id @default(cuid())
-  name   String             @db.VarChar(120)
-  slug   String             @unique @db.VarChar(140)
-  status OrganizationStatus @default(active)
+  id       String  @id @default(uuid()) @db.Uuid
+  slug     String  @unique
+  name     String
+  imageUrl String?
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  memberships  Membership[]
+  settings     OrganizationSettings?
+  subscription BillingSubscription?
 
-  selectedByUsers                User[]                          @relation("SelectedOrganization")
-  memberships                    Membership[]
-  invitations                    OrganizationInvitation[]
-  projects                       Project[]
-  auditEvents                    AuditEvent[]
-  billingCustomer                BillingCustomer?
-  billingSubscription            BillingSubscription?
-  billingEntitlements            BillingEntitlement[]
-  providerCustomerBindings       ProviderCustomerBinding[]
-  connectAccount                 ConnectAccount?
-  connectPayments                ConnectPayment[]
-  connectRefunds                 ConnectRefund[]
-  connectRecoverySnapshots       ConnectRecoverySnapshot[]
-  providerConnectAccountBindings ProviderConnectAccountBinding[]
-  mediaAssets                    MediaAsset[]
-  providerMediaAssetBindings     ProviderMediaAssetBinding[]
-  locations                      LocationRecord[]
+  assets Asset[]
 
-  @@index([status])
-  @@index([updatedAt])
-  @@map("organizations")
-}
+  crmAccounts CrmAccount[]
+  crmContacts CrmContact[]
+  crmDeals    CrmDeal[]
 
-model MediaAsset {
-  id                String           @id @default(cuid())
-  organizationId    String
-  uploadedById      String
-  providerAssetId   String           @unique @db.VarChar(255)
-  publicId          String           @db.VarChar(255)
-  resourceType      String           @db.VarChar(40)
-  format            String?          @db.VarChar(40)
-  secureUrl         String?          @db.VarChar(1000)
-  bytes             Int?
-  width             Int?
-  height            Int?
-  status            MediaAssetStatus @default(pending)
-  providerUpdatedAt DateTime?
-  createdAt         DateTime         @default(now())
-  updatedAt         DateTime         @updatedAt
+  projects         Project[]
+  projectMembers   ProjectMember[]
+  milestones       Milestone[]
+  tasks            Task[]
+  taskDependencies TaskDependency[]
 
-  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  supportTickets    SupportTicket[]
+  supportMessages   SupportMessage[]
+  knowledgeArticles KnowledgeArticle[]
 
-  @@index([organizationId, status])
-  @@index([uploadedById])
-  @@map("media_assets")
-}
+  audiences     Audience[]
+  campaigns     Campaign[]
+  campaignSteps CampaignStep[]
 
-model ProviderMediaAssetBinding {
-  id              String   @id @default(cuid())
-  providerAssetId String   @unique @db.VarChar(255)
-  organizationId  String
-  createdAt       DateTime @default(now())
+  invoices     Invoice[]
+  invoiceLines InvoiceLine[]
+  expenses     Expense[]
 
-  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  socialAccounts  SocialAccount[]
+  socialPosts     SocialPost[]
+  socialVariants  SocialVariant[]
+  socialPostMedia SocialPostMedia[]
 
-  @@index([organizationId])
-  @@map("provider_media_asset_bindings")
-}
+  aiGenerations AiGeneration[]
+  aiUsage       AiUsageLedger[]
 
-model LocationRecord {
-  id             String   @id @default(cuid())
-  organizationId String
-  label          String   @db.VarChar(200)
-  mapboxId       String?  @db.VarChar(255)
-  longitude      Decimal  @db.Decimal(9, 6)
-  latitude       Decimal  @db.Decimal(8, 6)
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  portalDocuments        PortalDocument[]
+  portalDocumentVersions PortalDocumentVersion[]
+  portalApprovals        PortalApproval[]
 
-  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  auditEvents AuditEvent[]
 
-  @@index([organizationId])
-  @@map("location_records")
+  webhookEvents      WebhookEvent[]
+  idempotencyRecords IdempotencyRecord[]
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
 }
 
 model Membership {
-  id             String           @id @default(cuid())
-  organizationId String
-  userId         String
-  role           OrganizationRole @default(viewer)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id             String           @id @default(uuid()) @db.Uuid
+  organizationId String           @db.Uuid
+  userId         String           @db.Uuid
+  role           MembershipRole   @default(MEMBER)
+  status         MembershipStatus @default(ACTIVE)
 
   organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  user         User         @relation(fields: [userId], references: [id], onDelete: Restrict)
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  crmAccountsOwned CrmAccount[] @relation("CrmAccountOwner")
+  crmContactsOwned CrmContact[] @relation("CrmContactOwner")
+  crmDealsOwned    CrmDeal[]    @relation("CrmDealOwner")
+
+  projectsOwned      Project[]       @relation("ProjectOwner")
+  projectMemberships ProjectMember[]
+  tasksAssigned      Task[]          @relation("TaskAssignee")
+
+  supportTicketsAssigned    SupportTicket[]    @relation("SupportAssignee")
+  supportMessagesAuthored   SupportMessage[]   @relation("SupportMessageAuthor")
+  knowledgeArticlesAuthored KnowledgeArticle[] @relation("KnowledgeArticleAuthor")
+
+  campaignsOwned Campaign[] @relation("CampaignOwner")
+
+  invoicesCreated   Invoice[] @relation("InvoiceCreator")
+  expensesSubmitted Expense[] @relation("ExpenseSubmitter")
+
+  assetsCreated      Asset[]      @relation("AssetCreator")
+  socialPostsCreated SocialPost[] @relation("SocialPostCreator")
+
+  portalVersionsUploaded  PortalDocumentVersion[] @relation("PortalVersionUploader")
+  portalApprovalsReviewed PortalApproval[]        @relation("PortalApprovalReviewer")
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
 
   @@unique([organizationId, userId])
-  @@index([organizationId])
+  @@index([organizationId, status])
   @@index([userId])
-  @@index([role])
-  @@map("memberships")
 }
 
-model OrganizationInvitation {
-  id              String           @id @default(cuid())
-  organizationId  String
-  email           String           @db.VarChar(320)
-  role            OrganizationRole @default(viewer)
-  status          InvitationStatus @default(pending)
-  invitedByUserId String
-  expiresAt       DateTime
-  acceptedAt      DateTime?
+model OrganizationSettings {
+  id             String @id @default(uuid()) @db.Uuid
+  organizationId String @unique @db.Uuid
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  invitedBy    User         @relation("InvitationSender", fields: [invitedByUserId], references: [id], onDelete: Restrict)
-
-  @@unique([organizationId, email, status])
-  @@index([invitedByUserId])
-  @@index([status, expiresAt])
-  @@map("organization_invitations")
-}
-
-model Project {
-  id             String @id @default(cuid())
-  organizationId String
-  ownerId        String
-
-  name        String        @db.VarChar(120)
-  slug        String        @unique @db.VarChar(140)
-  description String?       @db.VarChar(500)
-  status      ProjectStatus @default(active)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  owner        User         @relation("ProjectOwner", fields: [ownerId], references: [id], onDelete: Restrict)
-  auditEvents  AuditEvent[]
-
-  @@index([organizationId])
-  @@index([ownerId])
-  @@index([status])
-  @@index([updatedAt])
-  @@map("projects")
-}
-
-model AuditEvent {
-  id String @id @default(cuid())
-
-  eventName   String
-  actorType   AuditActorType
-  actorUserId String?
-
-  entityType String
-  entityId   String
-
-  organizationId String?
-  projectId      String?
-  requestId      String?
-  metadata       Json?
-
-  createdAt DateTime @default(now())
-
-  actorUser    User?         @relation("AuditActorUser", fields: [actorUserId], references: [id], onDelete: SetNull)
-  organization Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
-  project      Project?      @relation(fields: [projectId], references: [id], onDelete: SetNull)
-
-  @@index([eventName])
-  @@index([actorType])
-  @@index([actorUserId])
-  @@index([entityType, entityId])
-  @@index([organizationId, createdAt])
-  @@index([projectId, createdAt])
-  @@index([createdAt])
-  @@map("audit_events")
-}
-
-model ProviderWebhookEvent {
-  id String @id @default(cuid())
-
-  provider        WebhookProvider
-  providerEventId String          @db.VarChar(255)
-  eventType       String          @db.VarChar(120)
-
-  status       ProviderWebhookStatus @default(received)
-  attemptCount Int                   @default(0)
-
-  receivedAt          DateTime  @default(now())
-  lastAttemptAt       DateTime?
-  processingStartedAt DateTime?
-  processedAt         DateTime?
-
-  processingError String? @db.VarChar(500)
-  safeMetadata    Json?
-
-  @@unique([provider, providerEventId])
-  @@index([provider])
-  @@index([providerEventId])
-  @@index([eventType])
-  @@index([status])
-  @@index([status, processingStartedAt])
-  @@index([receivedAt])
-  @@map("provider_webhook_events")
-}
-
-model BillingCustomer {
-  id               String @id @default(cuid())
-  organizationId   String @unique
-  stripeCustomerId String @unique @db.VarChar(255)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  organization Organization         @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  subscription BillingSubscription?
-
-  @@index([organizationId])
-  @@map("billing_customers")
-}
-
-model ProviderCustomerBinding {
-  id                 String          @id @default(cuid())
-  provider           WebhookProvider
-  providerCustomerId String          @db.VarChar(255)
-  organizationId     String
-
-  createdAt DateTime @default(now())
+  timezone        String @default("UTC")
+  locale          String @default("en-US")
+  defaultCurrency String @default("USD") @db.Char(3)
 
   organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
 
-  @@unique([provider, providerCustomerId])
-  @@index([organizationId])
-  @@map("provider_customer_bindings")
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
 }
 
 model BillingSubscription {
-  id                   String                    @id @default(cuid())
-  organizationId       String                    @unique
-  billingCustomerId    String                    @unique
-  stripeSubscriptionId String                    @unique @db.VarChar(255)
-  status               BillingSubscriptionStatus
-  stripePriceId        String                    @db.VarChar(255)
-  currentPeriodEnd     DateTime?
-  cancelAtPeriodEnd    Boolean                   @default(false)
-  providerCreatedAt    DateTime
-  providerUpdatedAt    DateTime
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  organization    Organization              @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  billingCustomer BillingCustomer           @relation(fields: [billingCustomerId], references: [id], onDelete: Cascade)
-  items           BillingSubscriptionItem[]
-  entitlements    BillingEntitlement[]
-
-  @@index([organizationId])
-  @@index([status])
-  @@map("billing_subscriptions")
-}
-
-model BillingSubscriptionItem {
-  id                       String @id @default(cuid())
-  billingSubscriptionId    String
-  stripeSubscriptionItemId String @unique @db.VarChar(255)
-  stripePriceId            String @db.VarChar(255)
-  quantity                 Int    @default(1)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  subscription BillingSubscription @relation(fields: [billingSubscriptionId], references: [id], onDelete: Cascade)
-
-  @@index([billingSubscriptionId])
-  @@map("billing_subscription_items")
-}
-
-model BillingEntitlement {
-  id                    String  @id @default(cuid())
-  organizationId        String
-  billingSubscriptionId String?
-  key                   String  @db.VarChar(80)
-  active                Boolean @default(false)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  organization Organization         @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  subscription BillingSubscription? @relation(fields: [billingSubscriptionId], references: [id], onDelete: SetNull)
-
-  @@unique([organizationId, key])
-  @@index([organizationId, active])
-  @@index([billingSubscriptionId])
-  @@map("billing_entitlements")
-}
-
-model ConnectAccount {
-  id                   String               @id @default(cuid())
-  organizationId       String               @unique
-  stripeAccountId      String               @unique @db.VarChar(255)
-  country              String               @db.VarChar(2)
-  status               ConnectAccountStatus @default(pending)
-  detailsSubmitted     Boolean              @default(false)
-  chargesEnabled       Boolean              @default(false)
-  payoutsEnabled       Boolean              @default(false)
-  requirementsDueCount Int                  @default(0)
-  disabledReason       String?              @db.VarChar(160)
-  providerUpdatedAt    DateTime
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  organization      Organization              @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  payments          ConnectPayment[]
-  recoverySnapshots ConnectRecoverySnapshot[]
-
-  @@index([organizationId])
-  @@index([status])
-  @@map("connect_accounts")
-}
-
-model ProviderConnectAccountBinding {
-  id                String @id @default(cuid())
-  providerAccountId String @unique @db.VarChar(255)
-  organizationId    String
-
-  createdAt DateTime @default(now())
+  id                     String             @id @default(uuid()) @db.Uuid
+  organizationId         String             @unique @db.Uuid
+  provider               String
+  providerCustomerId     String?
+  providerSubscriptionId String?            @unique
+  planKey                String
+  status                 SubscriptionStatus
+  currentPeriodEnd       DateTime?          @db.Timestamptz(6)
+  cancelAtPeriodEnd      Boolean            @default(false)
 
   organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
 
-  @@index([organizationId])
-  @@map("provider_connect_account_bindings")
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
+
+  @@index([provider, providerCustomerId])
 }
 
-model ConnectPayment {
-  id                      String               @id @default(cuid())
-  organizationId          String
-  connectAccountId        String
-  reference               String               @db.VarChar(120)
-  stripeCheckoutSessionId String?              @unique @db.VarChar(255)
-  stripePaymentIntentId   String?              @unique @db.VarChar(255)
-  latestChargeId          String?              @db.VarChar(255)
-  amountMinor             Int
-  currency                String               @db.VarChar(3)
-  platformFeeMinor        Int
-  status                  ConnectPaymentStatus @default(checkout_pending)
-  amountCapturableMinor   Int                  @default(0)
-  amountReceivedMinor     Int                  @default(0)
-  refundedAmountMinor     Int                  @default(0)
-  providerUpdatedAt       DateTime
+model Asset {
+  id                    String  @id @default(uuid()) @db.Uuid
+  organizationId        String  @db.Uuid
+  createdByMembershipId String? @db.Uuid
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  storageProvider String
+  storageKey      String
+  filename        String
+  contentType     String
+  byteSize        BigInt
+  checksum        String?
 
-  organization      Organization              @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  connectAccount    ConnectAccount            @relation(fields: [connectAccountId], references: [id], onDelete: Restrict)
-  refunds           ConnectRefund[]
-  recoverySnapshots ConnectRecoverySnapshot[]
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  createdBy    Membership?  @relation("AssetCreator", fields: [createdByMembershipId], references: [id], onDelete: SetNull)
 
-  @@unique([organizationId, reference])
+  expenseReceipts        Expense[]               @relation("ExpenseReceipt")
+  socialPostMedia        SocialPostMedia[]
+  portalDocumentVersions PortalDocumentVersion[]
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+
+  @@unique([organizationId, storageProvider, storageKey])
+  @@index([organizationId, createdAt])
+}
+
+model CrmAccount {
+  id                String  @id @default(uuid()) @db.Uuid
+  organizationId    String  @db.Uuid
+  ownerMembershipId String? @db.Uuid
+
+  name       String
+  website    String?
+  industry   String?
+  status     CrmAccountStatus @default(PROSPECT)
+  notes      String?
+  archivedAt DateTime?        @db.Timestamptz(6)
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  owner        Membership?  @relation("CrmAccountOwner", fields: [ownerMembershipId], references: [id], onDelete: SetNull)
+
+  contacts CrmContact[]
+  deals    CrmDeal[]
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
+
   @@index([organizationId, status])
-  @@index([connectAccountId])
-  @@map("connect_payments")
+  @@index([organizationId, ownerMembershipId])
+  @@index([organizationId, name])
 }
 
-model ConnectRefund {
-  id                String              @id @default(cuid())
-  organizationId    String
-  connectPaymentId  String
-  stripeRefundId    String              @unique @db.VarChar(255)
-  amountMinor       Int
-  status            ConnectRefundStatus
-  providerUpdatedAt DateTime
+model CrmContact {
+  id                String  @id @default(uuid()) @db.Uuid
+  organizationId    String  @db.Uuid
+  accountId         String? @db.Uuid
+  ownerMembershipId String? @db.Uuid
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  firstName  String
+  lastName   String
+  email      String?
+  phone      String?
+  title      String?
+  status     CrmContactStatus @default(LEAD)
+  archivedAt DateTime?        @db.Timestamptz(6)
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  account      CrmAccount?  @relation(fields: [accountId], references: [id], onDelete: SetNull)
+  owner        Membership?  @relation("CrmContactOwner", fields: [ownerMembershipId], references: [id], onDelete: SetNull)
+
+  primaryDeals CrmDeal[] @relation("CrmDealPrimaryContact")
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
+
+  @@index([organizationId, status])
+  @@index([organizationId, accountId])
+  @@index([organizationId, email])
+}
+
+model CrmDeal {
+  id                String  @id @default(uuid()) @db.Uuid
+  organizationId    String  @db.Uuid
+  accountId         String  @db.Uuid
+  primaryContactId  String? @db.Uuid
+  ownerMembershipId String? @db.Uuid
+
+  name              String
+  stage             CrmDealStage @default(LEAD)
+  value             Decimal      @default(0) @db.Decimal(19, 4)
+  currency          String       @default("USD") @db.Char(3)
+  probability       Int          @default(0)
+  expectedCloseDate DateTime?    @db.Date
+  closedAt          DateTime?    @db.Timestamptz(6)
+  archivedAt        DateTime?    @db.Timestamptz(6)
+  version           Int          @default(1)
+
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  account        CrmAccount   @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  primaryContact CrmContact?  @relation("CrmDealPrimaryContact", fields: [primaryContactId], references: [id], onDelete: SetNull)
+  owner          Membership?  @relation("CrmDealOwner", fields: [ownerMembershipId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
+
+  @@index([organizationId, stage])
+  @@index([organizationId, ownerMembershipId])
+  @@index([organizationId, accountId])
+  @@index([organizationId, expectedCloseDate])
+}
+
+model Project {
+  id                String  @id @default(uuid()) @db.Uuid
+  organizationId    String  @db.Uuid
+  ownerMembershipId String? @db.Uuid
+
+  name        String
+  description String?
+  status      ProjectStatus @default(PLANNED)
+  startsAt    DateTime?     @db.Date
+  dueAt       DateTime?     @db.Date
+  archivedAt  DateTime?     @db.Timestamptz(6)
+  version     Int           @default(1)
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  owner        Membership?  @relation("ProjectOwner", fields: [ownerMembershipId], references: [id], onDelete: SetNull)
+
+  members    ProjectMember[]
+  milestones Milestone[]
+  tasks      Task[]
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
+
+  @@index([organizationId, status])
+  @@index([organizationId, ownerMembershipId])
+  @@index([organizationId, dueAt])
+}
+
+model ProjectMember {
+  id             String            @id @default(uuid()) @db.Uuid
+  organizationId String            @db.Uuid
+  projectId      String            @db.Uuid
+  membershipId   String            @db.Uuid
+  role           ProjectMemberRole @default(CONTRIBUTOR)
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  project      Project      @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  membership   Membership   @relation(fields: [membershipId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+
+  @@unique([projectId, membershipId])
+  @@index([organizationId, membershipId])
+}
+
+model Milestone {
+  id             String @id @default(uuid()) @db.Uuid
+  organizationId String @db.Uuid
+  projectId      String @db.Uuid
+
+  name        String
+  description String?
+  dueAt       DateTime? @db.Date
+  completedAt DateTime? @db.Timestamptz(6)
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  project      Project      @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  tasks Task[]
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
+
+  @@index([organizationId, projectId])
+  @@index([organizationId, dueAt])
+}
+
+model Task {
+  id                   String  @id @default(uuid()) @db.Uuid
+  organizationId       String  @db.Uuid
+  projectId            String  @db.Uuid
+  milestoneId          String? @db.Uuid
+  parentTaskId         String? @db.Uuid
+  assigneeMembershipId String? @db.Uuid
+
+  title       String
+  description String?
+  status      TaskStatus   @default(TODO)
+  priority    TaskPriority @default(MEDIUM)
+  startsAt    DateTime?    @db.Timestamptz(6)
+  dueAt       DateTime?    @db.Timestamptz(6)
+  completedAt DateTime?    @db.Timestamptz(6)
+  position    Int          @default(0)
+  version     Int          @default(1)
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  project      Project      @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  milestone    Milestone?   @relation(fields: [milestoneId], references: [id], onDelete: SetNull)
+
+  parent   Task?  @relation("TaskHierarchy", fields: [parentTaskId], references: [id], onDelete: SetNull)
+  children Task[] @relation("TaskHierarchy")
+
+  assignee Membership? @relation("TaskAssignee", fields: [assigneeMembershipId], references: [id], onDelete: SetNull)
+
+  dependencies TaskDependency[] @relation("TaskDependencySource")
+  requiredBy   TaskDependency[] @relation("TaskDependencyTarget")
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
+
+  @@index([organizationId, projectId, status])
+  @@index([organizationId, assigneeMembershipId, status])
+  @@index([organizationId, dueAt])
+  @@index([parentTaskId])
+}
+
+model TaskDependency {
+  id              String @id @default(uuid()) @db.Uuid
+  organizationId  String @db.Uuid
+  taskId          String @db.Uuid
+  dependsOnTaskId String @db.Uuid
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  task         Task         @relation("TaskDependencySource", fields: [taskId], references: [id], onDelete: Cascade)
+  dependsOn    Task         @relation("TaskDependencyTarget", fields: [dependsOnTaskId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+
+  @@unique([taskId, dependsOnTaskId])
+  @@index([organizationId, dependsOnTaskId])
+}
+
+model SupportTicket {
+  id                   String  @id @default(uuid()) @db.Uuid
+  organizationId       String  @db.Uuid
+  requesterUserId      String? @db.Uuid
+  assignedMembershipId String? @db.Uuid
+
+  number      Int
+  subject     String
+  description String?
+  status      TicketStatus   @default(OPEN)
+  priority    TicketPriority @default(NORMAL)
+
+  firstResponseDueAt DateTime? @db.Timestamptz(6)
+  resolutionDueAt    DateTime? @db.Timestamptz(6)
+  resolvedAt         DateTime? @db.Timestamptz(6)
+  closedAt           DateTime? @db.Timestamptz(6)
+  version            Int       @default(1)
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  requester    User?        @relation("SupportRequester", fields: [requesterUserId], references: [id], onDelete: SetNull)
+  assignee     Membership?  @relation("SupportAssignee", fields: [assignedMembershipId], references: [id], onDelete: SetNull)
+
+  messages SupportMessage[]
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
+
+  @@unique([organizationId, number])
+  @@index([organizationId, status, priority])
+  @@index([organizationId, assignedMembershipId, status])
+}
+
+model SupportMessage {
+  id                 String  @id @default(uuid()) @db.Uuid
+  organizationId     String  @db.Uuid
+  ticketId           String  @db.Uuid
+  authorMembershipId String? @db.Uuid
+
+  authorLabel String
+  body        String
+  isInternal  Boolean @default(false)
+
+  organization Organization  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  ticket       SupportTicket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  author       Membership?   @relation("SupportMessageAuthor", fields: [authorMembershipId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+
+  @@index([organizationId, ticketId, createdAt])
+}
+
+model KnowledgeArticle {
+  id                 String  @id @default(uuid()) @db.Uuid
+  organizationId     String  @db.Uuid
+  authorMembershipId String? @db.Uuid
+
+  slug   String
+  title  String
+  body   String
+  status KnowledgeArticleStatus @default(DRAFT)
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  author       Membership?  @relation("KnowledgeArticleAuthor", fields: [authorMembershipId], references: [id], onDelete: SetNull)
+
+  publishedAt DateTime? @db.Timestamptz(6)
+  createdAt   DateTime  @default(now()) @db.Timestamptz(6)
+  updatedAt   DateTime  @updatedAt @db.Timestamptz(6)
+
+  @@unique([organizationId, slug])
+  @@index([organizationId, status])
+}
+
+model Audience {
+  id             String @id @default(uuid()) @db.Uuid
+  organizationId String @db.Uuid
+
+  name       String
+  definition Json
+  status     AudienceStatus @default(DRAFT)
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  campaigns    Campaign[]
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
+
+  @@index([organizationId, status])
+}
+
+model Campaign {
+  id                String  @id @default(uuid()) @db.Uuid
+  organizationId    String  @db.Uuid
+  audienceId        String? @db.Uuid
+  ownerMembershipId String? @db.Uuid
+
+  name        String
+  description String?
+  status      CampaignStatus @default(DRAFT)
+  scheduledAt DateTime?      @db.Timestamptz(6)
+  startedAt   DateTime?      @db.Timestamptz(6)
+  completedAt DateTime?      @db.Timestamptz(6)
+  version     Int            @default(1)
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  audience     Audience?    @relation(fields: [audienceId], references: [id], onDelete: SetNull)
+  owner        Membership?  @relation("CampaignOwner", fields: [ownerMembershipId], references: [id], onDelete: SetNull)
+
+  steps CampaignStep[]
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
+
+  @@index([organizationId, status])
+  @@index([organizationId, scheduledAt])
+}
+
+model CampaignStep {
+  id             String @id @default(uuid()) @db.Uuid
+  organizationId String @db.Uuid
+  campaignId     String @db.Uuid
+
+  position Int
+  type     CampaignStepType
+  config   Json
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  campaign     Campaign     @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
+
+  @@unique([campaignId, position])
+  @@index([organizationId, campaignId])
+}
+
+model Invoice {
+  id                    String  @id @default(uuid()) @db.Uuid
+  organizationId        String  @db.Uuid
+  createdByMembershipId String? @db.Uuid
+
+  number        Int
+  customerName  String
+  customerEmail String?
+  currency      String  @default("USD") @db.Char(3)
+
+  subtotal Decimal @default(0) @db.Decimal(19, 4)
+  taxTotal Decimal @default(0) @db.Decimal(19, 4)
+  total    Decimal @default(0) @db.Decimal(19, 4)
+
+  status   InvoiceStatus @default(DRAFT)
+  issuedAt DateTime?     @db.Date
+  dueAt    DateTime?     @db.Date
+  paidAt   DateTime?     @db.Timestamptz(6)
+  version  Int           @default(1)
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  createdBy    Membership?  @relation("InvoiceCreator", fields: [createdByMembershipId], references: [id], onDelete: SetNull)
+
+  lines InvoiceLine[]
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
+
+  @@unique([organizationId, number])
+  @@index([organizationId, status])
+  @@index([organizationId, dueAt])
+}
+
+model InvoiceLine {
+  id             String @id @default(uuid()) @db.Uuid
+  organizationId String @db.Uuid
+  invoiceId      String @db.Uuid
+
+  position     Int
+  description  String
+  quantity     Decimal @default(1) @db.Decimal(12, 3)
+  unitPrice    Decimal @db.Decimal(19, 4)
+  taxRate      Decimal @default(0) @db.Decimal(7, 6)
+  lineSubtotal Decimal @db.Decimal(19, 4)
+  lineTax      Decimal @db.Decimal(19, 4)
+  lineTotal    Decimal @db.Decimal(19, 4)
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  invoice      Invoice      @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+
+  @@unique([invoiceId, position])
+  @@index([organizationId, invoiceId])
+}
+
+model Expense {
+  id                      String  @id @default(uuid()) @db.Uuid
+  organizationId          String  @db.Uuid
+  submittedByMembershipId String? @db.Uuid
+  receiptAssetId          String? @db.Uuid
+
+  vendor      String
+  description String?
+  amount      Decimal       @db.Decimal(19, 4)
+  currency    String        @default("USD") @db.Char(3)
+  incurredAt  DateTime      @db.Date
+  status      ExpenseStatus @default(DRAFT)
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  submittedBy  Membership?  @relation("ExpenseSubmitter", fields: [submittedByMembershipId], references: [id], onDelete: SetNull)
+  receipt      Asset?       @relation("ExpenseReceipt", fields: [receiptAssetId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
+
+  @@index([organizationId, status])
+  @@index([organizationId, incurredAt])
+}
+
+model SocialAccount {
+  id             String @id @default(uuid()) @db.Uuid
+  organizationId String @db.Uuid
+
+  provider          SocialProvider
+  providerAccountId String
+  displayName       String
+  credentialRef     String?
+  active            Boolean        @default(true)
+
+  organization Organization    @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  variants     SocialVariant[]
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
+
+  @@unique([organizationId, provider, providerAccountId])
+  @@index([organizationId, active])
+}
+
+model SocialPost {
+  id                    String  @id @default(uuid()) @db.Uuid
+  organizationId        String  @db.Uuid
+  createdByMembershipId String? @db.Uuid
+
+  title       String?
+  content     String
+  status      SocialPostStatus @default(DRAFT)
+  scheduledAt DateTime?        @db.Timestamptz(6)
+  publishedAt DateTime?        @db.Timestamptz(6)
+  version     Int              @default(1)
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  createdBy    Membership?  @relation("SocialPostCreator", fields: [createdByMembershipId], references: [id], onDelete: SetNull)
+
+  variants SocialVariant[]
+  media    SocialPostMedia[]
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
+
+  @@index([organizationId, status])
+  @@index([organizationId, scheduledAt])
+}
+
+model SocialVariant {
+  id              String @id @default(uuid()) @db.Uuid
+  organizationId  String @db.Uuid
+  postId          String @db.Uuid
+  socialAccountId String @db.Uuid
+
+  content        String
+  status         SocialVariantStatus @default(DRAFT)
+  providerPostId String?
+  publishedAt    DateTime?           @db.Timestamptz(6)
+  errorCode      String?
+
+  organization  Organization  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  post          SocialPost    @relation(fields: [postId], references: [id], onDelete: Cascade)
+  socialAccount SocialAccount @relation(fields: [socialAccountId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
+
+  @@unique([postId, socialAccountId])
+  @@index([organizationId, status])
+}
+
+model SocialPostMedia {
+  id             String @id @default(uuid()) @db.Uuid
+  organizationId String @db.Uuid
+  postId         String @db.Uuid
+  assetId        String @db.Uuid
+  position       Int
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  post         SocialPost   @relation(fields: [postId], references: [id], onDelete: Cascade)
+  asset        Asset        @relation(fields: [assetId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, assetId])
+  @@unique([postId, position])
+  @@index([organizationId, postId])
+}
+
+model AiGeneration {
+  id             String @id @default(uuid()) @db.Uuid
+  organizationId String @db.Uuid
+  userId         String @db.Uuid
+
+  provider String
+  model    String
+  status   AiGenerationStatus @default(PENDING)
+
+  input       Json
+  output      Json?
+  requestHash String?
+  errorCode   String?
+
+  inputTokens  Int     @default(0)
+  outputTokens Int     @default(0)
+  cost         Decimal @default(0) @db.Decimal(19, 8)
+
+  startedAt   DateTime? @db.Timestamptz(6)
+  completedAt DateTime? @db.Timestamptz(6)
 
   organization Organization   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  payment      ConnectPayment @relation(fields: [connectPaymentId], references: [id], onDelete: Cascade)
+  user         User           @relation("AiGenerationUser", fields: [userId], references: [id], onDelete: Restrict)
+  usage        AiUsageLedger?
 
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
+
+  @@index([organizationId, userId, createdAt])
   @@index([organizationId, status])
-  @@index([connectPaymentId])
-  @@map("connect_refunds")
+  @@index([organizationId, requestHash])
 }
 
-model ConnectRecoverySnapshot {
-  id               String                   @id @default(cuid())
-  organizationId   String
-  connectAccountId String?
-  connectPaymentId String?
-  operation        ConnectRecoveryOperation
-  outcome          ConnectRecoveryOutcome
-  providerObjectId String                   @db.VarChar(255)
-  providerStatus   String                   @db.VarChar(80)
-  safeMetadata     Json?
+model AiUsageLedger {
+  id             String @id @default(uuid()) @db.Uuid
+  organizationId String @db.Uuid
+  userId         String @db.Uuid
+  generationId   String @unique @db.Uuid
 
-  createdAt DateTime @default(now())
+  provider     String
+  model        String
+  inputTokens  Int
+  outputTokens Int
+  cost         Decimal @db.Decimal(19, 8)
 
-  organization   Organization    @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  connectAccount ConnectAccount? @relation(fields: [connectAccountId], references: [id], onDelete: Cascade)
-  connectPayment ConnectPayment? @relation(fields: [connectPaymentId], references: [id], onDelete: Cascade)
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  user         User         @relation("AiUsageUser", fields: [userId], references: [id], onDelete: Restrict)
+  generation   AiGeneration @relation(fields: [generationId], references: [id], onDelete: Cascade)
+
+  occurredAt DateTime @default(now()) @db.Timestamptz(6)
+
+  @@index([organizationId, occurredAt])
+  @@index([organizationId, userId, occurredAt])
+}
+
+model PortalDocument {
+  id             String @id @default(uuid()) @db.Uuid
+  organizationId String @db.Uuid
+
+  title                String
+  description          String?
+  status               PortalDocumentStatus @default(DRAFT)
+  clientVisible        Boolean              @default(false)
+  currentVersionNumber Int                  @default(0)
+  version              Int                  @default(1)
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  versions PortalDocumentVersion[]
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
+
+  @@index([organizationId, status])
+  @@index([organizationId, clientVisible])
+}
+
+model PortalDocumentVersion {
+  id                     String  @id @default(uuid()) @db.Uuid
+  organizationId         String  @db.Uuid
+  documentId             String  @db.Uuid
+  assetId                String  @db.Uuid
+  uploadedByMembershipId String? @db.Uuid
+
+  versionNumber Int
+  notes         String?
+
+  organization Organization   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  document     PortalDocument @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  asset        Asset          @relation(fields: [assetId], references: [id], onDelete: Restrict)
+  uploadedBy   Membership?    @relation("PortalVersionUploader", fields: [uploadedByMembershipId], references: [id], onDelete: SetNull)
+
+  approvals PortalApproval[]
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+
+  @@unique([documentId, versionNumber])
+  @@index([organizationId, documentId])
+}
+
+model PortalApproval {
+  id                   String  @id @default(uuid()) @db.Uuid
+  organizationId       String  @db.Uuid
+  documentVersionId    String  @db.Uuid
+  reviewerMembershipId String? @db.Uuid
+
+  reviewerLabel String
+  status        ApprovalStatus @default(PENDING)
+  note          String?
+  decidedAt     DateTime?      @db.Timestamptz(6)
+
+  organization    Organization          @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  documentVersion PortalDocumentVersion @relation(fields: [documentVersionId], references: [id], onDelete: Cascade)
+  reviewer        Membership?           @relation("PortalApprovalReviewer", fields: [reviewerMembershipId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
+
+  @@unique([documentVersionId, reviewerMembershipId])
+  @@index([organizationId, status])
+}
+
+model AuditEvent {
+  id             String  @id @default(uuid()) @db.Uuid
+  organizationId String  @db.Uuid
+  actorUserId    String? @db.Uuid
+
+  action       String
+  resourceType String
+  resourceId   String?
+  metadata     Json?
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  actor        User?        @relation("AuditActor", fields: [actorUserId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
 
   @@index([organizationId, createdAt])
-  @@index([connectAccountId])
-  @@index([connectPaymentId])
-  @@map("connect_recovery_snapshots")
+  @@index([organizationId, resourceType, resourceId])
+  @@index([organizationId, action])
+}
+
+model WebhookEvent {
+  id             String  @id @default(uuid()) @db.Uuid
+  organizationId String? @db.Uuid
+
+  provider String
+  eventId  String
+  type     String
+  status   WebhookStatus @default(RECEIVED)
+
+  payloadHash String?
+  errorCode   String?
+  receivedAt  DateTime  @default(now()) @db.Timestamptz(6)
+  processedAt DateTime? @db.Timestamptz(6)
+
+  organization Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+
+  @@unique([provider, eventId])
+  @@index([organizationId, receivedAt])
+  @@index([provider, status])
+}
+
+model IdempotencyRecord {
+  id             String  @id @default(uuid()) @db.Uuid
+  organizationId String? @db.Uuid
+
+  scope String
+  key   String
+  state IdempotencyState @default(STARTED)
+
+  result      Json?
+  errorCode   String?
+  completedAt DateTime? @db.Timestamptz(6)
+
+  organization Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
+
+  @@unique([scope, key])
+  @@index([organizationId, createdAt])
 }

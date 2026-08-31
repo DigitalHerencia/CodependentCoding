@@ -1,0 +1,332 @@
+{
+  "$schema": "codependent-coding://contracts/design/v1",
+  "contractVersion": 1,
+  "kind": "design-contract",
+  "serialization": "yaml-1.2-json-subset",
+  "generatedAt": "2026-08-30T21:26:00-06:00",
+  "authority": {
+    "humanSpecification": "context/docs/Design.md",
+    "visualEvidenceRoot": "context/mockups",
+    "brandAssetAuthority": "public/",
+    "rule": "Mockups control hierarchy/presentation evidence, not unsupported behavior. Existing public assets are authoritative for logos/wordmarks/artwork."
+  },
+  "intent": {
+    "mode": "dark-only",
+    "style": [
+      "neo-brutalist",
+      "technical",
+      "theatrical",
+      "retro-futurist command console",
+      "deliberately over-specified"
+    ],
+    "readingRule": "Documentation is materially quieter than marketing/configuration surfaces."
+  },
+  "tokens": {
+    "background": [
+      "#000000",
+      "#05030b"
+    ],
+    "foreground": "#ffffff",
+    "brandCyanApprox": "#2f7a8d",
+    "glowUnderline": "#2f7a8d",
+    "typography": {
+      "heading": "Copperplate Gothic Bold or supplied wordmark asset",
+      "body": "JetBrains Mono",
+      "code": "Fira Code"
+    },
+    "borders": "thin high-contrast cyan/gray; square or restrained radius",
+    "effects": "controlled cyan glow that never reduces legibility",
+    "semanticTokenNames": [
+      "color-background",
+      "color-foreground",
+      "color-card",
+      "color-card-foreground",
+      "color-popover",
+      "color-popover-foreground",
+      "color-primary",
+      "color-primary-foreground",
+      "color-secondary",
+      "color-secondary-foreground",
+      "color-accent",
+      "color-accent-foreground",
+      "color-muted",
+      "color-muted-foreground",
+      "color-destructive",
+      "color-destructive-foreground",
+      "color-success",
+      "color-success-foreground",
+      "color-warning",
+      "color-warning-foreground",
+      "color-info",
+      "color-info-foreground",
+      "color-border",
+      "color-input",
+      "color-ring",
+      "color-chart-1",
+      "color-chart-2",
+      "color-chart-3",
+      "color-chart-4",
+      "color-chart-5",
+      "color-neon-pink",
+      "color-neon-green",
+      "color-neon-blue",
+      "color-neon-orange",
+      "color-neon-purple",
+      "color-clash-1",
+      "color-clash-2",
+      "color-clash-3",
+      "color-clash-4",
+      "radius-sm",
+      "radius-md",
+      "radius-lg",
+      "radius-xl",
+      "var-rounded",
+      "var-hover",
+      "var-active",
+      "var-focused",
+      "var-border",
+      "breakpoint-sm",
+      "breakpoint-md",
+      "breakpoint-lg",
+      "breakpoint-xl"
+    ]
+  },
+  "global": {
+    "header": [
+      "black background",
+      "Codependent Coding wordmark left",
+      "primary product navigation",
+      "Copperplate-style all caps",
+      "white default text",
+      "active route cyan underline",
+      "hover about scale(1.05) without layout movement",
+      "mobile collapse preserves every primary surface"
+    ],
+    "footer": [
+      "black footer above decorative landscape",
+      "Digital Herencia identity left",
+      "FAQ/Terms/Privacy",
+      "readable independently of background image",
+      "decorative circuit/landscape never obstructs links"
+    ],
+    "backgroundArtwork": {
+      "landing": {
+        "asset": "public/Digital Herencia Banner.png",
+        "behavior": "full viewport width, bottom anchored, auto height, #05030b page"
+      },
+      "anthimeria": {
+        "asset": "public/Digital Herencia Desert BG.png",
+        "behavior": "full width, bottom anchored, footer overlays correctly"
+      },
+      "simples": {
+        "asset": "public/Digital Herencia Desert BG.png",
+        "behavior": "same landscape language"
+      }
+    }
+  },
+  "surfaces": {
+    "landing": {
+      "required": [
+        "large centered Codependent Coding identity",
+        "headline: WHEN EPISTEMOLOGIES FAIL, THE STACK STILL GOVERNS.",
+        "Hipster Stack supporting copy",
+        "two cyan rectangular primary CTAs",
+        "secondary line: NOTHING TO BORROW. WE CHECKED.",
+        "large Digital Herencia mark",
+        "bottom landscape/circuit horizon",
+        "generous negative space"
+      ]
+    },
+    "ontologies": {
+      "required": [
+        "THE ONTOLOGY™ / NORMALIZED DEFAULTS identity",
+        "wrapped Ontology selector",
+        "selected cyan underline/state",
+        "bordered tree + source/definition viewer",
+        "description/capability material below viewer",
+        "COPY PAGE and DOWNLOAD in upper-right action area",
+        "wide desktop code composition",
+        "safe stacked mobile viewer"
+      ]
+    },
+    "simplesOverview": {
+      "required": [
+        "THE SIMPLES™ / NORMALIZED BLOCKS identity",
+        "separate BUSINESSLOGIC BLOCKS™ / DOMAIN WORKFLOWS statement",
+        "separate PURE UI BLOCKS™ / PRESENTATION LAYER statement",
+        "bounded architecture diagrams/cards",
+        "exactly two top-level families communicated"
+      ]
+    },
+    "businessLogicDetail": {
+      "required": [
+        "BusinessLogic wordmark",
+        "large block title",
+        "capability/action row only for actually supported behavior",
+        "definition/docs/related tabs",
+        "large readable dark code panel",
+        "Includes/Works With/Output cards",
+        "download/copy/share actions only when real"
+      ]
+    },
+    "pureUiCatalogDetail": {
+      "required": [
+        "PureUI identity/category dominance",
+        "real component previews where possible",
+        "coherent example families",
+        "scannable but evaluable preview scale"
+      ]
+    },
+    "anthimeria": {
+      "required": [
+        "THE ANTHIMERIA™ WORKBENCH identity",
+        "desktop left configuration rail + right workbench",
+        "visually discrete categories/stages",
+        "outlined dark panels with cyan selected state",
+        "Application Definition preview visible as durable output",
+        "Includes/Works With/Output summaries",
+        "visual distinction between bounded presentation configuration and server internals"
+      ]
+    },
+    "documentation": {
+      "required": [
+        "desktop left docs navigation",
+        "readable long-form content column",
+        "visible current section",
+        "shared cyan/white code/link/heading language",
+        "quieter than marketing surfaces"
+      ]
+    }
+  },
+  "responsive": [
+    "no forced horizontal page scrolling",
+    "header collapses cleanly",
+    "two-column code/workbench layouts stack on narrow screens",
+    "large wordmarks use clamp/asset constraints",
+    "landscape stays bottom anchored without consuming mobile viewport",
+    "CTA groups and segmented controls wrap while preserving state clarity"
+  ],
+  "interactionStates": {
+    "default": "white/cyan text on near-black",
+    "hover": "small scale/brightness increase and restrained border/glow",
+    "activeSelected": "explicit cyan underline/border/fill/check/state",
+    "focus": "visible keyboard focus distinct from hover",
+    "disabled": "reduced but legible contrast; no misleading hover",
+    "error": "local explicit error accent, not global recolor",
+    "success": "explicit confirmation/check plus text feedback"
+  },
+  "accessibility": [
+    "WCAG-oriented semantic structure",
+    "keyboard operability",
+    "visible focus",
+    "sufficient contrast on #05030b/black",
+    "accessible names and states",
+    "tabs/dialogs/sidebars/code viewers/copy buttons/form fields keyboard usable",
+    "motion/glow never obscure text or become sole state indicator",
+    "decorative images use empty alt; meaningful identity graphics receive useful labels"
+  ],
+  "copy": {
+    "voice": [
+      "technical",
+      "precise",
+      "irreverent",
+      "self-aware"
+    ],
+    "invariants": [
+      "architecture terminology remains semantically correct",
+      "critical instructions/security/errors/configuration consequences stay plain and unambiguous",
+      "playful jokes/easter eggs are low-stakes only"
+    ]
+  },
+  "mockups": [
+    {
+      "path": "context/mockups/Anthimeria Mockup.jpg",
+      "sha256": "69f2742411ec0d12fd76ecb415e7f9a89ae866a70ddb0cc7505f12d06cbf078b",
+      "width": 894,
+      "height": 1600,
+      "role": "visual-reference",
+      "surface": "anthimeria"
+    },
+    {
+      "path": "context/mockups/Business Blocks Mockup.jpg",
+      "sha256": "830095942732b0f75a943a12a97144a0ec838e566282ab93adf5fed755627600",
+      "width": 1366,
+      "height": 1600,
+      "role": "visual-reference",
+      "surface": "businesslogic-detail"
+    },
+    {
+      "path": "context/mockups/Docs Mockup.jpg",
+      "sha256": "b83cf34087c7a34509860fe0d1850cfbf984ff1f78d22a31290f611c19163e18",
+      "width": 1366,
+      "height": 1600,
+      "role": "visual-reference",
+      "surface": "documentation"
+    },
+    {
+      "path": "context/mockups/Landing Mockup.jpg",
+      "sha256": "467eaadbb281dfec5bdb4ac09c9a9a40b7b09ed7e6bc13c82d32d68ecfc436b8",
+      "width": 894,
+      "height": 1600,
+      "role": "visual-reference",
+      "surface": "landing"
+    },
+    {
+      "path": "context/mockups/Ontology Mockup.jpg",
+      "sha256": "9fc4c54a7901bfe265ade4313470edbf3230dbe33e0ce1c7fe0450fab8f3af30",
+      "width": 894,
+      "height": 1600,
+      "role": "visual-reference",
+      "surface": "ontologies"
+    },
+    {
+      "path": "context/mockups/Simples 1 Mockup.jpg",
+      "sha256": "15ff659fd96fed3bf25cff8a1999703cd0b1390e10c0a22ffbaa5568eda98482",
+      "width": 1366,
+      "height": 1600,
+      "role": "visual-reference",
+      "surface": "simples-businesslogic-overview"
+    },
+    {
+      "path": "context/mockups/Simples 2 Mockup.jpg",
+      "sha256": "f27b0d83bdf5bed4a0f5517955ee9e728969cf350455ba9b71caa8894af10213",
+      "width": 1366,
+      "height": 1600,
+      "role": "visual-reference",
+      "surface": "simples-pureui-overview"
+    },
+    {
+      "path": "context/mockups/Template Mockup.jpg",
+      "sha256": "e974f61d5b9460ad09a58c1a3d24891be50657c1b758bad33564b939159c5b52",
+      "width": 1366,
+      "height": 1600,
+      "role": "visual-reference",
+      "surface": "maximal-template"
+    },
+    {
+      "path": "context/mockups/UI Blocks 1 Mockup.jpg",
+      "sha256": "9f426bae0059832b59790e7d2833f32df08d19fde96f0b87dbbd0f35c22891a4",
+      "width": 894,
+      "height": 1600,
+      "role": "visual-reference",
+      "surface": "pureui-errors"
+    },
+    {
+      "path": "context/mockups/UI Blocks 2 Mockup.jpg",
+      "sha256": "3c4f2b700cf69c816c097bcca1472a95ceb43826d876244fbec847680ca46ceb",
+      "width": 894,
+      "height": 1600,
+      "role": "visual-reference",
+      "surface": "pureui-onboarding"
+    }
+  ],
+  "sourceManifest": [
+    {
+      "path": "context/docs/Design.md",
+      "role": "design-specification",
+      "authority": "design-authority",
+      "sha256": "c0041deab9ac94b8fac1d4085f2aa57d4a1b6acb97c7b8403b33132a0a056556",
+      "bytes": 10078
+    }
+  ]
+}

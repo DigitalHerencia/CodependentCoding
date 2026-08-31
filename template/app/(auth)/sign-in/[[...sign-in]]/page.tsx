@@ -1,17 +1,6 @@
-import { SignIn } from "@clerk/nextjs"
+import { SignInFeature } from "@/features/auth/signInFeature";
 
-export default function SignInPage() {
-  return (
-    <SignIn
-      routing="path"
-      path="/sign-in"
-      signUpUrl="/sign-up"
-      appearance={{
-        elements: {
-          rootBox: "w-full max-w-md",
-          cardBox: "w-full",
-        },
-      }}
-    />
-  )
+// URL ownership stops here; orchestration is delegated to the feature.
+export default function Page() {
+  return <SignInFeature />;
 }
