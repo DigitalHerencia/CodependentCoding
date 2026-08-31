@@ -1,5 +1,12 @@
-import { SignInControl } from "@/lib/auth/components";
+import { SignIn } from "@clerk/nextjs";
 
 export function SignInFeature() {
-  return <SignInControl />;
+  return (
+    <SignIn
+      path="/sign-in"
+      routing="path"
+      signUpUrl="/sign-up"
+      fallbackRedirectUrl="/dashboard"
+    />
+  );
 }
