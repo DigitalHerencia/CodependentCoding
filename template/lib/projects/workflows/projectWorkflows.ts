@@ -4,7 +4,7 @@ import {
   updateTaskStatusSchema,
 } from "../../../schemas/projectsSchemas";
 
-import { requireIdentity } from "../../auth/identity";
+import { requireIdentity } from "../../auth/AUTH";
 import { assertPermission } from "../../authz/permissions";
 import { toProjectSummaryDTO, toTaskDTO } from "../../db/dto/projects.dto";
 import {

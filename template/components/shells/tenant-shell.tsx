@@ -1,3 +1,4 @@
+import { Show, SignInButton, UserButton } from "@clerk/nextjs";
 import {
   Brain,
   Image,
@@ -11,7 +12,6 @@ import type { ReactNode } from "react";
 
 import { Wordmark } from "@/components/brand/wordmark";
 import { Button } from "@/components/ui/button";
-import { SignedInControl, SignedOutControl, SignInButtonControl, UserButtonControl } from "@/lib/auth/components";
 import {
   applicationCapabilities,
   applicationDesign,
@@ -41,14 +41,14 @@ const navItems = [
 function AccountControl() {
   return (
     <>
-      <SignedInControl>
-        <UserButtonControl />
-      </SignedInControl>
-      <SignedOutControl>
-        <SignInButtonControl>
+      <Show when="signed-in">
+        <UserButton />
+      </Show>
+      <Show when="signed-out">
+        <SignInButton mode="modal">
           <Button size="sm">Sign in</Button>
-        </SignInButtonControl>
-      </SignedOutControl>
+        </SignInButton>
+      </Show>
     </>
   );
 }

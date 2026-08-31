@@ -3,7 +3,7 @@ import {
   createPortalDocumentSchema,
 } from "../../../schemas/portalSchemas";
 
-import { requireIdentity } from "../../auth/identity";
+import { requireIdentity } from "../../auth/AUTH";
 import { assertPermission } from "../../authz/permissions";
 import { toPortalDocumentDTO } from "../../db/dto/portal.dto";
 import { portalDocumentSelect } from "../../db/selects/portal.selects";

@@ -3,7 +3,7 @@ import {
   createAiGenerationSchema,
 } from "../../../schemas/aiSchemas";
 
-import { requireIdentity } from "../../auth/identity";
+import { requireIdentity } from "../../auth/AUTH";
 import { assertPermission } from "../../authz/permissions";
 import { toAiGenerationDTO } from "../../db/dto/ai.dto";
 import { aiGenerationSelect } from "../../db/selects/ai.selects";

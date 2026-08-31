@@ -5,7 +5,7 @@ import { z } from "zod";
 
 import type { AuthenticatedIdentity } from "@/types/access";
 
-import { requireIdentity } from "@/lib/auth/identity";
+import { requireIdentity } from "@/lib/auth/AUTH";
 import { assertPermission } from "@/lib/authz/permissions";
 import { completeAiGenerationTx } from "@/lib/db/transactions/complete-ai-generation.tx";
 import { withTenantTransaction } from "@/lib/db/tenant";

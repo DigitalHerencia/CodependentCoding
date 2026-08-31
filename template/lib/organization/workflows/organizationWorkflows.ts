@@ -1,6 +1,6 @@
 import { organizationSettingsSchema } from "../../../schemas/commonSchemas";
 
-import { requireIdentity } from "../../auth/identity";
+import { requireIdentity } from "../../auth/AUTH";
 import { assertPermission } from "../../authz/permissions";
 import { toOrganizationDTO } from "../../db/dto/common.dto";
 import { organizationOverviewSelect } from "../../db/selects/common.selects";

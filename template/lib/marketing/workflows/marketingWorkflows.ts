@@ -3,7 +3,7 @@ import {
   updateCampaignStatusSchema,
 } from "../../../schemas/marketingSchemas";
 
-import { requireIdentity } from "../../auth/identity";
+import { requireIdentity } from "../../auth/AUTH";
 import { assertPermission } from "../../authz/permissions";
 import { toCampaignDTO } from "../../db/dto/marketing.dto";
 import { campaignSelect } from "../../db/selects/marketing.selects";

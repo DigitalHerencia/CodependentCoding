@@ -3,7 +3,7 @@ import {
   updateInvoiceStatusSchema,
 } from "../../../schemas/invoicingSchemas";
 
-import { requireIdentity } from "../../auth/identity";
+import { requireIdentity } from "../../auth/AUTH";
 import { assertPermission } from "../../authz/permissions";
 import { toInvoiceDTO } from "../../db/dto/invoicing.dto";
 import { withTenantTransaction } from "../../db/tenant";
