@@ -13,7 +13,7 @@ import { withTenantTransaction } from "@/lib/db/tenant";
 import { completeAiGenerationTx } from "@/lib/db/transactions/complete-ai-generation.tx";
 import { failAiGenerationTx } from "@/lib/db/transactions/ai.tx";
 
-export class AiRateLimitError extends Error {
+class AiRateLimitError extends Error {
   constructor(message = "AI generation rate limit exceeded.") {
     super(message);
     this.name = "AiRateLimitError";
@@ -33,7 +33,8 @@ async function createGeneration(
       if (!Number.isInteger(rateLimit.limit) || rateLimit.limit < 1) {
         throw new Error("The AI rate limit must be a positive integer.");
       }
-      await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${`ai-rate-limit:${access.userId}`}))`;
+      const lockKey = `ai-rate-limit:${access.userId}`;
+      await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${lockKey}))`;
       const recentGenerationCount = await tx.aiGeneration.count({
         where: {
           organizationId: access.organizationId,
@@ -62,11 +63,11 @@ async function createGeneration(
   });
 }
 
-export function createAiGenerationRecord(rawInput: unknown) {
+export async function createAiGenerationRecord(rawInput: unknown) {
   return createGeneration(rawInput);
 }
 
-export function createRateLimitedAiGenerationRecord(
+export async function createRateLimitedAiGenerationRecord(
   rawInput: unknown,
   limit = 5,
   windowStart = new Date(Date.now() - 60_000),
