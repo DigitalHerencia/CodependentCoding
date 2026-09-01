@@ -4,23 +4,22 @@
 
 ## Definition
 
-- Codependent Coding™ explains and governs how software is understood and built. Loaded Vibes™ defines the reusable WebApp architectural form. Hipster Stack™ supplies the technologies used to realize that architecture.
-- A generated template or product application instantiates the architecture; it is not the architecture itself.
+Codependent Coding™ explains and governs how software is understood and built. Loaded Vibes™ defines the reusable WebApp architectural form. Hipster Stack™ supplies the technologies used to realize that architecture. A generated template or product application instantiates the architecture; it is not the architecture itself.
 
-## Target system
+## Operational backbone
 
-- Production-oriented, server-first, multi-tenant B2B SaaS.
-- Explicit state ownership, tenant containment, typed boundaries, recoverable external operations, and narrow agent execution are defaults.
-- Microservices, a generic service layer, client-side data authority, Clerk Organizations, Stripe Connect, persistent caching, and a sample Project domain are not mandatory.
+The application's backend-ish operational backbone is `lib`: Actions, Auth, AuthZ, Cache, Constants, DB, Fetchers, Integrations, Utils, and Workflows. It is intentionally broader than a folder literally named `server`.
 
-## Server-first rule
-
-- React Server Components are the default. Client Components exist only for browser interaction, local UI state, or browser APIs. Moving code client-side never moves authority into the browser.
+At the project root, `types/` owns TypeScript contracts, `schemas/` owns domain-organized Zod runtime validation, `prisma/` owns the authored database schema/migrations/seed/RLS lifecycle, and `generated/prisma/` is generated output rather than hand-authored architecture.
 
 ## State ownership
 
-- Clerk owns authentication/external identity truth. PostgreSQL owns local application state, membership, RBAC, and normalized entitlement state. Stripe owns provider payment truth. Workflows own interpretation and legal application transitions.
+Clerk owns external authentication/identity truth. PostgreSQL owns local application state, membership, RBAC, and tenant-owned persistence. Provider services own their external truth. Application operations interpret that truth through explicit boundaries rather than letting provider objects or persistence records leak everywhere.
+
+## Security defaults
+
+Protected reads and mutations authenticate and authorize. Tenant-owned database operations establish the intended tenant context and use RLS as independent containment. Zod validates untrusted runtime input at the boundary where it becomes trusted application data.
 
 ## Abstraction rule
 
-- Prefer direct domain-named modules and local duplication over speculative generic layers. Extract only when a repeated concept has one stable meaning, one contract, and clear callers.
+Prefer direct domain-named modules and explicit imports over speculative generic layers or barrel exports. Extract a reusable abstraction when it has one stable meaning and clear callers, not merely because two files look similar.
