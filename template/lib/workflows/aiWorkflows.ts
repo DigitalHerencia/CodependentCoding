@@ -1,24 +1,17 @@
 import {
   completeAiGenerationRecord,
   createAiGenerationRecord,
+  createRateLimitedAiGenerationRecord,
   failAiGenerationRecord,
 } from "@/lib/actions/aiActions";
 import {
   getAiPlaygroundConfiguration,
-  getMyAiGenerations,
   getMyAiUsage,
 } from "@/lib/fetchers/aiFetchers";
 import { generateHuggingFaceText } from "@/lib/integrations/hugging-face/inference";
 import type { AiUsageItem, ExecuteAiGenerationCommand } from "@/types/aiTypes";
 
 const TICKS_PER_US_DOLLAR = 10_000_000_000n;
-
-export class AiRateLimitError extends Error {
-  constructor(message = "AI generation rate limit exceeded.") {
-    super(message);
-    this.name = "AiRateLimitError";
-  }
-}
 
 export const createAiGenerationRecordWorkflow = createAiGenerationRecord;
 export const completeAiGenerationRecordWorkflow = completeAiGenerationRecord;
@@ -56,27 +49,11 @@ export async function selectModelWorkflow() {
   return configuration.model;
 }
 
-export async function enforceRateLimitWorkflow(
-  limit = 5,
-  windowStart = new Date(Date.now() - 60_000),
-) {
-  if (!Number.isInteger(limit) || limit < 1) {
-    throw new Error("The AI rate limit must be a positive integer.");
-  }
-  const generations = await getMyAiGenerations(100);
-  const recentGenerationCount = generations.filter(
-    (generation) => new Date(generation.createdAt) >= windowStart,
-  ).length;
-  if (recentGenerationCount >= limit) throw new AiRateLimitError();
-  return { recentGenerationCount, limit };
-}
-
 export async function executeGenerationWorkflow(
   command: ExecuteAiGenerationCommand,
 ) {
   const model = await selectModelWorkflow();
-  await enforceRateLimitWorkflow();
-  const generation = await createAiGenerationRecord({
+  const generation = await createRateLimitedAiGenerationRecord({
     provider: "hugging-face",
     model,
     input: { prompt: command.prompt },
