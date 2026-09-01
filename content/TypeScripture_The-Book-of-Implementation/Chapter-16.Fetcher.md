@@ -4,36 +4,45 @@
 
 ## Placement
 
-- `lib/fetchers/<domain>/<verb>-<representation>.fetcher.ts`
+Fetchers are domain-organized read operations under `lib/fetchers/`.
 
-## Canonical implementation
+```text
+lib/fetchers/
+  adminFetchers.ts
+  crmFetchers.ts
+  projectsFetchers.ts
+  ...
+```
+
+The naming convention is `<domain>Fetchers.ts`.
+
+## What a Fetcher does
+
+A Fetcher owns an application read. Protected reads authenticate and authorize, enter the appropriate tenant/RLS database context, query only the required data, and return an application-safe shape.
+
+## Golden pattern
 
 ```ts
 import "server-only";
 
-export async function getProjectDetail(input: unknown): Promise<ProjectDto | null> {
-  const criteria = projectDetailInputSchema.parse(input);
-  const actor = await requireActor();
-  const scope = await requireProjectReadScope(actor, criteria.organizationId);
+export async function getAdminMemberships() {
+  return withAuthenticatedRead(async (tx, access) => {
+    assertPermission(access, "admin:users");
 
-  return withTenantTransaction(scope, async (tx) => {
-    const record = await tx.project.findFirst({
-      where: {
-        id: criteria.projectId,
-        organizationId: scope.organizationId,
-        ...scope.projectWhere,
-      },
-      select: projectDetailSelect,
+    const rows = await tx.membership.findMany({
+      where: { organizationId: access.organizationId },
+      select: adminMembershipSelect,
     });
-    return record ? toProjectDto(record) : null;
+
+    return rows.map(toAdminMembershipDTO);
   });
 }
 ```
 
-## Critical correction
+Prisma selects keep reads explicit and typed; DTO mappers keep persistence-shaped records from casually leaking across the data boundary. Read criteria may also use Zod validation when they cross an untrusted runtime boundary.
 
-- The older “Golden Fetcher” examples that call the root `prisma` client directly are not canonical for protected tenant reads. Protected tenant reads use the RLS-scoped transaction client.
+## Rules
 
-## Testing
+Fetchers do not own mutations. They do not call provider SDKs merely to assemble a page. They may perform the reads necessary to answer their read use case, including multiple bounded reads when that is genuinely the read being requested.
 
-- Unit-test parsing, mapping, and policy composition. Use real PostgreSQL/runtime-role tests for cross-tenant containment. Architecture tests forbid writes, provider SDKs, and framework effects.
+Protected tenant reads should use the tenant/RLS-scoped database context rather than casually calling the root Prisma client.
