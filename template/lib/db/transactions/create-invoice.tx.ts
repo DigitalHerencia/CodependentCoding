@@ -28,6 +28,7 @@ export async function createInvoiceTx(
     );
   }
 
+  await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${input.organizationId}))`;
   const latest = await tx.invoice.aggregate({
     where: {
       organizationId: input.organizationId,
