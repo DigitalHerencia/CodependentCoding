@@ -1,7 +1,9 @@
 /* eslint-disable react-refresh/only-export-components */
 import * as React from "react";
-import { cva, type VariantProps } from "class-variance-authority";
+import { cva } from "class-variance-authority";
 import { cn } from "@/lib/utils";
+
+import type { SkeletonProps } from "@/types/commonTypes";
 
 const skeletonVariants = cva("bg-muted border-2 border-foreground/20", {
   variants: {
@@ -22,11 +24,6 @@ const skeletonVariants = cva("bg-muted border-2 border-foreground/20", {
     variant: "pulse",
   },
 });
-
-export interface SkeletonProps
-  extends
-    React.HTMLAttributes<HTMLDivElement>,
-    VariantProps<typeof skeletonVariants> {}
 
 function Skeleton({ className, variant, ...props }: SkeletonProps) {
   return (
