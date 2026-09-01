@@ -1,6 +1,9 @@
-import type { AccessContext, Permission } from "../../types/access";
+import type {
+  AccessContext,
+  Permission,
+  ResourceAccessDescriptor,
+} from "../../types/access";
 
-import type { ResourceAccessDescriptor } from "./resources";
 import { isPrivilegedRole } from "./roles";
 import { assertPermission } from "./permissions";
 
