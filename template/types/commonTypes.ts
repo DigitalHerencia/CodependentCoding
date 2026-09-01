@@ -27,3 +27,21 @@ export interface KbdComboProps extends Omit<KbdProps, "children"> {
   keys: string[];
   separator?: React.ReactNode;
 }
+
+export interface MarqueeProps extends React.HTMLAttributes<HTMLDivElement> {
+  children: React.ReactNode;
+  direction?: "left" | "right";
+  speed?: "slow" | "normal" | "fast";
+  pauseOnHover?: boolean;
+  bordered?: boolean;
+  repeat?: number;
+}
+
+export interface MarqueeItemProps extends React.HTMLAttributes<HTMLSpanElement> {
+  children: React.ReactNode;
+}
+
+export interface MarqueeSeparatorProps
+  extends React.HTMLAttributes<HTMLSpanElement> {
+  children?: React.ReactNode;
+}
