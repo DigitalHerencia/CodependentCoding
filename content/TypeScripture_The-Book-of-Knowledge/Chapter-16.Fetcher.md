@@ -4,22 +4,18 @@
 
 ## Definition
 
-- A Fetcher is a self-securing, server-only protected read use case returning bounded serializable DTOs. It is the complete application read boundary, not a generic fetch wrapper.
+A Fetcher is an application **read operation**. Reads are separated from Actions, which own mutations.
 
 ## Responsibilities
 
-- Parse unknown read criteria.
-- Resolve trusted Actor and tenant/capability/resource read scope.
-- Enter the canonical RLS-scoped transaction for protected tenant data.
-- Execute bounded tenant-scoped reads using explicit selects.
-- Map persistence records to DTOs.
-- Return deliberate singular/list cardinality.
+Protected Fetchers authenticate and authorize the caller, establish the appropriate tenant/RLS database context, execute bounded reads, use explicit Prisma selects where persistence is involved, and map persistence records into deliberate application DTOs.
+
+A Fetcher may validate read criteria with Zod when the criteria cross an untrusted runtime boundary. It may perform more than one database read when those reads genuinely belong to the read use case.
 
 ## Non-responsibilities
 
-- No writes, provider calls, synchronization, messaging, rendering, framework navigation/invalidation, persistence-record leakage, or unbounded collection reads.
-- Do not create `getThingPageState` Fetchers that absorb Feature orchestration. A Feature composes multiple Fetchers when the page needs multiple read use cases.
+Fetchers do not perform writes. They do not call provider SDKs merely to assemble application state. They do not return entire persistence models simply because Prisma can. They should not absorb arbitrary business processes that belong in Workflows.
 
-## Authority
+## Security
 
-- Identifiers are lookup criteria, not membership/ownership proof. Legal scope must participate in the SQL-producing predicate, with RLS as independent containment.
+Tenant and resource identifiers are lookup criteria, not proof of authority. Authorization and SQL-producing tenant/resource scope remain explicit, with RLS as independent containment.
