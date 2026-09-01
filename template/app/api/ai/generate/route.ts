@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import { ZodError } from "zod";
 
 import { executeGenerationFeature } from "@/features/ai/generationFeature";
-import { AiRateLimitError } from "@/lib/actions/aiActions";
 import { AuthenticationRequiredError } from "@/lib/auth/auth";
 import { AuthorizationError } from "@/lib/authz/permissions";
 import { ResourceAuthorizationError } from "@/lib/authz/policies";
@@ -25,8 +24,11 @@ export async function POST(request: Request) {
     ) {
       return NextResponse.json({ error: "Access denied." }, { status: 403 });
     }
-    if (cause instanceof AiRateLimitError) {
-      return NextResponse.json({ error: cause.message }, { status: 429 });
+    if (cause instanceof Error && cause.name === "AiRateLimitError") {
+      return NextResponse.json(
+        { error: "AI generation rate limit exceeded." },
+        { status: 429 },
+      );
     }
     return NextResponse.json({ error: "AI generation failed." }, { status: 500 });
   }
