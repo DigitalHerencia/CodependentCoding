@@ -2,45 +2,60 @@
 
 **The Book of Implementation™**
 
-## Canonical repository topology
+## Canonical backend-ish topology
+
+`lib` is the application's operations/infrastructure directory. It is often shorthand for "server operations," but it is deliberately not named `server` because not everything inside is server-only.
 
 ```text
-app/                     # routes, layouts, metadata, HTTP/framework outcomes
-features/                # server-first page/use-case orchestration
-components/
-  ui/                    # domain-agnostic primitives
-  blocks/                # reusable pure presentation compositions
 lib/
-  fetchers/              # protected reads
-  actions/               # thin Server Action adapters
-  <domain>/
-    workflows/           # named application use cases
-  auth/                  # Clerk-to-local Actor adaptation
-  authz/                 # membership, capability, scope, policy
+  actions/               # domain-organized mutations: <domain>Actions.ts
+  auth/                  # authentication/identity; Clerk lives here
+  authz/                 # permissions, policies, resources, roles
+  cache/                 # invalidation, cache life, tags
+  constants/             # cross-cutting stable values
   db/
-    selects/             # explicit Prisma projections
-    dto/                 # DTO types/mappers
-    transactions/        # canonical RLS runner + atomic helpers
-    internal/            # narrowly scoped owner-local DB helpers when actually needed
-  cache/                 # cache tags/keys and approved framework cache adapter
-  config/                # validated environment and static configuration
-  observability/         # logging/tracing adapters and safe correlation
-  integrations/          # provider adapters
-  webhooks/              # durable provider reconciliation
-schemas/                 # runtime trust-boundary schemas
-types/                   # shared transport/application contracts
-prisma/                  # schema, migrations, grants, RLS
+    dto/                  # persistence record -> application DTO mappers
+    selects/              # explicit typed Prisma projections
+    transactions/         # atomic local database operations
+    client.ts             # Prisma client using Neon adapter
+    provider.ts           # provider/external transaction context
+    tenant.ts             # authenticated tenant/RLS transaction context
+  fetchers/              # domain-organized reads: <domain>Fetchers.ts
+  integrations/          # provider folders: client + capability helpers
+  utils/                 # generic helpers; direct imports preferred
+  workflows/             # domain business-logic blocks: <domain>Workflows.ts
+schemas/                  # domain-organized Zod runtime validation
+types/                    # domain-organized TypeScript types/interfaces
+prisma/                   # schema, migrations, seed, grants/RLS
+generated/prisma/         # generated Prisma output; do not hand-edit
+proxy.ts                  # Clerk/Next request protection
+prisma.config.ts          # Prisma tooling configuration
 ```
 
-## Placement rule
+## Concern-first placement
 
-- `lib/application/` is not a canonical catch-all. Workflows are domain-owned: `lib/<domain>/workflows/`.
-- `components/shared/` and `components/<domain>/` are not architectural layers. Use `components/ui/` for primitives and `components/blocks/` for pure composed presentation; domain grouping may exist beneath `blocks/` when useful.
+Third-party code is not automatically an `integration`. The architectural concern wins over the vendor label. Clerk belongs in `lib/auth`; Neon/Prisma belong to the database concern; other external providers such as Stripe, Cloudinary, Hugging Face, SendGrid, and Vercel Blob belong in `lib/integrations/<provider>/`.
 
-## Application flow
+## Domain naming
+
+Domain-oriented operational files stay shallow and predictable: `adminActions.ts`, `adminFetchers.ts`, `adminWorkflows.ts`, and the corresponding `adminTypes.ts` and `adminSchemas.ts`. The same pattern applies to the other domains.
+
+## Operational flow
 
 ```text
-Page → Feature → Fetcher(s) → authorized DTOs → Blocks → Primitives
-Client intent → Server Action → Schema → Actor → Workflow → Transaction/Integration → Result
-Provider → Route Handler → Verification → Durable Inbox → Reconciliation → Local State
+Read:
+caller -> Fetcher -> auth/authz -> tenant DB context -> Prisma select -> DTO mapper -> caller
+
+Write:
+caller -> Action -> Zod validation -> auth/authz -> tenant DB context -> transaction helper -> DTO -> caller
+
+Business process:
+caller -> Workflow -> existing Actions/Fetchers/Integrations/Utils/Types/Schemas -> business result
+
+Provider webhook:
+provider -> app/api/.../route.ts -> integration webhook helpers -> application/database operations
 ```
+
+## Abstraction rule
+
+Do not create a generic service layer just to have one. Prefer direct domain-named modules and explicit imports. Workflows are the business-logic composition layer; utilities are only for helpers that do not have a better architectural owner.
