@@ -3,30 +3,17 @@ import "server-only";
 import { auth, currentUser } from "@clerk/nextjs/server";
 
 import type { AuthenticatedIdentity } from "../../types/access";
+import type {
+  AuthenticatedSession,
+  CurrentSessionContext,
+  CurrentUserProfile,
+} from "../../types/authTypes";
 
 export class AuthenticationRequiredError extends Error {
   constructor() {
     super("Authentication is required.");
     this.name = "AuthenticationRequiredError";
   }
-}
-
-export interface AuthenticatedSession {
-  clerkUserId: string;
-  clerkSessionId: string;
-}
-
-export interface CurrentSessionContext {
-  isAuthenticated: boolean;
-  clerkUserId: string | null;
-  clerkSessionId: string | null;
-}
-
-export interface CurrentUserProfile {
-  clerkUserId: string;
-  displayName: string | null;
-  primaryEmailAddress: string | null;
-  imageUrl: string;
 }
 
 export async function getIdentity(): Promise<AuthenticatedIdentity | null> {
