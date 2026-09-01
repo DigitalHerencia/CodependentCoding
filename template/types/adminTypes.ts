@@ -22,3 +22,4 @@ export interface AuditEventDTO {
   } | null;
   createdAt: string;
 }
+export type AuditRisk = "routine" | "sensitive" | "high-risk";

@@ -1,5 +1,5 @@
-import { updateContactWorkflow } from "../../crm/crmWorkflows";
-import { getContactById } from "../../fetchers/crmFetchers";
+import { updateContactWorkflow } from "./crmWorkflows";
+import { getContactById } from "@/lib/fetchers/crmFetchers";
 
 export async function qualifyLeadWorkflow(contactId: string) {
   const contact = await getContactById(contactId);

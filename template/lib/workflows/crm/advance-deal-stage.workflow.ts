@@ -1,5 +1,4 @@
-import type { CrmDealStage } from "../../../generated/prisma/client";
-
+import { type CrmDealStage } from "@/types/crmTypes";
 const transitions: Record<CrmDealStage, readonly CrmDealStage[]> = {
   LEAD: ["QUALIFIED", "LOST"],
   QUALIFIED: ["PROPOSAL", "LOST"],
@@ -14,4 +13,3 @@ export function advanceDealStage(current: CrmDealStage, next: CrmDealStage) {
     throw new Error(`A deal cannot move from ${current} to ${next}.`);
   return { stage: next, terminal: next === "WON" || next === "LOST" };
 }
-

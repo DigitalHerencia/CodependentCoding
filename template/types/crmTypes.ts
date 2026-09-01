@@ -70,3 +70,11 @@ export interface CrmAccountDTO {
   createdAt: string;
   updatedAt: string;
 }
+
+export type CrmDealStage =
+  | "LEAD"
+  | "QUALIFIED"
+  | "PROPOSAL"
+  | "NEGOTIATION"
+  | "WON"
+  | "LOST";

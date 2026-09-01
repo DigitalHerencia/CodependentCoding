@@ -5,8 +5,8 @@ import {
   createContactWorkflow,
   createCrmDealWorkflow,
   updateContactWorkflow,
-} from "../crm/crmWorkflows";
-import { advanceDealStageWorkflow } from "../crm/workflows/advance-deal-stage.workflow";
+} from "@/lib/workflows/crm/crmWorkflows";
+import { advanceDealStageWorkflow } from "@/lib/workflows/crm/advance-deal-stage.workflow";
 
 export async function createCrmDeal(input: unknown) {
   return createCrmDealWorkflow(input);

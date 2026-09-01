@@ -1,7 +1,8 @@
-export interface AiUsageItem {
-  inputTokens: number;
-  outputTokens: number;
-  cost: string;
+import type { AiUsageItem } from "@/types/aiTypes";
+import { getMyAiUsage } from "../../fetchers/aiFetchers";
+
+export async function calculateUsageWorkflow() {
+  return getMyAiUsage();
 }
 
 export function calculateUsage(items: AiUsageItem[]) {
@@ -15,4 +16,3 @@ export function calculateUsage(items: AiUsageItem[]) {
     { inputTokens: 0, outputTokens: 0, cost: 0, generationCount: 0 },
   );
 }
-

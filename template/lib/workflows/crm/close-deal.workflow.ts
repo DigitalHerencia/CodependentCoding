@@ -1,4 +1,4 @@
-import { updateCrmDealStageWorkflow } from "../../crm/crmWorkflows";
+import { updateCrmDealStageWorkflow } from "./crmWorkflows";
 export async function closeDealWorkflow(input: {
   dealId: string;
   outcome: "WON" | "LOST";

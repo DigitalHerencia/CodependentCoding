@@ -4,23 +4,23 @@ import {
   createCrmDealSchema,
   updateContactSchema,
   updateCrmDealStageSchema,
-} from "../../schemas/crmSchemas";
+} from "@/schemas/crmSchemas";
 
-import { requireIdentity } from "../auth/auth";
-import { authorizeOwnedOrAssignedWrite } from "../authz/policies";
-import { assertPermission } from "../authz/permissions";
-import { toCrmContactDTO, toCrmDealDTO } from "../db/dto/crmDto";
+import { requireIdentity } from "@/lib/auth/auth";
+import { authorizeOwnedOrAssignedWrite } from "@/lib/authz/policies";
+import { assertPermission } from "@/lib/authz/permissions";
+import { toCrmContactDTO, toCrmDealDTO } from "@/lib/db/dto/crmDto";
 import {
   crmContactAccessSelect,
   crmContactSelect,
   crmDealDetailSelect,
-} from "../db/selects/crmSelects";
-import { withTenantTransaction } from "../db/tenant";
+} from "@/lib/db/selects/crmSelects";
+import { withTenantTransaction } from "@/lib/db/tenant";
 import {
   ConcurrencyConflictError,
   ResourceNotFoundError,
-} from "../db/transactions/errors";
-import { updateDealStageTx } from "../db/transactions/update-deal-stage.tx";
+} from "@/lib/db/transactions/errors";
+import { updateDealStageTx } from "@/lib/db/transactions/update-deal-stage.tx";
 
 export async function createCrmDealWorkflow(rawInput: unknown) {
   const input = createCrmDealSchema.parse(rawInput);

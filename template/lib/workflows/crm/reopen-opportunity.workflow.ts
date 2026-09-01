@@ -1,4 +1,4 @@
-import { updateCrmDealStageWorkflow } from "../../crm/crmWorkflows";
+import { updateCrmDealStageWorkflow } from "./crmWorkflows";
 
 export async function reopenOpportunityWorkflow(input: {
   dealId: string;

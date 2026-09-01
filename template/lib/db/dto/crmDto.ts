@@ -3,13 +3,13 @@ import type {
   CrmContactDTO,
   CrmDealDTO,
   CrmDealSummaryDTO,
-} from "../../../types/crmTypes";
+} from "@/types/crmTypes";
 import type {
   CrmAccountRecord,
   CrmContactRecord,
   CrmDealDetailRecord,
   CrmDealSummaryRecord,
-} from "../selects/crmSelects";
+} from "@/lib/db/selects/crmSelects";
 
 export function toCrmContactDTO(record: CrmContactRecord): CrmContactDTO {
   return {

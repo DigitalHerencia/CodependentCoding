@@ -1,7 +1,7 @@
-import type { AuthenticatedIdentity } from "../../../types/access";
-import { assertPermission } from "../../authz/permissions";
-import { withTenantTransaction } from "../../db/tenant";
-import { assignCrmRecordTransaction } from "../../db/transactions/assignCrmRecordTransaction";
+import type { AuthenticatedIdentity } from "@/types/access";
+import { assertPermission } from "@/lib/authz/permissions";
+import { withTenantTransaction } from "@/lib/db/tenant";
+import { assignCrmRecordTransaction } from "@/lib/db/transactions/assignCrmRecordTransaction";
 
 export async function assignCrmRecordWorkflow(
   identity: AuthenticatedIdentity,

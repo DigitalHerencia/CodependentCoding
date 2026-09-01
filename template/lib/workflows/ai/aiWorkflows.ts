@@ -1,14 +1,14 @@
 import {
   completeAiGenerationSchema,
   createAiGenerationSchema,
-} from "../../../schemas/aiSchemas";
+} from "@/schemas/aiSchemas";
 
-import { requireIdentity } from "../../auth/auth";
-import { assertPermission } from "../../authz/permissions";
-import { toAiGenerationDTO } from "../../db/dto/ai.dto";
-import { aiGenerationSelect } from "../../db/selects/ai.selects";
-import { withTenantTransaction } from "../../db/tenant";
-import { completeAiGenerationTx } from "../../db/transactions/complete-ai-generation.tx";
+import { requireIdentity } from "@/lib/auth/auth";
+import { assertPermission } from "@/lib/authz/permissions";
+import { toAiGenerationDTO } from "@/lib/db/dto/ai.dto";
+import { aiGenerationSelect } from "@/lib/db/selects/ai.selects";
+import { withTenantTransaction } from "@/lib/db/tenant";
+import { completeAiGenerationTx } from "@/lib/db/transactions/complete-ai-generation.tx";
 
 export async function createAiGenerationRecordWorkflow(rawInput: unknown) {
   const input = createAiGenerationSchema.parse(rawInput);

@@ -8,3 +8,6 @@ export function costTicksToUsd(costTicks: number | bigint): string {
   return `${whole}.${fraction.slice(0, 8)}`;
 }
 
+export async function calculateCreditsWorkflow(costTicks: number | bigint) {
+  return costTicksToUsd(costTicks);
+}
