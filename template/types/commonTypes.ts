@@ -3,6 +3,7 @@ import type { VariantProps } from "class-variance-authority";
 
 import type { badgeVariants } from "@/components/ui/badge";
 import type { kbdVariants } from "@/components/ui/kbd";
+import type { skeletonVariants } from "@/components/ui/skeleton";
 import type { stepVariants } from "@/components/ui/stepper";
 import type {
   timelineConnectorVariants,
@@ -50,6 +51,11 @@ export interface MarqueeSeparatorProps
   extends React.HTMLAttributes<HTMLSpanElement> {
   children?: React.ReactNode;
 }
+
+export interface SkeletonProps
+  extends
+    React.HTMLAttributes<HTMLDivElement>,
+    VariantProps<typeof skeletonVariants> {}
 
 export interface StepperContextValue {
   activeStep: number;
