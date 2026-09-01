@@ -13,11 +13,39 @@ import { withTenantTransaction } from "@/lib/db/tenant";
 import { completeAiGenerationTx } from "@/lib/db/transactions/complete-ai-generation.tx";
 import { failAiGenerationTx } from "@/lib/db/transactions/ai.tx";
 
-export async function createAiGenerationRecord(rawInput: unknown) {
+export class AiRateLimitError extends Error {
+  constructor(message = "AI generation rate limit exceeded.") {
+    super(message);
+    this.name = "AiRateLimitError";
+  }
+}
+
+async function createGeneration(
+  rawInput: unknown,
+  rateLimit?: { limit: number; windowStart: Date },
+) {
   const input = createAiGenerationSchema.parse(rawInput);
   const identity = await requireIdentity();
   return withTenantTransaction(identity, async (tx, access) => {
     assertPermission(access, "ai:write");
+
+    if (rateLimit) {
+      if (!Number.isInteger(rateLimit.limit) || rateLimit.limit < 1) {
+        throw new Error("The AI rate limit must be a positive integer.");
+      }
+      await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${`ai-rate-limit:${access.userId}`}))`;
+      const recentGenerationCount = await tx.aiGeneration.count({
+        where: {
+          organizationId: access.organizationId,
+          userId: access.userId,
+          createdAt: { gte: rateLimit.windowStart },
+        },
+      });
+      if (recentGenerationCount >= rateLimit.limit) {
+        throw new AiRateLimitError();
+      }
+    }
+
     const record = await tx.aiGeneration.create({
       data: {
         organizationId: access.organizationId,
@@ -32,6 +60,18 @@ export async function createAiGenerationRecord(rawInput: unknown) {
     });
     return toAiGenerationDTO(record);
   });
+}
+
+export function createAiGenerationRecord(rawInput: unknown) {
+  return createGeneration(rawInput);
+}
+
+export function createRateLimitedAiGenerationRecord(
+  rawInput: unknown,
+  limit = 5,
+  windowStart = new Date(Date.now() - 60_000),
+) {
+  return createGeneration(rawInput, { limit, windowStart });
 }
 
 /** Provider network I/O must complete before this database transaction begins. */
