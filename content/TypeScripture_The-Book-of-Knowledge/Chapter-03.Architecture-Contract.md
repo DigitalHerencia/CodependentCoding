@@ -4,24 +4,24 @@
 
 ## Definition
 
-- Architecture defines significant responsibilities, boundaries, dependency direction, trust progression, and state ownership. It is not a dependency list or directory tree.
+Architecture defines significant responsibilities, boundaries, dependency direction, trust progression, and state ownership. The directory tree is evidence of that architecture, not the architecture by itself.
 
 ## Canonical grammar
 
-- Routes adapt. Features orchestrate. Components render. Fetchers read. Actions write. Schemas validate. Authorization decides. Workflows coordinate use cases. Transactions preserve invariants. Integration adapters own provider semantics. Webhooks reconcile external truth.
+Routes adapt HTTP/framework concerns. Features orchestrate presentation. Components render. Fetchers read. Actions mutate. Schemas validate runtime input. Authentication establishes identity. Authorization decides access. Database helpers select, map, and preserve atomicity. Integrations own provider mechanics. Workflows compose existing capabilities into domain business operations.
 
-## Hard ownership rules
+## The `lib` idea
 
-- Pages and layouts adapt Next.js route concerns and render Features. They do not directly perform protected reads or mutations.
-- Features own page/use-case presentation orchestration. They may call Fetchers for reads and compose Blocks/Primitives for rendering.
-- Components are presentation. Protected I/O, authorization decisions, persistence, and provider SDKs do not belong in components.
-- There is no canonical Query or Command application layer. Narrow private persistence helpers may exist inside approved data modules when a Fetcher, Workflow, Auth/AuthZ boundary, or Transaction Helper needs them, but those helpers do not become independently callable architectural roles.
+`lib` is the operations/infrastructure area. Calling it "server operations" is useful shorthand, but `server` would be too narrow because generic utilities, constants, and similar helpers are not inherently server-only. The physical name remains `lib`; "operations" and "infrastructure" describe what it mostly means.
 
-## No escape clauses
+## Concern-first ownership
 
-- There is no “when trivial” bypass from a page to a Fetcher or Action. A boundary is useful precisely because humans and agents disagree about what counts as trivial.
-- A Feature loader is not a mandatory architectural layer. A Feature may use local server-only helpers when complexity warrants them, but the helper does not acquire independent authority.
+Provider status does not decide placement by itself. Clerk belongs to authentication because identity is a first-class concern. Neon/Prisma belong to persistence because the database is a first-class concern. Other provider-specific capabilities belong under integrations.
 
-## Dependency direction
+## Domain organization
 
-- Framework/presentation depends inward on stable application/data/provider boundaries. Data, domain, and integration code do not depend upward on routes, Features, or presentation.
+Actions, Fetchers, Workflows, Types, and Schemas are organized by business domain using predictable names. This keeps related behavior discoverable without inventing a generic service layer.
+
+## Boundary rule
+
+Do not duplicate lower-level behavior merely to satisfy a layer. Workflows compose established Actions, Fetchers, integrations, utilities, types, and schemas. Actions and Fetchers own their respective mutation/read boundaries. Database helpers remain database helpers.
