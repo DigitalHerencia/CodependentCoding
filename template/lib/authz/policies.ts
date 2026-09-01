@@ -1,6 +1,9 @@
-import type { AccessContext, Permission } from "../../types/access";
+import type {
+  AccessContext,
+  Permission,
+  ResourceAccessDescriptor,
+} from "../../types/access";
 
-import type { ResourceAccessDescriptor } from "./resources";
 import { isPrivilegedRole } from "./roles";
 import { assertPermission } from "./permissions";
 
@@ -32,6 +35,13 @@ export function isAssignedResource(
   return resource.assigneeMembershipId === context.membershipId;
 }
 
+export function requestedResource(
+  context: AccessContext,
+  resource: ResourceAccessDescriptor,
+): boolean {
+  return resource.requesterUserId === context.userId;
+}
+
 export function canReadResource(
   context: AccessContext,
   resource: ResourceAccessDescriptor,
@@ -47,7 +57,8 @@ export function canReadResource(
   return (
     resource.clientVisible === true ||
     ownsResource(context, resource) ||
-    isAssignedResource(context, resource)
+    isAssignedResource(context, resource) ||
+    requestedResource(context, resource)
   );
 }
 
@@ -63,7 +74,8 @@ export function canManageOwnedOrAssignedResource(
     isPrivilegedRole(context.role) ||
     context.role === "MANAGER" ||
     ownsResource(context, resource) ||
-    isAssignedResource(context, resource)
+    isAssignedResource(context, resource) ||
+    (context.role === "CLIENT" && requestedResource(context, resource))
   );
 }
 
