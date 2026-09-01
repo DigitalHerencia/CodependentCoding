@@ -1,13 +1,17 @@
 /* eslint-disable react-refresh/only-export-components */
 import * as React from "react";
-import { cva, type VariantProps } from "class-variance-authority";
+import { cva } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
-// Timeline Context
-interface TimelineContextValue {
-  orientation: "vertical" | "horizontal";
-}
+import type {
+  TimelineConnectorProps,
+  TimelineContextValue,
+  TimelineDotProps,
+  TimelineItemProps,
+  TimelineProps,
+} from "@/types/commonTypes";
 
+// Timeline Context
 const TimelineContext = React.createContext<TimelineContextValue>({
   orientation: "vertical",
 });
@@ -17,10 +21,6 @@ function useTimeline() {
 }
 
 // Timeline Root
-export interface TimelineProps extends React.HTMLAttributes<HTMLDivElement> {
-  orientation?: "vertical" | "horizontal";
-}
-
 const Timeline = React.forwardRef<HTMLDivElement, TimelineProps>(
   ({ orientation = "vertical", className, children, ...props }, ref) => {
     return (
@@ -44,10 +44,6 @@ Timeline.displayName = "Timeline";
 
 // Timeline Item
 const timelineItemVariants = cva("relative flex");
-
-export interface TimelineItemProps extends React.HTMLAttributes<HTMLDivElement> {
-  status?: "completed" | "current" | "upcoming";
-}
 
 const TimelineItem = React.forwardRef<HTMLDivElement, TimelineItemProps>(
   ({ status, className, children, ...props }, ref) => {
@@ -97,11 +93,6 @@ const timelineDotVariants = cva(
   },
 );
 
-export interface TimelineDotProps
-  extends
-    React.HTMLAttributes<HTMLDivElement>,
-    VariantProps<typeof timelineDotVariants> {}
-
 const TimelineDot = React.forwardRef<HTMLDivElement, TimelineDotProps>(
   ({ status, size, className, children, ...props }, ref) => {
     return (
@@ -135,11 +126,6 @@ const timelineConnectorVariants = cva("transition duration-200", {
     orientation: "vertical",
   },
 });
-
-export interface TimelineConnectorProps
-  extends
-    React.HTMLAttributes<HTMLDivElement>,
-    Omit<VariantProps<typeof timelineConnectorVariants>, "orientation"> {}
 
 const TimelineConnector = React.forwardRef<
   HTMLDivElement,
