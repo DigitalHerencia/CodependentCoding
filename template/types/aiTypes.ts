@@ -22,8 +22,7 @@ export interface AiUsageItem {
   outputTokens: number;
   cost: string;
 }
-export interface AiUsageItem {
-  inputTokens: number;
-  outputTokens: number;
-  cost: string;
+
+export interface ExecuteAiGenerationCommand {
+  prompt: string;
 }

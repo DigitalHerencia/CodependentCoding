@@ -34,3 +34,7 @@ export interface PortalBillingDTO {
     dueAt: string | null;
   }>;
 }
+
+export interface PortalApprovalDecision {
+  status: "PENDING" | "APPROVED" | "REJECTED";
+}

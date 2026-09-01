@@ -1,8 +1,8 @@
 import type { CrmDealStage, Prisma } from "../../../generated/prisma/client";
 
-import { crmDealDetailSelect } from "../selects/crmSelects";
+import { crmDealDetailSelect } from "../selects/crm.selects";
 import { ConcurrencyConflictError } from "./errors";
-import { advanceDealStage } from "../../crm/logic/advance-deal-stage.logic";
+import { advanceDealStage } from "@/lib/utils/crm";
 
 export async function updateDealStageTx(
   tx: Prisma.TransactionClient,

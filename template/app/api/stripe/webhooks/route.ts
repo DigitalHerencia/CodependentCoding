@@ -1,60 +1,57 @@
-import {
-  withProviderOrganizationTransaction,
-  withProviderTransaction,
-} from "@/lib/db/provider";
+import { withProviderTransaction } from "@/lib/db/provider";
 import {
   claimWebhookEventTx,
   completeWebhookEventTx,
-  failWebhookEventTx,
 } from "@/lib/db/transactions/webhook-event.tx";
 import { getBillingSubscriptionInputFromEvent } from "@/lib/integrations/stripe/subscriptions";
 import { verifyStripeWebhook } from "@/lib/integrations/stripe/webhooks";
 
 export async function POST(request: Request) {
-  let webhookEventId: string | null = null;
+  const payload = await request.text();
+  let event;
+
   try {
-    const payload = await request.text();
-    const event = verifyStripeWebhook(
+    event = verifyStripeWebhook(
       payload,
       request.headers.get("stripe-signature"),
     );
+  } catch {
+    return Response.json(
+      { error: "Invalid Stripe webhook signature." },
+      { status: 400 },
+    );
+  }
+
+  try {
     const input = getBillingSubscriptionInputFromEvent(event);
     const organizationId = input?.organizationId ?? null;
-    webhookEventId = await withProviderTransaction((tx) =>
-      claimWebhookEventTx(tx, {
+    const processed = await withProviderTransaction(async (tx) => {
+      const webhookEventId = await claimWebhookEventTx(tx, {
         provider: "stripe",
         eventId: event.id,
         type: event.type,
         payload,
         organizationId,
-      }),
-    );
-    if (!webhookEventId)
-      return Response.json({ received: true, duplicate: true });
+      });
+      if (!webhookEventId) return false;
 
-    if (input) {
-      await withProviderOrganizationTransaction(input.organizationId, (tx) =>
-        tx.billingSubscription.upsert({
+      if (input) {
+        await tx.$executeRaw`SELECT set_config('app.organization_id', ${input.organizationId}, true)`;
+        await tx.billingSubscription.upsert({
           where: { organizationId: input.organizationId },
           create: input,
           update: input,
-        }),
-      );
-    }
-    await withProviderTransaction((tx) =>
-      completeWebhookEventTx(tx, webhookEventId!),
-    );
-    return Response.json({ received: true });
-  } catch (cause) {
-    const message =
-      cause instanceof Error ? cause.message : "Stripe webhook failed.";
-    if (webhookEventId)
-      await withProviderTransaction((tx) =>
-        failWebhookEventTx(tx, webhookEventId!, message),
-      );
+        });
+      }
+      await completeWebhookEventTx(tx, webhookEventId);
+      return true;
+    });
+
+    return Response.json({ received: true, duplicate: !processed });
+  } catch {
     return Response.json(
-      { error: message },
-      { status: webhookEventId ? 500 : 400 },
+      { error: "Stripe webhook processing failed." },
+      { status: 500 },
     );
   }
 }

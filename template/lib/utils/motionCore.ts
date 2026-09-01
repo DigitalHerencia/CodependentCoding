@@ -1,17 +1,8 @@
-export interface RevealOptions {
-  rootMargin?: string;
-  threshold?: number;
-  once?: boolean;
-  delay?: number;
-}
-
-export interface StaggerOptions {
-  delay?: number;
-  initialDelay?: number;
-  selector?: string;
-}
-
-export type PageTransition = "default" | "fade" | "slide";
+import type {
+  PageTransition,
+  RevealOptions,
+  StaggerOptions,
+} from "@/types/uiTypes";
 
 export function prefersReducedMotion(): boolean {
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -35,7 +26,9 @@ export function observeReveal(
       if (options.once !== false) observer.unobserve(element);
     },
     {
-      rootMargin: options.rootMargin,
+      ...(options.rootMargin === undefined
+        ? {}
+        : { rootMargin: options.rootMargin }),
       threshold: options.threshold ?? 0.15,
     },
   );

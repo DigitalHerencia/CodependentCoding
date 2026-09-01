@@ -9,8 +9,8 @@ import {
   getAngle,
   getDetailScale,
   getCurvePulseDuration,
-  type BackgroundCurveKey,
 } from "@/lib/utils/mathCurves";
+import type { BackgroundCurveKey } from "@/types/uiTypes";
 
 const SPEED_DURATION: Record<string, number> = {
   slow: 9000,
@@ -51,7 +51,7 @@ const MathCurveBackground = React.forwardRef<
     const rafRef = React.useRef<number>(0);
     const startTimeRef = React.useRef<number>(performance.now());
 
-    const durationMs = SPEED_DURATION[speed] ?? SPEED_DURATION.slow;
+    const durationMs = SPEED_DURATION[speed] ?? 9000;
     const HEAD_SIZE = 8;
 
     const initialTrackPath = React.useMemo(

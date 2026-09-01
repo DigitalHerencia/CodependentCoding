@@ -10,17 +10,17 @@ import {
   toCrmContactDTO,
   toCrmDealDTO,
   toCrmDealSummaryDTO,
-} from "../db/dto/crmDto";
+} from "../db/dto/crm.dto";
 import {
   crmAccountSelect,
   crmContactSelect,
   crmDealDetailSelect,
   crmDealSummarySelect,
-} from "../db/selects/crmSelects";
-import { withTemplateReadTransaction } from "../db/tenant";
+} from "../db/selects/crm.selects";
+import { withAuthenticatedRead } from "../db/tenant";
 
 export async function getCrmDeals(limit = 50) {
-  return withTemplateReadTransaction(async (tx, access) => {
+  return withAuthenticatedRead(async (tx, access) => {
     assertPermission(access, "crm:read");
 
     const rows = await tx.crmDeal.findMany({
@@ -45,7 +45,7 @@ export async function getCrmDeals(limit = 50) {
 }
 
 export async function getCrmDeal(dealId: string) {
-  return withTemplateReadTransaction(async (tx, access) => {
+  return withAuthenticatedRead(async (tx, access) => {
     assertPermission(access, "crm:read");
 
     const record = await tx.crmDeal.findFirst({
@@ -64,7 +64,7 @@ export async function getCrmDeal(dealId: string) {
 export async function getContacts(rawCriteria: unknown = {}) {
   const criteria = contactListCriteriaSchema.parse(rawCriteria);
 
-  return withTemplateReadTransaction(async (tx, access) => {
+  return withAuthenticatedRead(async (tx, access) => {
     assertPermission(access, "crm:read");
 
     const orderBy =
@@ -123,7 +123,7 @@ export async function getContacts(rawCriteria: unknown = {}) {
 export async function getContactById(rawContactId: unknown) {
   const contactId = contactIdSchema.parse(rawContactId);
 
-  return withTemplateReadTransaction(async (tx, access) => {
+  return withAuthenticatedRead(async (tx, access) => {
     assertPermission(access, "crm:read");
     const row = await tx.crmContact.findFirst({
       where: {
@@ -138,7 +138,7 @@ export async function getContactById(rawContactId: unknown) {
 }
 
 export async function getCrmAccount(accountId: string) {
-  return withTemplateReadTransaction(async (tx, access) => {
+  return withAuthenticatedRead(async (tx, access) => {
     assertPermission(access, "crm:read");
     const row = await tx.crmAccount.findFirst({
       where: {

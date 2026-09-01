@@ -9,10 +9,10 @@ import {
   knowledgeArticleSelect,
   supportTicketSelect,
 } from "../db/selects/support.selects";
-import { withTemplateReadTransaction } from "../db/tenant";
+import { withAuthenticatedRead } from "../db/tenant";
 
 export async function getSupportInbox(limit = 100) {
-  return withTemplateReadTransaction(async (tx, access) => {
+  return withAuthenticatedRead(async (tx, access) => {
     assertPermission(access, "support:read");
 
     const rows = await tx.supportTicket.findMany({
@@ -39,7 +39,7 @@ export async function getSupportInbox(limit = 100) {
 }
 
 export async function getSupportTicket(ticketId: string) {
-  return withTemplateReadTransaction(async (tx, access) => {
+  return withAuthenticatedRead(async (tx, access) => {
     assertPermission(access, "support:read");
 
     const record = await tx.supportTicket.findFirst({
@@ -55,7 +55,7 @@ export async function getSupportTicket(ticketId: string) {
 }
 
 export async function getKnowledgeArticles(limit = 100) {
-  return withTemplateReadTransaction(async (tx, access) => {
+  return withAuthenticatedRead(async (tx, access) => {
     assertPermission(access, "support:read");
     const rows = await tx.knowledgeArticle.findMany({
       where: { organizationId: access.organizationId, status: "PUBLISHED" },

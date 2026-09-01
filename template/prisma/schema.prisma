@@ -186,6 +186,7 @@ enum PortalDocumentStatus {
   IN_REVIEW
   APPROVED
   REJECTED
+  PUBLISHED
   ARCHIVED
 }
 
@@ -239,9 +240,10 @@ model Organization {
 
   assets Asset[]
 
-  crmAccounts CrmAccount[]
-  crmContacts CrmContact[]
-  crmDeals    CrmDeal[]
+  crmAccounts   CrmAccount[]
+  crmContacts   CrmContact[]
+  crmDeals      CrmDeal[]
+  crmActivities CrmActivity[]
 
   projects         Project[]
   projectMembers   ProjectMember[]

@@ -23,3 +23,49 @@ export interface AuditEventDTO {
   createdAt: string;
 }
 export type AuditRisk = "routine" | "sensitive" | "high-risk";
+
+export interface DisplayAuditEventDTO {
+  id: string;
+  action: string;
+  resource: string;
+  timestamp: string;
+  risk: AuditRisk;
+}
+
+export type AdminRole =
+  | "OWNER"
+  | "ADMIN"
+  | "MANAGER"
+  | "MEMBER"
+  | "BILLING"
+  | "SUPPORT"
+  | "CLIENT"
+  | "VIEWER";
+
+export interface ChangeAdminMembershipCommand {
+  membershipId: string;
+  role: AdminRole;
+}
+
+export interface UpdateAdminMembershipStatusCommand {
+  membershipId: string;
+}
+
+export interface ReconcileAdminProviderStateCommand {
+  provider: string;
+  providerCustomerId?: string | null;
+  providerSubscriptionId?: string | null;
+  planKey: string;
+  status: "TRIALING" | "ACTIVE" | "PAST_DUE" | "PAUSED" | "CANCELED";
+  currentPeriodEnd?: Date | null;
+  cancelAtPeriodEnd: boolean;
+}
+
+export type AdminBulkOperation =
+  | { kind: "suspend"; membershipId: string }
+  | { kind: "restore"; membershipId: string }
+  | {
+      kind: "change-role";
+      membershipId: string;
+      role: AdminRole;
+    };

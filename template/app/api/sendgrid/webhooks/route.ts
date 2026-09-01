@@ -1,29 +1,15 @@
-import { z } from "zod";
-
-import {
-  withProviderOrganizationTransaction,
-  withProviderTransaction,
-} from "@/lib/db/provider";
+import { withProviderTransaction } from "@/lib/db/provider";
 import {
   claimWebhookEventTx,
   completeWebhookEventTx,
-  failWebhookEventTx,
 } from "@/lib/db/transactions/webhook-event.tx";
 import { verifySendGridWebhook } from "@/lib/integrations/sendgrid/webhooks";
-
-const eventSchema = z.array(
-  z
-    .object({
-      event: z.string(),
-      sg_event_id: z.string(),
-      sg_message_id: z.string().optional(),
-      organizationId: z.string().uuid(),
-    })
-    .passthrough(),
-);
+import { sendGridWebhookEventsSchema } from "@/schemas/integrationSchemas";
 
 export async function POST(request: Request) {
   const payload = await request.text();
+  let events;
+
   try {
     const verified = verifySendGridWebhook(
       payload,
@@ -35,50 +21,43 @@ export async function POST(request: Request) {
         { error: "Invalid SendGrid webhook signature." },
         { status: 400 },
       );
-    const events = eventSchema.parse(JSON.parse(payload));
+    events = sendGridWebhookEventsSchema.parse(JSON.parse(payload));
+  } catch {
+    return Response.json(
+      { error: "Invalid SendGrid webhook." },
+      { status: 400 },
+    );
+  }
+
+  try {
     for (const event of events) {
-      let webhookEventId: string | null = null;
-      try {
-        webhookEventId = await withProviderTransaction((tx) =>
-          claimWebhookEventTx(tx, {
-            provider: "sendgrid",
-            eventId: event.sg_event_id,
-            type: event.event,
-            payload: JSON.stringify(event),
+      await withProviderTransaction(async (tx) => {
+        const webhookEventId = await claimWebhookEventTx(tx, {
+          provider: "sendgrid",
+          eventId: event.sg_event_id,
+          type: event.event,
+          payload: JSON.stringify(event),
+          organizationId: event.organizationId,
+        });
+        if (!webhookEventId) return;
+
+        await tx.$executeRaw`SELECT set_config('app.organization_id', ${event.organizationId}, true)`;
+        await tx.auditEvent.create({
+          data: {
             organizationId: event.organizationId,
-          }),
-        );
-        if (!webhookEventId) continue;
-        await withProviderOrganizationTransaction(
-          event.organizationId,
-          async (tx) => {
-            await tx.auditEvent.create({
-              data: {
-                organizationId: event.organizationId,
-                action: `email.${event.event}`,
-                resourceType: "email",
-                resourceId: event.sg_message_id ?? null,
-              },
-            });
+            action: `email.${event.event}`,
+            resourceType: "email",
+            resourceId: event.sg_message_id ?? null,
           },
-        );
-        await withProviderTransaction((tx) =>
-          completeWebhookEventTx(tx, webhookEventId!),
-        );
-      } catch (cause) {
-        const message =
-          cause instanceof Error ? cause.message : "SendGrid event failed.";
-        if (webhookEventId)
-          await withProviderTransaction((tx) =>
-            failWebhookEventTx(tx, webhookEventId!, message),
-          );
-        throw cause;
-      }
+        });
+        await completeWebhookEventTx(tx, webhookEventId);
+      });
     }
     return Response.json({ received: true });
-  } catch (cause) {
-    const message =
-      cause instanceof Error ? cause.message : "SendGrid webhook failed.";
-    return Response.json({ error: message }, { status: 400 });
+  } catch {
+    return Response.json(
+      { error: "SendGrid webhook processing failed." },
+      { status: 500 },
+    );
   }
 }

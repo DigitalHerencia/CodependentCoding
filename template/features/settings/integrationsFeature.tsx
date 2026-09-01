@@ -4,8 +4,8 @@ import {
 } from "@/components/blocks/application-sections";
 import { getIntegrationStatuses } from "@/lib/fetchers/integrationFetchers";
 
-export function IntegrationsFeature() {
-  const integrations = getIntegrationStatuses();
+export async function IntegrationsFeature() {
+  const integrations = await getIntegrationStatuses();
   return (
     <>
       <PageHeaderBlock

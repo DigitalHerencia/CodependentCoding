@@ -6,23 +6,17 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import type { IntegrationStatus } from "@/types/integrationTypes";
 
 export interface PageHeaderAction {
   label: string;
   href: string;
 }
 
-export interface IntegrationStatusItem {
-  name: string;
-  purpose: string;
-  state: string;
-  mode: string;
-}
-
 export function IntegrationStatusGridBlock({
   integrations,
 }: {
-  integrations: IntegrationStatusItem[];
+  integrations: IntegrationStatus[];
 }) {
   return (
     <section className="grid gap-4 py-6 md:grid-cols-2 xl:grid-cols-3">

@@ -9,7 +9,7 @@ export function isHuggingFaceConfigured() {
 }
 
 export function getHuggingFaceClient() {
-  const accessToken = process.env.HUGGINGFACE_ACCESS_TOKEN;
+  const accessToken = process.env.HUGGINGFACE_ACCESS_TOKEN?.trim();
   if (!accessToken)
     throw new Error(
       "Hugging Face is not configured. Add HUGGINGFACE_ACCESS_TOKEN to .env.local.",

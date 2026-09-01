@@ -72,9 +72,15 @@ export interface CrmAccountDTO {
 }
 
 export type CrmDealStage =
-  | "LEAD"
-  | "QUALIFIED"
-  | "PROPOSAL"
-  | "NEGOTIATION"
-  | "WON"
-  | "LOST";
+  "LEAD" | "QUALIFIED" | "PROPOSAL" | "NEGOTIATION" | "WON" | "LOST";
+
+export interface CloseDealCommand {
+  dealId: string;
+  outcome: "WON" | "LOST";
+  expectedVersion: number;
+}
+
+export interface ReopenOpportunityCommand {
+  dealId: string;
+  expectedVersion: number;
+}

@@ -3,10 +3,10 @@ import "server-only";
 import { assertPermission } from "../authz/permissions";
 import { toExpenseDTO, toInvoiceDTO } from "../db/dto/invoicing.dto";
 import { expenseSelect, invoiceSelect } from "../db/selects/invoicing.selects";
-import { withTemplateReadTransaction } from "../db/tenant";
+import { withAuthenticatedRead } from "../db/tenant";
 
 export async function getInvoices(limit = 50) {
-  return withTemplateReadTransaction(async (tx, access) => {
+  return withAuthenticatedRead(async (tx, access) => {
     assertPermission(access, "invoicing:read");
 
     const rows = await tx.invoice.findMany({
@@ -25,7 +25,7 @@ export async function getInvoices(limit = 50) {
 }
 
 export async function getInvoice(invoiceId: string) {
-  return withTemplateReadTransaction(async (tx, access) => {
+  return withAuthenticatedRead(async (tx, access) => {
     assertPermission(access, "invoicing:read");
 
     const record = await tx.invoice.findFirst({
@@ -41,7 +41,7 @@ export async function getInvoice(invoiceId: string) {
 }
 
 export async function getExpenses(limit = 100) {
-  return withTemplateReadTransaction(async (tx, access) => {
+  return withAuthenticatedRead(async (tx, access) => {
     assertPermission(access, "invoicing:read");
     const rows = await tx.expense.findMany({
       where: { organizationId: access.organizationId },

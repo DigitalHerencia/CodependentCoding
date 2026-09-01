@@ -42,3 +42,14 @@ export interface ExpenseDTO {
   status: string;
   submitter: string | null;
 }
+
+export interface InvoiceCalculationLine {
+  quantity: string;
+  unitPrice: string;
+  taxRate: string;
+}
+
+export interface FinalizeInvoiceCommand {
+  invoiceId: string;
+  expectedVersion: number;
+}

@@ -1,6 +1,4 @@
-export type LoaderCurveKey = "rose" | "spiral" | "lissajous";
-export type ProgressCurveKey = LoaderCurveKey;
-export type BackgroundCurveKey = LoaderCurveKey;
+import type { LoaderCurveKey } from "@/types/uiTypes";
 
 type Point = { x: number; y: number };
 

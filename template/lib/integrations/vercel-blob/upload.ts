@@ -12,7 +12,7 @@ export function uploadBlob(
   return put(pathname, body, {
     access: "private",
     addRandomSuffix: true,
-    contentType,
+    ...(contentType === undefined ? {} : { contentType }),
     token: getBlobToken(),
   });
 }

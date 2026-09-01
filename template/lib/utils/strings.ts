@@ -15,7 +15,14 @@ export function truncate(value: string, maximumLength: number) {
 
 export function safeHref(value: string | undefined | null) {
   if (!value) return "#";
-  if (value.startsWith("/") || value.startsWith("#")) return value;
+  if (value.startsWith("#")) return value;
+  if (
+    value.startsWith("/") &&
+    !value.startsWith("//") &&
+    !value.startsWith("/\\")
+  ) {
+    return value;
+  }
 
   try {
     const protocol = new URL(value).protocol;

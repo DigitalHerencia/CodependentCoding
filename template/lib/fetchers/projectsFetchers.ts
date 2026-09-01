@@ -6,10 +6,10 @@ import {
   projectSummarySelect,
   taskSelect,
 } from "../db/selects/projects.selects";
-import { withTemplateReadTransaction } from "../db/tenant";
+import { withAuthenticatedRead } from "../db/tenant";
 
 export async function getProjects(limit = 50) {
-  return withTemplateReadTransaction(async (tx, access) => {
+  return withAuthenticatedRead(async (tx, access) => {
     assertPermission(access, "projects:read");
 
     const rows = await tx.project.findMany({
@@ -29,7 +29,7 @@ export async function getProjects(limit = 50) {
 }
 
 export async function getProject(projectId: string) {
-  return withTemplateReadTransaction(async (tx, access) => {
+  return withAuthenticatedRead(async (tx, access) => {
     assertPermission(access, "projects:read");
     const row = await tx.project.findFirst({
       where: {
@@ -44,7 +44,7 @@ export async function getProject(projectId: string) {
 }
 
 export async function getProjectTasks(projectId: string, limit = 100) {
-  return withTemplateReadTransaction(async (tx, access) => {
+  return withAuthenticatedRead(async (tx, access) => {
     assertPermission(access, "projects:read");
 
     const rows = await tx.task.findMany({
@@ -69,7 +69,7 @@ export async function getProjectTasks(projectId: string, limit = 100) {
 }
 
 export async function getMyTasks(limit = 100) {
-  return withTemplateReadTransaction(async (tx, access) => {
+  return withAuthenticatedRead(async (tx, access) => {
     assertPermission(access, "projects:read");
 
     const rows = await tx.task.findMany({
@@ -97,7 +97,7 @@ export async function getMyTasks(limit = 100) {
 }
 
 export async function getProjectTaskDependencyFacts(projectId: string) {
-  return withTemplateReadTransaction(async (tx, access) => {
+  return withAuthenticatedRead(async (tx, access) => {
     assertPermission(access, "projects:read");
     return tx.task.findMany({
       where: { organizationId: access.organizationId, projectId },

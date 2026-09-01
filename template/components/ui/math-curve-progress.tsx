@@ -5,12 +5,8 @@ import * as React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
-import {
-  buildPath,
-  getPoint,
-  getAngle,
-  type ProgressCurveKey,
-} from "@/lib/utils/mathCurves";
+import { buildPath, getPoint, getAngle } from "@/lib/utils/mathCurves";
+import type { ProgressCurveKey } from "@/types/uiTypes";
 
 const mathCurveProgressVariants = cva("", {
   variants: {

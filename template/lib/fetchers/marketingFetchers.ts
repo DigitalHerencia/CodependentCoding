@@ -6,10 +6,10 @@ import {
   audienceSelect,
   campaignSelect,
 } from "../db/selects/marketing.selects";
-import { withTemplateReadTransaction } from "../db/tenant";
+import { withAuthenticatedRead } from "../db/tenant";
 
 export async function getCampaigns(limit = 50) {
-  return withTemplateReadTransaction(async (tx, access) => {
+  return withAuthenticatedRead(async (tx, access) => {
     assertPermission(access, "marketing:read");
 
     const rows = await tx.campaign.findMany({
@@ -28,7 +28,7 @@ export async function getCampaigns(limit = 50) {
 }
 
 export async function getAudiences(limit = 100) {
-  return withTemplateReadTransaction(async (tx, access) => {
+  return withAuthenticatedRead(async (tx, access) => {
     assertPermission(access, "marketing:read");
     const rows = await tx.audience.findMany({
       where: { organizationId: access.organizationId },

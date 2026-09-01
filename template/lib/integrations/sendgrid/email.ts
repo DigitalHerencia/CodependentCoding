@@ -9,7 +9,7 @@ export async function sendTransactionalEmail(input: {
   html?: string;
   organizationId: string;
 }) {
-  const from = process.env.SENDGRID_FROM_EMAIL;
+  const from = process.env.SENDGRID_FROM_EMAIL?.trim();
   if (!from)
     throw new Error(
       "SendGrid is not configured. Add SENDGRID_FROM_EMAIL to .env.local.",

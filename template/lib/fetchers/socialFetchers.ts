@@ -11,10 +11,10 @@ import {
   socialAccountSelect,
   socialPostSelect,
 } from "../db/selects/social.selects";
-import { withTemplateReadTransaction } from "../db/tenant";
+import { withAuthenticatedRead } from "../db/tenant";
 
 export async function getScheduledSocialPosts(limit = 100) {
-  return withTemplateReadTransaction(async (tx, access) => {
+  return withAuthenticatedRead(async (tx, access) => {
     assertPermission(access, "social:read");
 
     const rows = await tx.socialPost.findMany({
@@ -34,7 +34,7 @@ export async function getScheduledSocialPosts(limit = 100) {
 }
 
 export async function getSocialAccounts() {
-  return withTemplateReadTransaction(async (tx, access) => {
+  return withAuthenticatedRead(async (tx, access) => {
     assertPermission(access, "social:read");
     const rows = await tx.socialAccount.findMany({
       where: { organizationId: access.organizationId, active: true },
@@ -46,7 +46,7 @@ export async function getSocialAccounts() {
 }
 
 export async function getMediaAssets(limit = 100) {
-  return withTemplateReadTransaction(async (tx, access) => {
+  return withAuthenticatedRead(async (tx, access) => {
     assertPermission(access, "social:read");
     const rows = await tx.asset.findMany({
       where: { organizationId: access.organizationId },

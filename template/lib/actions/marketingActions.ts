@@ -1,13 +1,60 @@
 "use server";
 
 import {
-  updateCampaignStatusWorkflow,
-} from "../marketing/marketingWorkflows";
-import { scheduleCampaignWorkflow } from "../marketing/workflows/schedule-campaign.workflow";
+  createCampaignSchema,
+  updateCampaignStatusSchema,
+} from "@/schemas/marketingSchemas";
+import { requireIdentity } from "@/lib/auth/auth";
+import { assertPermission } from "@/lib/authz/permissions";
+import { toCampaignDTO } from "@/lib/db/dto/marketing.dto";
+import { campaignSelect } from "@/lib/db/selects/marketing.selects";
+import { withTenantTransaction } from "@/lib/db/tenant";
+import { ConcurrencyConflictError } from "@/lib/db/transactions/errors";
 
-export async function createCampaign(input: unknown) {
-  return scheduleCampaignWorkflow(input);
+export async function createCampaign(rawInput: unknown) {
+  const input = createCampaignSchema.parse(rawInput);
+  const identity = await requireIdentity();
+  return withTenantTransaction(identity, async (tx, access) => {
+    assertPermission(access, "marketing:write");
+    const record = await tx.campaign.create({
+      data: {
+        organizationId: access.organizationId,
+        ownerMembershipId: access.membershipId,
+        audienceId: input.audienceId ?? null,
+        name: input.name,
+        description: input.description ?? null,
+        scheduledAt: input.scheduledAt ?? null,
+        status: input.scheduledAt ? "SCHEDULED" : "DRAFT",
+      },
+      select: campaignSelect,
+    });
+    return toCampaignDTO(record);
+  });
 }
-export async function updateCampaignStatus(input: unknown) {
-  return updateCampaignStatusWorkflow(input);
+
+export async function updateCampaignStatus(rawInput: unknown) {
+  const input = updateCampaignStatusSchema.parse(rawInput);
+  const identity = await requireIdentity();
+  return withTenantTransaction(identity, async (tx, access) => {
+    assertPermission(access, "marketing:write");
+    const result = await tx.campaign.updateMany({
+      where: {
+        id: input.campaignId,
+        organizationId: access.organizationId,
+        version: input.expectedVersion,
+      },
+      data: {
+        status: input.status,
+        ...(input.status === "ACTIVE" ? { startedAt: new Date() } : {}),
+        ...(input.status === "COMPLETED" ? { completedAt: new Date() } : {}),
+        version: { increment: 1 },
+      },
+    });
+    if (result.count !== 1) throw new ConcurrencyConflictError("Campaign");
+    const record = await tx.campaign.findFirstOrThrow({
+      where: { id: input.campaignId, organizationId: access.organizationId },
+      select: campaignSelect,
+    });
+    return toCampaignDTO(record);
+  });
 }

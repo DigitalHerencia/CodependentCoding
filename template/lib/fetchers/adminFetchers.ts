@@ -1,16 +1,19 @@
 import "server-only";
 
 import { assertPermission } from "../authz/permissions";
-import { toAdminMembershipDTO, toAuditEventDTO } from "../db/dto/admin.dto";
+import {
+  toAdminMembershipDTO,
+  toAuditEventDTO,
+  toDisplayAuditEventDTO,
+} from "../db/dto/admin.dto";
 import {
   adminMembershipSelect,
   auditEventSelect,
 } from "../db/selects/admin.selects";
-import { withTemplateReadTransaction } from "../db/tenant";
-import { classifyAuditEvent } from "../admin/logic/classify-audit-event.logic";
+import { withAuthenticatedRead } from "../db/tenant";
 
 export async function getAuditEvents(limit = 100) {
-  return withTemplateReadTransaction(async (tx, access) => {
+  return withAuthenticatedRead(async (tx, access) => {
     assertPermission(access, "admin:audit");
 
     const rows = await tx.auditEvent.findMany({
@@ -30,16 +33,11 @@ export async function getAuditEvents(limit = 100) {
 
 export async function getDisplayAuditEvents(limit = 100) {
   const events = await getAuditEvents(limit);
-  return events.map((event) => ({
-    id: event.id,
-    action: `${event.action} · ${classifyAuditEvent(event.action)}`,
-    resource: `${event.resourceType}${event.resourceId ? ` · ${event.resourceId}` : ""}`,
-    timestamp: new Date(event.createdAt).toLocaleString(),
-  }));
+  return events.map(toDisplayAuditEventDTO);
 }
 
 export async function getAdminMemberships() {
-  return withTemplateReadTransaction(async (tx, access) => {
+  return withAuthenticatedRead(async (tx, access) => {
     assertPermission(access, "admin:users");
     const rows = await tx.membership.findMany({
       where: { organizationId: access.organizationId },
@@ -51,7 +49,7 @@ export async function getAdminMemberships() {
 }
 
 export async function getAdminRecordSummary() {
-  return withTemplateReadTransaction(async (tx, access) => {
+  return withAuthenticatedRead(async (tx, access) => {
     assertPermission(access, "admin:records");
     const [
       contacts,

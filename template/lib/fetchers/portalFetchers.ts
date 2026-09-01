@@ -2,15 +2,15 @@ import "server-only";
 
 import { assertPermission } from "../authz/permissions";
 import { toPortalDocumentDTO } from "../db/dto/portal.dto";
-import { portalDocumentSelect } from "../db/selects/portal.selects";
 import {
   portalBillingSelect,
+  portalDocumentSelect,
   portalInvoiceSelect,
 } from "../db/selects/portal.selects";
-import { withTemplateReadTransaction } from "../db/tenant";
+import { withAuthenticatedRead } from "../db/tenant";
 
 export async function getPortalDocuments(limit = 100) {
-  return withTemplateReadTransaction(async (tx, access) => {
+  return withAuthenticatedRead(async (tx, access) => {
     assertPermission(access, "portal:read");
 
     const clientOnly = access.role === "CLIENT";
@@ -39,7 +39,7 @@ export async function getPortalDocuments(limit = 100) {
 }
 
 export async function getPortalBilling() {
-  return withTemplateReadTransaction(async (tx, access) => {
+  return withAuthenticatedRead(async (tx, access) => {
     assertPermission(access, "portal:billing");
     const [subscription, invoices] = await Promise.all([
       tx.billingSubscription.findUnique({

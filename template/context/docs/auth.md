@@ -183,13 +183,13 @@ Do not allow an auth helper to become an unclassified database service.
 
 The code and `.env.example` must use one canonical secret name.
 
-The current route implementation uses:
+The route implementation uses Clerk's canonical environment name:
 
 ```text
-CLERK_WEBHOOK_SECRET
+CLERK_WEBHOOK_SIGNING_SECRET
 ```
 
-Governance therefore treats that as the canonical repository name unless the implementation is deliberately changed everywhere in one scoped update.
+This name stays aligned with Clerk's `verifyWebhook` helper.
 
 ## 12. Administrative demo routes
 

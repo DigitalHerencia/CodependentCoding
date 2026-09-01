@@ -19,10 +19,12 @@ import {
   triggerAnimation,
   startViewTransition,
   prefersReducedMotion,
-  type RevealOptions,
-  type StaggerOptions,
-  type PageTransition,
 } from "@/lib/utils/motionCore";
+import type {
+  PageTransition,
+  RevealOptions,
+  StaggerOptions,
+} from "@/types/uiTypes";
 
 // ──────────────────────────────────────────────────────────────────
 // <Reveal> — scroll-triggered entrance
@@ -63,7 +65,12 @@ export const Reveal = React.forwardRef<HTMLDivElement, RevealProps>(
     React.useEffect(() => {
       const el = innerRef.current;
       if (!el) return;
-      return observeReveal(el, { rootMargin, threshold, once, delay });
+      return observeReveal(el, {
+        ...(rootMargin === undefined ? {} : { rootMargin }),
+        ...(threshold === undefined ? {} : { threshold }),
+        ...(once === undefined ? {} : { once }),
+        ...(delay === undefined ? {} : { delay }),
+      });
     }, [rootMargin, threshold, once, delay]);
 
     const Tag = (as ?? "div") as React.ElementType;
@@ -135,7 +142,11 @@ export const Stagger = React.forwardRef<HTMLDivElement, StaggerProps>(
     React.useEffect(() => {
       const el = innerRef.current;
       if (!el) return;
-      return staggerChildren(el, { delay, initialDelay, selector });
+      return staggerChildren(el, {
+        ...(delay === undefined ? {} : { delay }),
+        ...(initialDelay === undefined ? {} : { initialDelay }),
+        ...(selector === undefined ? {} : { selector }),
+      });
     }, [delay, initialDelay, selector]);
 
     const Tag = (as ?? "div") as React.ElementType;

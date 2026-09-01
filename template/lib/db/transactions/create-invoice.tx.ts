@@ -2,7 +2,7 @@ import { Prisma } from "../../../generated/prisma/client";
 
 import { invoiceSelect } from "../selects/invoicing.selects";
 import { InvariantViolationError } from "./errors";
-import { calculateInvoiceTotals } from "../../invoicing/logic/calculate-invoice-totals.logic";
+import { calculateInvoiceTotals } from "@/lib/utils/invoicing";
 
 export async function createInvoiceTx(
   tx: Prisma.TransactionClient,

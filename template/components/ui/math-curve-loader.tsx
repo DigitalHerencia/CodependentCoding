@@ -11,8 +11,8 @@ import {
   getAngle,
   getDetailScale,
   getCurvePulseDuration,
-  type LoaderCurveKey,
 } from "@/lib/utils/mathCurves";
+import type { LoaderCurveKey } from "@/types/uiTypes";
 
 const mathCurveLoaderVariants = cva("", {
   variants: {
@@ -68,7 +68,7 @@ const MathCurveLoader = React.forwardRef<SVGSVGElement, MathCurveLoaderProps>(
     const rafRef = React.useRef<number>(0);
     const startTimeRef = React.useRef<number>(performance.now());
 
-    const durationMs = SPEED_DURATION[speed] ?? SPEED_DURATION.normal;
+    const durationMs = SPEED_DURATION[speed] ?? 5500;
 
     // Rebuild static track path when curve changes
     const trackPath = React.useMemo(() => buildPath(curve, 1.0), [curve]);
