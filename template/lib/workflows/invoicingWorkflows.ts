@@ -44,5 +44,5 @@ export async function finalizeInvoiceWorkflow(input: FinalizeInvoiceCommand) {
   if (invoice.status !== "DRAFT") {
     throw new Error("Only a draft invoice can be finalized.");
   }
-  return updateInvoiceStatus({ ...input, status: "ISSUED" });
+  return updateInvoiceStatus({ ...input, status: "OPEN" });
 }
