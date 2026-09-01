@@ -19,28 +19,18 @@ import {
   triggerAnimation,
   startViewTransition,
   prefersReducedMotion,
-  type RevealOptions,
-  type StaggerOptions,
   type PageTransition,
 } from "@/lib/utils/motionCore";
+
+import type {
+  MotionProps,
+  RevealProps,
+  StaggerProps,
+} from "@/types/commonTypes";
 
 // ──────────────────────────────────────────────────────────────────
 // <Reveal> — scroll-triggered entrance
 // ──────────────────────────────────────────────────────────────────
-
-export type RevealDirection = "up" | "down" | "left" | "right";
-
-export interface RevealProps
-  extends
-    React.HTMLAttributes<HTMLDivElement>,
-    Omit<RevealOptions, "rootMargin"> {
-  /** Direction to slide in from. Default 'up'. */
-  direction?: RevealDirection;
-  /** Custom IntersectionObserver rootMargin. */
-  rootMargin?: string;
-  /** Element tag to render. Default 'div'. */
-  as?: keyof React.JSX.IntrinsicElements;
-}
 
 export const Reveal = React.forwardRef<HTMLDivElement, RevealProps>(
   (
@@ -84,16 +74,6 @@ Reveal.displayName = "Reveal";
 // <Motion> — declarative recipe composition
 // ──────────────────────────────────────────────────────────────────
 
-export interface MotionProps extends React.HTMLAttributes<HTMLElement> {
-  as?: keyof React.JSX.IntrinsicElements;
-  /** Apply .bk-press for interactive shadow choreography. */
-  press?: boolean;
-  /** Apply .bk-stamp-in entrance. */
-  stamp?: boolean;
-  /** Apply .bk-pulse-shadow. */
-  pulse?: boolean;
-}
-
 export const Motion = React.forwardRef<HTMLElement, MotionProps>(
   ({ as, press, stamp, pulse, className, children, ...rest }, ref) => {
     const Tag = (as ?? "div") as React.ElementType;
@@ -118,11 +98,6 @@ Motion.displayName = "Motion";
 // ──────────────────────────────────────────────────────────────────
 // <Stagger> — sequence children entrance
 // ──────────────────────────────────────────────────────────────────
-
-export interface StaggerProps
-  extends React.HTMLAttributes<HTMLDivElement>, StaggerOptions {
-  as?: keyof React.JSX.IntrinsicElements;
-}
 
 export const Stagger = React.forwardRef<HTMLDivElement, StaggerProps>(
   (
