@@ -16,26 +16,45 @@ export async function claimWebhookEventTx(
     organizationId?: string | null;
   },
 ) {
+  const payloadHash = hashWebhookPayload(input.payload);
   const inserted = await tx.$queryRaw<Array<{ id: string }>>`
     INSERT INTO "WebhookEvent" ("id", "organizationId", "provider", "eventId", "type", "status", "payloadHash", "receivedAt")
-    VALUES (gen_random_uuid(), ${input.organizationId ?? null}::uuid, ${input.provider}, ${input.eventId}, ${input.type}, 'PROCESSING', ${hashWebhookPayload(input.payload)}, now())
+    VALUES (gen_random_uuid(), ${input.organizationId ?? null}::uuid, ${input.provider}, ${input.eventId}, ${input.type}, 'PROCESSING', ${payloadHash}, now())
     ON CONFLICT ("provider", "eventId") DO UPDATE
     SET
       "organizationId" = EXCLUDED."organizationId",
-      "type" = EXCLUDED."type",
       "status" = 'PROCESSING',
-      "payloadHash" = EXCLUDED."payloadHash",
       "receivedAt" = now(),
       "processedAt" = NULL,
       "errorCode" = NULL
-    WHERE "WebhookEvent"."status" = 'FAILED'
-       OR (
-         "WebhookEvent"."status" = 'PROCESSING'
-         AND "WebhookEvent"."receivedAt" < now() - interval '5 minutes'
-       )
+    WHERE "WebhookEvent"."payloadHash" = EXCLUDED."payloadHash"
+      AND "WebhookEvent"."type" = EXCLUDED."type"
+      AND (
+        "WebhookEvent"."status" = 'FAILED'
+        OR (
+          "WebhookEvent"."status" = 'PROCESSING'
+          AND "WebhookEvent"."receivedAt" < now() - interval '5 minutes'
+        )
+      )
     RETURNING "id"
   `;
-  return inserted[0]?.id ?? null;
+
+  if (inserted[0]?.id) return inserted[0].id;
+
+  const existing = await tx.webhookEvent.findUnique({
+    where: {
+      provider_eventId: { provider: input.provider, eventId: input.eventId },
+    },
+    select: { payloadHash: true, type: true },
+  });
+  if (
+    existing &&
+    (existing.payloadHash !== payloadHash || existing.type !== input.type)
+  ) {
+    throw new Error("Webhook event identity does not match its original payload.");
+  }
+
+  return null;
 }
 
 export function completeWebhookEventTx(
