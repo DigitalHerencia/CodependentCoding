@@ -1,7 +1,9 @@
 /* eslint-disable react-refresh/only-export-components */
 import * as React from "react";
-import { cva, type VariantProps } from "class-variance-authority";
+import { cva } from "class-variance-authority";
 import { cn } from "@/lib/utils";
+
+import type { KbdComboProps, KbdProps } from "@/types/commonTypes";
 
 const kbdVariants = cva(
   "inline-flex items-center justify-center font-mono font-bold uppercase border-3 border-foreground",
@@ -25,9 +27,6 @@ const kbdVariants = cva(
   },
 );
 
-export interface KbdProps
-  extends React.HTMLAttributes<HTMLElement>, VariantProps<typeof kbdVariants> {}
-
 const Kbd = React.forwardRef<HTMLElement, KbdProps>(
   ({ className, variant, size, ...props }, ref) => {
     return (
@@ -40,11 +39,6 @@ const Kbd = React.forwardRef<HTMLElement, KbdProps>(
   },
 );
 Kbd.displayName = "Kbd";
-
-export interface KbdComboProps extends Omit<KbdProps, "children"> {
-  keys: string[];
-  separator?: React.ReactNode;
-}
 
 const KbdCombo = React.forwardRef<HTMLDivElement, KbdComboProps>(
   ({ keys, separator = "+", variant, size, className, ...props }, ref) => {
