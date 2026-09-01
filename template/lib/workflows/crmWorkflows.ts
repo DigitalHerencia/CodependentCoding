@@ -1,11 +1,6 @@
+import { updateContact, updateCrmDealStage } from "@/lib/actions/crmActions";
 import {
-  archiveContact,
-  createContact,
-  createCrmDeal,
-  updateContact,
-  updateCrmDealStage,
-} from "@/lib/actions/crmActions";
-import {
+  getClosedWonCrmValue,
   getContactById,
   getCrmDeal,
   getCrmDeals,
@@ -14,12 +9,6 @@ import type {
   CloseDealCommand,
   ReopenOpportunityCommand,
 } from "@/types/crmTypes";
-
-export const createCrmDealWorkflow = createCrmDeal;
-export const updateCrmDealStageWorkflow = updateCrmDealStage;
-export const createContactWorkflow = createContact;
-export const updateContactWorkflow = updateContact;
-export const archiveContactWorkflow = archiveContact;
 
 export async function closeDealWorkflow(input: CloseDealCommand) {
   return updateCrmDealStage({ ...input, stage: input.outcome });
@@ -74,22 +63,13 @@ export async function calculateSalesVelocityWorkflow(
   periodStart: Date,
   periodEnd: Date,
 ) {
-  const summaries = await getCrmDeals(100);
-  const deals = await Promise.all(
-    summaries
-      .filter((deal) => deal.stage === "WON")
-      .map((deal) => getCrmDeal(deal.id)),
-  );
+  if (periodEnd < periodStart) {
+    throw new Error("The sales velocity period end must follow its start.");
+  }
+  const closedWonValue = await getClosedWonCrmValue(periodStart, periodEnd);
   const days = Math.max(
     1,
     (periodEnd.getTime() - periodStart.getTime()) / 86_400_000,
   );
-  const value = deals.reduce((total, deal) => {
-    if (!deal?.closedAt) return total;
-    const closedAt = new Date(deal.closedAt);
-    return closedAt >= periodStart && closedAt <= periodEnd
-      ? total + Number(deal.value)
-      : total;
-  }, 0);
-  return (value / days).toFixed(4);
+  return (Number(closedWonValue) / days).toFixed(4);
 }

@@ -2,7 +2,8 @@
 
 /* eslint-disable react-refresh/only-export-components */
 import * as React from "react";
-import { cn, safeHref } from "@/lib/utils";
+import { cn } from "@/lib/utils/cn";
+import { safeHref } from "@/lib/utils/strings";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";

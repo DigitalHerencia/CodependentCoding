@@ -1,18 +1,10 @@
 import type { NextRequest } from "next/server";
 
 import {
-  projectClerkUser,
+  processClerkWebhook,
   verifyClerkWebhook,
+  WebhookIdentityConflictError,
 } from "@/lib/auth/clerk-webhooks";
-import { withProviderTransaction } from "@/lib/db/provider";
-import {
-  anonymizeClerkUserTx,
-  syncClerkUserTx,
-} from "@/lib/db/transactions/clerk-user.tx";
-import {
-  claimWebhookEventTx,
-  completeWebhookEventTx,
-} from "@/lib/db/transactions/webhook-event.tx";
 
 export async function POST(request: NextRequest) {
   const payload = await request.clone().text();
@@ -36,28 +28,16 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const processed = await withProviderTransaction(async (tx) => {
-      const webhookEventId = await claimWebhookEventTx(tx, {
-        provider: "clerk",
-        eventId,
-        type: event.type,
-        payload,
-      });
-
-      if (!webhookEventId) return false;
-
-      if (event.type === "user.created" || event.type === "user.updated") {
-        await syncClerkUserTx(tx, projectClerkUser(event.data));
-      } else if (event.type === "user.deleted" && event.data.id) {
-        await anonymizeClerkUserTx(tx, event.data.id);
-      }
-
-      await completeWebhookEventTx(tx, webhookEventId);
-      return true;
-    });
+    const processed = await processClerkWebhook(event, eventId, payload);
 
     return Response.json({ received: true, duplicate: !processed });
-  } catch {
+  } catch (error) {
+    if (error instanceof WebhookIdentityConflictError) {
+      return Response.json(
+        { error: "Clerk webhook event identity conflict." },
+        { status: 409 },
+      );
+    }
     return Response.json(
       { error: "Clerk webhook processing failed." },
       { status: 500 },

@@ -19,6 +19,10 @@ Authorization answers **what may this authenticated caller do?** The canonical R
 
 Protected reads and mutations perform authoritative authorization at their operational boundary. Client-provided user IDs, roles, permissions, organization IDs, prices, customer/account IDs, or provider metadata do not establish authority.
 
+Tenant membership and resource access are different decisions. Establishing the correct organization, tenant transaction, or RLS context proves containment; it does not prove that every member may read or mutate every resource in that tenant. Operations enforce capability permission plus any ownership, requester, assignee, visibility, or other resource policy required by the use case.
+
+Closed authorization vocabulary has one application owner. Runtime validation, persistence enums, administrative commands, grants, and UI choices derive from or exhaustively translate that vocabulary so a new role cannot be accepted in one layer and unknown in another.
+
 ## RLS relationship
 
 RLS is independent database containment for tenant-owned data. It complements Auth/AuthZ; it does not replace them. Protected tenant operations establish the intended transaction-local tenant/identity context and execute under a runtime role that cannot bypass the RLS policy it is supposed to enforce.

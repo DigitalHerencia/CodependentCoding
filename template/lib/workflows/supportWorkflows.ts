@@ -1,17 +1,10 @@
-import {
-  createSupportTicket,
-  updateSupportTicketStatus,
-} from "@/lib/actions/supportActions";
+import { updateSupportTicketStatus } from "@/lib/actions/supportActions";
 import {
   getKnowledgeArticles,
   getSupportInbox,
   getSupportTicket,
 } from "@/lib/fetchers/supportFetchers";
 import type { SupportTicketTransitionCommand } from "@/types/supportTypes";
-
-export const createSupportTicketWorkflow = createSupportTicket;
-export const createTicketFromIntakeWorkflow = createSupportTicket;
-export const updateSupportTicketStatusWorkflow = updateSupportTicketStatus;
 
 export async function resolveTicketWorkflow(
   input: SupportTicketTransitionCommand,

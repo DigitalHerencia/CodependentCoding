@@ -56,3 +56,5 @@ export async function changeAdminMembership(rawInput: unknown) {
 ## Boundary
 
 An Action owns mutation orchestration, not every business process in the application. When a named business operation requires composition across existing Actions, Fetchers, integrations, calculations, or other capabilities, that composition belongs in a domain Workflow rather than being duplicated inside the Action.
+
+Mutation-specific transition rules, provider limits, or scheduling rules may remain private beside the Action/transaction that enforces them. Do not export them from generic `utils/` merely to make them look reusable.

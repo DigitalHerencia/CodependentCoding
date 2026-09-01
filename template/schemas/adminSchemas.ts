@@ -1,15 +1,8 @@
 import { z } from "zod";
+import { SubscriptionStatus } from "@/generated/prisma/enums";
+import { appRoles } from "@/lib/authz/roles";
 
-export const adminRoleSchema = z.enum([
-  "OWNER",
-  "ADMIN",
-  "MANAGER",
-  "MEMBER",
-  "BILLING",
-  "SUPPORT",
-  "CLIENT",
-  "VIEWER",
-]);
+export const adminRoleSchema = z.enum(appRoles);
 
 export const changeAdminMembershipSchema = z.object({
   membershipId: z.string().uuid(),
@@ -31,7 +24,7 @@ export const reconcileAdminProviderStateSchema = z.object({
     .nullable()
     .optional(),
   planKey: z.string().trim().min(1).max(100),
-  status: z.enum(["TRIALING", "ACTIVE", "PAST_DUE", "PAUSED", "CANCELED"]),
+  status: z.enum(SubscriptionStatus),
   currentPeriodEnd: z.coerce.date().nullable().optional(),
   cancelAtPeriodEnd: z.boolean(),
 });

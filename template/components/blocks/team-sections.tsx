@@ -2,7 +2,8 @@
 import * as React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { cn, safeHref } from "@/lib/utils";
+import { cn } from "@/lib/utils/cn";
+import { safeHref } from "@/lib/utils/strings";
 import { XIcon, Mail } from "lucide-react";
 
 function getInitials(name: string) {

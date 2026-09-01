@@ -3,7 +3,7 @@
 /* eslint-disable react-refresh/only-export-components */
 import * as React from "react";
 import { ChevronRight, Folder, File } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/cn";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Collapsible,

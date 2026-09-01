@@ -15,6 +15,7 @@
 ## Feature ownership
 
 - Compose one page/use-case experience. Call one or more Fetchers. Interpret authorized DTO/null/list results into presentation state, including page-level not-found/redirect outcomes when those outcomes depend on fetched application state. Compose Blocks and provide action references to interactive UI.
+- Own presentation-only view models such as localized timestamps, display labels, badges, and visual risk classifications. Those transformations must not be hidden in persistence DTO mappers.
 - A Feature is server-first by default. A deliberate Client Feature may exist only for browser interaction and receives safe state/actions from the server boundary.
 
 ## No loader layer

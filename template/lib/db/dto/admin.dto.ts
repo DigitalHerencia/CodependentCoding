@@ -1,11 +1,11 @@
 import type {
   AdminMembershipDTO,
+  AdminProviderStateDTO,
   AuditEventDTO,
-  AuditRisk,
-  DisplayAuditEventDTO,
 } from "../../../types/adminTypes";
 import type {
   AdminMembershipRecord,
+  AdminProviderSubscriptionRecord,
   AuditEventRecord,
 } from "../selects/admin.selects";
 
@@ -27,29 +27,6 @@ export function toAuditEventDTO(record: AuditEventRecord): AuditEventDTO {
   };
 }
 
-function classifyAuditEvent(action: string): AuditRisk {
-  const normalized = action.toLowerCase();
-  if (/(delete|revoke|role|permission|bulk|export)/.test(normalized)) {
-    return "high-risk";
-  }
-  if (/(update|approve|reject|invite|publish)/.test(normalized)) {
-    return "sensitive";
-  }
-  return "routine";
-}
-
-export function toDisplayAuditEventDTO(
-  event: AuditEventDTO,
-): DisplayAuditEventDTO {
-  return {
-    id: event.id,
-    action: event.action,
-    resource: `${event.resourceType}${event.resourceId ? ` · ${event.resourceId}` : ""}`,
-    timestamp: new Date(event.createdAt).toLocaleString(),
-    risk: classifyAuditEvent(event.action),
-  };
-}
-
 export function toAdminMembershipDTO(
   record: AdminMembershipRecord,
 ): AdminMembershipDTO {
@@ -59,5 +36,16 @@ export function toAdminMembershipDTO(
     status: record.status,
     user: record.user,
     createdAt: record.createdAt.toISOString(),
+  };
+}
+
+export function toAdminProviderStateDTO(
+  record: AdminProviderSubscriptionRecord,
+): AdminProviderStateDTO {
+  return {
+    ...record,
+    currentPeriodEnd: record.currentPeriodEnd?.toISOString() ?? null,
+    createdAt: record.createdAt.toISOString(),
+    updatedAt: record.updatedAt.toISOString(),
   };
 }

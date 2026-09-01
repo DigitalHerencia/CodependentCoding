@@ -40,7 +40,7 @@ Workflow
 
 A Workflow may combine multiple reads into a business-level result, perform read -> decision -> mutation orchestration, calculate domain state, enforce a business transition, or coordinate a longer provider-backed process.
 
-A one-to-one Workflow alias is allowed when the Workflow is intentionally being used as the domain-facing business-operation facade, but aliases should not exist merely to manufacture another layer. The audit should prefer real orchestration and make intentional aliases obvious.
+A one-to-one Workflow alias requires a documented domain facade or compatibility contract plus real callers. Otherwise callers use the Action/Fetcher directly and the alias is removed. Naming a second export `*Workflow` without adding a contract is not orchestration.
 
 ## Golden pattern
 

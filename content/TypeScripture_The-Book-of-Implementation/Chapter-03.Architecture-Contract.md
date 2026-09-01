@@ -7,9 +7,15 @@ The human-readable TypeScripture chapters are the authority. The YAML and JSON b
 ## Canonical machine contract — YAML
 
 ```yaml
-version: 3
-architecture: loaded-vibes
+version: 4
+architecture: codependent-coding
+post_generation_operations: loaded-vibes
 operations_root: lib
+semantic_authority:
+  single_owner_per_concept: true
+  derivatives: derive-or-translate-exhaustively
+  independently_retyped_closed_vocabularies: forbidden
+  exception_rule: documented-security-correctness-provider-or-material-performance-constraint
 organization:
   domain_files: shallow
   naming:
@@ -31,6 +37,8 @@ operations:
   authz:
     owns: authorization-rbac
     files: [permissions.ts, policies.ts, resources.ts, roles.ts]
+    requires: [capability-permission, tenant-scope, resource-policy-when-applicable]
+    vocabulary: single-application-owner
   cache:
     owns: next-cache-policy
     files: [invalidate.ts, life.ts, tags.ts]
@@ -46,11 +54,15 @@ operations:
     provider: trusted-provider-or-organization-transaction-context
     tenant: authenticated-local-user-membership-and-rls-context
     dto: persistence-record-to-application-dto
+    dto_excludes: [locale-formatting, display-labels, presentation-risk]
     selects: exact-typed-prisma-projections
     transactions: atomic-local-database-operations
+    concurrency: race-sensitive-read-write-decisions-are-serialized-or-conditional
   fetchers:
     owns: reads
     protected: authenticated-and-authorized
+    query_shape: purpose-built-projection-or-aggregate
+    n_plus_one: avoid
   integrations:
     owns: provider-specific-external-service-code
     pattern: provider-folder-with-client-and-capability-helpers
@@ -59,11 +71,13 @@ operations:
   utils:
     owns: generic-reusable-helpers-with-no-better-owner
     barrels: avoid-by-default
+    domain_rules: forbidden-when-a-domain-owner-exists
   workflows:
     owns: domain-business-logic-orchestration
     analogy: business-logic-blocks
     composes: [actions, fetchers, integrations, utils, types, schemas, established-helpers]
     duplication: forbidden
+    one_to_one_alias: documented-facade-with-real-callers-only
 root_contracts:
   schemas:
     owns: domain-organized-zod-runtime-validation
@@ -85,15 +99,21 @@ webhooks:
   provider_helper: lib/integrations/<provider>/webhooks.ts
   route_owns: http-request-response-boundary
   helper_owns: provider-specific-webhook-mechanics
+  identity: [provider, event-id]
+  identity_facts_immutable: [event-type, verified-payload-hash]
+  lifecycle: [claim, process, complete-or-fail, stale-recovery, replay]
+  route_errors: classified-and-sanitized
 security:
   authentication: auth
   authorization: authz
   tenant_containment: postgres-rls
   protected_mutations: authenticated-and-authorized
   protected_reads: authenticated-and-authorized
+  tenant_scope_does_not_imply: resource-access
   untrusted_runtime_input: zod-validated-at-trust-boundary
 performance:
   prisma_reads: explicit-selects
+  aggregate_questions: aggregate-queries
   imports: direct-by-default
   barrel_exports: avoid-by-default
 ```
@@ -102,9 +122,16 @@ performance:
 
 ```json
 {
-  "version": 3,
-  "architecture": "loaded-vibes",
+  "version": 4,
+  "architecture": "codependent-coding",
+  "postGenerationOperations": "loaded-vibes",
   "operationsRoot": "lib",
+  "semanticAuthority": {
+    "singleOwnerPerConcept": true,
+    "derivatives": "derive-or-translate-exhaustively",
+    "independentlyRetypedClosedVocabularies": "forbidden",
+    "exceptionRule": "documented-security-correctness-provider-or-material-performance-constraint"
+  },
   "organization": {
     "domainFiles": "shallow",
     "naming": {
@@ -129,7 +156,9 @@ performance:
     },
     "authz": {
       "owns": "authorization-rbac",
-      "files": ["permissions.ts", "policies.ts", "resources.ts", "roles.ts"]
+      "files": ["permissions.ts", "policies.ts", "resources.ts", "roles.ts"],
+      "requires": ["capability-permission", "tenant-scope", "resource-policy-when-applicable"],
+      "vocabulary": "single-application-owner"
     },
     "cache": {
       "owns": "next-cache-policy",
@@ -148,12 +177,16 @@ performance:
       "provider": "trusted-provider-or-organization-transaction-context",
       "tenant": "authenticated-local-user-membership-and-rls-context",
       "dto": "persistence-record-to-application-dto",
+      "dtoExcludes": ["locale-formatting", "display-labels", "presentation-risk"],
       "selects": "exact-typed-prisma-projections",
-      "transactions": "atomic-local-database-operations"
+      "transactions": "atomic-local-database-operations",
+      "concurrency": "race-sensitive-read-write-decisions-are-serialized-or-conditional"
     },
     "fetchers": {
       "owns": "reads",
-      "protected": "authenticated-and-authorized"
+      "protected": "authenticated-and-authorized",
+      "queryShape": "purpose-built-projection-or-aggregate",
+      "nPlusOne": "avoid"
     },
     "integrations": {
       "owns": "provider-specific-external-service-code",
@@ -163,13 +196,15 @@ performance:
     },
     "utils": {
       "owns": "generic-reusable-helpers-with-no-better-owner",
-      "barrels": "avoid-by-default"
+      "barrels": "avoid-by-default",
+      "domainRules": "forbidden-when-a-domain-owner-exists"
     },
     "workflows": {
       "owns": "domain-business-logic-orchestration",
       "analogy": "business-logic-blocks",
       "composes": ["actions", "fetchers", "integrations", "utils", "types", "schemas", "established-helpers"],
-      "duplication": "forbidden"
+      "duplication": "forbidden",
+      "oneToOneAlias": "documented-facade-with-real-callers-only"
     }
   },
   "rootContracts": {
@@ -184,7 +219,11 @@ performance:
     "route": "app/api/<provider>/.../route.ts",
     "providerHelper": "lib/integrations/<provider>/webhooks.ts",
     "routeOwns": "http-request-response-boundary",
-    "helperOwns": "provider-specific-webhook-mechanics"
+    "helperOwns": "provider-specific-webhook-mechanics",
+    "identity": ["provider", "event-id"],
+    "identityFactsImmutable": ["event-type", "verified-payload-hash"],
+    "lifecycle": ["claim", "process", "complete-or-fail", "stale-recovery", "replay"],
+    "routeErrors": "classified-and-sanitized"
   },
   "security": {
     "authentication": "auth",
@@ -192,10 +231,12 @@ performance:
     "tenantContainment": "postgres-rls",
     "protectedMutations": "authenticated-and-authorized",
     "protectedReads": "authenticated-and-authorized",
+    "tenantScopeDoesNotImply": "resource-access",
     "untrustedRuntimeInput": "zod-validated-at-trust-boundary"
   },
   "performance": {
     "prismaReads": "explicit-selects",
+    "aggregateQuestions": "aggregate-queries",
     "imports": "direct-by-default",
     "barrelExports": "avoid-by-default"
   }

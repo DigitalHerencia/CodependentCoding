@@ -13,7 +13,41 @@ import { withTenantTransaction } from "@/lib/db/tenant";
 import { ResourceNotFoundError } from "@/lib/db/transactions/errors";
 import { scheduleSocialPostTx } from "@/lib/db/transactions/schedule-social-post.tx";
 import { approveSocialPostTx } from "@/lib/db/transactions/social.tx";
-import { buildPlatformVariant, resolvePublishTime } from "@/lib/utils/social";
+
+const characterLimits = {
+  LINKEDIN: 3_000,
+  X: 280,
+  FACEBOOK: 63_206,
+  INSTAGRAM: 2_200,
+  OTHER: 100_000,
+} as const;
+
+function buildPlatformVariant(
+  provider: keyof typeof characterLimits,
+  content: string,
+) {
+  const normalized = content.trim();
+  if (!normalized) throw new Error("Social content cannot be empty.");
+  const limit = characterLimits[provider];
+  if (normalized.length > limit) {
+    throw new Error(
+      `${provider} content exceeds its ${limit}-character limit.`,
+    );
+  }
+  return normalized;
+}
+
+function resolvePublishTime(requestedAt: Date, now = new Date()): Date {
+  if (!Number.isFinite(requestedAt.getTime())) {
+    throw new Error("The publication time is invalid.");
+  }
+  if (requestedAt.getTime() < now.getTime() + 60_000) {
+    throw new Error(
+      "The publication time must be at least one minute in the future.",
+    );
+  }
+  return requestedAt;
+}
 
 export async function createSocialPost(rawInput: unknown) {
   const input = createSocialPostSchema.parse(rawInput);

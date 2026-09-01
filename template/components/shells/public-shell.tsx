@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 
 import { Wordmark } from "@/components/brand/wordmark";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/cn";
 
 type PublicShellProps = {
   children: ReactNode;

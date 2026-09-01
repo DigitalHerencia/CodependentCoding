@@ -21,6 +21,10 @@ A layer contract says what a responsibility owns, what it may know, what it may 
 
 Persistence records should not casually become application contracts. Select only what is needed, derive the persistence record shape from that select, and deliberately map it into the DTO shape that may cross the boundary.
 
+A DTO mapper normalizes persistence into application data. Locale formatting, display labels, risk badges, and other view decisions belong to the Feature or presentation owner. Conversely, a Feature should not reinterpret authorization, lifecycle legality, money, or provider truth as presentation logic.
+
 ## Trust progression
 
 Untrusted runtime input becomes runtime-valid through schema validation; identity is established through Auth; access is decided through AuthZ; domain/database invariants are enforced at the operation that owns them; persistence commits atomically where required; DTO mapping produces the application-facing data shape.
+
+Every translation across that progression is explicit. Validation proves shape, authentication proves identity, tenant scope proves containment, authorization proves permission/resource access, and a DTO proves only the application data contract. None substitutes for the others.

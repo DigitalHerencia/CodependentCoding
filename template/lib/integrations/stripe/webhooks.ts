@@ -1,6 +1,17 @@
 import "server-only";
 
+import type Stripe from "stripe";
+
+import { withProviderTransaction } from "@/lib/db/provider";
+import {
+  claimWebhookEventTx,
+  completeWebhookEventTx,
+  failWebhookEventTx,
+} from "@/lib/db/transactions/webhook-event.tx";
 import { getStripeClient } from "./client";
+import { getBillingSubscriptionInputFromEvent } from "./subscriptions";
+
+export { WebhookIdentityConflictError } from "@/lib/db/transactions/webhook-event.tx";
 
 export function verifyStripeWebhook(payload: string, signature: string | null) {
   const secret = process.env.STRIPE_WEBHOOK_SECRET?.trim();
@@ -10,4 +21,50 @@ export function verifyStripeWebhook(payload: string, signature: string | null) {
     );
   if (!signature) throw new Error("The Stripe-Signature header is required.");
   return getStripeClient().webhooks.constructEvent(payload, signature, secret);
+}
+
+export async function processStripeWebhook(
+  event: Stripe.Event,
+  payload: string,
+) {
+  const input = getBillingSubscriptionInputFromEvent(event);
+  const organizationId = input?.organizationId ?? null;
+
+  const webhookEventId = await withProviderTransaction((tx) =>
+    claimWebhookEventTx(tx, {
+      provider: "stripe",
+      eventId: event.id,
+      type: event.type,
+      payload,
+      organizationId,
+    }),
+  );
+  if (!webhookEventId) return false;
+
+  try {
+    await withProviderTransaction(async (tx) => {
+      if (input) {
+        await tx.$executeRaw`SELECT set_config('app.organization_id', ${input.organizationId}, true)`;
+        await tx.billingSubscription.upsert({
+          where: { organizationId: input.organizationId },
+          create: input,
+          update: input,
+        });
+      }
+      await completeWebhookEventTx(tx, webhookEventId);
+    });
+    return true;
+  } catch (error) {
+    try {
+      await withProviderTransaction((tx) =>
+        failWebhookEventTx(tx, webhookEventId, "processing_failed"),
+      );
+    } catch (recordingError) {
+      throw new AggregateError(
+        [error, recordingError],
+        "Stripe webhook processing and failure recording both failed.",
+      );
+    }
+    throw error;
+  }
 }

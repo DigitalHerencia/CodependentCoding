@@ -52,3 +52,5 @@ There is no separate canonical `lib/webhooks/` architectural layer in this conve
 ## Implementation rule
 
 Use one obvious owner for each responsibility. Do not instantiate supporting patterns as folders merely for architectural ceremony, do not duplicate lower-level behavior inside Workflows, and prefer explicit direct imports over barrel exports by default.
+
+For every closed vocabulary or cross-layer invariant, record the semantic owner and whether each other representation is derived or exhaustively translated. A type alias, Zod enum, Prisma enum, provider mapper, and UI option list that happen to contain the same strings are not five authorities.

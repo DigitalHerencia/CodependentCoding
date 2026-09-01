@@ -54,8 +54,13 @@ caller -> Workflow -> existing Actions/Fetchers/Integrations/Utils/Types/Schemas
 
 Provider webhook:
 provider -> app/api/.../route.ts -> integration webhook helpers -> application/database operations
+
+Cross-layer vocabulary:
+semantic owner -> derived TypeScript/Zod/Prisma/provider/UI representations -> exhaustive drift check
 ```
 
 ## Abstraction rule
 
 Do not create a generic service layer just to have one. Prefer direct domain-named modules and explicit imports. Workflows are the business-logic composition layer; utilities are only for helpers that do not have a better architectural owner.
+
+When a rule governs one domain operation, keep it with that operation or an explicitly named domain capability. Do not move transition matrices, invoice arithmetic, provider content limits, scheduling policy, or similar business rules into generic utilities.

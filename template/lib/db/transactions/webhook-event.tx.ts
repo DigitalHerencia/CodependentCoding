@@ -2,6 +2,13 @@ import { createHash } from "node:crypto";
 
 import type { Prisma } from "../../../generated/prisma/client";
 
+export class WebhookIdentityConflictError extends Error {
+  constructor() {
+    super("Webhook event identity does not match its original payload.");
+    this.name = "WebhookIdentityConflictError";
+  }
+}
+
 export function hashWebhookPayload(payload: string) {
   return createHash("sha256").update(payload).digest("hex");
 }
@@ -51,7 +58,7 @@ export async function claimWebhookEventTx(
     existing &&
     (existing.payloadHash !== payloadHash || existing.type !== input.type)
   ) {
-    throw new Error("Webhook event identity does not match its original payload.");
+    throw new WebhookIdentityConflictError();
   }
 
   return null;
@@ -64,5 +71,16 @@ export function completeWebhookEventTx(
   return tx.webhookEvent.update({
     where: { id: webhookEventId },
     data: { status: "PROCESSED", processedAt: new Date(), errorCode: null },
+  });
+}
+
+export function failWebhookEventTx(
+  tx: Prisma.TransactionClient,
+  webhookEventId: string,
+  errorCode: string,
+) {
+  return tx.webhookEvent.update({
+    where: { id: webhookEventId },
+    data: { status: "FAILED", processedAt: new Date(), errorCode },
   });
 }

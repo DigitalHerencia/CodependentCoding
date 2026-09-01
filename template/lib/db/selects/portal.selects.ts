@@ -41,6 +41,11 @@ export const portalBillingSelect = {
   cancelAtPeriodEnd: true,
 } satisfies Prisma.BillingSubscriptionSelect;
 
+export type PortalBillingSubscriptionRecord =
+  Prisma.BillingSubscriptionGetPayload<{
+    select: typeof portalBillingSelect;
+  }>;
+
 export const portalInvoiceSelect = {
   id: true,
   number: true,
@@ -50,3 +55,7 @@ export const portalInvoiceSelect = {
   currency: true,
   dueAt: true,
 } satisfies Prisma.InvoiceSelect;
+
+export type PortalInvoiceRecord = Prisma.InvoiceGetPayload<{
+  select: typeof portalInvoiceSelect;
+}>;

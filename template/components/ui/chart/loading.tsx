@@ -1,5 +1,5 @@
 import * as React from "react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/cn";
 
 /** Static silhouette — a chart-shaped placeholder, not real data. */
 const BAR_HEIGHTS = ["45%", "70%", "35%", "85%", "55%", "75%", "40%"];

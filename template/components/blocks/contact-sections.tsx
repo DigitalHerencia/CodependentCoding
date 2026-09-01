@@ -2,7 +2,8 @@ import type { ReactNode } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { cn, safeHref } from "@/lib/utils";
+import { cn } from "@/lib/utils/cn";
+import { safeHref } from "@/lib/utils/strings";
 
 export interface ContactMethod {
   icon: ReactNode;

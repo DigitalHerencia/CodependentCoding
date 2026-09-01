@@ -17,3 +17,7 @@ Clerk can be an intentional exception when the webhook helpers are truly part of
 Verify webhook signatures according to the provider's rules before trusting event contents. External delivery may be duplicated, replayed, concurrent, delayed, or out of order. Consequential processing therefore needs idempotent effects where appropriate, and database facts that must commit together need atomic transaction handling.
 
 Do not claim that a database transaction itself provides idempotency, and do not hold provider/network work open inside a long database transaction.
+
+The provider plus provider event ID form durable event identity when that pair is the idempotency key. Event type and verified payload identity are immutable facts of that identity; a retry with the same ID but a different type or payload is rejected rather than allowed to redefine the stored event. Claim, process, complete/fail, stale-recovery, and replay behavior are explicit lifecycle states.
+
+HTTP routes classify failures without leaking provider, secret, database, or internal error details. Signature/payload failures, authentication failures, authorization failures, conflicts/rate limits, and unexpected processing failures do not collapse into one generic client error merely because they were all thrown exceptions.

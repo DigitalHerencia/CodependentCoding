@@ -1,16 +1,8 @@
 import {
-  addPortalDocumentVersion,
-  createPortalDocument,
-} from "@/lib/actions/portalActions";
-import {
   getPortalBilling,
   getPortalDocuments,
 } from "@/lib/fetchers/portalFetchers";
 import type { PortalApprovalDecision } from "@/types/portalTypes";
-
-export const createPortalDocumentWorkflow = createPortalDocument;
-export const addPortalDocumentVersionWorkflow = addPortalDocumentVersion;
-export const publishDocumentVersionWorkflow = addPortalDocumentVersion;
 
 export async function getPortalWorkspaceWorkflow(limit = 100) {
   const [documents, billing] = await Promise.all([

@@ -4,6 +4,18 @@ import { verifyWebhook } from "@clerk/nextjs/webhooks";
 import type { NextRequest } from "next/server";
 
 import type { ClerkUserProjection } from "@/types/integrationTypes";
+import { withProviderTransaction } from "@/lib/db/provider";
+import {
+  anonymizeClerkUserTx,
+  syncClerkUserTx,
+} from "@/lib/db/transactions/clerk-user.tx";
+import {
+  claimWebhookEventTx,
+  completeWebhookEventTx,
+  failWebhookEventTx,
+} from "@/lib/db/transactions/webhook-event.tx";
+
+export { WebhookIdentityConflictError } from "@/lib/db/transactions/webhook-event.tx";
 
 export async function verifyClerkWebhook(request: NextRequest) {
   const signingSecret = process.env.CLERK_WEBHOOK_SIGNING_SECRET;
@@ -37,4 +49,45 @@ export function projectClerkUser(user: {
     imageUrl: user.image_url || null,
     username: user.username,
   };
+}
+
+export async function processClerkWebhook(
+  event: Awaited<ReturnType<typeof verifyClerkWebhook>>,
+  eventId: string,
+  payload: string,
+) {
+  const webhookEventId = await withProviderTransaction((tx) =>
+    claimWebhookEventTx(tx, {
+      provider: "clerk",
+      eventId,
+      type: event.type,
+      payload,
+    }),
+  );
+  if (!webhookEventId) return false;
+
+  try {
+    await withProviderTransaction(async (tx) => {
+      if (event.type === "user.created" || event.type === "user.updated") {
+        await syncClerkUserTx(tx, projectClerkUser(event.data));
+      } else if (event.type === "user.deleted" && event.data.id) {
+        await anonymizeClerkUserTx(tx, event.data.id);
+      }
+
+      await completeWebhookEventTx(tx, webhookEventId);
+    });
+    return true;
+  } catch (error) {
+    try {
+      await withProviderTransaction((tx) =>
+        failWebhookEventTx(tx, webhookEventId, "processing_failed"),
+      );
+    } catch (recordingError) {
+      throw new AggregateError(
+        [error, recordingError],
+        "Clerk webhook processing and failure recording both failed.",
+      );
+    }
+    throw error;
+  }
 }

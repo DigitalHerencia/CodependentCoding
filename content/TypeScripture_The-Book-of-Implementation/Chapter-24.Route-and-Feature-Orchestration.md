@@ -36,6 +36,8 @@ export async function ProjectDetailFeature({ projectId }: { projectId: string })
 }
 ```
 
+Features may derive presentation-only view models from authorized DTOs: localized timestamps, labels, badges, empty states, and display risk. Persistence DTO mappers remain deterministic application-data translators and do not own those view decisions.
+
 ## Block
 
 ```tsx

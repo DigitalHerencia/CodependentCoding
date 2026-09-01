@@ -25,3 +25,13 @@ Actions, Fetchers, Workflows, Types, and Schemas are organized by business domai
 ## Boundary rule
 
 Do not duplicate lower-level behavior merely to satisfy a layer. Workflows compose established Actions, Fetchers, integrations, utilities, types, and schemas. Actions and Fetchers own their respective mutation/read boundaries. Database helpers remain database helpers.
+
+## Cross-layer semantic authority
+
+A business vocabulary or invariant that appears in more than one representation still has one semantic owner. TypeScript unions, Zod schemas, Prisma enums, provider mappings, UI choices, and documentation either derive from that owner or translate it through an explicit exhaustive mapping. Independently retyping the same closed vocabulary is drift, even when every copy is locally valid.
+
+The same rule applies to lifecycle names, error categories, resource visibility, cache tags, provider event identity, and configuration keys. A boundary may translate a concept into the representation it needs; it may not quietly redefine the concept.
+
+## Exception rule
+
+An implementation may depart from an owner's preferred method when a demonstrated security, correctness, provider, or material performance constraint requires it. The exception must preserve the intended outcome, name the superseding constraint, remain as narrow as possible, and carry evidence. “Best practice” without a concrete failure mode is not authority to redesign the system.

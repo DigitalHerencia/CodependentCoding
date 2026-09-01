@@ -18,4 +18,6 @@ Workflows are organized by domain: admin, AI, CRM, invoicing, marketing, organiz
 
 A Workflow owns composition and business meaning, not the lower-level mechanics it composes. Authentication remains Auth, authorization remains AuthZ, reads remain Fetchers, mutations remain Actions, provider mechanics remain Integrations, and atomic local persistence remains the database layer.
 
-A one-to-one Workflow alias can be intentional when Workflows are being used as a stable business-operation facade, but aliases should not be manufactured merely to make every operation pass through another file.
+A one-to-one Workflow alias is justified only by a documented stable facade with real callers or compatibility obligations. A second name with no additional contract, policy, orchestration, or compatibility purpose is ceremonial drift and should not exist.
+
+Workflow calculations remain domain-owned. Generic utilities may be composed when they are genuinely generic; a domain transition matrix, provider-specific content rule, invoice calculation, or publication policy does not become generic merely because more than one operation uses it.

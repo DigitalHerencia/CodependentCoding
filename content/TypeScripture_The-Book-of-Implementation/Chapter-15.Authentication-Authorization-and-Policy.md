@@ -34,6 +34,18 @@ Authorization establishes what an authenticated caller may do. The RBAC vocabula
 
 Protected reads and mutations authorize at their operational boundary. RLS is independent database containment for tenant-owned tables; it does not replace application authorization.
 
+Authorization evaluates all applicable dimensions:
+
+```text
+authenticated identity
+  + capability permission
+  + tenant/organization containment
+  + resource policy (owner/requester/assignee/visibility/etc.)
+  = authorized operation
+```
+
+The role vocabulary has one application owner. Role types, runtime schemas, persistence mappings, grants, administrative commands, and UI choices derive from that owner or use an exhaustive translation that fails when a role is unmapped.
+
 ## Security rule
 
 Client-provided identity, role, organization, price, customer/account IDs, or provider metadata never establish authority. Tenant-owned database work must execute with the intended tenant context, and the runtime database role must not bypass the RLS protections it is supposed to enforce.

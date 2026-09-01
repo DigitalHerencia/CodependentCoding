@@ -2,9 +2,13 @@ import type {
   MembershipRole,
   MembershipStatus,
   Prisma,
+  SubscriptionStatus,
 } from "@/generated/prisma/client";
 
-import { adminMembershipSelect } from "../selects/admin.selects";
+import {
+  adminMembershipSelect,
+  adminProviderSubscriptionSelect,
+} from "../selects/admin.selects";
 import { ResourceNotFoundError } from "./errors";
 
 export async function updateMembershipAdministrationTx(
@@ -56,7 +60,7 @@ export async function reconcileAdministrativeProviderStateTx(
     providerCustomerId?: string | null;
     providerSubscriptionId?: string | null;
     planKey: string;
-    status: "TRIALING" | "ACTIVE" | "PAST_DUE" | "PAUSED" | "CANCELED";
+    status: SubscriptionStatus;
     currentPeriodEnd?: Date | null;
     cancelAtPeriodEnd: boolean;
   },
@@ -82,6 +86,7 @@ export async function reconcileAdministrativeProviderStateTx(
       currentPeriodEnd: input.currentPeriodEnd ?? null,
       cancelAtPeriodEnd: input.cancelAtPeriodEnd,
     },
+    select: adminProviderSubscriptionSelect,
   });
   await tx.auditEvent.create({
     data: {

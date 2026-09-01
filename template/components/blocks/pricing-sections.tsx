@@ -1,5 +1,6 @@
 import { Check } from "lucide-react";
-import { cn, safeHref } from "@/lib/utils";
+import { cn } from "@/lib/utils/cn";
+import { safeHref } from "@/lib/utils/strings";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 

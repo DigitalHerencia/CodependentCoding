@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { CampaignStatus } from "@/generated/prisma/enums";
 
 export const createCampaignSchema = z.object({
   audienceId: z.string().uuid().nullable().optional(),
@@ -9,13 +10,6 @@ export const createCampaignSchema = z.object({
 
 export const updateCampaignStatusSchema = z.object({
   campaignId: z.string().uuid(),
-  status: z.enum([
-    "DRAFT",
-    "SCHEDULED",
-    "ACTIVE",
-    "PAUSED",
-    "COMPLETED",
-    "CANCELED",
-  ]),
+  status: z.enum(CampaignStatus),
   expectedVersion: z.number().int().positive(),
 });

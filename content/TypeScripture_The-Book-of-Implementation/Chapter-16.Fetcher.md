@@ -46,3 +46,24 @@ Prisma selects keep reads explicit and typed; DTO mappers keep persistence-shape
 Fetchers do not own mutations. They do not call provider SDKs merely to assemble a page. They may perform the reads necessary to answer their read use case, including multiple bounded reads when that is genuinely the read being requested.
 
 Protected tenant reads should use the tenant/RLS-scoped database context rather than casually calling the root Prisma client.
+
+## Purpose-built read rule
+
+Answer aggregate questions with aggregate reads and narrow projections. Do not fetch a list of DTOs and then call a detail Fetcher once per row merely to count, sum, or test existence.
+
+```ts
+export async function getClosedWonValue(periodStart: Date, periodEnd: Date) {
+  return withAuthenticatedRead(async (tx, access) => {
+    assertPermission(access, "crm:read");
+    const result = await tx.crmDeal.aggregate({
+      where: {
+        organizationId: access.organizationId,
+        stage: "WON",
+        closedAt: { gte: periodStart, lte: periodEnd },
+      },
+      _sum: { value: true },
+    });
+    return result._sum.value?.toString() ?? "0";
+  });
+}
+```

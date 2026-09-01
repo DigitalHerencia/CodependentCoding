@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { InvoiceStatus } from "@/generated/prisma/enums";
 
 const currency = z
   .string()
@@ -32,6 +33,6 @@ export const createInvoiceSchema = z.object({
 
 export const updateInvoiceStatusSchema = z.object({
   invoiceId: z.string().uuid(),
-  status: z.enum(["DRAFT", "OPEN", "PAID", "VOID", "OVERDUE"]),
+  status: z.enum(InvoiceStatus),
   expectedVersion: z.number().int().positive(),
 });

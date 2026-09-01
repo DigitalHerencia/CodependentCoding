@@ -1,11 +1,7 @@
 import "server-only";
 
 import { assertPermission } from "../authz/permissions";
-import {
-  toAdminMembershipDTO,
-  toAuditEventDTO,
-  toDisplayAuditEventDTO,
-} from "../db/dto/admin.dto";
+import { toAdminMembershipDTO, toAuditEventDTO } from "../db/dto/admin.dto";
 import {
   adminMembershipSelect,
   auditEventSelect,
@@ -29,11 +25,6 @@ export async function getAuditEvents(limit = 100) {
 
     return rows.map(toAuditEventDTO);
   });
-}
-
-export async function getDisplayAuditEvents(limit = 100) {
-  const events = await getAuditEvents(limit);
-  return events.map(toDisplayAuditEventDTO);
 }
 
 export async function getAdminMemberships() {

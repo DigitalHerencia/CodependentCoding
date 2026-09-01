@@ -1,5 +1,12 @@
-import type { PortalDocumentDTO } from "../../../types/portalTypes";
-import type { PortalDocumentRecord } from "../selects/portal.selects";
+import type {
+  PortalBillingDTO,
+  PortalDocumentDTO,
+} from "../../../types/portalTypes";
+import type {
+  PortalBillingSubscriptionRecord,
+  PortalDocumentRecord,
+  PortalInvoiceRecord,
+} from "../selects/portal.selects";
 
 export function toPortalDocumentDTO(
   record: PortalDocumentRecord,
@@ -26,5 +33,24 @@ export function toPortalDocumentDTO(
       : null,
     createdAt: record.createdAt.toISOString(),
     updatedAt: record.updatedAt.toISOString(),
+  };
+}
+
+export function toPortalBillingSubscriptionDTO(
+  record: PortalBillingSubscriptionRecord,
+): NonNullable<PortalBillingDTO["subscription"]> {
+  return {
+    ...record,
+    currentPeriodEnd: record.currentPeriodEnd?.toISOString() ?? null,
+  };
+}
+
+export function toPortalInvoiceDTO(
+  record: PortalInvoiceRecord,
+): PortalBillingDTO["invoices"][number] {
+  return {
+    ...record,
+    total: record.total.toString(),
+    dueAt: record.dueAt?.toISOString() ?? null,
   };
 }

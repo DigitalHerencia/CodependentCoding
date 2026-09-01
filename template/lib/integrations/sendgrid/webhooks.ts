@@ -1,6 +1,15 @@
 import "server-only";
 
 import { EventWebhook } from "@sendgrid/eventwebhook";
+import { sendGridWebhookEventsSchema } from "@/schemas/integrationSchemas";
+import { withProviderTransaction } from "@/lib/db/provider";
+import {
+  claimWebhookEventTx,
+  completeWebhookEventTx,
+  failWebhookEventTx,
+} from "@/lib/db/transactions/webhook-event.tx";
+
+export { WebhookIdentityConflictError } from "@/lib/db/transactions/webhook-event.tx";
 
 export function verifySendGridWebhook(
   payload: string,
@@ -21,4 +30,59 @@ export function verifySendGridWebhook(
     signature,
     timestamp,
   );
+}
+
+export function parseSendGridWebhookEvents(
+  payload: string,
+  signature: string | null,
+  timestamp: string | null,
+) {
+  if (!verifySendGridWebhook(payload, signature, timestamp)) {
+    throw new Error("Invalid SendGrid webhook signature.");
+  }
+  return sendGridWebhookEventsSchema.parse(JSON.parse(payload));
+}
+
+export async function processSendGridWebhookEvents(
+  events: ReturnType<typeof parseSendGridWebhookEvents>,
+) {
+  for (const event of events) {
+    const webhookEventId = await withProviderTransaction((tx) =>
+      claimWebhookEventTx(tx, {
+        provider: "sendgrid",
+        eventId: event.sg_event_id,
+        type: event.event,
+        payload: JSON.stringify(event),
+        organizationId: event.organizationId,
+      }),
+    );
+    if (!webhookEventId) continue;
+
+    try {
+      await withProviderTransaction(async (tx) => {
+        await tx.$executeRaw`SELECT set_config('app.organization_id', ${event.organizationId}, true)`;
+        await tx.auditEvent.create({
+          data: {
+            organizationId: event.organizationId,
+            action: `email.${event.event}`,
+            resourceType: "email",
+            resourceId: event.sg_message_id ?? null,
+          },
+        });
+        await completeWebhookEventTx(tx, webhookEventId);
+      });
+    } catch (error) {
+      try {
+        await withProviderTransaction((tx) =>
+          failWebhookEventTx(tx, webhookEventId, "processing_failed"),
+        );
+      } catch (recordingError) {
+        throw new AggregateError(
+          [error, recordingError],
+          "SendGrid webhook processing and failure recording both failed.",
+        );
+      }
+      throw error;
+    }
+  }
 }

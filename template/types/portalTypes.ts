@@ -1,3 +1,5 @@
+import type { ApprovalStatus } from "@/generated/prisma/enums";
+
 export interface PortalDocumentDTO {
   id: string;
   title: string;
@@ -36,5 +38,5 @@ export interface PortalBillingDTO {
 }
 
 export interface PortalApprovalDecision {
-  status: "PENDING" | "APPROVED" | "REJECTED";
+  status: ApprovalStatus;
 }

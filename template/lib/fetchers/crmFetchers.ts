@@ -61,6 +61,27 @@ export async function getCrmDeal(dealId: string) {
   });
 }
 
+export async function getClosedWonCrmValue(periodStart: Date, periodEnd: Date) {
+  return withAuthenticatedRead(async (tx, access) => {
+    assertPermission(access, "crm:read");
+
+    const result = await tx.crmDeal.aggregate({
+      where: {
+        organizationId: access.organizationId,
+        archivedAt: null,
+        stage: "WON",
+        closedAt: {
+          gte: periodStart,
+          lte: periodEnd,
+        },
+      },
+      _sum: { value: true },
+    });
+
+    return result._sum.value?.toString() ?? "0";
+  });
+}
+
 export async function getContacts(rawCriteria: unknown = {}) {
   const criteria = contactListCriteriaSchema.parse(rawCriteria);
 

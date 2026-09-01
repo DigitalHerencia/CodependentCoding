@@ -1,6 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 import * as React from "react";
-import { cn, safeHref } from "@/lib/utils";
+import { cn } from "@/lib/utils/cn";
+import { safeHref } from "@/lib/utils/strings";
 import { Marquee } from "@/components/ui/marquee";
 
 export interface LogoItem {

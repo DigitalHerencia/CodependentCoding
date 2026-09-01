@@ -1,37 +1,9 @@
-export type AppRole =
-  | "OWNER"
-  | "ADMIN"
-  | "MANAGER"
-  | "MEMBER"
-  | "BILLING"
-  | "SUPPORT"
-  | "CLIENT"
-  | "VIEWER";
+import type { appRoles } from "@/lib/authz/roles";
+import type { permissions } from "@/lib/authz/permissions";
 
-export type Permission =
-  | "organization:read"
-  | "organization:write"
-  | "crm:read"
-  | "crm:write"
-  | "projects:read"
-  | "projects:write"
-  | "support:read"
-  | "support:write"
-  | "marketing:read"
-  | "marketing:write"
-  | "invoicing:read"
-  | "invoicing:write"
-  | "social:read"
-  | "social:write"
-  | "ai:read"
-  | "ai:write"
-  | "portal:read"
-  | "portal:write"
-  | "portal:billing"
-  | "admin:audit"
-  | "admin:records"
-  | "admin:users"
-  | "admin:bulk";
+export type AppRole = (typeof appRoles)[number];
+
+export type Permission = (typeof permissions)[number];
 
 /** Clerk establishes user identity only. Application tenancy is resolved locally. */
 export interface AuthenticatedIdentity {

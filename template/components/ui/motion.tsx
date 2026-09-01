@@ -12,7 +12,7 @@
  * BoldKit's globals.css, the recipes are already included.
  */
 import * as React from "react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/cn";
 import {
   observeReveal,
   staggerChildren,

@@ -2,7 +2,8 @@
 import * as React from "react";
 import * as RechartsPrimitive from "recharts";
 import { cva, type VariantProps } from "class-variance-authority";
-import { cn, sanitizeCssValue } from "@/lib/utils";
+import { cn } from "@/lib/utils/cn";
+import { sanitizeCssValue } from "@/lib/utils/strings";
 import { ChartContext, THEMES, type ChartConfig } from "./types";
 import { ChartLoading } from "./loading";
 

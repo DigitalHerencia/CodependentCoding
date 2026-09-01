@@ -31,3 +31,22 @@ export const adminMembershipSelect = {
 export type AdminMembershipRecord = Prisma.MembershipGetPayload<{
   select: typeof adminMembershipSelect;
 }>;
+
+export const adminProviderSubscriptionSelect = {
+  id: true,
+  organizationId: true,
+  provider: true,
+  providerCustomerId: true,
+  providerSubscriptionId: true,
+  planKey: true,
+  status: true,
+  currentPeriodEnd: true,
+  cancelAtPeriodEnd: true,
+  createdAt: true,
+  updatedAt: true,
+} satisfies Prisma.BillingSubscriptionSelect;
+
+export type AdminProviderSubscriptionRecord =
+  Prisma.BillingSubscriptionGetPayload<{
+    select: typeof adminProviderSubscriptionSelect;
+  }>;

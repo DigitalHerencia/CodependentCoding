@@ -1,7 +1,13 @@
-export type ContactStatus = "LEAD" | "ACTIVE" | "INACTIVE" | "ARCHIVED";
+import type {
+  CrmContactStatus,
+  CrmDealStage as PrismaCrmDealStage,
+} from "@/generated/prisma/enums";
+import type { contactSortValues } from "@/schemas/crmSchemas";
+
+export type ContactStatus = CrmContactStatus;
 export type EditableContactStatus = Exclude<ContactStatus, "ARCHIVED">;
 
-export type ContactSort = "name-asc" | "name-desc" | "updated-desc";
+export type ContactSort = (typeof contactSortValues)[number];
 
 export interface ContactListCriteria {
   query: string;
@@ -71,12 +77,11 @@ export interface CrmAccountDTO {
   updatedAt: string;
 }
 
-export type CrmDealStage =
-  "LEAD" | "QUALIFIED" | "PROPOSAL" | "NEGOTIATION" | "WON" | "LOST";
+export type CrmDealStage = PrismaCrmDealStage;
 
 export interface CloseDealCommand {
   dealId: string;
-  outcome: "WON" | "LOST";
+  outcome: Extract<CrmDealStage, "WON" | "LOST">;
   expectedVersion: number;
 }
 

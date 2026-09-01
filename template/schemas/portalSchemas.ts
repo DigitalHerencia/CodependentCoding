@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { ApprovalStatus } from "@/generated/prisma/enums";
 
 export const createPortalDocumentSchema = z.object({
   title: z.string().trim().min(1).max(300),
@@ -15,6 +16,6 @@ export const addPortalDocumentVersionSchema = z.object({
 
 export const decidePortalApprovalSchema = z.object({
   approvalId: z.string().uuid(),
-  status: z.enum(["APPROVED", "REJECTED"]),
+  status: z.enum(ApprovalStatus).exclude(["PENDING"]),
   note: z.string().max(10_000).nullable().optional(),
 });

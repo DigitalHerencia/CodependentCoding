@@ -1,12 +1,4 @@
-import {
-  createCampaign,
-  updateCampaignStatus,
-} from "@/lib/actions/marketingActions";
 import { getAudiences, getCampaigns } from "@/lib/fetchers/marketingFetchers";
-
-export const createCampaignWorkflow = createCampaign;
-export const scheduleCampaignWorkflow = createCampaign;
-export const updateCampaignStatusWorkflow = updateCampaignStatus;
 
 export async function getMarketingWorkspaceWorkflow(limit = 50) {
   const [campaigns, audiences] = await Promise.all([

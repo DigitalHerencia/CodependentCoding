@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/cn";
 import { Badge } from "@/components/ui/badge";
 
 export type ChangelogTag = "feature" | "fix" | "improvement" | "breaking";

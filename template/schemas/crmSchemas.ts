@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { CrmContactStatus, CrmDealStage } from "@/generated/prisma/enums";
 
 const uuid = z.string().uuid();
 const currency = z
@@ -9,13 +10,20 @@ const money = z
   .string()
   .regex(/^\d+(\.\d{1,4})?$/, "Expected a non-negative decimal.");
 
-export const contactStatusSchema = z.enum(["LEAD", "ACTIVE", "INACTIVE"]);
+export const contactStatusSchema = z
+  .enum(CrmContactStatus)
+  .exclude(["ARCHIVED"]);
 export const contactIdSchema = uuid;
+export const contactSortValues = [
+  "name-asc",
+  "name-desc",
+  "updated-desc",
+] as const;
 
 export const contactListCriteriaSchema = z.object({
   query: z.string().trim().max(100).default(""),
   status: contactStatusSchema.optional(),
-  sort: z.enum(["name-asc", "name-desc", "updated-desc"]).default("name-asc"),
+  sort: z.enum(contactSortValues).default("name-asc"),
   limit: z.coerce.number().int().min(1).max(200).default(100),
 });
 
@@ -53,13 +61,6 @@ export const createCrmDealSchema = z.object({
 
 export const updateCrmDealStageSchema = z.object({
   dealId: uuid,
-  stage: z.enum([
-    "LEAD",
-    "QUALIFIED",
-    "PROPOSAL",
-    "NEGOTIATION",
-    "WON",
-    "LOST",
-  ]),
+  stage: z.enum(CrmDealStage),
   expectedVersion: z.number().int().positive(),
 });

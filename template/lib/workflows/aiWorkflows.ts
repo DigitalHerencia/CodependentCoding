@@ -1,6 +1,5 @@
 import {
   completeAiGenerationRecord,
-  createAiGenerationRecord,
   createRateLimitedAiGenerationRecord,
   failAiGenerationRecord,
 } from "@/lib/actions/aiActions";
@@ -12,10 +11,6 @@ import { generateHuggingFaceText } from "@/lib/integrations/hugging-face/inferen
 import type { AiUsageItem, ExecuteAiGenerationCommand } from "@/types/aiTypes";
 
 const TICKS_PER_US_DOLLAR = 10_000_000_000n;
-
-export const createAiGenerationRecordWorkflow = createAiGenerationRecord;
-export const completeAiGenerationRecordWorkflow = completeAiGenerationRecord;
-export const recordGenerationUsageWorkflow = completeAiGenerationRecord;
 
 export function costTicksToUsd(costTicks: number | bigint): string {
   const ticks = BigInt(costTicks);

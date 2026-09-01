@@ -1,7 +1,11 @@
 import "server-only";
 
 import { assertPermission } from "../authz/permissions";
-import { toPortalDocumentDTO } from "../db/dto/portal.dto";
+import {
+  toPortalBillingSubscriptionDTO,
+  toPortalDocumentDTO,
+  toPortalInvoiceDTO,
+} from "../db/dto/portal.dto";
 import {
   portalBillingSelect,
   portalDocumentSelect,
@@ -55,17 +59,9 @@ export async function getPortalBilling() {
     ]);
     return {
       subscription: subscription
-        ? {
-            ...subscription,
-            currentPeriodEnd:
-              subscription.currentPeriodEnd?.toISOString() ?? null,
-          }
+        ? toPortalBillingSubscriptionDTO(subscription)
         : null,
-      invoices: invoices.map((invoice) => ({
-        ...invoice,
-        total: invoice.total.toString(),
-        dueAt: invoice.dueAt?.toISOString() ?? null,
-      })),
+      invoices: invoices.map(toPortalInvoiceDTO),
     };
   });
 }

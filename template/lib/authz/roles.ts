@@ -1,5 +1,7 @@
+import type { MembershipRole } from "@/generated/prisma/enums";
 import type { AppRole } from "../../types/access";
 
+/** Canonical application role vocabulary. Runtime schemas and type aliases derive from this list. */
 export const appRoles = [
   "OWNER",
   "ADMIN",
@@ -9,7 +11,16 @@ export const appRoles = [
   "SUPPORT",
   "CLIENT",
   "VIEWER",
-] as const satisfies readonly AppRole[];
+] as const satisfies readonly MembershipRole[];
+
+type MissingPersistenceRole = Exclude<
+  MembershipRole,
+  (typeof appRoles)[number]
+>;
+const membershipRoleCoverage: MissingPersistenceRole extends never
+  ? true
+  : never = true;
+void membershipRoleCoverage;
 
 const privilegedRoles = new Set<AppRole>(["OWNER", "ADMIN"]);
 

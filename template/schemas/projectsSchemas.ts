@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { TaskPriority, TaskStatus } from "@/generated/prisma/enums";
 
 const uuid = z.string().uuid();
 
@@ -16,19 +17,12 @@ export const createTaskSchema = z.object({
   assigneeMembershipId: uuid.nullable().optional(),
   title: z.string().trim().min(1).max(300),
   description: z.string().max(20_000).nullable().optional(),
-  priority: z.enum(["LOW", "MEDIUM", "HIGH", "URGENT"]).default("MEDIUM"),
+  priority: z.enum(TaskPriority).default("MEDIUM"),
   dueAt: z.coerce.date().nullable().optional(),
 });
 
 export const updateTaskStatusSchema = z.object({
   taskId: uuid,
-  status: z.enum([
-    "BACKLOG",
-    "TODO",
-    "IN_PROGRESS",
-    "BLOCKED",
-    "DONE",
-    "CANCELED",
-  ]),
+  status: z.enum(TaskStatus),
   expectedVersion: z.number().int().positive(),
 });

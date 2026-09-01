@@ -1,3 +1,6 @@
+import type { SubscriptionStatus } from "@/generated/prisma/enums";
+import type { AppRole } from "./access";
+
 export interface AdminMembershipDTO {
   id: string;
   role: string;
@@ -32,15 +35,21 @@ export interface DisplayAuditEventDTO {
   risk: AuditRisk;
 }
 
-export type AdminRole =
-  | "OWNER"
-  | "ADMIN"
-  | "MANAGER"
-  | "MEMBER"
-  | "BILLING"
-  | "SUPPORT"
-  | "CLIENT"
-  | "VIEWER";
+export type AdminRole = AppRole;
+
+export interface AdminProviderStateDTO {
+  id: string;
+  organizationId: string;
+  provider: string;
+  providerCustomerId: string | null;
+  providerSubscriptionId: string | null;
+  planKey: string;
+  status: string;
+  currentPeriodEnd: string | null;
+  cancelAtPeriodEnd: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
 
 export interface ChangeAdminMembershipCommand {
   membershipId: string;
@@ -56,7 +65,7 @@ export interface ReconcileAdminProviderStateCommand {
   providerCustomerId?: string | null;
   providerSubscriptionId?: string | null;
   planKey: string;
-  status: "TRIALING" | "ACTIVE" | "PAST_DUE" | "PAUSED" | "CANCELED";
+  status: SubscriptionStatus;
   currentPeriodEnd?: Date | null;
   cancelAtPeriodEnd: boolean;
 }

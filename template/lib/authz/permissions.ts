@@ -1,6 +1,6 @@
 import type { AccessContext, AppRole, Permission } from "../../types/access";
 
-const allPermissions: readonly Permission[] = [
+export const permissions = [
   "organization:read",
   "organization:write",
   "crm:read",
@@ -24,11 +24,11 @@ const allPermissions: readonly Permission[] = [
   "admin:records",
   "admin:users",
   "admin:bulk",
-];
+] as const;
 
 const grants: Record<AppRole, ReadonlySet<Permission>> = {
-  OWNER: new Set(allPermissions),
-  ADMIN: new Set(allPermissions),
+  OWNER: new Set(permissions),
+  ADMIN: new Set(permissions),
 
   MANAGER: new Set([
     "organization:read",

@@ -4,7 +4,8 @@
 import * as React from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { cn, safeHref } from "@/lib/utils";
+import { cn } from "@/lib/utils/cn";
+import { safeHref } from "@/lib/utils/strings";
 import { ArrowRight, Mail, Sparkles, Zap } from "lucide-react";
 
 // ============================================================================

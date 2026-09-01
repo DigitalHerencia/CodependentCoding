@@ -19,3 +19,5 @@ Actions may use Prisma selects, DTO mappers, and transaction helpers. Transactio
 ## Boundary
 
 Actions should not become a dumping ground for every multi-step business process. When the business operation is primarily composition across existing Actions, Fetchers, integrations, calculations, or other capabilities, the composition belongs in a domain Workflow.
+
+Mutation-specific rules may stay with the Action or transaction operation that enforces them. Moving a rule into `utils/` does not make it reusable architecture; if the rule is specific to a domain mutation, keep its authority beside that mutation or in an explicitly named domain capability.

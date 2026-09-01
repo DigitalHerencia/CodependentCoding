@@ -18,6 +18,8 @@
 - `blocked`: required check could not run because a prerequisite failed.
 - `inferred`: conclusion from inspection/reasoning rather than execution.
 
+Executed evidence identifies the exact artifact and property inspected. A repository-wide command that fails on an unrelated baseline does not prove the changed scope failed; a filtered review does not prove the whole repository passed. Tool incompatibility, missing scripts, absent credentials, and provider/database prerequisites are reported as blockers rather than rewritten as successful checks.
+
 ## Escalation
 
 - Conflicting equal authority, new privileged roles/routes, provider money movement, weakened tenant/auth/RLS/idempotency, destructive production action, secrets, legal/compliance choices, or irreversible migration risk require human authority.

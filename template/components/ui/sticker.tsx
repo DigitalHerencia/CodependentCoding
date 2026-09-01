@@ -1,7 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 import * as React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/cn";
 
 const stickerVariants = cva(
   "relative inline-flex items-center justify-center border-3 border-foreground font-bold uppercase tracking-wide transition-transform",

@@ -1,7 +1,8 @@
 /* eslint-disable react-refresh/only-export-components */
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { cn, safeHref } from "@/lib/utils";
+import { cn } from "@/lib/utils/cn";
+import { safeHref } from "@/lib/utils/strings";
 import { ArrowRight, Play, Sparkles, Star, Zap } from "lucide-react";
 
 // ============================================================================

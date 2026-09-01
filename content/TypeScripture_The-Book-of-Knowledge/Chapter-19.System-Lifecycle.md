@@ -23,6 +23,8 @@
 - Race-sensitive transitions use current facts plus conditional/atomic enforcement.
 - Provider state and local state remain distinct and reconcile explicitly.
 - Recovery paths and audit evidence are part of the lifecycle, not optional afterthoughts.
+- Every closed state vocabulary has one semantic owner; schemas, types, persistence, mappings, and UI derive from or exhaustively translate it.
+- Human-readable sequential identifiers and rate/admission limits are allocation problems, not ordinary reads. Concurrent attempts require serialization, a database allocator, conditional mutation, or another atomic admission mechanism.
 
 ## Runtime ownership
 
