@@ -2,10 +2,10 @@ import { NextResponse } from "next/server";
 import { ZodError } from "zod";
 
 import { executeGenerationFeature } from "@/features/ai/generationFeature";
+import { AiRateLimitError } from "@/lib/actions/aiActions";
 import { AuthenticationRequiredError } from "@/lib/auth/auth";
 import { AuthorizationError } from "@/lib/authz/permissions";
 import { ResourceAuthorizationError } from "@/lib/authz/policies";
-import { AiRateLimitError } from "@/lib/workflows/aiWorkflows";
 import { aiGenerationRequestSchema } from "@/schemas/aiSchemas";
 
 export async function POST(request: Request) {
