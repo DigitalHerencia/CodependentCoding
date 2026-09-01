@@ -5,29 +5,35 @@
 ## Canonical placement
 
 ```text
-lib/auth/                  # Clerk → local Actor
-lib/authz/                 # membership, capabilities, scopes, policies
-lib/db/internal/identity.* # narrowly scoped identity/membership persistence helpers
-lib/db/transactions/       # RLS-scoped transaction runner
-prisma/                    # grants and RLS policies
+lib/auth/
+  auth.ts        # server-side identity/session helpers over Clerk
+  clerk.ts       # Clerk client instantiation/configuration
+  redirects.ts   # centralized authentication redirects
+  clerkWebhook.ts # optional Clerk-specific webhook helpers when they truly belong to auth
+
+lib/authz/
+  permissions.ts
+  policies.ts
+  resources.ts
+  roles.ts
+
+lib/db/tenant.ts # authenticated local membership/access context + tenant/RLS transaction
+prisma/          # schema, grants, migrations, RLS policies
+proxy.ts         # Clerk/Next request protection
 ```
 
-## RLS runner
+## Authentication
 
-```ts
-export async function withTenantTransaction<T>(
-  scope: { organizationId: string; userId: string },
-  operation: (tx: Prisma.TransactionClient) => Promise<T>,
-): Promise<T> {
-  return prisma.$transaction(async (tx) => {
-    await tx.$executeRaw`SELECT set_config('app.organization_id', ${scope.organizationId}, true)`;
-    await tx.$executeRaw`SELECT set_config('app.user_id', ${scope.userId}, true)`;
-    return operation(tx);
-  });
-}
-```
+Authentication establishes who is calling. Clerk is an external provider, but authentication is important enough to be a first-class architectural concern, so Clerk identity/session code belongs in `lib/auth` rather than the generic integrations directory.
 
-## Implementation rule
+`auth.ts` is the application's server-side identity boundary: authenticate the session, obtain current session context, and obtain the current user/identity information needed by protected operations. `clerk.ts` owns client setup. Redirect behavior stays centralized in `redirects.ts`.
 
-- Auth/AuthZ modules may depend on narrowly approved private identity/membership persistence reads. This is an explicit security/data boundary, not permission for arbitrary Prisma access throughout `auth/`.
-- Runtime credentials must own no protected table and must not have `BYPASSRLS`; RLS is enabled and forced on protected tables.
+## Authorization
+
+Authorization establishes what an authenticated caller may do. The RBAC vocabulary is straightforward: **roles** represent access positions, **permissions** represent allowed capabilities, **resources** are the protected things, and **policies** express/enforce the rules connecting those facts.
+
+Protected reads and mutations authorize at their operational boundary. RLS is independent database containment for tenant-owned tables; it does not replace application authorization.
+
+## Security rule
+
+Client-provided identity, role, organization, price, customer/account IDs, or provider metadata never establish authority. Tenant-owned database work must execute with the intended tenant context, and the runtime database role must not bypass the RLS protections it is supposed to enforce.
