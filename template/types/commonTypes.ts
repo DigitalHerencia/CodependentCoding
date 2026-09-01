@@ -3,6 +3,7 @@ import type { VariantProps } from "class-variance-authority";
 
 import type { badgeVariants } from "@/components/ui/badge";
 import type { kbdVariants } from "@/components/ui/kbd";
+import type { stepVariants } from "@/components/ui/stepper";
 
 export interface OrganizationDTO {
   id: string;
@@ -44,4 +45,50 @@ export interface MarqueeItemProps extends React.HTMLAttributes<HTMLSpanElement> 
 export interface MarqueeSeparatorProps
   extends React.HTMLAttributes<HTMLSpanElement> {
   children?: React.ReactNode;
+}
+
+export interface StepperContextValue {
+  activeStep: number;
+  setActiveStep: (step: number) => void;
+  totalSteps: number;
+  orientation: "horizontal" | "vertical";
+}
+
+export interface StepperProps extends React.HTMLAttributes<HTMLDivElement> {
+  activeStep?: number;
+  onStepChange?: (step: number) => void;
+  orientation?: "horizontal" | "vertical";
+}
+
+export type StepperListProps = React.HTMLAttributes<HTMLDivElement>;
+
+export interface StepperItemContextValue {
+  index: number;
+  triggerId: string;
+}
+
+export interface StepperItemProps extends React.HTMLAttributes<HTMLDivElement> {
+  index: number;
+}
+
+export interface StepperTriggerProps
+  extends
+    React.ButtonHTMLAttributes<HTMLButtonElement>,
+    VariantProps<typeof stepVariants> {
+  showStepNumber?: boolean;
+}
+
+export type StepperSeparatorProps = React.HTMLAttributes<HTMLDivElement>;
+
+export interface StepperContentProps
+  extends React.HTMLAttributes<HTMLDivElement> {
+  index: number;
+}
+
+export interface StepperActionsProps
+  extends React.HTMLAttributes<HTMLDivElement> {
+  onComplete?: () => void;
+  prevLabel?: string;
+  nextLabel?: string;
+  completeLabel?: string;
 }
