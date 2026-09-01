@@ -18,6 +18,7 @@ export async function getSupportInbox(limit = 100) {
     const rows = await tx.supportTicket.findMany({
       where: {
         organizationId: access.organizationId,
+        ...(access.role === "CLIENT" ? { requesterUserId: access.userId } : {}),
         status: {
           not: "CLOSED",
         },
@@ -46,6 +47,7 @@ export async function getSupportTicket(ticketId: string) {
       where: {
         id: ticketId,
         organizationId: access.organizationId,
+        ...(access.role === "CLIENT" ? { requesterUserId: access.userId } : {}),
       },
       select: supportTicketSelect,
     });
