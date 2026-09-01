@@ -6,6 +6,7 @@ import {
 } from "@/schemas/supportSchemas";
 import { requireIdentity } from "@/lib/auth/auth";
 import { assertPermission } from "@/lib/authz/permissions";
+import { authorizeOwnedOrAssignedWrite } from "@/lib/authz/policies";
 import { toSupportTicketDTO } from "@/lib/db/dto/support.dto";
 import { supportTicketSelect } from "@/lib/db/selects/support.selects";
 import { withTenantTransaction } from "@/lib/db/tenant";
@@ -16,6 +17,7 @@ export async function createSupportTicket(rawInput: unknown) {
   const identity = await requireIdentity();
   return withTenantTransaction(identity, async (tx, access) => {
     assertPermission(access, "support:write");
+    await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${access.organizationId}))`;
     const latest = await tx.supportTicket.aggregate({
       where: { organizationId: access.organizationId },
       _max: { number: true },
@@ -39,7 +41,23 @@ export async function updateSupportTicketStatus(rawInput: unknown) {
   const input = updateSupportTicketStatusSchema.parse(rawInput);
   const identity = await requireIdentity();
   return withTenantTransaction(identity, async (tx, access) => {
-    assertPermission(access, "support:write");
+    const target = await tx.supportTicket.findFirst({
+      where: { id: input.ticketId, organizationId: access.organizationId },
+      select: {
+        organizationId: true,
+        requesterUserId: true,
+        assignedMembershipId: true,
+      },
+    });
+    if (!target) throw new Error("Support ticket was not found.");
+
+    authorizeOwnedOrAssignedWrite(access, "support:write", {
+      kind: "support-ticket",
+      organizationId: target.organizationId,
+      requesterUserId: target.requesterUserId,
+      assigneeMembershipId: target.assignedMembershipId,
+    });
+
     const record = await updateTicketStatusTx(tx, {
       organizationId: access.organizationId,
       ticketId: input.ticketId,
