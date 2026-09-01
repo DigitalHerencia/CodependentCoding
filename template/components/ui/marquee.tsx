@@ -1,20 +1,11 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
 
-interface MarqueeProps extends React.HTMLAttributes<HTMLDivElement> {
-  /** Content to display in the marquee */
-  children: React.ReactNode;
-  /** Direction of the marquee animation */
-  direction?: "left" | "right";
-  /** Speed of the animation: 'slow' | 'normal' | 'fast' */
-  speed?: "slow" | "normal" | "fast";
-  /** Pause animation on hover */
-  pauseOnHover?: boolean;
-  /** Show neubrutalism border styling */
-  bordered?: boolean;
-  /** Number of times to repeat the content (for seamless loop) */
-  repeat?: number;
-}
+import type {
+  MarqueeItemProps,
+  MarqueeProps,
+  MarqueeSeparatorProps,
+} from "@/types/commonTypes";
 
 const speedClasses = {
   slow: "animate-marquee-slow",
@@ -83,10 +74,6 @@ const Marquee = React.forwardRef<HTMLDivElement, MarqueeProps>(
 );
 Marquee.displayName = "Marquee";
 
-interface MarqueeItemProps extends React.HTMLAttributes<HTMLSpanElement> {
-  children: React.ReactNode;
-}
-
 const MarqueeItem = React.forwardRef<HTMLSpanElement, MarqueeItemProps>(
   ({ className, children, ...props }, ref) => {
     return (
@@ -104,11 +91,6 @@ const MarqueeItem = React.forwardRef<HTMLSpanElement, MarqueeItemProps>(
   },
 );
 MarqueeItem.displayName = "MarqueeItem";
-
-interface MarqueeSeparatorProps extends React.HTMLAttributes<HTMLSpanElement> {
-  /** Separator character or element */
-  children?: React.ReactNode;
-}
 
 const MarqueeSeparator = React.forwardRef<
   HTMLSpanElement,
