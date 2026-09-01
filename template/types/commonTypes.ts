@@ -4,6 +4,10 @@ import type { VariantProps } from "class-variance-authority";
 import type { badgeVariants } from "@/components/ui/badge";
 import type { kbdVariants } from "@/components/ui/kbd";
 import type { stepVariants } from "@/components/ui/stepper";
+import type {
+  timelineConnectorVariants,
+  timelineDotVariants,
+} from "@/components/ui/timeline";
 
 export interface OrganizationDTO {
   id: string;
@@ -92,3 +96,25 @@ export interface StepperActionsProps
   nextLabel?: string;
   completeLabel?: string;
 }
+
+export interface TimelineContextValue {
+  orientation: "vertical" | "horizontal";
+}
+
+export interface TimelineProps extends React.HTMLAttributes<HTMLDivElement> {
+  orientation?: "vertical" | "horizontal";
+}
+
+export interface TimelineItemProps extends React.HTMLAttributes<HTMLDivElement> {
+  status?: "completed" | "current" | "upcoming";
+}
+
+export interface TimelineDotProps
+  extends
+    React.HTMLAttributes<HTMLDivElement>,
+    VariantProps<typeof timelineDotVariants> {}
+
+export interface TimelineConnectorProps
+  extends
+    React.HTMLAttributes<HTMLDivElement>,
+    Omit<VariantProps<typeof timelineConnectorVariants>, "orientation"> {}
