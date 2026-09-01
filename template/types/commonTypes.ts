@@ -1,3 +1,8 @@
+import type * as React from "react";
+import type { VariantProps } from "class-variance-authority";
+
+import type { kbdVariants } from "@/components/ui/kbd";
+
 export interface OrganizationDTO {
   id: string;
   slug: string;
@@ -7,4 +12,12 @@ export interface OrganizationDTO {
   locale: string;
   defaultCurrency: string;
   memberCount: number;
+}
+
+export interface KbdProps
+  extends React.HTMLAttributes<HTMLElement>, VariantProps<typeof kbdVariants> {}
+
+export interface KbdComboProps extends Omit<KbdProps, "children"> {
+  keys: string[];
+  separator?: React.ReactNode;
 }
