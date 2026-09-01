@@ -2,18 +2,23 @@
 
 /* eslint-disable react-refresh/only-export-components */
 import * as React from "react";
-import { cva, type VariantProps } from "class-variance-authority";
+import { cva } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 import { Check } from "lucide-react";
 
-// Context
-interface StepperContextValue {
-  activeStep: number;
-  setActiveStep: (step: number) => void;
-  totalSteps: number;
-  orientation: "horizontal" | "vertical";
-}
+import type {
+  StepperActionsProps,
+  StepperContentProps,
+  StepperContextValue,
+  StepperItemContextValue,
+  StepperItemProps,
+  StepperListProps,
+  StepperProps,
+  StepperSeparatorProps,
+  StepperTriggerProps,
+} from "@/types/commonTypes";
 
+// Context
 const StepperContext = React.createContext<StepperContextValue | null>(null);
 
 function useStepperContext() {
@@ -50,12 +55,6 @@ const stepVariants = cva(
 );
 
 // Stepper Root
-export interface StepperProps extends React.HTMLAttributes<HTMLDivElement> {
-  activeStep?: number;
-  onStepChange?: (step: number) => void;
-  orientation?: "horizontal" | "vertical";
-}
-
 const Stepper = React.forwardRef<HTMLDivElement, StepperProps>(
   (
     {
@@ -117,8 +116,6 @@ const Stepper = React.forwardRef<HTMLDivElement, StepperProps>(
 Stepper.displayName = "Stepper";
 
 // Stepper List (container for triggers)
-export type StepperListProps = React.HTMLAttributes<HTMLDivElement>;
-
 const StepperList = React.forwardRef<HTMLDivElement, StepperListProps>(
   ({ className, children, ...props }, ref) => {
     const { orientation } = useStepperContext();
@@ -142,11 +139,6 @@ const StepperList = React.forwardRef<HTMLDivElement, StepperListProps>(
 StepperList.displayName = "StepperList";
 
 // Stepper Item (wrapper for a single step)
-interface StepperItemContextValue {
-  index: number;
-  triggerId: string;
-}
-
 const StepperItemContext = React.createContext<StepperItemContextValue | null>(
   null,
 );
@@ -159,10 +151,6 @@ function useStepperItemContext() {
     );
   }
   return context;
-}
-
-export interface StepperItemProps extends React.HTMLAttributes<HTMLDivElement> {
-  index: number;
 }
 
 const StepperItem = React.forwardRef<HTMLDivElement, StepperItemProps>(
@@ -194,13 +182,6 @@ StepperItem.displayName = "StepperItem";
 )._isBoldKitStepperItem = true;
 
 // Stepper Trigger (the clickable step indicator)
-export interface StepperTriggerProps
-  extends
-    React.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof stepVariants> {
-  showStepNumber?: boolean;
-}
-
 const StepperTrigger = React.forwardRef<HTMLButtonElement, StepperTriggerProps>(
   ({ size, showStepNumber = true, className, children, ...props }, ref) => {
     const { activeStep, setActiveStep } = useStepperContext();
@@ -238,8 +219,6 @@ const StepperTrigger = React.forwardRef<HTMLButtonElement, StepperTriggerProps>(
 StepperTrigger.displayName = "StepperTrigger";
 
 // Stepper Separator (line between steps)
-export type StepperSeparatorProps = React.HTMLAttributes<HTMLDivElement>;
-
 const StepperSeparator = React.forwardRef<
   HTMLDivElement,
   StepperSeparatorProps
@@ -268,10 +247,6 @@ const StepperSeparator = React.forwardRef<
 StepperSeparator.displayName = "StepperSeparator";
 
 // Stepper Content (panel for each step)
-export interface StepperContentProps extends React.HTMLAttributes<HTMLDivElement> {
-  index: number;
-}
-
 const StepperContent = React.forwardRef<HTMLDivElement, StepperContentProps>(
   ({ index, className, children, ...props }, ref) => {
     const { activeStep } = useStepperContext();
@@ -299,13 +274,6 @@ const StepperContent = React.forwardRef<HTMLDivElement, StepperContentProps>(
 StepperContent.displayName = "StepperContent";
 
 // Stepper Actions (prev/next buttons helper)
-export interface StepperActionsProps extends React.HTMLAttributes<HTMLDivElement> {
-  onComplete?: () => void;
-  prevLabel?: string;
-  nextLabel?: string;
-  completeLabel?: string;
-}
-
 const StepperActions = React.forwardRef<HTMLDivElement, StepperActionsProps>(
   (
     {
