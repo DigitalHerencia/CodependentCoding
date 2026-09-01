@@ -5,6 +5,11 @@ export interface SocialPostDTO {
   status: string;
   scheduledAt: string | null;
   publishedAt: string | null;
+  approvedAt: string | null;
+  approvedBy: {
+    membershipId: string;
+    displayName: string | null;
+  } | null;
   version: number;
   variants: Array<{
     id: string;

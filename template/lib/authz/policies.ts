@@ -1,7 +1,15 @@
-import type { AccessContext } from "../../types/access";
+import type { AccessContext, Permission } from "../../types/access";
 
 import type { ResourceAccessDescriptor } from "./resources";
 import { isPrivilegedRole } from "./roles";
+import { assertPermission } from "./permissions";
+
+export class ResourceAuthorizationError extends Error {
+  constructor(resource: ResourceAccessDescriptor) {
+    super(`Access denied for ${resource.kind} in the active organization.`);
+    this.name = "ResourceAuthorizationError";
+  }
+}
 
 export function isSameTenant(
   context: AccessContext,
@@ -57,4 +65,15 @@ export function canManageOwnedOrAssignedResource(
     ownsResource(context, resource) ||
     isAssignedResource(context, resource)
   );
+}
+
+export function authorizeOwnedOrAssignedWrite(
+  context: AccessContext,
+  permission: Permission,
+  resource: ResourceAccessDescriptor,
+): void {
+  assertPermission(context, permission);
+  if (!canManageOwnedOrAssignedResource(context, resource)) {
+    throw new ResourceAuthorizationError(resource);
+  }
 }

@@ -36,6 +36,13 @@ export function toSocialPostDTO(record: SocialPostRecord): SocialPostDTO {
     status: record.status,
     scheduledAt: record.scheduledAt?.toISOString() ?? null,
     publishedAt: record.publishedAt?.toISOString() ?? null,
+    approvedAt: record.approvedAt?.toISOString() ?? null,
+    approvedBy: record.approvedBy
+      ? {
+          membershipId: record.approvedBy.id,
+          displayName: record.approvedBy.user.displayName,
+        }
+      : null,
     version: record.version,
     variants: record.variants.map((variant) => ({
       id: variant.id,

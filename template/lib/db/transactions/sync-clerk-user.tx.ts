@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 
 import type { Prisma } from "../../../generated/prisma/client";
-import type { ClerkUserProjection } from "../../auth/clerkWebhook";
+import type { ClerkUserProjection } from "../../integrations/clerk/webhook";
 
 function workspaceSlug(username: string | null, clerkUserId: string): string {
   const base =

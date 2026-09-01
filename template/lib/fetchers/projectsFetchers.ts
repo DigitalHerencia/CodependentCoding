@@ -95,3 +95,18 @@ export async function getMyTasks(limit = 100) {
     return rows.map(toTaskDTO);
   });
 }
+
+export async function getProjectTaskDependencyFacts(projectId: string) {
+  return withTemplateReadTransaction(async (tx, access) => {
+    assertPermission(access, "projects:read");
+    return tx.task.findMany({
+      where: { organizationId: access.organizationId, projectId },
+      orderBy: [{ position: "asc" }, { createdAt: "asc" }],
+      select: {
+        id: true,
+        status: true,
+        dependencies: { select: { dependsOnTaskId: true } },
+      },
+    });
+  });
+}

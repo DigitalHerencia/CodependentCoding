@@ -19,3 +19,8 @@ export const scheduleSocialPostSchema = z.object({
   scheduledAt: z.coerce.date(),
   expectedVersion: z.number().int().positive(),
 });
+
+export const approveSocialPostSchema = z.object({
+  postId: z.string().uuid(),
+  expectedVersion: z.number().int().positive(),
+});

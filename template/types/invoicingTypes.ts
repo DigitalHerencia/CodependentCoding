@@ -22,6 +22,11 @@ export interface InvoiceDTO {
   issuedAt: string | null;
   dueAt: string | null;
   paidAt: string | null;
+  approvedAt: string | null;
+  approvedBy: {
+    membershipId: string;
+    displayName: string | null;
+  } | null;
   version: number;
   lines: InvoiceLineDTO[];
   createdAt: string;

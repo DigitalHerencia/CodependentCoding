@@ -26,6 +26,7 @@ export async function scheduleSocialPostTx(
       status: {
         in: ["DRAFT", "FAILED"],
       },
+      approvedAt: { not: null },
     },
     data: {
       status: "SCHEDULED",

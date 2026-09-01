@@ -1,6 +1,6 @@
 "use server";
 
-import { updateOrganizationSettingsWorkflow } from "../organization/workflows/organizationWorkflows";
+import { updateOrganizationSettingsWorkflow } from "../organization/organizationWorkflows";
 
 export async function updateOrganizationSettings(rawInput: unknown) {
   return updateOrganizationSettingsWorkflow(rawInput);

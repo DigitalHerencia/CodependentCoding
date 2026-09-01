@@ -307,10 +307,13 @@ model Membership {
   campaignsOwned Campaign[] @relation("CampaignOwner")
 
   invoicesCreated   Invoice[] @relation("InvoiceCreator")
+  invoicesApproved  Invoice[] @relation("InvoiceApprover")
   expensesSubmitted Expense[] @relation("ExpenseSubmitter")
 
   assetsCreated      Asset[]      @relation("AssetCreator")
   socialPostsCreated SocialPost[] @relation("SocialPostCreator")
+  socialPostsApproved SocialPost[] @relation("SocialPostApprover")
+  crmActivitiesAuthored CrmActivity[] @relation("CrmActivityAuthor")
 
   portalVersionsUploaded  PortalDocumentVersion[] @relation("PortalVersionUploader")
   portalApprovalsReviewed PortalApproval[]        @relation("PortalApprovalReviewer")
@@ -464,6 +467,28 @@ model CrmDeal {
   @@index([organizationId, ownerMembershipId])
   @@index([organizationId, accountId])
   @@index([organizationId, expectedCloseDate])
+}
+
+model CrmActivity {
+  id                     String  @id @default(uuid()) @db.Uuid
+  organizationId         String  @db.Uuid
+  authoredByMembershipId String? @db.Uuid
+
+  recordType String
+  recordId   String @db.Uuid
+  kind       String
+  subject    String
+  body       String?
+  occurredAt DateTime @db.Timestamptz(6)
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  authoredBy   Membership?  @relation("CrmActivityAuthor", fields: [authoredByMembershipId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
+
+  @@index([organizationId, recordType, recordId, occurredAt])
+  @@index([organizationId, authoredByMembershipId])
 }
 
 model Project {
@@ -727,6 +752,7 @@ model Invoice {
   id                    String  @id @default(uuid()) @db.Uuid
   organizationId        String  @db.Uuid
   createdByMembershipId String? @db.Uuid
+  approvedByMembershipId String? @db.Uuid
 
   number        Int
   customerName  String
@@ -741,10 +767,12 @@ model Invoice {
   issuedAt DateTime?     @db.Date
   dueAt    DateTime?     @db.Date
   paidAt   DateTime?     @db.Timestamptz(6)
+  approvedAt DateTime?   @db.Timestamptz(6)
   version  Int           @default(1)
 
   organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   createdBy    Membership?  @relation("InvoiceCreator", fields: [createdByMembershipId], references: [id], onDelete: SetNull)
+  approvedBy   Membership?  @relation("InvoiceApprover", fields: [approvedByMembershipId], references: [id], onDelete: SetNull)
 
   lines InvoiceLine[]
 
@@ -753,6 +781,7 @@ model Invoice {
 
   @@unique([organizationId, number])
   @@index([organizationId, status])
+  @@index([organizationId, approvedAt])
   @@index([organizationId, dueAt])
 }
 
@@ -827,16 +856,19 @@ model SocialPost {
   id                    String  @id @default(uuid()) @db.Uuid
   organizationId        String  @db.Uuid
   createdByMembershipId String? @db.Uuid
+  approvedByMembershipId String? @db.Uuid
 
   title       String?
   content     String
   status      SocialPostStatus @default(DRAFT)
   scheduledAt DateTime?        @db.Timestamptz(6)
   publishedAt DateTime?        @db.Timestamptz(6)
+  approvedAt  DateTime?        @db.Timestamptz(6)
   version     Int              @default(1)
 
   organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   createdBy    Membership?  @relation("SocialPostCreator", fields: [createdByMembershipId], references: [id], onDelete: SetNull)
+  approvedBy   Membership?  @relation("SocialPostApprover", fields: [approvedByMembershipId], references: [id], onDelete: SetNull)
 
   variants SocialVariant[]
   media    SocialPostMedia[]
@@ -846,6 +878,7 @@ model SocialPost {
 
   @@index([organizationId, status])
   @@index([organizationId, scheduledAt])
+  @@index([organizationId, approvedAt])
 }
 
 model SocialVariant {

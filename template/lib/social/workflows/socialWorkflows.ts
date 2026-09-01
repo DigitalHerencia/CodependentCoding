@@ -3,15 +3,15 @@ import {
   scheduleSocialPostSchema,
 } from "../../../schemas/socialSchemas";
 
-import { requireIdentity } from "../../auth/AUTH";
+import { requireIdentity } from "../../auth/auth";
 import { assertPermission } from "../../authz/permissions";
 import { toSocialPostDTO } from "../../db/dto/social.dto";
 import { socialPostSelect } from "../../db/selects/social.selects";
 import { withTenantTransaction } from "../../db/tenant";
 import { ResourceNotFoundError } from "../../db/transactions/errors";
 import { scheduleSocialPostTx } from "../../db/transactions/schedule-social-post.tx";
-import { buildPlatformVariant } from "../../workflows/social/buildPlatformVariant";
-import { resolvePublishTime } from "../../workflows/social/resolvePublishTime";
+import { buildPlatformVariant } from "../logic/build-platform-variant.logic";
+import { resolvePublishTime } from "../logic/resolve-publish-time.logic";
 
 export async function createSocialPostWorkflow(rawInput: unknown) {
   const input = createSocialPostSchema.parse(rawInput);

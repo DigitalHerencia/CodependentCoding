@@ -13,6 +13,13 @@ export const invoiceSelect = {
   issuedAt: true,
   dueAt: true,
   paidAt: true,
+  approvedAt: true,
+  approvedBy: {
+    select: {
+      id: true,
+      user: { select: { displayName: true } },
+    },
+  },
   version: true,
   lines: {
     orderBy: {

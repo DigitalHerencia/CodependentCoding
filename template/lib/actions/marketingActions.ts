@@ -1,6 +1,13 @@
 "use server";
 
-import { createCampaignWorkflow, updateCampaignStatusWorkflow } from "../marketing/workflows/marketingWorkflows";
+import {
+  updateCampaignStatusWorkflow,
+} from "../marketing/marketingWorkflows";
+import { scheduleCampaignWorkflow } from "../marketing/workflows/schedule-campaign.workflow";
 
-export async function createCampaign(input: unknown) { return createCampaignWorkflow(input); }
-export async function updateCampaignStatus(input: unknown) { return updateCampaignStatusWorkflow(input); }
+export async function createCampaign(input: unknown) {
+  return scheduleCampaignWorkflow(input);
+}
+export async function updateCampaignStatus(input: unknown) {
+  return updateCampaignStatusWorkflow(input);
+}

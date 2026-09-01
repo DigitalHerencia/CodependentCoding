@@ -31,6 +31,13 @@ export function toInvoiceDTO(record: InvoiceRecord): InvoiceDTO {
     issuedAt: record.issuedAt?.toISOString() ?? null,
     dueAt: record.dueAt?.toISOString() ?? null,
     paidAt: record.paidAt?.toISOString() ?? null,
+    approvedAt: record.approvedAt?.toISOString() ?? null,
+    approvedBy: record.approvedBy
+      ? {
+          membershipId: record.approvedBy.id,
+          displayName: record.approvedBy.user.displayName,
+        }
+      : null,
     version: record.version,
     lines: record.lines.map((line) => ({
       id: line.id,

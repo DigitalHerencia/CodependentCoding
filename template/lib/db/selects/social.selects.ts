@@ -7,6 +7,13 @@ export const socialPostSelect = {
   status: true,
   scheduledAt: true,
   publishedAt: true,
+  approvedAt: true,
+  approvedBy: {
+    select: {
+      id: true,
+      user: { select: { displayName: true } },
+    },
+  },
   version: true,
   variants: {
     select: {

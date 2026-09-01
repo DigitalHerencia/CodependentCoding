@@ -7,7 +7,7 @@ import {
   auditEventSelect,
 } from "../db/selects/admin.selects";
 import { withTemplateReadTransaction } from "../db/tenant";
-import { classifyAuditEvent } from "../workflows/admin/classifyAuditEvent";
+import { classifyAuditEvent } from "../admin/logic/classify-audit-event.logic";
 
 export async function getAuditEvents(limit = 100) {
   return withTemplateReadTransaction(async (tx, access) => {
