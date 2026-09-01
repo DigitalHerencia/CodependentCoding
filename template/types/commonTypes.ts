@@ -1,6 +1,7 @@
 import type * as React from "react";
 import type { VariantProps } from "class-variance-authority";
 
+import type { badgeVariants } from "@/components/ui/badge";
 import type { kbdVariants } from "@/components/ui/kbd";
 
 export interface OrganizationDTO {
@@ -13,6 +14,11 @@ export interface OrganizationDTO {
   defaultCurrency: string;
   memberCount: number;
 }
+
+export interface BadgeProps
+  extends
+    React.HTMLAttributes<HTMLSpanElement>,
+    VariantProps<typeof badgeVariants> {}
 
 export interface KbdProps
   extends React.HTMLAttributes<HTMLElement>, VariantProps<typeof kbdVariants> {}
