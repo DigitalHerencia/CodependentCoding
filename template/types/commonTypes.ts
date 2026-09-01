@@ -9,6 +9,7 @@ import type {
   timelineConnectorVariants,
   timelineDotVariants,
 } from "@/components/ui/timeline";
+import type { RevealOptions, StaggerOptions } from "@/lib/utils/motionCore";
 
 export interface OrganizationDTO {
   id: string;
@@ -50,6 +51,29 @@ export interface MarqueeItemProps extends React.HTMLAttributes<HTMLSpanElement> 
 export interface MarqueeSeparatorProps
   extends React.HTMLAttributes<HTMLSpanElement> {
   children?: React.ReactNode;
+}
+
+export type RevealDirection = "up" | "down" | "left" | "right";
+
+export interface RevealProps
+  extends
+    React.HTMLAttributes<HTMLDivElement>,
+    Omit<RevealOptions, "rootMargin"> {
+  direction?: RevealDirection;
+  rootMargin?: string;
+  as?: keyof React.JSX.IntrinsicElements;
+}
+
+export interface MotionProps extends React.HTMLAttributes<HTMLElement> {
+  as?: keyof React.JSX.IntrinsicElements;
+  press?: boolean;
+  stamp?: boolean;
+  pulse?: boolean;
+}
+
+export interface StaggerProps
+  extends React.HTMLAttributes<HTMLDivElement>, StaggerOptions {
+  as?: keyof React.JSX.IntrinsicElements;
 }
 
 export interface SkeletonProps
