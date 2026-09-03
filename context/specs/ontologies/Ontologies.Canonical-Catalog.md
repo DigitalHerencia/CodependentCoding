@@ -10,1308 +10,910 @@ status: active
 authority: canonical-index
 parent: codependentcoding.ontologies.authoritative
 created: 2026-08-22
-updated: 2026-08-22
+updated: 2026-09-03
 ---
 
 # The Ontology™ Normalized Defaults — Canonical Catalog
 
-This catalog preserves the current canonical normalized file inventory for all nine Ontologies.
+# Canonical Ontology File Inventory
+## 0. Shared Foundation Ontology™
 
-It is intentionally implementation-specific and records:
+### Routes → Features → Templates → Blocks / Workflows
 
-```text
-Route
-→ Feature
-→ Page Template
-→ PureUI Block(s)
-→ BusinessLogic Block(s) / Workflow(s)
-→ UI Primitive constitutions
-→ server-operation/helper inventories
-→ integrations
-→ Semantic Design Token files
-```
+| Route | Feature / Form | Client Island | Suspense Skeleton | Page Template | Existing Block(s) | Workflow File |
+| --- | --- | --- | --- | --- | --- | --- |
+| `/dashboard` | `features/dashboard/dashboardFeature.tsx` | `features/dashboard/dashboardFeature.client.tsx` | `features/dashboard/dashboardSkeleton.tsx` | `components/templates/sharedDashboardTemplate.tsx` | `components/blocks/dashboard-layout.tsx` | `lib/workflows/organizationWorkflows.ts` |
+| `/onboarding` | `features/onboarding/onboardingFeature.tsx` | `features/onboarding/onboardingFeature.client.tsx` | `features/onboarding/onboardingSkeleton.tsx` | `components/templates/sharedOnboardingTemplate.tsx` | `components/blocks/onboarding-flow.tsx` | `lib/workflows/organizationWorkflows.ts` |
+| `/settings/billing` | `features/settings/billingFeature.tsx` | `features/settings/billingFeature.client.tsx` | `features/settings/billingSkeleton.tsx` | `components/templates/sharedBillingSettingsTemplate.tsx` | `components/blocks/settings-page.tsx` | `lib/workflows/organizationWorkflows.ts` |
+| `/settings/integrations` | `features/settings/integrationsFeature.tsx` | `features/settings/integrationsFeature.client.tsx` | `features/settings/integrationsSkeleton.tsx` | `components/templates/sharedIntegrationsTemplate.tsx` | `components/blocks/settings-page.tsx` | `lib/workflows/organizationWorkflows.ts` |
+| `/settings/members` | `features/settings/membersFeature.tsx` | `features/settings/membersFeature.client.tsx` | `features/settings/membersSkeleton.tsx` | `components/templates/sharedMembersTemplate.tsx` | `components/blocks/settings-page.tsx` | `lib/workflows/organizationWorkflows.ts` |
+| `/settings/profile` | `features/settings/profileFeature.tsx` | `features/settings/profileFeature.client.tsx` | `features/settings/profileSkeleton.tsx` | `components/templates/sharedProfileSettingsTemplate.tsx` | `components/blocks/settings-page.tsx` | `lib/workflows/organizationWorkflows.ts` |
 
-Where the source marks an artifact **`[STUB — BUILD]`**, that status remains authoritative.
-
-The authoritative Simples definition used by this catalog is:
+### Target Route Files
 
 ```text
-Simples™
-=
-PureUI Blocks™
-+
-BusinessLogic Blocks™
+app/(tenant)/dashboard/page.tsx
+app/(tenant)/onboarding/page.tsx
+app/(tenant)/settings/billing/page.tsx
+app/(tenant)/settings/integrations/page.tsx
+app/(tenant)/settings/members/page.tsx
+app/(tenant)/settings/profile/page.tsx
 ```
+### Target Feature Files
 
-Routes, Features, Templates, UI Primitives, Actions, Fetchers, schemas, types, and integrations shown below are relationships or constituents, not additional Simple families.
+```text
+features/dashboard/dashboardFeature.tsx
+features/dashboard/dashboardFeature.client.tsx
+features/dashboard/dashboardSkeleton.tsx
+features/onboarding/onboardingFeature.tsx
+features/onboarding/onboardingFeature.client.tsx
+features/onboarding/onboardingSkeleton.tsx
+features/settings/billingFeature.tsx
+features/settings/billingFeature.client.tsx
+features/settings/billingSkeleton.tsx
+features/settings/integrationsFeature.tsx
+features/settings/integrationsFeature.client.tsx
+features/settings/integrationsSkeleton.tsx
+features/settings/membersFeature.tsx
+features/settings/membersFeature.client.tsx
+features/settings/membersSkeleton.tsx
+features/settings/profileFeature.tsx
+features/settings/profileFeature.client.tsx
+features/settings/profileSkeleton.tsx
+```
+### Target Page Template Files
+
+```text
+components/templates/sharedDashboardTemplate.tsx
+components/templates/sharedOnboardingTemplate.tsx
+components/templates/sharedBillingSettingsTemplate.tsx
+components/templates/sharedIntegrationsTemplate.tsx
+components/templates/sharedMembersTemplate.tsx
+components/templates/sharedProfileSettingsTemplate.tsx
+```
+### Existing Block Files Used
+
+```text
+components/blocks/dashboard-layout.tsx
+components/blocks/onboarding-flow.tsx
+components/blocks/settings-page.tsx
+```
+### Canonical Server / Schema / Type Files
+
+```text
+lib/actions/commonActions.ts
+lib/fetchers/organizationFetchers.ts
+lib/fetchers/integrationFetchers.ts
+lib/workflows/organizationWorkflows.ts
+lib/db/selects/organization.selects.ts
+lib/db/dto/organization.dto.ts
+lib/authz/permissions.ts
+lib/authz/policies.ts
+lib/authz/resources.ts
+lib/authz/roles.ts
+schemas/commonSchemas.ts
+schemas/integrationSchemas.ts
+types/commonTypes.ts
+types/integrationTypes.ts
+types/access.ts
+types/uiTypes.ts
+```
 
 ---
-
-# Canonical Ontology File Inventory
 
 ## 1. CRM / Pipeline Tracker Ontology™
 
 ### Routes → Features → Templates → Blocks / Workflows
 
-| Route                                  | Feature                                    | Page Template                                | Blocks                                                                                                                         | Workflows                                                                                                                                                 |
-| -------------------------------------- | ------------------------------------------ | -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `/crm/pipeline`                        | `features/crm/pipelineFeature.tsx`         | `components/templates/WorkspaceTemplate.tsx` | `components/blocks/kanban-board.tsx` **[STUB — BUILD]**                                                                        | `lib/workflows/crm/advanceDealStageWorkflow.ts`, `detectStalledDealWorkflow.ts`, `calculatePipelineValueWorkflow.ts`, `calculateSalesVelocityWorkflow.ts` |
-| `/crm/leads`                           | `features/crm/leadsFeature.tsx`            | `components/templates/DataGridTemplate.tsx`  | `components/blocks/data-table-section.tsx` **[STUB — BUILD]**                                                                  | `qualifyLeadWorkflow.ts`, `assignCrmRecordWorkflow.ts`                                                                                                    |
-| `/crm/leads/new`                       | `features/crm/newLeadForm.tsx`             | `components/templates/FormTemplate.tsx`      | —                                                                                                                              | `qualifyLeadWorkflow.ts`                                                                                                                                  |
-| `/crm/leads/[leadId]`                  | `features/crm/leadDetailFeature.tsx`       | `components/templates/ProfileTemplate.tsx`   | `components/blocks/record-detail-section.tsx` **[STUB — BUILD]**, `components/blocks/activity-timeline.tsx` **[STUB — BUILD]** | `qualifyLeadWorkflow.ts`, `recordSalesActivityWorkflow.ts`                                                                                                |
-| `/crm/leads/[leadId]/edit`             | `features/crm/editLeadForm.tsx`            | `components/templates/FormTemplate.tsx`      | —                                                                                                                              | `qualifyLeadWorkflow.ts`                                                                                                                                  |
-| `/crm/contacts`                        | `features/crm/contactsFeature.tsx`         | `components/templates/DataGridTemplate.tsx`  | `components/blocks/data-table-section.tsx` **[STUB — BUILD]**                                                                  | `assignCrmRecordWorkflow.ts`                                                                                                                              |
-| `/crm/contacts/new`                    | `features/crm/newContactForm.tsx`          | `components/templates/FormTemplate.tsx`      | —                                                                                                                              | —                                                                                                                                                         |
-| `/crm/contacts/[contactId]`            | `features/crm/contactDetailFeature.tsx`    | `components/templates/ProfileTemplate.tsx`   | `components/blocks/record-detail-section.tsx` **[STUB — BUILD]**, `components/blocks/activity-timeline.tsx` **[STUB — BUILD]** | `recordSalesActivityWorkflow.ts`                                                                                                                          |
-| `/crm/contacts/[contactId]/edit`       | `features/crm/editContactForm.tsx`         | `components/templates/FormTemplate.tsx`      | —                                                                                                                              | —                                                                                                                                                         |
-| `/crm/accounts`                        | `features/crm/accountsFeature.tsx`         | `components/templates/DataGridTemplate.tsx`  | `components/blocks/data-table-section.tsx` **[STUB — BUILD]**                                                                  | `assignCrmRecordWorkflow.ts`                                                                                                                              |
-| `/crm/accounts/new`                    | `features/crm/newAccountForm.tsx`          | `components/templates/FormTemplate.tsx`      | —                                                                                                                              | —                                                                                                                                                         |
-| `/crm/accounts/[accountId]`            | `features/crm/accountDetailFeature.tsx`    | `components/templates/ProfileTemplate.tsx`   | `components/blocks/record-detail-section.tsx` **[STUB — BUILD]**, `components/blocks/activity-timeline.tsx` **[STUB — BUILD]** | `calculatePipelineValueWorkflow.ts`, `recordSalesActivityWorkflow.ts`                                                                                     |
-| `/crm/accounts/[accountId]/edit`       | `features/crm/editAccountForm.tsx`         | `components/templates/FormTemplate.tsx`      | —                                                                                                                              | —                                                                                                                                                         |
-| `/crm/deals`                           | `features/crm/dealsFeature.tsx`            | `components/templates/DataGridTemplate.tsx`  | `components/blocks/data-table-section.tsx` **[STUB — BUILD]**                                                                  | `advanceDealStageWorkflow.ts`, `detectStalledDealWorkflow.ts`                                                                                             |
-| `/crm/deals/new`                       | `features/crm/newDealForm.tsx`             | `components/templates/FormTemplate.tsx`      | —                                                                                                                              | `calculatePipelineValueWorkflow.ts`                                                                                                                       |
-| `/crm/deals/[dealId]`                  | `features/crm/dealDetailFeature.tsx`       | `components/templates/WorkspaceTemplate.tsx` | `components/blocks/record-detail-section.tsx` **[STUB — BUILD]**, `components/blocks/activity-timeline.tsx` **[STUB — BUILD]** | `advanceDealStageWorkflow.ts`, `closeDealWorkflow.ts`, `reopenOpportunityWorkflow.ts`                                                                     |
-| `/crm/deals/[dealId]/edit`             | `features/crm/editDealForm.tsx`            | `components/templates/FormTemplate.tsx`      | —                                                                                                                              | `calculatePipelineValueWorkflow.ts`                                                                                                                       |
-| `/crm/activities`                      | `features/crm/activitiesFeature.tsx`       | `components/templates/CalanderTemplate.tsx`  | `components/blocks/activity-timeline.tsx` **[STUB — BUILD]**                                                                   | `recordSalesActivityWorkflow.ts`                                                                                                                          |
-| `/crm/analytics`                       | `features/crm/crmAnalyticsFeature.tsx`     | `components/templates/DashboardTemplate.tsx` | `components/blocks/dashboard-layout.tsx`, `components/blocks/analytics-dashboard.tsx` **[STUB — BUILD]**                       | `calculatePipelineValueWorkflow.ts`, `calculateSalesVelocityWorkflow.ts`                                                                                  |
-| `/crm/settings`                        | `features/crm/crmSettingsFeature.tsx`      | `components/templates/SettingsTemplate.tsx`  | `components/blocks/settings-page.tsx`                                                                                          | —                                                                                                                                                         |
-| `/crm/settings/pipelines`              | `features/crm/pipelineSettingsFeature.tsx` | `components/templates/DataGridTemplate.tsx`  | `components/blocks/data-table-section.tsx` **[STUB — BUILD]**                                                                  | —                                                                                                                                                         |
-| `/crm/settings/pipelines/[pipelineId]` | `features/crm/pipelineEditorFeature.tsx`   | `components/templates/FormTemplate.tsx`      | `components/blocks/pipeline-stage-editor.tsx` **[STUB — BUILD]**                                                               | `advanceDealStageWorkflow.ts`                                                                                                                             |
+| Route | Feature / Form | Client Island | Suspense Skeleton | Page Template | Existing Block(s) | Workflow File |
+| --- | --- | --- | --- | --- | --- | --- |
+| `/crm/pipeline` | `features/crm/crmPipelineFeature.tsx` | `features/crm/crmPipelineFeature.client.tsx` | `features/crm/crmPipelineSkeleton.tsx` | `components/templates/crmPipelineTemplate.tsx` | `components/blocks/dashboard-layout.tsx` | `lib/workflows/crmWorkflows.ts` |
+| `/crm/analytics` | `features/crm/crmAnalyticsFeature.tsx` | `features/crm/crmAnalyticsFeature.client.tsx` | `features/crm/crmAnalyticsSkeleton.tsx` | `components/templates/crmAnalyticsTemplate.tsx` | `components/blocks/dashboard-layout.tsx` | `lib/workflows/crmWorkflows.ts` |
+| `/crm/leads` | `features/crm/crmLeadsFeature.tsx` | `features/crm/crmLeadsFeature.client.tsx` | `features/crm/crmLeadsSkeleton.tsx` | `components/templates/crmLeadsTemplate.tsx` | `components/blocks/dashboard-layout.tsx` | `lib/workflows/crmWorkflows.ts` |
+| `/crm/leads/new` | `features/crm/crmNewLeadForm.tsx` | — | — | — | — | `lib/workflows/crmWorkflows.ts` |
+| `/crm/leads/[leadId]` | `features/crm/crmLeadDetailFeature.tsx` | `features/crm/crmLeadDetailFeature.client.tsx` | `features/crm/crmLeadDetailSkeleton.tsx` | `components/templates/crmLeadDetailTemplate.tsx` | `components/blocks/dashboard-layout.tsx` | `lib/workflows/crmWorkflows.ts` |
+| `/crm/leads/[leadId]/edit` | `features/crm/crmEditLeadForm.tsx` | — | — | — | — | `lib/workflows/crmWorkflows.ts` |
+| `/crm/contacts` | `features/crm/crmContactsFeature.tsx` | `features/crm/crmContactsFeature.client.tsx` | `features/crm/crmContactsSkeleton.tsx` | `components/templates/crmContactsTemplate.tsx` | `components/blocks/dashboard-layout.tsx` | `lib/workflows/crmWorkflows.ts` |
+| `/crm/contacts/new` | `features/crm/crmNewContactForm.tsx` | — | — | — | — | `lib/workflows/crmWorkflows.ts` |
+| `/crm/contacts/[contactId]` | `features/crm/crmContactDetailFeature.tsx` | `features/crm/crmContactDetailFeature.client.tsx` | `features/crm/crmContactDetailSkeleton.tsx` | `components/templates/crmContactDetailTemplate.tsx` | `components/blocks/dashboard-layout.tsx` | `lib/workflows/crmWorkflows.ts` |
+| `/crm/contacts/[contactId]/edit` | `features/crm/crmEditContactForm.tsx` | — | — | — | — | `lib/workflows/crmWorkflows.ts` |
+| `/crm/accounts` | `features/crm/crmAccountsFeature.tsx` | `features/crm/crmAccountsFeature.client.tsx` | `features/crm/crmAccountsSkeleton.tsx` | `components/templates/crmAccountsTemplate.tsx` | `components/blocks/dashboard-layout.tsx` | `lib/workflows/crmWorkflows.ts` |
+| `/crm/accounts/new` | `features/crm/crmNewAccountForm.tsx` | — | — | — | — | `lib/workflows/crmWorkflows.ts` |
+| `/crm/accounts/[accountId]` | `features/crm/crmAccountDetailFeature.tsx` | `features/crm/crmAccountDetailFeature.client.tsx` | `features/crm/crmAccountDetailSkeleton.tsx` | `components/templates/crmAccountDetailTemplate.tsx` | `components/blocks/dashboard-layout.tsx` | `lib/workflows/crmWorkflows.ts` |
+| `/crm/accounts/[accountId]/edit` | `features/crm/crmEditAccountForm.tsx` | — | — | — | — | `lib/workflows/crmWorkflows.ts` |
 
-### CRM Block → UI Primitive Files
-
-#### `components/blocks/kanban-board.tsx` **[STUB — BUILD]**
-
-- `components/ui/card.tsx`
-    
-- `components/ui/badge.tsx`
-    
-- `components/ui/button.tsx`
-    
-- `components/ui/dropdown-menu.tsx`
-    
-- `components/ui/dialog.tsx`
-    
-- `components/ui/scroll-area.tsx`
-    
-- `components/ui/motion.tsx`
-    
-- `components/ui/skeleton.tsx`
-    
-
-#### `components/blocks/data-table-section.tsx` **[STUB — BUILD]**
-
-- `components/ui/data-table.tsx`
-    
-- `components/ui/input.tsx`
-    
-- `components/ui/select.tsx`
-    
-- `components/ui/checkbox.tsx`
-    
-- `components/ui/badge.tsx`
-    
-- `components/ui/pagination.tsx`
-    
-- `components/ui/dropdown-menu.tsx`
-    
-- `components/ui/button.tsx`
-    
-- `components/ui/skeleton.tsx`
-    
-
-#### `components/blocks/record-detail-section.tsx` **[STUB — BUILD]**
-
-- `components/ui/card.tsx`
-    
-- `components/ui/tabs.tsx`
-    
-- `components/ui/badge.tsx`
-    
-- `components/ui/avatar.tsx`
-    
-- `components/ui/separator.tsx`
-    
-- `components/ui/dropdown-menu.tsx`
-    
-- `components/ui/button.tsx`
-    
-- `components/ui/skeleton.tsx`
-    
-
-#### `components/blocks/activity-timeline.tsx` **[STUB — BUILD]**
-
-- `components/ui/timeline.tsx`
-    
-- `components/ui/avatar.tsx`
-    
-- `components/ui/card.tsx`
-    
-- `components/ui/badge.tsx`
-    
-- `components/ui/scroll-area.tsx`
-    
-- `components/ui/skeleton.tsx`
-    
-
-#### `components/blocks/analytics-dashboard.tsx` **[STUB — BUILD]**
-
-- `components/ui/stat-card.tsx`
-    
-- `components/ui/chart.tsx`
-    
-- `components/ui/chart-toolbar.tsx`
-    
-- `components/ui/donut-chart.tsx`
-    
-- `components/ui/radar-chart.tsx`
-    
-- `components/ui/radial-bar-chart.tsx`
-    
-- `components/ui/gauge-chart.tsx`
-    
-- `components/ui/sparkline.tsx`
-    
-- `components/ui/date-range-picker.tsx`
-    
-- `components/ui/card.tsx`
-    
-- `components/ui/tabs.tsx`
-    
-- `components/ui/skeleton.tsx`
-    
-
-#### `components/blocks/pipeline-stage-editor.tsx` **[STUB — BUILD]**
-
-- `components/ui/card.tsx`
-    
-- `components/ui/input.tsx`
-    
-- `components/ui/select.tsx`
-    
-- `components/ui/button.tsx`
-    
-- `components/ui/badge.tsx`
-    
-- `components/ui/dropdown-menu.tsx`
-    
-- `components/ui/dialog.tsx`
-    
-- `components/ui/motion.tsx`
-    
-
-#### Existing
-
-- `components/blocks/dashboard-layout.tsx`
-    
-- `components/blocks/settings-page.tsx`
-    
-
-### CRM Workflows
+### Target Route Files
 
 ```text
-lib/workflows/crm/advanceDealStageWorkflow.ts
-lib/workflows/crm/detectStalledDealWorkflow.ts
-lib/workflows/crm/calculatePipelineValueWorkflow.ts
-lib/workflows/crm/calculateSalesVelocityWorkflow.ts
-lib/workflows/crm/qualifyLeadWorkflow.ts
-lib/workflows/crm/assignCrmRecordWorkflow.ts
-lib/workflows/crm/recordSalesActivityWorkflow.ts
-lib/workflows/crm/closeDealWorkflow.ts
-lib/workflows/crm/reopenOpportunityWorkflow.ts
+app/(tenant)/crm/pipeline/page.tsx
+app/(tenant)/crm/analytics/page.tsx
+app/(tenant)/crm/leads/page.tsx
+app/(tenant)/crm/leads/new/page.tsx
+app/(tenant)/crm/leads/[leadId]/page.tsx
+app/(tenant)/crm/leads/[leadId]/edit/page.tsx
+app/(tenant)/crm/contacts/page.tsx
+app/(tenant)/crm/contacts/new/page.tsx
+app/(tenant)/crm/contacts/[contactId]/page.tsx
+app/(tenant)/crm/contacts/[contactId]/edit/page.tsx
+app/(tenant)/crm/accounts/page.tsx
+app/(tenant)/crm/accounts/new/page.tsx
+app/(tenant)/crm/accounts/[accountId]/page.tsx
+app/(tenant)/crm/accounts/[accountId]/edit/page.tsx
 ```
-
-### CRM Actions
+### Target Feature Files
 
 ```text
-lib/actions/crm/createLead.ts
-lib/actions/crm/updateLead.ts
-lib/actions/crm/deleteLead.ts
-
-lib/actions/crm/createContact.ts
-lib/actions/crm/updateContact.ts
-lib/actions/crm/deleteContact.ts
-
-lib/actions/crm/createAccount.ts
-lib/actions/crm/updateAccount.ts
-lib/actions/crm/deleteAccount.ts
-
-lib/actions/crm/createDeal.ts
-lib/actions/crm/updateDeal.ts
-lib/actions/crm/deleteDeal.ts
-
-lib/actions/crm/createActivity.ts
-lib/actions/crm/updateActivity.ts
-lib/actions/crm/deleteActivity.ts
-
-lib/actions/crm/createNote.ts
-lib/actions/crm/updateNote.ts
-lib/actions/crm/deleteNote.ts
-
-lib/actions/crm/createPipeline.ts
-lib/actions/crm/updatePipeline.ts
-lib/actions/crm/deletePipeline.ts
-
-lib/actions/crm/createPipelineStage.ts
-lib/actions/crm/updatePipelineStage.ts
-lib/actions/crm/deletePipelineStage.ts
+features/crm/crmPipelineFeature.tsx
+features/crm/crmAnalyticsFeature.tsx
+features/crm/crmLeadsFeature.tsx
+features/crm/crmNewLeadForm.tsx
+features/crm/crmLeadDetailFeature.tsx
+features/crm/crmEditLeadForm.tsx
+features/crm/crmContactsFeature.tsx
+features/crm/crmNewContactForm.tsx
+features/crm/crmContactDetailFeature.tsx
+features/crm/crmEditContactForm.tsx
+features/crm/crmAccountsFeature.tsx
+features/crm/crmNewAccountForm.tsx
+features/crm/crmAccountDetailFeature.tsx
+features/crm/crmEditAccountForm.tsx
+features/crm/crmPipelineFeature.client.tsx
+features/crm/crmAnalyticsFeature.client.tsx
+features/crm/crmLeadsFeature.client.tsx
+features/crm/crmLeadDetailFeature.client.tsx
+features/crm/crmContactsFeature.client.tsx
+features/crm/crmContactDetailFeature.client.tsx
+features/crm/crmAccountsFeature.client.tsx
+features/crm/crmAccountDetailFeature.client.tsx
+features/crm/crmPipelineSkeleton.tsx
+features/crm/crmAnalyticsSkeleton.tsx
+features/crm/crmLeadsSkeleton.tsx
+features/crm/crmLeadDetailSkeleton.tsx
+features/crm/crmContactsSkeleton.tsx
+features/crm/crmContactDetailSkeleton.tsx
+features/crm/crmAccountsSkeleton.tsx
+features/crm/crmAccountDetailSkeleton.tsx
 ```
-
-### CRM Fetchers
+### Target Page Template Files
 
 ```text
-lib/fetchers/crm/getLeads.ts
-lib/fetchers/crm/getLeadById.ts
-
-lib/fetchers/crm/getContacts.ts
-lib/fetchers/crm/getContactById.ts
-
-lib/fetchers/crm/getAccounts.ts
-lib/fetchers/crm/getAccountById.ts
-
-lib/fetchers/crm/getDeals.ts
-lib/fetchers/crm/getDealById.ts
-
-lib/fetchers/crm/getPipelines.ts
-lib/fetchers/crm/getPipelineById.ts
-lib/fetchers/crm/getPipelineStages.ts
-
-lib/fetchers/crm/getActivities.ts
-lib/fetchers/crm/getActivityById.ts
-lib/fetchers/crm/getNotesByRecord.ts
-
-lib/fetchers/crm/getPipelineMetrics.ts
-lib/fetchers/crm/getCrmAnalytics.ts
+components/templates/crmAccountDetailTemplate.tsx
+components/templates/crmAccountsTemplate.tsx
+components/templates/crmAnalyticsTemplate.tsx
+components/templates/crmContactDetailTemplate.tsx
+components/templates/crmContactsTemplate.tsx
+components/templates/crmLeadDetailTemplate.tsx
+components/templates/crmLeadsTemplate.tsx
+components/templates/crmPipelineTemplate.tsx
 ```
-
-### CRM Authz
+### Existing Block Files Used
 
 ```text
-lib/authz/crmPermissions.ts
-lib/authz/crmPolicies.ts
-lib/authz/crmResources.ts
+components/blocks/dashboard-layout.tsx
 ```
-
-### CRM Prisma Selects
-
-```text
-lib/db/selects/leadSelect.ts
-lib/db/selects/contactSelect.ts
-lib/db/selects/accountSelect.ts
-lib/db/selects/dealSelect.ts
-lib/db/selects/pipelineSelect.ts
-lib/db/selects/activitySelect.ts
-```
-
-### CRM DTO Mappers
+### Canonical Server / Schema / Type Files
 
 ```text
-lib/db/dto/leadDto.ts
-lib/db/dto/contactDto.ts
-lib/db/dto/accountDto.ts
-lib/db/dto/dealDto.ts
-lib/db/dto/pipelineDto.ts
-lib/db/dto/activityDto.ts
-lib/db/dto/crmAnalyticsDto.ts
-```
-
-### CRM Transactions
-
-```text
-lib/db/transactions/advanceDealStageTransaction.ts
-lib/db/transactions/closeDealTransaction.ts
-lib/db/transactions/recordSalesActivityTransaction.ts
-```
-
-### CRM Helpers
-
-```text
-lib/cache/crmCache.ts
-lib/constants/crmConstants.ts
-lib/utils/crmParams.ts
+lib/actions/crmActions.ts
+lib/fetchers/crmFetchers.ts
+lib/workflows/crmWorkflows.ts
+lib/db/selects/crm.selects.ts
+lib/db/dto/crm.dto.ts
+lib/db/transactions/assign-crm-record.tx.ts
+lib/db/transactions/record-sales-activity.tx.ts
+lib/db/transactions/update-deal-stage.tx.ts
+lib/authz/permissions.ts
+lib/authz/policies.ts
+lib/authz/resources.ts
+lib/authz/roles.ts
 schemas/crmSchemas.ts
 types/crmTypes.ts
-types/crmInterfaces.ts
-```
-
-### CRM Optional Provider Files
-
-```text
-lib/integrations/sendgrid/client.ts
-lib/integrations/sendgrid/email.ts
-
-lib/integrations/stripe/client.ts
-lib/integrations/stripe/checkout.ts
-lib/integrations/stripe/portal.ts
-lib/integrations/stripe/subscriptions.ts
-lib/integrations/stripe/webhooks.ts
-```
-
-### CRM Semantic Design Token Files
-
-```text
-app/globals.css
-components/ui/palettes.ts
 ```
 
 ---
 
-# 2. Project Management / Task Tracker Ontology™
+## 2. Project Management / Task Tracker Ontology™
 
 ### Routes → Features → Templates → Blocks / Workflows
 
-| Route                                       | Feature                                      | Page Template                                | Blocks                                                                                                                         | Workflows                                                                    |
-| ------------------------------------------- | -------------------------------------------- | -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------- |
-| `/projects`                                 | `features/projects/projectsFeature.tsx`      | `components/templates/DataGridTemplate.tsx`  | `components/blocks/data-table-section.tsx` **[STUB — BUILD]**                                                                  | `calculateProjectHealthWorkflow.ts`                                          |
-| `/projects/new`                             | `features/projects/newProjectForm.tsx`       | `components/templates/FormTemplate.tsx`      | —                                                                                                                              | —                                                                            |
-| `/projects/[projectId]`                     | `features/projects/projectDetailFeature.tsx` | `components/templates/ProjectTemplate.tsx`   | `components/blocks/dashboard-layout.tsx`, `components/blocks/record-detail-section.tsx` **[STUB — BUILD]**                     | `calculateProjectHealthWorkflow.ts`, `calculateMilestoneProgressWorkflow.ts` |
-| `/projects/[projectId]/edit`                | `features/projects/editProjectForm.tsx`      | `components/templates/FormTemplate.tsx`      | —                                                                                                                              | —                                                                            |
-| `/projects/[projectId]/tasks`               | `features/projects/tasksFeature.tsx`         | `components/templates/WorkspaceTemplate.tsx` | `components/blocks/kanban-board.tsx` **[STUB — BUILD]**, `components/blocks/data-table-section.tsx` **[STUB — BUILD]**         | `resolveTaskDependenciesWorkflow.ts`, `advanceTaskStateWorkflow.ts`          |
-| `/projects/[projectId]/tasks/new`           | `features/projects/newTaskForm.tsx`          | `components/templates/FormTemplate.tsx`      | —                                                                                                                              | `assignTaskWorkflow.ts`                                                      |
-| `/projects/[projectId]/tasks/[taskId]`      | `features/projects/taskDetailFeature.tsx`    | `components/templates/ProjectTemplate.tsx`   | `components/blocks/record-detail-section.tsx` **[STUB — BUILD]**, `components/blocks/activity-timeline.tsx` **[STUB — BUILD]** | `resolveTaskDependenciesWorkflow.ts`                                         |
-| `/projects/[projectId]/tasks/[taskId]/edit` | `features/projects/editTaskForm.tsx`         | `components/templates/FormTemplate.tsx`      | —                                                                                                                              | `rescheduleDependentTasksWorkflow.ts`                                        |
-| `/projects/[projectId]/milestones`          | `features/projects/milestonesFeature.tsx`    | `components/templates/DataGridTemplate.tsx`  | `components/blocks/data-table-section.tsx` **[STUB — BUILD]**                                                                  | `calculateMilestoneProgressWorkflow.ts`, `completeMilestoneWorkflow.ts`      |
-| `/projects/[projectId]/timeline`            | `features/projects/timelineFeature.tsx`      | `components/templates/CalanderTemplate.tsx`  | `components/blocks/project-timeline.tsx` **[STUB — BUILD]**                                                                    | `resolveTaskDependenciesWorkflow.ts`, `rescheduleDependentTasksWorkflow.ts`  |
-| `/my-tasks`                                 | `features/projects/myTasksFeature.tsx`       | `components/templates/DataGridTemplate.tsx`  | `components/blocks/data-table-section.tsx` **[STUB — BUILD]**                                                                  | `advanceTaskStateWorkflow.ts`                                                |
+| Route | Feature / Form | Client Island | Suspense Skeleton | Page Template | Existing Block(s) | Workflow File |
+| --- | --- | --- | --- | --- | --- | --- |
+| `/projects` | `features/projects/projectsFeature.tsx` | `features/projects/projectsFeature.client.tsx` | `features/projects/projectsSkeleton.tsx` | `components/templates/projectsTemplate.tsx` | `components/blocks/dashboard-layout.tsx` | `lib/workflows/projectsWorkflows.ts` |
+| `/projects/new` | `features/projects/projectNewForm.tsx` | — | — | — | — | `lib/workflows/projectsWorkflows.ts` |
+| `/projects/[projectId]` | `features/projects/projectFeature.tsx` | `features/projects/projectFeature.client.tsx` | `features/projects/projectSkeleton.tsx` | `components/templates/projectDetailTemplate.tsx` | `components/blocks/dashboard-layout.tsx` | `lib/workflows/projectsWorkflows.ts` |
+| `/projects/[projectId]/edit` | `features/projects/projectEditForm.tsx` | — | — | — | — | `lib/workflows/projectsWorkflows.ts` |
+| `/projects/[projectId]/tasks` | `features/projects/tasksFeature.tsx` | `features/projects/tasksFeature.client.tsx` | `features/projects/tasksSkeleton.tsx` | `components/templates/projectTasksTemplate.tsx` | `components/blocks/dashboard-layout.tsx` | `lib/workflows/projectsWorkflows.ts` |
+| `/projects/[projectId]/tasks/new` | `features/projects/taskNewForm.tsx` | — | — | — | — | `lib/workflows/projectsWorkflows.ts` |
+| `/projects/[projectId]/tasks/[taskId]` | `features/projects/taskFeature.tsx` | `features/projects/taskFeature.client.tsx` | `features/projects/taskSkeleton.tsx` | `components/templates/projectTaskDetailTemplate.tsx` | `components/blocks/dashboard-layout.tsx` | `lib/workflows/projectsWorkflows.ts` |
+| `/projects/[projectId]/tasks/[taskId]/edit` | `features/projects/taskEditForm.tsx` | — | — | — | — | `lib/workflows/projectsWorkflows.ts` |
+| `/projects/[projectId]/timeline` | `features/projects/timelineFeature.tsx` | `features/projects/timelineFeature.client.tsx` | `features/projects/timelineSkeleton.tsx` | `components/templates/projectTimelineTemplate.tsx` | `components/blocks/dashboard-layout.tsx` | `lib/workflows/projectsWorkflows.ts` |
+| `/my-tasks` | `features/projects/myTasksFeature.tsx` | `features/projects/myTasksFeature.client.tsx` | `features/projects/myTasksSkeleton.tsx` | `components/templates/myTasksTemplate.tsx` | `components/blocks/dashboard-layout.tsx` | `lib/workflows/projectsWorkflows.ts` |
 
-### Project Blocks → UI Primitives
+### Target Route Files
 
-#### `components/blocks/project-timeline.tsx` **[STUB — BUILD]**
+```text
+app/(tenant)/projects/page.tsx
+app/(tenant)/projects/new/page.tsx
+app/(tenant)/projects/[projectId]/page.tsx
+app/(tenant)/projects/[projectId]/edit/page.tsx
+app/(tenant)/projects/[projectId]/tasks/page.tsx
+app/(tenant)/projects/[projectId]/tasks/new/page.tsx
+app/(tenant)/projects/[projectId]/tasks/[taskId]/page.tsx
+app/(tenant)/projects/[projectId]/tasks/[taskId]/edit/page.tsx
+app/(tenant)/projects/[projectId]/timeline/page.tsx
+app/(tenant)/my-tasks/page.tsx
+```
+### Target Feature Files
 
-- `components/ui/timeline.tsx`
-    
-- `components/ui/calendar.tsx`
-    
-- `components/ui/date-picker.tsx`
-    
-- `components/ui/card.tsx`
-    
-- `components/ui/badge.tsx`
-    
-- `components/ui/progress.tsx`
-    
-- `components/ui/scroll-area.tsx`
-    
-- `components/ui/motion.tsx`
-    
+```text
+features/projects/projectsFeature.tsx
+features/projects/projectsFeature.client.tsx
+features/projects/projectsSkeleton.tsx
+features/projects/projectNewForm.tsx
+features/projects/projectFeature.tsx
+features/projects/projectFeature.client.tsx
+features/projects/projectSkeleton.tsx
+features/projects/projectEditForm.tsx
+features/projects/tasksFeature.tsx
+features/projects/tasksFeature.client.tsx
+features/projects/tasksSkeleton.tsx
+features/projects/taskNewForm.tsx
+features/projects/taskFeature.tsx
+features/projects/taskFeature.client.tsx
+features/projects/taskSkeleton.tsx
+features/projects/taskEditForm.tsx
+features/projects/timelineFeature.tsx
+features/projects/timelineFeature.client.tsx
+features/projects/timelineSkeleton.tsx
+features/projects/myTasksFeature.tsx
+features/projects/myTasksFeature.client.tsx
+features/projects/myTasksSkeleton.tsx
+```
+### Target Page Template Files
 
-#### Reused
+```text
+components/templates/myTasksTemplate.tsx
+components/templates/projectDetailTemplate.tsx
+components/templates/projectTaskDetailTemplate.tsx
+components/templates/projectTasksTemplate.tsx
+components/templates/projectTimelineTemplate.tsx
+components/templates/projectsTemplate.tsx
+```
+### Existing Block Files Used
 
 ```text
 components/blocks/dashboard-layout.tsx
-components/blocks/data-table-section.tsx
-components/blocks/record-detail-section.tsx
-components/blocks/kanban-board.tsx
-components/blocks/activity-timeline.tsx
 ```
-
-### Project Workflows
-
-```text
-lib/workflows/projects/calculateProjectHealthWorkflow.ts
-lib/workflows/projects/resolveTaskDependenciesWorkflow.ts
-lib/workflows/projects/calculateMilestoneProgressWorkflow.ts
-lib/workflows/projects/rescheduleDependentTasksWorkflow.ts
-lib/workflows/projects/assignTaskWorkflow.ts
-lib/workflows/projects/advanceTaskStateWorkflow.ts
-lib/workflows/projects/completeMilestoneWorkflow.ts
-lib/workflows/projects/completeProjectWorkflow.ts
-```
-
-### Project Server Operations / Helpers
+### Canonical Server / Schema / Type Files
 
 ```text
 lib/actions/projectsActions.ts
 lib/fetchers/projectsFetchers.ts
-lib/authz/projectsPermissions.ts
-lib/authz/projectsPolicies.ts
-
-lib/db/selects/projectsSelects.ts
-lib/db/dto/projectsDto.ts
-lib/db/transactions/projectsTransactions.ts
-
-lib/cache/projectsCache.ts
-lib/constants/projectsConstants.ts
-lib/utils/projectsParams.ts
-
+lib/workflows/projectsWorkflows.ts
+lib/db/selects/projects.selects.ts
+lib/db/dto/projects.dto.ts
+lib/db/transactions/projects.tx.ts
+lib/db/transactions/update-task-status.tx.ts
+lib/authz/permissions.ts
+lib/authz/policies.ts
+lib/authz/resources.ts
+lib/authz/roles.ts
 schemas/projectsSchemas.ts
 types/projectsTypes.ts
-types/projectsInterfaces.ts
-
-lib/integrations/vercel-blob/client.ts
-lib/integrations/vercel-blob/upload.ts
-lib/integrations/vercel-blob/delete.ts
-
-lib/integrations/cloudinary/client.ts
-lib/integrations/cloudinary/upload.ts
-lib/integrations/cloudinary/transformations.ts
-
-lib/integrations/sendgrid/client.ts
-lib/integrations/sendgrid/email.ts
-```
-
-### Project Semantic Design Token Files
-
-```text
-app/globals.css
-components/ui/palettes.ts
 ```
 
 ---
 
-# 3. Customer Support / Ticketing System Ontology™
+## 3. Customer Support / Ticketing Ontology™
 
 ### Routes → Features → Templates → Blocks / Workflows
 
-|Route|Feature|Page Template|Blocks|Workflows|
-|---|---|---|---|---|
-|`/support/inbox`|`features/support/inboxFeature.tsx`|`components/templates/WorkspaceTemplate.tsx`|`components/blocks/support-inbox.tsx` **[STUB — BUILD]**|`prioritizeTicketWorkflow.ts`, `assignTicketWorkflow.ts`, `calculateSlaWorkflow.ts`|
-|`/support/tickets/new`|`features/support/newTicketForm.tsx`|`components/templates/FormTemplate.tsx`|—|`createTicketFromIntakeWorkflow.ts`|
-|`/support/tickets/[ticketId]`|`features/support/ticketFeature.tsx`|`components/templates/WorkspaceTemplate.tsx`|`components/blocks/ticket-workspace.tsx` **[STUB — BUILD]**|`calculateSlaWorkflow.ts`, `determineEscalationWorkflow.ts`, `resolveTicketWorkflow.ts`, `reopenTicketWorkflow.ts`|
-|`/support/knowledge-base`|`features/support/knowledgeBaseFeature.tsx`|`components/templates/DocsTemplate.tsx`|`components/blocks/knowledge-base.tsx` **[STUB — BUILD]**|`publishKnowledgeArticleWorkflow.ts`|
-|`/support/knowledge-base/new`|`features/support/newKnowledgeArticleForm.tsx`|`components/templates/FormTemplate.tsx`|—|`publishKnowledgeArticleWorkflow.ts`|
-|`/support/knowledge-base/[articleId]`|`features/support/knowledgeArticleFeature.tsx`|`components/templates/DocsTemplate.tsx`|`components/blocks/knowledge-base.tsx` **[STUB — BUILD]**|—|
-|`/support/knowledge-base/[articleId]/edit`|`features/support/editKnowledgeArticleForm.tsx`|`components/templates/FormTemplate.tsx`|—|`publishKnowledgeArticleWorkflow.ts`|
-|`/support/analytics`|`features/support/supportAnalyticsFeature.tsx`|`components/templates/DashboardTemplate.tsx`|`components/blocks/analytics-dashboard.tsx` **[STUB — BUILD]**|`calculateSlaWorkflow.ts`|
+| Route | Feature / Form | Client Island | Suspense Skeleton | Page Template | Existing Block(s) | Workflow File |
+| --- | --- | --- | --- | --- | --- | --- |
+| `/support/inbox` | `features/support/inboxFeature.tsx` | `features/support/inboxFeature.client.tsx` | `features/support/inboxSkeleton.tsx` | `components/templates/supportInboxTemplate.tsx` | `components/blocks/dashboard-layout.tsx` | `lib/workflows/supportWorkflows.ts` |
+| `/support/tickets/new` | `features/support/ticketNewForm.tsx` | — | — | — | — | `lib/workflows/supportWorkflows.ts` |
+| `/support/tickets/[ticketId]` | `features/support/ticketFeature.tsx` | `features/support/ticketFeature.client.tsx` | `features/support/ticketSkeleton.tsx` | `components/templates/supportTicketTemplate.tsx` | `components/blocks/dashboard-layout.tsx` | `lib/workflows/supportWorkflows.ts` |
+| `/support/knowledge-base` | `features/support/knowledgeBaseFeature.tsx` | `features/support/knowledgeBaseFeature.client.tsx` | `features/support/knowledgeBaseSkeleton.tsx` | `components/templates/supportKnowledgeBaseTemplate.tsx` | `components/blocks/dashboard-layout.tsx` | `lib/workflows/supportWorkflows.ts` |
+| `/support/knowledge-base/new` | `features/support/knowledgeArticleNewForm.tsx` | — | — | — | — | `lib/workflows/supportWorkflows.ts` |
+| `/support/knowledge-base/[articleId]` | `features/support/knowledgeArticleFeature.tsx` | `features/support/knowledgeArticleFeature.client.tsx` | `features/support/knowledgeArticleSkeleton.tsx` | `components/templates/supportKnowledgeArticleTemplate.tsx` | `components/blocks/dashboard-layout.tsx` | `lib/workflows/supportWorkflows.ts` |
+| `/support/knowledge-base/[articleId]/edit` | `features/support/knowledgeArticleEditForm.tsx` | — | — | — | — | `lib/workflows/supportWorkflows.ts` |
+| `/support/analytics` | `features/support/supportAnalyticsFeature.tsx` | `features/support/supportAnalyticsFeature.client.tsx` | `features/support/supportAnalyticsSkeleton.tsx` | `components/templates/supportAnalyticsTemplate.tsx` | `components/blocks/dashboard-layout.tsx` | `lib/workflows/supportWorkflows.ts` |
 
-### Support Blocks → UI Primitives
-
-#### `components/blocks/support-inbox.tsx` **[STUB — BUILD]**
-
-- `components/ui/resizable.tsx`
-    
-- `components/ui/data-table.tsx`
-    
-- `components/ui/scroll-area.tsx`
-    
-- `components/ui/card.tsx`
-    
-- `components/ui/badge.tsx`
-    
-- `components/ui/avatar.tsx`
-    
-- `components/ui/tabs.tsx`
-    
-- `components/ui/input.tsx`
-    
-- `components/ui/select.tsx`
-    
-- `components/ui/skeleton.tsx`
-    
-
-#### `components/blocks/ticket-workspace.tsx` **[STUB — BUILD]**
-
-- `components/ui/resizable.tsx`
-    
-- `components/ui/scroll-area.tsx`
-    
-- `components/ui/avatar.tsx`
-    
-- `components/ui/card.tsx`
-    
-- `components/ui/badge.tsx`
-    
-- `components/ui/tabs.tsx`
-    
-- `components/ui/textarea.tsx`
-    
-- `components/ui/button.tsx`
-    
-- `components/ui/dropdown-menu.tsx`
-    
-- `components/ui/alert.tsx`
-    
-- `components/ui/spinner.tsx`
-    
-
-#### `components/blocks/knowledge-base.tsx` **[STUB — BUILD]**
-
-- `components/ui/input.tsx`
-    
-- `components/ui/card.tsx`
-    
-- `components/ui/accordion.tsx`
-    
-- `components/ui/tabs.tsx`
-    
-- `components/ui/breadcrumb.tsx`
-    
-- `components/ui/pagination.tsx`
-    
-- `components/ui/skeleton.tsx`
-    
-
-### Support Workflows
+### Target Route Files
 
 ```text
-lib/workflows/support/createTicketFromIntakeWorkflow.ts
-lib/workflows/support/prioritizeTicketWorkflow.ts
-lib/workflows/support/assignTicketWorkflow.ts
-lib/workflows/support/calculateSlaWorkflow.ts
-lib/workflows/support/determineEscalationWorkflow.ts
-lib/workflows/support/resolveTicketWorkflow.ts
-lib/workflows/support/reopenTicketWorkflow.ts
-lib/workflows/support/publishKnowledgeArticleWorkflow.ts
+app/(tenant)/support/inbox/page.tsx
+app/(tenant)/support/tickets/new/page.tsx
+app/(tenant)/support/tickets/[ticketId]/page.tsx
+app/(tenant)/support/knowledge-base/page.tsx
+app/(tenant)/support/knowledge-base/new/page.tsx
+app/(tenant)/support/knowledge-base/[articleId]/page.tsx
+app/(tenant)/support/knowledge-base/[articleId]/edit/page.tsx
+app/(tenant)/support/analytics/page.tsx
 ```
+### Target Feature Files
 
-### Support Server Operations / Helpers
+```text
+features/support/inboxFeature.tsx
+features/support/inboxFeature.client.tsx
+features/support/inboxSkeleton.tsx
+features/support/ticketNewForm.tsx
+features/support/ticketFeature.tsx
+features/support/ticketFeature.client.tsx
+features/support/ticketSkeleton.tsx
+features/support/knowledgeBaseFeature.tsx
+features/support/knowledgeBaseFeature.client.tsx
+features/support/knowledgeBaseSkeleton.tsx
+features/support/knowledgeArticleNewForm.tsx
+features/support/knowledgeArticleFeature.tsx
+features/support/knowledgeArticleFeature.client.tsx
+features/support/knowledgeArticleSkeleton.tsx
+features/support/knowledgeArticleEditForm.tsx
+features/support/supportAnalyticsFeature.tsx
+features/support/supportAnalyticsFeature.client.tsx
+features/support/supportAnalyticsSkeleton.tsx
+```
+### Target Page Template Files
+
+```text
+components/templates/supportAnalyticsTemplate.tsx
+components/templates/supportInboxTemplate.tsx
+components/templates/supportKnowledgeArticleTemplate.tsx
+components/templates/supportKnowledgeBaseTemplate.tsx
+components/templates/supportTicketTemplate.tsx
+```
+### Existing Block Files Used
+
+```text
+components/blocks/dashboard-layout.tsx
+```
+### Canonical Server / Schema / Type Files
 
 ```text
 lib/actions/supportActions.ts
 lib/fetchers/supportFetchers.ts
-lib/authz/supportPermissions.ts
-lib/authz/supportPolicies.ts
-
-lib/db/selects/supportSelects.ts
-lib/db/dto/supportDto.ts
-lib/db/transactions/supportTransactions.ts
-
-lib/cache/supportCache.ts
-lib/constants/supportConstants.ts
-lib/utils/supportParams.ts
-
+lib/workflows/supportWorkflows.ts
+lib/db/selects/support.selects.ts
+lib/db/dto/support.dto.ts
+lib/db/transactions/support.tx.ts
+lib/db/transactions/update-ticket-status.tx.ts
+lib/authz/permissions.ts
+lib/authz/policies.ts
+lib/authz/resources.ts
+lib/authz/roles.ts
 schemas/supportSchemas.ts
 types/supportTypes.ts
-types/supportInterfaces.ts
-
-lib/integrations/sendgrid/client.ts
-lib/integrations/sendgrid/email.ts
-
-lib/integrations/vercel-blob/client.ts
-lib/integrations/vercel-blob/upload.ts
-lib/integrations/vercel-blob/delete.ts
-
-lib/integrations/cloudinary/client.ts
-lib/integrations/cloudinary/upload.ts
-lib/integrations/cloudinary/transformations.ts
-```
-
-### Support Semantic Design Token Files
-
-```text
-app/globals.css
-components/ui/palettes.ts
 ```
 
 ---
 
-# 4. Marketing Automation & Analytics Ontology™
+## 4. Marketing Automation & Analytics Ontology™
 
 ### Routes → Features → Templates → Blocks / Workflows
 
-|Route|Feature|Page Template|Blocks|Workflows|
-|---|---|---|---|---|
-|`/marketing/campaigns`|`features/marketing/campaignsFeature.tsx`|`components/templates/DataGridTemplate.tsx`|`components/blocks/data-table-section.tsx` **[STUB — BUILD]**|`scheduleCampaignWorkflow.ts`, `advanceCampaignSequenceWorkflow.ts`|
-|`/marketing/campaigns/new`|`features/marketing/newCampaignForm.tsx`|`components/templates/StepperTemplate.tsx`|—|`evaluateAudienceRulesWorkflow.ts`, `applyDripTimingWorkflow.ts`|
-|`/marketing/campaigns/[campaignId]`|`features/marketing/campaignDetailFeature.tsx`|`components/templates/WorkspaceTemplate.tsx`|`components/blocks/campaign-workflow.tsx` **[STUB — BUILD]**|`advanceCampaignSequenceWorkflow.ts`, `processCampaignEventWorkflow.ts`|
-|`/marketing/campaigns/[campaignId]/edit`|`features/marketing/editCampaignForm.tsx`|`components/templates/StepperTemplate.tsx`|—|`evaluateCampaignTriggerWorkflow.ts`, `applyDripTimingWorkflow.ts`|
-|`/marketing/audiences`|`features/marketing/audiencesFeature.tsx`|`components/templates/DataGridTemplate.tsx`|`components/blocks/data-table-section.tsx` **[STUB — BUILD]**|`evaluateAudienceRulesWorkflow.ts`|
-|`/marketing/audiences/new`|`features/marketing/newAudienceForm.tsx`|`components/templates/FormTemplate.tsx`|—|`evaluateAudienceRulesWorkflow.ts`|
-|`/marketing/audiences/[audienceId]`|`features/marketing/audienceDetailFeature.tsx`|`components/templates/WorkspaceTemplate.tsx`|`components/blocks/audience-rule-builder.tsx` **[STUB — BUILD]**|`evaluateAudienceRulesWorkflow.ts`|
-|`/marketing/audiences/[audienceId]/edit`|`features/marketing/editAudienceForm.tsx`|`components/templates/FormTemplate.tsx`|—|`evaluateAudienceRulesWorkflow.ts`|
-|`/marketing/analytics`|`features/marketing/marketingAnalyticsFeature.tsx`|`components/templates/DashboardTemplate.tsx`|`components/blocks/analytics-dashboard.tsx` **[STUB — BUILD]**|`calculateAttributionWorkflow.ts`, `calculateCampaignMetricsWorkflow.ts`|
+| Route | Feature / Form | Client Island | Suspense Skeleton | Page Template | Existing Block(s) | Workflow File |
+| --- | --- | --- | --- | --- | --- | --- |
+| `/marketing/analytics` | `features/marketing/marketingAnalyticsFeature.tsx` | `features/marketing/marketingAnalyticsFeature.client.tsx` | `features/marketing/marketingAnalyticsSkeleton.tsx` | `components/templates/marketingAnalyticsTemplate.tsx` | `components/blocks/dashboard-layout.tsx` | `lib/workflows/marketingWorkflows.ts` |
+| `/marketing/audiences` | `features/marketing/audiencesFeature.tsx` | `features/marketing/audiencesFeature.client.tsx` | `features/marketing/audiencesSkeleton.tsx` | `components/templates/marketingAudiencesTemplate.tsx` | `components/blocks/dashboard-layout.tsx` | `lib/workflows/marketingWorkflows.ts` |
+| `/marketing/audiences/new` | `features/marketing/audienceNewForm.tsx` | — | — | — | — | `lib/workflows/marketingWorkflows.ts` |
+| `/marketing/audiences/[audienceId]` | `features/marketing/audienceFeature.tsx` | `features/marketing/audienceFeature.client.tsx` | `features/marketing/audienceSkeleton.tsx` | `components/templates/marketingAudienceDetailTemplate.tsx` | `components/blocks/dashboard-layout.tsx` | `lib/workflows/marketingWorkflows.ts` |
+| `/marketing/audiences/[audienceId]/edit` | `features/marketing/audienceEditForm.tsx` | — | — | — | — | `lib/workflows/marketingWorkflows.ts` |
+| `/marketing/campaigns` | `features/marketing/campaignsFeature.tsx` | `features/marketing/campaignsFeature.client.tsx` | `features/marketing/campaignsSkeleton.tsx` | `components/templates/marketingCampaignsTemplate.tsx` | `components/blocks/dashboard-layout.tsx` | `lib/workflows/marketingWorkflows.ts` |
+| `/marketing/campaigns/new` | `features/marketing/campaignNewForm.tsx` | — | — | — | — | `lib/workflows/marketingWorkflows.ts` |
+| `/marketing/campaigns/[campaignId]` | `features/marketing/campaignFeature.tsx` | `features/marketing/campaignFeature.client.tsx` | `features/marketing/campaignSkeleton.tsx` | `components/templates/marketingCampaignDetailTemplate.tsx` | `components/blocks/dashboard-layout.tsx` | `lib/workflows/marketingWorkflows.ts` |
+| `/marketing/campaigns/[campaignId]/edit` | `features/marketing/campaignEditForm.tsx` | — | — | — | — | `lib/workflows/marketingWorkflows.ts` |
 
-### Marketing Blocks → UI Primitives
-
-#### `components/blocks/audience-rule-builder.tsx` **[STUB — BUILD]**
-
-- `components/ui/card.tsx`
-    
-- `components/ui/select.tsx`
-    
-- `components/ui/combobox.tsx`
-    
-- `components/ui/input.tsx`
-    
-- `components/ui/button-group.tsx`
-    
-- `components/ui/button.tsx`
-    
-- `components/ui/dropdown-menu.tsx`
-    
-- `components/ui/popover.tsx`
-    
-- `components/ui/badge.tsx`
-    
-- `components/ui/separator.tsx`
-    
-
-#### `components/blocks/campaign-workflow.tsx` **[STUB — BUILD]**
-
-- `components/ui/timeline.tsx`
-    
-- `components/ui/card.tsx`
-    
-- `components/ui/badge.tsx`
-    
-- `components/ui/button.tsx`
-    
-- `components/ui/dropdown-menu.tsx`
-    
-- `components/ui/popover.tsx`
-    
-- `components/ui/motion.tsx`
-    
-- `components/ui/scroll-area.tsx`
-    
-
-### Marketing Workflows
+### Target Route Files
 
 ```text
-lib/workflows/marketing/evaluateAudienceRulesWorkflow.ts
-lib/workflows/marketing/scheduleCampaignWorkflow.ts
-lib/workflows/marketing/advanceCampaignSequenceWorkflow.ts
-lib/workflows/marketing/evaluateCampaignTriggerWorkflow.ts
-lib/workflows/marketing/processCampaignEventWorkflow.ts
-lib/workflows/marketing/calculateAttributionWorkflow.ts
-lib/workflows/marketing/calculateCampaignMetricsWorkflow.ts
-lib/workflows/marketing/applyDripTimingWorkflow.ts
+app/(tenant)/marketing/analytics/page.tsx
+app/(tenant)/marketing/audiences/page.tsx
+app/(tenant)/marketing/audiences/new/page.tsx
+app/(tenant)/marketing/audiences/[audienceId]/page.tsx
+app/(tenant)/marketing/audiences/[audienceId]/edit/page.tsx
+app/(tenant)/marketing/campaigns/page.tsx
+app/(tenant)/marketing/campaigns/new/page.tsx
+app/(tenant)/marketing/campaigns/[campaignId]/page.tsx
+app/(tenant)/marketing/campaigns/[campaignId]/edit/page.tsx
 ```
+### Target Feature Files
 
-### Marketing Server Operations / Helpers
+```text
+features/marketing/marketingAnalyticsFeature.tsx
+features/marketing/marketingAnalyticsFeature.client.tsx
+features/marketing/marketingAnalyticsSkeleton.tsx
+features/marketing/audiencesFeature.tsx
+features/marketing/audiencesFeature.client.tsx
+features/marketing/audiencesSkeleton.tsx
+features/marketing/audienceNewForm.tsx
+features/marketing/audienceFeature.tsx
+features/marketing/audienceFeature.client.tsx
+features/marketing/audienceSkeleton.tsx
+features/marketing/audienceEditForm.tsx
+features/marketing/campaignsFeature.tsx
+features/marketing/campaignsFeature.client.tsx
+features/marketing/campaignsSkeleton.tsx
+features/marketing/campaignNewForm.tsx
+features/marketing/campaignFeature.tsx
+features/marketing/campaignFeature.client.tsx
+features/marketing/campaignSkeleton.tsx
+features/marketing/campaignEditForm.tsx
+```
+### Target Page Template Files
+
+```text
+components/templates/marketingAnalyticsTemplate.tsx
+components/templates/marketingAudienceDetailTemplate.tsx
+components/templates/marketingAudiencesTemplate.tsx
+components/templates/marketingCampaignDetailTemplate.tsx
+components/templates/marketingCampaignsTemplate.tsx
+```
+### Existing Block Files Used
+
+```text
+components/blocks/dashboard-layout.tsx
+```
+### Canonical Server / Schema / Type Files
 
 ```text
 lib/actions/marketingActions.ts
 lib/fetchers/marketingFetchers.ts
-lib/authz/marketingPermissions.ts
-lib/authz/marketingPolicies.ts
-
-lib/db/selects/marketingSelects.ts
-lib/db/dto/marketingDto.ts
-lib/db/transactions/marketingTransactions.ts
-
-lib/cache/marketingCache.ts
-lib/constants/marketingConstants.ts
-lib/utils/marketingParams.ts
-
+lib/workflows/marketingWorkflows.ts
+lib/db/selects/marketing.selects.ts
+lib/db/dto/marketing.dto.ts
+lib/db/transactions/marketing.tx.ts
+lib/authz/permissions.ts
+lib/authz/policies.ts
+lib/authz/resources.ts
+lib/authz/roles.ts
 schemas/marketingSchemas.ts
 types/marketingTypes.ts
-types/marketingInterfaces.ts
-
-lib/integrations/sendgrid/client.ts
-lib/integrations/sendgrid/email.ts
-
-lib/integrations/cloudinary/client.ts
-lib/integrations/cloudinary/upload.ts
-lib/integrations/cloudinary/transformations.ts
-```
-
-### Marketing Semantic Design Token Files
-
-```text
-app/globals.css
-components/ui/palettes.ts
 ```
 
 ---
 
-# 5. Invoicing & Expense Tracker Ontology™
+## 5. Invoicing & Expense Tracker Ontology™
 
 ### Routes → Features → Templates → Blocks / Workflows
 
-|Route|Feature|Page Template|Blocks|Workflows|
-|---|---|---|---|---|
-|`/invoices`|`features/invoicing/invoicesFeature.tsx`|`components/templates/DataGridTemplate.tsx`|`components/blocks/data-table-section.tsx` **[STUB — BUILD]**|`determineInvoiceStatusWorkflow.ts`|
-|`/invoices/new`|`features/invoicing/newInvoiceForm.tsx`|`components/templates/FormTemplate.tsx`|`components/blocks/invoice.tsx`|`calculateInvoiceTotalsWorkflow.ts`, `calculateTaxesWorkflow.ts`|
-|`/invoices/[invoiceId]`|`features/invoicing/invoiceDetailFeature.tsx`|`components/templates/BillingTemplate.tsx`|`components/blocks/invoice.tsx`|`determineInvoiceStatusWorkflow.ts`, `finalizeInvoiceWorkflow.ts`, `reconcilePaymentStateWorkflow.ts`|
-|`/invoices/[invoiceId]/edit`|`features/invoicing/editInvoiceForm.tsx`|`components/templates/FormTemplate.tsx`|`components/blocks/invoice.tsx`|`calculateInvoiceTotalsWorkflow.ts`, `calculateTaxesWorkflow.ts`|
-|`/expenses`|`features/invoicing/expensesFeature.tsx`|`components/templates/DataGridTemplate.tsx`|`components/blocks/data-table-section.tsx` **[STUB — BUILD]**|`enforceExpensePolicyWorkflow.ts`|
-|`/expenses/new`|`features/invoicing/newExpenseForm.tsx`|`components/templates/FormTemplate.tsx`|`components/blocks/expense-upload.tsx` **[STUB — BUILD]**|`submitExpenseWorkflow.ts`, `enforceExpensePolicyWorkflow.ts`|
-|`/expenses/[expenseId]`|`features/invoicing/expenseDetailFeature.tsx`|`components/templates/ProfileTemplate.tsx`|`components/blocks/record-detail-section.tsx` **[STUB — BUILD]**|`approveExpenseWorkflow.ts`|
-|`/expenses/[expenseId]/edit`|`features/invoicing/editExpenseForm.tsx`|`components/templates/FormTemplate.tsx`|`components/blocks/expense-upload.tsx` **[STUB — BUILD]**|`enforceExpensePolicyWorkflow.ts`|
+| Route | Feature / Form | Client Island | Suspense Skeleton | Page Template | Existing Block(s) | Workflow File |
+| --- | --- | --- | --- | --- | --- | --- |
+| `/invoices` | `features/invoicing/invoicesFeature.tsx` | `features/invoicing/invoicesFeature.client.tsx` | `features/invoicing/invoicesSkeleton.tsx` | `components/templates/invoicingInvoicesTemplate.tsx` | `components/blocks/dashboard-layout.tsx` | `lib/workflows/invoicingWorkflows.ts` |
+| `/invoices/new` | `features/invoicing/invoiceNewForm.tsx` | — | — | — | — | `lib/workflows/invoicingWorkflows.ts` |
+| `/invoices/[invoiceId]` | `features/invoicing/invoiceFeature.tsx` | `features/invoicing/invoiceFeature.client.tsx` | `features/invoicing/invoiceSkeleton.tsx` | `components/templates/invoicingInvoiceDetailTemplate.tsx` | `components/blocks/invoice.tsx` | `lib/workflows/invoicingWorkflows.ts` |
+| `/invoices/[invoiceId]/edit` | `features/invoicing/invoiceEditForm.tsx` | — | — | — | — | `lib/workflows/invoicingWorkflows.ts` |
+| `/expenses` | `features/invoicing/expensesFeature.tsx` | `features/invoicing/expensesFeature.client.tsx` | `features/invoicing/expensesSkeleton.tsx` | `components/templates/invoicingExpensesTemplate.tsx` | `components/blocks/dashboard-layout.tsx` | `lib/workflows/invoicingWorkflows.ts` |
+| `/expenses/new` | `features/invoicing/expenseNewForm.tsx` | — | — | — | — | `lib/workflows/invoicingWorkflows.ts` |
+| `/expenses/[expenseId]` | `features/invoicing/expenseFeature.tsx` | `features/invoicing/expenseFeature.client.tsx` | `features/invoicing/expenseSkeleton.tsx` | `components/templates/invoicingExpenseDetailTemplate.tsx` | `components/blocks/dashboard-layout.tsx` | `lib/workflows/invoicingWorkflows.ts` |
+| `/expenses/[expenseId]/edit` | `features/invoicing/expenseEditForm.tsx` | — | — | — | — | `lib/workflows/invoicingWorkflows.ts` |
 
-### Invoicing Blocks → UI Primitives
-
-#### `components/blocks/invoice.tsx`
-
-- `components/ui/card.tsx`
-    
-- `components/ui/table.tsx`
-    
-- `components/ui/input.tsx`
-    
-- `components/ui/select.tsx`
-    
-- `components/ui/badge.tsx`
-    
-- `components/ui/separator.tsx`
-    
-- `components/ui/button.tsx`
-    
-
-#### `components/blocks/expense-upload.tsx` **[STUB — BUILD]**
-
-- `components/ui/dropzone.tsx`
-    
-- `components/ui/input.tsx`
-    
-- `components/ui/select.tsx`
-    
-- `components/ui/date-picker.tsx`
-    
-- `components/ui/card.tsx`
-    
-- `components/ui/badge.tsx`
-    
-- `components/ui/button.tsx`
-    
-- `components/ui/progress.tsx`
-    
-
-### Invoicing Workflows
+### Target Route Files
 
 ```text
-lib/workflows/invoicing/calculateInvoiceTotalsWorkflow.ts
-lib/workflows/invoicing/calculateTaxesWorkflow.ts
-lib/workflows/invoicing/determineInvoiceStatusWorkflow.ts
-lib/workflows/invoicing/finalizeInvoiceWorkflow.ts
-lib/workflows/invoicing/approveInvoiceWorkflow.ts
-lib/workflows/invoicing/reconcilePaymentStateWorkflow.ts
-lib/workflows/invoicing/applyCurrencyCalculationsWorkflow.ts
-lib/workflows/invoicing/submitExpenseWorkflow.ts
-lib/workflows/invoicing/approveExpenseWorkflow.ts
-lib/workflows/invoicing/enforceExpensePolicyWorkflow.ts
+app/(tenant)/invoices/page.tsx
+app/(tenant)/invoices/new/page.tsx
+app/(tenant)/invoices/[invoiceId]/page.tsx
+app/(tenant)/invoices/[invoiceId]/edit/page.tsx
+app/(tenant)/expenses/page.tsx
+app/(tenant)/expenses/new/page.tsx
+app/(tenant)/expenses/[expenseId]/page.tsx
+app/(tenant)/expenses/[expenseId]/edit/page.tsx
 ```
-
-### Invoicing Server Operations / Helpers
+### Target Feature Files
 
 ```text
-lib/actions/invoicingActions.ts
-lib/fetchers/invoicingFetchers.ts
-lib/authz/invoicingPermissions.ts
-lib/authz/invoicingPolicies.ts
-
-lib/db/selects/invoicingSelects.ts
-lib/db/dto/invoicingDto.ts
-lib/db/transactions/invoicingTransactions.ts
-
-lib/cache/invoicingCache.ts
-lib/constants/invoicingConstants.ts
-lib/utils/invoicingParams.ts
-
-schemas/invoicingSchemas.ts
-types/invoicingTypes.ts
-types/invoicingInterfaces.ts
-
-lib/integrations/stripe/client.ts
-lib/integrations/stripe/checkout.ts
-lib/integrations/stripe/portal.ts
-lib/integrations/stripe/subscriptions.ts
-lib/integrations/stripe/webhooks.ts
-
-lib/integrations/vercel-blob/client.ts
-lib/integrations/vercel-blob/upload.ts
-lib/integrations/vercel-blob/delete.ts
+features/invoicing/invoicesFeature.tsx
+features/invoicing/invoicesFeature.client.tsx
+features/invoicing/invoicesSkeleton.tsx
+features/invoicing/invoiceNewForm.tsx
+features/invoicing/invoiceFeature.tsx
+features/invoicing/invoiceFeature.client.tsx
+features/invoicing/invoiceSkeleton.tsx
+features/invoicing/invoiceEditForm.tsx
+features/invoicing/expensesFeature.tsx
+features/invoicing/expensesFeature.client.tsx
+features/invoicing/expensesSkeleton.tsx
+features/invoicing/expenseNewForm.tsx
+features/invoicing/expenseFeature.tsx
+features/invoicing/expenseFeature.client.tsx
+features/invoicing/expenseSkeleton.tsx
+features/invoicing/expenseEditForm.tsx
 ```
-
-### Invoicing Semantic Design Token Files
+### Target Page Template Files
 
 ```text
-app/globals.css
-components/ui/palettes.ts
+components/templates/invoicingExpenseDetailTemplate.tsx
+components/templates/invoicingExpensesTemplate.tsx
+components/templates/invoicingInvoiceDetailTemplate.tsx
+components/templates/invoicingInvoicesTemplate.tsx
 ```
-
----
-
-# 6. Social Media Scheduler Ontology™
-
-### Routes → Features → Templates → Blocks / Workflows
-
-|Route|Feature|Page Template|Blocks|Workflows|
-|---|---|---|---|---|
-|`/social/calendar`|`features/social/calendarFeature.tsx`|`components/templates/CalanderTemplate.tsx`|`components/blocks/social-calendar.tsx` **[STUB — BUILD]**|`resolvePublishTimeWorkflow.ts`, `schedulePostWorkflow.ts`|
-|`/social/compose`|`features/social/composerFeature.tsx`|`components/templates/WorkspaceTemplate.tsx`|`components/blocks/post-composer.tsx` **[STUB — BUILD]**|`buildPlatformVariantWorkflow.ts`, `approvePostWorkflow.ts`, `schedulePostWorkflow.ts`|
-|`/social/posts/[postId]`|`features/social/postDetailFeature.tsx`|`components/templates/WorkspaceTemplate.tsx`|`components/blocks/post-composer.tsx` **[STUB — BUILD]**, `components/blocks/activity-timeline.tsx` **[STUB — BUILD]**|`publishPostWorkflow.ts`, `reconcilePublishStateWorkflow.ts`|
-|`/social/posts/[postId]/edit`|`features/social/editPostForm.tsx`|`components/templates/FormTemplate.tsx`|—|`buildPlatformVariantWorkflow.ts`, `schedulePostWorkflow.ts`|
-|`/social/media`|`features/social/mediaLibraryFeature.tsx`|`components/templates/DataGridTemplate.tsx`|`components/blocks/media-library.tsx` **[STUB — BUILD]**|`associateMediaWorkflow.ts`|
-
-### Social Blocks → UI Primitives
-
-#### `components/blocks/social-calendar.tsx` **[STUB — BUILD]**
-
-- `components/ui/calendar.tsx`
-    
-- `components/ui/date-picker.tsx`
-    
-- `components/ui/popover.tsx`
-    
-- `components/ui/card.tsx`
-    
-- `components/ui/badge.tsx`
-    
-- `components/ui/avatar.tsx`
-    
-- `components/ui/button.tsx`
-    
-- `components/ui/select.tsx`
-    
-
-#### `components/blocks/post-composer.tsx` **[STUB — BUILD]**
-
-- `components/ui/textarea.tsx`
-    
-- `components/ui/input.tsx`
-    
-- `components/ui/select.tsx`
-    
-- `components/ui/tabs.tsx`
-    
-- `components/ui/card.tsx`
-    
-- `components/ui/dropzone.tsx`
-    
-- `components/ui/button.tsx`
-    
-- `components/ui/date-picker.tsx`
-    
-- `components/ui/time-picker.tsx`
-    
-- `components/ui/popover.tsx`
-    
-- `components/ui/badge.tsx`
-    
-
-#### `components/blocks/media-library.tsx` **[STUB — BUILD]**
-
-- `components/ui/card.tsx`
-    
-- `components/ui/aspect-ratio.tsx`
-    
-- `components/ui/dialog.tsx`
-    
-- `components/ui/dropzone.tsx`
-    
-- `components/ui/checkbox.tsx`
-    
-- `components/ui/dropdown-menu.tsx`
-    
-- `components/ui/input.tsx`
-    
-- `components/ui/pagination.tsx`
-    
-
-### Social Workflows
-
-```text
-lib/workflows/social/buildPlatformVariantWorkflow.ts
-lib/workflows/social/resolvePublishTimeWorkflow.ts
-lib/workflows/social/approvePostWorkflow.ts
-lib/workflows/social/schedulePostWorkflow.ts
-lib/workflows/social/publishPostWorkflow.ts
-lib/workflows/social/reconcilePublishStateWorkflow.ts
-lib/workflows/social/retryFailedPublicationWorkflow.ts
-lib/workflows/social/associateMediaWorkflow.ts
-```
-
-### Social Server Operations / Helpers
-
-```text
-lib/actions/socialActions.ts
-lib/fetchers/socialFetchers.ts
-lib/authz/socialPermissions.ts
-lib/authz/socialPolicies.ts
-
-lib/db/selects/socialSelects.ts
-lib/db/dto/socialDto.ts
-lib/db/transactions/socialTransactions.ts
-
-lib/cache/socialCache.ts
-lib/constants/socialConstants.ts
-lib/utils/socialParams.ts
-
-schemas/socialSchemas.ts
-types/socialTypes.ts
-types/socialInterfaces.ts
-
-lib/integrations/cloudinary/client.ts
-lib/integrations/cloudinary/upload.ts
-lib/integrations/cloudinary/transformations.ts
-
-lib/integrations/vercel-blob/client.ts
-lib/integrations/vercel-blob/upload.ts
-lib/integrations/vercel-blob/delete.ts
-```
-
-### Social Semantic Design Token Files
-
-```text
-app/globals.css
-components/ui/palettes.ts
-```
-
----
-
-# 7. AI-Powered Wrapper / Micro-SaaS Ontology™
-
-### Routes → Features → Templates → Blocks / Workflows
-
-|Route|Feature|Page Template|Blocks|Workflows|
-|---|---|---|---|---|
-|`/ai`|`features/ai/generationFeature.tsx`|`components/templates/WorkspaceTemplate.tsx`|`components/blocks/ai-chat-workspace.tsx` **[STUB — BUILD]**|`authorizeModelAccessWorkflow.ts`, `selectModelWorkflow.ts`, `executeGenerationWorkflow.ts`|
-|`/ai/playground`|`features/ai/playgroundFeature.tsx`|`components/templates/WorkspaceTemplate.tsx`|`components/blocks/ai-playground.tsx` **[STUB — BUILD]**|`selectModelWorkflow.ts`, `executeGenerationWorkflow.ts`, `calculateUsageWorkflow.ts`|
-|`/ai/usage`|`features/ai/usageFeature.tsx`|`components/templates/DashboardTemplate.tsx`|`components/blocks/usage-dashboard.tsx` **[STUB — BUILD]**|`calculateUsageWorkflow.ts`, `calculateCreditsWorkflow.ts`, `enforceRateLimitWorkflow.ts`, `reconcileUsageBillingWorkflow.ts`|
-
-### AI Blocks → UI Primitives
-
-#### `components/blocks/ai-chat-workspace.tsx` **[STUB — BUILD]**
-
-- `components/ui/scroll-area.tsx`
-    
-- `components/ui/textarea.tsx`
-    
-- `components/ui/button.tsx`
-    
-- `components/ui/card.tsx`
-    
-- `components/ui/avatar.tsx`
-    
-- `components/ui/spinner.tsx`
-    
-- `components/ui/badge.tsx`
-    
-- `components/ui/dropdown-menu.tsx`
-    
-
-#### `components/blocks/ai-playground.tsx` **[STUB — BUILD]**
-
-- `components/ui/resizable.tsx`
-    
-- `components/ui/textarea.tsx`
-    
-- `components/ui/select.tsx`
-    
-- `components/ui/slider.tsx`
-    
-- `components/ui/input.tsx`
-    
-- `components/ui/tabs.tsx`
-    
-- `components/ui/card.tsx`
-    
-- `components/ui/button.tsx`
-    
-- `components/ui/badge.tsx`
-    
-- `components/ui/kbd.tsx`
-    
-
-#### `components/blocks/usage-dashboard.tsx` **[STUB — BUILD]**
-
-- `components/ui/stat-card.tsx`
-    
-- `components/ui/chart.tsx`
-    
-- `components/ui/gauge-chart.tsx`
-    
-- `components/ui/sparkline.tsx`
-    
-- `components/ui/progress.tsx`
-    
-- `components/ui/card.tsx`
-    
-- `components/ui/date-range-picker.tsx`
-    
-- `components/ui/skeleton.tsx`
-    
-
-### AI Workflows
-
-```text
-lib/workflows/ai/authorizeModelAccessWorkflow.ts
-lib/workflows/ai/selectModelWorkflow.ts
-lib/workflows/ai/executeGenerationWorkflow.ts
-lib/workflows/ai/calculateUsageWorkflow.ts
-lib/workflows/ai/calculateCreditsWorkflow.ts
-lib/workflows/ai/enforceRateLimitWorkflow.ts
-lib/workflows/ai/recordGenerationUsageWorkflow.ts
-lib/workflows/ai/reconcileUsageBillingWorkflow.ts
-```
-
-### AI Server Operations / Helpers
-
-```text
-lib/actions/aiActions.ts
-lib/fetchers/aiFetchers.ts
-lib/authz/aiPermissions.ts
-lib/authz/aiPolicies.ts
-
-lib/db/selects/aiSelects.ts
-lib/db/dto/aiDto.ts
-lib/db/transactions/aiTransactions.ts
-
-lib/cache/aiCache.ts
-lib/constants/aiConstants.ts
-lib/utils/aiParams.ts
-
-schemas/aiSchemas.ts
-types/aiTypes.ts
-types/aiInterfaces.ts
-
-lib/integrations/hugging-face/client.ts
-lib/integrations/hugging-face/inference.ts
-lib/integrations/hugging-face/embeddings.ts
-
-lib/integrations/stripe/client.ts
-lib/integrations/stripe/checkout.ts
-lib/integrations/stripe/portal.ts
-lib/integrations/stripe/subscriptions.ts
-lib/integrations/stripe/webhooks.ts
-```
-
-### AI Semantic Design Token Files
-
-```text
-app/globals.css
-components/ui/palettes.ts
-```
-
----
-
-# 8. B2B Client Portal Ontology™
-
-### Routes → Features → Templates → Blocks / Workflows
-
-|Route|Feature|Page Template|Blocks|Workflows|
-|---|---|---|---|---|
-|`/portal`|`features/portal/portalFeature.tsx`|`components/templates/DashboardTemplate.tsx`|`components/blocks/dashboard-layout.tsx`|`calculateClientProjectStatusWorkflow.ts`|
-|`/portal/documents`|`features/portal/documentsFeature.tsx`|`components/templates/DataGridTemplate.tsx`|`components/blocks/file-vault.tsx` **[STUB — BUILD]**|`shareDocumentWorkflow.ts`, `publishDocumentVersionWorkflow.ts`|
-|`/portal/documents/[documentId]`|`features/portal/documentDetailFeature.tsx`|`components/templates/WorkspaceTemplate.tsx`|`components/blocks/record-detail-section.tsx` **[STUB — BUILD]**, `components/blocks/approval-panel.tsx` **[STUB — BUILD]**|`requestApprovalWorkflow.ts`, `approveDeliverableWorkflow.ts`, `rejectDeliverableWorkflow.ts`|
-|`/portal/approvals`|`features/portal/approvalsFeature.tsx`|`components/templates/DataGridTemplate.tsx`|`components/blocks/approval-panel.tsx` **[STUB — BUILD]**|`requestApprovalWorkflow.ts`, `approveDeliverableWorkflow.ts`, `rejectDeliverableWorkflow.ts`|
-|`/portal/billing`|`features/portal/billingFeature.tsx`|`components/templates/BillingTemplate.tsx`|`components/blocks/invoice.tsx`|`settleClientInvoiceWorkflow.ts`|
-
-### Portal Blocks → UI Primitives
-
-#### `components/blocks/file-vault.tsx` **[STUB — BUILD]**
-
-- `components/ui/dropzone.tsx`
-    
-- `components/ui/data-table.tsx`
-    
-- `components/ui/card.tsx`
-    
-- `components/ui/badge.tsx`
-    
-- `components/ui/dropdown-menu.tsx`
-    
-- `components/ui/dialog.tsx`
-    
-- `components/ui/progress.tsx`
-    
-- `components/ui/pagination.tsx`
-    
-
-#### `components/blocks/approval-panel.tsx` **[STUB — BUILD]**
-
-- `components/ui/card.tsx`
-    
-- `components/ui/badge.tsx`
-    
-- `components/ui/alert-dialog.tsx`
-    
-- `components/ui/button.tsx`
-    
-- `components/ui/textarea.tsx`
-    
-- `components/ui/timeline.tsx`
-    
-- `components/ui/separator.tsx`
-    
-
-#### Existing
+### Existing Block Files Used
 
 ```text
 components/blocks/dashboard-layout.tsx
 components/blocks/invoice.tsx
 ```
-
-### Portal Workflows
-
-```text
-lib/workflows/portal/grantClientAccessWorkflow.ts
-lib/workflows/portal/calculateClientProjectStatusWorkflow.ts
-lib/workflows/portal/shareDocumentWorkflow.ts
-lib/workflows/portal/publishDocumentVersionWorkflow.ts
-lib/workflows/portal/requestApprovalWorkflow.ts
-lib/workflows/portal/approveDeliverableWorkflow.ts
-lib/workflows/portal/rejectDeliverableWorkflow.ts
-lib/workflows/portal/settleClientInvoiceWorkflow.ts
-```
-
-### Portal Server Operations / Helpers
+### Canonical Server / Schema / Type Files
 
 ```text
-lib/actions/portalActions.ts
-lib/fetchers/portalFetchers.ts
-lib/authz/portalPermissions.ts
-lib/authz/portalPolicies.ts
-
-lib/db/selects/portalSelects.ts
-lib/db/dto/portalDto.ts
-lib/db/transactions/portalTransactions.ts
-
-lib/cache/portalCache.ts
-lib/constants/portalConstants.ts
-lib/utils/portalParams.ts
-
-schemas/portalSchemas.ts
-types/portalTypes.ts
-types/portalInterfaces.ts
-
-lib/integrations/vercel-blob/client.ts
-lib/integrations/vercel-blob/upload.ts
-lib/integrations/vercel-blob/delete.ts
-
-lib/integrations/cloudinary/client.ts
-lib/integrations/cloudinary/upload.ts
-lib/integrations/cloudinary/transformations.ts
-
-lib/integrations/stripe/client.ts
-lib/integrations/stripe/checkout.ts
-lib/integrations/stripe/portal.ts
-lib/integrations/stripe/webhooks.ts
-
-lib/integrations/sendgrid/client.ts
-lib/integrations/sendgrid/email.ts
-```
-
-### Portal Semantic Design Token Files
-
-```text
-app/globals.css
-components/ui/palettes.ts
+lib/actions/invoicingActions.ts
+lib/fetchers/invoicingFetchers.ts
+lib/workflows/invoicingWorkflows.ts
+lib/db/selects/invoicing.selects.ts
+lib/db/dto/invoicing.dto.ts
+lib/db/transactions/create-invoice.tx.ts
+lib/db/transactions/invoicing.tx.ts
+lib/db/transactions/update-invoice-status.tx.ts
+lib/authz/permissions.ts
+lib/authz/policies.ts
+lib/authz/resources.ts
+lib/authz/roles.ts
+schemas/invoicingSchemas.ts
+types/invoicingTypes.ts
 ```
 
 ---
 
-# 9. Internal Tools / Admin Portal Ontology™
+## 6. Social Media Scheduler Ontology™
 
 ### Routes → Features → Templates → Blocks / Workflows
 
-|Route|Feature|Page Template|Blocks|Workflows|
-|---|---|---|---|---|
-|`/admin/records`|`features/admin/recordsFeature.tsx`|`components/templates/AdminTemplate.tsx`|`components/blocks/admin-record-inspector.tsx` **[STUB — BUILD]**|`performAdministrativeOverrideWorkflow.ts`|
-|`/admin/records/[recordId]`|`features/admin/recordDetailFeature.tsx`|`components/templates/AdminTemplate.tsx`|`components/blocks/record-detail-section.tsx` **[STUB — BUILD]**|`performAdministrativeOverrideWorkflow.ts`|
-|`/admin/users`|`features/admin/usersFeature.tsx`|`components/templates/AdminTemplate.tsx`|`components/blocks/admin-user-table.tsx` **[STUB — BUILD]**, `components/blocks/bulk-actions.tsx` **[STUB — BUILD]**|`suspendUserWorkflow.ts`, `restoreUserWorkflow.ts`, `executeBulkOperationWorkflow.ts`|
-|`/admin/users/[userId]`|`features/admin/userDetailFeature.tsx`|`components/templates/AdminTemplate.tsx`|`components/blocks/record-detail-section.tsx` **[STUB — BUILD]**|`suspendUserWorkflow.ts`, `restoreUserWorkflow.ts`, `changeMembershipWorkflow.ts`|
-|`/admin/audit`|`features/admin/auditFeature.tsx`|`components/templates/AdminTemplate.tsx`|`components/blocks/audit-log.tsx` **[STUB — BUILD]**|`classifyAuditEventWorkflow.ts`|
+| Route | Feature / Form | Client Island | Suspense Skeleton | Page Template | Existing Block(s) | Workflow File |
+| --- | --- | --- | --- | --- | --- | --- |
+| `/social/calendar` | `features/social/calendarFeature.tsx` | `features/social/calendarFeature.client.tsx` | `features/social/calendarSkeleton.tsx` | `components/templates/socialCalendarTemplate.tsx` | `components/blocks/dashboard-layout.tsx` | `lib/workflows/socialWorkflows.ts` |
+| `/social/compose` | `features/social/composerFeature.tsx` | `features/social/composerFeature.client.tsx` | `features/social/composerSkeleton.tsx` | `components/templates/socialComposeTemplate.tsx` | `components/blocks/dashboard-layout.tsx` | `lib/workflows/socialWorkflows.ts` |
+| `/social/media` | `features/social/mediaLibraryFeature.tsx` | `features/social/mediaLibraryFeature.client.tsx` | `features/social/mediaLibrarySkeleton.tsx` | `components/templates/socialMediaTemplate.tsx` | `components/blocks/dashboard-layout.tsx` | `lib/workflows/socialWorkflows.ts` |
 
-### Admin Blocks → UI Primitives
-
-#### `components/blocks/admin-record-inspector.tsx` **[STUB — BUILD]**
-
-- `components/ui/data-table.tsx`
-    
-- `components/ui/resizable.tsx`
-    
-- `components/ui/card.tsx`
-    
-- `components/ui/tabs.tsx`
-    
-- `components/ui/badge.tsx`
-    
-- `components/ui/drawer.tsx`
-    
-- `components/ui/dropdown-menu.tsx`
-    
-- `components/ui/input.tsx`
-    
-- `components/ui/pagination.tsx`
-    
-
-#### `components/blocks/admin-user-table.tsx` **[STUB — BUILD]**
-
-- `components/ui/data-table.tsx`
-    
-- `components/ui/avatar.tsx`
-    
-- `components/ui/badge.tsx`
-    
-- `components/ui/checkbox.tsx`
-    
-- `components/ui/dropdown-menu.tsx`
-    
-- `components/ui/input.tsx`
-    
-- `components/ui/select.tsx`
-    
-- `components/ui/pagination.tsx`
-    
-
-#### `components/blocks/bulk-actions.tsx` **[STUB — BUILD]**
-
-- `components/ui/checkbox.tsx`
-    
-- `components/ui/select.tsx`
-    
-- `components/ui/dialog.tsx`
-    
-- `components/ui/alert-dialog.tsx`
-    
-- `components/ui/progress.tsx`
-    
-- `components/ui/button.tsx`
-    
-- `components/ui/dropdown-menu.tsx`
-    
-
-#### `components/blocks/audit-log.tsx` **[STUB — BUILD]**
-
-- `components/ui/data-table.tsx`
-    
-- `components/ui/badge.tsx`
-    
-- `components/ui/date-range-picker.tsx`
-    
-- `components/ui/input.tsx`
-    
-- `components/ui/select.tsx`
-    
-- `components/ui/pagination.tsx`
-    
-- `components/ui/drawer.tsx`
-    
-- `components/ui/card.tsx`
-    
-
-### Admin Workflows
+### Target Route Files
 
 ```text
-lib/workflows/admin/suspendUserWorkflow.ts
-lib/workflows/admin/restoreUserWorkflow.ts
-lib/workflows/admin/changeMembershipWorkflow.ts
-lib/workflows/admin/executeBulkOperationWorkflow.ts
-lib/workflows/admin/classifyAuditEventWorkflow.ts
-lib/workflows/admin/performAdministrativeOverrideWorkflow.ts
-lib/workflows/admin/reconcileAdministrativeProviderStateWorkflow.ts
+app/(tenant)/social/calendar/page.tsx
+app/(tenant)/social/compose/page.tsx
+app/(tenant)/social/media/page.tsx
+```
+### Target Feature Files
+
+```text
+features/social/calendarFeature.tsx
+features/social/calendarFeature.client.tsx
+features/social/calendarSkeleton.tsx
+features/social/composerFeature.tsx
+features/social/composerFeature.client.tsx
+features/social/composerSkeleton.tsx
+features/social/mediaLibraryFeature.tsx
+features/social/mediaLibraryFeature.client.tsx
+features/social/mediaLibrarySkeleton.tsx
+```
+### Target Page Template Files
+
+```text
+components/templates/socialCalendarTemplate.tsx
+components/templates/socialComposeTemplate.tsx
+components/templates/socialMediaTemplate.tsx
+```
+### Existing Block Files Used
+
+```text
+components/blocks/dashboard-layout.tsx
+```
+### Canonical Server / Schema / Type Files
+
+```text
+lib/actions/socialActions.ts
+lib/fetchers/socialFetchers.ts
+lib/workflows/socialWorkflows.ts
+lib/db/selects/social.selects.ts
+lib/db/dto/social.dto.ts
+lib/db/transactions/schedule-social-post.tx.ts
+lib/db/transactions/social.tx.ts
+lib/authz/permissions.ts
+lib/authz/policies.ts
+lib/authz/resources.ts
+lib/authz/roles.ts
+schemas/socialSchemas.ts
+types/socialTypes.ts
 ```
 
-### Admin Server Operations / Helpers
+---
+
+## 7. AI-Powered Wrapper / Micro-SaaS Ontology™
+
+### Routes → Features → Templates → Blocks / Workflows
+
+| Route | Feature / Form | Client Island | Suspense Skeleton | Page Template | Existing Block(s) | Workflow File |
+| --- | --- | --- | --- | --- | --- | --- |
+| `/ai` | `features/ai/aiGenerationFeature.tsx` | `features/ai/aiGenerationFeature.client.tsx` | `features/ai/aiGenerationSkeleton.tsx` | `components/templates/aiGenerationTemplate.tsx` | `components/blocks/dashboard-layout.tsx` | `lib/workflows/aiWorkflows.ts` |
+| `/ai/playground` | `features/ai/aiPlaygroundFeature.tsx` | `features/ai/aiPlaygroundFeature.client.tsx` | `features/ai/aiPlaygroundSkeleton.tsx` | `components/templates/aiPlaygroundTemplate.tsx` | `components/blocks/dashboard-layout.tsx` | `lib/workflows/aiWorkflows.ts` |
+| `/ai/usage` | `features/ai/aiUsageFeature.tsx` | `features/ai/aiUsageFeature.client.tsx` | `features/ai/aiUsageSkeleton.tsx` | `components/templates/aiUsageTemplate.tsx` | `components/blocks/dashboard-layout.tsx` | `lib/workflows/aiWorkflows.ts` |
+
+### Target Route Files
+
+```text
+app/(tenant)/ai/page.tsx
+app/(tenant)/ai/playground/page.tsx
+app/(tenant)/ai/usage/page.tsx
+```
+### Target Feature Files
+
+```text
+features/ai/aiGenerationFeature.tsx
+features/ai/aiGenerationFeature.client.tsx
+features/ai/aiGenerationSkeleton.tsx
+features/ai/aiPlaygroundFeature.tsx
+features/ai/aiPlaygroundFeature.client.tsx
+features/ai/aiPlaygroundSkeleton.tsx
+features/ai/aiUsageFeature.tsx
+features/ai/aiUsageFeature.client.tsx
+features/ai/aiUsageSkeleton.tsx
+```
+### Target Page Template Files
+
+```text
+components/templates/aiGenerationTemplate.tsx
+components/templates/aiPlaygroundTemplate.tsx
+components/templates/aiUsageTemplate.tsx
+```
+### Existing Block Files Used
+
+```text
+components/blocks/dashboard-layout.tsx
+```
+### Canonical Server / Schema / Type Files
+
+```text
+lib/actions/aiActions.ts
+lib/fetchers/aiFetchers.ts
+lib/workflows/aiWorkflows.ts
+lib/db/selects/ai.selects.ts
+lib/db/dto/ai.dto.ts
+lib/db/transactions/ai.tx.ts
+lib/db/transactions/complete-ai-generation.tx.ts
+lib/authz/permissions.ts
+lib/authz/policies.ts
+lib/authz/resources.ts
+lib/authz/roles.ts
+schemas/aiSchemas.ts
+types/aiTypes.ts
+lib/integrations/hugging-face/client.ts
+lib/integrations/hugging-face/embeddings.ts
+lib/integrations/hugging-face/inference.ts
+```
+
+---
+
+## 8. B2B Client Portal Ontology™
+
+### Routes → Features → Templates → Blocks / Workflows
+
+| Route | Feature / Form | Client Island | Suspense Skeleton | Page Template | Existing Block(s) | Workflow File |
+| --- | --- | --- | --- | --- | --- | --- |
+| `/portal` | `features/portal/portalFeature.tsx` | `features/portal/portalFeature.client.tsx` | `features/portal/portalSkeleton.tsx` | `components/templates/portalHomeTemplate.tsx` | `components/blocks/dashboard-layout.tsx` | `lib/workflows/portalWorkflows.ts` |
+| `/portal/billing` | `features/portal/billingFeature.tsx` | `features/portal/billingFeature.client.tsx` | `features/portal/billingSkeleton.tsx` | `components/templates/portalBillingTemplate.tsx` | `components/blocks/dashboard-layout.tsx` | `lib/workflows/portalWorkflows.ts` |
+| `/portal/documents` | `features/portal/documentsFeature.tsx` | `features/portal/documentsFeature.client.tsx` | `features/portal/documentsSkeleton.tsx` | `components/templates/portalDocumentsTemplate.tsx` | `components/blocks/dashboard-layout.tsx` | `lib/workflows/portalWorkflows.ts` |
+| `/portal/documents/[documentId]` | `features/portal/documentFeature.tsx` | `features/portal/documentFeature.client.tsx` | `features/portal/documentSkeleton.tsx` | `components/templates/portalDocumentDetailTemplate.tsx` | `components/blocks/dashboard-layout.tsx` | `lib/workflows/portalWorkflows.ts` |
+
+### Target Route Files
+
+```text
+app/(tenant)/portal/page.tsx
+app/(tenant)/portal/billing/page.tsx
+app/(tenant)/portal/documents/page.tsx
+app/(tenant)/portal/documents/[documentId]/page.tsx
+```
+### Target Feature Files
+
+```text
+features/portal/portalFeature.tsx
+features/portal/portalFeature.client.tsx
+features/portal/portalSkeleton.tsx
+features/portal/billingFeature.tsx
+features/portal/billingFeature.client.tsx
+features/portal/billingSkeleton.tsx
+features/portal/documentsFeature.tsx
+features/portal/documentsFeature.client.tsx
+features/portal/documentsSkeleton.tsx
+features/portal/documentFeature.tsx
+features/portal/documentFeature.client.tsx
+features/portal/documentSkeleton.tsx
+```
+### Target Page Template Files
+
+```text
+components/templates/portalBillingTemplate.tsx
+components/templates/portalDocumentDetailTemplate.tsx
+components/templates/portalDocumentsTemplate.tsx
+components/templates/portalHomeTemplate.tsx
+```
+### Existing Block Files Used
+
+```text
+components/blocks/dashboard-layout.tsx
+```
+### Canonical Server / Schema / Type Files
+
+```text
+lib/actions/portalActions.ts
+lib/fetchers/portalFetchers.ts
+lib/workflows/portalWorkflows.ts
+lib/db/selects/portal.selects.ts
+lib/db/dto/portal.dto.ts
+lib/db/transactions/add-portal-version.tx.ts
+lib/db/transactions/portal.tx.ts
+lib/authz/permissions.ts
+lib/authz/policies.ts
+lib/authz/resources.ts
+lib/authz/roles.ts
+schemas/portalSchemas.ts
+types/portalTypes.ts
+lib/integrations/vercel-blob/client.ts
+lib/integrations/vercel-blob/upload.ts
+lib/integrations/vercel-blob/delete.ts
+```
+
+---
+
+## 9. Internal Tools / Admin Portal Ontology™
+
+### Routes → Features → Templates → Blocks / Workflows
+
+| Route | Feature / Form | Client Island | Suspense Skeleton | Page Template | Existing Block(s) | Workflow File |
+| --- | --- | --- | --- | --- | --- | --- |
+| `/admin/audit` | `features/admin/adminAuditFeature.tsx` | `features/admin/adminAuditFeature.client.tsx` | `features/admin/adminAuditSkeleton.tsx` | `components/templates/adminAuditTemplate.tsx` | `components/blocks/dashboard-layout.tsx` | `lib/workflows/adminWorkflows.ts` |
+| `/admin/records` | `features/admin/adminRecordsFeature.tsx` | `features/admin/adminRecordsFeature.client.tsx` | `features/admin/adminRecordsSkeleton.tsx` | `components/templates/adminRecordsTemplate.tsx` | `components/blocks/dashboard-layout.tsx` | `lib/workflows/adminWorkflows.ts` |
+| `/admin/records/[recordId]` | `features/admin/adminRecordDetailFeature.tsx` | `features/admin/adminRecordDetailFeature.client.tsx` | `features/admin/adminRecordDetailSkeleton.tsx` | `components/templates/adminRecordDetailTemplate.tsx` | `components/blocks/dashboard-layout.tsx` | `lib/workflows/adminWorkflows.ts` |
+| `/admin/users` | `features/admin/adminUsersFeature.tsx` | `features/admin/adminUsersFeature.client.tsx` | `features/admin/adminUsersSkeleton.tsx` | `components/templates/adminUsersTemplate.tsx` | `components/blocks/dashboard-layout.tsx` | `lib/workflows/adminWorkflows.ts` |
+| `/admin/users/new` | `features/admin/adminNewUserForm.tsx` | — | — | — | — | `lib/workflows/adminWorkflows.ts` |
+| `/admin/users/[userId]` | `features/admin/adminUserDetailFeature.tsx` | `features/admin/adminUserDetailFeature.client.tsx` | `features/admin/adminUserDetailSkeleton.tsx` | `components/templates/adminUserDetailTemplate.tsx` | `components/blocks/dashboard-layout.tsx` | `lib/workflows/adminWorkflows.ts` |
+| `/admin/users/[userId]/edit` | `features/admin/adminEditUserForm.tsx` | — | — | — | — | `lib/workflows/adminWorkflows.ts` |
+
+### Target Route Files
+
+```text
+app/(tenant)/admin/audit/page.tsx
+app/(tenant)/admin/records/page.tsx
+app/(tenant)/admin/records/[recordId]/page.tsx
+app/(tenant)/admin/users/page.tsx
+app/(tenant)/admin/users/new/page.tsx
+app/(tenant)/admin/users/[userId]/page.tsx
+app/(tenant)/admin/users/[userId]/edit/page.tsx
+```
+### Target Feature Files
+
+```text
+features/admin/adminAuditFeature.tsx
+features/admin/adminAuditFeature.client.tsx
+features/admin/adminAuditSkeleton.tsx
+features/admin/adminRecordsFeature.tsx
+features/admin/adminRecordsFeature.client.tsx
+features/admin/adminRecordsSkeleton.tsx
+features/admin/adminRecordDetailFeature.tsx
+features/admin/adminRecordDetailFeature.client.tsx
+features/admin/adminRecordDetailSkeleton.tsx
+features/admin/adminUsersFeature.tsx
+features/admin/adminUsersFeature.client.tsx
+features/admin/adminUsersSkeleton.tsx
+features/admin/adminNewUserForm.tsx
+features/admin/adminUserDetailFeature.tsx
+features/admin/adminUserDetailFeature.client.tsx
+features/admin/adminUserDetailSkeleton.tsx
+features/admin/adminEditUserForm.tsx
+```
+### Target Page Template Files
+
+```text
+components/templates/adminAuditTemplate.tsx
+components/templates/adminRecordDetailTemplate.tsx
+components/templates/adminRecordsTemplate.tsx
+components/templates/adminUserDetailTemplate.tsx
+components/templates/adminUsersTemplate.tsx
+```
+### Existing Block Files Used
+
+```text
+components/blocks/dashboard-layout.tsx
+```
+### Canonical Server / Schema / Type Files
 
 ```text
 lib/actions/adminActions.ts
 lib/fetchers/adminFetchers.ts
-lib/authz/adminPermissions.ts
-lib/authz/adminPolicies.ts
-
-lib/db/selects/adminSelects.ts
-lib/db/dto/adminDto.ts
-lib/db/transactions/adminTransactions.ts
-
-lib/cache/adminCache.ts
-lib/constants/adminConstants.ts
-lib/utils/adminParams.ts
-
+lib/workflows/adminWorkflows.ts
+lib/db/selects/admin.selects.ts
+lib/db/dto/admin.dto.ts
+lib/db/transactions/admin.tx.ts
+lib/authz/permissions.ts
+lib/authz/policies.ts
+lib/authz/resources.ts
+lib/authz/roles.ts
 schemas/adminSchemas.ts
 types/adminTypes.ts
-types/adminInterfaces.ts
-
-lib/integrations/stripe/client.ts
-lib/integrations/stripe/subscriptions.ts
 ```
 
-### Admin Semantic Design Token Files
+---
+
+# Shared Existing Component Inventory
+
+### Existing Block Files — unchanged
 
 ```text
-app/globals.css
-components/ui/palettes.ts
+components/blocks/auth-forms.tsx
+components/blocks/bento-grid.tsx
+components/blocks/changelog-section.tsx
+components/blocks/comparison-table.tsx
+components/blocks/contact-section.tsx
+components/blocks/cta-section.tsx
+components/blocks/dashboard-layout.tsx
+components/blocks/error-pages.tsx
+components/blocks/faq-section.tsx
+components/blocks/feature-grid.tsx
+components/blocks/footer-section.tsx
+components/blocks/hero-section.tsx
+components/blocks/invoice.tsx
+components/blocks/logo-cloud.tsx
+components/blocks/onboarding-flow.tsx
+components/blocks/pricing-section.tsx
+components/blocks/settings-page.tsx
+components/blocks/stats-section.tsx
+components/blocks/team-section.tsx
+components/blocks/testimonials.tsx
+```
+
+### Existing Shell Files — unchanged
+
+```text
+components/shells/auth-shell.tsx
+components/shells/portal-shell.tsx
+components/shells/public-shell.tsx
+components/shells/tenant-shell.tsx
+```
+
+### Existing UI / Chart Primitives — unchanged
+
+```text
+components/ui/*
+components/chart/*
+```
+
+### Canonical Shared Lib Files — unchanged
+
+```text
+lib/auth/auth.ts
+lib/auth/clerk-webhooks.ts
+lib/auth/clerk.ts
+lib/auth/redirects.ts
+lib/cache/invalidate.ts
+lib/cache/life.ts
+lib/cache/tags.ts
+lib/constants/limits.ts
+lib/constants/pagination.ts
+lib/utils/chartExport.ts
+lib/utils/cn.ts
+lib/utils/dates.ts
+lib/utils/mathCurves.ts
+lib/utils/money.ts
+lib/utils/motionCore.ts
+lib/utils/strings.ts
+```
+
+### Canonical Integration Files — unchanged
+
+```text
+lib/integrations/status.ts
+lib/integrations/cloudinary/client.ts
+lib/integrations/cloudinary/transformations.ts
+lib/integrations/cloudinary/upload.ts
+lib/integrations/hugging-face/client.ts
+lib/integrations/hugging-face/embeddings.ts
+lib/integrations/hugging-face/inference.ts
+lib/integrations/sendgrid/client.ts
+lib/integrations/sendgrid/email.ts
+lib/integrations/sendgrid/webhooks.ts
+lib/integrations/stripe/checkout.ts
+lib/integrations/stripe/client.ts
+lib/integrations/stripe/portal.ts
+lib/integrations/stripe/subscriptions.ts
+lib/integrations/stripe/webhooks.ts
+lib/integrations/vercel-blob/client.ts
+lib/integrations/vercel-blob/delete.ts
+lib/integrations/vercel-blob/upload.ts
 ```
