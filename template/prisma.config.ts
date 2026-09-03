@@ -6,7 +6,7 @@ config({ path: ".env.local", quiet: true });
 config({ quiet: true });
 
 const directDatabaseUrl =
-  process.env.DATABASE_NO_POOLING?.trim() ?? process.env.DATABASE_URL?.trim();
+  process.env.DIRECT_DATABASE_URL?.trim() ?? process.env.DATABASE_URL?.trim();
 
 export default defineConfig({
   schema: "prisma/schema.prisma",

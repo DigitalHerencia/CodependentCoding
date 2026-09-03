@@ -8,10 +8,10 @@ config({ path: ".env.local", quiet: true });
 config({ quiet: true });
 
 const connectionString =
-  process.env.DATABASE_NO_POOLING ?? process.env.DATABASE_URL;
+  process.env.DIRECT_DATABASE_URL ?? process.env.DATABASE_URL;
 
 if (!connectionString) {
-  throw new Error("DATABASE_NO_POOLING or DATABASE_URL is required to seed.");
+  throw new Error("DIRECT_DATABASE_URL or DATABASE_URL is required to seed.");
 }
 
 const prisma = new PrismaClient({
