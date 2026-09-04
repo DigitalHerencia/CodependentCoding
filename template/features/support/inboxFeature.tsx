@@ -1,35 +1,104 @@
-import {
-  DataTableBlock,
-  PageHeaderBlock,
-} from "@/components/blocks/application-sections";
-import { getSupportInbox } from "@/lib/fetchers/supportFetchers";
+import { SupportInboxTemplate } from "@/components/templates/supportInboxTemplate";
+import { InboxFeatureClient } from "@/features/support/inboxFeature.client";
+import { getSupportWorkspaceWorkflow } from "@/lib/workflows/supportWorkflows";
+
+function displayValue(
+  record: object,
+  keys: readonly string[],
+  fallback: string,
+) {
+  const values = record as Record<string, unknown>;
+  for (const key of keys) {
+    const value = values[key];
+    if (value instanceof Date) return value.toLocaleDateString();
+    if (
+      typeof value === "string" ||
+      typeof value === "number" ||
+      typeof value === "bigint"
+    ) {
+      return String(value);
+    }
+    if (value && typeof value === "object") {
+      const nested = value as Record<string, unknown>;
+      const label = nested.displayName ?? nested.name ?? nested.email;
+      if (typeof label === "string") return label;
+    }
+  }
+  return fallback;
+}
 
 export async function InboxFeature() {
-  const tickets = await getSupportInbox();
+  const workspace = await getSupportWorkspaceWorkflow();
+  const records = workspace.tickets;
+  const rows = records.map((record, index) => {
+    const item = record as object;
+    const id = displayValue(
+      item,
+      ["id", "resource", "number"],
+      String(index + 1),
+    );
+    return {
+      id,
+      href: `${"/support/tickets"}/${id}`,
+      cells: {
+        name: displayValue(
+          item,
+          [
+            "name",
+            "title",
+            "subject",
+            "resource",
+            "invoiceNumber",
+            "email",
+            "id",
+          ],
+          id,
+        ),
+        state: displayValue(
+          item,
+          ["status", "state", "stage", "role", "count"],
+          "ACTIVE",
+        ),
+        owner: displayValue(
+          item,
+          [
+            "owner",
+            "assignee",
+            "client",
+            "organization",
+            "channel",
+            "provider",
+          ],
+          "—",
+        ),
+        updated: displayValue(
+          item,
+          ["updatedAt", "createdAt", "dueAt", "publishedAt", "date"],
+          "—",
+        ),
+      },
+    };
+  });
+
   return (
-    <div className="space-y-6">
-      <PageHeaderBlock eyebrow="Support" title="Inbox" />
-      <DataTableBlock
-        columns={[
-          { key: "ticket", label: "Ticket" },
-          { key: "priority", label: "Priority" },
-          { key: "status", label: "Status" },
-          { key: "requester", label: "Requester" },
-          { key: "assignee", label: "Assignee" },
-        ]}
-        rows={tickets.map((ticket) => ({
-          id: ticket.id,
-          href: `/support/tickets/${ticket.id}`,
-          cells: {
-            ticket: `#${ticket.number} · ${ticket.subject}`,
-            priority: ticket.priority,
-            status: ticket.status,
-            requester:
-              ticket.requester?.displayName ?? ticket.requester?.email ?? null,
-            assignee: ticket.assignee?.displayName ?? null,
-          },
-        }))}
-      />
-    </div>
+    <SupportInboxTemplate
+      rows={rows}
+      stats={[
+        {
+          label: "Records",
+          value: String(rows.length),
+          trend: "server workflow",
+        },
+        {
+          label: "Active",
+          value: String(
+            rows.filter((row) => row.cells.state !== "ARCHIVED").length,
+          ),
+        },
+        { label: "Updated", value: rows[0]?.cells.updated ?? "—" },
+        { label: "Source", value: "SERVER" },
+      ]}
+      toolbar={<InboxFeatureClient />}
+    />
   );
 }

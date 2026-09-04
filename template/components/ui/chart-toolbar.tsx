@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Download, Image, FileText, Maximize } from "lucide-react";
+import { Download, Image as ImageIcon, FileText, Maximize } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 import { Button } from "@/components/ui/button";
 import {
@@ -73,7 +73,7 @@ export const ChartToolbar = React.forwardRef<HTMLDivElement, ChartToolbarProps>(
                 (el) => void exportPNG(el, `${filename}.png`),
               )}
             >
-              <Image />
+              <ImageIcon />
             </Button>
           )}
           {svg && (

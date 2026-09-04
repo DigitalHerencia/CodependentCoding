@@ -2,7 +2,10 @@ import "server-only";
 
 import { EventWebhook } from "@sendgrid/eventwebhook";
 import { sendGridWebhookEventsSchema } from "@/schemas/integrationSchemas";
-import { withProviderTransaction } from "@/lib/db/provider";
+import {
+  withProviderOrganizationTransaction,
+  withProviderTransaction,
+} from "@/lib/db/provider";
 import {
   claimWebhookEventTx,
   completeWebhookEventTx,
@@ -59,8 +62,7 @@ export async function processSendGridWebhookEvents(
     if (!webhookEventId) continue;
 
     try {
-      await withProviderTransaction(async (tx) => {
-        await tx.$executeRaw`SELECT set_config('app.organization_id', ${event.organizationId}, true)`;
+      await withProviderOrganizationTransaction(event.organizationId, async (tx) => {
         await tx.auditEvent.create({
           data: {
             organizationId: event.organizationId,

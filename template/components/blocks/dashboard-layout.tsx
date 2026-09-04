@@ -1,140 +1,285 @@
- 
-import type { ReactNode } from 'react'
-import { cn } from '@/lib/utils'
+import Link from "next/link";
+import type { ReactNode } from "react";
+
+import { cn } from "@/lib/utils/cn";
 
 export interface DashboardNavItem {
-  label: string
-  active?: boolean
+  label: string;
+  href?: string | undefined;
+  active?: boolean;
 }
 
 export interface DashboardStat {
-  label: string
-  value: string
-  trend?: string
+  label: string;
+  value: string;
+  trend?: string;
 }
 
 export interface DashboardLayoutProps {
-  title?: string
-  nav: DashboardNavItem[]
-  stats: DashboardStat[]
-  /** Optional main-area content; a placeholder chart + table render by default. */
-  children?: ReactNode
-  className?: string
+  title: string;
+  nav: readonly DashboardNavItem[];
+  stats?: readonly DashboardStat[];
+  toolbar?: ReactNode;
+  children: ReactNode;
+  aside?: ReactNode;
+  className?: string;
 }
 
-// Simple bar visualization built from divs — no chart dependency needed for the
-// showcase block.
-const demoBars = [60, 85, 45, 95, 70, 55, 80]
-
 export function DashboardLayout({
-  title = 'Dashboard',
+  title,
   nav,
-  stats,
+  stats = [],
+  toolbar,
   children,
+  aside,
   className,
 }: DashboardLayoutProps) {
   return (
     <section
       className={cn(
-        'flex min-h-[560px] border-3 border-foreground shadow-[6px_6px_0px_hsl(var(--shadow-color))] bg-background',
-        className
+        "grid min-h-[42rem] overflow-hidden border border-border bg-background lg:grid-cols-[11rem_minmax(0,1fr)_14rem]",
+        className,
       )}
     >
-      {/* Sidebar */}
-      <aside className="hidden w-56 shrink-0 flex-col border-r-3 border-foreground bg-card p-4 md:flex">
-        <div className="mb-6 text-lg font-black uppercase tracking-tight">BoldKit</div>
-        <nav className="space-y-1">
-          {nav.map((item) => (
-            <button
-              key={item.label}
-              // Without this the active item is styling only — AT gets no signal.
-              aria-current={item.active ? 'page' : undefined}
-              className={cn(
-                'w-full border-2 border-transparent px-3 py-2 text-left text-sm font-bold uppercase tracking-wide transition',
-                item.active
-                  ? 'border-foreground bg-primary text-primary-foreground shadow-[2px_2px_0px_hsl(var(--shadow-color))]'
-                  : 'hover:border-foreground hover:bg-muted'
-              )}
-            >
-              {item.label}
-            </button>
-          ))}
+      <aside className="hidden border-r border-border bg-[#080b0d] p-3 lg:block">
+        <p className="mb-5 font-mono text-base font-black text-foreground">
+          BoldKit
+        </p>
+        <nav aria-label={`${title} navigation`} className="space-y-1">
+          {nav.map((item) => {
+            const classes = cn(
+              "block w-full border border-transparent px-3 py-2 text-left font-mono text-[0.7rem] text-foreground transition-colors",
+              item.active
+                ? "border-primary bg-primary text-primary-foreground"
+                : "hover:border-muted hover:bg-[#101518]",
+            );
+
+            return item.href ? (
+              <Link
+                key={item.label}
+                aria-current={item.active ? "page" : undefined}
+                className={classes}
+                href={item.href}
+              >
+                {item.label}
+              </Link>
+            ) : (
+              <span
+                key={item.label}
+                aria-current={item.active ? "page" : undefined}
+                className={classes}
+              >
+                {item.label}
+              </span>
+            );
+          })}
         </nav>
       </aside>
 
-      {/* Main */}
-      <div className="flex-1 p-6 space-y-6">
-        <header className="flex items-center justify-between">
-          <h2 className="text-2xl font-black uppercase tracking-tight">{title}</h2>
-          <div className="h-9 w-9 border-3 border-foreground bg-accent shadow-[2px_2px_0px_hsl(var(--shadow-color))]" />
+      <div className="min-w-0 bg-[#05070a]">
+        <header className="flex min-h-14 items-center justify-between gap-4 border-b border-border px-4 py-3">
+          <h1 className="font-mono text-xl font-black tracking-tight text-foreground">
+            {title}
+          </h1>
+          {toolbar}
         </header>
 
-        {/* Stat row */}
-        <div className="grid gap-4 sm:grid-cols-3">
-          {stats.map((stat) => (
-            <div
-              key={stat.label}
-              className="border-3 border-foreground bg-card p-4 shadow-[4px_4px_0px_hsl(var(--shadow-color))]"
-            >
-              <div className="text-xs font-bold uppercase tracking-wide text-muted-foreground">
-                {stat.label}
-              </div>
-              <div className="mt-1 text-3xl font-black">{stat.value}</div>
-              {stat.trend && (
-                <div className="mt-1 text-xs font-bold text-success">{stat.trend}</div>
-              )}
+        <div className="space-y-4 p-4">
+          {stats.length > 0 ? (
+            <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-4">
+              {stats.map((stat) => (
+                <DashboardStatCard key={stat.label} {...stat} />
+              ))}
             </div>
-          ))}
+          ) : null}
+          {children}
         </div>
-
-        {children ?? (
-          <>
-            {/* Chart placeholder */}
-            <div className="border-3 border-foreground bg-card p-5 shadow-[4px_4px_0px_hsl(var(--shadow-color))]">
-              <div className="mb-4 text-sm font-black uppercase tracking-wide">Weekly activity</div>
-              <div className="flex h-40 items-end gap-3">
-                {demoBars.map((h, i) => (
-                  <div
-                    key={i}
-                    className="flex-1 border-2 border-foreground bg-primary"
-                    style={{ height: `${h}%` }}
-                  />
-                ))}
-              </div>
-            </div>
-
-            {/* Table shell */}
-            <div className="overflow-hidden border-3 border-foreground shadow-[4px_4px_0px_hsl(var(--shadow-color))]">
-              <table className="w-full border-collapse">
-                <thead>
-                  <tr className="border-b-3 border-foreground bg-muted">
-                    {['User', 'Plan', 'Status'].map((h) => (
-                      <th key={h} className="p-3 text-left text-xs font-black uppercase tracking-wide">
-                        {h}
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {[
-                    ['Ada L.', 'Pro', 'Active'],
-                    ['Alan T.', 'Team', 'Active'],
-                    ['Grace H.', 'Free', 'Trial'],
-                  ].map((row) => (
-                    <tr key={row[0]} className="border-b-2 border-foreground last:border-b-0">
-                      {row.map((cell) => (
-                        <td key={cell} className="p-3 text-sm font-medium">
-                          {cell}
-                        </td>
-                      ))}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </>
-        )}
       </div>
+
+      <aside className="hidden border-l border-border bg-[#05030b] p-3 lg:block">
+        <div className="mb-3 border border-border px-3 py-2 font-mono text-[0.68rem] font-bold text-foreground">
+          {title}
+        </div>
+        {aside ?? (
+          <p className="font-mono text-[0.65rem] leading-relaxed text-[#9dc0c8]">
+            Server state is authoritative. Controls in this rail expose only
+            supported workflow state.
+          </p>
+        )}
+      </aside>
     </section>
-  )
+  );
+}
+
+export function DashboardStatCard({ label, value, trend }: DashboardStat) {
+  return (
+    <article className="border border-border bg-[#0b0f12] p-3">
+      <p className="font-mono text-[0.6rem] uppercase tracking-wider text-[#9dc0c8]">
+        {label}
+      </p>
+      <p className="mt-1 font-mono text-xl font-black text-foreground">
+        {value}
+      </p>
+      {trend ? (
+        <p className="mt-1 font-mono text-[0.58rem] text-[#8cb9c3]">{trend}</p>
+      ) : null}
+    </article>
+  );
+}
+
+export function DashboardPanel({
+  title,
+  children,
+  className,
+}: {
+  title?: string;
+  children: ReactNode;
+  className?: string;
+}) {
+  return (
+    <section className={cn("border border-border bg-[#0b0f12]", className)}>
+      {title ? (
+        <h2 className="border-b border-border px-3 py-2 font-mono text-[0.68rem] font-black uppercase tracking-wider text-foreground">
+          {title}
+        </h2>
+      ) : null}
+      <div className="p-3">{children}</div>
+    </section>
+  );
+}
+
+export interface DashboardTableColumn {
+  key: string;
+  label: string;
+}
+
+export interface DashboardTableRow {
+  id: string;
+  href?: string | undefined;
+  cells: Record<string, ReactNode>;
+}
+
+export interface CanonicalDashboardTemplateProps {
+  stats?: readonly DashboardStat[];
+  columns?: readonly DashboardTableColumn[];
+  rows?: readonly DashboardTableRow[];
+  toolbar?: ReactNode;
+  aside?: ReactNode;
+  children?: ReactNode;
+  chartValues?: readonly number[];
+}
+
+export function DashboardTable({
+  columns,
+  rows,
+  emptyLabel = "No records available.",
+}: {
+  columns: readonly DashboardTableColumn[];
+  rows: readonly DashboardTableRow[];
+  emptyLabel?: string;
+}) {
+  return (
+    <div className="overflow-x-auto border border-border">
+      <table className="w-full min-w-[36rem] border-collapse font-mono text-[0.64rem]">
+        <thead className="bg-[#101518] text-[#9dc0c8]">
+          <tr>
+            {columns.map((column) => (
+              <th
+                key={column.key}
+                className="border-b border-border px-3 py-2 text-left uppercase tracking-wider"
+              >
+                {column.label}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {rows.length > 0 ? (
+            rows.map((row) => (
+              <tr
+                key={row.id}
+                className="border-b border-[#314047] last:border-0"
+              >
+                {columns.map((column, index) => (
+                  <td key={column.key} className="px-3 py-2 text-foreground">
+                    {index === 0 && row.href ? (
+                      <Link
+                        className="text-[#8ec6d3] hover:underline"
+                        href={row.href}
+                      >
+                        {row.cells[column.key] ?? "—"}
+                      </Link>
+                    ) : (
+                      (row.cells[column.key] ?? "—")
+                    )}
+                  </td>
+                ))}
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td
+                className="px-3 py-8 text-center text-[#9dc0c8]"
+                colSpan={columns.length}
+              >
+                {emptyLabel}
+              </td>
+            </tr>
+          )}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+export function DashboardBars({
+  values,
+  label,
+}: {
+  values: readonly number[];
+  label: string;
+}) {
+  const maximum = Math.max(1, ...values);
+  return (
+    <div aria-label={label} className="flex h-40 items-end gap-2" role="img">
+      {values.map((value, index) => (
+        <span
+          key={`${value}-${index}`}
+          className="min-h-1 flex-1 border border-[#8ec6d3] bg-primary"
+          style={{ height: `${Math.max(4, (value / maximum) * 100)}%` }}
+        />
+      ))}
+    </div>
+  );
+}
+
+export function DashboardRailList({
+  items,
+}: {
+  items: readonly { label: string; value?: string; meta?: string }[];
+}) {
+  return (
+    <div className="space-y-2">
+      {items.map((item) => (
+        <article
+          key={`${item.label}-${item.value ?? ""}`}
+          className="border border-[#5b737a] p-2"
+        >
+          <p className="font-mono text-[0.62rem] font-bold text-foreground">
+            {item.label}
+          </p>
+          {item.value ? (
+            <p className="mt-1 font-mono text-[0.58rem] text-[#8ec6d3]">
+              {item.value}
+            </p>
+          ) : null}
+          {item.meta ? (
+            <p className="mt-1 font-mono text-[0.55rem] text-[#9dc0c8]">
+              {item.meta}
+            </p>
+          ) : null}
+        </article>
+      ))}
+    </div>
+  );
 }

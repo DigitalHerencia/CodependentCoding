@@ -1,6 +1,12 @@
-import { InboxFeature } from "@/features/support/inboxFeature";
+import { Suspense } from "react";
 
-// URL ownership stops here; orchestration is delegated to the feature.
-export default function Page() {
-  return <InboxFeature />;
+import { InboxFeature } from "@/features/support/inboxFeature";
+import { InboxSkeleton } from "@/features/support/inboxSkeleton";
+
+export default async function Page() {
+  return (
+    <Suspense fallback={<InboxSkeleton />}>
+      <InboxFeature />
+    </Suspense>
+  );
 }

@@ -1,6 +1,12 @@
-import { CrmAnalyticsFeature } from "@/features/crm/crmAnalyticsFeature";
+import { Suspense } from "react";
 
-// URL ownership stops here; orchestration is delegated to the feature.
-export default function Page() {
-  return <CrmAnalyticsFeature />;
+import { CrmAnalyticsFeature } from "@/features/crm/crmAnalyticsFeature";
+import { CrmAnalyticsSkeleton } from "@/features/crm/crmAnalyticsSkeleton";
+
+export default async function Page() {
+  return (
+    <Suspense fallback={<CrmAnalyticsSkeleton />}>
+      <CrmAnalyticsFeature />
+    </Suspense>
+  );
 }

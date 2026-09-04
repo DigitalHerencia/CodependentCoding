@@ -10,8 +10,8 @@ import {
   Users,
 } from "lucide-react";
 
-import { FeatureGrid } from "@/components/blocks/feature-sections";
-import { HeroSection } from "@/components/blocks/hero-sections";
+import { FeatureGrid } from "@/components/blocks/feature-grid";
+import { HeroSection } from "@/components/blocks/hero-section";
 
 const recipeFeatures = [
   [

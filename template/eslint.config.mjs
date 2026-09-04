@@ -66,26 +66,19 @@ export default defineConfig([
       ],
     },
   },
+  // Actions may use the canonical DTO, select, tenant, and transaction helpers.
+  // Provider semantics remain isolated behind integration adapters.
   {
     files: ["lib/actions/**/*.{js,jsx,ts,tsx}"],
     rules: {
       "no-restricted-imports": [
         "error",
         {
-          paths: databasePackages.map((name) => ({
-            name,
-            allowTypeImports: true,
-            message: "Server Actions delegate database work to workflows.",
-          })),
           patterns: [
             {
-              group: [
-                ...databaseImportPatterns,
-                "@/lib/integrations/**",
-                "**/lib/integrations/**",
-              ],
+              group: ["@/lib/integrations/**", "**/lib/integrations/**"],
               message:
-                "Server Actions validate transport input and delegate to workflows; they do not own database or provider implementation.",
+                "Server Actions invoke provider behavior through workflows or provider-neutral capabilities.",
             },
           ],
         },
@@ -111,11 +104,9 @@ export default defineConfig([
                 "**/app/**",
                 "@/lib/integrations/**",
                 "**/lib/integrations/**",
-                "@/lib/workflows/**",
-                "**/lib/workflows/**",
               ],
               message:
-                "Features orchestrate blocks, fetchers, and actions without importing routes, workflows, providers, or database implementation.",
+                "Features orchestrate templates and workflows without importing routes, providers, or database implementation.",
             },
           ],
         },

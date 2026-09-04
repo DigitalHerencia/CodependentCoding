@@ -1,36 +1,44 @@
-/* eslint-disable react-refresh/only-export-components */
-import * as React from 'react'
-import { cn, safeHref } from '@/lib/utils'
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
-import { Separator } from '@/components/ui/separator'
-import { Twitter, Github, Linkedin, Instagram, Youtube, Mail, ArrowRight } from 'lucide-react'
+import * as React from "react";
+import { cn } from "@/lib/utils/cn";
+import { safeHref } from "@/lib/utils/strings";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import {
+  MessageCircle,
+  Code2,
+  BriefcaseBusiness,
+  Camera,
+  Play,
+  Mail,
+  ArrowRight,
+} from "lucide-react";
 
 export interface FooterLink {
-  label: string
-  href: string
+  label: string;
+  href: string;
 }
 
 export interface FooterColumn {
-  title: string
-  links: FooterLink[]
+  title: string;
+  links: FooterLink[];
 }
 
 export interface FooterSocialLink {
-  platform: 'twitter' | 'github' | 'linkedin' | 'instagram' | 'youtube'
-  href: string
+  platform: "twitter" | "github" | "linkedin" | "instagram" | "youtube";
+  href: string;
 }
 
 // ============================================================================
 // FOOTER VARIANT 1: Multi-Column
 // ============================================================================
 export interface FooterMultiColumnProps {
-  logo?: React.ReactNode
-  description?: string
-  columns: FooterColumn[]
-  socialLinks?: FooterSocialLink[]
-  copyright?: string
-  className?: string
+  logo?: React.ReactNode;
+  description?: string;
+  columns: FooterColumn[];
+  socialLinks?: FooterSocialLink[];
+  copyright?: string;
+  className?: string;
 }
 
 export function FooterMultiColumn({
@@ -41,23 +49,36 @@ export function FooterMultiColumn({
   copyright = `© ${new Date().getFullYear()} Your Company. All rights reserved.`,
   className,
 }: FooterMultiColumnProps) {
-  const totalCols = columns.length + 1 // +1 for brand column (counts as 2 on lg)
-  const lgCols = Math.min(totalCols + 1, 6) // brand takes 2 slots on lg
-  const lgColsClass = {
-    2: 'lg:grid-cols-2',
-    3: 'lg:grid-cols-3',
-    4: 'lg:grid-cols-4',
-    5: 'lg:grid-cols-5',
-    6: 'lg:grid-cols-6',
-  }[lgCols] ?? 'lg:grid-cols-6'
+  const totalCols = columns.length + 1; // +1 for brand column (counts as 2 on lg)
+  const lgCols = Math.min(totalCols + 1, 6); // brand takes 2 slots on lg
+  const lgColsClass =
+    {
+      2: "lg:grid-cols-2",
+      3: "lg:grid-cols-3",
+      4: "lg:grid-cols-4",
+      5: "lg:grid-cols-5",
+      6: "lg:grid-cols-6",
+    }[lgCols] ?? "lg:grid-cols-6";
 
   return (
-    <footer className={cn('py-16 px-4 md:px-8 lg:px-16 border-t-3 border-foreground', className)}>
+    <footer
+      className={cn(
+        "py-16 px-4 md:px-8 lg:px-16 border-t-3 border-foreground",
+        className,
+      )}
+    >
       <div className="max-w-7xl mx-auto">
-        <div className={cn('grid grid-cols-2 md:grid-cols-4 gap-8 mb-12', lgColsClass)}>
+        <div
+          className={cn(
+            "grid grid-cols-2 md:grid-cols-4 gap-8 mb-12",
+            lgColsClass,
+          )}
+        >
           {/* Brand column */}
           <div className="col-span-2 space-y-4">
-            {logo && <div className="font-black text-2xl uppercase">{logo}</div>}
+            {logo && (
+              <div className="font-black text-2xl uppercase">{logo}</div>
+            )}
             {description && (
               <p className="text-muted-foreground font-medium max-w-xs">
                 {description}
@@ -66,7 +87,11 @@ export function FooterMultiColumn({
             {socialLinks && (
               <div className="flex gap-2">
                 {socialLinks.map((link) => (
-                  <SocialIcon key={`social-${link.platform}`} platform={link.platform} href={safeHref(link.href)} />
+                  <SocialIcon
+                    key={`social-${link.platform}`}
+                    platform={link.platform}
+                    href={safeHref(link.href)}
+                  />
                 ))}
               </div>
             )}
@@ -101,46 +126,53 @@ export function FooterMultiColumn({
         </div>
       </div>
     </footer>
-  )
+  );
 }
 
 // ============================================================================
 // FOOTER VARIANT 2: With Newsletter
 // ============================================================================
 export interface FooterWithNewsletterProps {
-  logo?: React.ReactNode
-  columns: FooterColumn[]
-  newsletterTitle?: string
-  newsletterDescription?: string
-  onNewsletterSubmit?: (email: string) => void
-  copyright?: string
-  className?: string
+  logo?: React.ReactNode;
+  columns: FooterColumn[];
+  newsletterTitle?: string;
+  newsletterDescription?: string;
+  onNewsletterSubmit?: (email: string) => void;
+  copyright?: string;
+  className?: string;
 }
 
 export function FooterWithNewsletter({
   logo,
   columns,
-  newsletterTitle = 'Subscribe to our newsletter',
-  newsletterDescription = 'Get the latest updates and news delivered to your inbox.',
+  newsletterTitle = "Subscribe to our newsletter",
+  newsletterDescription = "Get the latest updates and news delivered to your inbox.",
   onNewsletterSubmit,
   copyright = `© ${new Date().getFullYear()} Your Company. All rights reserved.`,
   className,
 }: FooterWithNewsletterProps) {
-  const [email, setEmail] = React.useState('')
+  const [email, setEmail] = React.useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    onNewsletterSubmit?.(email)
-    setEmail('')
-  }
+    e.preventDefault();
+    onNewsletterSubmit?.(email);
+    setEmail("");
+  };
 
   return (
-    <footer className={cn('py-16 px-4 md:px-8 lg:px-16 border-t-3 border-foreground bg-muted/30', className)}>
+    <footer
+      className={cn(
+        "py-16 px-4 md:px-8 lg:px-16 border-t-3 border-foreground bg-muted/30",
+        className,
+      )}
+    >
       <div className="max-w-7xl mx-auto">
         <div className="grid lg:grid-cols-2 gap-12 mb-12">
           {/* Newsletter section */}
           <div className="space-y-4">
-            {logo && <div className="font-black text-2xl uppercase">{logo}</div>}
+            {logo && (
+              <div className="font-black text-2xl uppercase">{logo}</div>
+            )}
             <h4 className="font-black uppercase text-lg">{newsletterTitle}</h4>
             <p className="text-muted-foreground font-medium">
               {newsletterDescription}
@@ -190,18 +222,18 @@ export function FooterWithNewsletter({
         </div>
       </div>
     </footer>
-  )
+  );
 }
 
 // ============================================================================
 // FOOTER VARIANT 3: Simple Centered
 // ============================================================================
 export interface FooterSimpleProps {
-  logo?: React.ReactNode
-  links?: FooterLink[]
-  socialLinks?: FooterSocialLink[]
-  copyright?: string
-  className?: string
+  logo?: React.ReactNode;
+  links?: FooterLink[];
+  socialLinks?: FooterSocialLink[];
+  copyright?: string;
+  className?: string;
 }
 
 export function FooterSimple({
@@ -212,7 +244,12 @@ export function FooterSimple({
   className,
 }: FooterSimpleProps) {
   return (
-    <footer className={cn('py-12 px-4 md:px-8 lg:px-16 border-t-3 border-foreground', className)}>
+    <footer
+      className={cn(
+        "py-12 px-4 md:px-8 lg:px-16 border-t-3 border-foreground",
+        className,
+      )}
+    >
       <div className="max-w-4xl mx-auto text-center space-y-6">
         {logo && <div className="font-black text-2xl uppercase">{logo}</div>}
 
@@ -233,7 +270,11 @@ export function FooterSimple({
         {socialLinks && (
           <div className="flex justify-center gap-2">
             {socialLinks.map((link) => (
-              <SocialIcon key={`social-${link.platform}`} platform={link.platform} href={safeHref(link.href)} />
+              <SocialIcon
+                key={`social-${link.platform}`}
+                platform={link.platform}
+                href={safeHref(link.href)}
+              />
             ))}
           </div>
         )}
@@ -241,17 +282,17 @@ export function FooterSimple({
         <p className="text-sm text-muted-foreground">{copyright}</p>
       </div>
     </footer>
-  )
+  );
 }
 
 // ============================================================================
 // FOOTER VARIANT 4: Minimal
 // ============================================================================
 export interface FooterMinimalProps {
-  logo?: React.ReactNode
-  links?: FooterLink[]
-  copyright?: string
-  className?: string
+  logo?: React.ReactNode;
+  links?: FooterLink[];
+  copyright?: string;
+  className?: string;
 }
 
 export function FooterMinimal({
@@ -261,7 +302,12 @@ export function FooterMinimal({
   className,
 }: FooterMinimalProps) {
   return (
-    <footer className={cn('py-8 px-4 md:px-8 lg:px-16 border-t-3 border-foreground', className)}>
+    <footer
+      className={cn(
+        "py-8 px-4 md:px-8 lg:px-16 border-t-3 border-foreground",
+        className,
+      )}
+    >
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
         <div className="flex items-center gap-4">
           {logo && <div className="font-black text-lg uppercase">{logo}</div>}
@@ -283,35 +329,35 @@ export function FooterMinimal({
         )}
       </div>
     </footer>
-  )
+  );
 }
 
 // ============================================================================
 // FOOTER VARIANT 5: With CTA
 // ============================================================================
 export interface FooterWithCTAProps {
-  logo?: React.ReactNode
-  description?: string
-  columns: FooterColumn[]
-  ctaTitle?: string
-  ctaAction?: { label: string; onClick?: () => void }
-  socialLinks?: FooterSocialLink[]
-  copyright?: string
-  className?: string
+  logo?: React.ReactNode;
+  description?: string;
+  columns: FooterColumn[];
+  ctaTitle?: string;
+  ctaAction?: { label: string; onClick?: () => void };
+  socialLinks?: FooterSocialLink[];
+  copyright?: string;
+  className?: string;
 }
 
 export function FooterWithCTA({
   logo,
   description,
   columns,
-  ctaTitle = 'Ready to get started?',
+  ctaTitle = "Ready to get started?",
   ctaAction,
   socialLinks,
   copyright = `© ${new Date().getFullYear()} Your Company. All rights reserved.`,
   className,
 }: FooterWithCTAProps) {
   return (
-    <footer className={cn('border-t-3 border-foreground', className)}>
+    <footer className={cn("border-t-3 border-foreground", className)}>
       {/* CTA Banner */}
       <div className="py-12 px-4 md:px-8 lg:px-16 bg-primary text-primary-foreground">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
@@ -335,14 +381,21 @@ export function FooterWithCTA({
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 mb-8">
             <div className="col-span-2 md:col-span-1 space-y-4">
-              {logo && <div className="font-black text-xl uppercase">{logo}</div>}
+              {logo && (
+                <div className="font-black text-xl uppercase">{logo}</div>
+              )}
               {description && (
                 <p className="text-sm text-muted-foreground">{description}</p>
               )}
               {socialLinks && (
                 <div className="flex gap-2">
                   {socialLinks.map((link) => (
-                    <SocialIcon key={`social-${link.platform}`} platform={link.platform} href={safeHref(link.href)} size="sm" />
+                    <SocialIcon
+                      key={`social-${link.platform}`}
+                      platform={link.platform}
+                      href={safeHref(link.href)}
+                      size="sm"
+                    />
                   ))}
                 </div>
               )}
@@ -377,7 +430,7 @@ export function FooterWithCTA({
         </div>
       </div>
     </footer>
-  )
+  );
 }
 
 // ============================================================================
@@ -386,23 +439,23 @@ export function FooterWithCTA({
 function SocialIcon({
   platform,
   href,
-  size = 'default',
+  size = "default",
 }: {
-  platform: FooterSocialLink['platform']
-  href: string
-  size?: 'sm' | 'default'
+  platform: FooterSocialLink["platform"];
+  href: string;
+  size?: "sm" | "default";
 }) {
   const icons = {
-    twitter: Twitter,
-    github: Github,
-    linkedin: Linkedin,
-    instagram: Instagram,
-    youtube: Youtube,
-  }
+    twitter: MessageCircle,
+    github: Code2,
+    linkedin: BriefcaseBusiness,
+    instagram: Camera,
+    youtube: Play,
+  };
 
-  const Icon = icons[platform]
-  const sizeClasses = size === 'sm' ? 'w-7 h-7' : 'w-9 h-9'
-  const iconSize = size === 'sm' ? 'h-3.5 w-3.5' : 'h-4 w-4'
+  const Icon = icons[platform];
+  const sizeClasses = size === "sm" ? "w-7 h-7" : "w-9 h-9";
+  const iconSize = size === "sm" ? "h-3.5 w-3.5" : "h-4 w-4";
 
   return (
     <a
@@ -410,13 +463,13 @@ function SocialIcon({
       target="_blank"
       rel="noopener noreferrer"
       className={cn(
-        'flex items-center justify-center border-2 border-foreground bg-muted hover:bg-primary hover:text-primary-foreground transition hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[2px_2px_0px_hsl(var(--shadow-color))]',
-        sizeClasses
+        "flex items-center justify-center border-2 border-foreground bg-muted hover:bg-primary hover:text-primary-foreground transition hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[2px_2px_0px_hsl(var(--shadow-color))]",
+        sizeClasses,
       )}
     >
       <Icon className={iconSize} />
     </a>
-  )
+  );
 }
 
 // ============================================================================
@@ -428,4 +481,4 @@ export const FooterSection = {
   Simple: FooterSimple,
   Minimal: FooterMinimal,
   WithCTA: FooterWithCTA,
-}
+};

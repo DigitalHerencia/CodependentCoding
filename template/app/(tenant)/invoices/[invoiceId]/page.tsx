@@ -1,11 +1,17 @@
-import { InvoiceFeature } from "@/features/invoicing/invoiceFeature";
+import { Suspense } from "react";
 
-// URL ownership stops here; orchestration is delegated to the feature.
+import { InvoiceFeature } from "@/features/invoicing/invoiceFeature";
+import { InvoiceSkeleton } from "@/features/invoicing/invoiceSkeleton";
+
 export default async function Page({
   params,
 }: {
   params: Promise<{ invoiceId: string }>;
 }) {
   const { invoiceId } = await params;
-  return <InvoiceFeature invoiceId={invoiceId} />;
+  return (
+    <Suspense fallback={<InvoiceSkeleton />}>
+      <InvoiceFeature invoiceId={invoiceId} />
+    </Suspense>
+  );
 }

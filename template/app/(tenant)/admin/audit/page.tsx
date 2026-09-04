@@ -1,5 +1,12 @@
-import { AuditFeature } from "@/features/admin/auditFeature";
+import { Suspense } from "react";
 
-export default function Page() {
-  return <AuditFeature />;
+import { AdminAuditFeature } from "@/features/admin/adminAuditFeature";
+import { AdminAuditSkeleton } from "@/features/admin/adminAuditSkeleton";
+
+export default async function Page() {
+  return (
+    <Suspense fallback={<AdminAuditSkeleton />}>
+      <AdminAuditFeature />
+    </Suspense>
+  );
 }

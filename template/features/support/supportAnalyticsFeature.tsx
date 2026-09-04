@@ -1,41 +1,104 @@
-import {
-  MetricGridBlock,
-  PageHeaderBlock,
-} from "@/components/blocks/application-sections";
-import { getSupportInbox } from "@/lib/fetchers/supportFetchers";
+import { SupportAnalyticsTemplate } from "@/components/templates/supportAnalyticsTemplate";
+import { SupportAnalyticsFeatureClient } from "@/features/support/supportAnalyticsFeature.client";
+import { getSupportWorkspaceWorkflow } from "@/lib/workflows/supportWorkflows";
+
+function displayValue(
+  record: object,
+  keys: readonly string[],
+  fallback: string,
+) {
+  const values = record as Record<string, unknown>;
+  for (const key of keys) {
+    const value = values[key];
+    if (value instanceof Date) return value.toLocaleDateString();
+    if (
+      typeof value === "string" ||
+      typeof value === "number" ||
+      typeof value === "bigint"
+    ) {
+      return String(value);
+    }
+    if (value && typeof value === "object") {
+      const nested = value as Record<string, unknown>;
+      const label = nested.displayName ?? nested.name ?? nested.email;
+      if (typeof label === "string") return label;
+    }
+  }
+  return fallback;
+}
 
 export async function SupportAnalyticsFeature() {
-  const tickets = await getSupportInbox(200);
+  const workspace = await getSupportWorkspaceWorkflow();
+  const records = workspace.tickets;
+  const rows = records.map((record, index) => {
+    const item = record as object;
+    const id = displayValue(
+      item,
+      ["id", "resource", "number"],
+      String(index + 1),
+    );
+    return {
+      id,
+      href: undefined,
+      cells: {
+        name: displayValue(
+          item,
+          [
+            "name",
+            "title",
+            "subject",
+            "resource",
+            "invoiceNumber",
+            "email",
+            "id",
+          ],
+          id,
+        ),
+        state: displayValue(
+          item,
+          ["status", "state", "stage", "role", "count"],
+          "ACTIVE",
+        ),
+        owner: displayValue(
+          item,
+          [
+            "owner",
+            "assignee",
+            "client",
+            "organization",
+            "channel",
+            "provider",
+          ],
+          "—",
+        ),
+        updated: displayValue(
+          item,
+          ["updatedAt", "createdAt", "dueAt", "publishedAt", "date"],
+          "—",
+        ),
+      },
+    };
+  });
+
   return (
-    <div className="space-y-6">
-      <PageHeaderBlock
-        eyebrow="Support"
-        title="Inbox analytics"
-        description="Counts derive from authorized active-tenant tickets."
-      />
-      <MetricGridBlock
-        metrics={[
-          { label: "Open workload", value: String(tickets.length) },
-          {
-            label: "Urgent",
-            value: String(
-              tickets.filter((ticket) => ticket.priority === "URGENT").length,
-            ),
-          },
-          {
-            label: "Waiting on customer",
-            value: String(
-              tickets.filter(
-                (ticket) => ticket.status === "WAITING_ON_CUSTOMER",
-              ).length,
-            ),
-          },
-          {
-            label: "Unassigned",
-            value: String(tickets.filter((ticket) => !ticket.assignee).length),
-          },
-        ]}
-      />
-    </div>
+    <SupportAnalyticsTemplate
+      rows={rows}
+      stats={[
+        {
+          label: "Records",
+          value: String(rows.length),
+          trend: "server workflow",
+        },
+        {
+          label: "Active",
+          value: String(
+            rows.filter((row) => row.cells.state !== "ARCHIVED").length,
+          ),
+        },
+        { label: "Updated", value: rows[0]?.cells.updated ?? "—" },
+        { label: "Source", value: "SERVER" },
+      ]}
+      toolbar={<SupportAnalyticsFeatureClient />}
+    />
   );
 }

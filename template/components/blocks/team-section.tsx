@@ -1,40 +1,41 @@
-/* eslint-disable react-refresh/only-export-components */
-import * as React from 'react'
-import { Card, CardContent } from '@/components/ui/card'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { cn, safeHref } from '@/lib/utils'
-import { XIcon, Linkedin, Github, Mail } from 'lucide-react'
+import * as React from "react";
+import Image from "next/image";
+import { Card, CardContent } from "@/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { cn } from "@/lib/utils/cn";
+import { safeHref } from "@/lib/utils/strings";
+import { XIcon, BriefcaseBusiness, Code2, Mail } from "lucide-react";
 
 function getInitials(name: string) {
-  const parts = name.trim().split(/\s+/).filter(Boolean)
-  if (parts.length === 0) return '?'
-  if (parts.length === 1) return (parts[0][0] ?? '?').toUpperCase()
-  return ((parts[0][0] ?? '') + (parts[parts.length - 1][0] ?? '')).toUpperCase()
+  const parts = name.trim().split(/\s+/).filter(Boolean);
+  if (parts.length === 0) return "?";
+  if (parts.length === 1) return (parts[0]?.[0] ?? "?").toUpperCase();
+  return ((parts.at(0)?.[0] ?? "") + (parts.at(-1)?.[0] ?? "")).toUpperCase();
 }
 
 export interface TeamMember {
-  name: string
-  role: string
-  bio?: string
-  avatar?: string
+  name: string;
+  role: string;
+  bio?: string;
+  avatar?: string;
   social?: {
-    twitter?: string
-    linkedin?: string
-    github?: string
-    email?: string
-  }
+    twitter?: string;
+    linkedin?: string;
+    github?: string;
+    email?: string;
+  };
 }
 
 // ============================================================================
 // TEAM VARIANT 1: Grid with Cards
 // ============================================================================
 export interface TeamGridProps {
-  title?: string
-  subtitle?: string
-  description?: string
-  members: TeamMember[]
-  columns?: 2 | 3 | 4
-  className?: string
+  title?: string;
+  subtitle?: string;
+  description?: string;
+  members: TeamMember[];
+  columns?: 2 | 3 | 4;
+  className?: string;
 }
 
 export function TeamGrid({
@@ -46,13 +47,13 @@ export function TeamGrid({
   className,
 }: TeamGridProps) {
   const gridCols = {
-    2: 'md:grid-cols-2',
-    3: 'md:grid-cols-2 lg:grid-cols-3',
-    4: 'md:grid-cols-2 lg:grid-cols-4',
-  }
+    2: "md:grid-cols-2",
+    3: "md:grid-cols-2 lg:grid-cols-3",
+    4: "md:grid-cols-2 lg:grid-cols-4",
+  };
 
   return (
-    <section className={cn('py-16 px-4 md:px-8 lg:px-16', className)}>
+    <section className={cn("py-16 px-4 md:px-8 lg:px-16", className)}>
       <div className="max-w-7xl mx-auto">
         {(title || subtitle || description) && (
           <div className="text-center mb-12 space-y-4">
@@ -74,7 +75,7 @@ export function TeamGrid({
           </div>
         )}
 
-        <div className={cn('grid gap-6', gridCols[columns])}>
+        <div className={cn("grid gap-6", gridCols[columns])}>
           {members.map((member) => (
             <Card
               key={`team-${member.name}`}
@@ -89,7 +90,9 @@ export function TeamGrid({
                 </Avatar>
 
                 <div>
-                  <h3 className="font-black uppercase text-lg">{member.name}</h3>
+                  <h3 className="font-black uppercase text-lg">
+                    {member.name}
+                  </h3>
                   <p className="text-sm text-muted-foreground font-medium">
                     {member.role}
                   </p>
@@ -102,16 +105,28 @@ export function TeamGrid({
                 {member.social && (
                   <div className="flex justify-center gap-2">
                     {member.social.twitter && (
-                      <SocialLink href={member.social.twitter} icon={<XIcon className="h-4 w-4" />} />
+                      <SocialLink
+                        href={member.social.twitter}
+                        icon={<XIcon className="h-4 w-4" />}
+                      />
                     )}
                     {member.social.linkedin && (
-                      <SocialLink href={member.social.linkedin} icon={<Linkedin className="h-4 w-4" />} />
+                      <SocialLink
+                        href={member.social.linkedin}
+                        icon={<BriefcaseBusiness className="h-4 w-4" />}
+                      />
                     )}
                     {member.social.github && (
-                      <SocialLink href={member.social.github} icon={<Github className="h-4 w-4" />} />
+                      <SocialLink
+                        href={member.social.github}
+                        icon={<Code2 className="h-4 w-4" />}
+                      />
                     )}
                     {member.social.email && (
-                      <SocialLink href={`mailto:${member.social.email}`} icon={<Mail className="h-4 w-4" />} />
+                      <SocialLink
+                        href={`mailto:${member.social.email}`}
+                        icon={<Mail className="h-4 w-4" />}
+                      />
                     )}
                   </div>
                 )}
@@ -121,25 +136,23 @@ export function TeamGrid({
         </div>
       </div>
     </section>
-  )
+  );
 }
 
 // ============================================================================
 // TEAM VARIANT 2: Simple List
 // ============================================================================
 export interface TeamListProps {
-  title?: string
-  members: TeamMember[]
-  className?: string
+  title?: string;
+  members: TeamMember[];
+  className?: string;
 }
 
-export function TeamList({
-  title,
-  members,
-  className,
-}: TeamListProps) {
+export function TeamList({ title, members, className }: TeamListProps) {
   return (
-    <section className={cn('py-16 px-4 md:px-8 lg:px-16 bg-muted/30', className)}>
+    <section
+      className={cn("py-16 px-4 md:px-8 lg:px-16 bg-muted/30", className)}
+    >
       <div className="max-w-4xl mx-auto">
         {title && (
           <h2 className="text-3xl md:text-4xl font-black uppercase tracking-tight text-center mb-12">
@@ -168,10 +181,16 @@ export function TeamList({
               {member.social && (
                 <div className="flex gap-2">
                   {member.social.twitter && (
-                    <SocialLink href={member.social.twitter} icon={<XIcon className="h-4 w-4" />} />
+                    <SocialLink
+                      href={member.social.twitter}
+                      icon={<XIcon className="h-4 w-4" />}
+                    />
                   )}
                   {member.social.linkedin && (
-                    <SocialLink href={member.social.linkedin} icon={<Linkedin className="h-4 w-4" />} />
+                    <SocialLink
+                      href={member.social.linkedin}
+                      icon={<BriefcaseBusiness className="h-4 w-4" />}
+                    />
                   )}
                 </div>
               )}
@@ -180,17 +199,17 @@ export function TeamList({
         </div>
       </div>
     </section>
-  )
+  );
 }
 
 // ============================================================================
 // TEAM VARIANT 3: With Large Photos
 // ============================================================================
 export interface TeamLargePhotosProps {
-  title?: string
-  subtitle?: string
-  members: TeamMember[]
-  className?: string
+  title?: string;
+  subtitle?: string;
+  members: TeamMember[];
+  className?: string;
 }
 
 export function TeamLargePhotos({
@@ -200,7 +219,7 @@ export function TeamLargePhotos({
   className,
 }: TeamLargePhotosProps) {
   return (
-    <section className={cn('py-16 px-4 md:px-8 lg:px-16', className)}>
+    <section className={cn("py-16 px-4 md:px-8 lg:px-16", className)}>
       <div className="max-w-7xl mx-auto">
         {(title || subtitle) && (
           <div className="text-center mb-12 space-y-2">
@@ -222,9 +241,12 @@ export function TeamLargePhotos({
             <div key={`team-${member.name}`} className="group">
               <div className="relative border-3 border-foreground shadow-[6px_6px_0px_hsl(var(--shadow-color))] overflow-hidden mb-4 group-hover:shadow-[8px_8px_0px_hsl(var(--shadow-color))] group-hover:translate-x-[-2px] group-hover:translate-y-[-2px] transition">
                 {member.avatar ? (
-                  <img
+                  <Image
                     src={member.avatar}
                     alt={member.name}
+                    height={640}
+                    unoptimized
+                    width={640}
                     className="w-full h-80 object-cover"
                   />
                 ) : (
@@ -236,16 +258,34 @@ export function TeamLargePhotos({
                 )}
 
                 {member.social && (
-                  <div aria-hidden="true" className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-foreground/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div
+                    aria-hidden="true"
+                    className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-foreground/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
                     <div className="flex justify-center gap-2">
                       {member.social.twitter && (
-                        <SocialLink href={member.social.twitter} icon={<XIcon className="h-4 w-4" />} light tabIndex={-1} />
+                        <SocialLink
+                          href={member.social.twitter}
+                          icon={<XIcon className="h-4 w-4" />}
+                          light
+                          tabIndex={-1}
+                        />
                       )}
                       {member.social.linkedin && (
-                        <SocialLink href={member.social.linkedin} icon={<Linkedin className="h-4 w-4" />} light tabIndex={-1} />
+                        <SocialLink
+                          href={member.social.linkedin}
+                          icon={<BriefcaseBusiness className="h-4 w-4" />}
+                          light
+                          tabIndex={-1}
+                        />
                       )}
                       {member.social.github && (
-                        <SocialLink href={member.social.github} icon={<Github className="h-4 w-4" />} light tabIndex={-1} />
+                        <SocialLink
+                          href={member.social.github}
+                          icon={<Code2 className="h-4 w-4" />}
+                          light
+                          tabIndex={-1}
+                        />
                       )}
                     </div>
                   </div>
@@ -255,24 +295,26 @@ export function TeamLargePhotos({
               <h3 className="font-black uppercase text-xl">{member.name}</h3>
               <p className="text-muted-foreground font-medium">{member.role}</p>
               {member.bio && (
-                <p className="text-sm text-muted-foreground mt-2">{member.bio}</p>
+                <p className="text-sm text-muted-foreground mt-2">
+                  {member.bio}
+                </p>
               )}
             </div>
           ))}
         </div>
       </div>
     </section>
-  )
+  );
 }
 
 // ============================================================================
 // TEAM VARIANT 4: Compact Avatars
 // ============================================================================
 export interface TeamCompactProps {
-  title?: string
-  description?: string
-  members: TeamMember[]
-  className?: string
+  title?: string;
+  description?: string;
+  members: TeamMember[];
+  className?: string;
 }
 
 export function TeamCompact({
@@ -282,7 +324,7 @@ export function TeamCompact({
   className,
 }: TeamCompactProps) {
   return (
-    <section className={cn('py-16 px-4 md:px-8 lg:px-16', className)}>
+    <section className={cn("py-16 px-4 md:px-8 lg:px-16", className)}>
       <div className="max-w-4xl mx-auto text-center space-y-8">
         {(title || description) && (
           <div className="space-y-4">
@@ -292,9 +334,7 @@ export function TeamCompact({
               </h2>
             )}
             {description && (
-              <p className="text-muted-foreground font-medium">
-                {description}
-              </p>
+              <p className="text-muted-foreground font-medium">{description}</p>
             )}
           </div>
         )}
@@ -315,7 +355,7 @@ export function TeamCompact({
         </div>
       </div>
     </section>
-  )
+  );
 }
 
 // ============================================================================
@@ -327,10 +367,10 @@ function SocialLink({
   light = false,
   tabIndex,
 }: {
-  href: string
-  icon: React.ReactNode
-  light?: boolean
-  tabIndex?: number
+  href: string;
+  icon: React.ReactNode;
+  light?: boolean;
+  tabIndex?: number;
 }) {
   return (
     <a
@@ -339,13 +379,15 @@ function SocialLink({
       rel="noopener noreferrer"
       tabIndex={tabIndex}
       className={cn(
-        'w-8 h-8 flex items-center justify-center border-2 border-foreground transition hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[2px_2px_0px_hsl(var(--shadow-color))]',
-        light ? 'bg-background text-foreground' : 'bg-muted hover:bg-primary hover:text-primary-foreground'
+        "w-8 h-8 flex items-center justify-center border-2 border-foreground transition hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[2px_2px_0px_hsl(var(--shadow-color))]",
+        light
+          ? "bg-background text-foreground"
+          : "bg-muted hover:bg-primary hover:text-primary-foreground",
       )}
     >
       {icon}
     </a>
-  )
+  );
 }
 
 // ============================================================================
@@ -356,4 +398,4 @@ export const TeamSection = {
   List: TeamList,
   LargePhotos: TeamLargePhotos,
   Compact: TeamCompact,
-}
+};

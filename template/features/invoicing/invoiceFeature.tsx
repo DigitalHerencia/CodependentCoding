@@ -1,66 +1,104 @@
-import {
-  DataTableBlock,
-  EmptyStateBlock,
-  PageHeaderBlock,
-  RecordDetailBlock,
-} from "@/components/blocks/application-sections";
-import { getInvoice } from "@/lib/fetchers/invoicingFetchers";
+import { InvoicingInvoiceDetailTemplate } from "@/components/templates/invoicingInvoiceDetailTemplate";
+import { InvoiceFeatureClient } from "@/features/invoicing/invoiceFeature.client";
+import { getInvoiceWorkflow } from "@/lib/workflows/invoicingWorkflows";
+
+function displayValue(
+  record: object,
+  keys: readonly string[],
+  fallback: string,
+) {
+  const values = record as Record<string, unknown>;
+  for (const key of keys) {
+    const value = values[key];
+    if (value instanceof Date) return value.toLocaleDateString();
+    if (
+      typeof value === "string" ||
+      typeof value === "number" ||
+      typeof value === "bigint"
+    ) {
+      return String(value);
+    }
+    if (value && typeof value === "object") {
+      const nested = value as Record<string, unknown>;
+      const label = nested.displayName ?? nested.name ?? nested.email;
+      if (typeof label === "string") return label;
+    }
+  }
+  return fallback;
+}
+
 export async function InvoiceFeature({ invoiceId }: { invoiceId: string }) {
-  const invoice = await getInvoice(invoiceId);
-  if (!invoice)
-    return (
-      <EmptyStateBlock
-        title="Invoice not found"
-        description="No invoice is visible with this identifier."
-      />
+  const record = await getInvoiceWorkflow(invoiceId);
+  const records = record ? [record] : [];
+  const rows = records.map((record, index) => {
+    const item = record as object;
+    const id = displayValue(
+      item,
+      ["id", "resource", "number"],
+      String(index + 1),
     );
+    return {
+      id,
+      href: undefined,
+      cells: {
+        name: displayValue(
+          item,
+          [
+            "name",
+            "title",
+            "subject",
+            "resource",
+            "invoiceNumber",
+            "email",
+            "id",
+          ],
+          id,
+        ),
+        state: displayValue(
+          item,
+          ["status", "state", "stage", "role", "count"],
+          "ACTIVE",
+        ),
+        owner: displayValue(
+          item,
+          [
+            "owner",
+            "assignee",
+            "client",
+            "organization",
+            "channel",
+            "provider",
+          ],
+          "—",
+        ),
+        updated: displayValue(
+          item,
+          ["updatedAt", "createdAt", "dueAt", "publishedAt", "date"],
+          "—",
+        ),
+      },
+    };
+  });
+
   return (
-    <div className="space-y-6">
-      <PageHeaderBlock
-        eyebrow={`Invoice #${invoice.number}`}
-        title={invoice.customerName}
-      />
-      <RecordDetailBlock
-        title="Invoice totals"
-        status={invoice.status}
-        items={[
-          {
-            label: "Subtotal",
-            value: `${invoice.currency} ${invoice.subtotal}`,
-          },
-          { label: "Tax", value: `${invoice.currency} ${invoice.taxTotal}` },
-          { label: "Total", value: `${invoice.currency} ${invoice.total}` },
-          {
-            label: "Issued",
-            value: invoice.issuedAt
-              ? new Date(invoice.issuedAt).toLocaleDateString()
-              : "—",
-          },
-          {
-            label: "Due",
-            value: invoice.dueAt
-              ? new Date(invoice.dueAt).toLocaleDateString()
-              : "—",
-          },
-        ]}
-      />
-      <DataTableBlock
-        columns={[
-          { key: "description", label: "Line" },
-          { key: "quantity", label: "Quantity" },
-          { key: "price", label: "Unit price" },
-          { key: "total", label: "Total" },
-        ]}
-        rows={invoice.lines.map((line) => ({
-          id: line.id,
-          cells: {
-            description: line.description,
-            quantity: line.quantity,
-            price: line.unitPrice,
-            total: line.lineTotal,
-          },
-        }))}
-      />
-    </div>
+    <InvoicingInvoiceDetailTemplate
+      rows={rows}
+      stats={[
+        {
+          label: "Records",
+          value: String(rows.length),
+          trend: "server workflow",
+        },
+        {
+          label: "Active",
+          value: String(
+            rows.filter((row) => row.cells.state !== "ARCHIVED").length,
+          ),
+        },
+        { label: "Updated", value: rows[0]?.cells.updated ?? "—" },
+        { label: "Source", value: "SERVER" },
+      ]}
+      toolbar={<InvoiceFeatureClient />}
+    />
   );
 }

@@ -1,6 +1,5 @@
 "use client";
 
-/* eslint-disable react-refresh/only-export-components */
 import * as React from "react";
 import { createPortal } from "react-dom";
 import { X } from "lucide-react";

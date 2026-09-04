@@ -1,5 +1,12 @@
-import { RecordsFeature } from "@/features/admin/recordsFeature";
+import { Suspense } from "react";
 
-export default function Page() {
-  return <RecordsFeature />;
+import { AdminRecordsFeature } from "@/features/admin/adminRecordsFeature";
+import { AdminRecordsSkeleton } from "@/features/admin/adminRecordsSkeleton";
+
+export default async function Page() {
+  return (
+    <Suspense fallback={<AdminRecordsSkeleton />}>
+      <AdminRecordsFeature />
+    </Suspense>
+  );
 }

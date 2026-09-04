@@ -39,7 +39,7 @@ export type ChartPalette = keyof typeof CHART_PALETTES;
 // Helper to get colors from a palette
 export function getChartColor(palette: ChartPalette, index: number): string {
   const colors = CHART_PALETTES[palette];
-  return colors[index % colors.length];
+  return colors[index % colors.length]!;
 }
 
 // Generate ChartConfig from palette

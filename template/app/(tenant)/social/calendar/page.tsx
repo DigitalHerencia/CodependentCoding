@@ -1,6 +1,12 @@
-import { CalendarFeature } from "@/features/social/calendarFeature";
+import { Suspense } from "react";
 
-// URL ownership stops here; orchestration is delegated to the feature.
-export default function Page() {
-  return <CalendarFeature />;
+import { CalendarFeature } from "@/features/social/calendarFeature";
+import { CalendarSkeleton } from "@/features/social/calendarSkeleton";
+
+export default async function Page() {
+  return (
+    <Suspense fallback={<CalendarSkeleton />}>
+      <CalendarFeature />
+    </Suspense>
+  );
 }

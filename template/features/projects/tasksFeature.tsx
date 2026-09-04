@@ -1,39 +1,104 @@
-import {
-  DataTableBlock,
-  PageHeaderBlock,
-} from "@/components/blocks/application-sections";
-import { getMyTasks, getProjectTasks } from "@/lib/fetchers/projectsFetchers";
+import { ProjectTasksTemplate } from "@/components/templates/projectTasksTemplate";
+import { TasksFeatureClient } from "@/features/projects/tasksFeature.client";
+import { getProjectWorkspaceWorkflow } from "@/lib/workflows/projectsWorkflows";
 
-export async function TasksFeature({ projectId }: { projectId?: string }) {
-  const tasks = projectId
-    ? await getProjectTasks(projectId)
-    : await getMyTasks();
+function displayValue(
+  record: object,
+  keys: readonly string[],
+  fallback: string,
+) {
+  const values = record as Record<string, unknown>;
+  for (const key of keys) {
+    const value = values[key];
+    if (value instanceof Date) return value.toLocaleDateString();
+    if (
+      typeof value === "string" ||
+      typeof value === "number" ||
+      typeof value === "bigint"
+    ) {
+      return String(value);
+    }
+    if (value && typeof value === "object") {
+      const nested = value as Record<string, unknown>;
+      const label = nested.displayName ?? nested.name ?? nested.email;
+      if (typeof label === "string") return label;
+    }
+  }
+  return fallback;
+}
+
+export async function TasksFeature({ projectId }: { projectId: string }) {
+  const workspace = await getProjectWorkspaceWorkflow(projectId);
+  const records = workspace.tasks;
+  const rows = records.map((record, index) => {
+    const item = record as object;
+    const id = displayValue(
+      item,
+      ["id", "resource", "number"],
+      String(index + 1),
+    );
+    return {
+      id,
+      href: `/projects/${projectId}/tasks/${id}`,
+      cells: {
+        name: displayValue(
+          item,
+          [
+            "name",
+            "title",
+            "subject",
+            "resource",
+            "invoiceNumber",
+            "email",
+            "id",
+          ],
+          id,
+        ),
+        state: displayValue(
+          item,
+          ["status", "state", "stage", "role", "count"],
+          "ACTIVE",
+        ),
+        owner: displayValue(
+          item,
+          [
+            "owner",
+            "assignee",
+            "client",
+            "organization",
+            "channel",
+            "provider",
+          ],
+          "—",
+        ),
+        updated: displayValue(
+          item,
+          ["updatedAt", "createdAt", "dueAt", "publishedAt", "date"],
+          "—",
+        ),
+      },
+    };
+  });
+
   return (
-    <div className="space-y-6">
-      <PageHeaderBlock
-        eyebrow="Projects"
-        title={projectId ? "Project tasks" : "My tasks"}
-        description="Assignment and tenant scope are enforced before task DTOs reach this table."
-      />
-      <DataTableBlock
-        columns={[
-          { key: "title", label: "Task" },
-          { key: "status", label: "Status" },
-          { key: "priority", label: "Priority" },
-          { key: "assignee", label: "Assignee" },
-          { key: "due", label: "Due" },
-        ]}
-        rows={tasks.map((task) => ({
-          id: task.id,
-          cells: {
-            title: task.title,
-            status: task.status,
-            priority: task.priority,
-            assignee: task.assignee?.displayName ?? null,
-            due: task.dueAt ? new Date(task.dueAt).toLocaleDateString() : null,
-          },
-        }))}
-      />
-    </div>
+    <ProjectTasksTemplate
+      rows={rows}
+      stats={[
+        {
+          label: "Records",
+          value: String(rows.length),
+          trend: "server workflow",
+        },
+        {
+          label: "Active",
+          value: String(
+            rows.filter((row) => row.cells.state !== "ARCHIVED").length,
+          ),
+        },
+        { label: "Updated", value: rows[0]?.cells.updated ?? "—" },
+        { label: "Source", value: "SERVER" },
+      ]}
+      toolbar={<TasksFeatureClient />}
+    />
   );
 }

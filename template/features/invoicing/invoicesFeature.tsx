@@ -1,39 +1,104 @@
-import {
-  DataTableBlock,
-  PageHeaderBlock,
-} from "@/components/blocks/application-sections";
-import { getInvoices } from "@/lib/fetchers/invoicingFetchers";
+import { InvoicingInvoicesTemplate } from "@/components/templates/invoicingInvoicesTemplate";
+import { InvoicesFeatureClient } from "@/features/invoicing/invoicesFeature.client";
+import { getInvoicingWorkspaceWorkflow } from "@/lib/workflows/invoicingWorkflows";
+
+function displayValue(
+  record: object,
+  keys: readonly string[],
+  fallback: string,
+) {
+  const values = record as Record<string, unknown>;
+  for (const key of keys) {
+    const value = values[key];
+    if (value instanceof Date) return value.toLocaleDateString();
+    if (
+      typeof value === "string" ||
+      typeof value === "number" ||
+      typeof value === "bigint"
+    ) {
+      return String(value);
+    }
+    if (value && typeof value === "object") {
+      const nested = value as Record<string, unknown>;
+      const label = nested.displayName ?? nested.name ?? nested.email;
+      if (typeof label === "string") return label;
+    }
+  }
+  return fallback;
+}
+
 export async function InvoicesFeature() {
-  const invoices = await getInvoices();
+  const workspace = await getInvoicingWorkspaceWorkflow();
+  const records = workspace.invoices;
+  const rows = records.map((record, index) => {
+    const item = record as object;
+    const id = displayValue(
+      item,
+      ["id", "resource", "number"],
+      String(index + 1),
+    );
+    return {
+      id,
+      href: `${"/invoices"}/${id}`,
+      cells: {
+        name: displayValue(
+          item,
+          [
+            "name",
+            "title",
+            "subject",
+            "resource",
+            "invoiceNumber",
+            "email",
+            "id",
+          ],
+          id,
+        ),
+        state: displayValue(
+          item,
+          ["status", "state", "stage", "role", "count"],
+          "ACTIVE",
+        ),
+        owner: displayValue(
+          item,
+          [
+            "owner",
+            "assignee",
+            "client",
+            "organization",
+            "channel",
+            "provider",
+          ],
+          "—",
+        ),
+        updated: displayValue(
+          item,
+          ["updatedAt", "createdAt", "dueAt", "publishedAt", "date"],
+          "—",
+        ),
+      },
+    };
+  });
+
   return (
-    <div className="space-y-6">
-      <PageHeaderBlock
-        eyebrow="Invoicing"
-        title="Invoices"
-        action={{ label: "New invoice", href: "/invoices/new" }}
-      />
-      <DataTableBlock
-        columns={[
-          { key: "number", label: "Invoice" },
-          { key: "customer", label: "Customer" },
-          { key: "total", label: "Total" },
-          { key: "status", label: "Status" },
-          { key: "due", label: "Due" },
-        ]}
-        rows={invoices.map((invoice) => ({
-          id: invoice.id,
-          href: `/invoices/${invoice.id}`,
-          cells: {
-            number: `#${invoice.number}`,
-            customer: invoice.customerName,
-            total: `${invoice.currency} ${invoice.total}`,
-            status: invoice.status,
-            due: invoice.dueAt
-              ? new Date(invoice.dueAt).toLocaleDateString()
-              : null,
-          },
-        }))}
-      />
-    </div>
+    <InvoicingInvoicesTemplate
+      rows={rows}
+      stats={[
+        {
+          label: "Records",
+          value: String(rows.length),
+          trend: "server workflow",
+        },
+        {
+          label: "Active",
+          value: String(
+            rows.filter((row) => row.cells.state !== "ARCHIVED").length,
+          ),
+        },
+        { label: "Updated", value: rows[0]?.cells.updated ?? "—" },
+        { label: "Source", value: "SERVER" },
+      ]}
+      toolbar={<InvoicesFeatureClient />}
+    />
   );
 }

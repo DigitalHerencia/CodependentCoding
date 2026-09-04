@@ -1,6 +1,5 @@
 "use client";
 
-/* eslint-disable react-refresh/only-export-components */
 import * as React from "react";
 import {
   format,
@@ -232,8 +231,10 @@ const DateRangePicker = React.forwardRef<
             <div className="p-3">
               <Calendar
                 mode="range"
-                defaultMonth={selectedRange?.from}
-                selected={selectedRange}
+                {...(selectedRange?.from
+                  ? { defaultMonth: selectedRange.from }
+                  : {})}
+                {...(selectedRange ? { selected: selectedRange } : {})}
                 onSelect={handleSelect}
                 numberOfMonths={effectiveNumberOfMonths}
                 disabled={(date) => {

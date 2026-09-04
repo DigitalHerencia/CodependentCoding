@@ -1,14 +1,13 @@
-/* eslint-disable react-refresh/only-export-components */
-import * as React from 'react';
+import * as React from "react";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from '@/components/ui/accordion';
-import { cn } from '@/lib/utils';
-import { HelpCircle, MessageCircle } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+} from "@/components/ui/accordion";
+import { cn } from "@/lib/utils/cn";
+import { HelpCircle, MessageCircle } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export interface FAQItem {
   question: string;
@@ -34,7 +33,7 @@ export function FAQAccordion({
   className,
 }: FAQAccordionProps) {
   return (
-    <section className={cn('py-16 px-4 md:px-8 lg:px-16', className)}>
+    <section className={cn("py-16 px-4 md:px-8 lg:px-16", className)}>
       <div className="max-w-3xl mx-auto">
         {(title || subtitle || description) && (
           <div className="text-center mb-12 space-y-4">
@@ -93,7 +92,7 @@ export function FAQTwoColumns({ title, items, className }: FAQTwoColumnsProps) {
 
   return (
     <section
-      className={cn('py-16 px-4 md:px-8 lg:px-16 bg-muted/30', className)}
+      className={cn("py-16 px-4 md:px-8 lg:px-16 bg-muted/30", className)}
     >
       <div className="max-w-6xl mx-auto">
         {title && (
@@ -147,7 +146,7 @@ export function FAQWithCategories({
   if (!categories.length) return null;
 
   return (
-    <section className={cn('py-16 px-4 md:px-8 lg:px-16', className)}>
+    <section className={cn("py-16 px-4 md:px-8 lg:px-16", className)}>
       <div className="max-w-4xl mx-auto">
         {title && (
           <h2 className="text-3xl md:text-4xl font-black uppercase tracking-tight text-center mb-12">
@@ -159,7 +158,7 @@ export function FAQWithCategories({
           {categories.map((category, index) => (
             <Button
               key={category.name}
-              variant={activeCategory === index ? 'default' : 'outline'}
+              variant={activeCategory === index ? "default" : "outline"}
               onClick={() => setActiveCategory(index)}
             >
               {category.name}
@@ -208,13 +207,13 @@ export interface FAQWithContactProps {
 export function FAQWithContact({
   title,
   items,
-  contactTitle = 'Still have questions?',
+  contactTitle = "Still have questions?",
   contactDescription = "Can't find the answer you're looking for? Please reach out to our friendly team.",
   contactAction,
   className,
 }: FAQWithContactProps) {
   return (
-    <section className={cn('py-16 px-4 md:px-8 lg:px-16', className)}>
+    <section className={cn("py-16 px-4 md:px-8 lg:px-16", className)}>
       <div className="max-w-4xl mx-auto">
         {title && (
           <h2 className="text-3xl md:text-4xl font-black uppercase tracking-tight text-center mb-12">
@@ -269,7 +268,7 @@ export interface FAQSimpleListProps {
 export function FAQSimpleList({ title, items, className }: FAQSimpleListProps) {
   return (
     <section
-      className={cn('py-16 px-4 md:px-8 lg:px-16 bg-muted/30', className)}
+      className={cn("py-16 px-4 md:px-8 lg:px-16 bg-muted/30", className)}
     >
       <div className="max-w-3xl mx-auto">
         {title && (

@@ -1,6 +1,12 @@
-import { IntegrationsFeature } from "@/features/settings/integrationsFeature";
+import { Suspense } from "react";
 
-// URL ownership stops here; orchestration is delegated to the feature.
-export default function Page() {
-  return <IntegrationsFeature />;
+import { IntegrationsFeature } from "@/features/settings/integrationsFeature";
+import { IntegrationsSkeleton } from "@/features/settings/integrationsSkeleton";
+
+export default async function Page() {
+  return (
+    <Suspense fallback={<IntegrationsSkeleton />}>
+      <IntegrationsFeature />
+    </Suspense>
+  );
 }

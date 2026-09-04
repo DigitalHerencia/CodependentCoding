@@ -88,7 +88,7 @@ function drawSpiral(
       const dy = r - cy;
       const dist = Math.sqrt(dx * dx + dy * dy);
       if (dist < 0.5) {
-        grid[r][c] = chars[chars.length - 1];
+        grid[r]![c] = chars[chars.length - 1]!;
         continue;
       }
       const angle =
@@ -101,9 +101,9 @@ function drawSpiral(
       const threshold = spacing * 0.38;
       if (nearestR >= 0 && distToArm < threshold) {
         const intensity = 1 - distToArm / threshold;
-        grid[r][c] = chars[Math.floor(intensity * (chars.length - 1))];
+        grid[r]![c] = chars[Math.floor(intensity * (chars.length - 1))]!;
       } else {
-        grid[r][c] = " ";
+        grid[r]![c] = " ";
       }
     }
   }
@@ -133,9 +133,9 @@ function drawRose(
       const threshold = radius * 0.12;
       if (distToRose < threshold) {
         const intensity = 1 - distToRose / threshold;
-        grid[r][c] = chars[Math.floor(intensity * (chars.length - 1))];
+        grid[r]![c] = chars[Math.floor(intensity * (chars.length - 1))]!;
       } else {
-        grid[r][c] = " ";
+        grid[r]![c] = " ";
       }
     }
   }
@@ -161,9 +161,9 @@ function drawWave(
       const threshold = 0.08;
       if (distToWave < threshold) {
         const intensity = 1 - distToWave / threshold;
-        grid[r][c] = chars[Math.floor(intensity * (chars.length - 1))];
+        grid[r]![c] = chars[Math.floor(intensity * (chars.length - 1))]!;
       } else {
-        grid[r][c] = " ";
+        grid[r]![c] = " ";
       }
     }
   }
@@ -191,15 +191,15 @@ function drawVortex(
       const intensity =
         ((Math.sin(vortexAngle * 3) + 1) / 2) * Math.exp(-dist / (maxR * 0.8));
       if (intensity > 0.08) {
-        grid[r][c] =
+        grid[r]![c] =
           chars[
             Math.min(
               Math.floor(intensity * (chars.length - 1)),
               chars.length - 1,
             )
-          ];
+          ]!;
       } else {
-        grid[r][c] = " ";
+        grid[r]![c] = " ";
       }
     }
   }
@@ -233,9 +233,9 @@ function drawPulse(
       const fade = Math.max(0, 1 - dist / maxR);
       const intensity = ringIntensity * fade;
       if (intensity > 0.05) {
-        grid[r][c] = chars[Math.floor(intensity * (chars.length - 1))];
+        grid[r]![c] = chars[Math.floor(intensity * (chars.length - 1))]!;
       } else {
-        grid[r][c] = " ";
+        grid[r]![c] = " ";
       }
     }
   }
@@ -262,16 +262,17 @@ function drawMatrix(
   state: ColState[],
 ): void {
   for (let c = 0; c < cols; c++) {
-    const colT = (t * 0.001 * state[c].speed + state[c].offset) % (rows * 1.8);
+    const column = state[c]!;
+    const colT = (t * 0.001 * column.speed + column.offset) % (rows * 1.8);
     for (let r = 0; r < rows; r++) {
       const distFromHead = colT - r;
       if (distFromHead >= 0 && distFromHead < 1) {
-        grid[r][c] = chars[chars.length - 1];
+        grid[r]![c] = chars[chars.length - 1]!;
       } else if (distFromHead >= 1 && distFromHead < rows * 0.45) {
         const fade = 1 - distFromHead / (rows * 0.45);
-        grid[r][c] = chars[Math.floor(fade * (chars.length - 1))];
+        grid[r]![c] = chars[Math.floor(fade * (chars.length - 1))]!;
       } else {
-        grid[r][c] = " ";
+        grid[r]![c] = " ";
       }
     }
   }
@@ -297,7 +298,7 @@ function drawGrid(
           ) +
             1) /
           2;
-        grid[r][c] = chars[Math.floor(wave * (chars.length - 1))];
+        grid[r]![c] = chars[Math.floor(wave * (chars.length - 1))]!;
       } else if (isH || isV) {
         const wave =
           Math.sin(
@@ -305,9 +306,9 @@ function drawGrid(
           ) *
             0.3 +
           0.3;
-        grid[r][c] = chars[Math.floor(wave * (chars.length - 1))];
+        grid[r]![c] = chars[Math.floor(wave * (chars.length - 1))]!;
       } else {
-        grid[r][c] = " ";
+        grid[r]![c] = " ";
       }
     }
   }
@@ -366,10 +367,12 @@ function drawTorus(
       const ny2 = nx * sinB + ny1 * cosB;
       const nz2 = nz1;
       const L = nx2 * 0.57 + ny2 * 0.57 + nz2 * -0.57;
-      if (L > 0 && ooz > zbuf[yp][xp]) {
-        zbuf[yp][xp] = ooz;
-        grid[yp][xp] =
-          chars[Math.min(Math.floor(L * (chars.length - 1)), chars.length - 1)];
+      if (L > 0 && ooz > zbuf[yp]![xp]!) {
+        zbuf[yp]![xp] = ooz;
+        grid[yp]![xp] =
+          chars[
+            Math.min(Math.floor(L * (chars.length - 1)), chars.length - 1)
+          ]!;
       }
     }
   }
@@ -420,16 +423,18 @@ function drawSphere(
       const L = Math.max(0, sx * lx + sy * ly + sz * lz);
       if (onGrid) {
         const intensity = 0.3 + L * 0.7;
-        grid[r][c] =
+        grid[r]![c] =
           chars[
             Math.min(
               Math.floor(intensity * (chars.length - 1)),
               chars.length - 1,
             )
-          ];
+          ]!;
       } else if (L > 0.02) {
-        grid[r][c] =
-          chars[Math.min(Math.floor(L * (chars.length - 1)), chars.length - 1)];
+        grid[r]![c] =
+          chars[
+            Math.min(Math.floor(L * (chars.length - 1)), chars.length - 1)
+          ]!;
       }
       // dark side stays ' '
     }
@@ -489,7 +494,7 @@ function drawCube(
     const L = Math.max(0, rnx * lx + rny * ly + rnz * lz);
     if (L < 0.02) continue;
     const ch =
-      chars[Math.min(Math.floor(L * (chars.length - 1)), chars.length - 1)];
+      chars[Math.min(Math.floor(L * (chars.length - 1)), chars.length - 1)]!;
     for (let u = -1; u <= 1 + step * 0.5; u += step) {
       for (let v = -1; v <= 1 + step * 0.5; v += step) {
         const [rx, ry, rz] = rot(...ptFn(u, v));
@@ -503,10 +508,10 @@ function drawCube(
           xp < cols &&
           yp >= 0 &&
           yp < rows &&
-          ooz > zbuf[yp][xp]
+          ooz > zbuf[yp]![xp]!
         ) {
-          zbuf[yp][xp] = ooz;
-          grid[yp][xp] = ch;
+          zbuf[yp]![xp] = ooz;
+          grid[yp]![xp] = ch;
         }
       }
     }
@@ -574,10 +579,12 @@ function drawDonut(
         sinT * cosA -
         cosP * cosT * sinB;
 
-      if (L > 0 && ooz > zbuf[yp][xp]) {
-        zbuf[yp][xp] = ooz;
-        grid[yp][xp] =
-          chars[Math.min(Math.floor(L * (chars.length - 1)), chars.length - 1)];
+      if (L > 0 && ooz > zbuf[yp]![xp]!) {
+        zbuf[yp]![xp] = ooz;
+        grid[yp]![xp] =
+          chars[
+            Math.min(Math.floor(L * (chars.length - 1)), chars.length - 1)
+          ]!;
       }
     }
   }
@@ -616,12 +623,12 @@ function drawHelix(
     const ooz = 1 / zDist;
     const xp = Math.round(cx + K1 * rx * ooz);
     const yp = Math.round(cy - K1 * py * ooz * aspect);
-    if (xp >= 0 && xp < cols && yp >= 0 && yp < rows && ooz > zbuf[yp][xp]) {
-      zbuf[yp][xp] = ooz;
-      grid[yp][xp] =
+    if (xp >= 0 && xp < cols && yp >= 0 && yp < rows && ooz > zbuf[yp]![xp]!) {
+      zbuf[yp]![xp] = ooz;
+      grid[yp]![xp] =
         chars[
           Math.min(Math.floor(intensity * (chars.length - 1)), chars.length - 1)
-        ];
+        ]!;
     }
   }
 
@@ -766,16 +773,16 @@ function drawTrefoilKnot(
       const [rnx, rny, rnz] = rotYX(snx, sny, snz);
       const L = Math.max(0, rnx * lx + rny * ly + rnz * lz);
 
-      if (ooz > zbuf[yp][xp]) {
-        zbuf[yp][xp] = ooz;
+      if (ooz > zbuf[yp]![xp]!) {
+        zbuf[yp]![xp] = ooz;
         const intensity = 0.15 + L * 0.85;
-        grid[yp][xp] =
+        grid[yp]![xp] =
           chars[
             Math.min(
               Math.floor(intensity * (chars.length - 1)),
               chars.length - 1,
             )
-          ];
+          ]!;
       }
     }
   }
@@ -878,24 +885,26 @@ function drawGeodesicDome(
       if (xp < 0 || xp >= cols || yp < 0 || yp >= rows) continue;
       const [rnx, rny, rnz] = rotYX(px, py, pz);
       const L = Math.max(0.25, rnx * lx + rny * ly + rnz * lz);
-      if (ooz > zbuf[yp][xp]) {
-        zbuf[yp][xp] = ooz;
-        grid[yp][xp] =
-          chars[Math.min(Math.floor(L * (chars.length - 1)), chars.length - 1)];
+      if (ooz > zbuf[yp]![xp]!) {
+        zbuf[yp]![xp] = ooz;
+        grid[yp]![xp] =
+          chars[
+            Math.min(Math.floor(L * (chars.length - 1)), chars.length - 1)
+          ]!;
       }
     }
   }
 
   for (const [ai, bi, ci] of faces) {
-    const va = norm3(rawV[ai]),
-      vb = norm3(rawV[bi]),
-      vc = norm3(rawV[ci]);
+    const va = norm3(rawV[ai]!),
+      vb = norm3(rawV[bi]!),
+      vc = norm3(rawV[ci]!);
     const pts: [number, number, number][][] = [];
     for (let i = 0; i <= freq; i++) {
       pts[i] = [];
       for (let j = 0; j <= freq - i; j++) {
         const k = freq - i - j;
-        pts[i][j] = norm3([
+        pts[i]![j] = norm3([
           (i * va[0] + j * vb[0] + k * vc[0]) / freq,
           (i * va[1] + j * vb[1] + k * vc[1]) / freq,
           (i * va[2] + j * vb[2] + k * vc[2]) / freq,
@@ -904,10 +913,10 @@ function drawGeodesicDome(
     }
     for (let i = 0; i <= freq; i++) {
       for (let j = 0; j <= freq - i; j++) {
-        if (j + 1 <= freq - i) plotEdge(pts[i][j], pts[i][j + 1]);
+        if (j + 1 <= freq - i) plotEdge(pts[i]![j]!, pts[i]![j + 1]!);
         if (i + 1 <= freq && j <= freq - (i + 1))
-          plotEdge(pts[i][j], pts[i + 1][j]);
-        if (i + 1 <= freq && j >= 1) plotEdge(pts[i][j], pts[i + 1][j - 1]);
+          plotEdge(pts[i]![j]!, pts[i + 1]![j]!);
+        if (i + 1 <= freq && j >= 1) plotEdge(pts[i]![j]!, pts[i + 1]![j - 1]!);
       }
     }
   }
@@ -966,10 +975,10 @@ function drawSaturn(
     if (xp < 0 || xp >= cols || yp < 0 || yp >= rows) return;
     const [rnx, rny, rnz] = rotYX(nx, ny, nz);
     const L = Math.max(0, rnx * lx + rny * ly + rnz * lz);
-    if (L > 0 && ooz > zbuf[yp][xp]) {
-      zbuf[yp][xp] = ooz;
-      grid[yp][xp] =
-        chars[Math.min(Math.floor(L * (chars.length - 1)), chars.length - 1)];
+    if (L > 0 && ooz > zbuf[yp]![xp]!) {
+      zbuf[yp]![xp] = ooz;
+      grid[yp]![xp] =
+        chars[Math.min(Math.floor(L * (chars.length - 1)), chars.length - 1)]!;
     }
   }
 
@@ -1015,15 +1024,15 @@ function drawSaturn(
       const xp = Math.round(cx + K1 * rx * ooz);
       const yp = Math.round(cy - K1 * ry * ooz * aspect);
       if (xp < 0 || xp >= cols || yp < 0 || yp >= rows) continue;
-      if (ooz > zbuf[yp][xp]) {
-        zbuf[yp][xp] = ooz;
-        grid[yp][xp] =
+      if (ooz > zbuf[yp]![xp]!) {
+        zbuf[yp]![xp] = ooz;
+        grid[yp]![xp] =
           chars[
             Math.min(
               Math.floor(ringBrightness * (chars.length - 1)),
               chars.length - 1,
             )
-          ];
+          ]!;
       }
     }
   }
@@ -1078,10 +1087,10 @@ function drawHyperboloid(
     const nm = Math.sqrt(px * px + py * py + pz * pz);
     const [rnx, rny, rnz] = rotYX(px / nm, -py / nm, pz / nm);
     const L = Math.max(0.12, rnx * lx + rny * ly + rnz * lz);
-    if (ooz > zbuf[yp][xp]) {
-      zbuf[yp][xp] = ooz;
-      grid[yp][xp] =
-        chars[Math.min(Math.floor(L * (chars.length - 1)), chars.length - 1)];
+    if (ooz > zbuf[yp]![xp]!) {
+      zbuf[yp]![xp] = ooz;
+      grid[yp]![xp] =
+        chars[Math.min(Math.floor(L * (chars.length - 1)), chars.length - 1)]!;
     }
   }
 
@@ -1208,19 +1217,19 @@ function drawDNA(
         snz = cu * nz + su * bz;
       const [rnx, , rnz] = rotY(snx, 0, snz);
       const L = Math.max(0, rnx * lx + rnz * lz);
-      if (ooz > zbuf[yp][xp]) {
-        zbuf[yp][xp] = ooz;
+      if (ooz > zbuf[yp]![xp]!) {
+        zbuf[yp]![xp] = ooz;
         const intensity = Math.max(
           0.12,
           Math.min(1, baseBrightness * (0.3 + L * 0.7)),
         );
-        grid[yp][xp] =
+        grid[yp]![xp] =
           chars[
             Math.min(
               Math.floor(intensity * (chars.length - 1)),
               chars.length - 1,
             )
-          ];
+          ]!;
       }
     }
   }
@@ -1266,12 +1275,12 @@ function drawDNA(
         const xp = Math.round(cx + K1 * vrx * ooz);
         const yp = Math.round(cy - K1 * vry * ooz * aspect);
         if (xp < 0 || xp >= cols || yp < 0 || yp >= rows) continue;
-        if (ooz > zbuf[yp][xp]) {
-          zbuf[yp][xp] = ooz;
-          grid[yp][xp] =
+        if (ooz > zbuf[yp]![xp]!) {
+          zbuf[yp]![xp] = ooz;
+          grid[yp]![xp] =
             chars[
               Math.min(Math.floor(0.42 * (chars.length - 1)), chars.length - 1)
-            ];
+            ]!;
         }
       }
     }
@@ -1324,7 +1333,6 @@ function makeAsciiComponent(
         const g = makeGrid(cols, rows);
         drawFn(g, cols, rows, 0, chars, matrixStateRef.current);
         return gridToLines(g);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
       }, [cols, rows, chars]);
 
       React.useEffect(() => {
@@ -1337,7 +1345,6 @@ function makeAsciiComponent(
               if (span) span.textContent = lines[i] ?? "";
             });
           } else {
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             pre!.textContent = lines.join("\n");
           }
         }

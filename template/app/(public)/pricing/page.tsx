@@ -1,5 +1,5 @@
-import { FAQTwoColumns } from "@/components/blocks/faq-sections";
-import { PricingSection } from "@/components/blocks/pricing-sections";
+import { FAQTwoColumns } from "@/components/blocks/faq-section";
+import { PricingSection } from "@/components/blocks/pricing-section";
 
 const tiers = [
   {

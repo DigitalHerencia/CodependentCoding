@@ -1,11 +1,17 @@
-/* eslint-disable react-refresh/only-export-components */
-import * as React from 'react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Progress } from '@/components/ui/progress'
-import { cn } from '@/lib/utils'
+import * as React from "react";
+import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import { cn } from "@/lib/utils/cn";
 import {
   ArrowRight,
   ArrowLeft,
@@ -16,26 +22,26 @@ import {
   Sparkles,
   PartyPopper,
   Upload,
-} from 'lucide-react'
+} from "lucide-react";
 
 // ============================================================================
 // ONBOARDING VARIANT 1: Step Wizard
 // ============================================================================
 export interface OnboardingStep {
-  id: string
-  title: string
-  description?: string
-  icon?: React.ReactNode
-  content: React.ReactNode
-  optional?: boolean
+  id: string;
+  title: string;
+  description?: string;
+  icon?: React.ReactNode;
+  content: React.ReactNode;
+  optional?: boolean;
 }
 
 export interface OnboardingWizardProps {
-  steps: OnboardingStep[]
-  onComplete?: () => void
-  onStepChange?: (stepIndex: number) => void
-  showProgress?: boolean
-  className?: string
+  steps: OnboardingStep[];
+  onComplete?: () => void;
+  onStepChange?: (stepIndex: number) => void;
+  showProgress?: boolean;
+  className?: string;
 }
 
 export function OnboardingWizard({
@@ -45,33 +51,36 @@ export function OnboardingWizard({
   showProgress = true,
   className,
 }: OnboardingWizardProps) {
-  const [currentStep, setCurrentStep] = React.useState(0)
-  const progress = ((currentStep + 1) / steps.length) * 100
+  const [currentStep, setCurrentStep] = React.useState(0);
+  const progress = ((currentStep + 1) / steps.length) * 100;
 
   const handleNext = () => {
     if (currentStep < steps.length - 1) {
-      setCurrentStep(currentStep + 1)
-      onStepChange?.(currentStep + 1)
+      setCurrentStep(currentStep + 1);
+      onStepChange?.(currentStep + 1);
     } else {
-      onComplete?.()
+      onComplete?.();
     }
-  }
+  };
 
   const handlePrevious = () => {
     if (currentStep > 0) {
-      setCurrentStep(currentStep - 1)
-      onStepChange?.(currentStep - 1)
+      setCurrentStep(currentStep - 1);
+      onStepChange?.(currentStep - 1);
     }
-  }
+  };
 
   const handleSkip = () => {
-    if (steps[currentStep].optional) {
-      handleNext()
+    if (steps[currentStep]?.optional) {
+      handleNext();
     }
-  }
+  };
+
+  const activeStep = steps[currentStep];
+  if (!activeStep) return null;
 
   return (
-    <div className={cn('w-full max-w-2xl mx-auto', className)}>
+    <div className={cn("w-full max-w-2xl mx-auto", className)}>
       {/* Progress */}
       {showProgress && (
         <div className="mb-8 space-y-4">
@@ -79,27 +88,33 @@ export function OnboardingWizard({
             <span className="font-bold uppercase tracking-wide">
               Step {currentStep + 1} of {steps.length}
             </span>
-            <span className="text-muted-foreground">{Math.round(progress)}% complete</span>
+            <span className="text-muted-foreground">
+              {Math.round(progress)}% complete
+            </span>
           </div>
           <Progress value={progress} className="h-3" />
         </div>
       )}
 
       {/* Step Indicators */}
-      <div className="flex items-center justify-center gap-2 mb-8" role="list" aria-label="Progress steps">
+      <div
+        className="flex items-center justify-center gap-2 mb-8"
+        role="list"
+        aria-label="Progress steps"
+      >
         {steps.map((step, index) => (
           <React.Fragment key={step.id}>
             <div
               role="listitem"
               aria-label={`Step ${index + 1} of ${steps.length}: ${step.title}`}
-              aria-current={index === currentStep ? 'step' : undefined}
+              aria-current={index === currentStep ? "step" : undefined}
               className={cn(
-                'w-10 h-10 flex items-center justify-center border-3 border-foreground font-bold transition',
+                "w-10 h-10 flex items-center justify-center border-3 border-foreground font-bold transition",
                 index < currentStep
-                  ? 'bg-success text-success-foreground shadow-[4px_4px_0px_hsl(var(--shadow-color))]'
+                  ? "bg-success text-success-foreground shadow-[4px_4px_0px_hsl(var(--shadow-color))]"
                   : index === currentStep
-                    ? 'bg-primary text-primary-foreground shadow-[4px_4px_0px_hsl(var(--shadow-color))] scale-110'
-                    : 'bg-muted text-muted-foreground'
+                    ? "bg-primary text-primary-foreground shadow-[4px_4px_0px_hsl(var(--shadow-color))] scale-110"
+                    : "bg-muted text-muted-foreground",
               )}
             >
               {index < currentStep ? <Check className="h-5 w-5" /> : index + 1}
@@ -107,8 +122,8 @@ export function OnboardingWizard({
             {index < steps.length - 1 && (
               <div
                 className={cn(
-                  'h-1 w-8 transition-colors',
-                  index < currentStep ? 'bg-success' : 'bg-muted'
+                  "h-1 w-8 transition-colors",
+                  index < currentStep ? "bg-success" : "bg-muted",
                 )}
               />
             )}
@@ -119,20 +134,20 @@ export function OnboardingWizard({
       {/* Current Step Content */}
       <Card>
         <CardHeader className="text-center">
-          {steps[currentStep].icon && (
+          {activeStep.icon && (
             <div className="w-16 h-16 mx-auto flex items-center justify-center border-3 border-foreground bg-primary/10 shadow-[4px_4px_0px_hsl(var(--shadow-color))] mb-4">
-              {steps[currentStep].icon}
+              {activeStep.icon}
             </div>
           )}
           <CardTitle className="text-2xl font-black uppercase">
-            {steps[currentStep].title}
+            {activeStep.title}
           </CardTitle>
-          {steps[currentStep].description && (
-            <CardDescription>{steps[currentStep].description}</CardDescription>
+          {activeStep.description && (
+            <CardDescription>{activeStep.description}</CardDescription>
           )}
         </CardHeader>
         <CardContent className="space-y-6">
-          {steps[currentStep].content}
+          {activeStep.content}
 
           <div className="flex items-center justify-between pt-4">
             <Button
@@ -145,13 +160,13 @@ export function OnboardingWizard({
             </Button>
 
             <div className="flex items-center gap-2">
-              {steps[currentStep].optional && (
+              {activeStep.optional && (
                 <Button variant="ghost" onClick={handleSkip}>
                   Skip
                 </Button>
               )}
               <Button onClick={handleNext}>
-                {currentStep === steps.length - 1 ? 'Complete' : 'Continue'}
+                {currentStep === steps.length - 1 ? "Complete" : "Continue"}
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </div>
@@ -159,25 +174,29 @@ export function OnboardingWizard({
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }
 
 // ============================================================================
 // ONBOARDING VARIANT 2: Welcome Screen
 // ============================================================================
 export interface WelcomeScreenProps {
-  logo?: React.ReactNode
-  title?: string
-  subtitle?: string
-  features?: Array<{ icon: React.ReactNode; title: string; description: string }>
-  primaryAction?: { label: string; onClick?: () => void }
-  secondaryAction?: { label: string; onClick?: () => void }
-  className?: string
+  logo?: React.ReactNode;
+  title?: string;
+  subtitle?: string;
+  features?: Array<{
+    icon: React.ReactNode;
+    title: string;
+    description: string;
+  }>;
+  primaryAction?: { label: string; onClick?: () => void };
+  secondaryAction?: { label: string; onClick?: () => void };
+  className?: string;
 }
 
 export function WelcomeScreen({
   logo,
-  title = 'Welcome to the app',
+  title = "Welcome to the app",
   subtitle = "Let's get you started with a quick setup",
   features,
   primaryAction,
@@ -185,7 +204,7 @@ export function WelcomeScreen({
   className,
 }: WelcomeScreenProps) {
   return (
-    <div className={cn('w-full max-w-2xl mx-auto text-center', className)}>
+    <div className={cn("w-full max-w-2xl mx-auto text-center", className)}>
       <Card>
         <CardContent className="pt-8 pb-8 space-y-8">
           {logo && (
@@ -212,7 +231,9 @@ export function WelcomeScreen({
                     {feature.icon}
                   </div>
                   <h3 className="font-bold">{feature.title}</h3>
-                  <p className="text-sm text-muted-foreground">{feature.description}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {feature.description}
+                  </p>
                 </div>
               ))}
             </div>
@@ -226,7 +247,11 @@ export function WelcomeScreen({
               </Button>
             )}
             {secondaryAction && (
-              <Button variant="outline" size="lg" onClick={secondaryAction.onClick}>
+              <Button
+                variant="outline"
+                size="lg"
+                onClick={secondaryAction.onClick}
+              >
                 {secondaryAction.label}
               </Button>
             )}
@@ -234,7 +259,7 @@ export function WelcomeScreen({
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }
 
 // ============================================================================
@@ -242,32 +267,32 @@ export function WelcomeScreen({
 // ============================================================================
 export interface ProfileSetupProps {
   onSubmit?: (data: {
-    name: string
-    role: string
-    avatar?: File
-    interests: string[]
-  }) => void
-  availableRoles?: Array<{ value: string; label: string }>
-  availableInterests?: Array<{ value: string; label: string }>
-  className?: string
+    name: string;
+    role: string;
+    avatar?: File;
+    interests: string[];
+  }) => void;
+  availableRoles?: Array<{ value: string; label: string }>;
+  availableInterests?: Array<{ value: string; label: string }>;
+  className?: string;
 }
 
 const defaultRoles = [
-  { value: 'developer', label: 'Developer' },
-  { value: 'designer', label: 'Designer' },
-  { value: 'manager', label: 'Product Manager' },
-  { value: 'marketing', label: 'Marketing' },
-  { value: 'other', label: 'Other' },
-]
+  { value: "developer", label: "Developer" },
+  { value: "designer", label: "Designer" },
+  { value: "manager", label: "Product Manager" },
+  { value: "marketing", label: "Marketing" },
+  { value: "other", label: "Other" },
+];
 
 const defaultInterests = [
-  { value: 'web', label: 'Web Development' },
-  { value: 'mobile', label: 'Mobile Apps' },
-  { value: 'ai', label: 'AI & Machine Learning' },
-  { value: 'design', label: 'UI/UX Design' },
-  { value: 'data', label: 'Data Science' },
-  { value: 'devops', label: 'DevOps' },
-]
+  { value: "web", label: "Web Development" },
+  { value: "mobile", label: "Mobile Apps" },
+  { value: "ai", label: "AI & Machine Learning" },
+  { value: "design", label: "UI/UX Design" },
+  { value: "data", label: "Data Science" },
+  { value: "devops", label: "DevOps" },
+];
 
 export function ProfileSetup({
   onSubmit,
@@ -276,34 +301,36 @@ export function ProfileSetup({
   className,
 }: ProfileSetupProps) {
   const [formData, setFormData] = React.useState({
-    name: '',
-    role: '',
+    name: "",
+    role: "",
     interests: [] as string[],
-  })
-  const [avatarPreview, setAvatarPreview] = React.useState<string | null>(null)
-  const [avatarFile, setAvatarFile] = React.useState<File | undefined>(undefined)
-  const [avatarError, setAvatarError] = React.useState<string | null>(null)
-  const fileInputRef = React.useRef<HTMLInputElement>(null)
+  });
+  const [avatarPreview, setAvatarPreview] = React.useState<string | null>(null);
+  const [avatarFile, setAvatarFile] = React.useState<File | undefined>(
+    undefined,
+  );
+  const [avatarError, setAvatarError] = React.useState<string | null>(null);
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file) return
-    setAvatarError(null)
-    if (!file.type.startsWith('image/')) {
-      setAvatarError('Please select an image file.')
-      return
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setAvatarError(null);
+    if (!file.type.startsWith("image/")) {
+      setAvatarError("Please select an image file.");
+      return;
     }
     if (file.size > 5 * 1024 * 1024) {
-      setAvatarError('Image must be smaller than 5MB.')
-      return
+      setAvatarError("Image must be smaller than 5MB.");
+      return;
     }
-    setAvatarFile(file)
-    const reader = new FileReader()
+    setAvatarFile(file);
+    const reader = new FileReader();
     reader.onloadend = () => {
-      setAvatarPreview(reader.result as string)
-    }
-    reader.readAsDataURL(file)
-  }
+      setAvatarPreview(reader.result as string);
+    };
+    reader.readAsDataURL(file);
+  };
 
   const toggleInterest = (interest: string) => {
     setFormData({
@@ -311,19 +338,19 @@ export function ProfileSetup({
       interests: formData.interests.includes(interest)
         ? formData.interests.filter((i) => i !== interest)
         : [...formData.interests, interest],
-    })
-  }
+    });
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     onSubmit?.({
       ...formData,
-      avatar: avatarFile,
-    })
-  }
+      ...(avatarFile ? { avatar: avatarFile } : {}),
+    });
+  };
 
   return (
-    <Card className={cn('w-full max-w-lg mx-auto', className)}>
+    <Card className={cn("w-full max-w-lg mx-auto", className)}>
       <CardHeader className="text-center">
         <div className="w-14 h-14 mx-auto flex items-center justify-center border-3 border-foreground bg-primary/10 shadow-[4px_4px_0px_hsl(var(--shadow-color))] mb-2">
           <User className="h-7 w-7" />
@@ -343,9 +370,12 @@ export function ProfileSetup({
               className="relative w-24 h-24 border-3 border-dashed border-foreground bg-muted flex items-center justify-center hover:bg-muted/80 transition-colors"
             >
               {avatarPreview ? (
-                <img
+                <Image
                   src={avatarPreview}
                   alt="Avatar preview"
+                  height={96}
+                  unoptimized
+                  width={96}
                   className="w-full h-full object-cover"
                 />
               ) : (
@@ -360,7 +390,9 @@ export function ProfileSetup({
               />
             </button>
             {avatarError && (
-              <p className="text-sm text-destructive font-medium">{avatarError}</p>
+              <p className="text-sm text-destructive font-medium">
+                {avatarError}
+              </p>
             )}
           </div>
 
@@ -372,7 +404,9 @@ export function ProfileSetup({
             <Input
               id="name"
               value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, name: e.target.value })
+              }
               placeholder="What should we call you?"
               required
             />
@@ -388,10 +422,10 @@ export function ProfileSetup({
                   type="button"
                   onClick={() => setFormData({ ...formData, role: role.value })}
                   className={cn(
-                    'p-2 text-sm border-2 border-foreground font-medium transition',
+                    "p-2 text-sm border-2 border-foreground font-medium transition",
                     formData.role === role.value
-                      ? 'bg-primary text-primary-foreground shadow-[3px_3px_0px_hsl(var(--shadow-color))]'
-                      : 'bg-card hover:bg-muted'
+                      ? "bg-primary text-primary-foreground shadow-[3px_3px_0px_hsl(var(--shadow-color))]"
+                      : "bg-card hover:bg-muted",
                   )}
                 >
                   {role.label}
@@ -403,7 +437,10 @@ export function ProfileSetup({
           {/* Interests */}
           <div className="space-y-2">
             <Label className="font-bold uppercase text-xs">
-              Your Interests <span className="text-muted-foreground">(Select all that apply)</span>
+              Your Interests{" "}
+              <span className="text-muted-foreground">
+                (Select all that apply)
+              </span>
             </Label>
             <div className="grid grid-cols-2 gap-2">
               {availableInterests.map((interest) => (
@@ -412,16 +449,17 @@ export function ProfileSetup({
                   type="button"
                   onClick={() => toggleInterest(interest.value)}
                   className={cn(
-                    'p-2 text-sm border-2 border-foreground font-medium transition flex items-center gap-2',
+                    "p-2 text-sm border-2 border-foreground font-medium transition flex items-center gap-2",
                     formData.interests.includes(interest.value)
-                      ? 'bg-secondary text-secondary-foreground shadow-[3px_3px_0px_hsl(var(--shadow-color))]'
-                      : 'bg-card hover:bg-muted'
+                      ? "bg-secondary text-secondary-foreground shadow-[3px_3px_0px_hsl(var(--shadow-color))]"
+                      : "bg-card hover:bg-muted",
                   )}
                 >
                   <div
                     className={cn(
-                      'w-4 h-4 border-2 border-current flex items-center justify-center',
-                      formData.interests.includes(interest.value) && 'bg-current'
+                      "w-4 h-4 border-2 border-current flex items-center justify-center",
+                      formData.interests.includes(interest.value) &&
+                        "bg-current",
                     )}
                   >
                     {formData.interests.includes(interest.value) && (
@@ -441,16 +479,16 @@ export function ProfileSetup({
         </form>
       </CardContent>
     </Card>
-  )
+  );
 }
 
 // ============================================================================
 // ONBOARDING VARIANT 4: Workspace/Team Setup
 // ============================================================================
 export interface WorkspaceSetupProps {
-  onSubmit?: (data: { name: string; members: string[] }) => void
-  onSkip?: () => void
-  className?: string
+  onSubmit?: (data: { name: string; members: string[] }) => void;
+  onSkip?: () => void;
+  className?: string;
 }
 
 export function WorkspaceSetup({
@@ -458,38 +496,38 @@ export function WorkspaceSetup({
   onSkip,
   className,
 }: WorkspaceSetupProps) {
-  const [workspaceName, setWorkspaceName] = React.useState('')
-  const [memberEmail, setMemberEmail] = React.useState('')
-  const [members, setMembers] = React.useState<string[]>([])
-  const [emailError, setEmailError] = React.useState<string | null>(null)
+  const [workspaceName, setWorkspaceName] = React.useState("");
+  const [memberEmail, setMemberEmail] = React.useState("");
+  const [members, setMembers] = React.useState<string[]>([]);
+  const [emailError, setEmailError] = React.useState<string | null>(null);
 
   const addMember = () => {
-    const trimmed = memberEmail.trim()
-    if (!trimmed) return
+    const trimmed = memberEmail.trim();
+    if (!trimmed) return;
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
-      setEmailError('Enter a valid email address')
-      return
+      setEmailError("Enter a valid email address");
+      return;
     }
     if (members.includes(trimmed)) {
-      setEmailError('Already invited')
-      return
+      setEmailError("Already invited");
+      return;
     }
-    setMembers([...members, trimmed])
-    setMemberEmail('')
-    setEmailError(null)
-  }
+    setMembers([...members, trimmed]);
+    setMemberEmail("");
+    setEmailError(null);
+  };
 
   const removeMember = (email: string) => {
-    setMembers(members.filter((m) => m !== email))
-  }
+    setMembers(members.filter((m) => m !== email));
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    onSubmit?.({ name: workspaceName, members })
-  }
+    e.preventDefault();
+    onSubmit?.({ name: workspaceName, members });
+  };
 
   return (
-    <Card className={cn('w-full max-w-lg mx-auto', className)}>
+    <Card className={cn("w-full max-w-lg mx-auto", className)}>
       <CardHeader className="text-center">
         <div className="w-14 h-14 mx-auto flex items-center justify-center border-3 border-foreground bg-secondary/10 shadow-[4px_4px_0px_hsl(var(--shadow-color))] mb-2">
           <Building className="h-7 w-7" />
@@ -497,7 +535,9 @@ export function WorkspaceSetup({
         <CardTitle className="text-2xl font-black uppercase">
           Create Your Workspace
         </CardTitle>
-        <CardDescription>Set up your team workspace and invite members</CardDescription>
+        <CardDescription>
+          Set up your team workspace and invite members
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -516,7 +556,8 @@ export function WorkspaceSetup({
 
           <div className="space-y-2">
             <Label htmlFor="invite" className="font-bold uppercase text-xs">
-              Invite Team Members <span className="text-muted-foreground">(Optional)</span>
+              Invite Team Members{" "}
+              <span className="text-muted-foreground">(Optional)</span>
             </Label>
             <div className="flex gap-2">
               <Input
@@ -524,8 +565,8 @@ export function WorkspaceSetup({
                 type="email"
                 value={memberEmail}
                 onChange={(e) => {
-                  setMemberEmail(e.target.value)
-                  if (emailError) setEmailError(null)
+                  setMemberEmail(e.target.value);
+                  if (emailError) setEmailError(null);
                 }}
                 placeholder="colleague@email.com"
               />
@@ -565,7 +606,12 @@ export function WorkspaceSetup({
 
           <div className="flex gap-3">
             {onSkip && (
-              <Button type="button" variant="outline" className="flex-1" onClick={onSkip}>
+              <Button
+                type="button"
+                variant="outline"
+                className="flex-1"
+                onClick={onSkip}
+              >
                 Skip for Now
               </Button>
             )}
@@ -577,7 +623,7 @@ export function WorkspaceSetup({
         </form>
       </CardContent>
     </Card>
-  )
+  );
 }
 
 // ============================================================================
@@ -585,15 +631,15 @@ export function WorkspaceSetup({
 // ============================================================================
 export interface GoalSelectionProps {
   goals: Array<{
-    id: string
-    title: string
-    description: string
-    icon: React.ReactNode
-  }>
-  onSubmit?: (selectedGoals: string[]) => void
-  minSelection?: number
-  maxSelection?: number
-  className?: string
+    id: string;
+    title: string;
+    description: string;
+    icon: React.ReactNode;
+  }>;
+  onSubmit?: (selectedGoals: string[]) => void;
+  minSelection?: number;
+  maxSelection?: number;
+  className?: string;
 }
 
 export function GoalSelection({
@@ -603,18 +649,18 @@ export function GoalSelection({
   maxSelection = 3,
   className,
 }: GoalSelectionProps) {
-  const [selected, setSelected] = React.useState<string[]>([])
+  const [selected, setSelected] = React.useState<string[]>([]);
 
   const toggleGoal = (id: string) => {
     if (selected.includes(id)) {
-      setSelected(selected.filter((s) => s !== id))
+      setSelected(selected.filter((s) => s !== id));
     } else if (selected.length < maxSelection) {
-      setSelected([...selected, id])
+      setSelected([...selected, id]);
     }
-  }
+  };
 
   return (
-    <Card className={cn('w-full max-w-2xl mx-auto', className)}>
+    <Card className={cn("w-full max-w-2xl mx-auto", className)}>
       <CardHeader className="text-center">
         <div className="w-14 h-14 mx-auto flex items-center justify-center border-3 border-foreground bg-accent/10 shadow-[4px_4px_0px_hsl(var(--shadow-color))] mb-2">
           <Target className="h-7 w-7" />
@@ -634,23 +680,27 @@ export function GoalSelection({
               type="button"
               onClick={() => toggleGoal(goal.id)}
               className={cn(
-                'flex items-start gap-4 p-4 border-3 border-foreground text-left transition',
+                "flex items-start gap-4 p-4 border-3 border-foreground text-left transition",
                 selected.includes(goal.id)
-                  ? 'bg-primary/10 shadow-[4px_4px_0px_hsl(var(--shadow-color))] translate-x-[-2px] translate-y-[-2px]'
-                  : 'bg-card hover:bg-muted'
+                  ? "bg-primary/10 shadow-[4px_4px_0px_hsl(var(--shadow-color))] translate-x-[-2px] translate-y-[-2px]"
+                  : "bg-card hover:bg-muted",
               )}
             >
               <div
                 className={cn(
-                  'w-10 h-10 flex items-center justify-center border-2 border-foreground shrink-0',
-                  selected.includes(goal.id) ? 'bg-primary text-primary-foreground' : 'bg-muted'
+                  "w-10 h-10 flex items-center justify-center border-2 border-foreground shrink-0",
+                  selected.includes(goal.id)
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-muted",
                 )}
               >
                 {goal.icon}
               </div>
               <div>
                 <h3 className="font-bold">{goal.title}</h3>
-                <p className="text-sm text-muted-foreground">{goal.description}</p>
+                <p className="text-sm text-muted-foreground">
+                  {goal.description}
+                </p>
               </div>
             </button>
           ))}
@@ -662,41 +712,43 @@ export function GoalSelection({
           onClick={() => onSubmit?.(selected)}
           disabled={selected.length < minSelection}
         >
-          Continue with {selected.length} goal{selected.length !== 1 ? 's' : ''}
+          Continue with {selected.length} goal{selected.length !== 1 ? "s" : ""}
           <ArrowRight className="ml-2 h-4 w-4" />
         </Button>
       </CardContent>
     </Card>
-  )
+  );
 }
 
 // ============================================================================
 // ONBOARDING VARIANT 6: Completion Screen
 // ============================================================================
 export interface CompletionScreenProps {
-  title?: string
-  subtitle?: string
-  features?: Array<{ title: string; description: string }>
-  primaryAction?: { label: string; onClick?: () => void }
-  className?: string
+  title?: string;
+  subtitle?: string;
+  features?: Array<{ title: string; description: string }>;
+  primaryAction?: { label: string; onClick?: () => void };
+  className?: string;
 }
 
 export function CompletionScreen({
   title = "You're all set!",
-  subtitle = 'Your account is ready to go. Here are some things you can do next:',
+  subtitle = "Your account is ready to go. Here are some things you can do next:",
   features,
   primaryAction,
   className,
 }: CompletionScreenProps) {
   return (
-    <Card className={cn('w-full max-w-lg mx-auto', className)}>
+    <Card className={cn("w-full max-w-lg mx-auto", className)}>
       <CardContent className="pt-8 pb-8 text-center space-y-6">
         <div className="w-20 h-20 mx-auto flex items-center justify-center border-3 border-foreground bg-success shadow-[6px_6px_0px_hsl(var(--shadow-color))] text-success-foreground">
           <PartyPopper className="h-10 w-10" />
         </div>
 
         <div className="space-y-2">
-          <h1 className="text-3xl font-black uppercase tracking-tight">{title}</h1>
+          <h1 className="text-3xl font-black uppercase tracking-tight">
+            {title}
+          </h1>
           <p className="text-muted-foreground">{subtitle}</p>
         </div>
 
@@ -712,7 +764,9 @@ export function CompletionScreen({
                 </div>
                 <div>
                   <p className="font-bold text-sm">{feature.title}</p>
-                  <p className="text-xs text-muted-foreground">{feature.description}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {feature.description}
+                  </p>
                 </div>
               </div>
             ))}
@@ -727,7 +781,7 @@ export function CompletionScreen({
         )}
       </CardContent>
     </Card>
-  )
+  );
 }
 
 // ============================================================================
@@ -740,4 +794,4 @@ export const OnboardingFlow = {
   WorkspaceSetup: WorkspaceSetup,
   GoalSelection: GoalSelection,
   Completion: CompletionScreen,
-}
+};

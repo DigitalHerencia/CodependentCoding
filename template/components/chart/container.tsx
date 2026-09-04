@@ -1,4 +1,3 @@
-/* eslint-disable react-refresh/only-export-components */
 import * as React from "react";
 import * as RechartsPrimitive from "recharts";
 import { cva, type VariantProps } from "class-variance-authority";
@@ -41,13 +40,13 @@ export interface ChartContainerProps
     typeof RechartsPrimitive.ResponsiveContainer
   >["children"];
   /** Accessible label for the chart (required for screen readers) */
-  "aria-label"?: string;
+  "aria-label"?: string | undefined;
   /** ID of element that labels this chart */
-  "aria-labelledby"?: string;
+  "aria-labelledby"?: string | undefined;
   /** Render a brutalist placeholder instead of the chart while data is pending. */
-  loading?: boolean;
+  loading?: boolean | undefined;
   /** Announced while `loading` is true. */
-  loadingLabel?: string;
+  loadingLabel?: string | undefined;
 }
 
 export function ChartContainer({
@@ -81,7 +80,9 @@ export function ChartContainer({
       >
         <ChartStyle id={chartId} config={config} />
         {loading ? (
-          <ChartLoading label={loadingLabel} />
+          <ChartLoading
+            {...(loadingLabel === undefined ? {} : { label: loadingLabel })}
+          />
         ) : (
           <RechartsPrimitive.ResponsiveContainer>
             {children}

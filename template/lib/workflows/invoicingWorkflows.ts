@@ -14,6 +14,15 @@ export async function getInvoicingWorkspaceWorkflow(limit = 50) {
   return { invoices, expenses };
 }
 
+export async function getInvoiceWorkflow(invoiceId: string) {
+  return getInvoice(invoiceId);
+}
+
+export async function getExpenseWorkflow(expenseId: string) {
+  const expenses = await getExpenses(100);
+  return expenses.find((expense) => expense.id === expenseId) ?? null;
+}
+
 export async function finalizeInvoiceWorkflow(input: FinalizeInvoiceCommand) {
   const invoice = await getInvoice(input.invoiceId);
   if (!invoice) throw new Error("Invoice was not found.");

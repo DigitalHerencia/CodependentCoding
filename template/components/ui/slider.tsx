@@ -160,13 +160,15 @@ const Slider = React.forwardRef<HTMLDivElement, SliderProps>(
 
           const len = Math.min(prev.length, targetsRef.current.length);
           for (let i = 0; i < len; i++) {
-            const displacement = targetsRef.current[i] - prev[i].position;
+            const spring = prev[i]!;
+            const target = targetsRef.current[i]!;
+            const displacement = target - spring.position;
             const springForce = stiffness * displacement;
-            const dampingForce = damping * prev[i].velocity;
+            const dampingForce = damping * spring.velocity;
             const acceleration = (springForce - dampingForce) / mass;
 
-            const newVelocity = prev[i].velocity + acceleration * deltaTime;
-            const newPosition = prev[i].position + newVelocity * deltaTime;
+            const newVelocity = spring.velocity + acceleration * deltaTime;
+            const newPosition = spring.position + newVelocity * deltaTime;
 
             // Calculate squish based on velocity
             const velocityMagnitude = Math.abs(newVelocity);
@@ -180,7 +182,7 @@ const Slider = React.forwardRef<HTMLDivElement, SliderProps>(
 
             // Stop animation when settled
             if (Math.abs(displacement) < 0.01 && Math.abs(newVelocity) < 0.01) {
-              newSprings.push({ position: targetsRef.current[i], velocity: 0 });
+              newSprings.push({ position: target, velocity: 0 });
               newSquishes[i] = { scaleX: 1, scaleY: 1 };
             } else {
               newSprings.push({ position: newPosition, velocity: newVelocity });
@@ -261,7 +263,7 @@ const Slider = React.forwardRef<HTMLDivElement, SliderProps>(
       let nearestDistance = Infinity;
 
       for (let i = 0; i < springs.length; i++) {
-        const distance = Math.abs(springs[i].position - percent);
+        const distance = Math.abs(springs[i]!.position - percent);
         if (distance < nearestDistance) {
           nearestDistance = distance;
           nearestIndex = i;
@@ -277,16 +279,16 @@ const Slider = React.forwardRef<HTMLDivElement, SliderProps>(
       if (isRange) {
         // Ensure values don't cross over
         if (index === 0) {
-          newValues[0] = Math.min(newValue, actualValue[1] - step);
+          newValues[0] = Math.min(newValue, (actualValue[1] ?? max) - step);
         } else {
-          newValues[1] = Math.max(newValue, actualValue[0] + step);
+          newValues[1] = Math.max(newValue, (actualValue[0] ?? min) + step);
         }
       } else {
         newValues[index] = newValue;
       }
 
       // Clamp to min/max
-      newValues[index] = Math.max(min, Math.min(max, newValues[index]));
+      newValues[index] = Math.max(min, Math.min(max, newValues[index] ?? min));
 
       if (!isControlled) {
         setUncontrolledValue(newValues);
@@ -310,8 +312,10 @@ const Slider = React.forwardRef<HTMLDivElement, SliderProps>(
       // Add velocity boost for jelly effect
       setSprings((prev) => {
         const newSprings = [...prev];
+        const spring = newSprings[nearestThumbIndex];
+        if (!spring) return prev;
         newSprings[nearestThumbIndex] = {
-          ...newSprings[nearestThumbIndex],
+          ...spring,
           velocity: (e.movementX || 0) * 10,
         };
         return newSprings;
@@ -324,10 +328,11 @@ const Slider = React.forwardRef<HTMLDivElement, SliderProps>(
         // Add velocity for jelly effect
         setSprings((prev) => {
           const newSprings = [...prev];
+          const spring = newSprings[nearestThumbIndex];
+          if (!spring) return prev;
           newSprings[nearestThumbIndex] = {
-            ...newSprings[nearestThumbIndex],
-            velocity:
-              newSprings[nearestThumbIndex].velocity + (e.movementX || 0) * 3,
+            ...spring,
+            velocity: spring.velocity + (e.movementX || 0) * 3,
           };
           return newSprings;
         });
@@ -369,9 +374,11 @@ const Slider = React.forwardRef<HTMLDivElement, SliderProps>(
           // Add velocity for jelly effect
           setSprings((prev) => {
             const newSprings = [...prev];
+            const spring = newSprings[index];
+            if (!spring) return prev;
             newSprings[index] = {
-              ...newSprings[index],
-              velocity: newSprings[index].velocity + (e.movementX || 0) * 3,
+              ...spring,
+              velocity: spring.velocity + (e.movementX || 0) * 3,
             };
             return newSprings;
           });
@@ -399,23 +406,24 @@ const Slider = React.forwardRef<HTMLDivElement, SliderProps>(
     const handleKeyDown = (index: number) => (e: React.KeyboardEvent) => {
       if (disabled) return;
 
-      let newValue = actualValue[index];
+      const currentValue = actualValue[index] ?? min;
+      let newValue = currentValue;
       const largeStep = (max - min) / 10;
 
       switch (e.key) {
         case "ArrowRight":
         case "ArrowUp":
-          newValue = Math.min(max, actualValue[index] + step);
+          newValue = Math.min(max, currentValue + step);
           break;
         case "ArrowLeft":
         case "ArrowDown":
-          newValue = Math.max(min, actualValue[index] - step);
+          newValue = Math.max(min, currentValue - step);
           break;
         case "PageUp":
-          newValue = Math.min(max, actualValue[index] + largeStep);
+          newValue = Math.min(max, currentValue + largeStep);
           break;
         case "PageDown":
-          newValue = Math.max(min, actualValue[index] - largeStep);
+          newValue = Math.max(min, currentValue - largeStep);
           break;
         case "Home":
           newValue = min;
@@ -433,9 +441,11 @@ const Slider = React.forwardRef<HTMLDivElement, SliderProps>(
       // Add velocity for keyboard navigation jelly effect
       setSprings((prev) => {
         const newSprings = [...prev];
+        const spring = newSprings[index];
+        if (!spring) return prev;
         newSprings[index] = {
-          ...newSprings[index],
-          velocity: (newValue > actualValue[index] ? 1 : -1) * 80,
+          ...spring,
+          velocity: (newValue > currentValue ? 1 : -1) * 80,
         };
         return newSprings;
       });

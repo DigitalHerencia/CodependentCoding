@@ -2,7 +2,10 @@ import "server-only";
 
 import type Stripe from "stripe";
 
-import { withProviderTransaction } from "@/lib/db/provider";
+import {
+  withProviderOrganizationTransaction,
+  withProviderTransaction,
+} from "@/lib/db/provider";
 import {
   claimWebhookEventTx,
   completeWebhookEventTx,
@@ -42,17 +45,23 @@ export async function processStripeWebhook(
   if (!webhookEventId) return false;
 
   try {
-    await withProviderTransaction(async (tx) => {
-      if (input) {
-        await tx.$executeRaw`SELECT set_config('app.organization_id', ${input.organizationId}, true)`;
+    if (input) {
+      await withProviderOrganizationTransaction(
+        input.organizationId,
+        async (tx) => {
         await tx.billingSubscription.upsert({
           where: { organizationId: input.organizationId },
           create: input,
           update: input,
         });
-      }
-      await completeWebhookEventTx(tx, webhookEventId);
-    });
+          await completeWebhookEventTx(tx, webhookEventId);
+        },
+      );
+    } else {
+      await withProviderTransaction((tx) =>
+        completeWebhookEventTx(tx, webhookEventId),
+      );
+    }
     return true;
   } catch (error) {
     try {

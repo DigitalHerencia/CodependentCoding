@@ -1,6 +1,12 @@
-import { GenerationFeature } from "@/features/ai/generationFeature";
+import { Suspense } from "react";
 
-// URL ownership stops here; orchestration is delegated to the feature.
-export default function Page() {
-  return <GenerationFeature />;
+import { AiGenerationFeature } from "@/features/ai/aiGenerationFeature";
+import { AiGenerationSkeleton } from "@/features/ai/aiGenerationSkeleton";
+
+export default async function Page() {
+  return (
+    <Suspense fallback={<AiGenerationSkeleton />}>
+      <AiGenerationFeature />
+    </Suspense>
+  );
 }

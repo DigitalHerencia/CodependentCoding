@@ -12,6 +12,11 @@ export async function getPortalWorkspaceWorkflow(limit = 100) {
   return { documents, billing };
 }
 
+export async function getPortalDocumentWorkflow(documentId: string) {
+  const documents = await getPortalDocuments(100);
+  return documents.find((document) => document.id === documentId) ?? null;
+}
+
 export function determineApprovalState(decisions: PortalApprovalDecision[]) {
   if (decisions.some((decision) => decision.status === "REJECTED")) {
     return "REJECTED" as const;

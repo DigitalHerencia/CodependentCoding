@@ -118,13 +118,13 @@ const RadialBarChartComponent = React.forwardRef<
           )}
           <RadialBar
             dataKey="value"
-            background={
-              showBackground ? { fill: "hsl(var(--muted))" } : undefined
-            }
+            {...(showBackground
+              ? { background: { fill: "hsl(var(--muted))" } }
+              : {})}
             cornerRadius={0}
             isAnimationActive={animated}
             animationDuration={400}
-            stackId={variant === "stacked" ? "stack" : undefined}
+            {...(variant === "stacked" ? { stackId: "stack" } : {})}
             label={
               showLabel
                 ? {

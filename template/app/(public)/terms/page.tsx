@@ -1,5 +1,5 @@
-import { FAQSimpleList } from "@/components/blocks/faq-sections";
-import { HeroSection } from "@/components/blocks/hero-sections";
+import { FAQSimpleList } from "@/components/blocks/faq-section";
+import { HeroSection } from "@/components/blocks/hero-section";
 
 export default function Page() {
   return (

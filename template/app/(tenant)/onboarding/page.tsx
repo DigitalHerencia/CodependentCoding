@@ -1,6 +1,12 @@
-import { OnboardingFeature } from "@/features/onboarding/onboardingFeature";
+import { Suspense } from "react";
 
-// URL ownership stops here; orchestration is delegated to the feature.
-export default function Page() {
-  return <OnboardingFeature />;
+import { OnboardingFeature } from "@/features/onboarding/onboardingFeature";
+import { OnboardingSkeleton } from "@/features/onboarding/onboardingSkeleton";
+
+export default async function Page() {
+  return (
+    <Suspense fallback={<OnboardingSkeleton />}>
+      <OnboardingFeature />
+    </Suspense>
+  );
 }

@@ -1,29 +1,104 @@
-export function MembersFeature() {
+import { SharedMembersTemplate } from "@/components/templates/sharedMembersTemplate";
+import { MembersFeatureClient } from "@/features/settings/membersFeature.client";
+import { getOrganizationSettingsWorkflow } from "@/lib/workflows/organizationWorkflows";
+
+function displayValue(
+  record: object,
+  keys: readonly string[],
+  fallback: string,
+) {
+  const values = record as Record<string, unknown>;
+  for (const key of keys) {
+    const value = values[key];
+    if (value instanceof Date) return value.toLocaleDateString();
+    if (
+      typeof value === "string" ||
+      typeof value === "number" ||
+      typeof value === "bigint"
+    ) {
+      return String(value);
+    }
+    if (value && typeof value === "object") {
+      const nested = value as Record<string, unknown>;
+      const label = nested.displayName ?? nested.name ?? nested.email;
+      if (typeof label === "string") return label;
+    }
+  }
+  return fallback;
+}
+
+export async function MembersFeature() {
+  const workspace = await getOrganizationSettingsWorkflow();
+  const records = [workspace.organization, ...workspace.integrations];
+  const rows = records.map((record, index) => {
+    const item = record as object;
+    const id = displayValue(
+      item,
+      ["id", "resource", "number"],
+      String(index + 1),
+    );
+    return {
+      id,
+      href: undefined,
+      cells: {
+        name: displayValue(
+          item,
+          [
+            "name",
+            "title",
+            "subject",
+            "resource",
+            "invoiceNumber",
+            "email",
+            "id",
+          ],
+          id,
+        ),
+        state: displayValue(
+          item,
+          ["status", "state", "stage", "role", "count"],
+          "ACTIVE",
+        ),
+        owner: displayValue(
+          item,
+          [
+            "owner",
+            "assignee",
+            "client",
+            "organization",
+            "channel",
+            "provider",
+          ],
+          "—",
+        ),
+        updated: displayValue(
+          item,
+          ["updatedAt", "createdAt", "dueAt", "publishedAt", "date"],
+          "—",
+        ),
+      },
+    };
+  });
+
   return (
-    <section className="space-y-4 border-3 border-foreground bg-card p-6">
-      <div>
-        <p className="text-sm font-semibold uppercase tracking-widest">
-          Application-owned access
-        </p>
-        <h1 className="mt-1 text-2xl font-bold">Members & roles</h1>
-      </div>
-      <p className="max-w-2xl text-sm text-muted-foreground">
-        Membership management belongs to the application database, not Clerk
-        Organizations.
-      </p>
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        {[
-          ["Owner", "Full workspace control"],
-          ["Admin", "Administrative access"],
-          ["Member", "Standard product access"],
-          ["Viewer", "Read-only access"],
-        ].map(([role, description]) => (
-          <article key={role} className="border-2 border-foreground p-4">
-            <h2 className="font-semibold">{role}</h2>
-            <p className="mt-1 text-sm text-muted-foreground">{description}</p>
-          </article>
-        ))}
-      </div>
-    </section>
+    <SharedMembersTemplate
+      rows={rows}
+      stats={[
+        {
+          label: "Records",
+          value: String(rows.length),
+          trend: "server workflow",
+        },
+        {
+          label: "Active",
+          value: String(
+            rows.filter((row) => row.cells.state !== "ARCHIVED").length,
+          ),
+        },
+        { label: "Updated", value: rows[0]?.cells.updated ?? "—" },
+        { label: "Source", value: "SERVER" },
+      ]}
+      toolbar={<MembersFeatureClient />}
+    />
   );
 }

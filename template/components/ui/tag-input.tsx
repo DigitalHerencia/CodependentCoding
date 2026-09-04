@@ -147,7 +147,7 @@ const TagInput = React.forwardRef<TagInputHandle, TagInputProps>(
 
         if (parts.length > 1) {
           tryAddTags(parts.slice(0, -1));
-          setInputValue(parts[parts.length - 1]);
+          setInputValue(parts.at(-1) ?? "");
         }
       }
     };

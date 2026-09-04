@@ -1,11 +1,17 @@
-import { AccountFeature } from "@/features/crm/accountFeature";
+import { Suspense } from "react";
 
-// URL ownership stops here; orchestration is delegated to the feature.
+import { CrmAccountDetailFeature } from "@/features/crm/crmAccountDetailFeature";
+import { CrmAccountDetailSkeleton } from "@/features/crm/crmAccountDetailSkeleton";
+
 export default async function Page({
   params,
 }: {
   params: Promise<{ accountId: string }>;
 }) {
   const { accountId } = await params;
-  return <AccountFeature accountId={accountId} />;
+  return (
+    <Suspense fallback={<CrmAccountDetailSkeleton />}>
+      <CrmAccountDetailFeature accountId={accountId} />
+    </Suspense>
+  );
 }

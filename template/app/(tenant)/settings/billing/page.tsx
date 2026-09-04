@@ -1,6 +1,12 @@
-import { BillingFeature } from "@/features/settings/billingFeature";
+import { Suspense } from "react";
 
-// URL ownership stops here; orchestration is delegated to the feature.
-export default function Page() {
-  return <BillingFeature />;
+import { BillingFeature } from "@/features/settings/billingFeature";
+import { BillingSkeleton } from "@/features/settings/billingSkeleton";
+
+export default async function Page() {
+  return (
+    <Suspense fallback={<BillingSkeleton />}>
+      <BillingFeature />
+    </Suspense>
+  );
 }

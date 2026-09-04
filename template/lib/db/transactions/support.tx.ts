@@ -6,6 +6,13 @@ import {
 } from "../selects/support.selects";
 import { ConcurrencyConflictError, ResourceNotFoundError } from "./errors";
 
+export async function lockSupportTicketNumberTx(
+  tx: Prisma.TransactionClient,
+  organizationId: string,
+) {
+  await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${organizationId}))`;
+}
+
 export async function assignSupportTicketTx(
   tx: Prisma.TransactionClient,
   input: {

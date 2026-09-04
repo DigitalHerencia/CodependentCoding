@@ -1,11 +1,17 @@
-import { TimelineFeature } from "@/features/projects/timelineFeature";
+import { Suspense } from "react";
 
-// URL ownership stops here; orchestration is delegated to the feature.
+import { TimelineFeature } from "@/features/projects/timelineFeature";
+import { TimelineSkeleton } from "@/features/projects/timelineSkeleton";
+
 export default async function Page({
   params,
 }: {
   params: Promise<{ projectId: string }>;
 }) {
   const { projectId } = await params;
-  return <TimelineFeature projectId={projectId} />;
+  return (
+    <Suspense fallback={<TimelineSkeleton />}>
+      <TimelineFeature projectId={projectId} />
+    </Suspense>
+  );
 }

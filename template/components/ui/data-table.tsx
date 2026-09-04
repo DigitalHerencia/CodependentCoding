@@ -1,6 +1,5 @@
 "use client";
 
-/* eslint-disable react-refresh/only-export-components */
 import * as React from "react";
 import {
   columnFilteringFeature,
@@ -408,7 +407,7 @@ function DataTable<TData extends RowData>({
           <DataTableToolbar
             table={table}
             filterPlaceholder={filterPlaceholder}
-            filterColumn={filterColumn}
+            {...(filterColumn === undefined ? {} : { filterColumn })}
             showColumnVisibility={enableColumnVisibility}
           />
         )}

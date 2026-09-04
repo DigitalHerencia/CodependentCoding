@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 
-import { ContactDetailFeature } from "@/features/crm/contactDetailFeature";
-import { ContactDetailSkeleton } from "@/features/crm/contactDetailSkeleton";
+import { CrmContactDetailFeature } from "@/features/crm/crmContactDetailFeature";
+import { CrmContactDetailSkeleton } from "@/features/crm/crmContactDetailSkeleton";
 
 export default async function Page({
   params,
@@ -10,8 +10,8 @@ export default async function Page({
 }) {
   const { contactId } = await params;
   return (
-    <Suspense fallback={<ContactDetailSkeleton />}>
-      <ContactDetailFeature contactId={contactId} />
+    <Suspense fallback={<CrmContactDetailSkeleton />}>
+      <CrmContactDetailFeature contactId={contactId} />
     </Suspense>
   );
 }

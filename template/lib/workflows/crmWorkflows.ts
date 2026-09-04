@@ -4,7 +4,26 @@ import {
   getContactById,
   getCrmDeal,
   getCrmDeals,
+  getCrmAccount,
+  getContacts,
 } from "@/lib/fetchers/crmFetchers";
+
+export async function getCrmWorkspaceWorkflow(limit = 100) {
+  const [deals, contacts] = await Promise.all([
+    getCrmDeals(limit),
+    getContacts({ limit, sort: "name-asc" }),
+  ]);
+  return { deals, contacts };
+}
+
+export async function getCrmRecordWorkflow(
+  kind: "deal" | "contact" | "account",
+  id: string,
+) {
+  if (kind === "deal") return getCrmDeal(id);
+  if (kind === "account") return getCrmAccount(id);
+  return getContactById(id);
+}
 import type {
   CloseDealCommand,
   ReopenOpportunityCommand,

@@ -1,4 +1,3 @@
-/* eslint-disable react-refresh/only-export-components */
 import * as React from "react";
 import { ReferenceLine, ReferenceDot } from "recharts";
 import type {
@@ -88,21 +87,21 @@ export function referenceLineElement(
   const axisProp = spec.axis === "x" ? { x: spec.value } : { y: spec.value };
   return (
     <ReferenceLine
-      key={key}
+      {...(key === undefined ? {} : { key })}
       {...axisProp}
       stroke={spec.color ?? FOREGROUND}
       strokeWidth={3}
-      strokeDasharray={spec.dash ? DASH : undefined}
-      label={
-        spec.label
-          ? {
+      {...(spec.dash ? { strokeDasharray: DASH } : {})}
+      {...(spec.label
+        ? {
+            label: {
               value: spec.label,
-              position: "insideTopRight",
+              position: "insideTopRight" as const,
               fontWeight: 700,
               fontSize: 11,
-            }
-          : undefined
-      }
+            },
+          }
+        : {})}
       ifOverflow="extendDomain"
     />
   );
@@ -144,16 +143,16 @@ export function arrowElements(
       ]}
       stroke={FOREGROUND}
       strokeWidth={3}
-      label={
-        spec.label
-          ? {
+      {...(spec.label
+        ? {
+            label: {
               value: spec.label,
-              position: "center",
+              position: "center" as const,
               fontWeight: 700,
               fontSize: 11,
-            }
-          : undefined
-      }
+            },
+          }
+        : {})}
       ifOverflow="extendDomain"
     />,
     // Endpoint marker approximating an arrowhead.

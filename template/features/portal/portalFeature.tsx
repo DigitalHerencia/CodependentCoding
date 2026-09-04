@@ -1,35 +1,104 @@
-import {
-  MetricGridBlock,
-  PageHeaderBlock,
-} from "@/components/blocks/application-sections";
-import { getPortalDocuments } from "@/lib/fetchers/portalFetchers";
+import { PortalHomeTemplate } from "@/components/templates/portalHomeTemplate";
+import { PortalFeatureClient } from "@/features/portal/portalFeature.client";
+import { getPortalWorkspaceWorkflow } from "@/lib/workflows/portalWorkflows";
 
-// Features orchestrate blocks and lib helpers; they never import raw UI primitives.
+function displayValue(
+  record: object,
+  keys: readonly string[],
+  fallback: string,
+) {
+  const values = record as Record<string, unknown>;
+  for (const key of keys) {
+    const value = values[key];
+    if (value instanceof Date) return value.toLocaleDateString();
+    if (
+      typeof value === "string" ||
+      typeof value === "number" ||
+      typeof value === "bigint"
+    ) {
+      return String(value);
+    }
+    if (value && typeof value === "object") {
+      const nested = value as Record<string, unknown>;
+      const label = nested.displayName ?? nested.name ?? nested.email;
+      if (typeof label === "string") return label;
+    }
+  }
+  return fallback;
+}
+
 export async function PortalFeature() {
-  const documents = await getPortalDocuments();
-  const visible = documents.filter((document) => document.clientVisible).length;
-  const approved = documents.filter(
-    (document) => document.status === "APPROVED",
-  ).length;
-  const awaitingReview = documents.filter(
-    (document) => document.status === "IN_REVIEW",
-  ).length;
+  const workspace = await getPortalWorkspaceWorkflow();
+  const records = workspace.documents;
+  const rows = records.map((record, index) => {
+    const item = record as object;
+    const id = displayValue(
+      item,
+      ["id", "resource", "number"],
+      String(index + 1),
+    );
+    return {
+      id,
+      href: undefined,
+      cells: {
+        name: displayValue(
+          item,
+          [
+            "name",
+            "title",
+            "subject",
+            "resource",
+            "invoiceNumber",
+            "email",
+            "id",
+          ],
+          id,
+        ),
+        state: displayValue(
+          item,
+          ["status", "state", "stage", "role", "count"],
+          "ACTIVE",
+        ),
+        owner: displayValue(
+          item,
+          [
+            "owner",
+            "assignee",
+            "client",
+            "organization",
+            "channel",
+            "provider",
+          ],
+          "—",
+        ),
+        updated: displayValue(
+          item,
+          ["updatedAt", "createdAt", "dueAt", "publishedAt", "date"],
+          "—",
+        ),
+      },
+    };
+  });
+
   return (
-    <div className="space-y-6">
-      <PageHeaderBlock
-        eyebrow="Client portal"
-        title="Workspace overview"
-        description="Authorized documents and project handoff state for the active organization."
-        action={{ label: "Open documents", href: "/portal/documents" }}
-      />
-      <MetricGridBlock
-        metrics={[
-          { label: "Documents", value: documents.length.toString() },
-          { label: "Client visible", value: visible.toString() },
-          { label: "Approved", value: approved.toString() },
-          { label: "In review", value: awaitingReview.toString() },
-        ]}
-      />
-    </div>
+    <PortalHomeTemplate
+      rows={rows}
+      stats={[
+        {
+          label: "Records",
+          value: String(rows.length),
+          trend: "server workflow",
+        },
+        {
+          label: "Active",
+          value: String(
+            rows.filter((row) => row.cells.state !== "ARCHIVED").length,
+          ),
+        },
+        { label: "Updated", value: rows[0]?.cells.updated ?? "—" },
+        { label: "Source", value: "SERVER" },
+      ]}
+      toolbar={<PortalFeatureClient />}
+    />
   );
 }

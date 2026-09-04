@@ -1,23 +1,24 @@
-/* eslint-disable react-refresh/only-export-components */
-import * as React from 'react'
-import { cn, safeHref } from '@/lib/utils'
-import { Marquee } from '@/components/ui/marquee'
+import * as React from "react";
+import Image from "next/image";
+import { cn } from "@/lib/utils/cn";
+import { safeHref } from "@/lib/utils/strings";
+import { Marquee } from "@/components/ui/marquee";
 
 export interface LogoItem {
-  name: string
-  logo: string | React.ReactNode
-  url?: string
+  name: string;
+  logo: string | React.ReactNode;
+  url?: string;
 }
 
 // ============================================================================
 // LOGO CLOUD VARIANT 1: Simple Grid
 // ============================================================================
 export interface LogoCloudGridProps {
-  title?: string
-  subtitle?: string
-  logos: LogoItem[]
-  columns?: 3 | 4 | 5 | 6
-  className?: string
+  title?: string;
+  subtitle?: string;
+  logos: LogoItem[];
+  columns?: 3 | 4 | 5 | 6;
+  className?: string;
 }
 
 export function LogoCloudGrid({
@@ -28,14 +29,14 @@ export function LogoCloudGrid({
   className,
 }: LogoCloudGridProps) {
   const gridCols = {
-    3: 'grid-cols-3',
-    4: 'grid-cols-2 md:grid-cols-4',
-    5: 'grid-cols-2 md:grid-cols-3 lg:grid-cols-5',
-    6: 'grid-cols-3 md:grid-cols-6',
-  }
+    3: "grid-cols-3",
+    4: "grid-cols-2 md:grid-cols-4",
+    5: "grid-cols-2 md:grid-cols-3 lg:grid-cols-5",
+    6: "grid-cols-3 md:grid-cols-6",
+  };
 
   return (
-    <section className={cn('py-12 px-4 md:px-8 lg:px-16', className)}>
+    <section className={cn("py-12 px-4 md:px-8 lg:px-16", className)}>
       <div className="max-w-6xl mx-auto">
         {(title || subtitle) && (
           <div className="text-center mb-8 space-y-2">
@@ -52,36 +53,38 @@ export function LogoCloudGrid({
           </div>
         )}
 
-        <div className={cn('grid gap-8 items-center', gridCols[columns])}>
+        <div className={cn("grid gap-8 items-center", gridCols[columns])}>
           {logos.map((logo) => (
             <LogoCloudItem key={`logo-${logo.name}`} logo={logo} />
           ))}
         </div>
       </div>
     </section>
-  )
+  );
 }
 
 // ============================================================================
 // LOGO CLOUD VARIANT 2: With Marquee
 // ============================================================================
 export interface LogoCloudMarqueeProps {
-  title?: string
-  logos: LogoItem[]
-  speed?: 'slow' | 'normal' | 'fast'
-  direction?: 'left' | 'right'
-  className?: string
+  title?: string;
+  logos: LogoItem[];
+  speed?: "slow" | "normal" | "fast";
+  direction?: "left" | "right";
+  className?: string;
 }
 
 export function LogoCloudMarquee({
   title,
   logos,
-  speed = 'normal',
-  direction = 'left',
+  speed = "normal",
+  direction = "left",
   className,
 }: LogoCloudMarqueeProps) {
   return (
-    <section className={cn('py-12 px-4 md:px-8 lg:px-16 overflow-hidden', className)}>
+    <section
+      className={cn("py-12 px-4 md:px-8 lg:px-16 overflow-hidden", className)}
+    >
       <div className="max-w-7xl mx-auto">
         {title && (
           <p className="text-center text-sm font-bold uppercase tracking-widest text-muted-foreground mb-8">
@@ -89,20 +92,19 @@ export function LogoCloudMarquee({
           </p>
         )}
 
-        <Marquee
-          className="py-4"
-          direction={direction}
-          speed={speed}
-        >
+        <Marquee className="py-4" direction={direction} speed={speed}>
           {logos.map((logo) => (
             <div
               key={`logo-marquee-${logo.name}`}
               className="mx-8 flex items-center justify-center h-12 opacity-70 hover:opacity-100 transition-opacity grayscale hover:grayscale-0"
             >
-              {typeof logo.logo === 'string' ? (
-                <img
+              {typeof logo.logo === "string" ? (
+                <Image
                   src={logo.logo}
                   alt={logo.name}
+                  height={96}
+                  unoptimized
+                  width={240}
                   className="h-full w-auto object-contain"
                 />
               ) : (
@@ -113,17 +115,17 @@ export function LogoCloudMarquee({
         </Marquee>
       </div>
     </section>
-  )
+  );
 }
 
 // ============================================================================
 // LOGO CLOUD VARIANT 3: Bordered Cards
 // ============================================================================
 export interface LogoCloudCardsProps {
-  title?: string
-  subtitle?: string
-  logos: LogoItem[]
-  className?: string
+  title?: string;
+  subtitle?: string;
+  logos: LogoItem[];
+  className?: string;
 }
 
 export function LogoCloudCards({
@@ -133,7 +135,9 @@ export function LogoCloudCards({
   className,
 }: LogoCloudCardsProps) {
   return (
-    <section className={cn('py-16 px-4 md:px-8 lg:px-16 bg-muted/30', className)}>
+    <section
+      className={cn("py-16 px-4 md:px-8 lg:px-16 bg-muted/30", className)}
+    >
       <div className="max-w-6xl mx-auto">
         {(title || subtitle) && (
           <div className="text-center mb-10 space-y-2">
@@ -153,48 +157,54 @@ export function LogoCloudCards({
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {logos.map((logo) => {
             const inner = (
-              <div
-                className="border-3 border-foreground bg-card p-6 flex items-center justify-center h-24 hover:shadow-[4px_4px_0px_hsl(var(--shadow-color))] hover:translate-x-[-2px] hover:translate-y-[-2px] transition cursor-pointer"
-              >
-                {typeof logo.logo === 'string' ? (
-                  <img
+              <div className="border-3 border-foreground bg-card p-6 flex items-center justify-center h-24 hover:shadow-[4px_4px_0px_hsl(var(--shadow-color))] hover:translate-x-[-2px] hover:translate-y-[-2px] transition cursor-pointer">
+                {typeof logo.logo === "string" ? (
+                  <Image
                     src={logo.logo}
                     alt={logo.name}
+                    height={96}
+                    unoptimized
+                    width={240}
                     className="h-10 w-auto object-contain"
                   />
                 ) : (
                   logo.logo
                 )}
               </div>
-            )
+            );
             return logo.url ? (
-              <a key={`logo-${logo.name}`} href={safeHref(logo.url)} target="_blank" rel="noopener noreferrer">
+              <a
+                key={`logo-${logo.name}`}
+                href={safeHref(logo.url)}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 {inner}
               </a>
             ) : (
               <React.Fragment key={`logo-${logo.name}`}>{inner}</React.Fragment>
-            )
+            );
           })}
         </div>
       </div>
     </section>
-  )
+  );
 }
 
 // ============================================================================
 // LOGO CLOUD VARIANT 4: With Stats
 // ============================================================================
 export interface LogoCloudWithStatsProps {
-  title?: string
-  logos: LogoItem[]
-  stats: Array<{ value: string; label: string }>
+  title?: string;
+  logos: LogoItem[];
+  stats: Array<{ value: string; label: string }>;
   /**
    * Cap the number of logos rendered. Omit to render all of them — the 3-column
    * grid simply grows another row. Previously this was hard-capped at 9, which
    * dropped the rest with only a console warning.
    */
-  maxLogos?: number
-  className?: string
+  maxLogos?: number;
+  className?: string;
 }
 
 export function LogoCloudWithStats({
@@ -204,9 +214,10 @@ export function LogoCloudWithStats({
   maxLogos,
   className,
 }: LogoCloudWithStatsProps) {
-  const visibleLogos = maxLogos === undefined ? logos : logos.slice(0, maxLogos)
+  const visibleLogos =
+    maxLogos === undefined ? logos : logos.slice(0, maxLogos);
   return (
-    <section className={cn('py-16 px-4 md:px-8 lg:px-16', className)}>
+    <section className={cn("py-16 px-4 md:px-8 lg:px-16", className)}>
       <div className="max-w-6xl mx-auto">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-8">
@@ -234,33 +245,42 @@ export function LogoCloudWithStats({
           <div className="grid grid-cols-3 gap-6">
             {visibleLogos.map((logo) => {
               const inner = (
-                <div
-                  className="flex items-center justify-center h-16 opacity-70 hover:opacity-100 transition-opacity"
-                >
-                  {typeof logo.logo === 'string' ? (
-                    <img
+                <div className="flex items-center justify-center h-16 opacity-70 hover:opacity-100 transition-opacity">
+                  {typeof logo.logo === "string" ? (
+                    <Image
                       src={logo.logo}
                       alt={logo.name}
+                      height={96}
+                      unoptimized
+                      width={240}
                       className="h-8 w-auto object-contain grayscale hover:grayscale-0 transition"
                     />
                   ) : (
                     logo.logo
                   )}
                 </div>
-              )
+              );
               return logo.url ? (
-                <a key={`logo-${logo.name}`} href={safeHref(logo.url)} target="_blank" rel="noopener noreferrer" className="cursor-pointer">
+                <a
+                  key={`logo-${logo.name}`}
+                  href={safeHref(logo.url)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="cursor-pointer"
+                >
                   {inner}
                 </a>
               ) : (
-                <React.Fragment key={`logo-${logo.name}`}>{inner}</React.Fragment>
-              )
+                <React.Fragment key={`logo-${logo.name}`}>
+                  {inner}
+                </React.Fragment>
+              );
             })}
           </div>
         </div>
       </div>
     </section>
-  )
+  );
 }
 
 // ============================================================================
@@ -269,27 +289,30 @@ export function LogoCloudWithStats({
 function LogoCloudItem({ logo }: { logo: LogoItem }) {
   const content = (
     <div className="flex items-center justify-center h-12 opacity-60 hover:opacity-100 transition-opacity grayscale hover:grayscale-0">
-      {typeof logo.logo === 'string' ? (
-        <img
+      {typeof logo.logo === "string" ? (
+        <Image
           src={logo.logo}
           alt={logo.name}
+          height={96}
+          unoptimized
+          width={240}
           className="h-full w-auto object-contain"
         />
       ) : (
         logo.logo
       )}
     </div>
-  )
+  );
 
   if (logo.url) {
     return (
       <a href={safeHref(logo.url)} target="_blank" rel="noopener noreferrer">
         {content}
       </a>
-    )
+    );
   }
 
-  return content
+  return content;
 }
 
 // ============================================================================
@@ -300,4 +323,4 @@ export const LogoCloud = {
   Marquee: LogoCloudMarquee,
   Cards: LogoCloudCards,
   WithStats: LogoCloudWithStats,
-}
+};

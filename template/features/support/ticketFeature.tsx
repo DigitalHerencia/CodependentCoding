@@ -1,55 +1,104 @@
-import {
-  EmptyStateBlock,
-  PageHeaderBlock,
-  RecordDetailBlock,
-} from "@/components/blocks/application-sections";
-import { getSupportTicket } from "@/lib/fetchers/supportFetchers";
+import { SupportTicketTemplate } from "@/components/templates/supportTicketTemplate";
+import { TicketFeatureClient } from "@/features/support/ticketFeature.client";
+import { getSupportTicketWorkflow } from "@/lib/workflows/supportWorkflows";
+
+function displayValue(
+  record: object,
+  keys: readonly string[],
+  fallback: string,
+) {
+  const values = record as Record<string, unknown>;
+  for (const key of keys) {
+    const value = values[key];
+    if (value instanceof Date) return value.toLocaleDateString();
+    if (
+      typeof value === "string" ||
+      typeof value === "number" ||
+      typeof value === "bigint"
+    ) {
+      return String(value);
+    }
+    if (value && typeof value === "object") {
+      const nested = value as Record<string, unknown>;
+      const label = nested.displayName ?? nested.name ?? nested.email;
+      if (typeof label === "string") return label;
+    }
+  }
+  return fallback;
+}
 
 export async function TicketFeature({ ticketId }: { ticketId: string }) {
-  const ticket = await getSupportTicket(ticketId);
-  if (!ticket)
-    return (
-      <EmptyStateBlock
-        title="Ticket not found"
-        description="No visible support ticket matches this identifier."
-      />
+  const record = await getSupportTicketWorkflow(ticketId);
+  const records = record ? [record] : [];
+  const rows = records.map((record, index) => {
+    const item = record as object;
+    const id = displayValue(
+      item,
+      ["id", "resource", "number"],
+      String(index + 1),
     );
+    return {
+      id,
+      href: undefined,
+      cells: {
+        name: displayValue(
+          item,
+          [
+            "name",
+            "title",
+            "subject",
+            "resource",
+            "invoiceNumber",
+            "email",
+            "id",
+          ],
+          id,
+        ),
+        state: displayValue(
+          item,
+          ["status", "state", "stage", "role", "count"],
+          "ACTIVE",
+        ),
+        owner: displayValue(
+          item,
+          [
+            "owner",
+            "assignee",
+            "client",
+            "organization",
+            "channel",
+            "provider",
+          ],
+          "—",
+        ),
+        updated: displayValue(
+          item,
+          ["updatedAt", "createdAt", "dueAt", "publishedAt", "date"],
+          "—",
+        ),
+      },
+    };
+  });
+
   return (
-    <div className="space-y-6">
-      <PageHeaderBlock
-        eyebrow={`Ticket #${ticket.number}`}
-        title={ticket.subject}
-      />
-      <RecordDetailBlock
-        title="Support request"
-        status={ticket.status}
-        items={[
-          { label: "Priority", value: ticket.priority },
-          {
-            label: "Requester",
-            value:
-              ticket.requester?.displayName ?? ticket.requester?.email ?? "—",
-          },
-          {
-            label: "Assignee",
-            value: ticket.assignee?.displayName ?? "Unassigned",
-          },
-          { label: "Messages", value: String(ticket.messageCount) },
-          {
-            label: "First response due",
-            value: ticket.firstResponseDueAt
-              ? new Date(ticket.firstResponseDueAt).toLocaleString()
-              : "—",
-          },
-          {
-            label: "Resolution due",
-            value: ticket.resolutionDueAt
-              ? new Date(ticket.resolutionDueAt).toLocaleString()
-              : "—",
-          },
-          { label: "Description", value: ticket.description ?? "—" },
-        ]}
-      />
-    </div>
+    <SupportTicketTemplate
+      rows={rows}
+      stats={[
+        {
+          label: "Records",
+          value: String(rows.length),
+          trend: "server workflow",
+        },
+        {
+          label: "Active",
+          value: String(
+            rows.filter((row) => row.cells.state !== "ARCHIVED").length,
+          ),
+        },
+        { label: "Updated", value: rows[0]?.cells.updated ?? "—" },
+        { label: "Source", value: "SERVER" },
+      ]}
+      toolbar={<TicketFeatureClient />}
+    />
   );
 }

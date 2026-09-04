@@ -1,6 +1,5 @@
-import { InvoiceEditorFeature } from "@/features/invoicing/invoiceEditorFeature";
+import { InvoiceNewForm } from "@/features/invoicing/invoiceNewForm";
 
-// URL ownership stops here; orchestration is delegated to the feature.
-export default function Page() {
-  return <InvoiceEditorFeature />;
+export default async function Page() {
+  return <InvoiceNewForm />;
 }

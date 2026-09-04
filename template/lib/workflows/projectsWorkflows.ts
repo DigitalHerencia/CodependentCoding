@@ -3,7 +3,21 @@ import {
   getProjects,
   getProjectTaskDependencyFacts,
   getProjectTasks,
+  getMyTasks,
 } from "@/lib/fetchers/projectsFetchers";
+
+export async function getProjectsDashboardWorkflow(limit = 100) {
+  const [projects, myTasks] = await Promise.all([
+    getProjects(limit),
+    getMyTasks(limit),
+  ]);
+  return { projects, myTasks };
+}
+
+export async function getTaskWorkflow(projectId: string, taskId: string) {
+  const tasks = await getProjectTasks(projectId);
+  return tasks.find((task) => task.id === taskId) ?? null;
+}
 
 export async function getProjectWorkspaceWorkflow(projectId: string) {
   const [project, tasks] = await Promise.all([

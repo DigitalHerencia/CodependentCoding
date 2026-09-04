@@ -26,6 +26,15 @@ export async function getSupportWorkspaceWorkflow(limit = 100) {
   return { tickets, knowledgeArticles };
 }
 
+export async function getSupportTicketWorkflow(ticketId: string) {
+  return getSupportTicket(ticketId);
+}
+
+export async function getKnowledgeArticleWorkflow(articleId: string) {
+  const articles = await getKnowledgeArticles(100);
+  return articles.find((article) => article.id === articleId) ?? null;
+}
+
 export async function determineEscalationWorkflow(ticketId: string) {
   const ticket = await getSupportTicket(ticketId);
   if (!ticket) throw new Error("Support ticket was not found.");

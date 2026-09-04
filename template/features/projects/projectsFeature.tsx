@@ -1,38 +1,104 @@
-import {
-  DataTableBlock,
-  PageHeaderBlock,
-} from "@/components/blocks/application-sections";
-import { getProjects } from "@/lib/fetchers/projectsFetchers";
+import { ProjectsTemplate } from "@/components/templates/projectsTemplate";
+import { ProjectsFeatureClient } from "@/features/projects/projectsFeature.client";
+import { getProjectsDashboardWorkflow } from "@/lib/workflows/projectsWorkflows";
+
+function displayValue(
+  record: object,
+  keys: readonly string[],
+  fallback: string,
+) {
+  const values = record as Record<string, unknown>;
+  for (const key of keys) {
+    const value = values[key];
+    if (value instanceof Date) return value.toLocaleDateString();
+    if (
+      typeof value === "string" ||
+      typeof value === "number" ||
+      typeof value === "bigint"
+    ) {
+      return String(value);
+    }
+    if (value && typeof value === "object") {
+      const nested = value as Record<string, unknown>;
+      const label = nested.displayName ?? nested.name ?? nested.email;
+      if (typeof label === "string") return label;
+    }
+  }
+  return fallback;
+}
 
 export async function ProjectsFeature() {
-  const projects = await getProjects();
+  const workspace = await getProjectsDashboardWorkflow();
+  const records = workspace.projects;
+  const rows = records.map((record, index) => {
+    const item = record as object;
+    const id = displayValue(
+      item,
+      ["id", "resource", "number"],
+      String(index + 1),
+    );
+    return {
+      id,
+      href: `${"/projects"}/${id}`,
+      cells: {
+        name: displayValue(
+          item,
+          [
+            "name",
+            "title",
+            "subject",
+            "resource",
+            "invoiceNumber",
+            "email",
+            "id",
+          ],
+          id,
+        ),
+        state: displayValue(
+          item,
+          ["status", "state", "stage", "role", "count"],
+          "ACTIVE",
+        ),
+        owner: displayValue(
+          item,
+          [
+            "owner",
+            "assignee",
+            "client",
+            "organization",
+            "channel",
+            "provider",
+          ],
+          "—",
+        ),
+        updated: displayValue(
+          item,
+          ["updatedAt", "createdAt", "dueAt", "publishedAt", "date"],
+          "—",
+        ),
+      },
+    };
+  });
+
   return (
-    <div className="space-y-6">
-      <PageHeaderBlock
-        eyebrow="Projects"
-        title="Project portfolio"
-        action={{ label: "View my tasks", href: "/my-tasks" }}
-      />
-      <DataTableBlock
-        columns={[
-          { key: "name", label: "Project" },
-          { key: "status", label: "Status" },
-          { key: "open", label: "Open tasks" },
-          { key: "due", label: "Due" },
-        ]}
-        rows={projects.map((project) => ({
-          id: project.id,
-          href: `/projects/${project.id}`,
-          cells: {
-            name: project.name,
-            status: project.status,
-            open: String(project.openTaskCount),
-            due: project.dueAt
-              ? new Date(project.dueAt).toLocaleDateString()
-              : null,
-          },
-        }))}
-      />
-    </div>
+    <ProjectsTemplate
+      rows={rows}
+      stats={[
+        {
+          label: "Records",
+          value: String(rows.length),
+          trend: "server workflow",
+        },
+        {
+          label: "Active",
+          value: String(
+            rows.filter((row) => row.cells.state !== "ARCHIVED").length,
+          ),
+        },
+        { label: "Updated", value: rows[0]?.cells.updated ?? "—" },
+        { label: "Source", value: "SERVER" },
+      ]}
+      toolbar={<ProjectsFeatureClient />}
+    />
   );
 }

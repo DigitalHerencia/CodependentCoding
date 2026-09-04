@@ -1,41 +1,104 @@
-import { Bot, Kanban, ReceiptText, Users } from "lucide-react";
+import { SharedDashboardTemplate } from "@/components/templates/sharedDashboardTemplate";
+import { DashboardFeatureClient } from "@/features/dashboard/dashboardFeature.client";
+import { getOrganizationSettingsWorkflow } from "@/lib/workflows/organizationWorkflows";
 
-import { FeatureGrid } from "@/components/blocks/feature-sections";
-import { HeroSection } from "@/components/blocks/hero-sections";
+function displayValue(
+  record: object,
+  keys: readonly string[],
+  fallback: string,
+) {
+  const values = record as Record<string, unknown>;
+  for (const key of keys) {
+    const value = values[key];
+    if (value instanceof Date) return value.toLocaleDateString();
+    if (
+      typeof value === "string" ||
+      typeof value === "number" ||
+      typeof value === "bigint"
+    ) {
+      return String(value);
+    }
+    if (value && typeof value === "object") {
+      const nested = value as Record<string, unknown>;
+      const label = nested.displayName ?? nested.name ?? nested.email;
+      if (typeof label === "string") return label;
+    }
+  }
+  return fallback;
+}
 
-export function DashboardFeature() {
+export async function DashboardFeature() {
+  const workspace = await getOrganizationSettingsWorkflow();
+  const records = [workspace.organization, ...workspace.integrations];
+  const rows = records.map((record, index) => {
+    const item = record as object;
+    const id = displayValue(
+      item,
+      ["id", "resource", "number"],
+      String(index + 1),
+    );
+    return {
+      id,
+      href: undefined,
+      cells: {
+        name: displayValue(
+          item,
+          [
+            "name",
+            "title",
+            "subject",
+            "resource",
+            "invoiceNumber",
+            "email",
+            "id",
+          ],
+          id,
+        ),
+        state: displayValue(
+          item,
+          ["status", "state", "stage", "role", "count"],
+          "ACTIVE",
+        ),
+        owner: displayValue(
+          item,
+          [
+            "owner",
+            "assignee",
+            "client",
+            "organization",
+            "channel",
+            "provider",
+          ],
+          "—",
+        ),
+        updated: displayValue(
+          item,
+          ["updatedAt", "createdAt", "dueAt", "publishedAt", "date"],
+          "—",
+        ),
+      },
+    };
+  });
+
   return (
-    <>
-      <HeroSection.Minimal
-        title="Application dashboard"
-        description="Open a recipe workspace. Persisted metrics appear only through its authorized fetcher."
-      />
-      <FeatureGrid.WithIcons
-        title="Workspaces"
-        columns={2}
-        features={[
-          {
-            icon: <Users className="size-7" />,
-            title: "CRM",
-            description: "Manage tenant-scoped accounts, contacts, and deals.",
-          },
-          {
-            icon: <Kanban className="size-7" />,
-            title: "Projects",
-            description: "Coordinate projects, milestones, and assigned tasks.",
-          },
-          {
-            icon: <ReceiptText className="size-7" />,
-            title: "Invoicing",
-            description: "Create decimal-safe invoices and track expenses.",
-          },
-          {
-            icon: <Bot className="size-7" />,
-            title: "AI workspace",
-            description: "Run selected models with explicit usage records.",
-          },
-        ]}
-      />
-    </>
+    <SharedDashboardTemplate
+      rows={rows}
+      stats={[
+        {
+          label: "Records",
+          value: String(rows.length),
+          trend: "server workflow",
+        },
+        {
+          label: "Active",
+          value: String(
+            rows.filter((row) => row.cells.state !== "ARCHIVED").length,
+          ),
+        },
+        { label: "Updated", value: rows[0]?.cells.updated ?? "—" },
+        { label: "Source", value: "SERVER" },
+      ]}
+      toolbar={<DashboardFeatureClient />}
+    />
   );
 }

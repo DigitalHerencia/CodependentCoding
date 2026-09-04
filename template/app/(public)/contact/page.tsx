@@ -1,6 +1,6 @@
 import { Mail, MessageSquareText } from "lucide-react";
 
-import { ContactWithCards } from "@/components/blocks/contact-sections";
+import { ContactWithCards } from "@/components/blocks/contact-section";
 
 export default function Page() {
   return (

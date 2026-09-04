@@ -1,5 +1,5 @@
 "use client";
-import { ErrorBlock } from "@/components/blocks/error-states";
+import { GenericErrorPage } from "@/components/blocks/error-pages";
 
 // Fatal route errors require a client boundary; recovery presentation remains a block.
 export default function GlobalError({
@@ -8,7 +8,10 @@ export default function GlobalError({
   return (
     <html lang="en">
       <body>
-        <ErrorBlock title="Something went wrong" onRetry={reset} />
+        <GenericErrorPage
+          actions={[{ label: "Try again", onClick: reset }]}
+          title="Something went wrong"
+        />
       </body>
     </html>
   );

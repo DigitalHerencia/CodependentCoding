@@ -11,13 +11,14 @@ import { toSupportTicketDTO } from "@/lib/db/dto/support.dto";
 import { supportTicketSelect } from "@/lib/db/selects/support.selects";
 import { withTenantTransaction } from "@/lib/db/tenant";
 import { updateTicketStatusTx } from "@/lib/db/transactions/update-ticket-status.tx";
+import { lockSupportTicketNumberTx } from "@/lib/db/transactions/support.tx";
 
 export async function createSupportTicket(rawInput: unknown) {
   const input = createSupportTicketSchema.parse(rawInput);
   const identity = await requireIdentity();
   return withTenantTransaction(identity, async (tx, access) => {
     assertPermission(access, "support:write");
-    await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${access.organizationId}))`;
+    await lockSupportTicketNumberTx(tx, access.organizationId);
     const latest = await tx.supportTicket.aggregate({
       where: { organizationId: access.organizationId },
       _max: { number: true },

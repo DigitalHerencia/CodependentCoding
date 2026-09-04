@@ -1,4 +1,3 @@
-/* eslint-disable react-refresh/only-export-components */
 // Re-export all chart components from the chart directory
 // This maintains backward compatibility with existing imports
 
@@ -45,7 +44,7 @@ export {
   calloutElement,
   arrowElements,
   renderChartAnnotations,
-} from "./chart/index";
+} from "../chart/index";
 
 export type {
   ChartAnnotation,
@@ -83,4 +82,4 @@ export type {
   SankeyChartProps,
   SankeyNode,
   SankeyLink,
-} from "./chart/index";
+} from "../chart/index";

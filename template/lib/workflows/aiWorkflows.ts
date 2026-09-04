@@ -6,7 +6,17 @@ import {
 import {
   getAiPlaygroundConfiguration,
   getMyAiUsage,
+  getMyAiGenerations,
 } from "@/lib/fetchers/aiFetchers";
+
+export async function getAiWorkspaceWorkflow() {
+  const [configuration, generations, usage] = await Promise.all([
+    getAiPlaygroundConfiguration(),
+    getMyAiGenerations(),
+    getMyAiUsage(),
+  ]);
+  return { configuration, generations, usage };
+}
 import { generateHuggingFaceText } from "@/lib/integrations/hugging-face/inference";
 import type { AiUsageItem, ExecuteAiGenerationCommand } from "@/types/aiTypes";
 

@@ -1,4 +1,3 @@
-/* eslint-disable react-refresh/only-export-components */
 import * as React from "react";
 import { cn } from "@/lib/utils/cn";
 
@@ -1963,8 +1962,8 @@ function buildKochPath(): string {
   for (let iter = 0; iter < 2; iter++) {
     const next: { x: number; y: number }[] = [];
     for (let j = 0; j < pts.length; j++) {
-      const a = pts[j],
-        b = pts[(j + 1) % pts.length];
+      const a = pts[j]!,
+        b = pts[(j + 1) % pts.length]!;
       const dx = (b.x - a.x) / 3,
         dy = (b.y - a.y) / 3;
       const p1 = { x: a.x + dx, y: a.y + dy };
@@ -2157,7 +2156,6 @@ export const FibonacciSpiralShape = React.forwardRef<SVGSVGElement, ShapeProps>(
     {
       size = 100,
       strokeWidth = 3,
-      filled = false,
       color,
       animation = "none",
       speed = "normal",

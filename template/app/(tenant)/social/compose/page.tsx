@@ -1,6 +1,12 @@
-import { ComposerFeature } from "@/features/social/composerFeature";
+import { Suspense } from "react";
 
-// URL ownership stops here; orchestration is delegated to the feature.
-export default function Page() {
-  return <ComposerFeature />;
+import { ComposerFeature } from "@/features/social/composerFeature";
+import { ComposerSkeleton } from "@/features/social/composerSkeleton";
+
+export default async function Page() {
+  return (
+    <Suspense fallback={<ComposerSkeleton />}>
+      <ComposerFeature />
+    </Suspense>
+  );
 }

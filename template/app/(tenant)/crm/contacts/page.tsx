@@ -1,12 +1,12 @@
 import { Suspense } from "react";
 
-import { ContactsFeature } from "@/features/crm/contactsFeature";
-import { ContactsSkeleton } from "@/features/crm/contactsSkeleton";
+import { CrmContactsFeature } from "@/features/crm/crmContactsFeature";
+import { CrmContactsSkeleton } from "@/features/crm/crmContactsSkeleton";
 
-export default function Page() {
+export default async function Page() {
   return (
-    <Suspense fallback={<ContactsSkeleton />}>
-      <ContactsFeature />
+    <Suspense fallback={<CrmContactsSkeleton />}>
+      <CrmContactsFeature />
     </Suspense>
   );
 }

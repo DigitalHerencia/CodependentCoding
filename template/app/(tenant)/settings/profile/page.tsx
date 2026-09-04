@@ -1,6 +1,12 @@
-import { ProfileFeature } from "@/features/settings/profileFeature";
+import { Suspense } from "react";
 
-// URL ownership stops here; orchestration is delegated to the feature.
-export default function Page() {
-  return <ProfileFeature />;
+import { ProfileFeature } from "@/features/settings/profileFeature";
+import { ProfileSkeleton } from "@/features/settings/profileSkeleton";
+
+export default async function Page() {
+  return (
+    <Suspense fallback={<ProfileSkeleton />}>
+      <ProfileFeature />
+    </Suspense>
+  );
 }

@@ -1,6 +1,12 @@
-import { TasksFeature } from "@/features/projects/tasksFeature";
+import { Suspense } from "react";
 
-// URL ownership stops here; orchestration is delegated to the feature.
-export default function Page() {
-  return <TasksFeature />;
+import { MyTasksFeature } from "@/features/projects/myTasksFeature";
+import { MyTasksSkeleton } from "@/features/projects/myTasksSkeleton";
+
+export default async function Page() {
+  return (
+    <Suspense fallback={<MyTasksSkeleton />}>
+      <MyTasksFeature />
+    </Suspense>
+  );
 }

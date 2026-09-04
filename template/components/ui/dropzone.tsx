@@ -1,6 +1,5 @@
 "use client";
 
-/* eslint-disable react-refresh/only-export-components */
 import * as React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils/cn";
@@ -10,7 +9,7 @@ import {
   Upload,
   X,
   File,
-  Image,
+  Image as ImageIcon,
   FileText,
   FileCode,
   FileAudio,
@@ -369,10 +368,14 @@ const FileList = React.forwardRef<HTMLDivElement, FileListProps>(
           <FileListItem
             key={`${item.file.name}-${index}`}
             file={item.file}
-            progress={item.progress}
-            error={item.error}
-            uploading={item.uploading}
-            onRemove={onRemove ? () => onRemove(item.file) : undefined}
+            {...(item.progress === undefined
+              ? {}
+              : { progress: item.progress })}
+            {...(item.error === undefined ? {} : { error: item.error })}
+            {...(item.uploading === undefined
+              ? {}
+              : { uploading: item.uploading })}
+            {...(onRemove ? { onRemove: () => onRemove(item.file) } : {})}
           />
         ))}
       </div>
@@ -452,7 +455,7 @@ function formatBytes(bytes: number): string {
 
 function renderFileIcon(mimeType: string) {
   const className = "h-5 w-5";
-  if (mimeType.startsWith("image/")) return <Image className={className} />;
+  if (mimeType.startsWith("image/")) return <ImageIcon className={className} />;
   if (mimeType.startsWith("video/")) return <FileVideo className={className} />;
   if (mimeType.startsWith("audio/")) return <FileAudio className={className} />;
   if (mimeType.includes("pdf") || mimeType.includes("document"))

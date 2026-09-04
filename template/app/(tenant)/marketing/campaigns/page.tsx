@@ -1,6 +1,12 @@
-import { CampaignsFeature } from "@/features/marketing/campaignsFeature";
+import { Suspense } from "react";
 
-// URL ownership stops here; orchestration is delegated to the feature.
-export default function Page() {
-  return <CampaignsFeature />;
+import { CampaignsFeature } from "@/features/marketing/campaignsFeature";
+import { CampaignsSkeleton } from "@/features/marketing/campaignsSkeleton";
+
+export default async function Page() {
+  return (
+    <Suspense fallback={<CampaignsSkeleton />}>
+      <CampaignsFeature />
+    </Suspense>
+  );
 }

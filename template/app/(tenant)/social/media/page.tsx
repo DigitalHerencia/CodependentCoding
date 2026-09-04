@@ -1,6 +1,12 @@
-import { MediaLibraryFeature } from "@/features/social/mediaLibraryFeature";
+import { Suspense } from "react";
 
-// URL ownership stops here; orchestration is delegated to the feature.
-export default function Page() {
-  return <MediaLibraryFeature />;
+import { MediaLibraryFeature } from "@/features/social/mediaLibraryFeature";
+import { MediaLibrarySkeleton } from "@/features/social/mediaLibrarySkeleton";
+
+export default async function Page() {
+  return (
+    <Suspense fallback={<MediaLibrarySkeleton />}>
+      <MediaLibraryFeature />
+    </Suspense>
+  );
 }

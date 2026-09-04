@@ -1,63 +1,107 @@
-import {
-  DataTableBlock,
-  PageHeaderBlock,
-  RecordDetailBlock,
-} from "@/components/blocks/application-sections";
-import { getPortalBilling } from "@/lib/fetchers/portalFetchers";
+import { PortalBillingTemplate } from "@/components/templates/portalBillingTemplate";
+import { BillingFeatureClient } from "@/features/portal/billingFeature.client";
+import { getPortalWorkspaceWorkflow } from "@/lib/workflows/portalWorkflows";
 
-// Features orchestrate blocks and lib helpers; they never import raw UI primitives.
+function displayValue(
+  record: object,
+  keys: readonly string[],
+  fallback: string,
+) {
+  const values = record as Record<string, unknown>;
+  for (const key of keys) {
+    const value = values[key];
+    if (value instanceof Date) return value.toLocaleDateString();
+    if (
+      typeof value === "string" ||
+      typeof value === "number" ||
+      typeof value === "bigint"
+    ) {
+      return String(value);
+    }
+    if (value && typeof value === "object") {
+      const nested = value as Record<string, unknown>;
+      const label = nested.displayName ?? nested.name ?? nested.email;
+      if (typeof label === "string") return label;
+    }
+  }
+  return fallback;
+}
+
 export async function BillingFeature() {
-  const billing = await getPortalBilling();
+  const workspace = await getPortalWorkspaceWorkflow();
+  const records = [
+    ...(workspace.billing.subscription ? [workspace.billing.subscription] : []),
+    ...workspace.billing.invoices,
+  ];
+  const rows = records.map((record, index) => {
+    const item = record as object;
+    const id = displayValue(
+      item,
+      ["id", "resource", "number"],
+      String(index + 1),
+    );
+    return {
+      id,
+      href: undefined,
+      cells: {
+        name: displayValue(
+          item,
+          [
+            "name",
+            "title",
+            "subject",
+            "resource",
+            "invoiceNumber",
+            "email",
+            "id",
+          ],
+          id,
+        ),
+        state: displayValue(
+          item,
+          ["status", "state", "stage", "role", "count"],
+          "ACTIVE",
+        ),
+        owner: displayValue(
+          item,
+          [
+            "owner",
+            "assignee",
+            "client",
+            "organization",
+            "channel",
+            "provider",
+          ],
+          "—",
+        ),
+        updated: displayValue(
+          item,
+          ["updatedAt", "createdAt", "dueAt", "publishedAt", "date"],
+          "—",
+        ),
+      },
+    };
+  });
+
   return (
-    <div className="space-y-6">
-      <PageHeaderBlock
-        eyebrow="Client portal"
-        title="Billing"
-        description="Billing access is separately authorized from general portal access."
-      />
-      {billing.subscription ? (
-        <RecordDetailBlock
-          title={billing.subscription.planKey}
-          status={billing.subscription.status}
-          items={[
-            {
-              label: "Period end",
-              value: billing.subscription.currentPeriodEnd
-                ? new Date(
-                    billing.subscription.currentPeriodEnd,
-                  ).toLocaleDateString()
-                : "Not set",
-            },
-            {
-              label: "Cancels at period end",
-              value: billing.subscription.cancelAtPeriodEnd ? "Yes" : "No",
-            },
-          ]}
-        />
-      ) : null}
-      <DataTableBlock
-        columns={[
-          { key: "number", label: "Invoice" },
-          { key: "customer", label: "Customer" },
-          { key: "status", label: "Status" },
-          { key: "total", label: "Total" },
-          { key: "due", label: "Due" },
-        ]}
-        rows={billing.invoices.map((invoice) => ({
-          id: invoice.id,
-          href: `/invoices/${invoice.id}`,
-          cells: {
-            number: `#${invoice.number}`,
-            customer: invoice.customerName,
-            status: invoice.status,
-            total: `${invoice.currency} ${invoice.total}`,
-            due: invoice.dueAt
-              ? new Date(invoice.dueAt).toLocaleDateString()
-              : null,
-          },
-        }))}
-        emptyMessage="No invoices are available for this organization."
-      />
-    </div>
+    <PortalBillingTemplate
+      rows={rows}
+      stats={[
+        {
+          label: "Records",
+          value: String(rows.length),
+          trend: "server workflow",
+        },
+        {
+          label: "Active",
+          value: String(
+            rows.filter((row) => row.cells.state !== "ARCHIVED").length,
+          ),
+        },
+        { label: "Updated", value: rows[0]?.cells.updated ?? "—" },
+        { label: "Source", value: "SERVER" },
+      ]}
+      toolbar={<BillingFeatureClient />}
+    />
   );
 }

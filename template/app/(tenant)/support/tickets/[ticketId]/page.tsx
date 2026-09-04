@@ -1,11 +1,17 @@
-import { TicketFeature } from "@/features/support/ticketFeature";
+import { Suspense } from "react";
 
-// URL ownership stops here; orchestration is delegated to the feature.
+import { TicketFeature } from "@/features/support/ticketFeature";
+import { TicketSkeleton } from "@/features/support/ticketSkeleton";
+
 export default async function Page({
   params,
 }: {
   params: Promise<{ ticketId: string }>;
 }) {
   const { ticketId } = await params;
-  return <TicketFeature ticketId={ticketId} />;
+  return (
+    <Suspense fallback={<TicketSkeleton />}>
+      <TicketFeature ticketId={ticketId} />
+    </Suspense>
+  );
 }

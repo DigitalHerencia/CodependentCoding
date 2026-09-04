@@ -1,9 +1,9 @@
 import { Boxes, ShieldCheck, Workflow } from "lucide-react";
 
-import { CTASimple } from "@/components/blocks/cta-sections";
-import { FeatureGrid } from "@/components/blocks/feature-sections";
-import { HeroSection } from "@/components/blocks/hero-sections";
-import { StatsSection } from "@/components/blocks/stats-sections";
+import { CTASimple } from "@/components/blocks/cta-section";
+import { FeatureGrid } from "@/components/blocks/feature-grid";
+import { HeroSection } from "@/components/blocks/hero-section";
+import { StatsSection } from "@/components/blocks/stats-section";
 
 const capabilities = [
   {

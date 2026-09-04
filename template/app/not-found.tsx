@@ -1,6 +1,6 @@
-import { ErrorBlock } from "@/components/blocks/error-states";
+import { NotFoundPage } from "@/components/blocks/error-pages";
 
 // Global 404 presentation delegates to a reusable block.
 export default function NotFound() {
-  return <ErrorBlock title="Not found" />;
+  return <NotFoundPage title="Not found" />;
 }

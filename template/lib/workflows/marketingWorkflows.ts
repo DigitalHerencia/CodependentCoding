@@ -14,3 +14,13 @@ export async function calculateCampaignMetricsWorkflow(campaignId: string) {
   if (!campaign) throw new Error("Campaign was not found.");
   return campaign;
 }
+
+export async function getMarketingRecordWorkflow(
+  kind: "campaign" | "audience",
+  id: string,
+) {
+  const workspace = await getMarketingWorkspaceWorkflow(100);
+  const records =
+    kind === "campaign" ? workspace.campaigns : workspace.audiences;
+  return records.find((record) => record.id === id) ?? null;
+}

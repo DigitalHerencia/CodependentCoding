@@ -1,28 +1,27 @@
-/* eslint-disable react-refresh/only-export-components */
-import * as React from 'react'
-import { Card, CardContent } from '@/components/ui/card'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { cn } from '@/lib/utils'
-import { Quote, Star } from 'lucide-react'
+import * as React from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { cn } from "@/lib/utils/cn";
+import { Quote, Star } from "lucide-react";
 
 export interface TestimonialItem {
-  quote: string
-  author: string
-  role: string
-  company?: string
-  avatar?: string
-  rating?: number
+  quote: string;
+  author: string;
+  role: string;
+  company?: string;
+  avatar?: string;
+  rating?: number;
 }
 
 // ============================================================================
 // TESTIMONIALS VARIANT 1: Cards Grid
 // ============================================================================
 export interface TestimonialsGridProps {
-  title?: string
-  subtitle?: string
-  testimonials: TestimonialItem[]
-  columns?: 2 | 3
-  className?: string
+  title?: string;
+  subtitle?: string;
+  testimonials: TestimonialItem[];
+  columns?: 2 | 3;
+  className?: string;
 }
 
 export function TestimonialsGrid({
@@ -33,12 +32,14 @@ export function TestimonialsGrid({
   className,
 }: TestimonialsGridProps) {
   const gridCols = {
-    2: 'md:grid-cols-2',
-    3: 'md:grid-cols-2 lg:grid-cols-3',
-  }
+    2: "md:grid-cols-2",
+    3: "md:grid-cols-2 lg:grid-cols-3",
+  };
 
   return (
-    <section className={cn('py-16 px-4 md:px-8 lg:px-16 bg-muted/30', className)}>
+    <section
+      className={cn("py-16 px-4 md:px-8 lg:px-16 bg-muted/30", className)}
+    >
       <div className="max-w-7xl mx-auto">
         {(title || subtitle) && (
           <div className="text-center mb-12 space-y-4">
@@ -55,7 +56,7 @@ export function TestimonialsGrid({
           </div>
         )}
 
-        <div className={cn('grid gap-6', gridCols[columns])}>
+        <div className={cn("grid gap-6", gridCols[columns])}>
           {testimonials.map((testimonial) => (
             <Card
               key={`testimonial-${testimonial.author}`}
@@ -70,10 +71,10 @@ export function TestimonialsGrid({
                       <Star
                         key={i}
                         className={cn(
-                          'h-4 w-4',
+                          "h-4 w-4",
                           i < testimonial.rating!
-                            ? 'fill-warning text-warning'
-                            : 'text-muted-foreground'
+                            ? "fill-warning text-warning"
+                            : "text-muted-foreground",
                         )}
                       />
                     ))}
@@ -81,7 +82,7 @@ export function TestimonialsGrid({
                 )}
 
                 <p className="text-lg font-medium leading-relaxed">
-                  "{testimonial.quote}"
+                  &ldquo;{testimonial.quote}&rdquo;
                 </p>
 
                 <div className="flex items-center gap-3 pt-4 border-t-2 border-foreground">
@@ -105,15 +106,15 @@ export function TestimonialsGrid({
         </div>
       </div>
     </section>
-  )
+  );
 }
 
 // ============================================================================
 // TESTIMONIALS VARIANT 2: Single Quote (Large)
 // ============================================================================
 export interface TestimonialsSingleProps {
-  testimonial: TestimonialItem
-  className?: string
+  testimonial: TestimonialItem;
+  className?: string;
 }
 
 export function TestimonialsSingle({
@@ -121,12 +122,12 @@ export function TestimonialsSingle({
   className,
 }: TestimonialsSingleProps) {
   return (
-    <section className={cn('py-20 px-4 md:px-8 lg:px-16', className)}>
+    <section className={cn("py-20 px-4 md:px-8 lg:px-16", className)}>
       <div className="max-w-4xl mx-auto text-center space-y-8">
         <Quote className="h-16 w-16 text-primary mx-auto" />
 
         <blockquote className="text-2xl md:text-3xl lg:text-4xl font-bold leading-relaxed">
-          "{testimonial.quote}"
+          &ldquo;{testimonial.quote}&rdquo;
         </blockquote>
 
         <div className="flex flex-col items-center gap-4">
@@ -146,16 +147,16 @@ export function TestimonialsSingle({
         </div>
       </div>
     </section>
-  )
+  );
 }
 
 // ============================================================================
 // TESTIMONIALS VARIANT 3: Masonry Layout
 // ============================================================================
 export interface TestimonialsMasonryProps {
-  title?: string
-  testimonials: TestimonialItem[]
-  className?: string
+  title?: string;
+  testimonials: TestimonialItem[];
+  className?: string;
 }
 
 export function TestimonialsMasonry({
@@ -168,10 +169,10 @@ export function TestimonialsMasonry({
     testimonials.filter((_, i) => i % 3 === 0),
     testimonials.filter((_, i) => i % 3 === 1),
     testimonials.filter((_, i) => i % 3 === 2),
-  ]
+  ];
 
   return (
-    <section className={cn('py-16 px-4 md:px-8 lg:px-16', className)}>
+    <section className={cn("py-16 px-4 md:px-8 lg:px-16", className)}>
       <div className="max-w-7xl mx-auto">
         {title && (
           <h2 className="text-3xl md:text-4xl font-black uppercase tracking-tight text-center mb-12">
@@ -194,17 +195,17 @@ export function TestimonialsMasonry({
                           <Star
                             key={i}
                             className={cn(
-                              'h-4 w-4',
+                              "h-4 w-4",
                               i < testimonial.rating!
-                                ? 'fill-warning text-warning'
-                                : 'text-muted-foreground'
+                                ? "fill-warning text-warning"
+                                : "text-muted-foreground",
                             )}
                           />
                         ))}
                       </div>
                     )}
                     <p className="font-medium leading-relaxed">
-                      "{testimonial.quote}"
+                      &ldquo;{testimonial.quote}&rdquo;
                     </p>
 
                     <div className="flex items-center gap-3">
@@ -215,7 +216,9 @@ export function TestimonialsMasonry({
                         </AvatarFallback>
                       </Avatar>
                       <div>
-                        <p className="font-bold text-sm">{testimonial.author}</p>
+                        <p className="font-bold text-sm">
+                          {testimonial.author}
+                        </p>
                         <p className="text-xs text-muted-foreground">
                           {testimonial.role}
                         </p>
@@ -229,17 +232,17 @@ export function TestimonialsMasonry({
         </div>
       </div>
     </section>
-  )
+  );
 }
 
 // ============================================================================
 // TESTIMONIALS VARIANT 4: With Avatars Row
 // ============================================================================
 export interface TestimonialsWithAvatarsProps {
-  title?: string
-  description?: string
-  testimonials: TestimonialItem[]
-  className?: string
+  title?: string;
+  description?: string;
+  testimonials: TestimonialItem[];
+  className?: string;
 }
 
 export function TestimonialsWithAvatars({
@@ -248,14 +251,17 @@ export function TestimonialsWithAvatars({
   testimonials,
   className,
 }: TestimonialsWithAvatarsProps) {
-  const [activeIndex, setActiveIndex] = React.useState(0)
+  const [activeIndex, setActiveIndex] = React.useState(0);
 
-  if (!testimonials.length) return null
+  if (!testimonials.length) return null;
 
-  const activeTestimonial = testimonials[activeIndex] ?? testimonials[0]
+  const activeTestimonial = testimonials[activeIndex] ?? testimonials[0];
+  if (!activeTestimonial) return null;
 
   return (
-    <section className={cn('py-16 px-4 md:px-8 lg:px-16 bg-muted/30', className)}>
+    <section
+      className={cn("py-16 px-4 md:px-8 lg:px-16 bg-muted/30", className)}
+    >
       <div className="max-w-4xl mx-auto text-center space-y-8">
         {(title || description) && (
           <div className="space-y-4">
@@ -276,7 +282,7 @@ export function TestimonialsWithAvatars({
           <Quote className="h-10 w-10 text-primary mx-auto mb-6" />
 
           <blockquote className="text-xl md:text-2xl font-medium leading-relaxed mb-6">
-            "{activeTestimonial.quote}"
+            &ldquo;{activeTestimonial.quote}&rdquo;
           </blockquote>
 
           <div>
@@ -296,16 +302,17 @@ export function TestimonialsWithAvatars({
               aria-pressed={index === activeIndex}
               onClick={() => setActiveIndex(index)}
               className={cn(
-                'transition',
+                "transition",
                 index === activeIndex
-                  ? 'scale-110'
-                  : 'opacity-50 hover:opacity-100'
+                  ? "scale-110"
+                  : "opacity-50 hover:opacity-100",
               )}
             >
               <Avatar
                 className={cn(
-                  'h-12 w-12 border-3 border-foreground',
-                  index === activeIndex && 'shadow-[3px_3px_0px_hsl(var(--shadow-color))]'
+                  "h-12 w-12 border-3 border-foreground",
+                  index === activeIndex &&
+                    "shadow-[3px_3px_0px_hsl(var(--shadow-color))]",
                 )}
               >
                 <AvatarImage src={testimonial.avatar} />
@@ -318,7 +325,7 @@ export function TestimonialsWithAvatars({
         </div>
       </div>
     </section>
-  )
+  );
 }
 
 // ============================================================================
@@ -329,4 +336,4 @@ export const Testimonials = {
   Single: TestimonialsSingle,
   Masonry: TestimonialsMasonry,
   WithAvatars: TestimonialsWithAvatars,
-}
+};

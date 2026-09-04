@@ -160,7 +160,7 @@ function computeLayout(
       computedNodes.set(id, {
         id,
         label: node.label,
-        color: node.color || NODE_COLORS[node.index % NODE_COLORS.length],
+        color: node.color || NODE_COLORS[node.index % NODE_COLORS.length]!,
         x: padding.left + col * colWidth,
         y: yOffset,
         width: nodeWidth,
@@ -262,7 +262,8 @@ const SankeyChart = React.forwardRef<HTMLDivElement, SankeyChartProps>(
       if (!containerRef.current) return;
       const ro = new ResizeObserver((entries) => {
         if (mountedRef.current) {
-          setWidth(entries[0].contentRect.width);
+          const entry = entries[0];
+          if (entry) setWidth(entry.contentRect.width);
         }
       });
       ro.observe(containerRef.current);

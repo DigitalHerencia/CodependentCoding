@@ -92,8 +92,8 @@ const HeatmapChart = React.forwardRef<HTMLDivElement, HeatmapChartProps>(
       if (data.length === 0) return { min: 0, max: 1 };
       // Reduce instead of Math.min(...vals) spread: the spread passes every
       // value as a function argument and throws RangeError on very large datasets.
-      let min = data[0].value;
-      let max = data[0].value;
+      let min = data[0]!.value;
+      let max = data[0]!.value;
       for (const d of data) {
         if (d.value < min) min = d.value;
         if (d.value > max) max = d.value;

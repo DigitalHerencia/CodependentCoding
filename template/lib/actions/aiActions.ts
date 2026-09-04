@@ -11,7 +11,10 @@ import { toAiGenerationDTO } from "@/lib/db/dto/ai.dto";
 import { aiGenerationSelect } from "@/lib/db/selects/ai.selects";
 import { withTenantTransaction } from "@/lib/db/tenant";
 import { completeAiGenerationTx } from "@/lib/db/transactions/complete-ai-generation.tx";
-import { failAiGenerationTx } from "@/lib/db/transactions/ai.tx";
+import {
+  failAiGenerationTx,
+  lockAiRateLimitTx,
+} from "@/lib/db/transactions/ai.tx";
 
 class AiRateLimitError extends Error {
   constructor(message = "AI generation rate limit exceeded.") {
@@ -34,7 +37,7 @@ async function createGeneration(
         throw new Error("The AI rate limit must be a positive integer.");
       }
       const lockKey = `ai-rate-limit:${access.userId}`;
-      await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${lockKey}))`;
+      await lockAiRateLimitTx(tx, lockKey);
       const recentGenerationCount = await tx.aiGeneration.count({
         where: {
           organizationId: access.organizationId,

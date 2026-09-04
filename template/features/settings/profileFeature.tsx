@@ -1,20 +1,104 @@
-import { Show, UserProfile } from "@clerk/nextjs";
+import { SharedProfileSettingsTemplate } from "@/components/templates/sharedProfileSettingsTemplate";
+import { ProfileFeatureClient } from "@/features/settings/profileFeature.client";
+import { getOrganizationSettingsWorkflow } from "@/lib/workflows/organizationWorkflows";
 
-export function ProfileFeature() {
+function displayValue(
+  record: object,
+  keys: readonly string[],
+  fallback: string,
+) {
+  const values = record as Record<string, unknown>;
+  for (const key of keys) {
+    const value = values[key];
+    if (value instanceof Date) return value.toLocaleDateString();
+    if (
+      typeof value === "string" ||
+      typeof value === "number" ||
+      typeof value === "bigint"
+    ) {
+      return String(value);
+    }
+    if (value && typeof value === "object") {
+      const nested = value as Record<string, unknown>;
+      const label = nested.displayName ?? nested.name ?? nested.email;
+      if (typeof label === "string") return label;
+    }
+  }
+  return fallback;
+}
+
+export async function ProfileFeature() {
+  const workspace = await getOrganizationSettingsWorkflow();
+  const records = [workspace.organization, ...workspace.integrations];
+  const rows = records.map((record, index) => {
+    const item = record as object;
+    const id = displayValue(
+      item,
+      ["id", "resource", "number"],
+      String(index + 1),
+    );
+    return {
+      id,
+      href: undefined,
+      cells: {
+        name: displayValue(
+          item,
+          [
+            "name",
+            "title",
+            "subject",
+            "resource",
+            "invoiceNumber",
+            "email",
+            "id",
+          ],
+          id,
+        ),
+        state: displayValue(
+          item,
+          ["status", "state", "stage", "role", "count"],
+          "ACTIVE",
+        ),
+        owner: displayValue(
+          item,
+          [
+            "owner",
+            "assignee",
+            "client",
+            "organization",
+            "channel",
+            "provider",
+          ],
+          "—",
+        ),
+        updated: displayValue(
+          item,
+          ["updatedAt", "createdAt", "dueAt", "publishedAt", "date"],
+          "—",
+        ),
+      },
+    };
+  });
+
   return (
-    <>
-      <Show when="signed-out">
-        <section className="border-3 border-foreground bg-card p-6">
-          <h1 className="text-xl font-semibold">Account profile</h1>
-          <p className="mt-2 text-sm text-muted-foreground">
-            This screen is publicly visible in the template. Sign in to open the
-            live Clerk user-profile control.
-          </p>
-        </section>
-      </Show>
-      <Show when="signed-in">
-        <UserProfile routing="hash" />
-      </Show>
-    </>
+    <SharedProfileSettingsTemplate
+      rows={rows}
+      stats={[
+        {
+          label: "Records",
+          value: String(rows.length),
+          trend: "server workflow",
+        },
+        {
+          label: "Active",
+          value: String(
+            rows.filter((row) => row.cells.state !== "ARCHIVED").length,
+          ),
+        },
+        { label: "Updated", value: rows[0]?.cells.updated ?? "—" },
+        { label: "Source", value: "SERVER" },
+      ]}
+      toolbar={<ProfileFeatureClient />}
+    />
   );
 }

@@ -1,6 +1,12 @@
-import { KnowledgeBaseFeature } from "@/features/support/knowledgeBaseFeature";
+import { Suspense } from "react";
 
-// URL ownership stops here; orchestration is delegated to the feature.
-export default function Page() {
-  return <KnowledgeBaseFeature />;
+import { KnowledgeBaseFeature } from "@/features/support/knowledgeBaseFeature";
+import { KnowledgeBaseSkeleton } from "@/features/support/knowledgeBaseSkeleton";
+
+export default async function Page() {
+  return (
+    <Suspense fallback={<KnowledgeBaseSkeleton />}>
+      <KnowledgeBaseFeature />
+    </Suspense>
+  );
 }
