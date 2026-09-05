@@ -1,25 +1,16 @@
-import {
-  clerkMiddleware,
-  createRouteMatcher,
-} from "@clerk/nextjs/server";
+import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 
 const isPublicRoute = createRouteMatcher([
   "/",
-  "/architecture(.*)",
-  "/components(.*)",
-  "/contact(.*)",
-  "/explore(.*)",
-  "/faq(.*)",
-  "/features(.*)",
-  "/integrations(.*)",
-  "/pricing(.*)",
-  "/privacy(.*)",
-  "/terms(.*)",
+  "/faq",
+  "/features",
+  "/privacy",
+  "/terms",
   "/sign-in(.*)",
   "/sign-up(.*)",
-  "/api/clerk/webhooks(.*)",
-  "/api/sendgrid/webhooks(.*)",
-  "/api/stripe/webhooks(.*)",
+  "/api/clerk/webhooks",
+  "/api/sendgrid/webhooks",
+  "/api/stripe/webhooks",
   "/__clerk(.*)",
 ]);
 

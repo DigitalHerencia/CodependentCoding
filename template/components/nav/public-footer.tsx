@@ -1,10 +1,7 @@
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
-import {
-  applicationCapabilities,
-  applicationProduct,
-} from "@/content/application";
+import { applicationProduct } from "@/content/application";
 
 export interface PublicFooterLink {
   label: string;
@@ -16,12 +13,8 @@ export interface PublicFooterProps {
 }
 
 export const defaultPublicFooterLinks = [
-  ...(applicationCapabilities.marketing
-    ? [
-        { label: "Pricing", href: "/pricing" },
-        { label: "FAQ", href: "/faq" },
-      ]
-    : []),
+  { label: "Features", href: "/features" },
+  { label: "FAQ", href: "/faq" },
   { label: "Terms", href: "/terms" },
   { label: "Privacy", href: "/privacy" },
 ] satisfies readonly PublicFooterLink[];
@@ -30,9 +23,9 @@ export function PublicFooter({
   links = defaultPublicFooterLinks,
 }: PublicFooterProps) {
   return (
-    <footer className="w-full border-t border-neutral-400 bg-black">
+    <footer className="w-full border-t border-muted bg-background">
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-6 py-7 sm:px-10 lg:flex-row lg:items-center lg:justify-between lg:px-12">
-        <p className="font-mono text-sm leading-none text-neutral-400 sm:text-base lg:text-lg">
+        <p className="font-mono text-sm leading-none text-muted sm:text-base lg:text-lg">
           © {new Date().getFullYear()} {applicationProduct.name}. All rights
           reserved.
         </p>

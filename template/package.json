@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "next dev",
+    "dev": "concurrently -k -n next,ngrok \"pnpm dev:next\" \"pnpm dev:ngrok\"",
     "build": "next build --turbopack",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
@@ -15,7 +15,9 @@
     "start": "next start",
     "typecheck": "tsc --noEmit",
     "validate": "pnpm format:check && pnpm lint && pnpm typecheck",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "dev:next": "next dev",
+    "dev:ngrok": "ngrok http --url=liberal-gull-quietly.ngrok-free.app 3000"
   },
   "packageManager": "pnpm@11.24.0",
   "engines": {
@@ -87,6 +89,7 @@
     "@types/react": "19.2.18",
     "@types/react-dom": "19.2.5",
     "@types/ws": "8.18.1",
+    "concurrently": "^10.0.5",
     "eslint": "9.39.5",
     "eslint-config-next": "16.3.4",
     "eslint-config-prettier": "10.1.8",

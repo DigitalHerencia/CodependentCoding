@@ -49,11 +49,11 @@ export async function processStripeWebhook(
       await withProviderOrganizationTransaction(
         input.organizationId,
         async (tx) => {
-        await tx.billingSubscription.upsert({
-          where: { organizationId: input.organizationId },
-          create: input,
-          update: input,
-        });
+          await tx.billingSubscription.upsert({
+            where: { organizationId: input.organizationId },
+            create: input,
+            update: input,
+          });
           await completeWebhookEventTx(tx, webhookEventId);
         },
       );

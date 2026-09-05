@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 
 export interface FAQItem {
   question: string;
-  answer: string;
+  answer: React.ReactNode;
 }
 
 // ============================================================================
@@ -65,7 +65,7 @@ export function FAQAccordion({
               <AccordionTrigger className="px-6 py-4 font-bold uppercase tracking-wide hover:no-underline">
                 {item.question}
               </AccordionTrigger>
-              <AccordionContent className="px-6 pb-4 text-muted-foreground">
+              <AccordionContent className="px-6 pb-4 text-foreground [&_p]:my-4 [&_ul]:my-4 [&_ul]:list-disc [&_ul]:pl-6">
                 {item.answer}
               </AccordionContent>
             </AccordionItem>

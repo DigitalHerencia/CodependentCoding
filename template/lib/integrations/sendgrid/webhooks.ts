@@ -62,17 +62,20 @@ export async function processSendGridWebhookEvents(
     if (!webhookEventId) continue;
 
     try {
-      await withProviderOrganizationTransaction(event.organizationId, async (tx) => {
-        await tx.auditEvent.create({
-          data: {
-            organizationId: event.organizationId,
-            action: `email.${event.event}`,
-            resourceType: "email",
-            resourceId: event.sg_message_id ?? null,
-          },
-        });
-        await completeWebhookEventTx(tx, webhookEventId);
-      });
+      await withProviderOrganizationTransaction(
+        event.organizationId,
+        async (tx) => {
+          await tx.auditEvent.create({
+            data: {
+              organizationId: event.organizationId,
+              action: `email.${event.event}`,
+              resourceType: "email",
+              resourceId: event.sg_message_id ?? null,
+            },
+          });
+          await completeWebhookEventTx(tx, webhookEventId);
+        },
+      );
     } catch (error) {
       try {
         await withProviderTransaction((tx) =>

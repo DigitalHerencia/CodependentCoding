@@ -5,10 +5,7 @@ import Link from "next/link";
 
 import { LogoLockup } from "@/components/brand/logo-lockup";
 import { Button } from "@/components/ui/button";
-import {
-  applicationCapabilities,
-  applicationProduct,
-} from "@/content/application";
+import { applicationProduct } from "@/content/application";
 
 export interface PublicHeaderNavItem {
   label: string;
@@ -21,12 +18,8 @@ export interface PublicHeaderProps {
 }
 
 export const defaultPublicNavItems = [
-  ...(applicationCapabilities.marketing
-    ? [
-        { label: "Pricing", href: "/pricing" },
-        { label: "FAQ", href: "/faq" },
-      ]
-    : []),
+  { label: "Features", href: "/features" },
+  { label: "FAQ", href: "/faq" },
   { label: "Terms", href: "/terms" },
   { label: "Privacy", href: "/privacy" },
 ] satisfies readonly PublicHeaderNavItem[];
@@ -36,7 +29,7 @@ export function PublicHeader({
   navItems = defaultPublicNavItems,
 }: PublicHeaderProps) {
   return (
-    <header className="sticky top-0 z-50 h-21 w-full border-b border-neutral-400 bg-black">
+    <header className="sticky top-0 z-50 h-21 w-full border-b border-muted bg-background">
       <div className="mx-auto hidden h-full w-full max-w-7xl items-center justify-between px-6 sm:px-10 md:flex lg:px-12">
         <Link
           href="/"
@@ -46,7 +39,7 @@ export function PublicHeader({
           {logo}
         </Link>
 
-        <nav className="flex items-center gap-8 lg:gap-12">
+        <nav className="flex items-center gap-2 lg:gap-6">
           {navItems.map((item) => (
             <Button key={item.href} variant="ghost" size="sm" asChild>
               <Link href={item.href}>{item.label}</Link>
@@ -54,17 +47,12 @@ export function PublicHeader({
           ))}
         </nav>
 
-        <div className="flex items-center gap-4 lg:gap-5">
+        <div className="flex items-center gap-2 lg:gap-4">
           <Button variant="secondary" size="lg" asChild>
             <Link href="/sign-in">Sign in</Link>
           </Button>
 
-          <Button
-            variant="default"
-            size="lg"
-            className="min-w-40 sm:min-w-44 lg:min-w-48"
-            asChild
-          >
+          <Button variant="default" size="lg" className="shrink-0" asChild>
             <Link href="/sign-up?return_to=/dashboard">Get started</Link>
           </Button>
         </div>
