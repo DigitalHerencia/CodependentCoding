@@ -9,6 +9,40 @@ import {
 } from "@/components/ui/card";
 import { cn } from "@/lib/utils/cn";
 
+export function FeatureContentGrid({ title, introduction, items, closing, columns = 3 }: { title: string; introduction?: React.ReactNode; items: readonly { title: string; content: React.ReactNode }[]; closing?: React.ReactNode; columns?: 3 | 4 }) {
+  return <section className="border-y border-muted/30 px-6 py-16 sm:px-10 lg:px-12"><div className="mx-auto max-w-7xl"><h2 className="mb-6 text-center text-3xl font-black uppercase tracking-tight">{title}</h2>{introduction && <div className="mx-auto mb-10 max-w-3xl text-center leading-7">{introduction}</div>}<div className={cn("grid gap-6 md:grid-cols-2", columns === 4 ? "xl:grid-cols-4" : "xl:grid-cols-3")}>{items.map((item, index) => <Card key={item.title} className="border border-muted/60 bg-background shadow-none"><CardHeader><span className="mb-4 grid size-12 place-items-center border border-muted bg-primary text-lg font-bold">{String(index + 1).padStart(2, "0")}</span><CardTitle className="text-lg uppercase">{item.title}</CardTitle></CardHeader><CardContent className="leading-7 [&_p]:my-3 [&_ul]:list-disc [&_ul]:pl-5">{item.content}</CardContent></Card>)}</div>{closing && <div className="mt-8 text-center leading-7">{closing}</div>}</div></section>;
+}
+
+export function FeatureEditorial({
+  title,
+  children,
+  className,
+}: {
+  title?: string;
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    <section
+      className={cn(
+        "border-y border-muted/30 px-6 py-16 sm:px-10 lg:px-12",
+        className,
+      )}
+    >
+      <div className="mx-auto max-w-4xl">
+        {title && (
+          <h2 className="mb-8 text-3xl font-black uppercase tracking-tight sm:text-4xl">
+            {title}
+          </h2>
+        )}
+        <div className="text-lg leading-8 [&_p]:my-5 [&_h3]:mt-10 [&_h3]:text-xl [&_h3]:font-bold [&_ul]:my-5 [&_ul]:list-disc [&_ul]:pl-6 [&_blockquote]:my-8 [&_blockquote]:border-l-4 [&_blockquote]:border-primary [&_blockquote]:pl-6">
+          {children}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 const featureColors = [
   "bg-primary/10",
   "bg-secondary/10",

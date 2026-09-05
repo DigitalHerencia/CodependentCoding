@@ -9,7 +9,6 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { applicationCapabilities } from "@/content/application";
 
 export interface MobileBottomNavItem {
   label: string;
@@ -34,7 +33,7 @@ export function MobileBottomNav({
   return (
     <nav
       aria-label={ariaLabel}
-      className="fixed inset-x-0 bottom-0 z-50 grid h-14 grid-cols-4 border-t border-neutral-400 bg-black md:hidden"
+      className="fixed inset-x-0 bottom-0 z-50 grid h-14 grid-cols-4 border-t border-muted bg-background md:hidden"
     >
       {items.map((item) => {
         const Icon = item.icon;
@@ -45,7 +44,7 @@ export function MobileBottomNav({
             aria-current={
               isActivePath(pathname, item.href) ? "page" : undefined
             }
-            className="flex flex-col items-center justify-center gap-1 text-[10px] font-semibold text-neutral-400 uppercase aria-[current=page]:text-white"
+            className="flex flex-col items-center justify-center gap-1 text-[10px] font-semibold text-muted uppercase aria-[current=page]:text-foreground"
           >
             <Icon className="size-4" />
             {item.label}
@@ -58,13 +57,9 @@ export function MobileBottomNav({
 
 const publicItems = [
   { href: "/", label: "Home", icon: Home },
-  ...(applicationCapabilities.marketing
-    ? [
-        { href: "/pricing", label: "Price", icon: FileText },
-        { href: "/faq", label: "FAQ", icon: HelpCircle },
-      ]
-    : []),
-  { href: "/sign-in", label: "Sign", icon: ShieldCheck },
+  { href: "/features", label: "Features", icon: FileText },
+  { href: "/faq", label: "FAQ", icon: HelpCircle },
+  { href: "/sign-in", label: "Sign In", icon: ShieldCheck },
 ] satisfies readonly MobileBottomNavItem[];
 
 export function PublicMobileBottomNav() {

@@ -16,7 +16,5 @@ export default defineConfig({
   },
   // Generate and static tooling do not require database credentials. Prisma
   // migration commands still fail explicitly when a database URL is absent.
-  ...(directDatabaseUrl
-    ? { datasource: { url: directDatabaseUrl } }
-    : {}),
+  ...(directDatabaseUrl ? { datasource: { url: directDatabaseUrl } } : {}),
 });

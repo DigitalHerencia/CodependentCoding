@@ -11,7 +11,7 @@ import { ArrowRight, Mail, Sparkles, Zap } from "lucide-react";
 // ============================================================================
 export interface CTASimpleProps {
   title: string;
-  description?: string;
+  description?: React.ReactNode;
   primaryAction: { label: string; href?: string; onClick?: () => void };
   secondaryAction?: { label: string; href?: string; onClick?: () => void };
   className?: string;
@@ -32,9 +32,9 @@ export function CTASimple({
         </h2>
 
         {description && (
-          <p className="text-lg text-muted-foreground font-medium max-w-2xl mx-auto">
+          <div className="text-lg text-foreground/90 font-medium max-w-2xl mx-auto whitespace-pre-line [&_p]:my-4">
             {description}
-          </p>
+          </div>
         )}
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center">

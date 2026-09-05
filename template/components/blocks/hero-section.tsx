@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import Image from "next/image";
 
 import { Button } from "@/components/ui/button";
@@ -13,7 +14,7 @@ export interface HeroCenteredProps {
   badge?: string;
   title: string;
   titleHighlight?: string;
-  description: string;
+  description: ReactNode;
   primaryAction?: { label: string; href?: string; onClick?: () => void };
   secondaryAction?: { label: string; href?: string; onClick?: () => void };
   className?: string;
@@ -47,9 +48,9 @@ export function HeroCentered({
           )}
         </h1>
 
-        <p className="text-lg md:text-xl text-muted-foreground font-medium max-w-2xl mx-auto">
+        <div className="text-lg md:text-xl text-foreground/90 font-medium max-w-2xl mx-auto whitespace-pre-line [&_p]:my-4">
           {description}
-        </p>
+        </div>
 
         {(primaryAction || secondaryAction) && (
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
