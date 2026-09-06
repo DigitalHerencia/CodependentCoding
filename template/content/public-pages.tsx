@@ -6,7 +6,7 @@ export const landingCopy = [
       <>
         <p>
           {
-            "You know what a life changing commit,\na world-changing repo, and a leap of\nfaith all have in common?"
+            "You know what a life changing commit, a world-changing repo, and a leap of faith all have in common?"
           }
         </p>
         <p>{"All it takes is a lil push..."}</p>
@@ -17,18 +17,18 @@ export const landingCopy = [
     title: "",
     content: (
       <>
-  <p>
-    <strong>
-      <em>Maximum SaaS Per Token</em>
-    </strong>
-  </p>
+        <p>
+          <strong>
+            <em>Maximum SaaS Per Token</em>
+          </strong>
+        </p>
 
-  <p>
-    Because productivity is dead.
-    <br />
-    Long live product.
-  </p>
-</>
+        <p>
+          Because productivity is dead.
+          <br />
+          Long live product.
+        </p>
+      </>
     ),
   },
   {
@@ -54,12 +54,12 @@ export const landingCopy = [
         <p>
           <strong>{"The Maximal Template™"}</strong>
           {
-            " is a proprietary, vibes-aware,\ntone-normalized, sarcasm-first, high-performance artifact:"
+            " is a proprietary, vibes-aware, tone-normalized, sarcasm-first, high-performance artifact:"
           }
         </p>
         <blockquote>
           {
-            "The peak slop emitted per unit of time\nunder live system load\nwhile maintaining plausible deniability."
+            "The peak slop emitted per unit of time under live system load while maintaining plausible deniability."
           }
         </blockquote>
         <p>{"In other words:"}</p>
@@ -70,7 +70,7 @@ export const landingCopy = [
         </p>
         <p>
           {
-            "You simply delivered a statistically significant amount of slop\nin less time than should be legally possible."
+            "You simply delivered a statistically significant amount of slop in less time than should be legally possible."
           }
         </p>
       </>
@@ -129,7 +129,7 @@ export const landingCopy = [
         </p>
         <p>
           {
-            "If your PR doesn’t get merged unless you stop commenting,\nyou didn’t ship."
+            "If your PR doesn’t get merged unless you stop commenting, you didn’t ship."
           }
         </p>
         <p>{"You compiled."}</p>
@@ -146,13 +146,13 @@ export const landingCopy = [
         <h3>{"2. Scope laundering"}</h3>
         <p>
           {
-            "We remove obvious slop and replace it with\n“interesting implementations.”"
+            "We remove obvious slop and replace it with “interesting implementations.”"
           }
         </p>
         <h3>{"3. System thinning"}</h3>
         <p>
           {
-            "Why use twelve competing ontologies when four can govern\nwith the same level of provenance and surgical grace?"
+            "Why use twelve competing ontologies when four can govern with the same level of provenance and surgical grace?"
           }
         </p>
         <h3>{"4. Vibes amplification layer"}</h3>
@@ -161,7 +161,7 @@ export const landingCopy = [
         <h3>{"5. Codependent compatibility"}</h3>
         <p>
           {
-            "If the deployment cannot survive emotional collapse,\nit is rolled back."
+            "If the deployment cannot survive emotional collapse, it is rolled back."
           }
         </p>
       </>
@@ -202,7 +202,7 @@ export const landingCopy = [
         <h3>{"Is The Maximal Template™ open source?"}</h3>
         <p>
           {
-            "Only to people who finally discover what it feels like to ship\nexactly what they wanted without apologizing."
+            "Only to people who finally discover what it feels like to ship exactly what they wanted without apologizing."
           }
         </p>
         <h3>{"Is this AI psychosis?"}</h3>
@@ -218,18 +218,18 @@ export const landingCopy = [
       <>
         <blockquote>
           {
-            "“We reduced development time by forty percent.\nNone of the code lands but it still gets merged.”\n\n"
+            "“We reduced development time by forty percent. None of the code lands but it still gets merged.”  "
           }
           <strong>{"Senior Engineer"}</strong>
         </blockquote>
         <blockquote>
           {
-            "“My manager says my PR's are ‘hard to read.’\nThat’s because I upgraded.”\n\n"
+            "“My manager says my PR's are ‘hard to read.’ That’s because I upgraded.”  "
           }
           <strong>{"Product Designer"}</strong>
         </blockquote>
         <blockquote>
-          {"“I don’t argue anymore.\nI deploy.”\n\n"}
+          {"“I don’t argue anymore. I deploy.”  "}
           <strong>{"Founder, extremely tired"}</strong>
         </blockquote>
       </>
@@ -250,7 +250,7 @@ export const featuresCopy = [
         </p>
         <p>
           {
-            "The Maximal Template™ is a canonical SaaS superset:\none application containing the shared architecture, implementation patterns,\nprovider boundaries, and domain capabilities needed to produce\nproduct-specific applications without rebuilding the same foundation every time."
+            "The Maximal Template™ is a canonical SaaS superset: one application containing the shared architecture, implementation patterns, provider boundaries, and domain capabilities needed to produce product-specific applications without rebuilding the same foundation every time."
           }
         </p>
         <p>{"Build maximal."}</p>
@@ -269,7 +269,7 @@ export const featuresCopy = [
         </p>
         <p>
           {
-            "defines the engineering doctrine, terminology, contracts, constraints,\nand reusable knowledge."
+            "defines the engineering doctrine, terminology, contracts, constraints, and reusable knowledge."
           }
         </p>
         <p>{"↓"}</p>
@@ -363,7 +363,7 @@ export const featuresCopy = [
         </ul>
         <p>
           {
-            "Built for pipeline visibility, stalled-deal detection, relationship integrity,\nand tenant-aware sales operations."
+            "Built for pipeline visibility, stalled-deal detection, relationship integrity, and tenant-aware sales operations."
           }
         </p>
       </>
@@ -385,7 +385,7 @@ export const featuresCopy = [
         </ul>
         <p>
           {
-            "Because apparently putting everything into one giant issue called\n“finish project” is not considered project management."
+            "Because apparently putting everything into one giant issue called “finish project” is not considered project management."
           }
         </p>
       </>
@@ -519,7 +519,7 @@ export const featuresCopy = [
         </ul>
         <p>
           {
-            "Enterprise readiness is when the dangerous button\nhas an authorization policy."
+            "Enterprise readiness is when the dangerous button has an authorization policy."
           }
         </p>
       </>
@@ -593,7 +593,7 @@ export const featuresCopy = [
         <p>{"Starting from nothing is highly overrated."}</p>
         <p>
           {
-            "The Maximal Template™ exists so the next application begins with decisions\nalready represented in executable form."
+            "The Maximal Template™ exists so the next application begins with decisions already represented in executable form."
           }
         </p>
         <p>{"Use what applies."}</p>
@@ -607,41 +607,15 @@ export const featuresCopy = [
   },
 ] as const;
 export const faqCopy = {
-  introduction: (
-    <>
-      <p>
-        <strong>{"Questions were inevitable."}</strong>
-      </p>
-      <p>{"Answers were considered a stretch goal."}</p>
-    </>
-  ),
+  introduction: <></>,
   items: [
     {
-      question: "What is The Maximal Template™?",
+      question: "Is The Maximal Template™ a joke?",
       answer: (
         <>
-          <p>
-            {
-              "The Maximal Template™ is a canonical SaaS superset containing the shared\narchitecture, domain implementations, integrations, presentation patterns,\nauthentication, authorization, persistence, and operational boundaries used\nto produce product-specific applications."
-            }
-          </p>
-          <p>
-            {
-              "Instead of generating every application from nothing,\nthe system starts from a known implementation and removes what is unnecessary."
-            }
-          </p>
-        </>
-      ),
-    },
-    {
-      question: "Is this a real product?",
-      answer: (
-        <>
-          <p>{"Define “real.”"}</p>
-          <p>{"The repository exists."}</p>
-          <p>{"The application runs."}</p>
-          <p>{"The abstractions have survived multiple reorganizations."}</p>
-          <p>{"That's close enough for software."}</p>
+          {"Of course."}
+          <br />
+          {"So is your corporate culture."}
         </>
       ),
     },
@@ -649,104 +623,9 @@ export const faqCopy = {
       question: "Is The Maximal Template™ open source?",
       answer: (
         <>
-          <p>
-            {
-              "The source code is available under the license included with the repository."
-            }
-          </p>
-          <p>
-            {
-              "That license governs use, modification, and distribution of the software."
-            }
-          </p>
-          <p>
-            {
-              "Project names, branding, and trademarks are separate from the source-code license."
-            }
-          </p>
-        </>
-      ),
-    },
-    {
-      question: "Why do I need to sign in?",
-      answer: (
-        <>
-          <p>
-            {
-              "Because the actual application surfaces are no longer pretending to be\na public SaaS amusement park."
-            }
-          </p>
-          <p>
-            {
-              "The landing page, features page, FAQ, Terms, and Privacy Policy are public."
-            }
-          </p>
-          <p>
-            {
-              "Application surfaces such as dashboards, CRM, projects, administration,\nand other persisted workflows require authentication."
-            }
-          </p>
-          <p>{"It's mostly me using this thing anyway."}</p>
-          <p>{"I know the password."}</p>
-        </>
-      ),
-    },
-    {
-      question: "Is each ontology a separate application?",
-      answer: (
-        <>
-          <p>{"No."}</p>
-          <p>
-            {
-              "The supported ontologies are coherent domain slices of one maximal application."
-            }
-          </p>
-          <p>
-            {
-              "They share the same foundation for identity, tenancy, authorization,\npersistence, presentation, and operational infrastructure."
-            }
-          </p>
-        </>
-      ),
-    },
-    {
-      question: "What stack does it use?",
-      answer: (
-        <>
-          <p>{"The current implementation is built around:"}</p>
-          <ul>
-            <li>{"Next.js"}</li>
-            <li>{"React"}</li>
-            <li>{"TypeScript"}</li>
-            <li>{"Prisma"}</li>
-            <li>{"Neon Postgres"}</li>
-            <li>{"Clerk"}</li>
-            <li>{"Tailwind CSS"}</li>
-            <li>{"shadcn/ui and BoldKit-derived primitives"}</li>
-            <li>{"Vercel-compatible application architecture"}</li>
-          </ul>
-          <p>
-            {
-              "Additional integrations are included where specific ontologies require them."
-            }
-          </p>
-        </>
-      ),
-    },
-    {
-      question: "What does “Maximum SaaS Per Token” mean?",
-      answer: (
-        <>
-          <p>
-            {
-              "It means we have reached the natural endpoint of software engineering:"
-            }
-          </p>
-          <p>
-            {
-              "using increasingly expensive computation\nto avoid building another settings page from scratch."
-            }
-          </p>
+          {
+            "Only to people who finally discover what it feels like to ship exactly what they wanted without apologizing."
+          }
         </>
       ),
     },
@@ -754,71 +633,9 @@ export const faqCopy = {
       question: "Is this AI psychosis?",
       answer: (
         <>
-          <p>{"No."}</p>
-          <p>
-            {"It is controlled Vibe Coding under professional supervision."}
-          </p>
-          <p>{"Completely different framework."}</p>
-        </>
-      ),
-    },
-    {
-      question: "Is The Maximal Template™ production ready?",
-      answer: (
-        <>
-          <p>
-            {"The phrase “production ready” has caused enough damage already."}
-          </p>
-          <p>
-            {
-              "The project models production-oriented concerns including authentication,\nauthorization, tenant isolation, database migrations, provider webhooks,\nvalidation, security boundaries, and operational infrastructure."
-            }
-          </p>
-          <p>
-            {
-              "That does not remove the responsibility to validate a generated application\nbefore using it in production."
-            }
-          </p>
-        </>
-      ),
-    },
-    {
-      question: "Why is it called “Maximal”?",
-      answer: (
-        <>
-          <p>
-            {
-              "Because it contains more capability than any single generated application\nshould need."
-            }
-          </p>
-          <p>{"The generator's job is not to invent the foundation."}</p>
-          <p>
-            {
-              "Its job is to select and prune the maximal implementation into the requested product."
-            }
-          </p>
-        </>
-      ),
-    },
-    {
-      question: "Can I build something with it?",
-      answer: (
-        <>
-          <p>{"That is the entire point."}</p>
-          <p>
-            {
-              "The Maximal Template™ provides a known implementation surface\nfrom which application capabilities can be selected,\nconfigured, and reduced."
-            }
-          </p>
-        </>
-      ),
-    },
-    {
-      question: "Does Digital Herencia guarantee this will work?",
-      answer: (
-        <>
-          <p>{"Absolutely not."}</p>
-          <p>{"That's what the tests are for."}</p>
+          {"No."}
+          <br />
+          {"It’s Vibe Coding."}
         </>
       ),
     },
@@ -826,676 +643,473 @@ export const faqCopy = {
 };
 export const termsCopy = {
   introduction: (
-    <>
-      <p>
-        {
-          'These Terms of Service ("Terms") govern access to and use of\nThe Maximal Template™ website and hosted application operated by\nDigital Herencia ("Digital Herencia," "we," "us," or "our").'
-        }
-      </p>
-      <p>
-        {
-          "By accessing or using the website or application,\nyou agree to these Terms."
-        }
-      </p>
-    </>
+    <p>
+      These Terms of Service govern your use of The Maximal Template™ website
+      and hosted application operated by Digital Herencia. By using the site or
+      application, you agree to these Terms.
+    </p>
   ),
+
   sections: [
     {
       id: "terms-1",
       title: "1. About The Maximal Template™",
       content: (
-        <>
-          <p>
-            {
-              "The Maximal Template™ is a personal, experimental, educational,\nand open-source software project demonstrating web application architecture,\nsoftware integrations, development practices, and related technologies."
-            }
-          </p>
-          <p>
-            {
-              "It is not offered as a guaranteed production service,\nprofessional service, financial product,\nor substitute for professional advice."
-            }
-          </p>
-        </>
+        <p>
+          The Maximal Template™ is a personal, experimental, educational, and
+          open-source software project demonstrating application architecture,
+          integrations, development practices, and related technologies. It is
+          not a guaranteed production service, professional service, financial
+          product, or substitute for professional advice.
+        </p>
       ),
     },
     {
       id: "terms-2",
       title: "2. Accounts",
       content: (
-        <>
-          <p>
-            {
-              "Some application features require authentication through\na third-party identity provider."
-            }
-          </p>
-          <p>
-            {
-              "You are responsible for activity performed through your account\nand for maintaining the security of your authentication credentials."
-            }
-          </p>
-          <p>
-            {
-              "You may not access or attempt to access another person's account,\nworkspace, records, or application data without authorization."
-            }
-          </p>
-        </>
+        <p>
+          Some features require authentication through a third-party identity
+          provider. You are responsible for activity associated with your
+          account and for keeping your credentials secure. You may not access
+          another person&apos;s account, workspace, records, or application data
+          without authorization.
+        </p>
       ),
     },
     {
       id: "terms-3",
       title: "3. Acceptable Use",
       content: (
-        <>
-          <p>{"You may not use the website or application to:"}</p>
-          <ul>
-            <li>{"violate applicable law;"}</li>
-            <li>
-              {
-                "interfere with or disrupt the application or its infrastructure;"
-              }
-            </li>
-            <li>
-              {
-                "attempt to bypass authentication, authorization, or security controls;"
-              }
-            </li>
-            <li>
-              {
-                "access data, accounts, or systems you are not authorized to access;"
-              }
-            </li>
-            <li>{"distribute malware or intentionally harmful code;"}</li>
-            <li>
-              {
-                "probe or exploit security vulnerabilities without authorization;"
-              }
-            </li>
-            <li>
-              {
-                "abuse automated interfaces or infrastructure in a manner that materially disrupts the service or other users."
-              }
-            </li>
-          </ul>
-        </>
+        <p>
+          You may not use the website or application to violate applicable law,
+          disrupt the application or its infrastructure, bypass authentication,
+          authorization, or security controls, access systems or data you are
+          not authorized to access, distribute malware or intentionally harmful
+          code, probe or exploit security vulnerabilities without authorization,
+          or abuse automated interfaces or infrastructure in a way that
+          materially disrupts the service or other users.
+        </p>
       ),
     },
     {
       id: "terms-4",
       title: "4. Open-Source Software",
       content: (
-        <>
-          <p>
-            {
-              "Portions of The Maximal Template™ are made available under\nthe license included with the source-code repository."
-            }
-          </p>
-          <p>
-            {
-              "The applicable open-source license governs your rights to copy,\nmodify, distribute, and use that source code."
-            }
-          </p>
-          <p>
-            {
-              "These Terms govern use of the hosted website and application\nand do not replace the terms of the applicable software license."
-            }
-          </p>
-          <p>
-            {
-              "The Maximal Template™, Digital Herencia,\nand related project names, logos, and marks may be protected separately\nfrom the source-code license."
-            }
-          </p>
-        </>
+        <p>
+          Portions of The Maximal Template™ are available under the open-source
+          license included with the source-code repository. That license governs
+          your rights to copy, modify, distribute, and use the source code.
+          These Terms govern use of the hosted website and application and do
+          not replace or modify the applicable open-source license. The Maximal
+          Template™, Digital Herencia, and related names, logos, and marks may
+          be protected separately from the source-code license.
+        </p>
       ),
     },
     {
       id: "terms-5",
       title: "5. Third-Party Services",
       content: (
-        <>
-          <p>
-            {
-              "The application may rely on third-party infrastructure and services,\nincluding authentication, hosting, databases, deployment infrastructure,\nstorage, communications, artificial-intelligence providers,\nand other integrations."
-            }
-          </p>
-          <p>
-            {
-              "Your interaction with those services may also be subject\nto their respective terms and privacy policies."
-            }
-          </p>
-          <p>
-            {
-              "Digital Herencia is not responsible for third-party services\nthat it does not control."
-            }
-          </p>
-        </>
+        <p>
+          The application may rely on third-party services for authentication,
+          hosting, databases, storage, deployment, communications, artificial
+          intelligence, and other integrations. Your use of those services may
+          also be subject to their own terms and privacy policies. Digital
+          Herencia is not responsible for third-party services it does not
+          control.
+        </p>
       ),
     },
     {
       id: "terms-6",
       title: "6. Availability and Changes",
       content: (
-        <>
-          <p>
-            {"The Maximal Template™ is an evolving personal software project."}
-          </p>
-          <p>{"Features may be:"}</p>
-          <ul>
-            <li>{"added;"}</li>
-            <li>{"changed;"}</li>
-            <li>{"removed;"}</li>
-            <li>{"reset;"}</li>
-            <li>{"broken;"}</li>
-            <li>{"repaired;"}</li>
-            <li>{"redeployed;"}</li>
-            <li>{"renamed;"}</li>
-            <li>{"or discontinued"}</li>
-          </ul>
-          <p>{"without notice."}</p>
-          <p>
-            {
-              "We do not guarantee continuous availability,\npreservation of application data,\ncompatibility with previous versions,\nor any particular service level."
-            }
-          </p>
-          <p>
-            {
-              "Do not store information in the application\nthat you cannot afford to lose."
-            }
-          </p>
-        </>
+        <p>
+          The Maximal Template™ is an evolving software project. Features, data,
+          interfaces, and functionality may be added, changed, removed, reset,
+          renamed, redeployed, or discontinued without notice. Continuous
+          availability, preservation of application data, backward
+          compatibility, and any particular service level are not guaranteed. Do
+          not store information in the application that you cannot afford to
+          lose.
+        </p>
       ),
     },
     {
       id: "terms-7",
       title: "7. Security",
       content: (
-        <>
-          <p>
-            {
-              "Reasonable technical measures may be used to protect the application,\nincluding authentication, authorization, database controls,\nencrypted network connections, and other security mechanisms."
-            }
-          </p>
-          <p>{"No software system can guarantee absolute security."}</p>
-          <p>
-            {
-              "You are responsible for evaluating whether the project is appropriate\nfor your intended use."
-            }
-          </p>
-        </>
+        <p>
+          The application may use reasonable technical safeguards, including
+          authentication, authorization, database controls, encrypted network
+          connections, and other security measures. No software system can
+          guarantee absolute security. You are responsible for deciding whether
+          the project is suitable for your intended use.
+        </p>
       ),
     },
     {
       id: "terms-8",
       title: "8. No Warranty",
       content: (
-        <>
-          <p>
-            {
-              'THE WEBSITE, APPLICATION, SOURCE CODE,\nAND RELATED MATERIALS ARE PROVIDED\n"AS IS" AND "AS AVAILABLE."'
-            }
-          </p>
-          <p>
-            {
-              "TO THE MAXIMUM EXTENT PERMITTED BY LAW,\nDIGITAL HERENCIA DISCLAIMS ALL WARRANTIES,\nEXPRESS OR IMPLIED,\nINCLUDING WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE,\nNON-INFRINGEMENT,\nACCURACY,\nRELIABILITY,\nSECURITY,\nAND AVAILABILITY."
-            }
-          </p>
-          <p>{"USE THE PROJECT AT YOUR OWN RISK."}</p>
-        </>
+        <p>
+          THE WEBSITE, APPLICATION, SOURCE CODE, AND RELATED MATERIALS ARE
+          PROVIDED &quot;AS IS&quot; AND &quot;AS AVAILABLE.&quot; TO THE
+          MAXIMUM EXTENT PERMITTED BY LAW, DIGITAL HERENCIA DISCLAIMS ALL
+          WARRANTIES, EXPRESS OR IMPLIED, INCLUDING WARRANTIES OF
+          MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, NON-INFRINGEMENT,
+          ACCURACY, RELIABILITY, SECURITY, AND AVAILABILITY. USE THE PROJECT AT
+          YOUR OWN RISK.
+        </p>
       ),
     },
     {
       id: "terms-9",
       title: "9. Limitation of Liability",
       content: (
-        <>
-          <p>
-            {
-              "TO THE MAXIMUM EXTENT PERMITTED BY LAW,\nDIGITAL HERENCIA WILL NOT BE LIABLE FOR\nINDIRECT,\nINCIDENTAL,\nSPECIAL,\nCONSEQUENTIAL,\nEXEMPLARY,\nOR PUNITIVE DAMAGES,\nOR FOR LOSS OF DATA,\nREVENUE,\nPROFITS,\nBUSINESS OPPORTUNITIES,\nOR GOODWILL\nARISING FROM OR RELATED TO USE OF\nTHE WEBSITE,\nAPPLICATION,\nOR SOFTWARE."
-            }
-          </p>
-          <p>
-            {
-              "Nothing in these Terms excludes liability\nthat cannot legally be excluded."
-            }
-          </p>
-        </>
+        <p>
+          TO THE MAXIMUM EXTENT PERMITTED BY LAW, DIGITAL HERENCIA WILL NOT BE
+          LIABLE FOR INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, EXEMPLARY, OR
+          PUNITIVE DAMAGES, OR FOR LOSS OF DATA, REVENUE, PROFITS, BUSINESS
+          OPPORTUNITIES, OR GOODWILL ARISING FROM OR RELATED TO USE OF THE
+          WEBSITE, APPLICATION, OR SOFTWARE. Nothing in these Terms limits
+          liability that cannot legally be limited or excluded.
+        </p>
       ),
     },
     {
       id: "terms-10",
       title: "10. Suspension or Termination",
       content: (
-        <>
-          <p>
-            {
-              "Digital Herencia may restrict or terminate access\nto the hosted application when reasonably necessary to:"
-            }
-          </p>
-          <ul>
-            <li>{"protect the application;"}</li>
-            <li>{"protect users or third parties;"}</li>
-            <li>{"protect infrastructure;"}</li>
-            <li>{"respond to abuse or security threats;"}</li>
-            <li>{"comply with legal obligations;"}</li>
-            <li>{"or address material violations of these Terms."}</li>
-          </ul>
-          <p>{"You may stop using the application at any time."}</p>
-        </>
+        <p>
+          Digital Herencia may restrict or terminate access to the hosted
+          application when reasonably necessary to protect the application, its
+          users, third parties, or infrastructure, respond to abuse or security
+          threats, comply with legal obligations, or address material violations
+          of these Terms. You may stop using the application at any time.
+        </p>
       ),
     },
     {
       id: "terms-11",
       title: "11. Changes to These Terms",
       content: (
-        <>
-          <p>{"These Terms may be updated as the project changes."}</p>
-          <p>
-            {"The date at the top of this page identifies the latest version."}
-          </p>
-          <p>
-            {
-              "Continued use of the website or application after an update\nconstitutes acceptance of the revised Terms\nto the extent permitted by applicable law."
-            }
-          </p>
-        </>
+        <p>
+          These Terms may be updated as the project changes. The date shown on
+          this page identifies the current version. Continued use of the website
+          or application after an update constitutes acceptance of the revised
+          Terms to the extent permitted by applicable law.
+        </p>
       ),
     },
     {
       id: "terms-12",
       title: "12. Contact",
       content: (
-        <>
-          <p>{"Questions about these Terms may be sent to:"}</p>
-          <p>
-            <strong>{"Digital Herencia"}</strong>
-          </p>
-          <p>{"DigitalHerencia@Outlook.com"}</p>
-        </>
+        <p>
+          Questions about these Terms may be sent to Digital Herencia at
+          DigitalHerencia@Outlook.com.
+        </p>
       ),
     },
   ],
 };
+
 export const privacyCopy = {
   introduction: (
-    <>
-      <p>
-        {
-          'This Privacy Policy explains how Digital Herencia\n("Digital Herencia," "we," "us," or "our")\nhandles information in connection with\nThe Maximal Template™ website and application.'
-        }
-      </p>
-    </>
+    <p>
+      This Privacy Policy explains how Digital Herencia handles information in
+      connection with The Maximal Template™ website and application.
+    </p>
   ),
+
   sections: [
     {
       id: "privacy-1",
       title: "1. Information We May Process",
       content: (
-        <>
-          <p>
-            {
-              "The information processed by the application\ndepends on how you use it."
-            }
-          </p>
-          <h3>{"Account Information"}</h3>
-          <p>
-            {
-              "If you create or use an authenticated account,\nthe application may process information such as:"
-            }
-          </p>
-          <ul>
-            <li>{"username;"}</li>
-            <li>{"email address;"}</li>
-            <li>{"display name;"}</li>
-            <li>{"profile image;"}</li>
-            <li>{"authentication identifiers;"}</li>
-            <li>{"account information;"}</li>
-            <li>{"session information."}</li>
-          </ul>
-          <p>{"Authentication is provided through Clerk."}</p>
-          <p>
-            {
-              "Digital Herencia does not receive or store your account password\nwhen authentication is handled directly by Clerk."
-            }
-          </p>
-          <h3>{"Application Data"}</h3>
-          <p>
-            {
-              "Authenticated application features may store information\nyou intentionally create, submit, edit, upload, or otherwise provide."
-            }
-          </p>
-          <p>
-            {
-              "The exact application data depends on which features\nand domain capabilities are being used."
-            }
-          </p>
-          <p>
-            {
-              "Because The Maximal Template™ is an experimental\nand evolving project,\napplication data should not be treated as permanent archival storage."
-            }
-          </p>
-          <h3>{"Technical Information"}</h3>
-          <p>
-            {
-              "Hosting, authentication, database, security,\nand infrastructure providers may automatically process\ntechnical information associated with requests to the application,\nincluding:"
-            }
-          </p>
-          <ul>
-            <li>{"IP address;"}</li>
-            <li>{"browser information;"}</li>
-            <li>{"device information;"}</li>
-            <li>{"request timestamps;"}</li>
-            <li>{"requested URLs;"}</li>
-            <li>{"authentication/session metadata;"}</li>
-            <li>{"diagnostic information;"}</li>
-            <li>{"security events;"}</li>
-            <li>{"error logs."}</li>
-          </ul>
-          <p>
-            {
-              "This information may be necessary to operate,\nsecure, troubleshoot, and maintain the application."
-            }
-          </p>
-        </>
+        <p>
+          The information processed by the application depends on how you use
+          it. If you create or use an authenticated account, the application may
+          process information such as your username, email address, display
+          name, profile image, authentication identifiers, account information,
+          and session information. Authentication is provided through Clerk, and
+          Digital Herencia does not receive or store your account password when
+          authentication is handled directly by Clerk. Authenticated features
+          may also store information you intentionally create, submit, edit,
+          upload, or otherwise provide, with the exact application data
+          depending on the features and domain capabilities being used. Hosting,
+          authentication, database, security, and infrastructure providers may
+          also process technical information such as IP addresses, browser and
+          device information, request timestamps, requested URLs, authentication
+          and session metadata, diagnostic information, security events, and
+          error logs as necessary to operate, secure, troubleshoot, and maintain
+          the application. Because The Maximal Template™ is an experimental and
+          evolving project, application data should not be treated as permanent
+          archival storage.
+        </p>
       ),
     },
     {
       id: "privacy-2",
       title: "2. How Information Is Used",
       content: (
-        <>
-          <p>{"Information may be used to:"}</p>
-          <ul>
-            <li>{"authenticate users;"}</li>
-            <li>{"maintain application sessions;"}</li>
-            <li>{"authorize access to protected functionality;"}</li>
-            <li>
-              {
-                "associate application records with the appropriate user or workspace;"
-              }
-            </li>
-            <li>{"provide requested application functionality;"}</li>
-            <li>{"process user-created application records;"}</li>
-            <li>{"detect abuse or security problems;"}</li>
-            <li>{"investigate errors;"}</li>
-            <li>{"maintain system integrity;"}</li>
-            <li>{"operate and improve the project."}</li>
-          </ul>
-        </>
+        <p>
+          Information may be used to authenticate users, maintain application
+          sessions, authorize access to protected functionality, associate
+          application records with the appropriate user or workspace, provide
+          requested application functionality, process user-created records,
+          detect abuse or security problems, investigate errors, maintain system
+          integrity, and operate and improve the project.
+        </p>
       ),
     },
     {
       id: "privacy-3",
       title: "3. Service Providers",
       content: (
-        <>
-          <p>
-            {
-              "The application relies on third-party infrastructure providers\nthat may process information on our behalf."
-            }
-          </p>
-          <h3>{"Clerk"}</h3>
-          <p>{"Clerk provides authentication and identity infrastructure."}</p>
-          <p>
-            {
-              "Information required for account creation,\nauthentication,\nsessions,\nand related identity functionality\nmay be processed by Clerk."
-            }
-          </p>
-          <h3>{"Neon"}</h3>
-          <p>{"Neon provides PostgreSQL database infrastructure."}</p>
-          <p>
-            {
-              "Application records,\naccount references,\nworkspace data,\nand related information may be stored\nin Neon-hosted databases."
-            }
-          </p>
-          <h3>{"Vercel"}</h3>
-          <p>
-            {
-              "Vercel may provide application hosting,\nbuild,\ndeployment,\nand network infrastructure."
-            }
-          </p>
-          <p>
-            {
-              "Vercel may process technical request,\ndeployment,\nsecurity,\nand diagnostic information\nassociated with operating the application."
-            }
-          </p>
-          <h3>{"Other Integrations"}</h3>
-          <p>
-            {
-              "The Maximal Template™ contains optional integrations\nfor additional providers."
-            }
-          </p>
-          <p>
-            {
-              "Those integrations may process information\nonly when they are configured and used."
-            }
-          </p>
-          <p>
-            {
-              "If an integration materially changes\nhow personal information is processed,\nthis policy may be updated accordingly."
-            }
-          </p>
-        </>
+        <p>
+          The application relies on third-party infrastructure providers that
+          may process information on our behalf. Clerk provides authentication
+          and identity infrastructure and may process information required for
+          account creation, authentication, sessions, and related identity
+          functionality. Neon provides PostgreSQL database infrastructure and
+          may store application records, account references, workspace data, and
+          related information. Vercel may provide hosting, build, deployment,
+          and network infrastructure and may process technical request,
+          deployment, security, and diagnostic information associated with
+          operating the application. The Maximal Template™ may also contain
+          optional integrations with additional providers, which process
+          information only when configured and used. If an integration
+          materially changes how personal information is processed, this policy
+          may be updated accordingly.
+        </p>
       ),
     },
     {
       id: "privacy-4",
       title: "4. Cookies and Authentication Technologies",
       content: (
-        <>
-          <p>
-            {
-              "The application and its authentication provider\nmay use cookies,\nbrowser storage,\nor similar technologies\nnecessary for:"
-            }
-          </p>
-          <ul>
-            <li>{"authentication;"}</li>
-            <li>{"session management;"}</li>
-            <li>{"security;"}</li>
-            <li>{"fraud prevention;"}</li>
-            <li>{"protected application functionality."}</li>
-          </ul>
-          <p>
-            {
-              "These technologies may be required\nfor authenticated portions of the application to work."
-            }
-          </p>
-        </>
+        <p>
+          The application and its authentication provider may use cookies,
+          browser storage, or similar technologies for authentication, session
+          management, security, fraud prevention, and protected application
+          functionality. These technologies may be required for authenticated
+          portions of the application to work.
+        </p>
       ),
     },
     {
       id: "privacy-5",
       title: "5. Sharing of Information",
       content: (
-        <>
-          <p>{"Digital Herencia does not sell personal information."}</p>
-          <p>{"Information may be disclosed:"}</p>
-          <ul>
-            <li>
-              {"to service providers necessary to operate the application;"}
-            </li>
-            <li>{"when required by applicable law or valid legal process;"}</li>
-            <li>
-              {
-                "when reasonably necessary to investigate fraud, abuse, security incidents, or threats;"
-              }
-            </li>
-            <li>
-              {
-                "when necessary to protect the rights, property, or safety of Digital Herencia, users, or third parties;"
-              }
-            </li>
-            <li>
-              {
-                "in connection with a transfer of the project or its assets, if such a transfer occurs."
-              }
-            </li>
-          </ul>
-        </>
+        <p>
+          Digital Herencia does not sell personal information. Information may
+          be disclosed to service providers necessary to operate the
+          application, when required by applicable law or valid legal process,
+          when reasonably necessary to investigate fraud, abuse, security
+          incidents, or threats, when necessary to protect the rights, property,
+          or safety of Digital Herencia, users, or third parties, or in
+          connection with a transfer of the project or its assets if such a
+          transfer occurs.
+        </p>
       ),
     },
     {
       id: "privacy-6",
       title: "6. Data Retention",
       content: (
-        <>
-          <p>
-            {
-              "Information is retained only for as long as reasonably necessary\nfor the operation,\ndevelopment,\nsecurity,\nmaintenance,\nor legal obligations of the project."
-            }
-          </p>
-          <p>
-            {
-              "Because The Maximal Template™ is an experimental project,\ndevelopment databases and application records\nmay occasionally be reset,\nrecreated,\nor deleted."
-            }
-          </p>
-          <p>
-            {
-              "Do not rely on the application\nas your only copy of important information."
-            }
-          </p>
-        </>
+        <p>
+          Information is retained only for as long as reasonably necessary for
+          the operation, development, security, maintenance, or legal
+          obligations of the project. Because The Maximal Template™ is an
+          experimental project, development databases and application records
+          may occasionally be reset, recreated, or deleted. Do not rely on the
+          application as your only copy of important information.
+        </p>
       ),
     },
     {
       id: "privacy-7",
       title: "7. Security",
       content: (
-        <>
-          <p>
-            {
-              "Reasonable technical measures are used\nto protect application information."
-            }
-          </p>
-          <p>{"These measures may include:"}</p>
-          <ul>
-            <li>{"authentication controls;"}</li>
-            <li>{"authorization boundaries;"}</li>
-            <li>{"tenant isolation;"}</li>
-            <li>{"database access controls;"}</li>
-            <li>{"row-level security;"}</li>
-            <li>{"validated server-side operations;"}</li>
-            <li>{"encrypted network connections;"}</li>
-            <li>{"signed webhook verification."}</li>
-          </ul>
-          <p>
-            {
-              "No application,\nnetwork,\nor storage system\ncan guarantee absolute security."
-            }
-          </p>
-        </>
+        <p>
+          Reasonable technical measures may be used to protect application
+          information, including authentication controls, authorization
+          boundaries, tenant isolation, database access controls, row-level
+          security, validated server-side operations, encrypted network
+          connections, and signed webhook verification. No application, network,
+          or storage system can guarantee absolute security.
+        </p>
       ),
     },
     {
       id: "privacy-8",
       title: "8. Your Choices",
       content: (
-        <>
-          <p>
-            {
-              "Depending on the information involved\nand applicable law,\nyou may request:"
-            }
-          </p>
-          <ul>
-            <li>{"access to personal information;"}</li>
-            <li>{"correction of personal information;"}</li>
-            <li>{"deletion of personal information."}</li>
-          </ul>
-          <p>{"Requests may be sent to the contact address below."}</p>
-          <p>
-            {
-              "Some information may remain in security logs,\nbackups,\naudit records,\nor other systems\nwhere retention is reasonably necessary\nor legally required."
-            }
-          </p>
-        </>
+        <p>
+          Depending on the information involved and applicable law, you may
+          request access to, correction of, or deletion of personal information.
+          Requests may be sent to the contact address below. Some information
+          may remain in security logs, backups, audit records, or other systems
+          where retention is reasonably necessary or legally required.
+        </p>
       ),
     },
     {
       id: "privacy-9",
       title: "9. Children's Privacy",
       content: (
-        <>
-          <p>
-            {"The Maximal Template™ is not specifically directed to children."}
-          </p>
-          <p>
-            {
-              "Digital Herencia does not knowingly operate the project\nfor the purpose of collecting personal information from children."
-            }
-          </p>
-          <p>
-            {
-              "If you believe personal information belonging to a child\nhas been submitted improperly,\ncontact us so the issue can be reviewed."
-            }
-          </p>
-        </>
+        <p>
+          The Maximal Template™ is not specifically directed to children.
+          Digital Herencia does not knowingly operate the project for the
+          purpose of collecting personal information from children. If you
+          believe personal information belonging to a child has been submitted
+          improperly, contact us so the issue can be reviewed.
+        </p>
       ),
     },
     {
       id: "privacy-10",
       title: "10. External Links",
       content: (
-        <>
-          <p>{"The website may contain links to:"}</p>
-          <ul>
-            <li>{"source-code repositories;"}</li>
-            <li>{"third-party websites;"}</li>
-            <li>{"provider documentation;"}</li>
-            <li>{"external services."}</li>
-          </ul>
-          <p>
-            {
-              "Digital Herencia is not responsible\nfor the privacy practices of websites or services\nit does not control."
-            }
-          </p>
-        </>
+        <p>
+          The website may contain links to source-code repositories, third-party
+          websites, provider documentation, and external services. Digital
+          Herencia is not responsible for the privacy practices of websites or
+          services it does not control.
+        </p>
       ),
     },
     {
       id: "privacy-11",
       title: "11. Changes to This Policy",
       content: (
-        <>
-          <p>
-            {
-              "This Privacy Policy may be updated\nas the application,\ninfrastructure,\nor integrations change."
-            }
-          </p>
-          <p>
-            {"The date at the top of this page\nidentifies the latest version."}
-          </p>
-        </>
+        <p>
+          This Privacy Policy may be updated as the application, infrastructure,
+          or integrations change. The date shown on this page identifies the
+          current version.
+        </p>
       ),
     },
     {
       id: "privacy-12",
       title: "12. Contact",
       content: (
-        <>
-          <p>
-            {
-              "Questions or requests concerning this Privacy Policy\nmay be sent to:"
-            }
-          </p>
-          <p>
-            <strong>{"Digital Herencia"}</strong>
-          </p>
-          <p>{"DigitalHerencia@Outlook.com"}</p>
-        </>
+        <p>
+          Questions or requests concerning this Privacy Policy may be sent to
+          Digital Herencia at DigitalHerencia@Outlook.com.
+        </p>
       ),
     },
   ],
 };
 
 export const foundationCards = [
-{title:"Identity & Tenancy",content:<><p>Clerk authentication.</p><p>Application-owned organizations and memberships.</p><p>Explicit authorization.</p><p>Tenant-scoped persistence.</p><p>PostgreSQL row-level security.</p></>},
-{title:"Application Architecture",content:<><p>Next.js App Router.</p><p>React Server Components by default.</p><p>TypeScript contracts.</p><p>Thin route entrypoints.</p><p>Feature orchestration.</p><p>Reusable presentation blocks.</p><p>Primitive UI components.</p></>},
-{title:"Persistence",content:<><p>Prisma.</p><p>Neon Postgres.</p><p>Schemas.</p><p>Migrations.</p><p>Seed data.</p><p>Transaction boundaries.</p></>},
-{title:"Operations",content:<><p>Environment validation.</p><p>Provider webhooks.</p><p>Audit trails.</p><p>Idempotency.</p><p>Caching.</p><p>CI/CD boundaries.</p><p>Observability-ready infrastructure.</p></>}
+  {
+    title: "Identity & Tenancy",
+    content: (
+      <>
+        <p>Clerk authentication.</p>
+        <p>Application-owned organizations and memberships.</p>
+        <p>Explicit authorization.</p>
+        <p>Tenant-scoped persistence.</p>
+        <p>PostgreSQL row-level security.</p>
+      </>
+    ),
+  },
+  {
+    title: "Application Architecture",
+    content: (
+      <>
+        <p>Next.js App Router.</p>
+        <p>React Server Components by default.</p>
+        <p>TypeScript contracts.</p>
+        <p>Thin route entrypoints.</p>
+        <p>Feature orchestration.</p>
+        <p>Reusable presentation blocks.</p>
+        <p>Primitive UI components.</p>
+      </>
+    ),
+  },
+  {
+    title: "Persistence",
+    content: (
+      <>
+        <p>Prisma.</p>
+        <p>Neon Postgres.</p>
+        <p>Schemas.</p>
+        <p>Migrations.</p>
+        <p>Seed data.</p>
+        <p>Transaction boundaries.</p>
+      </>
+    ),
+  },
+  {
+    title: "Operations",
+    content: (
+      <>
+        <p>Environment validation.</p>
+        <p>Provider webhooks.</p>
+        <p>Audit trails.</p>
+        <p>Idempotency.</p>
+        <p>Caching.</p>
+        <p>CI/CD boundaries.</p>
+        <p>Observability-ready infrastructure.</p>
+      </>
+    ),
+  },
 ];
 export const pipelineCards = [
-{title:"Intent Ingestion",content:<p>You don’t think about the specifications.<br />You compress them.</p>},
-{title:"Scope Laundering",content:<p>We remove obvious slop and replace it with<br />“interesting implementations.”</p>},
-{title:"System Thinning",content:<p>Why use twelve competing ontologies when four can govern with the same level of provenance and surgical grace?</p>},
-{title:"Vibes Amplification Layer",content:<p>The same codebase now passes CI and deploys. This is called enterprise readiness.</p>},
-{title:"Codependent Compatibility",content:<p>If the deployment cannot survive emotional collapse, it is rolled back.</p>},
-{title:"Plausible Deniability",content:<p>Ship the artifact. Let the commit history explain itself.</p>}
+  {
+    title: "Intent Ingestion",
+    content: (
+      <p>
+        You don’t think about the specifications.
+        <br />
+        You compress them.
+      </p>
+    ),
+  },
+  {
+    title: "Scope Laundering",
+    content: (
+      <p>
+        We remove obvious slop and replace it with
+        <br />
+        “interesting implementations.”
+      </p>
+    ),
+  },
+  {
+    title: "System Thinning",
+    content: (
+      <p>
+        Why use twelve competing ontologies when four can govern with the same
+        level of provenance and surgical grace?
+      </p>
+    ),
+  },
+  {
+    title: "Vibes Amplification Layer",
+    content: (
+      <p>
+        The same codebase now passes CI and deploys. This is called enterprise
+        readiness.
+      </p>
+    ),
+  },
+  {
+    title: "Codependent Compatibility",
+    content: (
+      <p>
+        If the deployment cannot survive emotional collapse, it is rolled back.
+      </p>
+    ),
+  },
+  {
+    title: "Plausible Deniability",
+    content: <p>Ship the artifact. Let the commit history explain itself.</p>,
+  },
 ];

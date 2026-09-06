@@ -25,19 +25,19 @@ export function CTASimple({
   className,
 }: CTASimpleProps) {
   return (
-    <section className={cn("py-16 px-4 md:px-8 lg:px-16", className)}>
-      <div className="max-w-4xl mx-auto text-center space-y-6">
-        <h2 className="text-3xl md:text-4xl font-black uppercase tracking-tight">
+    <section className={cn("px-4 py-16 md:px-8 lg:px-16", className)}>
+      <div className="mx-auto max-w-4xl space-y-6 text-center">
+        <h2 className="text-3xl font-black tracking-tight uppercase md:text-4xl">
           {title}
         </h2>
 
         {description && (
-          <div className="text-lg text-foreground/90 font-medium max-w-2xl mx-auto whitespace-pre-line [&_p]:my-4">
+          <div className="mx-auto max-w-2xl text-lg font-medium whitespace-pre-line text-foreground/90 [&_p]:my-4">
             {description}
           </div>
         )}
 
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+        <div className="flex flex-col justify-center gap-4 sm:flex-row">
           {primaryAction.href ? (
             <Button size="lg" asChild>
               <a href={safeHref(primaryAction.href)}>
@@ -99,22 +99,22 @@ export function CTAWithBackground({
   };
 
   return (
-    <section className={cn("py-16 px-4 md:px-8 lg:px-16", className)}>
+    <section className={cn("px-4 py-16 md:px-8 lg:px-16", className)}>
       <div
         className={cn(
-          "max-w-5xl mx-auto border-3 border-foreground p-8 md:p-12 shadow-[8px_8px_0px_hsl(var(--shadow-color))]",
+          "mx-auto max-w-5xl border-3 border-foreground p-8 shadow-[8px_8px_0px_hsl(var(--shadow-color))] md:p-12",
           bgColors[backgroundColor],
         )}
       >
-        <div className="text-center space-y-6">
-          <Sparkles className="h-12 w-12 mx-auto" />
+        <div className="space-y-6 text-center">
+          <Sparkles className="mx-auto h-12 w-12" />
 
-          <h2 className="text-3xl md:text-4xl font-black uppercase tracking-tight">
+          <h2 className="text-3xl font-black tracking-tight uppercase md:text-4xl">
             {title}
           </h2>
 
           {description && (
-            <p className="text-lg font-medium max-w-2xl mx-auto opacity-90">
+            <p className="mx-auto max-w-2xl text-lg font-medium opacity-90">
               {description}
             </p>
           )}
@@ -186,22 +186,22 @@ export function CTANewsletter({
 
   return (
     <section
-      className={cn("py-16 px-4 md:px-8 lg:px-16 bg-muted/30", className)}
+      className={cn("bg-muted/30 px-4 py-16 md:px-8 lg:px-16", className)}
     >
-      <div className="max-w-2xl mx-auto text-center space-y-6">
-        <Mail className="h-12 w-12 mx-auto text-primary" />
+      <div className="mx-auto max-w-2xl space-y-6 text-center">
+        <Mail className="mx-auto h-12 w-12 text-primary" />
 
-        <h2 className="text-2xl md:text-3xl font-black uppercase tracking-tight">
+        <h2 className="text-2xl font-black tracking-tight uppercase md:text-3xl">
           {title}
         </h2>
 
         {description && (
-          <p className="text-muted-foreground font-medium">{description}</p>
+          <p className="font-medium text-muted-foreground">{description}</p>
         )}
 
         <form
           onSubmit={handleSubmit}
-          className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto"
+          className="mx-auto flex max-w-md flex-col gap-3 sm:flex-row"
         >
           <Input
             type="email"
@@ -250,24 +250,24 @@ export function CTASplit({
   className,
 }: CTASplitProps) {
   return (
-    <section className={cn("py-16 px-4 md:px-8 lg:px-16", className)}>
-      <div className="max-w-6xl mx-auto border-3 border-foreground shadow-[8px_8px_0px_hsl(var(--shadow-color))] overflow-hidden">
+    <section className={cn("px-4 py-16 md:px-8 lg:px-16", className)}>
+      <div className="mx-auto max-w-6xl overflow-hidden border-3 border-foreground shadow-[8px_8px_0px_hsl(var(--shadow-color))]">
         <div
           className={cn(
             "grid md:grid-cols-2",
             imagePosition === "left" && "md:[&>*:first-child]:order-2",
           )}
         >
-          <div className="p-8 md:p-12 flex flex-col justify-center space-y-6">
-            <h2 className="text-2xl md:text-3xl font-black uppercase tracking-tight">
+          <div className="flex flex-col justify-center space-y-6 p-8 md:p-12">
+            <h2 className="text-2xl font-black tracking-tight uppercase md:text-3xl">
               {title}
             </h2>
 
             {description && (
-              <p className="text-muted-foreground font-medium">{description}</p>
+              <p className="font-medium text-muted-foreground">{description}</p>
             )}
 
-            <div className="flex flex-col sm:flex-row gap-3">
+            <div className="flex flex-col gap-3 sm:flex-row">
               {primaryAction.href ? (
                 <Button size="lg" asChild>
                   <a href={safeHref(primaryAction.href)}>
@@ -307,7 +307,7 @@ export function CTASplit({
               height={800}
               unoptimized
               width={1200}
-              className="w-full h-full object-cover"
+              className="h-full w-full object-cover"
             />
           </div>
         </div>
@@ -350,18 +350,18 @@ export function CTABanner({
   return (
     <div
       className={cn(
-        "relative py-3 px-4 border-b-3 border-foreground",
+        "relative border-b-3 border-foreground px-4 py-3",
         variantStyles[variant],
         className,
       )}
     >
-      <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-center gap-3 text-center sm:text-left">
-        <p className="font-bold text-sm">{text}</p>
+      <div className="mx-auto flex max-w-7xl flex-col items-center justify-center gap-3 text-center sm:flex-row sm:text-left">
+        <p className="text-sm font-bold">{text}</p>
         {action.href ? (
           <Button
             size="sm"
             variant="outline"
-            className="bg-background text-foreground hover:bg-background/90 shrink-0"
+            className="shrink-0 bg-background text-foreground hover:bg-background/90"
             asChild
           >
             <a href={safeHref(action.href)}>
@@ -373,7 +373,7 @@ export function CTABanner({
           <Button
             size="sm"
             variant="outline"
-            className="bg-background text-foreground hover:bg-background/90 shrink-0"
+            className="shrink-0 bg-background text-foreground hover:bg-background/90"
             onClick={action.onClick}
           >
             {action.label}

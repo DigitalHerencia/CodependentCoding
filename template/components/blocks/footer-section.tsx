@@ -63,24 +63,24 @@ export function FooterMultiColumn({
   return (
     <footer
       className={cn(
-        "py-16 px-4 md:px-8 lg:px-16 border-t-3 border-foreground",
+        "border-t-3 border-foreground px-4 py-16 md:px-8 lg:px-16",
         className,
       )}
     >
-      <div className="max-w-7xl mx-auto">
+      <div className="mx-auto max-w-7xl">
         <div
           className={cn(
-            "grid grid-cols-2 md:grid-cols-4 gap-8 mb-12",
+            "mb-12 grid grid-cols-2 gap-8 md:grid-cols-4",
             lgColsClass,
           )}
         >
           {/* Brand column */}
           <div className="col-span-2 space-y-4">
             {logo && (
-              <div className="font-black text-2xl uppercase">{logo}</div>
+              <div className="text-2xl font-black uppercase">{logo}</div>
             )}
             {description && (
-              <p className="text-muted-foreground font-medium max-w-xs">
+              <p className="max-w-xs font-medium text-muted-foreground">
                 {description}
               </p>
             )}
@@ -100,7 +100,7 @@ export function FooterMultiColumn({
           {/* Link columns */}
           {columns.map((column, index) => (
             <div key={`col-${index}`} className="space-y-4">
-              <h4 className="font-black uppercase text-sm tracking-wide">
+              <h4 className="text-sm font-black tracking-wide uppercase">
                 {column.title}
               </h4>
               <ul className="space-y-2">
@@ -108,7 +108,7 @@ export function FooterMultiColumn({
                   <li key={`link-${link.label}`}>
                     <a
                       href={safeHref(link.href)}
-                      className="text-muted-foreground hover:text-foreground font-medium transition-colors"
+                      className="font-medium text-muted-foreground transition-colors hover:text-foreground"
                     >
                       {link.label}
                     </a>
@@ -119,7 +119,7 @@ export function FooterMultiColumn({
           ))}
         </div>
 
-        <Separator className="bg-foreground h-[3px]" />
+        <Separator className="h-[3px] bg-foreground" />
 
         <div className="pt-8 text-center text-sm text-muted-foreground">
           {copyright}
@@ -162,22 +162,22 @@ export function FooterWithNewsletter({
   return (
     <footer
       className={cn(
-        "py-16 px-4 md:px-8 lg:px-16 border-t-3 border-foreground bg-muted/30",
+        "border-t-3 border-foreground bg-muted/30 px-4 py-16 md:px-8 lg:px-16",
         className,
       )}
     >
-      <div className="max-w-7xl mx-auto">
-        <div className="grid lg:grid-cols-2 gap-12 mb-12">
+      <div className="mx-auto max-w-7xl">
+        <div className="mb-12 grid gap-12 lg:grid-cols-2">
           {/* Newsletter section */}
           <div className="space-y-4">
             {logo && (
-              <div className="font-black text-2xl uppercase">{logo}</div>
+              <div className="text-2xl font-black uppercase">{logo}</div>
             )}
-            <h4 className="font-black uppercase text-lg">{newsletterTitle}</h4>
-            <p className="text-muted-foreground font-medium">
+            <h4 className="text-lg font-black uppercase">{newsletterTitle}</h4>
+            <p className="font-medium text-muted-foreground">
               {newsletterDescription}
             </p>
-            <form onSubmit={handleSubmit} className="flex gap-2 max-w-md">
+            <form onSubmit={handleSubmit} className="flex max-w-md gap-2">
               <Input
                 type="email"
                 placeholder="Enter your email"
@@ -192,10 +192,10 @@ export function FooterWithNewsletter({
           </div>
 
           {/* Links section */}
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-2 gap-8 md:grid-cols-3">
             {columns.map((column, index) => (
               <div key={`col-${index}`} className="space-y-4">
-                <h4 className="font-black uppercase text-sm tracking-wide">
+                <h4 className="text-sm font-black tracking-wide uppercase">
                   {column.title}
                 </h4>
                 <ul className="space-y-2">
@@ -203,7 +203,7 @@ export function FooterWithNewsletter({
                     <li key={`link-${link.label}`}>
                       <a
                         href={safeHref(link.href)}
-                        className="text-muted-foreground hover:text-foreground font-medium transition-colors"
+                        className="font-medium text-muted-foreground transition-colors hover:text-foreground"
                       >
                         {link.label}
                       </a>
@@ -215,7 +215,7 @@ export function FooterWithNewsletter({
           </div>
         </div>
 
-        <Separator className="bg-foreground h-[3px]" />
+        <Separator className="h-[3px] bg-foreground" />
 
         <div className="pt-8 text-center text-sm text-muted-foreground">
           {copyright}
@@ -246,12 +246,12 @@ export function FooterSimple({
   return (
     <footer
       className={cn(
-        "py-12 px-4 md:px-8 lg:px-16 border-t-3 border-foreground",
+        "border-t-3 border-foreground px-4 py-12 md:px-8 lg:px-16",
         className,
       )}
     >
-      <div className="max-w-4xl mx-auto text-center space-y-6">
-        {logo && <div className="font-black text-2xl uppercase">{logo}</div>}
+      <div className="mx-auto max-w-4xl space-y-6 text-center">
+        {logo && <div className="text-2xl font-black uppercase">{logo}</div>}
 
         {links && (
           <nav className="flex flex-wrap justify-center gap-6">
@@ -259,7 +259,7 @@ export function FooterSimple({
               <a
                 key={`link-${link.label}`}
                 href={safeHref(link.href)}
-                className="text-muted-foreground hover:text-foreground font-bold uppercase text-sm transition-colors"
+                className="text-sm font-bold text-muted-foreground uppercase transition-colors hover:text-foreground"
               >
                 {link.label}
               </a>
@@ -304,13 +304,13 @@ export function FooterMinimal({
   return (
     <footer
       className={cn(
-        "py-8 px-4 md:px-8 lg:px-16 border-t-3 border-foreground",
+        "border-t-3 border-foreground px-4 py-8 md:px-8 lg:px-16",
         className,
       )}
     >
-      <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+      <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 md:flex-row">
         <div className="flex items-center gap-4">
-          {logo && <div className="font-black text-lg uppercase">{logo}</div>}
+          {logo && <div className="text-lg font-black uppercase">{logo}</div>}
           <span className="text-sm text-muted-foreground">{copyright}</span>
         </div>
 
@@ -320,7 +320,7 @@ export function FooterMinimal({
               <a
                 key={`link-${link.label}`}
                 href={safeHref(link.href)}
-                className="text-sm text-muted-foreground hover:text-foreground font-medium transition-colors"
+                className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
               >
                 {link.label}
               </a>
@@ -359,8 +359,8 @@ export function FooterWithCTA({
   return (
     <footer className={cn("border-t-3 border-foreground", className)}>
       {/* CTA Banner */}
-      <div className="py-12 px-4 md:px-8 lg:px-16 bg-primary text-primary-foreground">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+      <div className="bg-primary px-4 py-12 text-primary-foreground md:px-8 lg:px-16">
+        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-6 md:flex-row">
           <h3 className="text-2xl font-black uppercase">{ctaTitle}</h3>
           {ctaAction && (
             <Button
@@ -377,12 +377,12 @@ export function FooterWithCTA({
       </div>
 
       {/* Main footer */}
-      <div className="py-12 px-4 md:px-8 lg:px-16">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 mb-8">
-            <div className="col-span-2 md:col-span-1 space-y-4">
+      <div className="px-4 py-12 md:px-8 lg:px-16">
+        <div className="mx-auto max-w-7xl">
+          <div className="mb-8 grid grid-cols-2 gap-8 md:grid-cols-4 lg:grid-cols-5">
+            <div className="col-span-2 space-y-4 md:col-span-1">
               {logo && (
-                <div className="font-black text-xl uppercase">{logo}</div>
+                <div className="text-xl font-black uppercase">{logo}</div>
               )}
               {description && (
                 <p className="text-sm text-muted-foreground">{description}</p>
@@ -403,7 +403,7 @@ export function FooterWithCTA({
 
             {columns.map((column, index) => (
               <div key={`col-${index}`} className="space-y-3">
-                <h4 className="font-black uppercase text-xs tracking-wide">
+                <h4 className="text-xs font-black tracking-wide uppercase">
                   {column.title}
                 </h4>
                 <ul className="space-y-2">
@@ -411,7 +411,7 @@ export function FooterWithCTA({
                     <li key={`link-${link.label}`}>
                       <a
                         href={safeHref(link.href)}
-                        className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                        className="text-sm text-muted-foreground transition-colors hover:text-foreground"
                       >
                         {link.label}
                       </a>
@@ -422,7 +422,7 @@ export function FooterWithCTA({
             ))}
           </div>
 
-          <Separator className="bg-foreground h-[3px]" />
+          <Separator className="h-[3px] bg-foreground" />
 
           <div className="pt-6 text-center text-xs text-muted-foreground">
             {copyright}
@@ -463,7 +463,7 @@ function SocialIcon({
       target="_blank"
       rel="noopener noreferrer"
       className={cn(
-        "flex items-center justify-center border-2 border-foreground bg-muted hover:bg-primary hover:text-primary-foreground transition hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[2px_2px_0px_hsl(var(--shadow-color))]",
+        "flex items-center justify-center border-2 border-foreground bg-muted transition hover:translate-x-[-2px] hover:translate-y-[-2px] hover:bg-primary hover:text-primary-foreground hover:shadow-[2px_2px_0px_hsl(var(--shadow-color))]",
         sizeClasses,
       )}
     >

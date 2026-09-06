@@ -53,22 +53,22 @@ export function TeamGrid({
   };
 
   return (
-    <section className={cn("py-16 px-4 md:px-8 lg:px-16", className)}>
-      <div className="max-w-7xl mx-auto">
+    <section className={cn("px-4 py-16 md:px-8 lg:px-16", className)}>
+      <div className="mx-auto max-w-7xl">
         {(title || subtitle || description) && (
-          <div className="text-center mb-12 space-y-4">
+          <div className="mb-12 space-y-4 text-center">
             {subtitle && (
-              <p className="text-sm font-bold uppercase tracking-widest text-primary">
+              <p className="text-sm font-bold tracking-widest text-primary uppercase">
                 {subtitle}
               </p>
             )}
             {title && (
-              <h2 className="text-3xl md:text-4xl font-black uppercase tracking-tight">
+              <h2 className="text-3xl font-black tracking-tight uppercase md:text-4xl">
                 {title}
               </h2>
             )}
             {description && (
-              <p className="text-lg text-muted-foreground font-medium max-w-2xl mx-auto">
+              <p className="mx-auto max-w-2xl text-lg font-medium text-muted-foreground">
                 {description}
               </p>
             )}
@@ -79,21 +79,21 @@ export function TeamGrid({
           {members.map((member) => (
             <Card
               key={`team-${member.name}`}
-              className="group hover:translate-x-[-4px] hover:translate-y-[-4px] hover:shadow-[8px_8px_0px_hsl(var(--shadow-color))] transition"
+              className="group transition hover:translate-x-[-4px] hover:translate-y-[-4px] hover:shadow-[8px_8px_0px_hsl(var(--shadow-color))]"
             >
-              <CardContent className="p-6 text-center space-y-4">
-                <Avatar className="h-24 w-24 mx-auto border-3 border-foreground shadow-[4px_4px_0px_hsl(var(--shadow-color))]">
+              <CardContent className="space-y-4 p-6 text-center">
+                <Avatar className="mx-auto h-24 w-24 border-3 border-foreground shadow-[4px_4px_0px_hsl(var(--shadow-color))]">
                   <AvatarImage src={member.avatar} />
-                  <AvatarFallback className="font-bold text-2xl">
+                  <AvatarFallback className="text-2xl font-bold">
                     {getInitials(member.name)}
                   </AvatarFallback>
                 </Avatar>
 
                 <div>
-                  <h3 className="font-black uppercase text-lg">
+                  <h3 className="text-lg font-black uppercase">
                     {member.name}
                   </h3>
-                  <p className="text-sm text-muted-foreground font-medium">
+                  <p className="text-sm font-medium text-muted-foreground">
                     {member.role}
                   </p>
                 </div>
@@ -151,11 +151,11 @@ export interface TeamListProps {
 export function TeamList({ title, members, className }: TeamListProps) {
   return (
     <section
-      className={cn("py-16 px-4 md:px-8 lg:px-16 bg-muted/30", className)}
+      className={cn("bg-muted/30 px-4 py-16 md:px-8 lg:px-16", className)}
     >
-      <div className="max-w-4xl mx-auto">
+      <div className="mx-auto max-w-4xl">
         {title && (
-          <h2 className="text-3xl md:text-4xl font-black uppercase tracking-tight text-center mb-12">
+          <h2 className="mb-12 text-center text-3xl font-black tracking-tight uppercase md:text-4xl">
             {title}
           </h2>
         )}
@@ -164,7 +164,7 @@ export function TeamList({ title, members, className }: TeamListProps) {
           {members.map((member) => (
             <div
               key={`team-${member.name}`}
-              className="flex items-center gap-4 p-4 border-3 border-foreground bg-card shadow-[4px_4px_0px_hsl(var(--shadow-color))] hover:translate-x-[-4px] hover:translate-y-[-4px] hover:shadow-[8px_8px_0px_hsl(var(--shadow-color))] transition"
+              className="flex items-center gap-4 border-3 border-foreground bg-card p-4 shadow-[4px_4px_0px_hsl(var(--shadow-color))] transition hover:translate-x-[-4px] hover:translate-y-[-4px] hover:shadow-[8px_8px_0px_hsl(var(--shadow-color))]"
             >
               <Avatar className="h-16 w-16 border-2 border-foreground">
                 <AvatarImage src={member.avatar} />
@@ -219,27 +219,27 @@ export function TeamLargePhotos({
   className,
 }: TeamLargePhotosProps) {
   return (
-    <section className={cn("py-16 px-4 md:px-8 lg:px-16", className)}>
-      <div className="max-w-7xl mx-auto">
+    <section className={cn("px-4 py-16 md:px-8 lg:px-16", className)}>
+      <div className="mx-auto max-w-7xl">
         {(title || subtitle) && (
-          <div className="text-center mb-12 space-y-2">
+          <div className="mb-12 space-y-2 text-center">
             {subtitle && (
-              <p className="text-sm font-bold uppercase tracking-widest text-secondary">
+              <p className="text-sm font-bold tracking-widest text-secondary uppercase">
                 {subtitle}
               </p>
             )}
             {title && (
-              <h2 className="text-3xl md:text-4xl font-black uppercase tracking-tight">
+              <h2 className="text-3xl font-black tracking-tight uppercase md:text-4xl">
                 {title}
               </h2>
             )}
           </div>
         )}
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           {members.map((member) => (
             <div key={`team-${member.name}`} className="group">
-              <div className="relative border-3 border-foreground shadow-[6px_6px_0px_hsl(var(--shadow-color))] overflow-hidden mb-4 group-hover:shadow-[8px_8px_0px_hsl(var(--shadow-color))] group-hover:translate-x-[-2px] group-hover:translate-y-[-2px] transition">
+              <div className="relative mb-4 overflow-hidden border-3 border-foreground shadow-[6px_6px_0px_hsl(var(--shadow-color))] transition group-hover:translate-x-[-2px] group-hover:translate-y-[-2px] group-hover:shadow-[8px_8px_0px_hsl(var(--shadow-color))]">
                 {member.avatar ? (
                   <Image
                     src={member.avatar}
@@ -247,10 +247,10 @@ export function TeamLargePhotos({
                     height={640}
                     unoptimized
                     width={640}
-                    className="w-full h-80 object-cover"
+                    className="h-80 w-full object-cover"
                   />
                 ) : (
-                  <div className="w-full h-80 bg-muted flex items-center justify-center">
+                  <div className="flex h-80 w-full items-center justify-center bg-muted">
                     <span className="text-6xl font-black text-muted-foreground">
                       {getInitials(member.name)}
                     </span>
@@ -260,7 +260,7 @@ export function TeamLargePhotos({
                 {member.social && (
                   <div
                     aria-hidden="true"
-                    className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-foreground/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"
+                    className="absolute right-0 bottom-0 left-0 bg-gradient-to-t from-foreground/80 to-transparent p-4 opacity-0 transition-opacity group-hover:opacity-100"
                   >
                     <div className="flex justify-center gap-2">
                       {member.social.twitter && (
@@ -292,10 +292,10 @@ export function TeamLargePhotos({
                 )}
               </div>
 
-              <h3 className="font-black uppercase text-xl">{member.name}</h3>
-              <p className="text-muted-foreground font-medium">{member.role}</p>
+              <h3 className="text-xl font-black uppercase">{member.name}</h3>
+              <p className="font-medium text-muted-foreground">{member.role}</p>
               {member.bio && (
-                <p className="text-sm text-muted-foreground mt-2">
+                <p className="mt-2 text-sm text-muted-foreground">
                   {member.bio}
                 </p>
               )}
@@ -324,17 +324,17 @@ export function TeamCompact({
   className,
 }: TeamCompactProps) {
   return (
-    <section className={cn("py-16 px-4 md:px-8 lg:px-16", className)}>
-      <div className="max-w-4xl mx-auto text-center space-y-8">
+    <section className={cn("px-4 py-16 md:px-8 lg:px-16", className)}>
+      <div className="mx-auto max-w-4xl space-y-8 text-center">
         {(title || description) && (
           <div className="space-y-4">
             {title && (
-              <h2 className="text-2xl md:text-3xl font-black uppercase tracking-tight">
+              <h2 className="text-2xl font-black tracking-tight uppercase md:text-3xl">
                 {title}
               </h2>
             )}
             {description && (
-              <p className="text-muted-foreground font-medium">{description}</p>
+              <p className="font-medium text-muted-foreground">{description}</p>
             )}
           </div>
         )}
@@ -342,13 +342,13 @@ export function TeamCompact({
         <div className="flex flex-wrap justify-center gap-6">
           {members.map((member) => (
             <div key={`team-${member.name}`} className="text-center">
-              <Avatar className="h-20 w-20 mx-auto mb-2 border-3 border-foreground shadow-[3px_3px_0px_hsl(var(--shadow-color))]">
+              <Avatar className="mx-auto mb-2 h-20 w-20 border-3 border-foreground shadow-[3px_3px_0px_hsl(var(--shadow-color))]">
                 <AvatarImage src={member.avatar} />
-                <AvatarFallback className="font-bold text-lg">
+                <AvatarFallback className="text-lg font-bold">
                   {getInitials(member.name)}
                 </AvatarFallback>
               </Avatar>
-              <p className="font-bold text-sm">{member.name}</p>
+              <p className="text-sm font-bold">{member.name}</p>
               <p className="text-xs text-muted-foreground">{member.role}</p>
             </div>
           ))}
@@ -379,7 +379,7 @@ function SocialLink({
       rel="noopener noreferrer"
       tabIndex={tabIndex}
       className={cn(
-        "w-8 h-8 flex items-center justify-center border-2 border-foreground transition hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[2px_2px_0px_hsl(var(--shadow-color))]",
+        "flex h-8 w-8 items-center justify-center border-2 border-foreground transition hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[2px_2px_0px_hsl(var(--shadow-color))]",
         light
           ? "bg-background text-foreground"
           : "bg-muted hover:bg-primary hover:text-primary-foreground",

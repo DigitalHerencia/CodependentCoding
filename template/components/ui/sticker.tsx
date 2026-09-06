@@ -3,7 +3,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils/cn";
 
 const stickerVariants = cva(
-  "relative inline-flex items-center justify-center border-3 border-foreground font-bold uppercase tracking-wide transition-transform",
+  "relative inline-flex items-center justify-center border-3 border-foreground font-bold tracking-wide uppercase transition-transform",
   {
     variants: {
       variant: {
@@ -82,7 +82,7 @@ const Sticker = React.forwardRef<HTMLDivElement, StickerProps>(
           dashed &&
             "before:absolute before:inset-[-6px] before:border-2 before:border-dashed before:border-foreground/50",
           tape &&
-            "after:absolute after:left-1/2 after:top-[-8px] after:-translate-x-1/2 after:rotate-[-2deg] after:w-[50px] after:h-[16px] after:bg-accent/80 after:border-2 after:border-foreground",
+            "after:absolute after:top-[-8px] after:left-1/2 after:h-[16px] after:w-[50px] after:-translate-x-1/2 after:rotate-[-2deg] after:border-2 after:border-foreground after:bg-accent/80",
           interactive &&
             "cursor-pointer hover:translate-x-[4px] hover:translate-y-[4px] hover:shadow-none active:translate-x-[4px] active:translate-y-[4px] active:shadow-none",
           className,
@@ -97,7 +97,7 @@ const Sticker = React.forwardRef<HTMLDivElement, StickerProps>(
 Sticker.displayName = "Sticker";
 
 const stampVariants = cva(
-  "relative inline-flex items-center justify-center rounded-full border-4 border-foreground font-black uppercase tracking-widest",
+  "relative inline-flex items-center justify-center rounded-full border-4 border-foreground font-black tracking-widest uppercase",
   {
     variants: {
       variant: {
@@ -180,9 +180,9 @@ const stickyNoteVariants = cva(
         purple: "bg-secondary text-secondary-foreground",
       },
       size: {
-        sm: "p-3 text-sm min-w-[120px]",
-        default: "p-4 text-base min-w-[160px]",
-        lg: "p-6 text-lg min-w-[200px]",
+        sm: "min-w-[120px] p-3 text-sm",
+        default: "min-w-[160px] p-4 text-base",
+        lg: "min-w-[200px] p-6 text-lg",
       },
       rotation: {
         none: "rotate-0",
@@ -230,13 +230,13 @@ const StickyNote = React.forwardRef<HTMLDivElement, StickyNoteProps>(
         className={cn(
           stickyNoteVariants({ variant, size, rotation }),
           folded &&
-            "before:absolute before:bottom-0 before:right-0 before:w-0 before:h-0 before:border-l-[20px] before:border-l-transparent before:border-b-[20px] before:border-b-foreground/20",
+            "before:absolute before:right-0 before:bottom-0 before:h-0 before:w-0 before:border-b-[20px] before:border-l-[20px] before:border-b-foreground/20 before:border-l-transparent",
           className,
         )}
         {...props}
       >
         {pin && (
-          <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-destructive border-2 border-foreground shadow-[2px_2px_0px_hsl(var(--shadow-color))]" />
+          <div className="absolute -top-3 left-1/2 h-4 w-4 -translate-x-1/2 rounded-full border-2 border-foreground bg-destructive shadow-[2px_2px_0px_hsl(var(--shadow-color))]" />
         )}
         {children}
       </div>

@@ -231,7 +231,7 @@ export function Rating({
       className={cn(
         "flex items-center gap-0.5 outline-none",
         sizeClasses[size],
-        disabled && "opacity-50 pointer-events-none",
+        disabled && "pointer-events-none opacity-50",
         className,
       )}
     >
@@ -254,7 +254,7 @@ export function Rating({
             onMouseMove={(e) => handleStarMouseMove(e, starIndex)}
             className={cn(
               "flex items-center justify-center transition-transform focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-              interactive && "hover:scale-110 cursor-pointer",
+              interactive && "cursor-pointer hover:scale-110",
               !interactive && "cursor-default",
             )}
           >

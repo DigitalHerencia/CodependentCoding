@@ -1,0 +1,6 @@
+{
+  "eslint.workingDirectories": [{ "mode": "auto" }],
+  "files.associations": {
+    "**/app/globals.css": "tailwindcss"
+  }
+}

@@ -54,7 +54,7 @@ const FieldError = React.forwardRef<
       ref={ref}
       role="alert"
       className={cn(
-        "text-xs font-bold uppercase tracking-wide text-destructive",
+        "text-xs font-bold tracking-wide text-destructive uppercase",
         className,
       )}
       {...props}

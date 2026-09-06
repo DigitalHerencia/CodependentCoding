@@ -62,24 +62,24 @@ export function LogoCloudGrid({
   };
 
   return (
-    <section className={cn("py-12 px-4 md:px-8 lg:px-16", className)}>
-      <div className="max-w-6xl mx-auto">
+    <section className={cn("px-4 py-12 md:px-8 lg:px-16", className)}>
+      <div className="mx-auto max-w-6xl">
         {(title || subtitle) && (
-          <div className="text-center mb-8 space-y-2">
+          <div className="mb-8 space-y-2 text-center">
             {subtitle && (
-              <p className="text-sm font-bold uppercase tracking-widest text-muted-foreground">
+              <p className="text-sm font-bold tracking-widest text-muted-foreground uppercase">
                 {subtitle}
               </p>
             )}
             {title && (
-              <h2 className="text-xl md:text-2xl font-black uppercase tracking-tight">
+              <h2 className="text-xl font-black tracking-tight uppercase md:text-2xl">
                 {title}
               </h2>
             )}
           </div>
         )}
 
-        <div className={cn("grid gap-8 items-center", gridCols[columns])}>
+        <div className={cn("grid items-center gap-8", gridCols[columns])}>
           {logos.map((logo) => (
             <LogoCloudItem key={`logo-${logo.name}`} logo={logo} />
           ))}
@@ -109,11 +109,11 @@ export function LogoCloudMarquee({
 }: LogoCloudMarqueeProps) {
   return (
     <section
-      className={cn("py-12 px-4 md:px-8 lg:px-16 overflow-hidden", className)}
+      className={cn("overflow-hidden px-4 py-12 md:px-8 lg:px-16", className)}
     >
-      <div className="max-w-7xl mx-auto">
+      <div className="mx-auto max-w-7xl">
         {title && (
-          <p className="text-center text-sm font-bold uppercase tracking-widest text-muted-foreground mb-8">
+          <p className="mb-8 text-center text-sm font-bold tracking-widest text-muted-foreground uppercase">
             {title}
           </p>
         )}
@@ -122,7 +122,7 @@ export function LogoCloudMarquee({
           {logos.map((logo) => (
             <div
               key={`logo-marquee-${logo.name}`}
-              className="mx-8 flex items-center justify-center h-12 opacity-70 hover:opacity-100 transition-opacity grayscale hover:grayscale-0"
+              className="mx-8 flex h-12 items-center justify-center opacity-70 grayscale transition-opacity hover:opacity-100 hover:grayscale-0"
             >
               {typeof logo.logo === "string" ? (
                 <Image
@@ -162,28 +162,28 @@ export function LogoCloudCards({
 }: LogoCloudCardsProps) {
   return (
     <section
-      className={cn("py-16 px-4 md:px-8 lg:px-16 bg-muted/30", className)}
+      className={cn("bg-muted/30 px-4 py-16 md:px-8 lg:px-16", className)}
     >
-      <div className="max-w-6xl mx-auto">
+      <div className="mx-auto max-w-6xl">
         {(title || subtitle) && (
-          <div className="text-center mb-10 space-y-2">
+          <div className="mb-10 space-y-2 text-center">
             {subtitle && (
-              <p className="text-sm font-bold uppercase tracking-widest text-primary">
+              <p className="text-sm font-bold tracking-widest text-primary uppercase">
                 {subtitle}
               </p>
             )}
             {title && (
-              <h2 className="text-2xl md:text-3xl font-black uppercase tracking-tight">
+              <h2 className="text-2xl font-black tracking-tight uppercase md:text-3xl">
                 {title}
               </h2>
             )}
           </div>
         )}
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
           {logos.map((logo) => {
             const inner = (
-              <div className="border-3 border-foreground bg-card p-6 flex items-center justify-center h-24 hover:shadow-[4px_4px_0px_hsl(var(--shadow-color))] hover:translate-x-[-2px] hover:translate-y-[-2px] transition cursor-pointer">
+              <div className="flex h-24 cursor-pointer items-center justify-center border-3 border-foreground bg-card p-6 transition hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[4px_4px_0px_hsl(var(--shadow-color))]">
                 {typeof logo.logo === "string" ? (
                   <Image
                     src={logo.logo}
@@ -243,12 +243,12 @@ export function LogoCloudWithStats({
   const visibleLogos =
     maxLogos === undefined ? logos : logos.slice(0, maxLogos);
   return (
-    <section className={cn("py-16 px-4 md:px-8 lg:px-16", className)}>
-      <div className="max-w-6xl mx-auto">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
+    <section className={cn("px-4 py-16 md:px-8 lg:px-16", className)}>
+      <div className="mx-auto max-w-6xl">
+        <div className="grid items-center gap-12 lg:grid-cols-2">
           <div className="space-y-8">
             {title && (
-              <h2 className="text-2xl md:text-3xl font-black uppercase tracking-tight">
+              <h2 className="text-2xl font-black tracking-tight uppercase md:text-3xl">
                 {title}
               </h2>
             )}
@@ -260,7 +260,7 @@ export function LogoCloudWithStats({
                   className="border-3 border-foreground p-4 shadow-[4px_4px_0px_hsl(var(--shadow-color))]"
                 >
                   <div className="text-3xl font-black">{stat.value}</div>
-                  <div className="text-sm text-muted-foreground font-bold uppercase">
+                  <div className="text-sm font-bold text-muted-foreground uppercase">
                     {stat.label}
                   </div>
                 </div>
@@ -271,7 +271,7 @@ export function LogoCloudWithStats({
           <div className="grid grid-cols-3 gap-6">
             {visibleLogos.map((logo) => {
               const inner = (
-                <div className="flex items-center justify-center h-16 opacity-70 hover:opacity-100 transition-opacity">
+                <div className="flex h-16 items-center justify-center opacity-70 transition-opacity hover:opacity-100">
                   {typeof logo.logo === "string" ? (
                     <Image
                       src={logo.logo}
@@ -279,7 +279,7 @@ export function LogoCloudWithStats({
                       height={96}
                       unoptimized
                       width={240}
-                      className="h-8 w-auto object-contain grayscale hover:grayscale-0 transition"
+                      className="h-8 w-auto object-contain grayscale transition hover:grayscale-0"
                     />
                   ) : (
                     logo.logo
@@ -314,7 +314,7 @@ export function LogoCloudWithStats({
 // ============================================================================
 function LogoCloudItem({ logo }: { logo: LogoItem }) {
   const content = (
-    <div className="flex items-center justify-center h-12 opacity-60 hover:opacity-100 transition-opacity grayscale hover:grayscale-0">
+    <div className="flex h-12 items-center justify-center opacity-60 grayscale transition-opacity hover:opacity-100 hover:grayscale-0">
       {typeof logo.logo === "string" ? (
         <Image
           src={logo.logo}

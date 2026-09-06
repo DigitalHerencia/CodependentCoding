@@ -484,9 +484,9 @@ const Slider = React.forwardRef<HTMLDivElement, SliderProps>(
       <div
         ref={ref}
         className={cn(
-          "relative flex touch-none select-none items-center",
+          "relative flex touch-none items-center select-none",
           orientation === "vertical" ? "h-full w-5 flex-col" : "w-full py-2",
-          disabled && "opacity-50 pointer-events-none",
+          disabled && "pointer-events-none opacity-50",
           className,
         )}
         {...props}
@@ -523,7 +523,7 @@ const Slider = React.forwardRef<HTMLDivElement, SliderProps>(
 
           {/* Decorative stripes */}
           <div
-            className="absolute inset-0 opacity-10 pointer-events-none"
+            className="pointer-events-none absolute inset-0 opacity-10"
             style={{
               backgroundImage: `repeating-linear-gradient(
                 ${orientation === "vertical" ? "0deg" : "45deg"},
@@ -558,10 +558,10 @@ const Slider = React.forwardRef<HTMLDivElement, SliderProps>(
               "absolute h-7 w-7 cursor-grab",
               "border-3 border-foreground bg-background",
               "shadow-[4px_4px_0px_hsl(var(--shadow-color))]",
-              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+              "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none",
               "transition-shadow duration-150",
               activeThumb === index &&
-                "cursor-grabbing shadow-[2px_2px_0px_hsl(var(--shadow-color))] z-10",
+                "z-10 cursor-grabbing shadow-[2px_2px_0px_hsl(var(--shadow-color))]",
               hoveringThumb === index &&
                 activeThumb !== index &&
                 "shadow-[5px_5px_0px_hsl(var(--shadow-color))]",
@@ -603,19 +603,19 @@ const Slider = React.forwardRef<HTMLDivElement, SliderProps>(
                 <div
                   className={cn(
                     "bg-foreground/30",
-                    orientation === "vertical" ? "w-0.5 h-3" : "w-3 h-0.5",
+                    orientation === "vertical" ? "h-3 w-0.5" : "h-0.5 w-3",
                   )}
                 />
                 <div
                   className={cn(
                     "bg-foreground/30",
-                    orientation === "vertical" ? "w-0.5 h-3" : "w-3 h-0.5",
+                    orientation === "vertical" ? "h-3 w-0.5" : "h-0.5 w-3",
                   )}
                 />
                 <div
                   className={cn(
                     "bg-foreground/30",
-                    orientation === "vertical" ? "w-0.5 h-3" : "w-3 h-0.5",
+                    orientation === "vertical" ? "h-3 w-0.5" : "h-0.5 w-3",
                   )}
                 />
               </div>

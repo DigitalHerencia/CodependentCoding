@@ -26,8 +26,8 @@ const emptyStateVariants = cva("flex items-center justify-center", {
   variants: {
     variant: {
       default: "",
-      filled: "bg-muted/30 border-3 border-dashed border-foreground p-8",
-      card: "bg-card border-3 border-foreground shadow-[4px_4px_0px_hsl(var(--shadow-color))] p-8",
+      filled: "border-3 border-dashed border-foreground bg-muted/30 p-8",
+      card: "border-3 border-foreground bg-card p-8 shadow-[4px_4px_0px_hsl(var(--shadow-color))]",
     },
     size: {
       compact: "gap-2 p-2",
@@ -89,11 +89,11 @@ const iconContainerVariants = cva(
   {
     variants: {
       size: {
-        xs: "w-10 h-10",
-        sm: "w-12 h-12",
-        md: "w-16 h-16",
-        lg: "w-20 h-20",
-        xl: "w-24 h-24",
+        xs: "h-10 w-10",
+        sm: "h-12 w-12",
+        md: "h-16 w-16",
+        lg: "h-20 w-20",
+        xl: "h-24 w-24",
       },
       iconColor: {
         default: "bg-muted text-foreground",
@@ -194,7 +194,7 @@ const EmptyStateTitle = React.forwardRef<
   return (
     <h3
       ref={ref}
-      className={cn("font-black text-lg uppercase tracking-wide", className)}
+      className={cn("text-lg font-black tracking-wide uppercase", className)}
       {...props}
     >
       {children}
@@ -217,7 +217,7 @@ const EmptyStateDescription = React.forwardRef<
   return (
     <p
       ref={ref}
-      className={cn("text-muted-foreground font-medium max-w-sm", className)}
+      className={cn("max-w-sm font-medium text-muted-foreground", className)}
       {...props}
     >
       {children}
@@ -240,7 +240,7 @@ const EmptyStateActions = React.forwardRef<
     <div
       ref={ref}
       className={cn(
-        "flex flex-wrap items-center justify-center gap-2 mt-2",
+        "mt-2 flex flex-wrap items-center justify-center gap-2",
         className,
       )}
       {...props}

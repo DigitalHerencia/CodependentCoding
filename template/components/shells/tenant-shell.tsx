@@ -91,7 +91,7 @@ export function TenantShell({ children }: TenantShellProps) {
         <header
           className={`sticky top-0 z-40 border-b bg-background/90 backdrop-blur ${sidebar ? "md:hidden" : ""}`}
         >
-          <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-6 sm:px-10 lg:px-12">
+          <div className="mx-auto flex min-h-16 w-full max-w-7xl items-center justify-between gap-4 px-6 py-2 sm:px-10 lg:px-12">
             <Wordmark />
             <nav className="hidden items-center gap-2 md:flex">
               {navItems.map((item) => (
@@ -106,9 +106,7 @@ export function TenantShell({ children }: TenantShellProps) {
             <AccountControl />
           </div>
         </header>
-        <main className="lv-shell-main mx-auto w-full max-w-7xl px-6 sm:px-10 lg:px-12">
-          {children}
-        </main>
+        <main>{children}</main>
         <nav className="fixed inset-x-0 bottom-0 z-50 flex overflow-x-auto border-t bg-background md:hidden">
           {navItems.map((item) => (
             <Link

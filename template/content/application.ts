@@ -1,7 +1,6 @@
 export const applicationProduct = {
-  name: "The Maximal Template™",
-  description:
-    "One tenant-aware SaaS superset containing every supported recipe.",
+  name: "The Maximal Template™ Domain Library",
+  description: "Productivity is dead. Long live product.",
 } as const;
 
 export const applicationCapabilities = {

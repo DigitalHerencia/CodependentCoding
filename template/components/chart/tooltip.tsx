@@ -69,7 +69,7 @@ export function ChartTooltipContent({
     if (labelFormatter) {
       return (
         <div
-          className={cn("font-bold uppercase tracking-wide", labelClassName)}
+          className={cn("font-bold tracking-wide uppercase", labelClassName)}
         >
           {labelFormatter(value, payload)}
         </div>
@@ -158,7 +158,7 @@ export function ChartTooltipContent({
                     </div>
                     {item.value !== undefined &&
                       Number.isFinite(Number(item.value)) && (
-                        <span className="font-mono font-bold tabular-nums text-foreground">
+                        <span className="font-mono font-bold text-foreground tabular-nums">
                           {Number(item.value).toLocaleString()}
                         </span>
                       )}

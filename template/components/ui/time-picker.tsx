@@ -189,8 +189,8 @@ const TimePicker = React.forwardRef<HTMLButtonElement, TimePickerProps>(
         </PopoverTrigger>
         <PopoverContent
           className={cn(
-            "w-auto p-0 overflow-hidden",
-            "ease-out animate-in fade-in-0 zoom-in-95 duration-200",
+            "w-auto overflow-hidden p-0",
+            "animate-in duration-200 ease-out fade-in-0 zoom-in-95",
           )}
           align="start"
           sideOffset={4}
@@ -207,8 +207,8 @@ const TimePicker = React.forwardRef<HTMLButtonElement, TimePickerProps>(
             }}
           >
             {/* Hours column */}
-            <div className="flex-1 min-w-[60px] border-r-3 border-foreground">
-              <div className="px-2 py-2 text-center text-xs font-bold uppercase tracking-wide text-muted-foreground border-b-3 border-foreground bg-muted/30">
+            <div className="min-w-[60px] flex-1 border-r-3 border-foreground">
+              <div className="border-b-3 border-foreground bg-muted/30 px-2 py-2 text-center text-xs font-bold tracking-wide text-muted-foreground uppercase">
                 Hour
               </div>
               <ScrollArea className="h-[200px]">
@@ -221,12 +221,12 @@ const TimePicker = React.forwardRef<HTMLButtonElement, TimePickerProps>(
                       className={cn(
                         "w-full px-2 py-1.5 text-center text-sm",
                         "transition duration-150 ease-out",
-                        "hover:bg-muted hover:scale-105",
-                        "focus:outline-none focus:bg-muted",
+                        "hover:scale-105 hover:bg-muted",
+                        "focus:bg-muted focus:outline-none",
                         selectedHour === hour &&
-                          "bg-primary text-primary-foreground shadow-[2px_2px_0px_hsl(var(--shadow-color))] scale-105",
+                          "scale-105 bg-primary text-primary-foreground shadow-[2px_2px_0px_hsl(var(--shadow-color))]",
                         isTimeDisabled(hour, selectedMinute ?? 0) &&
-                          "opacity-50 cursor-not-allowed hover:scale-100",
+                          "cursor-not-allowed opacity-50 hover:scale-100",
                       )}
                     >
                       {format === "12h"
@@ -241,12 +241,12 @@ const TimePicker = React.forwardRef<HTMLButtonElement, TimePickerProps>(
             {/* Minutes column */}
             <div
               className={cn(
-                "flex-1 min-w-[60px]",
+                "min-w-[60px] flex-1",
                 (showSeconds || format === "12h") &&
                   "border-r-3 border-foreground",
               )}
             >
-              <div className="px-2 py-2 text-center text-xs font-bold uppercase tracking-wide text-muted-foreground border-b-3 border-foreground bg-muted/30">
+              <div className="border-b-3 border-foreground bg-muted/30 px-2 py-2 text-center text-xs font-bold tracking-wide text-muted-foreground uppercase">
                 Min
               </div>
               <ScrollArea className="h-[200px]">
@@ -259,10 +259,10 @@ const TimePicker = React.forwardRef<HTMLButtonElement, TimePickerProps>(
                       className={cn(
                         "w-full px-2 py-1.5 text-center text-sm",
                         "transition duration-150 ease-out",
-                        "hover:bg-muted hover:scale-105",
-                        "focus:outline-none focus:bg-muted",
+                        "hover:scale-105 hover:bg-muted",
+                        "focus:bg-muted focus:outline-none",
                         selectedMinute === minute &&
-                          "bg-primary text-primary-foreground shadow-[2px_2px_0px_hsl(var(--shadow-color))] scale-105",
+                          "scale-105 bg-primary text-primary-foreground shadow-[2px_2px_0px_hsl(var(--shadow-color))]",
                       )}
                     >
                       {minute.toString().padStart(2, "0")}
@@ -276,11 +276,11 @@ const TimePicker = React.forwardRef<HTMLButtonElement, TimePickerProps>(
             {showSeconds && (
               <div
                 className={cn(
-                  "flex-1 min-w-[60px]",
+                  "min-w-[60px] flex-1",
                   format === "12h" && "border-r-3 border-foreground",
                 )}
               >
-                <div className="px-2 py-2 text-center text-xs font-bold uppercase tracking-wide text-muted-foreground border-b-3 border-foreground bg-muted/30">
+                <div className="border-b-3 border-foreground bg-muted/30 px-2 py-2 text-center text-xs font-bold tracking-wide text-muted-foreground uppercase">
                   Sec
                 </div>
                 <ScrollArea className="h-[200px]">
@@ -293,10 +293,10 @@ const TimePicker = React.forwardRef<HTMLButtonElement, TimePickerProps>(
                         className={cn(
                           "w-full px-2 py-1.5 text-center text-sm",
                           "transition duration-150 ease-out",
-                          "hover:bg-muted hover:scale-105",
-                          "focus:outline-none focus:bg-muted",
+                          "hover:scale-105 hover:bg-muted",
+                          "focus:bg-muted focus:outline-none",
                           selectedSecond === second &&
-                            "bg-primary text-primary-foreground shadow-[2px_2px_0px_hsl(var(--shadow-color))] scale-105",
+                            "scale-105 bg-primary text-primary-foreground shadow-[2px_2px_0px_hsl(var(--shadow-color))]",
                         )}
                       >
                         {second.toString().padStart(2, "0")}
@@ -309,12 +309,12 @@ const TimePicker = React.forwardRef<HTMLButtonElement, TimePickerProps>(
 
             {/* AM/PM column */}
             {format === "12h" && (
-              <div className="flex-1 min-w-[50px]">
-                <div className="px-2 py-2 text-center text-xs font-bold uppercase tracking-wide text-muted-foreground border-b-3 border-foreground bg-muted/30">
+              <div className="min-w-[50px] flex-1">
+                <div className="border-b-3 border-foreground bg-muted/30 px-2 py-2 text-center text-xs font-bold tracking-wide text-muted-foreground uppercase">
                   <span className="hidden sm:inline">Period</span>
                   <span className="sm:hidden">AP</span>
                 </div>
-                <div className="p-1 space-y-1">
+                <div className="space-y-1 p-1">
                   {(["AM", "PM"] as const).map((period) => (
                     <button
                       key={period}
@@ -325,10 +325,10 @@ const TimePicker = React.forwardRef<HTMLButtonElement, TimePickerProps>(
                       className={cn(
                         "w-full px-2 py-3 text-center text-sm font-bold",
                         "transition duration-150 ease-out",
-                        "hover:bg-muted hover:scale-105",
-                        "focus:outline-none focus:bg-muted",
+                        "hover:scale-105 hover:bg-muted",
+                        "focus:bg-muted focus:outline-none",
                         selectedPeriod === period &&
-                          "bg-primary text-primary-foreground shadow-[2px_2px_0px_hsl(var(--shadow-color))] scale-105",
+                          "scale-105 bg-primary text-primary-foreground shadow-[2px_2px_0px_hsl(var(--shadow-color))]",
                       )}
                     >
                       {period}

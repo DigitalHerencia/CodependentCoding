@@ -44,7 +44,7 @@ const InputGroupAddon = React.forwardRef<HTMLDivElement, InputGroupAddonProps>(
     <div
       ref={ref}
       className={cn(
-        "flex items-center bg-muted px-3 text-sm font-bold uppercase tracking-wide text-muted-foreground [&_svg]:size-4 [&_svg]:shrink-0",
+        "flex items-center bg-muted px-3 text-sm font-bold tracking-wide text-muted-foreground uppercase [&_svg]:size-4 [&_svg]:shrink-0",
         position === "leading"
           ? "border-r-3 border-foreground"
           : "border-l-3 border-foreground",

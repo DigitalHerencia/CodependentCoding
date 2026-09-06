@@ -10,7 +10,7 @@ export function PortalShell({ children }: { children: ReactNode }) {
           <Wordmark />
         </div>
       </header>
-      <main className="mx-auto w-full max-w-6xl px-6 py-8">{children}</main>
+      <main>{children}</main>
     </div>
   );
 }

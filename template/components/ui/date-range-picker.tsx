@@ -161,9 +161,9 @@ const DateRangePicker = React.forwardRef<
         </PopoverTrigger>
         <PopoverContent
           className={cn(
-            "w-auto p-0 overflow-hidden",
+            "w-auto overflow-hidden p-0",
             "shadow-[8px_8px_0px_hsl(var(--shadow-color))]",
-            "ease-out animate-in fade-in-0 zoom-in-95 duration-200",
+            "animate-in duration-200 ease-out fade-in-0 zoom-in-95",
             "max-w-[calc(100vw-2rem)]",
             "max-h-[calc(100vh-4rem)] overflow-auto",
           )}
@@ -181,13 +181,13 @@ const DateRangePicker = React.forwardRef<
             {showPresets && resolvedPresets.length > 0 && (
               <div
                 className={cn(
-                  "p-3 bg-muted",
+                  "bg-muted p-3",
                   isMobile
                     ? "border-b-3 border-foreground"
                     : "min-w-[160px] border-r-3 border-foreground",
                 )}
               >
-                <p className="mb-3 text-[11px] font-black uppercase tracking-widest text-muted-foreground">
+                <p className="mb-3 text-[11px] font-black tracking-widest text-muted-foreground uppercase">
                   Presets
                 </p>
                 <div
@@ -203,7 +203,7 @@ const DateRangePicker = React.forwardRef<
                         type="button"
                         onClick={() => handlePresetClick(preset)}
                         className={cn(
-                          "text-left text-sm font-bold border-3 border-foreground bg-background transition duration-150",
+                          "border-3 border-foreground bg-background text-left text-sm font-bold transition duration-150",
                           isMobile
                             ? "px-2 py-1 text-xs shadow-[2px_2px_0px_hsl(var(--shadow-color))]"
                             : "w-full px-3 py-2 shadow-[3px_3px_0px_hsl(var(--shadow-color))]",

@@ -26,7 +26,7 @@ export function FeatureContentGrid({
   return (
     <section className={cn("px-6 py-16 sm:px-10 lg:px-12", className)}>
       <div className="mx-auto max-w-7xl">
-        <h2 className="mb-8 text-center text-3xl font-black uppercase tracking-tight">
+        <h2 className="mb-12 text-center text-3xl font-black tracking-tight uppercase">
           {title}
         </h2>
 
@@ -38,7 +38,7 @@ export function FeatureContentGrid({
 
         <div
           className={cn(
-            "grid gap-6 md:grid-cols-2",
+            "grid gap-8 md:grid-cols-2",
             columns === 4 ? "xl:grid-cols-4" : "xl:grid-cols-3",
           )}
         >
@@ -90,11 +90,11 @@ export function FeatureEditorial({
     >
       <div className="mx-auto max-w-4xl">
         {title && (
-          <h2 className="mb-8 text-3xl font-black uppercase tracking-tight sm:text-4xl">
+          <h2 className="mb-8 text-3xl font-black tracking-tight uppercase sm:text-4xl">
             {title}
           </h2>
         )}
-        <div className="text-lg leading-8 [&_p]:my-5 [&_h3]:mt-10 [&_h3]:text-xl [&_h3]:font-bold [&_ul]:my-5 [&_ul]:list-disc [&_ul]:pl-6 [&_blockquote]:my-8 [&_blockquote]:border-l-4 [&_blockquote]:border-primary [&_blockquote]:pl-6">
+        <div className="text-lg leading-8 [&_blockquote]:my-8 [&_blockquote]:border-l-4 [&_blockquote]:border-primary [&_blockquote]:pl-6 [&_h3]:mt-10 [&_h3]:text-xl [&_h3]:font-bold [&_p]:my-5 [&_ul]:my-5 [&_ul]:list-disc [&_ul]:pl-6">
           {children}
         </div>
       </div>
@@ -153,22 +153,22 @@ export function FeatureGridWithIcons({
   };
 
   return (
-    <section className={cn("py-16 px-4 md:px-8 lg:px-16", className)}>
-      <div className="max-w-7xl mx-auto">
+    <section className={cn("px-4 py-16 md:px-8 lg:px-16", className)}>
+      <div className="mx-auto max-w-7xl">
         {(title || subtitle || description) && (
-          <div className="text-center mb-12 space-y-4">
+          <div className="mb-12 space-y-4 text-center">
             {subtitle && (
-              <p className="text-sm font-bold uppercase tracking-widest text-primary">
+              <p className="text-sm font-bold tracking-widest text-primary uppercase">
                 {subtitle}
               </p>
             )}
             {title && (
-              <h2 className="text-3xl md:text-4xl font-black uppercase tracking-tight">
+              <h2 className="text-3xl font-black tracking-tight uppercase md:text-4xl">
                 {title}
               </h2>
             )}
             {description && (
-              <p className="text-lg text-muted-foreground font-medium max-w-2xl mx-auto">
+              <p className="mx-auto max-w-2xl text-lg font-medium text-muted-foreground">
                 {description}
               </p>
             )}
@@ -180,14 +180,14 @@ export function FeatureGridWithIcons({
             <Card
               key={feature.title}
               className={cn(
-                "group hover:translate-x-[-4px] hover:translate-y-[-4px] hover:shadow-[8px_8px_0px_hsl(var(--shadow-color))] transition",
+                "group transition hover:translate-x-[-4px] hover:translate-y-[-4px] hover:shadow-[8px_8px_0px_hsl(var(--shadow-color))]",
                 featureColors[index % 6],
               )}
             >
               <CardHeader>
                 <div
                   className={cn(
-                    "w-14 h-14 flex items-center justify-center border-3 border-foreground mb-4 shadow-[3px_3px_0px_hsl(var(--shadow-color))]",
+                    "mb-4 flex h-14 w-14 items-center justify-center border-3 border-foreground shadow-[3px_3px_0px_hsl(var(--shadow-color))]",
                     iconColors[index % 6],
                   )}
                 >
@@ -231,40 +231,40 @@ export function FeatureGridWithImages({
   className,
 }: FeatureGridWithImagesProps) {
   return (
-    <section className={cn("py-16 px-4 md:px-8 lg:px-16", className)}>
-      <div className="max-w-7xl mx-auto">
+    <section className={cn("px-4 py-16 md:px-8 lg:px-16", className)}>
+      <div className="mx-auto max-w-7xl">
         {(title || subtitle) && (
-          <div className="text-center mb-12 space-y-4">
+          <div className="mb-12 space-y-4 text-center">
             {subtitle && (
-              <p className="text-sm font-bold uppercase tracking-widest text-secondary">
+              <p className="text-sm font-bold tracking-widest text-secondary uppercase">
                 {subtitle}
               </p>
             )}
             {title && (
-              <h2 className="text-3xl md:text-4xl font-black uppercase tracking-tight">
+              <h2 className="text-3xl font-black tracking-tight uppercase md:text-4xl">
                 {title}
               </h2>
             )}
           </div>
         )}
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           {features.map((feature) => (
             <div key={feature.title} className="group">
-              <div className="border-3 border-foreground overflow-hidden shadow-[6px_6px_0px_hsl(var(--shadow-color))] group-hover:shadow-[8px_8px_0px_hsl(var(--shadow-color))] group-hover:translate-x-[-2px] group-hover:translate-y-[-2px] transition mb-4">
+              <div className="mb-4 overflow-hidden border-3 border-foreground shadow-[6px_6px_0px_hsl(var(--shadow-color))] transition group-hover:translate-x-[-2px] group-hover:translate-y-[-2px] group-hover:shadow-[8px_8px_0px_hsl(var(--shadow-color))]">
                 <Image
                   src={feature.image}
                   alt={feature.title}
                   height={450}
                   unoptimized
                   width={800}
-                  className="w-full h-48 object-cover"
+                  className="h-48 w-full object-cover"
                 />
               </div>
-              <h3 className="text-xl font-black uppercase mb-2">
+              <h3 className="mb-2 text-xl font-black uppercase">
                 {feature.title}
               </h3>
-              <p className="text-muted-foreground font-medium">
+              <p className="font-medium text-muted-foreground">
                 {feature.description}
               </p>
             </div>
@@ -295,8 +295,8 @@ export function FeatureGridAlternating({
   className,
 }: FeatureGridAlternatingProps) {
   return (
-    <section className={cn("py-16 px-4 md:px-8 lg:px-16", className)}>
-      <div className="max-w-6xl mx-auto space-y-16">
+    <section className={cn("px-4 py-16 md:px-8 lg:px-16", className)}>
+      <div className="mx-auto max-w-6xl space-y-16">
         {features.map((feature, index) => {
           const isReversed = index % 2 === 1;
 
@@ -304,41 +304,41 @@ export function FeatureGridAlternating({
             <div
               key={feature.title}
               className={cn(
-                "grid md:grid-cols-2 gap-8 md:gap-12 items-center",
+                "grid items-center gap-8 md:grid-cols-2 md:gap-12",
                 isReversed && "md:[&>*:first-child]:order-2",
               )}
             >
               <div className="space-y-4">
                 <div
                   className={cn(
-                    "w-16 h-16 flex items-center justify-center border-3 border-foreground shadow-[4px_4px_0px_hsl(var(--shadow-color))]",
+                    "flex h-16 w-16 items-center justify-center border-3 border-foreground shadow-[4px_4px_0px_hsl(var(--shadow-color))]",
                     iconColors[index % 6],
                   )}
                 >
                   {feature.icon}
                 </div>
-                <h3 className="text-2xl md:text-3xl font-black uppercase">
+                <h3 className="text-2xl font-black uppercase md:text-3xl">
                   {feature.title}
                 </h3>
-                <p className="text-lg text-muted-foreground font-medium">
+                <p className="text-lg font-medium text-muted-foreground">
                   {feature.description}
                 </p>
               </div>
 
               <div className="relative">
-                <div className="border-3 border-foreground shadow-[8px_8px_0px_hsl(var(--shadow-color))] overflow-hidden">
+                <div className="overflow-hidden border-3 border-foreground shadow-[8px_8px_0px_hsl(var(--shadow-color))]">
                   <Image
                     src={feature.image}
                     alt={feature.title}
                     height={450}
                     unoptimized
                     width={800}
-                    className="w-full h-auto object-cover"
+                    className="h-auto w-full object-cover"
                   />
                 </div>
                 <div
                   className={cn(
-                    "absolute -bottom-4 w-16 h-16 border-3 border-foreground",
+                    "absolute -bottom-4 h-16 w-16 border-3 border-foreground",
                     isReversed ? "-right-4" : "-left-4",
                     featureColors[index % 6],
                   )}
@@ -376,24 +376,24 @@ export function FeatureBentoGrid({
   className,
 }: FeatureBentoGridProps) {
   return (
-    <section className={cn("py-16 px-4 md:px-8 lg:px-16", className)}>
-      <div className="max-w-7xl mx-auto">
+    <section className={cn("px-4 py-16 md:px-8 lg:px-16", className)}>
+      <div className="mx-auto max-w-7xl">
         {(title || subtitle) && (
-          <div className="text-center mb-12 space-y-4">
+          <div className="mb-12 space-y-4 text-center">
             {subtitle && (
-              <p className="text-sm font-bold uppercase tracking-widest text-accent-foreground bg-accent inline-block px-3 py-1 border-2 border-foreground">
+              <p className="inline-block border-2 border-foreground bg-accent px-3 py-1 text-sm font-bold tracking-widest text-accent-foreground uppercase">
                 {subtitle}
               </p>
             )}
             {title && (
-              <h2 className="text-3xl md:text-4xl font-black uppercase tracking-tight">
+              <h2 className="text-3xl font-black tracking-tight uppercase md:text-4xl">
                 {title}
               </h2>
             )}
           </div>
         )}
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 auto-rows-[200px]">
+        <div className="grid auto-rows-[200px] gap-4 md:grid-cols-2 lg:grid-cols-3">
           {features.map((feature, index) => {
             const spanClass = {
               normal: "",
@@ -405,7 +405,7 @@ export function FeatureBentoGrid({
               <Card
                 key={feature.title}
                 className={cn(
-                  "group hover:translate-x-[-4px] hover:translate-y-[-4px] hover:shadow-[8px_8px_0px_hsl(var(--shadow-color))] transition flex flex-col overflow-hidden",
+                  "group flex flex-col overflow-hidden transition hover:translate-x-[-4px] hover:translate-y-[-4px] hover:shadow-[8px_8px_0px_hsl(var(--shadow-color))]",
                   featureColors[index % 6],
                   spanClass,
                 )}
@@ -413,16 +413,16 @@ export function FeatureBentoGrid({
                 <CardHeader className="flex-1">
                   <div
                     className={cn(
-                      "w-12 h-12 flex items-center justify-center border-3 border-foreground mb-4 shadow-[3px_3px_0px_hsl(var(--shadow-color))]",
+                      "mb-4 flex h-12 w-12 items-center justify-center border-3 border-foreground shadow-[3px_3px_0px_hsl(var(--shadow-color))]",
                       iconColors[index % 6],
                     )}
                   >
                     {feature.icon}
                   </div>
-                  <CardTitle className="uppercase text-lg">
+                  <CardTitle className="text-lg uppercase">
                     {feature.title}
                   </CardTitle>
-                  <CardDescription className="text-base line-clamp-3">
+                  <CardDescription className="line-clamp-3 text-base">
                     {feature.description}
                   </CardDescription>
                 </CardHeader>

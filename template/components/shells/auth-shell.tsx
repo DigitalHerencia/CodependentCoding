@@ -12,17 +12,15 @@ export function AuthShell({ children }: AuthShellProps) {
       <section className="hidden border-r bg-background p-8 md:flex md:flex-col md:justify-between">
         <Wordmark />
         <div className="max-w-xl space-y-4">
-          <p className="eyebrow text-sm text-primary">
-            Server-owned auth boundary
-          </p>
-          <h1>Access stays accountable.</h1>
-          <p className="text-muted-foreground">
-            Clerk identifies the user. Local tables authorize row-level reads
-            and writes.
+          <p className="eyebrow text-sm text-primary">On Security</p>
+          <h1>We take security very seriously.</h1>
+          <p className="text-foreground">
+            Our policies do not put people&apos;s data at risk. Their PII
+            already got leaked...just not by us.
           </p>
         </div>
       </section>
-      <section className="flex min-h-dvh items-center justify-center px-6 py-12">
+      <section className="flex min-h-dvh items-center justify-center">
         {children}
       </section>
     </main>

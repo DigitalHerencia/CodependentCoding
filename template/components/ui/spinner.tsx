@@ -85,21 +85,21 @@ const Spinner = React.forwardRef<HTMLDivElement, SpinnerProps>(
           <div
             className={cn(
               sizes.dot,
-              "bg-foreground animate-[brutal-dots_1.4s_ease-in-out_infinite]",
+              "animate-[brutal-dots_1.4s_ease-in-out_infinite] bg-foreground",
             )}
             style={{ animationDelay: "0ms" }}
           />
           <div
             className={cn(
               sizes.dot,
-              "bg-foreground animate-[brutal-dots_1.4s_ease-in-out_infinite]",
+              "animate-[brutal-dots_1.4s_ease-in-out_infinite] bg-foreground",
             )}
             style={{ animationDelay: "200ms" }}
           />
           <div
             className={cn(
               sizes.dot,
-              "bg-foreground animate-[brutal-dots_1.4s_ease-in-out_infinite]",
+              "animate-[brutal-dots_1.4s_ease-in-out_infinite] bg-foreground",
             )}
             style={{ animationDelay: "400ms" }}
           />
@@ -123,21 +123,21 @@ const Spinner = React.forwardRef<HTMLDivElement, SpinnerProps>(
           <div
             className={cn(
               sizes.bar,
-              "bg-foreground animate-[brutal-bars_1.2s_ease-in-out_infinite]",
+              "animate-[brutal-bars_1.2s_ease-in-out_infinite] bg-foreground",
             )}
             style={{ animationDelay: "0ms" }}
           />
           <div
             className={cn(
               sizes.bar,
-              "bg-foreground animate-[brutal-bars_1.2s_ease-in-out_infinite]",
+              "animate-[brutal-bars_1.2s_ease-in-out_infinite] bg-foreground",
             )}
             style={{ animationDelay: "150ms" }}
           />
           <div
             className={cn(
               sizes.bar,
-              "bg-foreground animate-[brutal-bars_1.2s_ease-in-out_infinite]",
+              "animate-[brutal-bars_1.2s_ease-in-out_infinite] bg-foreground",
             )}
             style={{ animationDelay: "300ms" }}
           />
@@ -190,9 +190,9 @@ const Spinner = React.forwardRef<HTMLDivElement, SpinnerProps>(
           {...props}
         >
           <div className={cn(sizes.ring, "relative")}>
-            <div className="absolute inset-0 bg-foreground border-3 border-foreground" />
+            <div className="absolute inset-0 border-3 border-foreground bg-foreground" />
             <div
-              className="absolute inset-0 bg-foreground animate-[brutal-shadow-spin_1s_linear_infinite]"
+              className="absolute inset-0 animate-[brutal-shadow-spin_1s_linear_infinite] bg-foreground"
               style={{ boxShadow: "3px 3px 0px hsl(var(--primary))" }}
             />
           </div>

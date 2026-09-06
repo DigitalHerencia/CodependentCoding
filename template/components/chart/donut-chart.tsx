@@ -155,7 +155,7 @@ const DonutChartCenter = React.forwardRef<
     <div ref={ref} className={cn("text-center", className)}>
       <div className="text-2xl font-black">{value}</div>
       {label && (
-        <div className="text-xs font-bold uppercase tracking-wide text-muted-foreground">
+        <div className="text-xs font-bold tracking-wide text-muted-foreground uppercase">
           {label}
         </div>
       )}

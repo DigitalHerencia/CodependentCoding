@@ -1,6 +1,12 @@
 packages: []
+# Keep validation commands read-only when dependencies need installing.
+verifyDepsBeforeRun: error
+minimumReleaseAgeStrict: true
 allowBuilds:
   "@prisma/engines": true
   esbuild: true
   prisma: true
+  sharp: true
   unrs-resolver: true
+minimumReleaseAgeExclude:
+  - react-resizable-panels@4.12.4

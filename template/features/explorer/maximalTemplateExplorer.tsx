@@ -81,7 +81,7 @@ export function MaximalTemplateExplorer() {
     <section className="space-y-8">
       <header className="max-w-3xl space-y-3">
         <Badge>PUBLIC DEMO</Badge>
-        <h1 className="text-4xl font-black uppercase tracking-tight sm:text-5xl">
+        <h1 className="text-4xl font-black tracking-tight uppercase sm:text-5xl">
           Explore the maximal system
         </h1>
         <p className="text-muted-foreground">

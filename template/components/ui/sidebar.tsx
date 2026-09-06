@@ -177,7 +177,7 @@ const sidebarVariants = cva(
         none: "w-[var(--sidebar-width)]",
         icon: "w-[var(--sidebar-width)] group-data-[state=collapsed]/sidebar:w-[var(--sidebar-width-collapsed)]",
         hidden:
-          "w-[var(--sidebar-width)] group-data-[state=collapsed]/sidebar:w-0 group-data-[state=collapsed]/sidebar:border-0 group-data-[state=collapsed]/sidebar:overflow-hidden",
+          "w-[var(--sidebar-width)] group-data-[state=collapsed]/sidebar:w-0 group-data-[state=collapsed]/sidebar:overflow-hidden group-data-[state=collapsed]/sidebar:border-0",
       },
       side: {
         left: "",
@@ -335,9 +335,9 @@ const SidebarGroupLabel = React.forwardRef<
     <div
       ref={ref}
       className={cn(
-        "px-2 py-1 text-xs font-bold uppercase tracking-wide text-muted-foreground",
+        "px-2 py-1 text-xs font-bold tracking-wide text-muted-foreground uppercase",
         "transition-opacity duration-200",
-        state === "collapsed" && "opacity-0 hidden",
+        state === "collapsed" && "hidden opacity-0",
         className,
       )}
       {...props}

@@ -93,7 +93,7 @@ const MarqueeItem = React.forwardRef<HTMLSpanElement, MarqueeItemProps>(
       <span
         ref={ref}
         className={cn(
-          "inline-flex items-center gap-2 whitespace-nowrap px-4 text-lg font-bold uppercase tracking-wide",
+          "inline-flex items-center gap-2 px-4 text-lg font-bold tracking-wide whitespace-nowrap uppercase",
           className,
         )}
         {...props}

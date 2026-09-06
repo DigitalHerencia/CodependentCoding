@@ -13,13 +13,13 @@ const statCardVariants = cva("relative overflow-hidden", {
       large: "md:col-span-2",
     },
     colorScheme: {
-      primary: "[&_.stat-icon]:bg-primary [&_.stat-bg]:bg-primary",
-      secondary: "[&_.stat-icon]:bg-secondary [&_.stat-bg]:bg-secondary",
-      accent: "[&_.stat-icon]:bg-accent [&_.stat-bg]:bg-accent",
-      success: "[&_.stat-icon]:bg-success [&_.stat-bg]:bg-success",
-      warning: "[&_.stat-icon]:bg-warning [&_.stat-bg]:bg-warning",
-      info: "[&_.stat-icon]:bg-info [&_.stat-bg]:bg-info",
-      destructive: "[&_.stat-icon]:bg-destructive [&_.stat-bg]:bg-destructive",
+      primary: "[&_.stat-bg]:bg-primary [&_.stat-icon]:bg-primary",
+      secondary: "[&_.stat-bg]:bg-secondary [&_.stat-icon]:bg-secondary",
+      accent: "[&_.stat-bg]:bg-accent [&_.stat-icon]:bg-accent",
+      success: "[&_.stat-bg]:bg-success [&_.stat-icon]:bg-success",
+      warning: "[&_.stat-bg]:bg-warning [&_.stat-icon]:bg-warning",
+      info: "[&_.stat-bg]:bg-info [&_.stat-icon]:bg-info",
+      destructive: "[&_.stat-bg]:bg-destructive [&_.stat-icon]:bg-destructive",
     },
   },
   defaultVariants: {
@@ -90,17 +90,17 @@ const StatCard = React.forwardRef<HTMLDivElement, StatCardProps>(
         {...props}
       >
         {/* Decorative background element */}
-        <div className="stat-bg absolute top-0 right-0 w-24 h-24 opacity-20 -translate-y-8 translate-x-8 rotate-12" />
+        <div className="stat-bg absolute top-0 right-0 h-24 w-24 translate-x-8 -translate-y-8 rotate-12 opacity-20" />
 
         <CardContent className="stat-content p-6">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-sm font-bold uppercase tracking-wide text-muted-foreground mb-1">
+              <p className="mb-1 text-sm font-bold tracking-wide text-muted-foreground uppercase">
                 {title}
               </p>
               <p className="text-3xl font-black">{value}</p>
               {change && (
-                <div className={cn("flex items-center gap-1 mt-2", trendColor)}>
+                <div className={cn("mt-2 flex items-center gap-1", trendColor)}>
                   <TrendIcon className="h-4 w-4" />
                   <span className="text-sm font-bold">{change}</span>
                   <span className="text-sm text-muted-foreground">
@@ -110,7 +110,7 @@ const StatCard = React.forwardRef<HTMLDivElement, StatCardProps>(
               )}
             </div>
             {icon && (
-              <div className="stat-icon w-12 h-12 border-3 border-foreground flex items-center justify-center shadow-[3px_3px_0px_hsl(var(--shadow-color))] text-foreground">
+              <div className="stat-icon flex h-12 w-12 items-center justify-center border-3 border-foreground text-foreground shadow-[3px_3px_0px_hsl(var(--shadow-color))]">
                 {icon}
               </div>
             )}
@@ -118,8 +118,8 @@ const StatCard = React.forwardRef<HTMLDivElement, StatCardProps>(
 
           {/* Progress section */}
           {progress && (
-            <div className="mt-4 pt-4 border-t-2 border-foreground/10">
-              <div className="flex items-center justify-between text-sm mb-2">
+            <div className="mt-4 border-t-2 border-foreground/10 pt-4">
+              <div className="mb-2 flex items-center justify-between text-sm">
                 <span className="text-muted-foreground">
                   {progress.label || "Progress"}
                 </span>

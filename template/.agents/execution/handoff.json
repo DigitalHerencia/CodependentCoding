@@ -3,7 +3,19 @@
   "file": ".agents/execution/handoff.json",
   "product": "The Maximal Template",
   "purpose": "Current handoff state for the next implementation agent.",
-  "updated_at": "2026-08-15T00:00:00-06:00",
+  "updated_at": "2026-09-06T00:00:00-06:00",
+  "tooling_configuration": {
+    "status": "implemented_with_remaining_audit_findings",
+    "evidence": ".agents/execution/progress.json#tooling_configuration",
+    "remaining": [
+      "Three pnpm audit advisories remain in Prisma transitive dependencies. No security-clean claim is supported."
+    ],
+    "resume_notes": [
+      "Work directly on main and preserve the owner's unrelated uncommitted source and design edits.",
+      "Install from template/ explicitly after package changes. verifyDepsBeforeRun is error to prevent lint/format commands from racing Prisma postinstall generation.",
+      "Current lint and typecheck passed; build, browser, and live provider checks were not run."
+    ]
+  },
   "authority_summary": [
     "Current explicit user instruction is highest authority.",
     "context/docs owns durable Maximal Template human intent.",

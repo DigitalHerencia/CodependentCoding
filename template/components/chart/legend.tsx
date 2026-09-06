@@ -33,7 +33,7 @@ export function ChartLegendContent({
   return (
     <div
       className={cn(
-        "flex items-center justify-center gap-4 font-bold uppercase tracking-wide",
+        "flex items-center justify-center gap-4 font-bold tracking-wide uppercase",
         verticalAlign === "top" ? "pb-3" : "pt-3",
         className,
       )}

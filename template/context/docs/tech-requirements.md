@@ -243,6 +243,29 @@ Do not claim a check passed unless it actually ran.
 
 Do not invent a parallel validation system solely to create activity. Machine contracts may define deterministic expectations that repository-native validators can enforce when such validators exist or are deliberately added by an approved spec.
 
+### Template tooling
+
+Run package commands from `template/`, which has its own pnpm workspace and lockfile.
+Install explicitly with `pnpm install` after dependency changes; pnpm reports stale
+dependencies before running scripts instead of silently reinstalling them.
+Keep TypeScript and ESLint within the peer ranges supported by Next's lint plugins;
+do not disable rules or parser diagnostics to accommodate an unsupported major.
+Node typings follow the Node runtime major declared in `package.json`.
+
+ESLint combines Next Core Web Vitals, TypeScript, and template architecture rules.
+Prettier owns formatting: two spaces, double quotes, semicolons, trailing commas,
+and LF endings. Its Tailwind plugin reads `app/globals.css` and sorts classes in
+JSX and `cn`, `clsx`, and `cva` calls. Generated output and local provider state
+are excluded from formatting and linting. `pnpm typecheck` regenerates Next route
+types before checking TypeScript so route edits do not leave stale validators.
+
+Tailwind v4 configuration stays in `app/globals.css`; shadcn's
+`tailwind.config` field is intentionally empty. The Tailwind import scopes source
+detection to this template and supplies the standard mobile-first `sm`, `md`,
+`lg`, `xl`, and `2xl` breakpoints (40, 48, 64, 80, and 96rem). Add custom
+breakpoints through CSS `@theme` only when the design requires them. Do not
+duplicate the CSS theme, animations, or breakpoints in a legacy config file.
+
 ## 17. Destructive/live operations
 
 Do not perform without explicit user instruction:

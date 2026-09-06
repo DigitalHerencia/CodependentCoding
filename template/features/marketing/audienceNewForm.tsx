@@ -31,7 +31,7 @@ export function AudienceNewForm() {
       onSubmit={handleSubmit((values) => setReviewed(values))}
     >
       <header className="border-b border-border pb-4">
-        <p className="font-mono text-[0.62rem] uppercase tracking-wider text-[#8ec6d3]">
+        <p className="font-mono text-[0.62rem] tracking-wider text-[#8ec6d3] uppercase">
           /marketing/audiences/new
         </p>
         <h1 className="mt-1 font-mono text-2xl font-black">New Audience</h1>

@@ -1,9 +1,5 @@
 import { HeroSection } from "@/components/blocks/hero-section";
-import {
-  FeatureEditorial,
-  FeatureContentGrid,
-} from "@/components/blocks/feature-grid";
-import { ComparisonTable } from "@/components/blocks/comparison-table";
+import { FeatureContentGrid } from "@/components/blocks/feature-grid";
 import { TestimonialsGrid } from "@/components/blocks/testimonials";
 import { CTASimple } from "@/components/blocks/cta-section";
 import { landingCopy, pipelineCards } from "@/content/public-pages";
@@ -17,13 +13,13 @@ export function LandingPageTemplate() {
         alt="Caution"
         width={1200}
         height={400}
-        className="w-full h-auto bg-background"
+        className="h-auto w-full bg-background"
       />
       <HeroSection.Centered
         title="The Maximal Template™"
         titleHighlight="Domain Library"
         description={landingCopy[1].content}
-        className="bg-background text-foreground mt-12 mb-12"
+        className="mt-12 mb-12 bg-background text-foreground"
         primaryAction={{ label: "GET STARTED", href: "/signup" }}
         secondaryAction={{ label: "LEARN MORE", href: "/features" }}
       />
@@ -32,16 +28,16 @@ export function LandingPageTemplate() {
         alt="Integrations"
         width={1200}
         height={200}
-        className="w-full h-auto"
+        className="h-auto w-full"
       />
       <FeatureContentGrid
         title={landingCopy[5].title}
         items={pipelineCards}
-        className="bg-background text-foreground mt-12 mb-12"
+        className="bg-background py-36 text-foreground"
       />
       <TestimonialsGrid
         title="Early Adopter Results"
-        className="bg-primary text-foreground py-36"
+        className="bg-primary py-28 text-foreground"
         cardClassName="bg-background text-foreground [&_svg]:text-foreground"
         testimonials={[
           {
@@ -77,7 +73,7 @@ export function LandingPageTemplate() {
             Move more product
           </>
         }
-        className="bg-background text-foreground py-48"
+        className="bg-background py-36 text-foreground"
         primaryAction={{ label: "GET STARTED", href: "/signup" }}
         secondaryAction={{ label: "LEARN MORE", href: "/features" }}
       />
@@ -86,7 +82,7 @@ export function LandingPageTemplate() {
         alt="Caution"
         width={1200}
         height={400}
-        className="w-full h-auto bg-background"
+        className="h-auto w-full bg-background"
       />
     </section>
   );

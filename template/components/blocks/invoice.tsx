@@ -108,9 +108,9 @@ export function Invoice({
   const status = data.status ? statusConfig[data.status] : null;
 
   return (
-    <div className={cn("max-w-4xl mx-auto", className)}>
+    <div className={cn("mx-auto max-w-4xl", className)}>
       {/* Actions Bar */}
-      <div className="flex items-center justify-between mb-6 print:hidden">
+      <div className="mb-6 flex items-center justify-between print:hidden">
         <h1 className="text-2xl font-black uppercase">Invoice</h1>
         <div className="flex gap-2">
           {onSendEmail && (
@@ -138,31 +138,31 @@ export function Invoice({
       <div className="border-3 border-foreground bg-card shadow-[8px_8px_0px_hsl(var(--shadow-color))] print:border-0 print:shadow-none">
         <div className="p-8 md:p-12">
           {/* Header */}
-          <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6 mb-8">
+          <div className="mb-8 flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
             <div>
               {logo && <div className="mb-4">{logo}</div>}
               <AddressBlock address={data.from} />
             </div>
 
-            <div className="text-left md:text-right space-y-2">
-              <h2 className="text-4xl font-black uppercase tracking-tight">
+            <div className="space-y-2 text-left md:text-right">
+              <h2 className="text-4xl font-black tracking-tight uppercase">
                 Invoice
               </h2>
               <div className="space-y-1 text-sm">
                 <p>
-                  <span className="font-bold uppercase text-muted-foreground">
+                  <span className="font-bold text-muted-foreground uppercase">
                     Invoice #:
                   </span>{" "}
                   <span className="font-medium">{data.invoiceNumber}</span>
                 </p>
                 <p>
-                  <span className="font-bold uppercase text-muted-foreground">
+                  <span className="font-bold text-muted-foreground uppercase">
                     Issue Date:
                   </span>{" "}
                   <span className="font-medium">{data.issueDate}</span>
                 </p>
                 <p>
-                  <span className="font-bold uppercase text-muted-foreground">
+                  <span className="font-bold text-muted-foreground uppercase">
                     Due Date:
                   </span>{" "}
                   <span className="font-medium">{data.dueDate}</span>
@@ -171,7 +171,7 @@ export function Invoice({
               {status && (
                 <div
                   className={cn(
-                    "inline-flex items-center gap-1 px-3 py-1 font-bold uppercase text-xs",
+                    "inline-flex items-center gap-1 px-3 py-1 text-xs font-bold uppercase",
                     status.bg,
                     status.text,
                   )}
@@ -184,8 +184,8 @@ export function Invoice({
           </div>
 
           {/* Bill To */}
-          <div className="mb-8 p-4 border-3 border-foreground bg-muted/30">
-            <p className="font-bold uppercase text-xs text-muted-foreground mb-2">
+          <div className="mb-8 border-3 border-foreground bg-muted/30 p-4">
+            <p className="mb-2 text-xs font-bold text-muted-foreground uppercase">
               Bill To
             </p>
             <AddressBlock address={data.to} />
@@ -196,16 +196,16 @@ export function Invoice({
             <table className="w-full">
               <thead>
                 <tr className="border-b-3 border-foreground">
-                  <th className="text-left py-3 font-black uppercase text-sm">
+                  <th className="py-3 text-left text-sm font-black uppercase">
                     Description
                   </th>
-                  <th className="text-center py-3 font-black uppercase text-sm w-24">
+                  <th className="w-24 py-3 text-center text-sm font-black uppercase">
                     Qty
                   </th>
-                  <th className="text-right py-3 font-black uppercase text-sm w-32">
+                  <th className="w-32 py-3 text-right text-sm font-black uppercase">
                     Unit Price
                   </th>
-                  <th className="text-right py-3 font-black uppercase text-sm w-32">
+                  <th className="w-32 py-3 text-right text-sm font-black uppercase">
                     Total
                   </th>
                 </tr>
@@ -234,7 +234,7 @@ export function Invoice({
           </div>
 
           {/* Totals */}
-          <div className="flex justify-end mb-8">
+          <div className="mb-8 flex justify-end">
             <div className="w-full max-w-xs space-y-2">
               <div className="flex justify-between py-2">
                 <span className="text-muted-foreground">Subtotal</span>
@@ -260,10 +260,10 @@ export function Invoice({
                   </span>
                 </div>
               )}
-              <Separator className="bg-foreground h-[2px]" />
+              <Separator className="h-[2px] bg-foreground" />
               <div className="flex justify-between py-2">
                 <span className="text-lg font-black uppercase">Total</span>
-                <span className="text-2xl font-black font-mono">
+                <span className="font-mono text-2xl font-black">
                   ${data.total.toFixed(2)}
                 </span>
               </div>
@@ -272,11 +272,11 @@ export function Invoice({
 
           {/* Payment Info */}
           {data.paymentInfo && (
-            <div className="mb-8 p-4 border-3 border-foreground bg-primary/5">
-              <p className="font-bold uppercase text-xs text-muted-foreground mb-3">
+            <div className="mb-8 border-3 border-foreground bg-primary/5 p-4">
+              <p className="mb-3 text-xs font-bold text-muted-foreground uppercase">
                 Payment Information
               </p>
-              <div className="grid md:grid-cols-2 gap-4 text-sm">
+              <div className="grid gap-4 text-sm md:grid-cols-2">
                 {data.paymentInfo.bankName && (
                   <div>
                     <p className="font-bold">Bank Name</p>
@@ -288,7 +288,7 @@ export function Invoice({
                 {data.paymentInfo.accountNumber && (
                   <div>
                     <p className="font-bold">Account Number</p>
-                    <p className="text-muted-foreground font-mono">
+                    <p className="font-mono text-muted-foreground">
                       {data.paymentInfo.accountNumber}
                     </p>
                   </div>
@@ -296,7 +296,7 @@ export function Invoice({
                 {data.paymentInfo.routingNumber && (
                   <div>
                     <p className="font-bold">Routing Number</p>
-                    <p className="text-muted-foreground font-mono">
+                    <p className="font-mono text-muted-foreground">
                       {data.paymentInfo.routingNumber}
                     </p>
                   </div>
@@ -315,10 +315,10 @@ export function Invoice({
 
           {/* Notes & Terms */}
           {(data.notes || data.terms) && (
-            <div className="grid md:grid-cols-2 gap-6 text-sm">
+            <div className="grid gap-6 text-sm md:grid-cols-2">
               {data.notes && (
                 <div>
-                  <p className="font-bold uppercase text-xs text-muted-foreground mb-2">
+                  <p className="mb-2 text-xs font-bold text-muted-foreground uppercase">
                     Notes
                   </p>
                   <p className="text-muted-foreground">{data.notes}</p>
@@ -326,7 +326,7 @@ export function Invoice({
               )}
               {data.terms && (
                 <div>
-                  <p className="font-bold uppercase text-xs text-muted-foreground mb-2">
+                  <p className="mb-2 text-xs font-bold text-muted-foreground uppercase">
                     Terms & Conditions
                   </p>
                   <p className="text-muted-foreground">{data.terms}</p>
@@ -372,13 +372,13 @@ export interface ReceiptProps {
 
 export function Receipt({ data, logo, onDownload, className }: ReceiptProps) {
   return (
-    <div className={cn("max-w-sm mx-auto", className)}>
+    <div className={cn("mx-auto max-w-sm", className)}>
       <div className="border-3 border-foreground bg-card shadow-[6px_6px_0px_hsl(var(--shadow-color))]">
-        <div className="p-6 space-y-6">
+        <div className="space-y-6 p-6">
           {/* Header */}
-          <div className="text-center space-y-2">
-            {logo && <div className="flex justify-center mb-4">{logo}</div>}
-            <h2 className="font-black uppercase text-xl">
+          <div className="space-y-2 text-center">
+            {logo && <div className="mb-4 flex justify-center">{logo}</div>}
+            <h2 className="text-xl font-black uppercase">
               {data.merchant.name}
             </h2>
             {data.merchant.address && (
@@ -393,15 +393,15 @@ export function Receipt({ data, logo, onDownload, className }: ReceiptProps) {
             )}
           </div>
 
-          <Separator className="bg-foreground h-[2px] border-dashed" />
+          <Separator className="h-[2px] border-dashed bg-foreground" />
 
           {/* Receipt Info */}
-          <div className="text-center space-y-1 text-sm">
+          <div className="space-y-1 text-center text-sm">
             <p className="font-bold uppercase">Receipt #{data.receiptNumber}</p>
             <p className="text-muted-foreground">{data.date}</p>
           </div>
 
-          <Separator className="bg-foreground h-[2px] border-dashed" />
+          <Separator className="h-[2px] border-dashed bg-foreground" />
 
           {/* Items */}
           <div className="space-y-2">
@@ -416,7 +416,7 @@ export function Receipt({ data, logo, onDownload, className }: ReceiptProps) {
             ))}
           </div>
 
-          <Separator className="bg-foreground h-[2px] border-dashed" />
+          <Separator className="h-[2px] border-dashed bg-foreground" />
 
           {/* Totals */}
           <div className="space-y-2">
@@ -438,11 +438,11 @@ export function Receipt({ data, logo, onDownload, className }: ReceiptProps) {
             </div>
           </div>
 
-          <Separator className="bg-foreground h-[2px] border-dashed" />
+          <Separator className="h-[2px] border-dashed bg-foreground" />
 
           {/* Payment Method */}
           {data.paymentMethod && (
-            <div className="text-center text-sm space-y-1">
+            <div className="space-y-1 text-center text-sm">
               <p className="text-muted-foreground">
                 Paid with {data.paymentMethod}
               </p>
@@ -454,7 +454,7 @@ export function Receipt({ data, logo, onDownload, className }: ReceiptProps) {
 
           {/* Thank You */}
           <div className="text-center">
-            <p className="font-bold uppercase text-sm">Thank You!</p>
+            <p className="text-sm font-bold uppercase">Thank You!</p>
           </div>
 
           {/* Download */}
@@ -523,18 +523,18 @@ export function InvoiceSummary({
   return (
     <div
       className={cn(
-        "border-3 border-foreground p-4 bg-card shadow-[4px_4px_0px_hsl(var(--shadow-color))] hover:shadow-[6px_6px_0px_hsl(var(--shadow-color))] hover:translate-x-[-2px] hover:translate-y-[-2px] transition",
+        "border-3 border-foreground bg-card p-4 shadow-[4px_4px_0px_hsl(var(--shadow-color))] transition hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_hsl(var(--shadow-color))]",
         className,
       )}
     >
-      <div className="flex items-start justify-between mb-4">
+      <div className="mb-4 flex items-start justify-between">
         <div>
-          <p className="font-black text-lg">{invoiceNumber}</p>
+          <p className="text-lg font-black">{invoiceNumber}</p>
           <p className="text-sm text-muted-foreground">{clientName}</p>
         </div>
         <div
           className={cn(
-            "px-2 py-1 text-xs font-bold uppercase border-2",
+            "border-2 px-2 py-1 text-xs font-bold uppercase",
             statusStyle.bg,
             statusStyle.border,
             statusStyle.text,
@@ -544,15 +544,15 @@ export function InvoiceSummary({
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-4 mb-4 text-sm">
+      <div className="mb-4 grid grid-cols-2 gap-4 text-sm">
         <div>
-          <p className="text-xs font-bold uppercase text-muted-foreground">
+          <p className="text-xs font-bold text-muted-foreground uppercase">
             Issued
           </p>
           <p className="font-medium">{issueDate}</p>
         </div>
         <div>
-          <p className="text-xs font-bold uppercase text-muted-foreground">
+          <p className="text-xs font-bold text-muted-foreground uppercase">
             Due
           </p>
           <p className="font-medium">{dueDate}</p>
@@ -560,7 +560,7 @@ export function InvoiceSummary({
       </div>
 
       <div className="flex items-center justify-between">
-        <p className="text-2xl font-black font-mono">${amount.toFixed(2)}</p>
+        <p className="font-mono text-2xl font-black">${amount.toFixed(2)}</p>
         <div className="flex gap-2">
           {onDownload && (
             <Button
@@ -617,7 +617,7 @@ export function InvoiceList({
   return (
     <div className={cn("border-3 border-foreground bg-card", className)}>
       {/* Header */}
-      <div className="grid grid-cols-12 gap-2 p-4 border-b-3 border-foreground bg-muted/50 font-bold uppercase text-xs">
+      <div className="grid grid-cols-12 gap-2 border-b-3 border-foreground bg-muted/50 p-4 text-xs font-bold uppercase">
         <div className="col-span-2">Invoice</div>
         <div className="col-span-3">Client</div>
         <div className="col-span-2">Date</div>
@@ -630,12 +630,12 @@ export function InvoiceList({
       {invoices.map((invoice) => (
         <div
           key={invoice.id}
-          className="grid grid-cols-12 gap-2 p-4 border-b border-foreground/20 hover:bg-muted/30 transition-colors items-center"
+          className="grid grid-cols-12 items-center gap-2 border-b border-foreground/20 p-4 transition-colors hover:bg-muted/30"
         >
-          <div className="col-span-2 font-bold truncate">
+          <div className="col-span-2 truncate font-bold">
             {invoice.invoiceNumber}
           </div>
-          <div className="col-span-3 text-muted-foreground truncate">
+          <div className="col-span-3 truncate text-muted-foreground">
             {invoice.clientName}
           </div>
           <div className="col-span-2 text-sm text-muted-foreground">
@@ -647,7 +647,7 @@ export function InvoiceList({
           <div className="col-span-2 flex justify-end">
             <span
               className={cn(
-                "px-2 py-0.5 text-xs font-bold uppercase whitespace-nowrap",
+                "px-2 py-0.5 text-xs font-bold whitespace-nowrap uppercase",
                 statusConfig[invoice.status],
               )}
             >

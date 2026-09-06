@@ -1,7 +1,6 @@
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
-import { applicationProduct } from "@/content/application";
 
 export interface PublicFooterLink {
   label: string;
@@ -13,7 +12,6 @@ export interface PublicFooterProps {
 }
 
 export const defaultPublicFooterLinks = [
-  { label: "Features", href: "/features" },
   { label: "FAQ", href: "/faq" },
   { label: "Terms", href: "/terms" },
   { label: "Privacy", href: "/privacy" },
@@ -23,14 +21,13 @@ export function PublicFooter({
   links = defaultPublicFooterLinks,
 }: PublicFooterProps) {
   return (
-    <footer className="w-full border-t border-muted bg-background">
-      <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-6 py-7 sm:px-10 lg:flex-row lg:items-center lg:justify-between lg:px-12">
-        <p className="font-mono text-sm leading-none text-muted sm:text-base lg:text-lg">
-          © {new Date().getFullYear()} {applicationProduct.name}. All rights
-          reserved.
+    <footer className="w-full border-t border-foreground bg-background">
+      <div className="mx-auto flex w-full max-w-7xl flex-col px-6 py-7 sm:px-10 lg:flex-row lg:items-center lg:justify-between lg:px-12">
+        <p className="font-mono text-sm leading-none text-foreground sm:text-base lg:text-lg">
+          © {new Date().getFullYear()} All rights reserved.
         </p>
 
-        <nav className="flex flex-wrap gap-x-4 gap-y-4 sm:gap-x-4">
+        <nav className="flex flex-wrap gap-x-2 gap-y-2 text-foreground sm:gap-x-1">
           {links.map((item) => (
             <Button key={item.href} variant="link" size="default" asChild>
               <Link href={item.href}>{item.label}</Link>

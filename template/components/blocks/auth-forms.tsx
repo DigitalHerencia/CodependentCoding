@@ -64,7 +64,7 @@ export function LoginForm({
   };
 
   return (
-    <div className={cn("w-full max-w-md mx-auto", className)}>
+    <div className={cn("mx-auto w-full max-w-md", className)}>
       <Card>
         <CardHeader className="space-y-4 text-center">
           {logo && <div className="mx-auto">{logo}</div>}
@@ -78,11 +78,11 @@ export function LoginForm({
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email" className="font-bold uppercase text-xs">
+              <Label htmlFor="email" className="text-xs font-bold uppercase">
                 Email
               </Label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Mail className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 <Input
                   id="email"
                   type="email"
@@ -99,17 +99,17 @@ export function LoginForm({
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password" className="font-bold uppercase text-xs">
+              <Label htmlFor="password" className="text-xs font-bold uppercase">
                 Password
               </Label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Lock className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 <Input
                   id="password"
                   type={showPassword ? "text" : "password"}
                   autoComplete="current-password"
                   placeholder="Enter your password"
-                  className="pl-10 pr-10"
+                  className="pr-10 pl-10"
                   value={formData.password}
                   onChange={(e) =>
                     setFormData({ ...formData, password: e.target.value })
@@ -120,7 +120,7 @@ export function LoginForm({
                   type="button"
                   aria-label={showPassword ? "Hide password" : "Show password"}
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                  className="absolute top-1/2 right-3 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                 >
                   {showPassword ? (
                     <EyeOff className="h-4 w-4" />
@@ -142,7 +142,7 @@ export function LoginForm({
                 />
                 <Label
                   htmlFor="remember"
-                  className="text-sm font-medium cursor-pointer"
+                  className="cursor-pointer text-sm font-medium"
                 >
                   Remember me
                 </Label>
@@ -170,7 +170,7 @@ export function LoginForm({
                     <div className="w-full border-t-2 border-foreground" />
                   </div>
                   <div className="relative flex justify-center text-xs uppercase">
-                    <span className="bg-card px-2 text-muted-foreground font-bold">
+                    <span className="bg-card px-2 font-bold text-muted-foreground">
                       Or continue with
                     </span>
                   </div>
@@ -194,7 +194,7 @@ export function LoginForm({
             )}
 
             {onSignUp && (
-              <p className="text-center text-sm text-muted-foreground mt-4">
+              <p className="mt-4 text-center text-sm text-muted-foreground">
                 Don&apos;t have an account?{" "}
                 <button
                   type="button"
@@ -263,7 +263,7 @@ export function SignUpForm({
   };
 
   return (
-    <div className={cn("w-full max-w-md mx-auto", className)}>
+    <div className={cn("mx-auto w-full max-w-md", className)}>
       <Card>
         <CardHeader className="space-y-4 text-center">
           {logo && <div className="mx-auto">{logo}</div>}
@@ -277,11 +277,11 @@ export function SignUpForm({
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="name" className="font-bold uppercase text-xs">
+              <Label htmlFor="name" className="text-xs font-bold uppercase">
                 Full Name
               </Label>
               <div className="relative">
-                <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <User className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 <Input
                   id="name"
                   type="text"
@@ -300,12 +300,12 @@ export function SignUpForm({
             <div className="space-y-2">
               <Label
                 htmlFor="signup-email"
-                className="font-bold uppercase text-xs"
+                className="text-xs font-bold uppercase"
               >
                 Email
               </Label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Mail className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 <Input
                   id="signup-email"
                   type="email"
@@ -324,18 +324,18 @@ export function SignUpForm({
             <div className="space-y-2">
               <Label
                 htmlFor="signup-password"
-                className="font-bold uppercase text-xs"
+                className="text-xs font-bold uppercase"
               >
                 Password
               </Label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Lock className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 <Input
                   id="signup-password"
                   type={showPassword ? "text" : "password"}
                   autoComplete="new-password"
                   placeholder="Create a password"
-                  className="pl-10 pr-10"
+                  className="pr-10 pl-10"
                   value={formData.password}
                   onChange={(e) =>
                     setFormData({ ...formData, password: e.target.value })
@@ -346,7 +346,7 @@ export function SignUpForm({
                   type="button"
                   aria-label={showPassword ? "Hide password" : "Show password"}
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                  className="absolute top-1/2 right-3 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                 >
                   {showPassword ? (
                     <EyeOff className="h-4 w-4" />
@@ -372,7 +372,7 @@ export function SignUpForm({
                 />
                 <Label
                   htmlFor="terms"
-                  className="text-sm leading-tight cursor-pointer"
+                  className="cursor-pointer text-sm leading-tight"
                 >
                   I agree to the{" "}
                   <a
@@ -391,7 +391,7 @@ export function SignUpForm({
                 </Label>
               </div>
               {termsError && (
-                <p className="text-xs text-destructive font-medium">
+                <p className="text-xs font-medium text-destructive">
                   {termsError}
                 </p>
               )}
@@ -409,7 +409,7 @@ export function SignUpForm({
                     <div className="w-full border-t-2 border-foreground" />
                   </div>
                   <div className="relative flex justify-center text-xs uppercase">
-                    <span className="bg-card px-2 text-muted-foreground font-bold">
+                    <span className="bg-card px-2 font-bold text-muted-foreground">
                       Or continue with
                     </span>
                   </div>
@@ -433,7 +433,7 @@ export function SignUpForm({
             )}
 
             {onSignIn && (
-              <p className="text-center text-sm text-muted-foreground mt-4">
+              <p className="mt-4 text-center text-sm text-muted-foreground">
                 Already have an account?{" "}
                 <button
                   type="button"
@@ -482,15 +482,15 @@ export function ForgotPasswordForm({
 
   if (submitted) {
     return (
-      <div className={cn("w-full max-w-md mx-auto", className)}>
+      <div className={cn("mx-auto w-full max-w-md", className)}>
         <Card>
-          <CardContent className="pt-6 text-center space-y-4">
-            <div className="w-16 h-16 mx-auto flex items-center justify-center border-3 border-foreground bg-success/20 shadow-[4px_4px_0px_hsl(var(--shadow-color))]">
+          <CardContent className="space-y-4 pt-6 text-center">
+            <div className="mx-auto flex h-16 w-16 items-center justify-center border-3 border-foreground bg-success/20 shadow-[4px_4px_0px_hsl(var(--shadow-color))]">
               <Mail className="h-8 w-8 text-success" />
             </div>
             <div>
               <h3 className="text-xl font-black uppercase">Check your email</h3>
-              <p className="text-sm text-muted-foreground mt-2">
+              <p className="mt-2 text-sm text-muted-foreground">
                 We sent a password reset link to{" "}
                 <span className="font-bold text-foreground">{email}</span>
               </p>
@@ -519,7 +519,7 @@ export function ForgotPasswordForm({
   }
 
   return (
-    <div className={cn("w-full max-w-md mx-auto", className)}>
+    <div className={cn("mx-auto w-full max-w-md", className)}>
       <Card>
         <CardHeader className="space-y-4 text-center">
           {logo && <div className="mx-auto">{logo}</div>}
@@ -535,12 +535,12 @@ export function ForgotPasswordForm({
             <div className="space-y-2">
               <Label
                 htmlFor="reset-email"
-                className="font-bold uppercase text-xs"
+                className="text-xs font-bold uppercase"
               >
                 Email
               </Label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Mail className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 <Input
                   id="reset-email"
                   type="email"
@@ -656,7 +656,7 @@ export function OTPVerificationForm({
   };
 
   return (
-    <div className={cn("w-full max-w-md mx-auto", className)}>
+    <div className={cn("mx-auto w-full max-w-md", className)}>
       <Card>
         <CardHeader className="space-y-4 text-center">
           {logo && <div className="mx-auto">{logo}</div>}
@@ -686,7 +686,7 @@ export function OTPVerificationForm({
                 onChange={(e) => handleChange(index, e.target.value)}
                 onKeyDown={(e) => handleKeyDown(index, e)}
                 onPaste={handlePaste}
-                className="w-12 h-14 text-center text-2xl font-black"
+                className="h-14 w-12 text-center text-2xl font-black"
               />
             ))}
           </div>
@@ -706,7 +706,7 @@ export function OTPVerificationForm({
             <ArrowRight className="ml-2 h-4 w-4" />
           </Button>
 
-          <div className="text-center space-y-2">
+          <div className="space-y-2 text-center">
             {onResend && (
               <p className="text-sm text-muted-foreground">
                 Didn&apos;t receive a code?{" "}
@@ -750,11 +750,11 @@ export function AuthSplitLayout({
   className,
 }: AuthSplitLayoutProps) {
   return (
-    <div className={cn("min-h-screen flex", className)}>
+    <div className={cn("flex min-h-screen", className)}>
       {position === "left" && brandContent && (
         <div
           className={cn(
-            "hidden lg:flex lg:w-1/2 flex-col justify-center p-12",
+            "hidden flex-col justify-center p-12 lg:flex lg:w-1/2",
             brandBackground,
           )}
         >
@@ -762,14 +762,14 @@ export function AuthSplitLayout({
         </div>
       )}
 
-      <div className="flex-1 flex items-center justify-center p-4 md:p-8">
+      <div className="flex flex-1 items-center justify-center p-4 md:p-8">
         {children}
       </div>
 
       {position === "right" && brandContent && (
         <div
           className={cn(
-            "hidden lg:flex lg:w-1/2 flex-col justify-center p-12",
+            "hidden flex-col justify-center p-12 lg:flex lg:w-1/2",
             brandBackground,
           )}
         >

@@ -80,12 +80,12 @@ export function OnboardingWizard({
   if (!activeStep) return null;
 
   return (
-    <div className={cn("w-full max-w-2xl mx-auto", className)}>
+    <div className={cn("mx-auto w-full max-w-2xl", className)}>
       {/* Progress */}
       {showProgress && (
         <div className="mb-8 space-y-4">
           <div className="flex items-center justify-between text-sm">
-            <span className="font-bold uppercase tracking-wide">
+            <span className="font-bold tracking-wide uppercase">
               Step {currentStep + 1} of {steps.length}
             </span>
             <span className="text-muted-foreground">
@@ -98,7 +98,7 @@ export function OnboardingWizard({
 
       {/* Step Indicators */}
       <div
-        className="flex items-center justify-center gap-2 mb-8"
+        className="mb-8 flex items-center justify-center gap-2"
         role="list"
         aria-label="Progress steps"
       >
@@ -109,11 +109,11 @@ export function OnboardingWizard({
               aria-label={`Step ${index + 1} of ${steps.length}: ${step.title}`}
               aria-current={index === currentStep ? "step" : undefined}
               className={cn(
-                "w-10 h-10 flex items-center justify-center border-3 border-foreground font-bold transition",
+                "flex h-10 w-10 items-center justify-center border-3 border-foreground font-bold transition",
                 index < currentStep
                   ? "bg-success text-success-foreground shadow-[4px_4px_0px_hsl(var(--shadow-color))]"
                   : index === currentStep
-                    ? "bg-primary text-primary-foreground shadow-[4px_4px_0px_hsl(var(--shadow-color))] scale-110"
+                    ? "scale-110 bg-primary text-primary-foreground shadow-[4px_4px_0px_hsl(var(--shadow-color))]"
                     : "bg-muted text-muted-foreground",
               )}
             >
@@ -135,7 +135,7 @@ export function OnboardingWizard({
       <Card>
         <CardHeader className="text-center">
           {activeStep.icon && (
-            <div className="w-16 h-16 mx-auto flex items-center justify-center border-3 border-foreground bg-primary/10 shadow-[4px_4px_0px_hsl(var(--shadow-color))] mb-4">
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center border-3 border-foreground bg-primary/10 shadow-[4px_4px_0px_hsl(var(--shadow-color))]">
               {activeStep.icon}
             </div>
           )}
@@ -204,30 +204,30 @@ export function WelcomeScreen({
   className,
 }: WelcomeScreenProps) {
   return (
-    <div className={cn("w-full max-w-2xl mx-auto text-center", className)}>
+    <div className={cn("mx-auto w-full max-w-2xl text-center", className)}>
       <Card>
-        <CardContent className="pt-8 pb-8 space-y-8">
+        <CardContent className="space-y-8 pt-8 pb-8">
           {logo && (
-            <div className="w-20 h-20 mx-auto flex items-center justify-center border-3 border-foreground bg-primary shadow-[6px_6px_0px_hsl(var(--shadow-color))]">
+            <div className="mx-auto flex h-20 w-20 items-center justify-center border-3 border-foreground bg-primary shadow-[6px_6px_0px_hsl(var(--shadow-color))]">
               {logo}
             </div>
           )}
 
           <div className="space-y-2">
-            <h1 className="text-3xl md:text-4xl font-black uppercase tracking-tight">
+            <h1 className="text-3xl font-black tracking-tight uppercase md:text-4xl">
               {title}
             </h1>
             <p className="text-lg text-muted-foreground">{subtitle}</p>
           </div>
 
           {features && features.length > 0 && (
-            <div className="grid md:grid-cols-3 gap-4 text-left">
+            <div className="grid gap-4 text-left md:grid-cols-3">
               {features.map((feature) => (
                 <div
                   key={feature.title}
-                  className="border-3 border-foreground p-4 bg-muted/30 space-y-2"
+                  className="space-y-2 border-3 border-foreground bg-muted/30 p-4"
                 >
-                  <div className="w-10 h-10 flex items-center justify-center border-2 border-foreground bg-card">
+                  <div className="flex h-10 w-10 items-center justify-center border-2 border-foreground bg-card">
                     {feature.icon}
                   </div>
                   <h3 className="font-bold">{feature.title}</h3>
@@ -239,7 +239,7 @@ export function WelcomeScreen({
             </div>
           )}
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+          <div className="flex flex-col items-center justify-center gap-3 sm:flex-row">
             {primaryAction && (
               <Button size="lg" onClick={primaryAction.onClick}>
                 {primaryAction.label}
@@ -350,9 +350,9 @@ export function ProfileSetup({
   };
 
   return (
-    <Card className={cn("w-full max-w-lg mx-auto", className)}>
+    <Card className={cn("mx-auto w-full max-w-lg", className)}>
       <CardHeader className="text-center">
-        <div className="w-14 h-14 mx-auto flex items-center justify-center border-3 border-foreground bg-primary/10 shadow-[4px_4px_0px_hsl(var(--shadow-color))] mb-2">
+        <div className="mx-auto mb-2 flex h-14 w-14 items-center justify-center border-3 border-foreground bg-primary/10 shadow-[4px_4px_0px_hsl(var(--shadow-color))]">
           <User className="h-7 w-7" />
         </div>
         <CardTitle className="text-2xl font-black uppercase">
@@ -367,7 +367,7 @@ export function ProfileSetup({
             <button
               type="button"
               onClick={() => fileInputRef.current?.click()}
-              className="relative w-24 h-24 border-3 border-dashed border-foreground bg-muted flex items-center justify-center hover:bg-muted/80 transition-colors"
+              className="relative flex h-24 w-24 items-center justify-center border-3 border-dashed border-foreground bg-muted transition-colors hover:bg-muted/80"
             >
               {avatarPreview ? (
                 <Image
@@ -376,7 +376,7 @@ export function ProfileSetup({
                   height={96}
                   unoptimized
                   width={96}
-                  className="w-full h-full object-cover"
+                  className="h-full w-full object-cover"
                 />
               ) : (
                 <Upload className="h-8 w-8 text-muted-foreground" />
@@ -390,7 +390,7 @@ export function ProfileSetup({
               />
             </button>
             {avatarError && (
-              <p className="text-sm text-destructive font-medium">
+              <p className="text-sm font-medium text-destructive">
                 {avatarError}
               </p>
             )}
@@ -398,7 +398,7 @@ export function ProfileSetup({
 
           {/* Name */}
           <div className="space-y-2">
-            <Label htmlFor="name" className="font-bold uppercase text-xs">
+            <Label htmlFor="name" className="text-xs font-bold uppercase">
               Your Name
             </Label>
             <Input
@@ -414,15 +414,15 @@ export function ProfileSetup({
 
           {/* Role */}
           <div className="space-y-2">
-            <Label className="font-bold uppercase text-xs">Your Role</Label>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+            <Label className="text-xs font-bold uppercase">Your Role</Label>
+            <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
               {availableRoles.map((role) => (
                 <button
                   key={role.value}
                   type="button"
                   onClick={() => setFormData({ ...formData, role: role.value })}
                   className={cn(
-                    "p-2 text-sm border-2 border-foreground font-medium transition",
+                    "border-2 border-foreground p-2 text-sm font-medium transition",
                     formData.role === role.value
                       ? "bg-primary text-primary-foreground shadow-[3px_3px_0px_hsl(var(--shadow-color))]"
                       : "bg-card hover:bg-muted",
@@ -436,7 +436,7 @@ export function ProfileSetup({
 
           {/* Interests */}
           <div className="space-y-2">
-            <Label className="font-bold uppercase text-xs">
+            <Label className="text-xs font-bold uppercase">
               Your Interests{" "}
               <span className="text-muted-foreground">
                 (Select all that apply)
@@ -449,7 +449,7 @@ export function ProfileSetup({
                   type="button"
                   onClick={() => toggleInterest(interest.value)}
                   className={cn(
-                    "p-2 text-sm border-2 border-foreground font-medium transition flex items-center gap-2",
+                    "flex items-center gap-2 border-2 border-foreground p-2 text-sm font-medium transition",
                     formData.interests.includes(interest.value)
                       ? "bg-secondary text-secondary-foreground shadow-[3px_3px_0px_hsl(var(--shadow-color))]"
                       : "bg-card hover:bg-muted",
@@ -457,7 +457,7 @@ export function ProfileSetup({
                 >
                   <div
                     className={cn(
-                      "w-4 h-4 border-2 border-current flex items-center justify-center",
+                      "flex h-4 w-4 items-center justify-center border-2 border-current",
                       formData.interests.includes(interest.value) &&
                         "bg-current",
                     )}
@@ -527,9 +527,9 @@ export function WorkspaceSetup({
   };
 
   return (
-    <Card className={cn("w-full max-w-lg mx-auto", className)}>
+    <Card className={cn("mx-auto w-full max-w-lg", className)}>
       <CardHeader className="text-center">
-        <div className="w-14 h-14 mx-auto flex items-center justify-center border-3 border-foreground bg-secondary/10 shadow-[4px_4px_0px_hsl(var(--shadow-color))] mb-2">
+        <div className="mx-auto mb-2 flex h-14 w-14 items-center justify-center border-3 border-foreground bg-secondary/10 shadow-[4px_4px_0px_hsl(var(--shadow-color))]">
           <Building className="h-7 w-7" />
         </div>
         <CardTitle className="text-2xl font-black uppercase">
@@ -542,7 +542,7 @@ export function WorkspaceSetup({
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
-            <Label htmlFor="workspace" className="font-bold uppercase text-xs">
+            <Label htmlFor="workspace" className="text-xs font-bold uppercase">
               Workspace Name
             </Label>
             <Input
@@ -555,7 +555,7 @@ export function WorkspaceSetup({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="invite" className="font-bold uppercase text-xs">
+            <Label htmlFor="invite" className="text-xs font-bold uppercase">
               Invite Team Members{" "}
               <span className="text-muted-foreground">(Optional)</span>
             </Label>
@@ -581,14 +581,14 @@ export function WorkspaceSetup({
 
           {members.length > 0 && (
             <div className="space-y-2">
-              <p className="text-xs font-bold uppercase text-muted-foreground">
+              <p className="text-xs font-bold text-muted-foreground uppercase">
                 Pending Invites ({members.length})
               </p>
               <div className="space-y-2">
                 {members.map((email) => (
                   <div
                     key={email}
-                    className="flex items-center justify-between border-2 border-foreground p-2 bg-muted/30"
+                    className="flex items-center justify-between border-2 border-foreground bg-muted/30 p-2"
                   >
                     <span className="text-sm">{email}</span>
                     <button
@@ -660,9 +660,9 @@ export function GoalSelection({
   };
 
   return (
-    <Card className={cn("w-full max-w-2xl mx-auto", className)}>
+    <Card className={cn("mx-auto w-full max-w-2xl", className)}>
       <CardHeader className="text-center">
-        <div className="w-14 h-14 mx-auto flex items-center justify-center border-3 border-foreground bg-accent/10 shadow-[4px_4px_0px_hsl(var(--shadow-color))] mb-2">
+        <div className="mx-auto mb-2 flex h-14 w-14 items-center justify-center border-3 border-foreground bg-accent/10 shadow-[4px_4px_0px_hsl(var(--shadow-color))]">
           <Target className="h-7 w-7" />
         </div>
         <CardTitle className="text-2xl font-black uppercase">
@@ -673,22 +673,22 @@ export function GoalSelection({
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
-        <div className="grid md:grid-cols-2 gap-3">
+        <div className="grid gap-3 md:grid-cols-2">
           {goals.map((goal) => (
             <button
               key={goal.id}
               type="button"
               onClick={() => toggleGoal(goal.id)}
               className={cn(
-                "flex items-start gap-4 p-4 border-3 border-foreground text-left transition",
+                "flex items-start gap-4 border-3 border-foreground p-4 text-left transition",
                 selected.includes(goal.id)
-                  ? "bg-primary/10 shadow-[4px_4px_0px_hsl(var(--shadow-color))] translate-x-[-2px] translate-y-[-2px]"
+                  ? "translate-x-[-2px] translate-y-[-2px] bg-primary/10 shadow-[4px_4px_0px_hsl(var(--shadow-color))]"
                   : "bg-card hover:bg-muted",
               )}
             >
               <div
                 className={cn(
-                  "w-10 h-10 flex items-center justify-center border-2 border-foreground shrink-0",
+                  "flex h-10 w-10 shrink-0 items-center justify-center border-2 border-foreground",
                   selected.includes(goal.id)
                     ? "bg-primary text-primary-foreground"
                     : "bg-muted",
@@ -739,14 +739,14 @@ export function CompletionScreen({
   className,
 }: CompletionScreenProps) {
   return (
-    <Card className={cn("w-full max-w-lg mx-auto", className)}>
-      <CardContent className="pt-8 pb-8 text-center space-y-6">
-        <div className="w-20 h-20 mx-auto flex items-center justify-center border-3 border-foreground bg-success shadow-[6px_6px_0px_hsl(var(--shadow-color))] text-success-foreground">
+    <Card className={cn("mx-auto w-full max-w-lg", className)}>
+      <CardContent className="space-y-6 pt-8 pb-8 text-center">
+        <div className="mx-auto flex h-20 w-20 items-center justify-center border-3 border-foreground bg-success text-success-foreground shadow-[6px_6px_0px_hsl(var(--shadow-color))]">
           <PartyPopper className="h-10 w-10" />
         </div>
 
         <div className="space-y-2">
-          <h1 className="text-3xl font-black uppercase tracking-tight">
+          <h1 className="text-3xl font-black tracking-tight uppercase">
             {title}
           </h1>
           <p className="text-muted-foreground">{subtitle}</p>
@@ -757,13 +757,13 @@ export function CompletionScreen({
             {features.map((feature) => (
               <div
                 key={feature.title}
-                className="flex items-start gap-3 border-2 border-foreground p-3 bg-muted/30"
+                className="flex items-start gap-3 border-2 border-foreground bg-muted/30 p-3"
               >
-                <div className="w-6 h-6 flex items-center justify-center bg-success text-success-foreground border-2 border-foreground shrink-0">
+                <div className="flex h-6 w-6 shrink-0 items-center justify-center border-2 border-foreground bg-success text-success-foreground">
                   <Check className="h-4 w-4" />
                 </div>
                 <div>
-                  <p className="font-bold text-sm">{feature.title}</p>
+                  <p className="text-sm font-bold">{feature.title}</p>
                   <p className="text-xs text-muted-foreground">
                     {feature.description}
                   </p>

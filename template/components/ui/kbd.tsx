@@ -3,18 +3,18 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils/cn";
 
 const kbdVariants = cva(
-  "inline-flex items-center justify-center font-mono font-bold uppercase border-3 border-foreground",
+  "inline-flex items-center justify-center border-3 border-foreground font-mono font-bold uppercase",
   {
     variants: {
       variant: {
         default: "bg-muted shadow-[2px_2px_0px_hsl(var(--shadow-color))]",
         outline: "bg-background",
-        ghost: "bg-transparent border-transparent text-muted-foreground",
+        ghost: "border-transparent bg-transparent text-muted-foreground",
       },
       size: {
-        sm: "min-w-5 h-5 px-1 text-[10px]",
-        md: "min-w-6 h-6 px-1.5 text-xs",
-        lg: "min-w-8 h-8 px-2 text-sm",
+        sm: "h-5 min-w-5 px-1 text-[10px]",
+        md: "h-6 min-w-6 px-1.5 text-xs",
+        lg: "h-8 min-w-8 px-2 text-sm",
       },
     },
     defaultVariants: {
@@ -56,7 +56,7 @@ const KbdCombo = React.forwardRef<HTMLDivElement, KbdComboProps>(
         {keys.map((key, index) => (
           <React.Fragment key={`kbd-${index}-${key}`}>
             {index > 0 && (
-              <span className="text-muted-foreground text-xs font-bold">
+              <span className="text-xs font-bold text-muted-foreground">
                 {separator}
               </span>
             )}

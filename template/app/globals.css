@@ -1,9 +1,12 @@
-@import "tailwindcss";
+@import "tailwindcss" source("../");
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
 
-@theme {
+@theme inline {
+  --font-sans: var(--font-body), ui-monospace, monospace;
+  --font-display: var(--font-heading), Impact, sans-serif;
+  --font-mono: var(--font-code), ui-monospace, monospace;
   --color-background: hsl(var(--background));
   --color-foreground: hsl(var(--foreground));
   --color-card: hsl(var(--card));
@@ -43,13 +46,33 @@
   --color-clash-2: hsl(var(--clash-2));
   --color-clash-3: hsl(var(--clash-3));
   --color-clash-4: hsl(var(--clash-4));
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: max(0px, calc(var(--radius) - 4px));
+  --radius-md: max(0px, calc(var(--radius) - 2px));
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+  --shadow-hard: 4px 4px 0 hsl(var(--shadow-color));
+  --shadow-hard-lg: var(--shadow-offset) var(--shadow-offset) 0
+    hsl(var(--shadow-color));
+  --ease-mechanical: var(--motion-ease);
+}
+
+@theme {
+  --animate-marquee: marquee 25s linear infinite;
+  --animate-marquee-slow: marquee 40s linear infinite;
+  --animate-marquee-fast: marquee 15s linear infinite;
+
+  @keyframes marquee {
+    to {
+      transform: translateX(-100%);
+    }
+  }
 }
 
 :root {
+  --motion-fast: 100ms;
+  --motion-base: 160ms;
+  --motion-slow: 240ms;
+  --motion-ease: cubic-bezier(0.2, 0, 0, 1);
   /* Base Colors */
   --background: 248 50% 3%;
   --foreground: 42 74% 94%;
@@ -127,18 +150,48 @@
     @apply border-border;
   }
 
-  html {
-    min-height: 100%;
-    color-scheme: dark;
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-display;
+    font-weight: 400;
+    line-height: 1.15;
+    text-wrap: balance;
   }
 
-  body {
-    min-height: 100vh;
-    margin: 0;
-    background: hsl(var(--background));
-    color: hsl(var(--foreground));
-    font-family: var(--font-sans);
-    text-rendering: optimizeLegibility;
+  h1 {
+    font-size: clamp(2.25rem, 5vw, 4.5rem);
+  }
+  h2 {
+    font-size: clamp(1.75rem, 3vw, 3rem);
+  }
+  h3 {
+    font-size: clamp(1.375rem, 2vw, 2rem);
+  }
+  h4 {
+    font-size: 1.25rem;
+  }
+  h5 {
+    font-size: 1.125rem;
+  }
+  h6 {
+    font-size: 1rem;
+  }
+
+  p {
+    line-height: 1.7;
+  }
+  code,
+  kbd,
+  pre,
+  samp {
+    @apply font-mono;
+  }
+  pre {
+    overflow-x: auto;
   }
 
   ::selection {
@@ -152,6 +205,10 @@
   }
 }
 
+@utility eyebrow {
+  @apply font-mono text-xs font-semibold tracking-widest uppercase;
+}
+
 @layer utilities {
   .bk-interactive {
     transition-duration: var(--motion-base);
@@ -159,9 +216,167 @@
       background-color, border-color, box-shadow, color, opacity, transform;
     transition-timing-function: var(--motion-ease);
   }
+
+  .bk-press {
+    transition:
+      transform var(--motion-base) var(--motion-ease),
+      box-shadow var(--motion-base) var(--motion-ease);
+    &:active {
+      transform: translate(4px, 4px);
+      box-shadow: none;
+    }
+  }
+  .bk-stamp-in {
+    animation: bk-stamp var(--motion-slow) var(--motion-ease) both;
+  }
+  .bk-pulse-shadow {
+    animation: bk-shadow 2s steps(2, end) infinite;
+  }
+  .bk-shake-x {
+    animation: bk-shake var(--motion-slow) linear;
+  }
+  .bk-progress-stepped {
+    transition-timing-function: steps(10, end);
+  }
+  .bk-progress-marquee {
+    width: 30%;
+    animation: bk-progress 1.5s linear infinite;
+  }
+  .bk-skeleton-stamp {
+    animation: bk-blink 1.5s steps(2, end) infinite;
+  }
+  .bk-skeleton-blocks {
+    background-image: repeating-linear-gradient(
+      90deg,
+      transparent 0 1rem,
+      hsl(var(--foreground) / 0.12) 1rem 2rem
+    );
+    animation: bk-cells 1s steps(4, end) infinite;
+  }
+  .bk-skeleton-scan {
+    background-image: linear-gradient(
+      90deg,
+      transparent 40%,
+      hsl(var(--foreground) / 0.15) 40% 60%,
+      transparent 60%
+    );
+    background-size: 250% 100%;
+    animation: bk-scan 1.5s linear infinite;
+  }
+  /* Keep content visible before hydration; the observer marks the entrance. */
+  .bk-reveal {
+    --reveal-x: 0px;
+    --reveal-y: 0px;
+  }
+  .bk-reveal-up {
+    --reveal-y: 1rem;
+  }
+  .bk-reveal-down {
+    --reveal-y: -1rem;
+  }
+  .bk-reveal-left {
+    --reveal-x: 1rem;
+  }
+  .bk-reveal-right {
+    --reveal-x: -1rem;
+  }
+  .bk-reveal[data-revealed="true"] {
+    animation: bk-reveal var(--motion-slow) var(--motion-ease) both;
+  }
+}
+
+@keyframes bk-stamp {
+  from {
+    opacity: 0;
+    transform: scale(1.04);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@keyframes bk-shadow {
+  0%,
+  100% {
+    box-shadow: 4px 4px 0 hsl(var(--shadow-color));
+  }
+  50% {
+    box-shadow: 6px 6px 0 hsl(var(--shadow-color));
+  }
+}
+@keyframes bk-shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25%,
+  75% {
+    transform: translateX(-4px);
+  }
+  50% {
+    transform: translateX(4px);
+  }
+}
+@keyframes bk-progress {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(334%);
+  }
+}
+@keyframes bk-blink {
+  50% {
+    opacity: 0.4;
+  }
+}
+@keyframes bk-cells {
+  to {
+    background-position: 2rem 0;
+  }
+}
+@keyframes bk-scan {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: 0 0;
+  }
+}
+@keyframes bk-reveal {
+  from {
+    opacity: 0;
+    transform: translate(var(--reveal-x), var(--reveal-y));
+  }
+  to {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+}
+@keyframes brutal-shadow-spin {
+  0%,
+  100% {
+    transform: translate(-4px, -4px);
+  }
+  25% {
+    transform: translate(4px, -4px);
+  }
+  50% {
+    transform: translate(4px, 4px);
+  }
+  75% {
+    transform: translate(-4px, 4px);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .bk-progress-marquee {
+    animation: none !important;
+    transform: translateX(100%);
+  }
+  .bk-reveal[data-revealed="true"] {
+    animation: none !important;
+  }
   *,
   *::before,
   *::after {

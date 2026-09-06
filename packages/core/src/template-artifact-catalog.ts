@@ -208,7 +208,6 @@ export const templateArtifactPaths = [
   'content/marketing.ts',
   'content/navigation.ts',
   'content/presentation/registry.ts',
-  'content/site.ts',
   'context/README.md',
   'context/docs/architecture-governance.md',
   'context/docs/architecture.md',

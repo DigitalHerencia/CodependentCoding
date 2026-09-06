@@ -114,7 +114,7 @@ export function DashboardLayout({
 export function DashboardStatCard({ label, value, trend }: DashboardStat) {
   return (
     <article className="border border-border bg-[#0b0f12] p-3">
-      <p className="font-mono text-[0.6rem] uppercase tracking-wider text-[#9dc0c8]">
+      <p className="font-mono text-[0.6rem] tracking-wider text-[#9dc0c8] uppercase">
         {label}
       </p>
       <p className="mt-1 font-mono text-xl font-black text-foreground">
@@ -139,7 +139,7 @@ export function DashboardPanel({
   return (
     <section className={cn("border border-border bg-[#0b0f12]", className)}>
       {title ? (
-        <h2 className="border-b border-border px-3 py-2 font-mono text-[0.68rem] font-black uppercase tracking-wider text-foreground">
+        <h2 className="border-b border-border px-3 py-2 font-mono text-[0.68rem] font-black tracking-wider text-foreground uppercase">
           {title}
         </h2>
       ) : null}
@@ -186,7 +186,7 @@ export function DashboardTable({
             {columns.map((column) => (
               <th
                 key={column.key}
-                className="border-b border-border px-3 py-2 text-left uppercase tracking-wider"
+                className="border-b border-border px-3 py-2 text-left tracking-wider uppercase"
               >
                 {column.label}
               </th>

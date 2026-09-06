@@ -195,7 +195,7 @@ const HeatmapChart = React.forwardRef<HTMLDivElement, HeatmapChartProps>(
                     }
                     tabIndex={cellTabIndex}
                     className={cn(
-                      "border border-foreground/30 transition duration-100 hover:border-foreground hover:border-2 hover:z-10 focus:border-foreground focus:border-2 focus:z-10 focus:outline-none",
+                      "border border-foreground/30 transition duration-100 hover:z-10 hover:border-2 hover:border-foreground focus:z-10 focus:border-2 focus:border-foreground focus:outline-none",
                       isInteractive ? "cursor-pointer" : "cursor-default",
                     )}
                     style={{
@@ -256,7 +256,7 @@ const HeatmapChart = React.forwardRef<HTMLDivElement, HeatmapChartProps>(
         {/* Tooltip */}
         {showTooltip && tooltip && (
           <div
-            className="fixed z-50 pointer-events-none border-3 border-foreground bg-background px-3 py-2 text-xs font-mono shadow-[4px_4px_0px_hsl(var(--foreground))]"
+            className="pointer-events-none fixed z-50 border-3 border-foreground bg-background px-3 py-2 font-mono text-xs shadow-[4px_4px_0px_hsl(var(--foreground))]"
             style={{
               left: Math.min(
                 Math.max(tooltip.x, 100),

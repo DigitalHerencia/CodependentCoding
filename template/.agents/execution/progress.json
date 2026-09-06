@@ -3,7 +3,106 @@
   "file": ".agents/execution/progress.json",
   "product": "The Maximal Template",
   "purpose": "Machine-readable tracker for the canonical eight-spec Maximal Template repair/build sequence.",
-  "updated_at": "2026-08-15T00:00:00-06:00",
+  "updated_at": "2026-09-06T00:00:00-06:00",
+  "tooling_configuration": {
+    "status": "implemented_with_remaining_audit_findings",
+    "authority": "Owner request to install updated template dependencies and reconcile ESLint, Prettier, Tailwind v4, shadcn, and template-root tooling.",
+    "revision": "297a4c91ee2ed448bd13c603b3041741a270d9b1 plus uncommitted working-tree changes",
+    "environment": "Windows; Node 24.14.0; pnpm 12.3.4; commands run from template/",
+    "implemented": [
+      "Installed owner runtime dependency upgrades and refreshed the template lockfile; retained compatible ESLint 9.39.5 and TypeScript 6.0.3 because current React/TypeScript lint plugins exclude the requested newer majors.",
+      "Aligned Node typings to Node 24; typecheck generates Next route types before tsc.",
+      "Preserved template lint rules and added presentation auth/feature boundaries, block React Hook Form restrictions, unused-disable diagnostics, and generated/local-state ignores.",
+      "Configured Prettier Tailwind v4 sorting for JSX and cn/clsx/cva, standalone editor defaults, EditorConfig, and nested ESLint working-directory detection.",
+      "Cleared shadcn's legacy config path; globals.css remains Tailwind authority with template-scoped scanning and standard responsive breakpoints.",
+      "Enabled sharp build permission, strict release-age handling, and stale-dependency errors before scripts. pnpm recorded an exact release-age exception for the owner's requested react-resizable-panels 4.12.4.",
+      "Removed four unused imports and escaped one JSX apostrophe without changing rendered copy."
+    ],
+    "executed": [
+      "pnpm install: passed, including Prisma Client generation. Initial Windows access failure recovered on retry; overlapping auto-install generation failures recovered with sequential generation before typecheck.",
+      "pnpm install --frozen-lockfile: passed after final workspace settings.",
+      "pnpm lint: passed with zero warnings after five source lint corrections.",
+      "pnpm typecheck: passed, including Next route type generation.",
+      "Focused Prettier check of edited configs, stylesheet, documentation, editor settings, and four corrected source files: passed.",
+      "In-memory ESLint probes: prohibited database, auth, feature, provider, block form, and raw SQL imports/expressions rejected; feature UI composition allowed; generated/local files ignored.",
+      "Node/PostCSS compilation: passed with zero warnings; semantic theme utilities and all five standard responsive breakpoints emitted. Prettier cn/clsx/cva sorting probes passed.",
+      "pnpm format:check: passed on final working tree after bulk formatting changes appeared in the shared workspace; initially reported 123 files.",
+      "pnpm audit --json: reports two high and one moderate advisory through Prisma dependencies (deepmerge-ts 7.1.5 and mysql2 3.15.3). No advisory suppression or unvalidated dependency overrides added."
+    ],
+    "skipped": [
+      "Build",
+      "Development server",
+      "Browser and live-provider verification",
+      "Database migrations"
+    ],
+    "blocked": [],
+    "remaining": [
+      "Resolve Prisma transitive advisories GHSA-ggr8-5vv4-36mx, GHSA-3f6p-5ww8-9rcr, and GHSA-rgwj-5xj2-c3m3 through a validated upstream update or scoped dependency remediation."
+    ],
+    "inferred": [
+      "Static checks establish tooling compatibility, not live provider or production behavior."
+    ]
+  },
+  "branding_cleanup": {
+    "status": "implemented",
+    "authority": "Current owner request to remove the site alias and apply LogoLockup and Wordmark consistently sitewide.",
+    "implemented": [
+      "Both brand components read applicationProduct directly; removed content/site.ts and its generator artifact catalog entry.",
+      "Public header honors its logo prop on desktop and mobile; auth shell exposes Wordmark on mobile.",
+      "Wordmark has an explicit home-link label and nonshrinking decorative initial; tenant header accommodates wrapping product names.",
+      "Removed unused applicationProduct import from public footer."
+    ],
+    "executed": [
+      "pnpm exec prettier --write components/brand/logo-lockup.tsx components/brand/wordmark.tsx components/nav/public-header.tsx components/nav/public-footer.tsx components/shells/auth-shell.tsx components/shells/tenant-shell.tsx: passed from template/.",
+      "pnpm exec eslint components/brand/logo-lockup.tsx components/brand/wordmark.tsx components/nav/public-header.tsx components/nav/public-footer.tsx components/shells/auth-shell.tsx components/shells/tenant-shell.tsx --max-warnings=0: passed from template/.",
+      "pnpm exec prettier --check packages/core/src/template-artifact-catalog.ts: passed.",
+      "Repository search found no remaining content/site or site.ts references in template/ or packages/.",
+      "git diff --check: passed."
+    ],
+    "skipped": ["Build", "Typecheck", "Browser verification"],
+    "blocked": [
+      "pnpm exec eslint packages/core/src/template-artifact-catalog.ts --max-warnings=0: root typescript-eslint rejects TypeScript 7.0."
+    ],
+    "inferred": [
+      "Existing public, auth, tenant, and portal branding now reads the shared application identity; responsive layout changes remain visually unverified."
+    ]
+  },
+  "tailwind_typography_update": {
+    "status": "complete",
+    "authority": "Current owner request to address CSS directive warnings and configure typography and required template utilities.",
+    "implemented": [
+      "Tailwind language associations and IntelliSense recommendations for repository and standalone template workspaces; CSS validation remains enabled.",
+      "Root-layout font loading for JetBrains Mono body, Archivo Black display, and Fira Code code text, with inline Tailwind font mappings and base typography.",
+      "Nonnegative radius tokens, hard shadows, motion tokens, eyebrow utility, and existing component animation recipes with reduced-motion support."
+    ],
+    "executed": [
+      "Prettier formatted changed CSS, TSX, and editor JSON files.",
+      "pnpm exec eslint app/layout.tsx --max-warnings=0: passed from template/.",
+      "Node/PostCSS compilation using @tailwindcss/postcss: passed; expected font, marquee, reveal, and spinner styles emitted; zero warnings and no unprocessed Tailwind directives.",
+      "git diff --check: passed."
+    ],
+    "skipped": [
+      "Full build and font download",
+      "Typecheck",
+      "Live editor diagnostics and browser verification"
+    ],
+    "blocked": []
+  },
+  "root_layout_update": {
+    "status": "complete",
+    "authority": "Current owner instruction: root layout owns uniform sitewide defaults and main-content spacing.",
+    "implemented": "Root layout owns metadata, system sans font, document styling, and responsive main gutters. Shells retain composition and internal navigation spacing.",
+    "executed": [
+      "pnpm exec prettier --check app/layout.tsx app/globals.css components/shells/public-shell.tsx components/shells/tenant-shell.tsx components/shells/portal-shell.tsx components/shells/auth-shell.tsx: passed from template/",
+      "pnpm exec eslint app/layout.tsx components/shells/public-shell.tsx components/shells/tenant-shell.tsx components/shells/portal-shell.tsx components/shells/auth-shell.tsx --max-warnings=0: passed from template/",
+      "git diff --check: passed"
+    ],
+    "skipped": ["Build", "Typecheck", "Browser verification"],
+    "blocked": [],
+    "inferred": [
+      "Responsive main spacing is shared by public, tenant, portal, and auth shells through root-layout selectors."
+    ]
+  },
   "status_values": [
     "not_started",
     "in_progress",

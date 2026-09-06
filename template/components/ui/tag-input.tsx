@@ -231,10 +231,10 @@ const TagInput = React.forwardRef<TagInputHandle, TagInputProps>(
         <div
           onClick={handleContainerClick}
           className={cn(
-            "flex flex-wrap items-center gap-2 min-h-11 w-full border-3 border-input bg-background px-3 py-2",
+            "flex min-h-11 w-full flex-wrap items-center gap-2 border-3 border-input bg-background px-3 py-2",
             "shadow-[4px_4px_0px_hsl(var(--shadow-color))] transition duration-200",
             "focus-within:translate-x-[4px] focus-within:translate-y-[4px] focus-within:shadow-none",
-            disabled && "opacity-50 cursor-not-allowed",
+            disabled && "cursor-not-allowed opacity-50",
             error && "border-destructive",
             className,
           )}
@@ -244,7 +244,7 @@ const TagInput = React.forwardRef<TagInputHandle, TagInputProps>(
             <span
               key={`tag-${index}`}
               className={cn(
-                "inline-flex items-center gap-1 px-2 py-0.5 text-xs font-bold uppercase tracking-wide",
+                "inline-flex items-center gap-1 px-2 py-0.5 text-xs font-bold tracking-wide uppercase",
                 "border-2 border-foreground bg-primary text-primary-foreground",
                 "shadow-[2px_2px_0px_hsl(var(--shadow-color))]",
               )}
@@ -257,7 +257,7 @@ const TagInput = React.forwardRef<TagInputHandle, TagInputProps>(
                     e.stopPropagation();
                     removeTag(index);
                   }}
-                  className="hover:bg-primary-foreground/20 rounded-sm p-0.5 transition-colors"
+                  className="rounded-sm p-0.5 transition-colors hover:bg-primary-foreground/20"
                   aria-label={`Remove ${tag}`}
                 >
                   <X className="h-3 w-3" />
@@ -277,7 +277,7 @@ const TagInput = React.forwardRef<TagInputHandle, TagInputProps>(
             placeholder={tags.length === 0 ? placeholder : ""}
             disabled={disabled}
             className={cn(
-              "flex-1 min-w-[120px] bg-transparent outline-none text-sm",
+              "min-w-[120px] flex-1 bg-transparent text-sm outline-none",
               "placeholder:text-muted-foreground disabled:cursor-not-allowed",
             )}
             {...props}

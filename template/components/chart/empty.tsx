@@ -13,7 +13,7 @@ const ChartEmpty = React.forwardRef<HTMLDivElement, ChartEmptyProps>(
         role="status"
         aria-live="polite"
         className={cn(
-          "flex min-h-[120px] w-full items-center justify-center border-3 border-dashed border-foreground/40 bg-muted/20 p-6 text-xs font-bold uppercase tracking-wide text-muted-foreground",
+          "flex min-h-[120px] w-full items-center justify-center border-3 border-dashed border-foreground/40 bg-muted/20 p-6 text-xs font-bold tracking-wide text-muted-foreground uppercase",
           className,
         )}
         {...props}

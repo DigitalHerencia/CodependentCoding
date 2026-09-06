@@ -225,7 +225,7 @@ const CarouselPrevious = React.forwardRef<
         // Disable translate on hover - use scale instead for carousel buttons
         "hover:translate-x-0 hover:translate-y-0 hover:scale-105 hover:shadow-[4px_4px_0px_hsl(var(--shadow-color))]",
         orientation === "horizontal"
-          ? "-left-12 top-1/2 -translate-y-1/2"
+          ? "top-1/2 -left-12 -translate-y-1/2"
           : "-top-12 left-1/2 -translate-x-1/2 rotate-90",
         className,
       )}
@@ -256,7 +256,7 @@ const CarouselNext = React.forwardRef<
         // Disable translate on hover - use scale instead for carousel buttons
         "hover:translate-x-0 hover:translate-y-0 hover:scale-105 hover:shadow-[4px_4px_0px_hsl(var(--shadow-color))]",
         orientation === "horizontal"
-          ? "-right-12 top-1/2 -translate-y-1/2"
+          ? "top-1/2 -right-12 -translate-y-1/2"
           : "-bottom-12 left-1/2 -translate-x-1/2 rotate-90",
         className,
       )}
@@ -282,7 +282,7 @@ const CarouselDots = React.forwardRef<
   return (
     <div
       ref={ref}
-      className={cn("flex items-center justify-center gap-2 mt-4", className)}
+      className={cn("mt-4 flex items-center justify-center gap-2", className)}
       {...props}
     >
       {scrollSnaps.map((snap, index) => (
@@ -293,7 +293,7 @@ const CarouselDots = React.forwardRef<
           className={cn(
             "h-3 w-3 border-2 border-foreground transition duration-200",
             index === selectedIndex
-              ? "bg-primary scale-110 shadow-[2px_2px_0px_hsl(var(--shadow-color))]"
+              ? "scale-110 bg-primary shadow-[2px_2px_0px_hsl(var(--shadow-color))]"
               : "bg-muted hover:bg-muted/80",
           )}
           aria-label={`Go to slide ${index + 1} of ${scrollSnaps.length}`}

@@ -10,9 +10,9 @@ import type { ProgressCurveKey } from "@/types/uiTypes";
 const mathCurveProgressVariants = cva("", {
   variants: {
     size: {
-      sm: "w-12 h-12",
-      md: "w-16 h-16",
-      lg: "w-24 h-24",
+      sm: "h-12 w-12",
+      md: "h-16 w-16",
+      lg: "h-24 w-24",
     },
   },
   defaultVariants: {

@@ -41,26 +41,26 @@ export function TestimonialsGrid({
 
   return (
     <section
-      className={cn("bg-muted/30 px-4 py-16 md:px-8 lg:px-16", className)}
+      className={cn("bg-primary px-4 py-16 md:px-8 lg:px-16", className)}
     >
       <div className="mx-auto max-w-7xl">
         {(title || subtitle) && (
-          <div className="mb-12 space-y-4 text-center">
+          <div className="mb-8 space-y-4 text-center">
             {subtitle && (
-              <p className="text-sm font-bold uppercase tracking-widest text-primary">
+              <p className="text-sm font-bold tracking-widest text-primary uppercase">
                 {subtitle}
               </p>
             )}
 
             {title && (
-              <h2 className="text-3xl font-black uppercase tracking-tight md:text-4xl">
+              <h2 className="text-3xl font-black uppercase md:text-4xl">
                 {title}
               </h2>
             )}
           </div>
         )}
 
-        <div className={cn("grid gap-6", gridCols[columns])}>
+        <div className={cn("grid gap-8", gridCols[columns])}>
           {testimonials.map((testimonial) => (
             <Card
               key={`testimonial-${testimonial.author}`}
@@ -89,7 +89,7 @@ export function TestimonialsGrid({
                 )}
 
                 <div className="min-h-24">
-                  <p className="text-lg font-medium leading-8">
+                  <p className="text-lg leading-8 font-medium">
                     &ldquo;{testimonial.quote}&rdquo;
                   </p>
                 </div>
@@ -126,24 +126,24 @@ export function TestimonialsSingle({
   className,
 }: TestimonialsSingleProps) {
   return (
-    <section className={cn("py-20 px-4 md:px-8 lg:px-16", className)}>
-      <div className="max-w-4xl mx-auto text-center space-y-8">
-        <Quote className="h-16 w-16 text-primary mx-auto" />
+    <section className={cn("px-4 py-20 md:px-8 lg:px-16", className)}>
+      <div className="mx-auto max-w-4xl space-y-8 text-center">
+        <Quote className="mx-auto h-16 w-16 text-primary" />
 
-        <blockquote className="text-2xl md:text-3xl lg:text-4xl font-bold leading-relaxed">
+        <blockquote className="text-2xl leading-relaxed font-bold md:text-3xl lg:text-4xl">
           &ldquo;{testimonial.quote}&rdquo;
         </blockquote>
 
         <div className="flex flex-col items-center gap-4">
           <Avatar className="h-16 w-16 border-3 border-foreground shadow-[4px_4px_0px_hsl(var(--shadow-color))]">
             <AvatarImage src={testimonial.avatar} />
-            <AvatarFallback className="font-bold text-xl">
+            <AvatarFallback className="text-xl font-bold">
               {testimonial.author.charAt(0)}
             </AvatarFallback>
           </Avatar>
           <div>
-            <p className="font-black text-lg uppercase">{testimonial.author}</p>
-            <p className="text-muted-foreground font-medium">
+            <p className="text-lg font-black uppercase">{testimonial.author}</p>
+            <p className="font-medium text-muted-foreground">
               {testimonial.role}
               {testimonial.company && ` at ${testimonial.company}`}
             </p>
@@ -176,23 +176,23 @@ export function TestimonialsMasonry({
   ];
 
   return (
-    <section className={cn("py-16 px-4 md:px-8 lg:px-16", className)}>
-      <div className="max-w-7xl mx-auto">
+    <section className={cn("px-4 py-16 md:px-8 lg:px-16", className)}>
+      <div className="mx-auto max-w-7xl">
         {title && (
-          <h2 className="text-3xl md:text-4xl font-black uppercase tracking-tight text-center mb-12">
+          <h2 className="mb-12 text-center text-3xl font-black tracking-tight uppercase md:text-4xl">
             {title}
           </h2>
         )}
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {columns.map((column, colIndex) => (
             <div key={colIndex} className="space-y-6">
               {column.map((testimonial) => (
                 <Card
                   key={`testimonial-${testimonial.author}`}
-                  className="hover:translate-x-[-4px] hover:translate-y-[-4px] hover:shadow-[8px_8px_0px_hsl(var(--shadow-color))] transition"
+                  className="transition hover:translate-x-[-4px] hover:translate-y-[-4px] hover:shadow-[8px_8px_0px_hsl(var(--shadow-color))]"
                 >
-                  <CardContent className="p-6 space-y-4">
+                  <CardContent className="space-y-4 p-6">
                     {testimonial.rating && (
                       <div className="flex gap-1">
                         {Array.from({ length: 5 }).map((_, i) => (
@@ -208,19 +208,19 @@ export function TestimonialsMasonry({
                         ))}
                       </div>
                     )}
-                    <p className="font-medium leading-relaxed">
+                    <p className="leading-relaxed font-medium">
                       &ldquo;{testimonial.quote}&rdquo;
                     </p>
 
                     <div className="flex items-center gap-3">
                       <Avatar className="h-10 w-10 border-2 border-foreground">
                         <AvatarImage src={testimonial.avatar} />
-                        <AvatarFallback className="font-bold text-sm">
+                        <AvatarFallback className="text-sm font-bold">
                           {testimonial.author.charAt(0)}
                         </AvatarFallback>
                       </Avatar>
                       <div>
-                        <p className="font-bold text-sm">
+                        <p className="text-sm font-bold">
                           {testimonial.author}
                         </p>
                         <p className="text-xs text-muted-foreground">
@@ -264,18 +264,18 @@ export function TestimonialsWithAvatars({
 
   return (
     <section
-      className={cn("py-16 px-4 md:px-8 lg:px-16 bg-muted/30", className)}
+      className={cn("bg-muted/30 px-4 py-16 md:px-8 lg:px-16", className)}
     >
-      <div className="max-w-4xl mx-auto text-center space-y-8">
+      <div className="mx-auto max-w-4xl space-y-8 text-center">
         {(title || description) && (
           <div className="space-y-4">
             {title && (
-              <h2 className="text-3xl md:text-4xl font-black uppercase tracking-tight">
+              <h2 className="text-3xl font-black tracking-tight uppercase md:text-4xl">
                 {title}
               </h2>
             )}
             {description && (
-              <p className="text-lg text-muted-foreground font-medium">
+              <p className="text-lg font-medium text-muted-foreground">
                 {description}
               </p>
             )}
@@ -283,9 +283,9 @@ export function TestimonialsWithAvatars({
         )}
 
         <div className="border-3 border-foreground bg-card p-8 shadow-[6px_6px_0px_hsl(var(--shadow-color))]">
-          <Quote className="h-10 w-10 text-primary mx-auto mb-6" />
+          <Quote className="mx-auto mb-6 h-10 w-10 text-primary" />
 
-          <blockquote className="text-xl md:text-2xl font-medium leading-relaxed mb-6">
+          <blockquote className="mb-6 text-xl leading-relaxed font-medium md:text-2xl">
             &ldquo;{activeTestimonial.quote}&rdquo;
           </blockquote>
 

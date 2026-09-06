@@ -95,7 +95,7 @@ export function ProfileSettings({
             <div className="relative">
               <Avatar className="h-24 w-24 border-3 border-foreground shadow-[4px_4px_0px_hsl(var(--shadow-color))]">
                 <AvatarImage src={formData.avatar} />
-                <AvatarFallback className="font-bold text-2xl">
+                <AvatarFallback className="text-2xl font-bold">
                   {formData.name
                     ?.split(" ")
                     .map((n) => n[0])
@@ -106,7 +106,7 @@ export function ProfileSettings({
                 type="button"
                 aria-label="Upload avatar"
                 onClick={handleAvatarClick}
-                className="absolute -bottom-1 -right-1 w-8 h-8 flex items-center justify-center border-2 border-foreground bg-primary text-primary-foreground shadow-[2px_2px_0px_hsl(var(--shadow-color))] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] transition"
+                className="absolute -right-1 -bottom-1 flex h-8 w-8 items-center justify-center border-2 border-foreground bg-primary text-primary-foreground shadow-[2px_2px_0px_hsl(var(--shadow-color))] transition hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none"
               >
                 <Upload className="h-4 w-4" />
               </button>
@@ -128,9 +128,9 @@ export function ProfileSettings({
 
           <Separator />
 
-          <div className="grid md:grid-cols-2 gap-4">
+          <div className="grid gap-4 md:grid-cols-2">
             <div className="space-y-2">
-              <Label htmlFor="name" className="font-bold uppercase text-xs">
+              <Label htmlFor="name" className="text-xs font-bold uppercase">
                 Full Name
               </Label>
               <Input
@@ -143,7 +143,7 @@ export function ProfileSettings({
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="email" className="font-bold uppercase text-xs">
+              <Label htmlFor="email" className="text-xs font-bold uppercase">
                 Email
               </Label>
               <Input
@@ -159,7 +159,7 @@ export function ProfileSettings({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="bio" className="font-bold uppercase text-xs">
+            <Label htmlFor="bio" className="text-xs font-bold uppercase">
               Bio
             </Label>
             <Textarea
@@ -173,9 +173,9 @@ export function ProfileSettings({
             />
           </div>
 
-          <div className="grid md:grid-cols-2 gap-4">
+          <div className="grid gap-4 md:grid-cols-2">
             <div className="space-y-2">
-              <Label htmlFor="company" className="font-bold uppercase text-xs">
+              <Label htmlFor="company" className="text-xs font-bold uppercase">
                 Company
               </Label>
               <Input
@@ -188,7 +188,7 @@ export function ProfileSettings({
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="location" className="font-bold uppercase text-xs">
+              <Label htmlFor="location" className="text-xs font-bold uppercase">
                 Location
               </Label>
               <Input
@@ -203,7 +203,7 @@ export function ProfileSettings({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="website" className="font-bold uppercase text-xs">
+            <Label htmlFor="website" className="text-xs font-bold uppercase">
               Website
             </Label>
             <Input
@@ -301,7 +301,7 @@ export function NotificationSettings({
         <CardDescription>Choose how you want to be notified</CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
-        <div className="flex items-center justify-end gap-8 text-xs font-bold uppercase tracking-wide text-muted-foreground">
+        <div className="flex items-center justify-end gap-8 text-xs font-bold tracking-wide text-muted-foreground uppercase">
           <span>Email</span>
           <span>Push</span>
         </div>
@@ -310,7 +310,7 @@ export function NotificationSettings({
           {settings.map((setting) => (
             <div
               key={setting.id}
-              className="flex items-center justify-between border-3 border-foreground p-4 bg-card"
+              className="flex items-center justify-between border-3 border-foreground bg-card p-4"
             >
               <div>
                 <p className="font-bold">{setting.title}</p>
@@ -380,9 +380,9 @@ export function SecuritySettings({
       </CardHeader>
       <CardContent className="space-y-6">
         {/* Password */}
-        <div className="flex items-center justify-between border-3 border-foreground p-4 bg-muted/30">
+        <div className="flex items-center justify-between border-3 border-foreground bg-muted/30 p-4">
           <div className="flex items-center gap-4">
-            <div className="w-10 h-10 flex items-center justify-center border-2 border-foreground bg-card">
+            <div className="flex h-10 w-10 items-center justify-center border-2 border-foreground bg-card">
               <Key className="h-5 w-5" />
             </div>
             <div>
@@ -398,9 +398,9 @@ export function SecuritySettings({
         </div>
 
         {/* Two-Factor Authentication */}
-        <div className="flex items-center justify-between border-3 border-foreground p-4 bg-muted/30">
+        <div className="flex items-center justify-between border-3 border-foreground bg-muted/30 p-4">
           <div className="flex items-center gap-4">
-            <div className="w-10 h-10 flex items-center justify-center border-2 border-foreground bg-card">
+            <div className="flex h-10 w-10 items-center justify-center border-2 border-foreground bg-card">
               <Shield className="h-5 w-5" />
             </div>
             <div>
@@ -423,7 +423,7 @@ export function SecuritySettings({
           <>
             <Separator />
             <div>
-              <h4 className="font-bold uppercase text-sm mb-4">
+              <h4 className="mb-4 text-sm font-bold uppercase">
                 Active Sessions
               </h4>
               <div className="space-y-3">
@@ -433,10 +433,10 @@ export function SecuritySettings({
                     className="flex items-center justify-between border-2 border-foreground p-3"
                   >
                     <div>
-                      <p className="font-medium flex items-center gap-2">
+                      <p className="flex items-center gap-2 font-medium">
                         {session.device}
                         {session.current && (
-                          <span className="text-xs bg-success/20 text-success px-2 py-0.5 font-bold uppercase">
+                          <span className="bg-success/20 px-2 py-0.5 text-xs font-bold text-success uppercase">
                             Current
                           </span>
                         )}
@@ -506,7 +506,7 @@ export function AppearanceSettings({
       <CardContent className="space-y-6">
         {/* Theme Selection */}
         <div className="space-y-3">
-          <Label className="font-bold uppercase text-xs">Theme</Label>
+          <Label className="text-xs font-bold uppercase">Theme</Label>
           <div className="grid grid-cols-3 gap-3">
             {[
               { value: "light", label: "Light", icon: Sun },
@@ -519,7 +519,7 @@ export function AppearanceSettings({
                 aria-pressed={theme === value}
                 onClick={() => onThemeChange?.(value as AppearanceTheme)}
                 className={cn(
-                  "flex flex-col items-center gap-2 p-4 border-3 border-foreground transition",
+                  "flex flex-col items-center gap-2 border-3 border-foreground p-4 transition",
                   theme === value
                     ? "bg-primary text-primary-foreground shadow-[4px_4px_0px_hsl(var(--shadow-color))]"
                     : "bg-card hover:bg-muted",
@@ -536,7 +536,7 @@ export function AppearanceSettings({
 
         {/* Accent Color */}
         <div className="space-y-3">
-          <Label className="font-bold uppercase text-xs">Accent Color</Label>
+          <Label className="text-xs font-bold uppercase">Accent Color</Label>
           <div className="flex flex-wrap gap-3">
             {accentColors.map((color) => (
               <button
@@ -548,15 +548,15 @@ export function AppearanceSettings({
                 aria-pressed={accentColor === color.value}
                 onClick={() => onAccentColorChange?.(color.value)}
                 className={cn(
-                  "w-10 h-10 border-3 border-foreground transition",
+                  "h-10 w-10 border-3 border-foreground transition",
                   accentColor === color.value &&
-                    "ring-2 ring-offset-2 ring-foreground",
+                    "ring-2 ring-foreground ring-offset-2",
                 )}
                 style={{ backgroundColor: color.value }}
                 title={color.name}
               >
                 {accentColor === color.value && (
-                  <Check className="h-5 w-5 text-white mx-auto" />
+                  <Check className="mx-auto h-5 w-5 text-white" />
                 )}
               </button>
             ))}
@@ -586,7 +586,7 @@ export function DangerZone({
   return (
     <Card className={cn("border-destructive", className)}>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2 font-black uppercase text-destructive">
+        <CardTitle className="flex items-center gap-2 font-black text-destructive uppercase">
           <AlertTriangle className="h-5 w-5" />
           Danger Zone
         </CardTitle>
@@ -617,7 +617,7 @@ export function DangerZone({
           </Button>
         </div>
 
-        <div className="flex items-center justify-between border-2 border-destructive/50 p-4 bg-destructive/5">
+        <div className="flex items-center justify-between border-2 border-destructive/50 bg-destructive/5 p-4">
           <div>
             <p className="font-bold text-destructive">Delete Account</p>
             <p className="text-sm text-muted-foreground">
@@ -687,12 +687,12 @@ export function SettingsPage({
   }, [appearance]);
 
   return (
-    <div className={cn("max-w-4xl mx-auto py-8 px-4", className)}>
+    <div className={cn("mx-auto max-w-4xl px-4 py-8", className)}>
       <div className="mb-8">
-        <h1 className="text-3xl font-black uppercase tracking-tight">
+        <h1 className="text-3xl font-black tracking-tight uppercase">
           Settings
         </h1>
-        <p className="text-muted-foreground mt-1">
+        <p className="mt-1 text-muted-foreground">
           Manage your account settings and preferences
         </p>
       </div>

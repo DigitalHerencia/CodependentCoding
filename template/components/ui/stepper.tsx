@@ -32,7 +32,7 @@ const stepVariants = cva(
         completed:
           "bg-success text-success-foreground shadow-[4px_4px_0px_hsl(var(--shadow-color))]",
         active:
-          "bg-primary text-primary-foreground shadow-[4px_4px_0px_hsl(var(--shadow-color))] scale-110",
+          "scale-110 bg-primary text-primary-foreground shadow-[4px_4px_0px_hsl(var(--shadow-color))]",
         upcoming: "bg-muted text-muted-foreground",
       },
       size: {
@@ -254,10 +254,10 @@ const StepperSeparator = React.forwardRef<
       className={cn(
         "transition duration-200",
         orientation === "horizontal"
-          ? "h-[3px] flex-1 min-w-8 mx-2"
-          : "w-[3px] min-h-8 my-2 ml-5",
-        isCompleted ? "bg-foreground" : "bg-foreground/30 border-foreground/30",
-        !isCompleted && "border-dashed border-2 bg-transparent",
+          ? "mx-2 h-[3px] min-w-8 flex-1"
+          : "my-2 ml-5 min-h-8 w-[3px]",
+        isCompleted ? "bg-foreground" : "border-foreground/30 bg-foreground/30",
+        !isCompleted && "border-2 border-dashed bg-transparent",
         className,
       )}
       {...props}
@@ -340,7 +340,7 @@ const StepperActions = React.forwardRef<HTMLDivElement, StepperActionsProps>(
     return (
       <div
         ref={ref}
-        className={cn("flex items-center gap-2 mt-4", className)}
+        className={cn("mt-4 flex items-center gap-2", className)}
         {...props}
       >
         {children || (
@@ -350,10 +350,10 @@ const StepperActions = React.forwardRef<HTMLDivElement, StepperActionsProps>(
               onClick={handlePrev}
               disabled={isFirst}
               className={cn(
-                "px-4 py-2 border-3 border-foreground font-bold uppercase text-sm",
+                "border-3 border-foreground px-4 py-2 text-sm font-bold uppercase",
                 "bg-muted shadow-[4px_4px_0px_hsl(var(--shadow-color))]",
                 "hover:translate-x-[4px] hover:translate-y-[4px] hover:shadow-none",
-                "disabled:opacity-50 disabled:pointer-events-none",
+                "disabled:pointer-events-none disabled:opacity-50",
                 "transition duration-200",
               )}
             >
@@ -363,7 +363,7 @@ const StepperActions = React.forwardRef<HTMLDivElement, StepperActionsProps>(
               type="button"
               onClick={handleNext}
               className={cn(
-                "px-4 py-2 border-3 border-foreground font-bold uppercase text-sm",
+                "border-3 border-foreground px-4 py-2 text-sm font-bold uppercase",
                 "bg-primary text-primary-foreground shadow-[4px_4px_0px_hsl(var(--shadow-color))]",
                 "hover:translate-x-[4px] hover:translate-y-[4px] hover:shadow-none",
                 "transition duration-200",

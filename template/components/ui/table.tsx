@@ -9,7 +9,7 @@ const Table = React.forwardRef<
     <table
       ref={ref}
       className={cn(
-        "w-full caption-bottom text-sm border-3 border-foreground shadow-[4px_4px_0px_hsl(var(--shadow-color))]",
+        "w-full caption-bottom border-3 border-foreground text-sm shadow-[4px_4px_0px_hsl(var(--shadow-color))]",
         className,
       )}
       {...props}
@@ -79,7 +79,7 @@ const TableHead = React.forwardRef<
   <th
     ref={ref}
     className={cn(
-      "h-12 px-4 text-left align-middle font-bold uppercase tracking-wide text-foreground [&:has([role=checkbox])]:pr-0",
+      "h-12 px-4 text-left align-middle font-bold tracking-wide text-foreground uppercase [&:has([role=checkbox])]:pr-0",
       className,
     )}
     {...props}

@@ -219,7 +219,7 @@ function TourPopover({
       className={cn(
         "fixed z-[9999] w-80 border-3 border-foreground bg-popover p-4",
         "shadow-[8px_8px_0px_hsl(var(--shadow-color))]",
-        "ease-out animate-in fade-in-0 zoom-in-95 duration-200",
+        "animate-in duration-200 ease-out fade-in-0 zoom-in-95",
       )}
       style={{ top: position.top, left: position.left }}
     >
@@ -228,7 +228,7 @@ function TourPopover({
         type="button"
         onClick={close}
         className={cn(
-          "absolute -right-3 -top-3 border-2 border-foreground bg-background p-1",
+          "absolute -top-3 -right-3 border-2 border-foreground bg-background p-1",
           "shadow-[2px_2px_0px_hsl(var(--shadow-color))]",
           "hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none",
           "transition duration-150",
@@ -240,7 +240,7 @@ function TourPopover({
 
       {/* Content */}
       <div className="space-y-3">
-        <h3 className="text-base font-bold uppercase tracking-wide">
+        <h3 className="text-base font-bold tracking-wide uppercase">
           {step.title}
         </h3>
         <p className="text-sm text-muted-foreground">{step.description}</p>
@@ -255,7 +255,7 @@ function TourPopover({
               key={i}
               className={cn(
                 "h-2 w-2 border-2 border-foreground transition duration-150",
-                i === currentStep ? "bg-primary scale-110" : "bg-muted",
+                i === currentStep ? "scale-110 bg-primary" : "bg-muted",
               )}
             />
           ))}

@@ -2,13 +2,13 @@
 
 ### Routes → Features → Templates → Blocks / Workflows
 
-|Route|Feature / Form|Client Island|Suspense Skeleton|Page Template|Block(s)|Workflow File|
-|-|-|-|-|-|-|-|
-|`/`|—|—|—|`components/templates/landingPageTemplate.tsx`|`components/blocks/hero-section.tsx`, `components/blocks/logo-cloud.tsx`, `components/blocks/feature-grid.tsx`, `components/blocks/stats-section.tsx`, `components/blocks/comparison-table.tsx`, `components/blocks/testimonials.tsx`, `components/blocks/cta-section.tsx`|—|
-|`/features`|—|—|—|`components/templates/featuresPageTemplate.tsx`|`components/blocks/hero-section.tsx`, `components/blocks/feature-grid.tsx`, `components/blocks/stats-section.tsx`, `components/blocks/ontology-showcase.tsx`, `components/blocks/comparison-table.tsx`, `components/blocks/cta-section.tsx`|—|
-|`/faq`|—|—|—|`components/templates/faqPageTemplate.tsx`|`components/blocks/hero-section.tsx`, `components/blocks/faq-section.tsx`, `components/blocks/cta-section.tsx`|—|
-|`/terms`|—|—|—|`components/templates/termsPageTemplate.tsx`|`components/blocks/hero-section.tsx`, `components/blocks/legal-document-section.tsx`|—|
-|`/privacy`|—|—|—|`components/templates/privacyPageTemplate.tsx`|`components/blocks/hero-section.tsx`, `components/blocks/legal-document-section.tsx`|—|
+| Route       | Feature / Form | Client Island | Suspense Skeleton | Page Template                                   | Block(s)                                                                                                                                                                                                                                                                   | Workflow File |
+| ----------- | -------------- | ------------- | ----------------- | ----------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
+| `/`         | —              | —             | —                 | `components/templates/landingPageTemplate.tsx`  | `components/blocks/hero-section.tsx`, `components/blocks/logo-cloud.tsx`, `components/blocks/feature-grid.tsx`, `components/blocks/stats-section.tsx`, `components/blocks/comparison-table.tsx`, `components/blocks/testimonials.tsx`, `components/blocks/cta-section.tsx` | —             |
+| `/features` | —              | —             | —                 | `components/templates/featuresPageTemplate.tsx` | `components/blocks/hero-section.tsx`, `components/blocks/feature-grid.tsx`, `components/blocks/stats-section.tsx`, `components/blocks/ontology-showcase.tsx`, `components/blocks/comparison-table.tsx`, `components/blocks/cta-section.tsx`                                | —             |
+| `/faq`      | —              | —             | —                 | `components/templates/faqPageTemplate.tsx`      | `components/blocks/hero-section.tsx`, `components/blocks/faq-section.tsx`, `components/blocks/cta-section.tsx`                                                                                                                                                             | —             |
+| `/terms`    | —              | —             | —                 | `components/templates/termsPageTemplate.tsx`    | `components/blocks/hero-section.tsx`, `components/blocks/legal-document-section.tsx`                                                                                                                                                                                       | —             |
+| `/privacy`  | —              | —             | —                 | `components/templates/privacyPageTemplate.tsx`  | `components/blocks/hero-section.tsx`, `components/blocks/legal-document-section.tsx`                                                                                                                                                                                       | —             |
 
 The existing reusable block inventory already contains the hero, logo cloud, feature grid, comparison table, CTA, stats, FAQ, and testimonials blocks; only the ontology-specific showcase and long-form legal document composition need new semantic blocks.
 
@@ -18,9 +18,9 @@ The existing reusable block inventory already contains the hero, logo cloud, fea
 
 ### Route → Template → Blocks
 
-|Route|Page Template|Existing Block(s)|
-|-|-|-|
-|`/`|`components/templates/landingPageTemplate.tsx`|`hero-section.tsx`, `logo-cloud.tsx`, `feature-grid.tsx`, `stats-section.tsx`, `comparison-table.tsx`, `testimonials.tsx`, `cta-section.tsx`|
+| Route | Page Template                                  | Existing Block(s)                                                                                                                            |
+| ----- | ---------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/`   | `components/templates/landingPageTemplate.tsx` | `hero-section.tsx`, `logo-cloud.tsx`, `feature-grid.tsx`, `stats-section.tsx`, `comparison-table.tsx`, `testimonials.tsx`, `cta-section.tsx` |
 
 ### Target Route File
 
@@ -85,9 +85,9 @@ The current `app/page.tsx` directly imports four blocks, so that file is specifi
 
 ### Route → Template → Blocks
 
-|Route|Page Template|Existing Block(s)|New Block(s)|
-|-|-|-|-|
-|`/features`|`components/templates/featuresPageTemplate.tsx`|`hero-section.tsx`, `feature-grid.tsx`, `stats-section.tsx`, `comparison-table.tsx`, `cta-section.tsx`|`ontology-showcase.tsx`|
+| Route       | Page Template                                   | Existing Block(s)                                                                                      | New Block(s)            |
+| ----------- | ----------------------------------------------- | ------------------------------------------------------------------------------------------------------ | ----------------------- |
+| `/features` | `components/templates/featuresPageTemplate.tsx` | `hero-section.tsx`, `feature-grid.tsx`, `stats-section.tsx`, `comparison-table.tsx`, `cta-section.tsx` | `ontology-showcase.tsx` |
 
 ### Target Route File
 
@@ -157,9 +157,9 @@ The Product reference supplies the **presentation grammar** for the ontology sho
 
 ### Route → Template → Blocks
 
-|Route|Page Template|Existing Block(s)|
-|-|-|-|
-|`/faq`|`components/templates/faqPageTemplate.tsx`|`hero-section.tsx`, `faq-section.tsx`, `cta-section.tsx`|
+| Route  | Page Template                              | Existing Block(s)                                        |
+| ------ | ------------------------------------------ | -------------------------------------------------------- |
+| `/faq` | `components/templates/faqPageTemplate.tsx` | `hero-section.tsx`, `faq-section.tsx`, `cta-section.tsx` |
 
 ### Target Route File
 
@@ -201,9 +201,9 @@ The accordion/client interaction remains encapsulated inside `components/blocks/
 
 ### Route → Template → Blocks
 
-|Route|Page Template|Existing Block(s)|New Block(s)|
-|-|-|-|-|
-|`/terms`|`components/templates/termsPageTemplate.tsx`|`hero-section.tsx`|`legal-document-section.tsx`|
+| Route    | Page Template                                | Existing Block(s)  | New Block(s)                 |
+| -------- | -------------------------------------------- | ------------------ | ---------------------------- |
+| `/terms` | `components/templates/termsPageTemplate.tsx` | `hero-section.tsx` | `legal-document-section.tsx` |
 
 ### Target Route File
 
@@ -249,9 +249,9 @@ app/(public)/terms/page.tsx
 
 ### Route → Template → Blocks
 
-|Route|Page Template|Existing Block(s)|New Block(s)|
-|-|-|-|-|
-|`/privacy`|`components/templates/privacyPageTemplate.tsx`|`hero-section.tsx`|`legal-document-section.tsx`|
+| Route      | Page Template                                  | Existing Block(s)  | New Block(s)                 |
+| ---------- | ---------------------------------------------- | ------------------ | ---------------------------- |
+| `/privacy` | `components/templates/privacyPageTemplate.tsx` | `hero-section.tsx` | `legal-document-section.tsx` |
 
 ### Target Route File
 
@@ -422,4 +422,3 @@ lib/db/\*
 schemas/\*
 types/\*
 ```
-

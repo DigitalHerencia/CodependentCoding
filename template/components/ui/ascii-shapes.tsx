@@ -1382,8 +1382,8 @@ function makeAsciiComponent(
           aria-hidden="true"
           ref={combineRef}
           className={cn(
-            "inline-block border-3 border-foreground shadow-[4px_4px_0px_hsl(var(--shadow-color))] bg-background overflow-hidden",
-            "font-mono text-xs leading-none tracking-tight select-none p-1",
+            "inline-block overflow-hidden border-3 border-foreground bg-background shadow-[4px_4px_0px_hsl(var(--shadow-color))]",
+            "p-1 font-mono text-xs leading-none tracking-tight select-none",
             className,
           )}
           style={multicolor ? undefined : { color: color || "currentColor" }}

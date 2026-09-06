@@ -363,7 +363,7 @@ const SankeyChart = React.forwardRef<HTMLDivElement, SankeyChartProps>(
         {/* Tooltip */}
         {showTooltip && tooltip && (
           <div
-            className="fixed z-50 pointer-events-none border-3 border-foreground bg-background px-3 py-2 text-xs font-mono shadow-[4px_4px_0px_hsl(var(--foreground))]"
+            className="pointer-events-none fixed z-50 border-3 border-foreground bg-background px-3 py-2 font-mono text-xs shadow-[4px_4px_0px_hsl(var(--foreground))]"
             style={{ left: tooltip.x + 12, top: tooltip.y - 32 }}
           >
             <p className="font-black">{tooltip.label}</p>

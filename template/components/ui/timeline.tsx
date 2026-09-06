@@ -60,7 +60,7 @@ const TimelineItem = React.forwardRef<HTMLDivElement, TimelineItemProps>(
           timelineItemVariants(),
           orientation === "vertical"
             ? "flex-row gap-4"
-            : "flex-col gap-4 items-center",
+            : "flex-col items-center gap-4",
           className,
         )}
         {...props}
@@ -80,7 +80,7 @@ const timelineDotVariants = cva(
       status: {
         completed: "bg-success shadow-[4px_4px_0px_hsl(var(--shadow-color))]",
         current:
-          "bg-primary shadow-[4px_4px_0px_hsl(var(--shadow-color))] scale-110",
+          "scale-110 bg-primary shadow-[4px_4px_0px_hsl(var(--shadow-color))]",
         upcoming: "bg-muted",
       },
       size: {
@@ -122,11 +122,11 @@ const timelineConnectorVariants = cva("transition duration-200", {
     status: {
       completed: "bg-foreground",
       current: "bg-foreground",
-      upcoming: "border-dashed border-2 border-foreground/50 bg-transparent",
+      upcoming: "border-2 border-dashed border-foreground/50 bg-transparent",
     },
     orientation: {
-      vertical: "w-[3px] min-h-8 ml-[14px]",
-      horizontal: "h-[3px] min-w-8 mt-[14px]",
+      vertical: "ml-[14px] min-h-8 w-[3px]",
+      horizontal: "mt-[14px] h-[3px] min-w-8",
     },
   },
   defaultVariants: {
@@ -203,7 +203,7 @@ const TimelineTitle = React.forwardRef<
   return (
     <h3
       ref={ref}
-      className={cn("text-base font-bold uppercase tracking-wide", className)}
+      className={cn("text-base font-bold tracking-wide uppercase", className)}
       {...props}
     />
   );
@@ -218,7 +218,7 @@ const TimelineDescription = React.forwardRef<
   return (
     <p
       ref={ref}
-      className={cn("text-sm text-muted-foreground mt-1", className)}
+      className={cn("mt-1 text-sm text-muted-foreground", className)}
       {...props}
     />
   );

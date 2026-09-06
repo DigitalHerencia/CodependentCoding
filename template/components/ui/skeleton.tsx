@@ -2,7 +2,7 @@ import * as React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils/cn";
 
-const skeletonVariants = cva("bg-muted border-2 border-foreground/20", {
+const skeletonVariants = cva("border-2 border-foreground/20 bg-muted", {
   variants: {
     variant: {
       /** Soft opacity breathe. The pre-v3.5 default. */

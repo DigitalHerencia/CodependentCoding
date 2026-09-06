@@ -16,7 +16,7 @@ function Calendar({
     <DayPicker
       showOutsideDays={showOutsideDays}
       className={cn(
-        "p-3 border-3 border-foreground bg-background shadow-[4px_4px_0px_hsl(var(--shadow-color))]",
+        "border-3 border-foreground bg-background p-3 shadow-[4px_4px_0px_hsl(var(--shadow-color))]",
         className,
       )}
       classNames={{
@@ -27,11 +27,11 @@ function Calendar({
         nav: "flex items-center gap-1",
         button_previous: cn(
           buttonVariants({ variant: "outline" }),
-          "h-7 w-7 bg-transparent p-0 absolute left-0 hover:translate-x-0 hover:translate-y-0 hover:scale-110",
+          "absolute left-0 h-7 w-7 bg-transparent p-0 hover:translate-x-0 hover:translate-y-0 hover:scale-110",
         ),
         button_next: cn(
           buttonVariants({ variant: "outline" }),
-          "h-7 w-7 bg-transparent p-0 absolute right-0 hover:translate-x-0 hover:translate-y-0 hover:scale-110",
+          "absolute right-0 h-7 w-7 bg-transparent p-0 hover:translate-x-0 hover:translate-y-0 hover:scale-110",
         ),
         month_grid: "w-full border-collapse space-y-1",
         weekdays: "flex",
@@ -40,7 +40,7 @@ function Calendar({
         day: "relative p-0 text-center text-sm focus-within:relative focus-within:z-20",
         day_button: cn(
           buttonVariants({ variant: "ghost" }),
-          "h-9 w-9 p-0 font-medium border-0 aria-selected:opacity-100",
+          "h-9 w-9 border-0 p-0 font-medium aria-selected:opacity-100",
         ),
         selected:
           "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground border-2 border-foreground",

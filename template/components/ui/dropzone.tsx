@@ -32,19 +32,19 @@ export interface DropzoneState {
 
 // Variants
 const dropzoneVariants = cva(
-  "relative flex flex-col items-center justify-center border-3 border-dashed border-foreground transition duration-200 cursor-pointer",
+  "relative flex cursor-pointer flex-col items-center justify-center border-3 border-dashed border-foreground transition duration-200",
   {
     variants: {
       state: {
-        idle: "bg-background hover:bg-muted/30 shadow-[4px_4px_0px_hsl(var(--shadow-color))] hover:shadow-[6px_6px_0px_hsl(var(--shadow-color))] hover:translate-x-[-2px] hover:translate-y-[-2px]",
+        idle: "bg-background shadow-[4px_4px_0px_hsl(var(--shadow-color))] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:bg-muted/30 hover:shadow-[6px_6px_0px_hsl(var(--shadow-color))]",
         dragging:
-          "border-solid border-primary bg-primary/10 scale-[1.02] shadow-[8px_8px_0px_hsl(var(--primary))]",
-        disabled: "opacity-50 cursor-not-allowed shadow-none",
+          "scale-[1.02] border-solid border-primary bg-primary/10 shadow-[8px_8px_0px_hsl(var(--primary))]",
+        disabled: "cursor-not-allowed opacity-50 shadow-none",
       },
       variant: {
         default: "p-8",
         compact: "p-6",
-        minimal: "p-3 border-2",
+        minimal: "border-2 p-3",
       },
     },
     defaultVariants: {
@@ -319,26 +319,26 @@ function DefaultDropzoneContent({
     <div className="flex flex-col items-center gap-3 text-center">
       <div
         className={cn(
-          "flex items-center justify-center w-16 h-16 border-3 border-foreground bg-muted transition duration-200",
+          "flex h-16 w-16 items-center justify-center border-3 border-foreground bg-muted transition duration-200",
           isDragging &&
-            "bg-primary border-primary shadow-[4px_4px_0px_hsl(var(--foreground))] -translate-x-1 -translate-y-1",
+            "-translate-x-1 -translate-y-1 border-primary bg-primary shadow-[4px_4px_0px_hsl(var(--foreground))]",
         )}
       >
         <Upload
           className={cn(
             "h-8 w-8 transition duration-200",
             isDragging
-              ? "text-primary-foreground animate-bounce"
+              ? "animate-bounce text-primary-foreground"
               : "text-foreground",
           )}
         />
       </div>
       {variant !== "minimal" && (
         <>
-          <p className="font-black uppercase tracking-wide text-lg">
+          <p className="text-lg font-black tracking-wide uppercase">
             {isDragging ? "Drop files here" : "Drag & drop files"}
           </p>
-          <p className="text-sm text-muted-foreground font-bold">
+          <p className="text-sm font-bold text-muted-foreground">
             or click to browse
           </p>
         </>
@@ -363,7 +363,7 @@ const FileList = React.forwardRef<HTMLDivElement, FileListProps>(
     if (files.length === 0) return null;
 
     return (
-      <div ref={ref} className={cn("space-y-2 mt-4", className)} {...props}>
+      <div ref={ref} className={cn("mt-4 space-y-2", className)} {...props}>
         {files.map((item, index) => (
           <FileListItem
             key={`${item.file.name}-${index}`}
@@ -403,23 +403,23 @@ function FileListItem({
   return (
     <div
       className={cn(
-        "flex items-center gap-3 p-3 border-3 border-foreground bg-background shadow-[3px_3px_0px_hsl(var(--shadow-color))]",
+        "flex items-center gap-3 border-3 border-foreground bg-background p-3 shadow-[3px_3px_0px_hsl(var(--shadow-color))]",
         error &&
           "border-destructive bg-destructive/10 shadow-[3px_3px_0px_hsl(var(--destructive))]",
       )}
     >
-      <div className="flex items-center justify-center w-10 h-10 bg-muted border-3 border-foreground">
+      <div className="flex h-10 w-10 items-center justify-center border-3 border-foreground bg-muted">
         {renderFileIcon(file.type)}
       </div>
 
-      <div className="flex-1 min-w-0">
-        <p className="font-bold text-sm truncate">{file.name}</p>
+      <div className="min-w-0 flex-1">
+        <p className="truncate text-sm font-bold">{file.name}</p>
         <p className="text-xs text-muted-foreground">
           {formatBytes(file.size)}
         </p>
-        {error && <p className="text-xs text-destructive font-bold">{error}</p>}
+        {error && <p className="text-xs font-bold text-destructive">{error}</p>}
         {uploading && progress !== undefined && (
-          <Progress value={progress} className="h-2 mt-1" />
+          <Progress value={progress} className="mt-1 h-2" />
         )}
       </div>
 
@@ -432,7 +432,7 @@ function FileListItem({
             e.stopPropagation();
             onRemove();
           }}
-          className="flex items-center justify-center w-8 h-8 border-3 border-foreground bg-background hover:bg-destructive hover:text-destructive-foreground hover:shadow-[2px_2px_0px_hsl(var(--foreground))] hover:-translate-x-0.5 hover:-translate-y-0.5 transition"
+          className="flex h-8 w-8 items-center justify-center border-3 border-foreground bg-background transition hover:-translate-x-0.5 hover:-translate-y-0.5 hover:bg-destructive hover:text-destructive-foreground hover:shadow-[2px_2px_0px_hsl(var(--foreground))]"
         >
           <X className="h-4 w-4" />
         </button>

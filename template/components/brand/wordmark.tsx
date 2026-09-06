@@ -1,17 +1,24 @@
 import Link from "next/link";
 
-import { site } from "@/content/site";
+import { applicationProduct } from "@/content/application";
 
 export function Wordmark() {
-  const mark = site.name.trim().charAt(0).toUpperCase();
+  const mark = applicationProduct.name.trim().charAt(0).toUpperCase();
 
   return (
-    <Link href="/" className="flex items-center gap-3 no-underline">
-      <span className="grid size-8 place-items-center border border-primary bg-primary text-sm font-black text-primary-foreground">
+    <Link
+      href="/"
+      aria-label={`${applicationProduct.name} home`}
+      className="flex min-w-0 items-center gap-3 no-underline"
+    >
+      <span
+        aria-hidden="true"
+        className="grid size-8 shrink-0 place-items-center border border-primary bg-primary text-sm font-black text-primary-foreground"
+      >
         {mark}
       </span>
-      <span className="font-display text-2xl leading-none uppercase">
-        {site.name}
+      <span className="min-w-0 font-display text-2xl leading-none wrap-break-word uppercase">
+        {applicationProduct.name}
       </span>
     </Link>
   );

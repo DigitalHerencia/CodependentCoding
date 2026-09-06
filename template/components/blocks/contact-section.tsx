@@ -52,16 +52,16 @@ export function ContactSplit({
   };
 
   return (
-    <section className={cn("py-16 px-4 md:px-8 lg:px-16", className)}>
-      <div className="max-w-6xl mx-auto">
-        <div className="grid lg:grid-cols-2 gap-12">
+    <section className={cn("px-4 py-16 md:px-8 lg:px-16", className)}>
+      <div className="mx-auto max-w-6xl">
+        <div className="grid gap-12 lg:grid-cols-2">
           {/* Info side */}
           <div className="space-y-8">
             <div className="space-y-4">
-              <h2 className="text-3xl md:text-4xl font-black uppercase tracking-tight">
+              <h2 className="text-3xl font-black tracking-tight uppercase md:text-4xl">
                 {title}
               </h2>
-              <p className="text-lg text-muted-foreground font-medium">
+              <p className="text-lg font-medium text-muted-foreground">
                 {description}
               </p>
             </div>
@@ -106,7 +106,7 @@ export function ContactSplit({
           <div className="border-3 border-foreground bg-card p-8 shadow-[6px_6px_0px_hsl(var(--shadow-color))]">
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="space-y-2">
-                <Label htmlFor="name" className="font-bold uppercase text-sm">
+                <Label htmlFor="name" className="text-sm font-bold uppercase">
                   Name
                 </Label>
                 <Input
@@ -121,7 +121,7 @@ export function ContactSplit({
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="email" className="font-bold uppercase text-sm">
+                <Label htmlFor="email" className="text-sm font-bold uppercase">
                   Email
                 </Label>
                 <Input
@@ -139,7 +139,7 @@ export function ContactSplit({
               <div className="space-y-2">
                 <Label
                   htmlFor="subject"
-                  className="font-bold uppercase text-sm"
+                  className="text-sm font-bold uppercase"
                 >
                   Subject
                 </Label>
@@ -157,7 +157,7 @@ export function ContactSplit({
               <div className="space-y-2">
                 <Label
                   htmlFor="message"
-                  className="font-bold uppercase text-sm"
+                  className="text-sm font-bold uppercase"
                 >
                   Message
                 </Label>
@@ -221,22 +221,22 @@ export function ContactCentered({
 
   return (
     <section
-      className={cn("py-16 px-4 md:px-8 lg:px-16 bg-muted/30", className)}
+      className={cn("bg-muted/30 px-4 py-16 md:px-8 lg:px-16", className)}
     >
-      <div className="max-w-2xl mx-auto">
-        <div className="text-center mb-8 space-y-4">
-          <MessageSquare className="h-12 w-12 mx-auto text-primary" />
-          <h2 className="text-3xl md:text-4xl font-black uppercase tracking-tight">
+      <div className="mx-auto max-w-2xl">
+        <div className="mb-8 space-y-4 text-center">
+          <MessageSquare className="mx-auto h-12 w-12 text-primary" />
+          <h2 className="text-3xl font-black tracking-tight uppercase md:text-4xl">
             {title}
           </h2>
-          <p className="text-muted-foreground font-medium">{description}</p>
+          <p className="font-medium text-muted-foreground">{description}</p>
         </div>
 
         <div className="border-3 border-foreground bg-card p-8 shadow-[6px_6px_0px_hsl(var(--shadow-color))]">
           <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="grid md:grid-cols-2 gap-4">
+            <div className="grid gap-4 md:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="name" className="font-bold uppercase text-sm">
+                <Label htmlFor="name" className="text-sm font-bold uppercase">
                   Name
                 </Label>
                 <Input
@@ -251,7 +251,7 @@ export function ContactCentered({
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="email" className="font-bold uppercase text-sm">
+                <Label htmlFor="email" className="text-sm font-bold uppercase">
                   Email
                 </Label>
                 <Input
@@ -268,7 +268,7 @@ export function ContactCentered({
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="subject" className="font-bold uppercase text-sm">
+              <Label htmlFor="subject" className="text-sm font-bold uppercase">
                 Subject
               </Label>
               <Input
@@ -283,7 +283,7 @@ export function ContactCentered({
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="message" className="font-bold uppercase text-sm">
+              <Label htmlFor="message" className="text-sm font-bold uppercase">
                 Message
               </Label>
               <Textarea
@@ -333,31 +333,31 @@ export function ContactWithCards({
   const cardColors = ["bg-primary/10", "bg-secondary/10", "bg-accent/10"];
 
   return (
-    <section className={cn("py-16 px-4 md:px-8 lg:px-16", className)}>
-      <div className="max-w-5xl mx-auto">
-        <div className="text-center mb-12 space-y-4">
-          <h2 className="text-3xl md:text-4xl font-black uppercase tracking-tight">
+    <section className={cn("px-4 py-16 md:px-8 lg:px-16", className)}>
+      <div className="mx-auto max-w-5xl">
+        <div className="mb-12 space-y-4 text-center">
+          <h2 className="text-3xl font-black tracking-tight uppercase md:text-4xl">
             {title}
           </h2>
-          <p className="text-lg text-muted-foreground font-medium">
+          <p className="text-lg font-medium text-muted-foreground">
             {description}
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid gap-6 md:grid-cols-3">
           {contactMethods.map((method, index) => (
             <Card
               key={method.title}
               className={cn(
-                "hover:translate-x-[-4px] hover:translate-y-[-4px] hover:shadow-[8px_8px_0px_hsl(var(--shadow-color))] transition",
+                "transition hover:translate-x-[-4px] hover:translate-y-[-4px] hover:shadow-[8px_8px_0px_hsl(var(--shadow-color))]",
                 cardColors[index % 3],
               )}
             >
-              <CardContent className="p-6 text-center space-y-4">
-                <div className="w-14 h-14 mx-auto flex items-center justify-center border-3 border-foreground bg-card shadow-[3px_3px_0px_hsl(var(--shadow-color))]">
+              <CardContent className="space-y-4 p-6 text-center">
+                <div className="mx-auto flex h-14 w-14 items-center justify-center border-3 border-foreground bg-card shadow-[3px_3px_0px_hsl(var(--shadow-color))]">
                   {method.icon}
                 </div>
-                <h3 className="font-black uppercase text-lg">{method.title}</h3>
+                <h3 className="text-lg font-black uppercase">{method.title}</h3>
                 <p className="text-sm text-muted-foreground">
                   {method.description}
                 </p>
@@ -406,17 +406,17 @@ export function ContactWithMap({
   };
 
   return (
-    <section className={cn("py-16 px-4 md:px-8 lg:px-16", className)}>
-      <div className="max-w-6xl mx-auto">
-        <h2 className="text-3xl md:text-4xl font-black uppercase tracking-tight text-center mb-12">
+    <section className={cn("px-4 py-16 md:px-8 lg:px-16", className)}>
+      <div className="mx-auto max-w-6xl">
+        <h2 className="mb-12 text-center text-3xl font-black tracking-tight uppercase md:text-4xl">
           {title}
         </h2>
 
-        <div className="grid lg:grid-cols-2 gap-8">
+        <div className="grid gap-8 lg:grid-cols-2">
           {/* Map/Image placeholder */}
-          <div className="border-3 border-foreground shadow-[6px_6px_0px_hsl(var(--shadow-color))] overflow-hidden h-[400px] lg:h-full lg:min-h-[400px]">
+          <div className="h-[400px] overflow-hidden border-3 border-foreground shadow-[6px_6px_0px_hsl(var(--shadow-color))] lg:h-full lg:min-h-[400px]">
             {mapPlaceholder || (
-              <div className="w-full h-full bg-muted flex items-center justify-center">
+              <div className="flex h-full w-full items-center justify-center bg-muted">
                 <MapPin className="h-16 w-16 text-muted-foreground" />
               </div>
             )}
@@ -463,7 +463,7 @@ export function ContactWithMap({
               <div className="space-y-2">
                 <Label
                   htmlFor="map-name"
-                  className="font-bold uppercase text-sm"
+                  className="text-sm font-bold uppercase"
                 >
                   Name
                 </Label>
@@ -480,7 +480,7 @@ export function ContactWithMap({
               <div className="space-y-2">
                 <Label
                   htmlFor="map-email"
-                  className="font-bold uppercase text-sm"
+                  className="text-sm font-bold uppercase"
                 >
                   Email
                 </Label>
@@ -498,7 +498,7 @@ export function ContactWithMap({
               <div className="space-y-2">
                 <Label
                   htmlFor="map-message"
-                  className="font-bold uppercase text-sm"
+                  className="text-sm font-bold uppercase"
                 >
                   Message
                 </Label>
@@ -541,11 +541,11 @@ function ContactInfoItem({
 }) {
   const content = (
     <div className="flex items-start gap-4">
-      <div className="w-10 h-10 flex items-center justify-center border-2 border-foreground bg-muted shrink-0">
+      <div className="flex h-10 w-10 shrink-0 items-center justify-center border-2 border-foreground bg-muted">
         {icon}
       </div>
       <div>
-        <p className="text-xs font-bold uppercase tracking-wide text-muted-foreground">
+        <p className="text-xs font-bold tracking-wide text-muted-foreground uppercase">
           {label}
         </p>
         <p className="font-medium">{value}</p>
@@ -557,7 +557,7 @@ function ContactInfoItem({
     return (
       <a
         href={safeHref(href)}
-        className="block hover:opacity-80 transition-opacity"
+        className="block transition-opacity hover:opacity-80"
       >
         {content}
       </a>

@@ -1,24 +1,31 @@
 import { HeroSection } from "@/components/blocks/hero-section";
 import { FAQAccordion } from "@/components/blocks/faq-section";
-import { CTASimple } from "@/components/blocks/cta-section";
 import { faqCopy } from "@/content/public-pages";
+import Image from "next/image";
+
 export function FAQPageTemplate() {
   return (
-    <>
+    <section>
+      <Image
+        src="/seperator.png"
+        alt="Caution"
+        width={1200}
+        height={400}
+        className="h-auto w-full bg-background"
+      />
       <HeroSection.Centered
-        badge="FAQ"
         title="Frequently Asked"
         titleHighlight="Questions"
-        description={faqCopy.introduction}
+        className="mt-8"
       />
-      <FAQAccordion items={faqCopy.items} className="pt-0" />
-      <CTASimple
-        title="Still have questions?"
-        description="Excellent.
-The architecture probably has a file for that."
-        primaryAction={{ label: "VIEW THE FEATURES", href: "/features" }}
-        secondaryAction={{ label: "SIGN IN", href: "/sign-in" }}
+      <FAQAccordion items={faqCopy.items} className="mb-28" />
+      <Image
+        src="/seperator.png"
+        alt="Caution"
+        width={1200}
+        height={400}
+        className="h-auto w-full bg-background"
       />
-    </>
+    </section>
   );
 }

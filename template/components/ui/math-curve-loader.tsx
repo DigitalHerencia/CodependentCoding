@@ -16,11 +16,11 @@ import type { LoaderCurveKey } from "@/types/uiTypes";
 const mathCurveLoaderVariants = cva("", {
   variants: {
     size: {
-      xs: "w-6 h-6",
-      sm: "w-8 h-8",
-      md: "w-12 h-12",
-      lg: "w-16 h-16",
-      xl: "w-24 h-24",
+      xs: "h-6 w-6",
+      sm: "h-8 w-8",
+      md: "h-12 w-12",
+      lg: "h-16 w-16",
+      xl: "h-24 w-24",
     },
   },
   defaultVariants: {
@@ -135,7 +135,7 @@ const MathCurveLoader = React.forwardRef<SVGSVGElement, MathCurveLoaderProps>(
             strokeOpacity={0.2}
             strokeLinecap="square"
             strokeLinejoin="miter"
-            className="group-hover:[stroke-opacity:0.4] transition-[stroke-opacity] duration-200"
+            className="transition-[stroke-opacity] duration-200 group-hover:[stroke-opacity:0.4]"
           />
           {/* Head square */}
           <rect

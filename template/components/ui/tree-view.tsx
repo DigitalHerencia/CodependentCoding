@@ -234,10 +234,10 @@ function TreeNodeItem({ node, level }: TreeNodeProps) {
         }
       }}
       className={cn(
-        "flex items-center gap-2 px-2 py-1.5 cursor-pointer transition-colors",
-        "hover:bg-muted focus:outline-none focus:bg-muted",
+        "flex cursor-pointer items-center gap-2 px-2 py-1.5 transition-colors",
+        "hover:bg-muted focus:bg-muted focus:outline-none",
         isSelected && "bg-accent",
-        node.disabled && "opacity-50 cursor-not-allowed",
+        node.disabled && "cursor-not-allowed opacity-50",
       )}
       style={{ paddingLeft: `${level * 16 + 8}px` }}
     >
@@ -251,7 +251,7 @@ function TreeNodeItem({ node, level }: TreeNodeProps) {
               toggleExpanded(node.id);
             }
           }}
-          className="p-0.5 hover:bg-muted-foreground/20 transition-colors"
+          className="p-0.5 transition-colors hover:bg-muted-foreground/20"
           aria-label={isExpanded ? "Collapse" : "Expand"}
         >
           <ChevronRight
@@ -289,7 +289,7 @@ function TreeNodeItem({ node, level }: TreeNodeProps) {
       )}
 
       {/* Label */}
-      <span className="text-sm truncate">{node.label}</span>
+      <span className="truncate text-sm">{node.label}</span>
     </div>
   );
 

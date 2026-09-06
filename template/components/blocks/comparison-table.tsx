@@ -35,7 +35,7 @@ function Cell({ value }: { value: string | boolean }) {
     );
   }
 
-  return <span className="text-sm font-semibold leading-6">{value}</span>;
+  return <span className="text-sm leading-6 font-semibold">{value}</span>;
 }
 
 export function ComparisonTable({
@@ -53,7 +53,7 @@ export function ComparisonTable({
     <section className={cn("px-6 py-20 sm:px-10 lg:px-12", className)}>
       <div className="mx-auto max-w-5xl">
         <div className="mb-8 text-center">
-          <h2 className="text-3xl font-black uppercase tracking-tight md:text-4xl">
+          <h2 className="text-3xl font-black tracking-tight uppercase md:text-4xl">
             {title}
           </h2>
 
@@ -75,7 +75,7 @@ export function ComparisonTable({
               >
                 <th
                   scope="col"
-                  className="w-32 px-5 py-3 text-left text-lg font-black uppercase tracking-wider"
+                  className="w-32 px-5 py-3 text-left text-lg font-black tracking-wider uppercase"
                 >
                   Metric
                 </th>
@@ -85,7 +85,7 @@ export function ComparisonTable({
                     key={column}
                     scope="col"
                     className={cn(
-                      "px-5 py-3 text-left text-lg font-black uppercase tracking-wider",
+                      "px-5 py-3 text-left text-lg font-black tracking-wider uppercase",
                       index === highlightColumn &&
                         "bg-primary text-primary-foreground",
                     )}

@@ -29,6 +29,11 @@ export default defineConfig([
   ...nextVitals,
   ...nextTypeScript,
   {
+    linterOptions: {
+      reportUnusedDisableDirectives: "error",
+    },
+  },
+  {
     files: ["**/*.{js,jsx,ts,tsx,mjs,mts,cjs,cts}"],
     rules: {
       "no-debugger": "error",
@@ -136,6 +141,12 @@ export default defineConfig([
                 "**/lib/integrations/**",
                 "@/lib/workflows/**",
                 "**/lib/workflows/**",
+                "@/lib/auth/**",
+                "**/lib/auth/**",
+                "@/lib/authz/**",
+                "**/lib/authz/**",
+                "@/features/**",
+                "**/features/**",
                 "@/app/**",
                 "**/app/**",
               ],
@@ -160,10 +171,41 @@ export default defineConfig([
       ],
     },
   },
+  {
+    files: ["components/blocks/**/*.{js,jsx,ts,tsx}"],
+    rules: {
+      "no-restricted-syntax": [
+        "error",
+        ...rawSqlSyntax.map((selector) => ({
+          selector,
+          message: "Raw SQL is restricted to lib/db/** or prisma/**.",
+        })),
+        {
+          selector: "ImportDeclaration[source.value='react-hook-form']",
+          message:
+            "React Hook Form state belongs in form features, not blocks.",
+        },
+      ],
+    },
+  },
   prettier,
   globalIgnores([
     ".next/**",
+    "out/**",
+    "build/**",
+    "dist/**",
     "coverage/**",
+    "playwright-report/**",
+    "test-results/**",
+    ".cache/**",
+    ".artifacts/**",
+    ".clerk/**",
+    ".vercel/**",
+    ".stripe/**",
+    ".neon/**",
+    ".supabase/**",
+    ".wrangler/**",
+    "next-env.d.ts",
     "generated/prisma/**",
     "node_modules/**",
     "public/**",
