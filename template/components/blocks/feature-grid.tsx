@@ -180,7 +180,7 @@ export function FeatureGridWithIcons({
             <Card
               key={feature.title}
               className={cn(
-                "group transition hover:translate-x-[-4px] hover:translate-y-[-4px] hover:shadow-[8px_8px_0px_hsl(var(--shadow-color))]",
+                "group transition hover:-translate-x-1er:translate-y-[-4px] hover:shadow-[8px_8px_0px_hsl(var(--shadow-color))]",
                 featureColors[index % 6],
               )}
             >
@@ -251,7 +251,7 @@ export function FeatureGridWithImages({
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           {features.map((feature) => (
             <div key={feature.title} className="group">
-              <div className="mb-4 overflow-hidden border-3 border-foreground shadow-[6px_6px_0px_hsl(var(--shadow-color))] transition group-hover:translate-x-[-2px] group-hover:translate-y-[-2px] group-hover:shadow-[8px_8px_0px_hsl(var(--shadow-color))]">
+              <div className="mb-4 overflow-hidden border-3 border-foreground shadow-[6px_6px_0px_hsl(var(--shadow-color))] transition group-hover:-translate-x-0.5 group-hover:-translate-y-0.5 group-hover:shadow-[8px_8px_0px_hsl(var(--shadow-color))]">
                 <Image
                   src={feature.image}
                   alt={feature.title}
@@ -311,7 +311,7 @@ export function FeatureGridAlternating({
               <div className="space-y-4">
                 <div
                   className={cn(
-                    "flex h-16 w-16 items-center justify-center border-3 border-foreground shadow-[4px_4px_0px_hsl(var(--shadow-color))]",
+                    "flex h-16 w-16 items-center justify-center border-3 border-foreground shadow-hard",
                     iconColors[index % 6],
                   )}
                 >
@@ -393,7 +393,7 @@ export function FeatureBentoGrid({
           </div>
         )}
 
-        <div className="grid auto-rows-[200px] gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid auto-rows-50 gap-4 md:grid-cols-2 lg:grid-cols-3">
           {features.map((feature, index) => {
             const spanClass = {
               normal: "",
@@ -405,7 +405,7 @@ export function FeatureBentoGrid({
               <Card
                 key={feature.title}
                 className={cn(
-                  "group flex flex-col overflow-hidden transition hover:translate-x-[-4px] hover:translate-y-[-4px] hover:shadow-[8px_8px_0px_hsl(var(--shadow-color))]",
+                  "group flex flex-col overflow-hidden transition hover:-translate-x-1 hover:-translate-y-1 hover:shadow-[8px_8px_0px_hsl(var(--shadow-color))]",
                   featureColors[index % 6],
                   spanClass,
                 )}

@@ -251,7 +251,7 @@ export function HeroWithStats({
           {stats.map((stat) => (
             <div
               key={`stat-${stat.label}`}
-              className="border-3 border-foreground bg-card p-6 text-center shadow-[4px_4px_0px_hsl(var(--shadow-color))]"
+              className="border-3 border-foreground bg-card p-6 text-center shadow-hard"
             >
               <div className="text-3xl font-black md:text-4xl">
                 {stat.value}
@@ -398,7 +398,7 @@ export function HeroWithVideo({
           </div>
           {/* Play button overlay */}
           <div className="absolute inset-0 flex items-center justify-center bg-foreground/20 transition-colors group-hover:bg-foreground/30">
-            <div className="flex h-20 w-20 items-center justify-center border-3 border-foreground bg-primary shadow-[4px_4px_0px_hsl(var(--shadow-color))] transition group-hover:-translate-x-1 group-hover:-translate-y-1 group-hover:shadow-[8px_8px_0px_hsl(var(--shadow-color))]">
+            <div className="flex h-20 w-20 items-center justify-center border-3 border-foreground bg-primary shadow-hard transition group-hover:-translate-x-1 group-hover:-translate-y-1 group-hover:shadow-[8px_8px_0px_hsl(var(--shadow-color))]">
               <Play className="h-8 w-8 fill-current" />
             </div>
           </div>

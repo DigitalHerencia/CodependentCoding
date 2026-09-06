@@ -135,7 +135,7 @@ export function TestimonialsSingle({
         </blockquote>
 
         <div className="flex flex-col items-center gap-4">
-          <Avatar className="h-16 w-16 border-3 border-foreground shadow-[4px_4px_0px_hsl(var(--shadow-color))]">
+          <Avatar className="h-16 w-16 border-3 border-foreground shadow-hard">
             <AvatarImage src={testimonial.avatar} />
             <AvatarFallback className="text-xl font-bold">
               {testimonial.author.charAt(0)}
@@ -190,7 +190,7 @@ export function TestimonialsMasonry({
               {column.map((testimonial) => (
                 <Card
                   key={`testimonial-${testimonial.author}`}
-                  className="transition hover:translate-x-[-4px] hover:translate-y-[-4px] hover:shadow-[8px_8px_0px_hsl(var(--shadow-color))]"
+                  className="transition hover:-translate-x-1 hover:-translate-y-1 hover:shadow-[8px_8px_0px_hsl(var(--shadow-color))]"
                 >
                   <CardContent className="space-y-4 p-6">
                     {testimonial.rating && (
