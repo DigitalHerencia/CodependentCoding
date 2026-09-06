@@ -16,12 +16,14 @@ export interface TestimonialItem {
 // ============================================================================
 // TESTIMONIALS VARIANT 1: Cards Grid
 // ============================================================================
+
 export interface TestimonialsGridProps {
   title?: string;
   subtitle?: string;
   testimonials: TestimonialItem[];
   columns?: 2 | 3;
   className?: string;
+  cardClassName?: string;
 }
 
 export function TestimonialsGrid({
@@ -29,6 +31,7 @@ export function TestimonialsGrid({
   subtitle,
   testimonials,
   columns = 3,
+  cardClassName,
   className,
 }: TestimonialsGridProps) {
   const gridCols = {
@@ -38,18 +41,19 @@ export function TestimonialsGrid({
 
   return (
     <section
-      className={cn("py-16 px-4 md:px-8 lg:px-16 bg-muted/30", className)}
+      className={cn("bg-muted/30 px-4 py-16 md:px-8 lg:px-16", className)}
     >
-      <div className="max-w-7xl mx-auto">
+      <div className="mx-auto max-w-7xl">
         {(title || subtitle) && (
-          <div className="text-center mb-12 space-y-4">
+          <div className="mb-12 space-y-4 text-center">
             {subtitle && (
               <p className="text-sm font-bold uppercase tracking-widest text-primary">
                 {subtitle}
               </p>
             )}
+
             {title && (
-              <h2 className="text-3xl md:text-4xl font-black uppercase tracking-tight">
+              <h2 className="text-3xl font-black uppercase tracking-tight md:text-4xl">
                 {title}
               </h2>
             )}
@@ -60,13 +64,16 @@ export function TestimonialsGrid({
           {testimonials.map((testimonial) => (
             <Card
               key={`testimonial-${testimonial.author}`}
-              className="bg-card hover:translate-x-[-4px] hover:translate-y-[-4px] hover:shadow-[8px_8px_0px_hsl(var(--shadow-color))] transition"
+              className={cn(
+                "bg-card transition hover:-translate-x-1 hover:-translate-y-1 hover:shadow-[8px_8px_0px_hsl(var(--background))]",
+                cardClassName,
+              )}
             >
-              <CardContent className="p-6 space-y-4">
-                <Quote className="h-8 w-8 text-primary" />
+              <CardContent className="p-6">
+                <Quote className="mb-5 h-8 w-8 text-primary" />
 
                 {testimonial.rating && (
-                  <div className="flex gap-1">
+                  <div className="mb-4 flex gap-1">
                     {Array.from({ length: 5 }).map((_, i) => (
                       <Star
                         key={i}
@@ -81,24 +88,21 @@ export function TestimonialsGrid({
                   </div>
                 )}
 
-                <p className="text-lg font-medium leading-relaxed">
-                  &ldquo;{testimonial.quote}&rdquo;
-                </p>
+                <div className="min-h-24">
+                  <p className="text-lg font-medium leading-8">
+                    &ldquo;{testimonial.quote}&rdquo;
+                  </p>
+                </div>
 
-                <div className="flex items-center gap-3 pt-4 border-t-2 border-foreground">
-                  <Avatar className="h-12 w-12 border-2 border-foreground">
-                    <AvatarImage src={testimonial.avatar} />
-                    <AvatarFallback className="font-bold">
-                      {testimonial.author.charAt(0)}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <p className="font-bold">{testimonial.author}</p>
+                <div className="border-t-2 border-foreground pt-4">
+                  <p className="font-bold">{testimonial.author}</p>
+
+                  {(testimonial.role || testimonial.company) && (
                     <p className="text-sm text-muted-foreground">
                       {testimonial.role}
                       {testimonial.company && ` at ${testimonial.company}`}
                     </p>
-                  </div>
+                  )}
                 </div>
               </CardContent>
             </Card>

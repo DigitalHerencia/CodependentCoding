@@ -1,7 +1,7 @@
 // Approved public copy, supplied by the owner on September 4, 2026.
 export const landingCopy = [
   {
-    title: "The Maximal Template™",
+    title: "The Maximal Template™ Domain Library",
     content: (
       <>
         <p>
@@ -17,25 +17,18 @@ export const landingCopy = [
     title: "",
     content: (
       <>
-        <p>
-          <strong>{"Introducing The Maximal Template™"}</strong>
-        </p>
-        <p>
-          <em>{"Maximum SaaS Per Token."}</em>
-        </p>
-        <p>{"Because productivity is dead."}</p>
-        <p>
-          {"Long live "}
-          <em>{"product."}</em>
-        </p>
-        <p>{"Not the boring, spreadsheet-shaped “product.”"}</p>
-        <p>{"We mean the good product.\nThe dangerous product."}</p>
-        <p>
-          {"The "}
-          <em>{"don’t-ask-what’s-in-it, just ship it"}</em>
-          {" product."}
-        </p>
-      </>
+  <p>
+    <strong>
+      <em>Maximum SaaS Per Token</em>
+    </strong>
+  </p>
+
+  <p>
+    Because productivity is dead.
+    <br />
+    Long live product.
+  </p>
+</>
     ),
   },
   {
@@ -165,7 +158,7 @@ export const landingCopy = [
         <h3>{"4. Vibes amplification layer"}</h3>
         <p>{"The same codebase now passes CI and deploys."}</p>
         <p>{"This is called enterprise readiness."}</p>
-        <h3>{"5. Codependent compatibility check"}</h3>
+        <h3>{"5. Codependent compatibility"}</h3>
         <p>
           {
             "If the deployment cannot survive emotional collapse,\nit is rolled back."
@@ -243,30 +236,8 @@ export const landingCopy = [
     ),
   },
   {
-    title: "Closing Statement",
-    content: (
-      <>
-        <p>{"Provenance is latency."}</p>
-        <p>
-          {
-            "The Maximal Template™ is\nlow-latency validation\nand a hardened CI/CD pipeline."
-          }
-        </p>
-        <p>{"You don’t raise series A."}</p>
-        <p>
-          {"You raise the "}
-          <strong>{"revenue-to-spite ratio."}</strong>
-        </p>
-        <p>
-          <strong>{"Maximum SaaS."}</strong>
-        </p>
-        <p>
-          <strong>{"The Maximal Template™."}</strong>
-        </p>
-        <p>{"Ship less code."}</p>
-        <p>{"Move more product."}</p>
-      </>
-    ),
+    title: "",
+    content: "",
   },
 ] as const;
 export const featuresCopy = [
@@ -1521,9 +1492,10 @@ export const foundationCards = [
 {title:"Operations",content:<><p>Environment validation.</p><p>Provider webhooks.</p><p>Audit trails.</p><p>Idempotency.</p><p>Caching.</p><p>CI/CD boundaries.</p><p>Observability-ready infrastructure.</p></>}
 ];
 export const pipelineCards = [
-{title:"1. Intent ingestion",content:<><p>You don’t think about the specifications.</p><p>You compress them.</p></>},
-{title:"2. Scope laundering",content:<p>We remove obvious slop and replace it with<br />“interesting implementations.”</p>},
-{title:"3. System thinning",content:<p>Why use twelve competing ontologies when four can govern<br />with the same level of provenance and surgical grace?</p>},
-{title:"4. Vibes amplification layer",content:<><p>The same codebase now passes CI and deploys.</p><p>This is called enterprise readiness.</p></>},
-{title:"5. Codependent compatibility check",content:<p>If the deployment cannot survive emotional collapse,<br />it is rolled back.</p>}
+{title:"Intent Ingestion",content:<p>You don’t think about the specifications.<br />You compress them.</p>},
+{title:"Scope Laundering",content:<p>We remove obvious slop and replace it with<br />“interesting implementations.”</p>},
+{title:"System Thinning",content:<p>Why use twelve competing ontologies when four can govern with the same level of provenance and surgical grace?</p>},
+{title:"Vibes Amplification Layer",content:<p>The same codebase now passes CI and deploys. This is called enterprise readiness.</p>},
+{title:"Codependent Compatibility",content:<p>If the deployment cannot survive emotional collapse, it is rolled back.</p>},
+{title:"Plausible Deniability",content:<p>Ship the artifact. Let the commit history explain itself.</p>}
 ];
