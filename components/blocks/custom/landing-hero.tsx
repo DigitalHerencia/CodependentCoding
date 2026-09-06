@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import type { Route } from 'next';
 
 export function LandingHero() {
   return (
@@ -30,7 +31,7 @@ export function LandingHero() {
           </Link>
           <Link
             className="brand-button brand-button-outline"
-            href="/typescripture"
+            href={'/typescripture' as Route}
           >
             More info
           </Link>

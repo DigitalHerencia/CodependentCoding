@@ -5,7 +5,7 @@ import type { Ontology } from '@/lib/public-catalog';
 export function OntologyCatalogBlock({
   ontologies,
 }: {
-  ontologies: Ontology[];
+  ontologies: readonly Ontology[];
 }) {
   return (
     <main className="ontology-catalog-page">

@@ -6,6 +6,9 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   transpilePackages: ['@hipster-stack/core', '@hipster-stack/schema'],
   turbopack: {},
+  typescript: {
+    tsconfigPath: 'tsconfig.build.json',
+  },
   images: {
     formats: ['image/avif', 'image/webp'],
   },

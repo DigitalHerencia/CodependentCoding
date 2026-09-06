@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Route } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import {
@@ -38,8 +38,8 @@ export async function generateMetadata({
   };
 }
 
-function chapterHref(book: TypeScriptureBookId, chapter: string) {
-  return `/typescripture/${book}/${chapter}`;
+function chapterHref(book: TypeScriptureBookId, chapter: string): Route {
+  return `/typescripture/${book}/${chapter}` as Route;
 }
 
 function TypeScriptureNavigation({
@@ -53,7 +53,7 @@ function TypeScriptureNavigation({
 
   return (
     <aside className="docs-navigation">
-      <Link className="docs-mark" href="/typescripture">
+      <Link className="docs-mark" href={'/typescripture' as Route}>
         <span>The</span>
         <strong>TypeScripture™</strong>
         <small>Canonical Doctrine</small>
@@ -229,7 +229,7 @@ export default async function DocumentationPage({
               </span>
             </Link>
           ) : (
-            <Link href="/typescripture">
+            <Link href={'/typescripture' as Route}>
               <small>Complete</small>
               <span>Return to the paired map</span>
             </Link>

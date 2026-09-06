@@ -704,7 +704,13 @@ export function hasCapability(role: OrganizationRole, capability: Capability): b
     '20260804062000_tenant_rls_baseline',
     'migration.sql',
   );
-  let migration = await readFile(migrationPath, 'utf8');
+  let migration: string;
+  try {
+    migration = await readFile(migrationPath, 'utf8');
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === 'ENOENT') return;
+    throw error;
+  }
   migration = migration
     .replace(
       /CREATE TYPE "OrganizationRole" AS ENUM \([^;]+\);/,
