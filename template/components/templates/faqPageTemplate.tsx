@@ -1,6 +1,6 @@
 import { HeroSection } from "@/components/blocks/hero-section";
 import { FAQAccordion } from "@/components/blocks/faq-section";
-import { faqCopy } from "@/content/public-pages";
+import { faqCopy } from "@/content/faq";
 import Image from "next/image";
 
 export function FAQPageTemplate() {
@@ -8,20 +8,20 @@ export function FAQPageTemplate() {
     <section>
       <Image
         src="/seperator.png"
-        alt="Caution"
+        alt={faqCopy.separatorAlt}
         width={1200}
         height={400}
         className="h-auto w-full bg-background"
       />
       <HeroSection.Centered
-        title="Frequently Asked"
-        titleHighlight="Questions"
+        title={faqCopy.title}
+        titleHighlight={faqCopy.titleHighlight}
         className="mt-8"
       />
-      <FAQAccordion items={faqCopy.items} className="mb-28" />
+      <FAQAccordion items={faqCopy.items} className="mb-20" />
       <Image
         src="/seperator.png"
-        alt="Caution"
+        alt={faqCopy.separatorAlt}
         width={1200}
         height={400}
         className="h-auto w-full bg-background"

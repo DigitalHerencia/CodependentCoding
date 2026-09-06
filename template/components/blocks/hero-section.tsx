@@ -31,7 +31,7 @@ export function HeroCentered({
 }: HeroCenteredProps) {
   return (
     <section className={cn("px-4 py-20 md:px-8 lg:px-16", className)}>
-      <div className="mx-auto max-w-4xl text-center">
+      <div className="mx-auto max-w-4xl space-y-8 text-center">
         {badge && (
           <Badge variant="outline" className="px-4 py-1 text-sm">
             {badge}
@@ -47,7 +47,7 @@ export function HeroCentered({
           )}
         </h1>
 
-        <div className="mx-auto max-w-2xl text-lg font-medium whitespace-pre-line text-foreground/90 md:text-xl [&_p]:my-4">
+        <div className="mx-auto max-w-2xl text-2xl font-medium whitespace-pre-line text-foreground/90 md:text-xl [&_p]:my-4">
           {description}
         </div>
 

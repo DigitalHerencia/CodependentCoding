@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="../public/Maximal Template Logo.jpg" alt="Vouch" width="800" />
+  <img src="./public/Maximal Template Logo.jpg" alt="Vouch" width="800" />
 
   <br />
   <br />

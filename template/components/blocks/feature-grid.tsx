@@ -26,19 +26,19 @@ export function FeatureContentGrid({
   return (
     <section className={cn("px-6 py-16 sm:px-10 lg:px-12", className)}>
       <div className="mx-auto max-w-7xl">
-        <h2 className="mb-12 text-center text-3xl font-black tracking-tight uppercase">
+        <h2 className="mb-10 text-center text-3xl font-black tracking-tight uppercase">
           {title}
         </h2>
 
         {introduction && (
-          <div className="mx-auto mb-10 max-w-3xl text-center leading-7">
+          <div className="mx-auto mb-8 max-w-3xl text-center leading-7">
             {introduction}
           </div>
         )}
 
         <div
           className={cn(
-            "grid gap-8 md:grid-cols-2",
+            "grid gap-6 md:grid-cols-2",
             columns === 4 ? "xl:grid-cols-4" : "xl:grid-cols-3",
           )}
         >

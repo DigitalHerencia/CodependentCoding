@@ -40,7 +40,7 @@ export default function RootLayout({
       className={`dark ${bodyFont.variable} ${displayFont.variable} ${codeFont.variable}`}
       style={{ colorScheme: "dark" }}
     >
-      <body className="m-0 min-h-dvh bg-background font-sans text-foreground antialiased [text-rendering:optimizeLegibility] [&_main]:mx-auto [&_main]:w-full [&_main]:max-w-7xl [&_main]:px-6 [&_main]:py-8 sm:[&_main]:px-10 lg:[&_main]:px-12">
+      <body className="m-0 min-h-dvh bg-background font-sans text-foreground antialiased [text-rendering:optimizeLegibility]">
         <ClerkProvider>{children}</ClerkProvider>
       </body>
     </html>

@@ -1,8 +1,12 @@
 import "server-only";
 
 import { PrismaNeon } from "@prisma/adapter-neon";
+import { config } from "dotenv";
 
-import { PrismaClient } from "../../generated/prisma/client";
+import { PrismaClient } from "@/generated/prisma/client";
+
+config({ path: ".env.local", quiet: true });
+config({ quiet: true });
 
 const connectionString = process.env.DATABASE_URL;
 

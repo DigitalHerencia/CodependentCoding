@@ -4,6 +4,14 @@
   "product": "The Maximal Template",
   "purpose": "Current handoff state for the next implementation agent.",
   "updated_at": "2026-09-06T00:00:00-06:00",
+  "tenant_auth_migration": {
+    "status": "implemented",
+    "evidence": ".agents/execution/progress.json#tenant_auth_migration",
+    "resume_notes": [
+      "Owner now requires sign-in for tenant surfaces, superseding the older public-demo layout policy.",
+      "Tenant layout uses existing getIdentity and redirectToSignIn helpers; proxy no longer uses createRouteMatcher. Keep resource-level authentication and authorization checks."
+    ]
+  },
   "tooling_configuration": {
     "status": "implemented_with_remaining_audit_findings",
     "evidence": ".agents/execution/progress.json#tooling_configuration",

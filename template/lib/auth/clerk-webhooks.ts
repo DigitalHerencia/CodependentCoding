@@ -2,6 +2,7 @@ import "server-only";
 
 import { verifyWebhook } from "@clerk/nextjs/webhooks";
 import type { NextRequest } from "next/server";
+import { config } from "dotenv";
 
 import type { ClerkUserProjection } from "@/types/integrationTypes";
 import { withProviderTransaction } from "@/lib/db/provider";
@@ -16,6 +17,9 @@ import {
 } from "@/lib/db/transactions/webhook-event.tx";
 
 export { WebhookIdentityConflictError } from "@/lib/db/transactions/webhook-event.tx";
+
+config({ path: ".env.local", quiet: true });
+config({ quiet: true });
 
 export async function verifyClerkWebhook(request: NextRequest) {
   const signingSecret = process.env.CLERK_WEBHOOK_SIGNING_SECRET;

@@ -1,6 +1,6 @@
 import { HeroSection } from "@/components/blocks/hero-section";
 import { LegalDocumentSection } from "@/components/blocks/legal-document-section";
-import { privacyCopy } from "@/content/public-pages";
+import { privacyCopy } from "@/content/privacy";
 import Image from "next/image";
 
 export function PrivacyPageTemplate() {
@@ -8,16 +8,20 @@ export function PrivacyPageTemplate() {
     <section>
       <Image
         src="/seperator.png"
-        alt="Caution"
+        alt={privacyCopy.separatorAlt}
         width={1200}
         height={400}
         className="h-auto w-full bg-background"
       />
-      <HeroSection.Centered title="Privacy" titleHighlight="Policy" />
-      <LegalDocumentSection updatedAt="September 4, 2026" {...privacyCopy} />
+      <HeroSection.Centered
+        title={privacyCopy.title}
+        titleHighlight={privacyCopy.titleHighlight}
+        className="mt-8"
+      />
+      <LegalDocumentSection {...privacyCopy} />
       <Image
         src="/seperator.png"
-        alt="Caution"
+        alt={privacyCopy.separatorAlt}
         width={1200}
         height={400}
         className="h-auto w-full bg-background"

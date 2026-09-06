@@ -53,7 +53,7 @@ export function TestimonialsGrid({
             )}
 
             {title && (
-              <h2 className="text-3xl font-black uppercase md:text-4xl">
+              <h2 className="text-3xl font-black tracking-tight uppercase md:text-4xl">
                 {title}
               </h2>
             )}

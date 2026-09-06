@@ -4,6 +4,18 @@
   "product": "The Maximal Template",
   "purpose": "Machine-readable tracker for the canonical eight-spec Maximal Template repair/build sequence.",
   "updated_at": "2026-09-06T00:00:00-06:00",
+  "tenant_auth_migration": {
+    "status": "implemented",
+    "authority": "Owner request to replace createRouteMatcher protection with existing auth helpers in the tenant layout.",
+    "implemented": "Tenant layout uses getIdentity and redirectToSignIn; proxy retains clerkMiddleware without path-based authentication. Existing resource-level checks remain in place.",
+    "executed": [
+      "pnpm exec eslint proxy.ts 'app/(tenant)/layout.tsx' --max-warnings=0: passed",
+      "pnpm exec prettier --check proxy.ts 'app/(tenant)/layout.tsx': passed"
+    ],
+    "skipped": ["Typecheck, build, browser, and live Clerk checks"],
+    "blocked": [],
+    "inferred": "Signed-out tenant navigation redirects to /sign-in; runtime behavior was not exercised."
+  },
   "tooling_configuration": {
     "status": "implemented_with_remaining_audit_findings",
     "authority": "Owner request to install updated template dependencies and reconcile ESLint, Prettier, Tailwind v4, shadcn, and template-root tooling.",

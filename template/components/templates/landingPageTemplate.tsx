@@ -2,7 +2,7 @@ import { HeroSection } from "@/components/blocks/hero-section";
 import { FeatureContentGrid } from "@/components/blocks/feature-grid";
 import { TestimonialsGrid } from "@/components/blocks/testimonials";
 import { CTASimple } from "@/components/blocks/cta-section";
-import { landingCopy, pipelineCards } from "@/content/public-pages";
+import { landingCopy, pipelineCards } from "@/content/landing";
 import Image from "next/image";
 
 export function LandingPageTemplate() {
@@ -10,76 +10,47 @@ export function LandingPageTemplate() {
     <section>
       <Image
         src="/seperator.png"
-        alt="Caution"
+        alt={landingCopy.separatorAlt}
         width={1200}
         height={400}
         className="h-auto w-full bg-background"
       />
       <HeroSection.Centered
-        title="The Maximal Template™"
-        titleHighlight="Domain Library"
-        description={landingCopy[1].content}
-        className="mt-12 mb-12 bg-background text-foreground"
-        primaryAction={{ label: "GET STARTED", href: "/signup" }}
-        secondaryAction={{ label: "LEARN MORE", href: "/features" }}
+        title={landingCopy.title}
+        titleHighlight={landingCopy.titleHighlight}
+        description={landingCopy.description}
+        className="y-space-8 mt-12 mb-12 bg-background text-foreground"
+        primaryAction={landingCopy.primaryAction}
+        secondaryAction={landingCopy.secondaryAction}
       />
       <Image
         src="/logo cloud.png"
-        alt="Integrations"
+        alt={landingCopy.integrationsAlt}
         width={1200}
         height={200}
         className="h-auto w-full"
       />
       <FeatureContentGrid
-        title={landingCopy[5].title}
+        title={landingCopy.pipelineTitle}
         items={pipelineCards}
-        className="bg-background py-36 text-foreground"
+        className="bg-background py-32 text-foreground"
       />
       <TestimonialsGrid
-        title="Early Adopter Results"
-        className="bg-primary py-28 text-foreground"
+        title={landingCopy.testimonialsTitle}
+        className="bg-primary py-24 text-background"
         cardClassName="bg-background text-foreground [&_svg]:text-foreground"
-        testimonials={[
-          {
-            quote: "None of the code lands but it still gets merged.",
-            author: "Senior Engineer",
-            role: "",
-          },
-          {
-            quote: "My manager says my PR's are hard to read.",
-
-            author: "Product Designer",
-            role: "",
-          },
-          {
-            quote: "I don’t argue anymore. I deploy.",
-            author: "Founder",
-            role: "",
-          },
-        ]}
+        testimonials={landingCopy.testimonials}
       />
       <CTASimple
-        title={
-          <>
-            The Maximal Template™
-            <br />
-            Domain Library
-          </>
-        }
-        description={
-          <>
-            Ship less code
-            <br />
-            Move more product
-          </>
-        }
-        className="bg-background py-36 text-foreground"
-        primaryAction={{ label: "GET STARTED", href: "/signup" }}
-        secondaryAction={{ label: "LEARN MORE", href: "/features" }}
+        title={landingCopy.ctaTitle}
+        description={landingCopy.ctaDescription}
+        className="bg-background py-38 text-foreground"
+        primaryAction={landingCopy.primaryAction}
+        secondaryAction={landingCopy.secondaryAction}
       />
       <Image
         src="/seperator.png"
-        alt="Caution"
+        alt={landingCopy.separatorAlt}
         width={1200}
         height={400}
         className="h-auto w-full bg-background"
