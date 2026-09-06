@@ -10,7 +10,7 @@ import { ArrowRight, Mail, Sparkles, Zap } from "lucide-react";
 // CTA VARIANT 1: Simple Centered
 // ============================================================================
 export interface CTASimpleProps {
-  title: string;
+  title: React.ReactNode;
   description?: React.ReactNode;
   primaryAction: { label: string; href?: string; onClick?: () => void };
   secondaryAction?: { label: string; href?: string; onClick?: () => void };

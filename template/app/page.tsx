@@ -7,9 +7,7 @@ export default function Page() {
   return (
     <PublicShell>
       <PublicHeader />
-      <main className="flex-1">
-        <LandingPageTemplate />
-      </main>
+      <LandingPageTemplate />
       <PublicFooter />
       <PublicMobileBottomNav />
     </PublicShell>

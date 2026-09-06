@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { Check, X } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 
@@ -14,25 +15,27 @@ export interface ComparisonTableProps {
   /** Zero-based index of the emphasized column. */
   highlightColumn?: number;
   className?: string;
+  headerClassName?: string;
+  tableClassName?: string;
+  footer?: ReactNode;
 }
 
 function Cell({ value }: { value: string | boolean }) {
   if (typeof value === "boolean") {
-    // The tick/cross IS the data. lucide marks its icons aria-hidden, so without
-    // the sr-only text a screen reader reads these cells as empty.
     return value ? (
-      <span className="inline-flex h-6 w-6 items-center justify-center border-2 border-foreground bg-success">
-        <Check className="h-3.5 w-3.5 text-success-foreground" />
+      <span className="inline-flex size-6 items-center justify-center border-2 border-foreground bg-success">
+        <Check className="size-3.5 text-success-foreground" />
         <span className="sr-only">Included</span>
       </span>
     ) : (
-      <span className="inline-flex h-6 w-6 items-center justify-center border-2 border-foreground bg-muted">
-        <X className="h-3.5 w-3.5 text-muted-foreground" />
+      <span className="inline-flex size-6 items-center justify-center border-2 border-foreground bg-muted">
+        <X className="size-3.5 text-muted-foreground" />
         <span className="sr-only">Not included</span>
       </span>
     );
   }
-  return <span className="text-sm font-bold">{value}</span>;
+
+  return <span className="text-sm font-semibold leading-6">{value}</span>;
 }
 
 export function ComparisonTable({
@@ -42,58 +45,76 @@ export function ComparisonTable({
   rows,
   highlightColumn,
   className,
+  headerClassName,
+  tableClassName,
+  footer,
 }: ComparisonTableProps) {
   return (
-    <section className={cn("py-16 px-4 md:px-8 lg:px-16", className)}>
-      <div className="max-w-5xl mx-auto">
-        <div className="text-center mb-12 space-y-3">
-          <h2 className="text-4xl md:text-5xl font-black uppercase tracking-tight">
+    <section className={cn("px-6 py-20 sm:px-10 lg:px-12", className)}>
+      <div className="mx-auto max-w-5xl">
+        <div className="mb-8 text-center">
+          <h2 className="text-3xl font-black uppercase tracking-tight md:text-4xl">
             {title}
           </h2>
+
           {subtitle && (
-            <p className="text-muted-foreground max-w-xl mx-auto">{subtitle}</p>
+            <p className="mx-auto mt-3 max-w-xl text-muted-foreground">
+              {subtitle}
+            </p>
           )}
         </div>
-        <div className="overflow-x-auto border-3 border-foreground shadow-[4px_4px_0px_hsl(var(--shadow-color))]">
-          <table className="w-full border-collapse">
+
+        <div className="overflow-x-auto border-2 border-foreground shadow-[8px_8px_0_hsl(var(--background))]">
+          <table className={cn("w-full border-collapse", tableClassName)}>
             <thead>
-              <tr className="border-b-3 border-foreground bg-muted">
+              <tr
+                className={cn(
+                  "border-b-2 border-foreground bg-muted",
+                  headerClassName,
+                )}
+              >
                 <th
                   scope="col"
-                  className="p-4 text-left text-sm font-black uppercase tracking-wide"
+                  className="w-32 px-5 py-3 text-left text-lg font-black uppercase tracking-wider"
                 >
-                  Feature
+                  Metric
                 </th>
-                {columns.map((col, i) => (
+
+                {columns.map((column, index) => (
                   <th
-                    key={col}
+                    key={column}
                     scope="col"
                     className={cn(
-                      "p-4 text-center text-sm font-black uppercase tracking-wide",
-                      i === highlightColumn &&
+                      "px-5 py-3 text-left text-lg font-black uppercase tracking-wider",
+                      index === highlightColumn &&
                         "bg-primary text-primary-foreground",
                     )}
                   >
-                    {col}
+                    {column}
                   </th>
                 ))}
               </tr>
             </thead>
+
             <tbody>
               {rows.map((row) => (
                 <tr
                   key={row.feature}
-                  className="border-b-2 border-foreground last:border-b-0"
+                  className="border-b border-foreground/30 last:border-b-0"
                 >
-                  <th scope="row" className="p-4 text-left text-sm font-bold">
+                  <th
+                    scope="row"
+                    className="px-5 py-4 text-left text-sm font-black uppercase"
+                  >
                     {row.feature}
                   </th>
-                  {row.values.map((value, i) => (
+
+                  {row.values.map((value, index) => (
                     <td
-                      key={i}
+                      key={index}
                       className={cn(
-                        "p-4 text-center",
-                        i === highlightColumn && "bg-primary/10",
+                        "px-5 py-4 text-left align-top",
+                        index === highlightColumn && "bg-primary/10",
                       )}
                     >
                       <Cell value={value} />
@@ -104,6 +125,10 @@ export function ComparisonTable({
             </tbody>
           </table>
         </div>
+
+        {footer && (
+          <div className="mt-8 text-center leading-7 [&_p]:my-3">{footer}</div>
+        )}
       </div>
     </section>
   );

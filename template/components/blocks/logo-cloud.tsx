@@ -4,6 +4,32 @@ import { cn } from "@/lib/utils/cn";
 import { safeHref } from "@/lib/utils/strings";
 import { Marquee } from "@/components/ui/marquee";
 
+export function LogoCloudImage({
+  src,
+  alt,
+  width,
+  height,
+  className,
+}: {
+  src: string;
+  alt: string;
+  width: number;
+  height: number;
+  className?: string;
+}) {
+  return (
+    <div className={cn("w-full", className)}>
+      <Image
+        src={src}
+        alt={alt}
+        width={width}
+        height={height}
+        className="block h-auto w-full"
+      />
+    </div>
+  );
+}
+
 export interface LogoItem {
   name: string;
   logo: string | React.ReactNode;
@@ -319,6 +345,7 @@ function LogoCloudItem({ logo }: { logo: LogoItem }) {
 // Export all variants
 // ============================================================================
 export const LogoCloud = {
+  Image: LogoCloudImage,
   Grid: LogoCloudGrid,
   Marquee: LogoCloudMarquee,
   Cards: LogoCloudCards,

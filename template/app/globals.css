@@ -52,19 +52,19 @@
 :root {
   /* Base Colors */
   --background: 248 50% 3%;
-  --foreground: 47 74% 94%;
+  --foreground: 42 74% 94%;
 
   /* Primary */
   --primary: 193 50% 32%;
-  --primary-foreground: 47 74% 94%;
+  --primary-foreground: 42 74% 94%;
 
   /* Secondary */
   --secondary: 193 50% 32%;
-  --secondary-foreground: 47 74% 94%;
+  --secondary-foreground: 42 74% 94%;
 
   /* Accent */
   --accent: 193 50% 32%;
-  --accent-foreground: 47 74% 94%;
+  --accent-foreground: 42 74% 94%;
 
   /* Muted */
   --muted: 193 23% 59%;
@@ -72,9 +72,9 @@
 
   /* Card & Popover */
   --card: 193 50% 32%;
-  --card-foreground: 47 74% 94%;
+  --card-foreground: 42 74% 94%;
   --popover: 193 50% 32%;
-  --popover-foreground: 47 74% 94%;
+  --popover-foreground: 42 74% 94%;
 
   /* Destructive */
   --destructive: 193 23% 59%;
@@ -82,23 +82,23 @@
 
   /* Status — success / warning / info */
   --success: 193 50% 32%;
-  --success-foreground: 47 74% 94%;
+  --success-foreground: 42 74% 94%;
   --warning: 193 23% 59%;
   --warning-foreground: 0 0% 0%;
   --info: 193 50% 32%;
-  --info-foreground: 47 74% 94%;
+  --info-foreground: 42 74% 94%;
 
   /* Border & Input */
-  --border: 47 74% 94%;
-  --input: 47 74% 94%;
-  --ring: 47 74% 94%;
+  --border: 42 74% 94%;
+  --input: 42 74% 94%;
+  --ring: 42 74% 94%;
 
   /* Radius - Minimal for neubrutalism */
   --radius: 0rem;
 
   /* BoldKit specific */
-  --shadow-color: 47 74% 94%;
-  --shadow-offset: 6px;
+  --shadow-color: 193 50% 32%;
+  --shadow-offset: 12px;
   --border-width: 5px;
 
   /* Chart colors */

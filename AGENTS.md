@@ -2,6 +2,10 @@
 
 This repository is **The Codependent Coding™ WebApp Architecture**. Use this file as the directory, not as a second copy of the architecture.
 
+## Owner-directed Git workflow
+
+Work directly on `main`. Do not create other branches unless the owner explicitly changes this instruction. Preserve all owner changes when committing and synchronizing. This owner instruction supersedes the general Issue-branch and pull-request delivery flow for this repository.
+
 ## Authority order
 
 1. Current explicit owner instruction.

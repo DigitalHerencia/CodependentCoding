@@ -8,9 +8,68 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { cn } from "@/lib/utils/cn";
+export function FeatureContentGrid({
+  title,
+  introduction,
+  items,
+  closing,
+  columns = 3,
+  className,
+}: {
+  title: string;
+  introduction?: React.ReactNode;
+  items: readonly { title: string; content: React.ReactNode }[];
+  closing?: React.ReactNode;
+  columns?: 3 | 4;
+  className?: string;
+}) {
+  return (
+    <section className={cn("px-6 py-16 sm:px-10 lg:px-12", className)}>
+      <div className="mx-auto max-w-7xl">
+        <h2 className="mb-8 text-center text-3xl font-black uppercase tracking-tight">
+          {title}
+        </h2>
 
-export function FeatureContentGrid({ title, introduction, items, closing, columns = 3 }: { title: string; introduction?: React.ReactNode; items: readonly { title: string; content: React.ReactNode }[]; closing?: React.ReactNode; columns?: 3 | 4 }) {
-  return <section className="border-y border-muted/30 px-6 py-16 sm:px-10 lg:px-12"><div className="mx-auto max-w-7xl"><h2 className="mb-6 text-center text-3xl font-black uppercase tracking-tight">{title}</h2>{introduction && <div className="mx-auto mb-10 max-w-3xl text-center leading-7">{introduction}</div>}<div className={cn("grid gap-6 md:grid-cols-2", columns === 4 ? "xl:grid-cols-4" : "xl:grid-cols-3")}>{items.map((item, index) => <Card key={item.title} className="border border-muted/60 bg-background shadow-none"><CardHeader><span className="mb-4 grid size-12 place-items-center border border-muted bg-primary text-lg font-bold">{String(index + 1).padStart(2, "0")}</span><CardTitle className="text-lg uppercase">{item.title}</CardTitle></CardHeader><CardContent className="leading-7 [&_p]:my-3 [&_ul]:list-disc [&_ul]:pl-5">{item.content}</CardContent></Card>)}</div>{closing && <div className="mt-8 text-center leading-7">{closing}</div>}</div></section>;
+        {introduction && (
+          <div className="mx-auto mb-10 max-w-3xl text-center leading-7">
+            {introduction}
+          </div>
+        )}
+
+        <div
+          className={cn(
+            "grid gap-6 md:grid-cols-2",
+            columns === 4 ? "xl:grid-cols-4" : "xl:grid-cols-3",
+          )}
+        >
+          {items.map((item, index) => (
+            <Card
+              key={item.title}
+              className="border-4 border-foreground bg-background shadow-[8px_8px_0_hsl(var(--primary))]"
+            >
+              <CardHeader>
+                <div className="flex items-center gap-4">
+                  <span className="grid size-12 shrink-0 place-items-center border border-muted bg-primary text-lg font-bold">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+
+                  <CardTitle className="text-lg uppercase">
+                    {item.title}
+                  </CardTitle>
+                </div>
+              </CardHeader>
+
+              <CardContent className="leading-7 [&_p]:my-3 [&_ul]:list-disc [&_ul]:pl-5">
+                {item.content}
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        {closing && <div className="mt-8 text-center leading-7">{closing}</div>}
+      </div>
+    </section>
+  );
 }
 
 export function FeatureEditorial({

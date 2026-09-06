@@ -1,101 +1,93 @@
 import { HeroSection } from "@/components/blocks/hero-section";
-import { FeatureEditorial, FeatureContentGrid } from "@/components/blocks/feature-grid";
-import { LogoCloud } from "@/components/blocks/logo-cloud";
+import {
+  FeatureEditorial,
+  FeatureContentGrid,
+} from "@/components/blocks/feature-grid";
 import { ComparisonTable } from "@/components/blocks/comparison-table";
 import { TestimonialsGrid } from "@/components/blocks/testimonials";
 import { CTASimple } from "@/components/blocks/cta-section";
 import { landingCopy, pipelineCards } from "@/content/public-pages";
+import Image from "next/image";
+
 export function LandingPageTemplate() {
   return (
-    <>
+    <section>
+      <Image
+        src="/seperator.png"
+        alt="Caution"
+        width={1200}
+        height={400}
+        className="w-full h-auto bg-background"
+      />
       <HeroSection.Centered
-        title="The Maximal"
-        titleHighlight="Template™"
-        description={landingCopy[0].content}
-        primaryAction={{ label: "ENTER THE TEMPLATE", href: "/dashboard" }}
-        secondaryAction={{ label: "VIEW FEATURES", href: "/features" }}
+        title="The Maximal Template™"
+        titleHighlight="Domain Library"
+        description={landingCopy[1].content}
+        className="bg-background text-foreground mt-12 mb-12"
+        primaryAction={{ label: "GET STARTED", href: "/signup" }}
+        secondaryAction={{ label: "LEARN MORE", href: "/features" }}
       />
-      <FeatureEditorial className="bg-primary text-center">
-        {landingCopy[1].content}
-      </FeatureEditorial>
-      <LogoCloud.Grid
-        columns={6}
-        logos={[
-          "Next.js",
-          "React",
-          "Prisma",
-          "Neon",
-          "Clerk",
-          "Tailwind CSS",
-        ].map((name) => ({ name, logo: <strong>{name}</strong> }))}
+      <Image
+        src="/logo cloud.png"
+        alt="Integrations"
+        width={1200}
+        height={200}
+        className="w-full h-auto"
       />
-      <FeatureEditorial>{landingCopy[2].content}</FeatureEditorial>
-      <FeatureEditorial title={landingCopy[3].title}>
-        {landingCopy[3].content}
-      </FeatureEditorial>
-      <FeatureContentGrid title={landingCopy[5].title} items={pipelineCards} />
-      <ComparisonTable
-        title="Product vs Productivity"
-        columns={["Old", "New"]}
-        rows={[
-          {
-            feature: "metric",
-            values: [
-              "Tasks completed per hour.",
-              "Codebases destabilized per commit.",
-            ],
-          },
-          { feature: "KPI", values: ["Velocity.", "After-taste."] },
-        ]}
-        highlightColumn={1}
+      <FeatureContentGrid
+        title={landingCopy[5].title}
+        items={pipelineCards}
+        className="bg-background text-foreground mt-12 mb-12"
       />
-      <FeatureEditorial>
-        {
-          <>
-            {" "}
-            <p>
-              If your PR doesn’t get merged unless you stop commenting,
-              <br />
-              you didn’t ship.
-            </p>
-            <p>You compiled.</p>
-          </>
-        }
-      </FeatureEditorial>
-      <FeatureEditorial title={landingCopy[6].title}>
-        {landingCopy[6].content}
-      </FeatureEditorial>
-      <FeatureEditorial title={landingCopy[7].title}>
-        {landingCopy[7].content}
-      </FeatureEditorial>
       <TestimonialsGrid
         title="Early Adopter Results"
+        className="bg-primary text-foreground py-36"
+        cardClassName="bg-background text-foreground [&_svg]:text-foreground"
         testimonials={[
           {
-            quote:
-              "We reduced development time by forty percent.\nNone of the code lands but it still gets merged.",
+            quote: "None of the code lands but it still gets merged.",
             author: "Senior Engineer",
             role: "",
           },
           {
-            quote:
-              "My manager says my PR's are ‘hard to read.’\nThat’s because I upgraded.",
+            quote: "My manager says my PR's are hard to read.",
+
             author: "Product Designer",
             role: "",
           },
           {
-            quote: "I don’t argue anymore.\nI deploy.",
-            author: "Founder, extremely tired",
+            quote: "I don’t argue anymore. I deploy.",
+            author: "Founder",
             role: "",
           },
         ]}
       />
       <CTASimple
-        title={landingCopy[9].title}
-        description={landingCopy[9].content}
-        primaryAction={{ label: "ENTER THE TEMPLATE", href: "/dashboard" }}
-        secondaryAction={{ label: "VIEW FEATURES", href: "/features" }}
+        title={
+          <>
+            The Maximal Template™
+            <br />
+            Domain Library
+          </>
+        }
+        description={
+          <>
+            Ship less code
+            <br />
+            Move more product
+          </>
+        }
+        className="bg-background text-foreground py-48"
+        primaryAction={{ label: "GET STARTED", href: "/signup" }}
+        secondaryAction={{ label: "LEARN MORE", href: "/features" }}
       />
-    </>
+      <Image
+        src="/seperator.png"
+        alt="Caution"
+        width={1200}
+        height={400}
+        className="w-full h-auto bg-background"
+      />
+    </section>
   );
 }

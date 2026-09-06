@@ -1,9 +1,16 @@
 import { HeroSection } from "@/components/blocks/hero-section";
-import { FeatureEditorial, FeatureContentGrid } from "@/components/blocks/feature-grid";
+import {
+  FeatureEditorial,
+  FeatureContentGrid,
+} from "@/components/blocks/feature-grid";
 import { StatsSection } from "@/components/blocks/stats-section";
 import { OntologyShowcase } from "@/components/blocks/ontology-showcase";
 import { CTASimple } from "@/components/blocks/cta-section";
-import { featuresCopy, foundationCards } from "@/content/public-pages";
+import {
+  featuresCopy,
+  foundationCards,
+  landingCopy,
+} from "@/content/public-pages";
 const ontologies = [
   {
     id: "crm",
@@ -136,7 +143,13 @@ export function FeaturesPageTemplate() {
       <FeatureEditorial title={featuresCopy[1].title}>
         {featuresCopy[1].content}
       </FeatureEditorial>
-      <FeatureContentGrid title={featuresCopy[2].title} introduction="Every supported ontology operates on the same underlying application foundation." items={foundationCards} columns={4} closing="The boring stuff is already invited to the meeting." />
+      <FeatureContentGrid
+        title={featuresCopy[2].title}
+        introduction="Every supported ontology operates on the same underlying application foundation."
+        items={foundationCards}
+        columns={4}
+        closing="The boring stuff is already invited to the meeting."
+      />
       <StatsSection.Grid
         columns={3}
         stats={[
@@ -154,6 +167,16 @@ export function FeaturesPageTemplate() {
         className="bg-primary/10"
       >
         {featuresCopy[13].content}
+      </FeatureEditorial>
+      <FeatureEditorial>{landingCopy[2].content}</FeatureEditorial>
+      <FeatureEditorial title={landingCopy[3].title}>
+        {landingCopy[3].content}
+      </FeatureEditorial>
+      <FeatureEditorial title={landingCopy[6].title}>
+        {landingCopy[6].content}
+      </FeatureEditorial>
+      <FeatureEditorial title={landingCopy[7].title}>
+        {landingCopy[7].content}
       </FeatureEditorial>
       <CTASimple
         title={featuresCopy[14].title}
