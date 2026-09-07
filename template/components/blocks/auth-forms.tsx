@@ -1,3 +1,5 @@
+"use client";
+
 import * as React from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -27,6 +29,7 @@ import {
 // AUTH VARIANT 1: Login Form
 // ============================================================================
 export interface LoginFormProps {
+  children?: React.ReactNode;
   logo?: React.ReactNode;
   title?: string;
   description?: string;
@@ -42,6 +45,7 @@ export interface LoginFormProps {
 }
 
 export function LoginForm({
+  children,
   logo,
   title = "Welcome back",
   description = "Enter your credentials to access your account",
@@ -63,6 +67,19 @@ export function LoginForm({
     onSubmit?.(formData);
   };
 
+  // Features supply their own controlled form; the block owns presentation only.
+  if (children) {
+    return (
+      <div className={cn("w-full space-y-4 bg-transparent", className)}>
+        {logo}
+        <div className="space-y-2">
+          <h2 className="text-center text-3xl font-black uppercase">{title}</h2>
+          <p className="text-base leading-relaxed">{description}</p>
+        </div>
+        {children}
+      </div>
+    );
+  }
   return (
     <div className={cn("mx-auto w-full max-w-md", className)}>
       <Card>
@@ -216,6 +233,7 @@ export function LoginForm({
 // AUTH VARIANT 2: Sign Up Form
 // ============================================================================
 export interface SignUpFormProps {
+  children?: React.ReactNode;
   logo?: React.ReactNode;
   title?: string;
   description?: string;
@@ -233,6 +251,7 @@ export interface SignUpFormProps {
 }
 
 export function SignUpForm({
+  children,
   logo,
   title = "Create an account",
   description = "Enter your details to get started",
@@ -262,6 +281,19 @@ export function SignUpForm({
     onSubmit?.(formData);
   };
 
+  // Features supply their own controlled form; the block owns presentation only.
+  if (children) {
+    return (
+      <div className={cn("w-full space-y-6 bg-transparent", className)}>
+        {logo}
+        <div className="space-y-2">
+          <h2 className="text-2xl font-black uppercase">{title}</h2>
+          <p className="text-base leading-relaxed">{description}</p>
+        </div>
+        {children}
+      </div>
+    );
+  }
   return (
     <div className={cn("mx-auto w-full max-w-md", className)}>
       <Card>
@@ -485,7 +517,7 @@ export function ForgotPasswordForm({
       <div className={cn("mx-auto w-full max-w-md", className)}>
         <Card>
           <CardContent className="space-y-4 pt-6 text-center">
-            <div className="mx-auto flex h-16 w-16 items-center justify-center border-3 border-foreground bg-success/20 shadow-[4px_4px_0px_hsl(var(--shadow-color))]">
+            <div className="mx-auto flex h-16 w-16 items-center justify-center border-3 border-foreground bg-success/20 shadow-hard">
               <Mail className="h-8 w-8 text-success" />
             </div>
             <div>

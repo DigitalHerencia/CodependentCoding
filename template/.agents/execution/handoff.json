@@ -3,7 +3,7 @@
   "file": ".agents/execution/handoff.json",
   "product": "The Maximal Template",
   "purpose": "Current handoff state for the next implementation agent.",
-  "updated_at": "2026-09-06T00:00:00-06:00",
+  "updated_at": "2026-09-06T23:07:21.9529939-06:00",
   "tenant_auth_migration": {
     "status": "implemented",
     "evidence": ".agents/execution/progress.json#tenant_auth_migration",
@@ -63,6 +63,58 @@
     "inferred": [
       "Spec 00 acceptance criteria were mapped by direct governance inspection.",
       "Spec 04 tenant containment is evidenced by scoped transactions and the existing CrmContact RLS policy migration; no live database RLS test was executed."
+    ]
+  },
+  "custom_auth": {
+    "status": "implemented_runtime_verification_blocked",
+    "authority": "Owner request for custom Clerk RHF auth flows, responsive swapped shell columns, and idempotent Neon user sync.",
+    "implemented": [
+      "Existing auth feature forms use RHF with Clerk hooks; existing blocks accept controlled children. No new React components.",
+      "Auth content, primary form column, logo, header, copyright, and route-dependent column order updated.",
+      "Clerk development username/password verified; required verified email enabled after CLI dry-run.",
+      "Local ignored .env.local DATABASE_URL corrected to the already migrated template database."
+    ],
+    "executed": [
+      "Focused ESLint: passed.",
+      "pnpm exec tsc --noEmit: passed.",
+      "Changed files formatted with Prettier.",
+      "Signed webhook verification and tamper rejection: passed.",
+      "Opt-in Neon transactional sync, one-membership repeat sync, webhook deduplication, identity conflict, and repeated anonymization: passed; all test writes rolled back.",
+      "Clerk dashboard: existing ngrok endpoint subscribes to user.created, user.updated, user.deleted."
+    ],
+    "skipped": [
+      "Build, development server startup, production configuration, migrations, deployment, commits and pushes."
+    ],
+    "blocked": [
+      "Browser rendering and end-to-end auth: localhost:3000 refused connection.",
+      "Fresh ngrok webhook delivery: local app is offline.",
+      "Inherited DATABASE_URL differs from corrected .env.local; launch environment must clear or align it.",
+      "Owner-deleted template/proxy.ts preserved; Clerk server session helpers require clerkMiddleware."
+    ],
+    "inferred": [
+      "Responsive column behavior and custom flow transitions are statically implemented, not browser verified."
+    ]
+  },
+  "auth_readability": {
+    "implemented": "Auth inputs use background surfaces and foreground text, including autofill styling. Form text and footer use foreground; descriptions use larger type and relaxed line height.",
+    "executed": [
+      "Visual inspection of running /sign-in and /sign-up desktop pages.",
+      "Focused ESLint and git diff --check passed; changed files formatted."
+    ],
+    "skipped": [
+      "Typecheck and tests: CSS and presentation-only changes.",
+      "Mobile viewport verification and authentication submission."
+    ]
+  },
+  "webhook_connection_repair": {
+    "cause": "Inherited DATABASE_URL targeted a database without WebhookEvent; local configuration targeted the migrated template database.",
+    "change": "Development database connection prefers explicit .env.local URL and caches Prisma by connection fingerprint; API logs bounded diagnostic codes only.",
+    "executed": [
+      "Direct invocation of actual API POST route through auth helper and Neon: signed event 200, duplicate 200, tampered signature 400; test ledger row removed.",
+      "Focused ESLint and TypeScript passed."
+    ],
+    "blocked": [
+      "HTTP/ngrok delivery could not be verified because localhost:3000 is offline."
     ]
   }
 }

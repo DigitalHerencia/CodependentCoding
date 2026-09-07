@@ -386,3 +386,41 @@
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Solid auth fields and high-contrast text; no nested card surface. */
+.auth-form-column input {
+  border: 1px solid hsl(var(--background) / 0.4);
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
+  caret-color: hsl(var(--foreground));
+  box-shadow: none;
+}
+.auth-form-column input::placeholder {
+  color: hsl(var(--foreground) / 0.7);
+}
+.auth-form-column input:autofill,
+.auth-form-column input:-webkit-autofill {
+  -webkit-text-fill-color: hsl(var(--foreground));
+  box-shadow: 0 0 0 1000px hsl(var(--background)) inset;
+}
+.auth-form-column input:focus-visible,
+.auth-form-column button:focus-visible,
+.auth-form-column a:focus-visible {
+  outline: 2px solid hsl(var(--foreground));
+  outline-offset: 3px;
+  --tw-ring-color: transparent;
+  --tw-ring-offset-color: transparent;
+}
+.auth-form-column button {
+  border-color: transparent;
+  color: hsl(var(--foreground));
+  box-shadow: none;
+  white-space: normal;
+}
+.auth-form-column button:hover {
+  color: hsl(var(--foreground));
+}
+.auth-form-column button[type="submit"] {
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
+}

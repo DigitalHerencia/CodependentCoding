@@ -38,6 +38,16 @@ export async function POST(request: NextRequest) {
         { status: 409 },
       );
     }
+    // Log only a bounded diagnostic code, never payloads, credentials, or PII.
+    const code =
+      error &&
+      typeof error === "object" &&
+      "code" in error &&
+      typeof error.code === "string" &&
+      /^P\d{4}$/.test(error.code)
+        ? error.code
+        : "processing_failed";
+    console.error("Clerk webhook processing failed", { code });
     return Response.json(
       { error: "Clerk webhook processing failed." },
       { status: 500 },

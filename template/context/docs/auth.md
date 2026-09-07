@@ -230,3 +230,15 @@ Never expose:
 - raw provider payloads containing sensitive data.
 
 Public publishable keys may be present where the provider requires them, but server secrets remain server-only.
+
+## Custom authentication UI and configuration
+
+`features/auth/signInFeature.tsx` and `signUpFeature.tsx` own self-contained React Hook Form state and Clerk hooks. The existing auth blocks accept controlled form content without nesting forms. The shared shell maps presentation copy from `content/auth.ts`, swaps desktop columns by auth route, and owns the logo, content header, and copyright footer.
+
+The canonical development configuration requires username and password, plus a verified email address for recovery and device trust. Password rules remain authoritative in Clerk; the client does not duplicate a policy that template owners may change. Smart CAPTCHA remains mounted during signup and must be allowed to display a challenge. Custom flows handle email verification, recovery, password reset, device trust, and available MFA factors. Clerk's SignIn/SignUp components handle additional instance requirements and pending session tasks.
+
+The webhook endpoint must subscribe to `user.created`, `user.updated`, and `user.deleted`. Local delivery uses the configured ngrok endpoint and requires the application and tunnel to be running. A configured subscription alone is not delivery evidence.
+
+`DATABASE_URL` must target the same migrated template database as `DIRECT_DATABASE_URL`. In development, the database client prefers the explicit `.env.local` DATABASE_URL over inherited shell values and refreshes its cached client when the connection changes. Production retains environment-variable precedence. Do not migrate an unrelated database to hide a targeting error.
+
+Focused webhook verification: `pnpm exec tsx --test tests/auth-webhooks.integration.test.ts`. Set `AUTH_WEBHOOK_DB_TEST=1` and the intended development `DATABASE_URL` to include the live Neon transaction test. The test deliberately rolls back all writes. Browser authentication and webhook delivery through ngrok remain separate checks.
