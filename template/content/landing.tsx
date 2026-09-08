@@ -51,8 +51,8 @@ export const landingCopy = {
       Move more product
     </>
   ),
-  primaryAction: { label: "GET STARTED", href: "/signup" },
-  secondaryAction: { label: "LEARN MORE", href: "/features" },
+  primaryAction: { label: "GET STARTED", href: "/sign-up" },
+  secondaryAction: { label: "LEARN MORE", href: "/#features" },
   separatorAlt: "Caution",
   integrationsAlt: "Integrations",
 };

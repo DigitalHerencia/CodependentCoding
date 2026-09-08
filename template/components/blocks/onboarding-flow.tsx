@@ -488,15 +488,31 @@ export function ProfileSetup({
 export interface WorkspaceSetupProps {
   onSubmit?: (data: { name: string; members: string[] }) => void;
   onSkip?: () => void;
+  initialName?: string;
+  canRename?: boolean;
+  enableInvites?: boolean;
+  submitting?: boolean;
+  error?: string;
+  title?: string;
+  description?: string;
+  submitLabel?: string;
   className?: string;
 }
 
 export function WorkspaceSetup({
   onSubmit,
   onSkip,
+  initialName = "",
+  canRename = true,
+  enableInvites = true,
+  submitting = false,
+  error,
+  title = "Create Your Workspace",
+  description = "Set up your team workspace and invite members",
+  submitLabel = "Create Workspace",
   className,
 }: WorkspaceSetupProps) {
-  const [workspaceName, setWorkspaceName] = React.useState("");
+  const [workspaceName, setWorkspaceName] = React.useState(initialName);
   const [memberEmail, setMemberEmail] = React.useState("");
   const [members, setMembers] = React.useState<string[]>([]);
   const [emailError, setEmailError] = React.useState<string | null>(null);
@@ -527,99 +543,120 @@ export function WorkspaceSetup({
   };
 
   return (
-    <Card className={cn("mx-auto w-full max-w-lg", className)}>
-      <CardHeader className="text-center">
-        <div className="mx-auto mb-2 flex h-14 w-14 items-center justify-center border-3 border-foreground bg-secondary/10 shadow-[4px_4px_0px_hsl(var(--shadow-color))]">
-          <Building className="h-7 w-7" />
+    <Card
+      className={cn(
+        "mx-auto w-full max-w-lg border border-foreground/30 shadow-none",
+        className,
+      )}
+    >
+      <CardHeader className="gap-3 border-b border-foreground/20 bg-background text-left">
+        <div className="flex size-10 items-center justify-center border border-primary bg-primary/10 text-muted-primary">
+          <Building className="size-5" />
         </div>
-        <CardTitle className="text-2xl font-black uppercase">
-          Create Your Workspace
-        </CardTitle>
-        <CardDescription>
-          Set up your team workspace and invite members
-        </CardDescription>
+        <CardTitle className="type-title uppercase">{title}</CardTitle>
+        <CardDescription>{description}</CardDescription>
       </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="space-y-2">
-            <Label htmlFor="workspace" className="text-xs font-bold uppercase">
-              Workspace Name
-            </Label>
-            <Input
-              id="workspace"
-              value={workspaceName}
-              onChange={(e) => setWorkspaceName(e.target.value)}
-              placeholder="e.g., Acme Inc."
-              required
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="invite" className="text-xs font-bold uppercase">
-              Invite Team Members{" "}
-              <span className="text-muted-foreground">(Optional)</span>
-            </Label>
-            <div className="flex gap-2">
+      <CardContent className="pt-6">
+        <form
+          onSubmit={handleSubmit}
+          aria-busy={submitting}
+          className="space-y-6"
+        >
+          <fieldset
+            disabled={submitting}
+            className="space-y-4 disabled:opacity-70"
+          >
+            <div className="form-field">
+              <Label htmlFor="workspace" className="type-label">
+                Workspace Name
+              </Label>
               <Input
-                id="invite"
-                type="email"
-                value={memberEmail}
-                onChange={(e) => {
-                  setMemberEmail(e.target.value);
-                  if (emailError) setEmailError(null);
-                }}
-                placeholder="colleague@email.com"
+                id="workspace"
+                value={workspaceName}
+                readOnly={!canRename}
+                maxLength={100}
+                onChange={(e) => setWorkspaceName(e.target.value)}
+                placeholder="e.g., Acme Inc."
+                required
               />
-              <Button type="button" variant="outline" onClick={addMember}>
-                Add
-              </Button>
             </div>
-            {emailError && (
-              <p className="text-xs font-bold text-destructive">{emailError}</p>
-            )}
-          </div>
 
-          {members.length > 0 && (
-            <div className="space-y-2">
-              <p className="text-xs font-bold text-muted-foreground uppercase">
-                Pending Invites ({members.length})
-              </p>
-              <div className="space-y-2">
-                {members.map((email) => (
-                  <div
-                    key={email}
-                    className="flex items-center justify-between border-2 border-foreground bg-muted/30 p-2"
-                  >
-                    <span className="text-sm">{email}</span>
-                    <button
-                      type="button"
-                      onClick={() => removeMember(email)}
-                      className="text-muted-foreground hover:text-destructive"
-                    >
-                      ×
-                    </button>
-                  </div>
-                ))}
+            {enableInvites && (
+              <div className="form-field">
+                <Label htmlFor="invite" className="type-label">
+                  Invite Team Members{" "}
+                  <span className="text-muted-primary">(Optional)</span>
+                </Label>
+                <div className="flex gap-2">
+                  <Input
+                    id="invite"
+                    type="email"
+                    value={memberEmail}
+                    onChange={(e) => {
+                      setMemberEmail(e.target.value);
+                      if (emailError) setEmailError(null);
+                    }}
+                    placeholder="colleague@email.com"
+                  />
+                  <Button type="button" variant="outline" onClick={addMember}>
+                    Add
+                  </Button>
+                </div>
+                {emailError && (
+                  <p className="text-xs font-bold text-destructive">
+                    {emailError}
+                  </p>
+                )}
               </div>
-            </div>
-          )}
-
-          <div className="flex gap-3">
-            {onSkip && (
-              <Button
-                type="button"
-                variant="outline"
-                className="flex-1"
-                onClick={onSkip}
-              >
-                Skip for Now
-              </Button>
             )}
-            <Button type="submit" className="flex-1">
-              Create Workspace
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
-          </div>
+
+            {enableInvites && members.length > 0 && (
+              <div className="form-field">
+                <p className="text-xs font-bold text-muted-primary uppercase">
+                  Pending Invites ({members.length})
+                </p>
+                <div className="form-field">
+                  {members.map((email) => (
+                    <div
+                      key={email}
+                      className="flex items-center justify-between border-2 border-foreground bg-muted/30 p-2"
+                    >
+                      <span className="text-sm">{email}</span>
+                      <button
+                        type="button"
+                        onClick={() => removeMember(email)}
+                        className="text-muted-primary hover:text-destructive"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <div className="flex gap-3">
+              {onSkip && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="flex-1"
+                  onClick={onSkip}
+                >
+                  Skip for Now
+                </Button>
+              )}
+              <Button type="submit" className="flex-1">
+                {submitting ? "Saving…" : submitLabel}
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </div>
+          </fieldset>
+          {error && (
+            <p role="alert" className="text-sm leading-relaxed">
+              {error}
+            </p>
+          )}
         </form>
       </CardContent>
     </Card>

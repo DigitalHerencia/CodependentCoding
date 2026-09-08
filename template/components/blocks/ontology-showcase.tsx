@@ -66,7 +66,7 @@ export function OntologyShowcase({ items }: OntologyShowcaseProps) {
               <dl className="mt-8 space-y-5 text-sm">
                 <div>
                   <dt className="mb-2 font-bold uppercase">Workflow</dt>
-                  <dd className="font-mono wrap-break-word text-muted">
+                  <dd className="font-mono wrap-break-word text-muted-foreground">
                     {item.workflow}
                   </dd>
                 </div>
@@ -74,7 +74,7 @@ export function OntologyShowcase({ items }: OntologyShowcaseProps) {
                   <dt className="mb-2 font-bold uppercase">
                     Implementation surfaces
                   </dt>
-                  <dd className="space-y-2 font-mono wrap-break-word text-muted">
+                  <dd className="space-y-2 font-mono wrap-break-word text-muted-foreground">
                     {item.surfaces.map((surface) => (
                       <p key={surface}>{surface}</p>
                     ))}

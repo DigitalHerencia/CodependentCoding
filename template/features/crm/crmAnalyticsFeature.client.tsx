@@ -12,7 +12,7 @@ export function CrmAnalyticsFeatureClient() {
   return (
     <form
       aria-label="crm analytics command"
-      className="flex items-center gap-2"
+      className="flex w-full flex-wrap items-center gap-2 sm:w-auto"
       onSubmit={(event) => {
         event.preventDefault();
         setApplied(command.trim());
@@ -20,16 +20,12 @@ export function CrmAnalyticsFeatureClient() {
     >
       <Input
         aria-label="Filter or command"
-        className="h-8 w-48 rounded-none border-[#5b737a] bg-[#05070a] font-mono text-[0.65rem]"
+        className="w-full min-w-0 sm:w-48"
         onChange={(event) => setCommand(event.target.value)}
         placeholder="Type a command or search…"
         value={command}
       />
-      <Button
-        className="h-8 rounded-none font-mono text-[0.62rem]"
-        size="sm"
-        type="submit"
-      >
+      <Button className="shrink-0" size="sm" type="submit">
         Apply
       </Button>
       <span aria-live="polite" className="sr-only">

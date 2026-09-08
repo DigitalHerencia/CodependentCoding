@@ -1,10 +1,14 @@
-import { SharedOnboardingTemplate } from "@/components/templates/sharedOnboardingTemplate";
+import { redirect } from "next/navigation";
 import { OnboardingFeatureClient } from "@/features/onboarding/onboardingFeature.client";
-import { getOrganizationSettingsWorkflow } from "@/lib/workflows/organizationWorkflows";
+import { getOnboardingState } from "@/lib/fetchers/onboardingFetchers";
 
 export async function OnboardingFeature() {
-  await getOrganizationSettingsWorkflow();
+  const state = await getOnboardingState();
+  if (state.completed) redirect("/dashboard");
   return (
-    <SharedOnboardingTemplate clientIsland={<OnboardingFeatureClient />} />
+    <OnboardingFeatureClient
+      workspaceName={state.workspaceName}
+      canRename={state.canRename}
+    />
   );
 }

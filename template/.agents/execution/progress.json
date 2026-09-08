@@ -3,7 +3,7 @@
   "file": ".agents/execution/progress.json",
   "product": "The Maximal Template",
   "purpose": "Machine-readable tracker for the canonical eight-spec Maximal Template repair/build sequence.",
-  "updated_at": "2026-09-07T22:38:25.234072+00:00",
+  "updated_at": "2026-09-08T19:48:22.9469532Z",
   "tenant_auth_migration": {
     "status": "implemented",
     "authority": "Owner request to replace createRouteMatcher protection with existing auth helpers in the tenant layout.",
@@ -12,7 +12,9 @@
       "pnpm exec eslint proxy.ts 'app/(tenant)/layout.tsx' --max-warnings=0: passed",
       "pnpm exec prettier --check proxy.ts 'app/(tenant)/layout.tsx': passed"
     ],
-    "skipped": ["Typecheck, build, browser, and live Clerk checks"],
+    "skipped": [
+      "Typecheck, build, browser, and live Clerk checks"
+    ],
     "blocked": [],
     "inferred": "Signed-out tenant navigation redirects to /sign-in; runtime behavior was not exercised."
   },
@@ -71,7 +73,11 @@
       "Repository search found no remaining content/site or site.ts references in template/ or packages/.",
       "git diff --check: passed."
     ],
-    "skipped": ["Build", "Typecheck", "Browser verification"],
+    "skipped": [
+      "Build",
+      "Typecheck",
+      "Browser verification"
+    ],
     "blocked": [
       "pnpm exec eslint packages/core/src/template-artifact-catalog.ts --max-warnings=0: root typescript-eslint rejects TypeScript 7.0."
     ],
@@ -109,7 +115,11 @@
       "pnpm exec eslint app/layout.tsx components/shells/public-shell.tsx components/shells/tenant-shell.tsx components/shells/portal-shell.tsx components/shells/auth-shell.tsx --max-warnings=0: passed from template/",
       "git diff --check: passed"
     ],
-    "skipped": ["Build", "Typecheck", "Browser verification"],
+    "skipped": [
+      "Build",
+      "Typecheck",
+      "Browser verification"
+    ],
     "blocked": [],
     "inferred": [
       "Responsive main spacing is shared by public, tenant, portal, and auth shells through root-layout selectors."
@@ -260,6 +270,42 @@
     "blocked": [],
     "inferred": [
       "Responsive wrapping and compact label-control grouping reviewed statically; rendered appearance remains unverified."
+    ]
+  },
+  "frontend_browser_review": {
+    "status": "visual_review_complete_functional_gaps_remaining",
+    "updated_at": "2026-09-08T19:48:22.8375118Z",
+    "screenshots": "C:/Users/scree/.codex/visualizations/2026/09/07/01a07e01-3ab4-7210-95b3-eb8480cd6b00/frontend-review/index.html",
+    "executed": [
+      "118 screenshots: 50 static/auth route requests and 9 existing record URLs at desktop and mobile widths; no detected page-error screen or document overflow",
+      "Sidebar collapse and CRM tree link navigation; mobile Escape dismissal; landing Features anchor",
+      "Computed global styles: input font 16px, minimum height 44px, token-derived card background",
+      "pnpm exec tsc --noEmit --incremental false: passed",
+      "Focused ESLint across changed tracked TypeScript files: passed",
+      "pnpm exec tsx --test tests/onboarding.test.ts: 5 passed"
+    ],
+    "changes": [
+      "Corrected /signup to /sign-up and /features to /#features",
+      "Added actual Features anchor and reduced landing primary slab to primary/10",
+      "Mobile menu uses in-flow disclosure and Escape restores trigger focus",
+      "Repeated forms use global surface and typography utilities; removed nested labels and hardcoded palette values"
+    ],
+    "blocked": [
+      "Most record detail/edit views lack records in the signed-in workspace",
+      "Completed onboarding redirects to dashboard",
+      "SendGrid and Vercel Blob missing configuration in rendered integration status"
+    ],
+    "remaining": [
+      "Generic command controls echo local input without executing search or business operations",
+      "Create/edit forms review locally without persistent writes",
+      "Full CRUD acceptance and cross-tenant negative testing remain unverified",
+      "Production performance and provider health checks not run"
+    ],
+    "skipped": [
+      "No production build, deployment, migration, seeding, commit, push, or live provider mutation"
+    ],
+    "inferred": [
+      "Inspected admin fetchers derive tenant context server-side, apply permission checks and organization filters; this is not an adversarial runtime security test"
     ]
   }
 }

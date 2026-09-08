@@ -24,7 +24,7 @@ export function AuthShell({ children }: AuthShellProps) {
         <AuthHeader />
         <div className="flex flex-1 items-center px-6 pb-8 md:p-12">
           <div className="max-w-xl space-y-5">
-            <p className="eyebrow text-muted">{authContent.eyebrow}</p>
+            <p className="eyebrow text-muted-primary">{authContent.eyebrow}</p>
             <h1 className="uppercase">{authContent.title}</h1>
             <p className="reading-copy text-foreground/80">
               {authContent.description}
@@ -34,7 +34,7 @@ export function AuthShell({ children }: AuthShellProps) {
       </section>
       <section
         className={cn(
-          "auth-form-column flex min-w-0 flex-col bg-primary text-foreground",
+          "auth-form-column flex min-w-0 flex-col bg-primary/10 text-foreground",
           formOnLeft && "md:order-1",
         )}
       >

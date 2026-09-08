@@ -33,17 +33,17 @@ export function TaskEditForm({
 
   return (
     <form
-      className="mx-auto max-w-4xl space-y-5 border border-border bg-[#05070a] p-5"
+      className="mx-auto w-full max-w-4xl space-y-5 surface-card p-5"
       onSubmit={handleSubmit((values) => setReviewed(values))}
     >
       <header className="border-b border-border pb-4">
-        <p className="font-mono text-[0.62rem] tracking-wider text-[#8ec6d3] uppercase">
+        <p className="type-caption text-muted-primary uppercase">
           /projects/[projectId]/tasks/[taskId]/edit
         </p>
-        <h1 className="mt-1 font-mono text-2xl font-black">Edit Task</h1>
+        <h1 className="mt-1 type-title">Edit Task</h1>
       </header>
       <div className="grid gap-4 md:grid-cols-2">
-        <label className="space-y-2">
+        <div className="form-field">
           <Label htmlFor={`name-${recordId}`}>Name</Label>
           <Input
             id={`name-${recordId}`}
@@ -54,18 +54,18 @@ export function TaskEditForm({
               {errors.name.message}
             </span>
           ) : null}
-        </label>
-        <label className="space-y-2">
+        </div>
+        <div className="form-field">
           <Label htmlFor={`email-${recordId}`}>Email or owner</Label>
           <Input id={`email-${recordId}`} {...register("email")} />
-        </label>
-        <label className="space-y-2 md:col-span-2">
+        </div>
+        <div className="form-field md:col-span-2">
           <Label htmlFor={`status-${recordId}`}>Status</Label>
           <Input
             id={`status-${recordId}`}
             {...register("status", { required: "Status is required." })}
           />
-        </label>
+        </div>
       </div>
       <Button type="submit">Review changes</Button>
       {reviewed ? (

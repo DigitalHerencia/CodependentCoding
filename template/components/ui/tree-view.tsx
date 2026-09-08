@@ -1,18 +1,17 @@
 "use client";
 
 import * as React from "react";
+import Link from "next/link";
+import type { Route } from "next";
 import { ChevronRight, Folder, File } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
+import { Collapsible, CollapsibleContent } from "@/components/ui/collapsible";
 
 export interface TreeNode {
   id: string;
   label: string;
+  href?: Route;
   icon?: React.ReactNode;
   children?: TreeNode[];
   disabled?: boolean;
@@ -152,6 +151,37 @@ const TreeView = React.forwardRef<HTMLDivElement, TreeViewProps>(
         <div
           ref={ref}
           role="tree"
+          onKeyDown={(event) => {
+            if (!["ArrowDown", "ArrowUp", "Home", "End"].includes(event.key))
+              return;
+            const items = Array.from(
+              event.currentTarget.querySelectorAll<HTMLElement>(
+                '[role="treeitem"]',
+              ),
+            ).filter(
+              (item) =>
+                item.getClientRects().length &&
+                item.getAttribute("aria-disabled") !== "true",
+            );
+            const current = (event.target as HTMLElement).closest<HTMLElement>(
+              '[role="treeitem"]',
+            );
+            const index = current ? items.indexOf(current) : -1;
+            const next =
+              event.key === "Home"
+                ? 0
+                : event.key === "End"
+                  ? items.length - 1
+                  : Math.max(
+                      0,
+                      Math.min(
+                        items.length - 1,
+                        index + (event.key === "ArrowDown" ? 1 : -1),
+                      ),
+                    );
+            event.preventDefault();
+            items[next]?.focus();
+          }}
           className={cn(
             "border-3 border-foreground bg-background p-2",
             "shadow-[4px_4px_0px_hsl(var(--shadow-color))]",
@@ -216,6 +246,25 @@ function TreeNodeItem({ node, level }: TreeNodeProps) {
     }
   };
 
+  if (node.href && !hasChildren) {
+    return (
+      <Link
+        href={node.href}
+        role="treeitem"
+        aria-selected={isSelected}
+        aria-current={isSelected ? "page" : undefined}
+        className={cn(
+          "navigation-item border-l-2 border-transparent",
+          isSelected && "border-primary navigation-active",
+        )}
+        style={{ marginLeft: `${level * 16}px` }}
+      >
+        {node.icon}
+        <span>{node.label}</span>
+      </Link>
+    );
+  }
+
   const content = (
     <div
       role="treeitem"
@@ -234,8 +283,8 @@ function TreeNodeItem({ node, level }: TreeNodeProps) {
         }
       }}
       className={cn(
-        "flex cursor-pointer items-center gap-2 px-2 py-1.5 transition-colors",
-        "hover:bg-muted focus:bg-muted focus:outline-none",
+        "flex min-h-11 cursor-pointer items-center gap-2 px-2 py-2 type-label transition-colors",
+        "hover:bg-primary/20 focus-visible:outline-2 focus-visible:outline-ring",
         isSelected && "bg-accent",
         node.disabled && "cursor-not-allowed opacity-50",
       )}
@@ -252,7 +301,8 @@ function TreeNodeItem({ node, level }: TreeNodeProps) {
             }
           }}
           className="p-0.5 transition-colors hover:bg-muted-foreground/20"
-          aria-label={isExpanded ? "Collapse" : "Expand"}
+          tabIndex={-1}
+          aria-label={`${isExpanded ? "Collapse" : "Expand"} ${node.label}`}
         >
           <ChevronRight
             className={cn(
@@ -299,9 +349,7 @@ function TreeNodeItem({ node, level }: TreeNodeProps) {
 
   return (
     <Collapsible open={isExpanded}>
-      <CollapsibleTrigger asChild className="w-full">
-        {content}
-      </CollapsibleTrigger>
+      {content}
       <CollapsibleContent>
         <div role="group">
           {(node.children ?? []).map((child) => (

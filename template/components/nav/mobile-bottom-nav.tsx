@@ -44,7 +44,7 @@ export function MobileBottomNav({
             aria-current={
               isActivePath(pathname, item.href) ? "page" : undefined
             }
-            className="flex flex-col items-center justify-center gap-1 text-[10px] font-semibold text-muted uppercase aria-[current=page]:text-foreground"
+            className="flex flex-col items-center justify-center gap-1 text-[10px] font-semibold text-muted-foreground uppercase aria-[current=page]:text-foreground"
           >
             <Icon className="size-4" />
             {item.label}
@@ -57,7 +57,7 @@ export function MobileBottomNav({
 
 const publicItems = [
   { href: "/", label: "Home", icon: Home },
-  { href: "/features", label: "Features", icon: FileText },
+  { href: "/#features", label: "Features", icon: FileText },
   { href: "/faq", label: "FAQ", icon: HelpCircle },
   { href: "/sign-in", label: "Sign In", icon: ShieldCheck },
 ] satisfies readonly MobileBottomNavItem[];

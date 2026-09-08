@@ -42,6 +42,11 @@ palette:
   accent_count_target: 1_to_2
   simultaneous_multi_neon_palette: forbidden
   semantic_tokens_required: true
+  palette_sources: [background, foreground, primary, muted-primary]
+  aliases_derive_from_sources: true
+  opacity_steps: [10, 20, 30, 40, 50, 60, 70, 80, 90]
+  tenant_navigation_owner: components/shells/tenant-shell.tsx
+  nested_navigation_sidebar: forbidden
 
 geometry:
   strong_borders: true

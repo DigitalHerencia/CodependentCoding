@@ -4,7 +4,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils/cn";
 
 const buttonVariants = cva(
-  "bk-interactive inline-flex items-center justify-center gap-2 border-3 border-foreground type-action whitespace-nowrap uppercase focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+  "bk-interactive control-action whitespace-nowrap uppercase [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
   {
     variants: {
       variant: {
@@ -18,16 +18,15 @@ const buttonVariants = cva(
           "bg-destructive text-destructive-foreground shadow-[4px_4px_0px_hsl(var(--shadow-color))] hover:translate-x-[4px] hover:translate-y-[4px] hover:shadow-none active:translate-x-[4px] active:translate-y-[4px] active:shadow-none",
         outline:
           "bg-background text-foreground shadow-[4px_4px_0px_hsl(var(--shadow-color))] hover:translate-x-[4px] hover:translate-y-[4px] hover:shadow-none active:translate-x-[4px] active:translate-y-[4px] active:shadow-none",
-        ghost:
-          "border-transparent shadow-none hover:border-foreground hover:bg-muted",
-        link: "border-transparent type-link tracking-normal text-foreground normal-case shadow-none",
+        ghost: "shadow-none hover:bg-muted",
+        link: "type-link tracking-normal text-foreground normal-case shadow-none",
         noShadow: "bg-primary text-primary-foreground",
         reverse:
           "bg-primary text-primary-foreground hover:translate-x-[-4px] hover:translate-y-[-4px] hover:shadow-[4px_4px_0px_hsl(var(--shadow-color))]",
       },
       size: {
         default: "h-11 px-5 py-2",
-        sm: "h-9 px-4 text-xs",
+        sm: "h-9 min-h-9 px-4 text-xs",
         lg: "h-12 px-8 text-base",
         xl: "h-14 px-10 text-lg",
         icon: "h-11 w-11",

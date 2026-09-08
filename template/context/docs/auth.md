@@ -242,3 +242,20 @@ The webhook endpoint must subscribe to `user.created`, `user.updated`, and `user
 `DATABASE_URL` must target the same migrated template database as `DIRECT_DATABASE_URL`. In development, the database client prefers the explicit `.env.local` DATABASE_URL over inherited shell values and refreshes its cached client when the connection changes. Production retains environment-variable precedence. Do not migrate an unrelated database to hide a targeting error.
 
 Focused webhook verification: `pnpm exec tsx --test tests/auth-webhooks.integration.test.ts`. Set `AUTH_WEBHOOK_DB_TEST=1` and the intended development `DATABASE_URL` to include the live Neon transaction test. The test deliberately rolls back all writes. Browser authentication and webhook delivery through ngrok remain separate checks.
+
+## Required first-sign-in setup
+
+Tenant pages require completed workspace confirmation after authentication.
+`/onboarding` lives in the authenticated `(setup)` group to avoid redirect loops.
+It reuses `WorkspaceSetup`; the client calls `completeOnboarding`, whose transaction
+resolves membership from the authenticated identity. Client-supplied tenant IDs are
+rejected. Workspace renaming requires `organization:write`; other members can
+confirm the existing name. Invitations are hidden until backed by a delivery flow.
+
+The durable `membership.onboarding.completed` audit event records completion per
+membership. Preserve these events when applying audit retention: they are lifecycle
+state, not disposable diagnostic logs. Membership locking serializes repeat submits.
+No event means setup is required, including for previously provisioned users.
+The layout gate controls navigation; existing resource-level authorization remains
+mandatory for every read and mutation. No seed data or new organization is created
+by completing setup.

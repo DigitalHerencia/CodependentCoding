@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/card";
 import { cn } from "@/lib/utils/cn";
 export function FeatureContentGrid({
+  id,
   title,
   introduction,
   items,
@@ -16,6 +17,7 @@ export function FeatureContentGrid({
   columns = 3,
   className,
 }: {
+  id?: string;
   title: string;
   introduction?: React.ReactNode;
   items: readonly { title: string; content: React.ReactNode }[];
@@ -24,7 +26,7 @@ export function FeatureContentGrid({
   className?: string;
 }) {
   return (
-    <section className={cn("px-6 py-16 sm:px-10 lg:px-12", className)}>
+    <section id={id} className={cn("px-6 py-16 sm:px-10 lg:px-12", className)}>
       <div className="mx-auto max-w-7xl">
         <h2 className="mb-10 text-center text-3xl font-black tracking-tight uppercase">
           {title}
@@ -180,7 +182,7 @@ export function FeatureGridWithIcons({
             <Card
               key={feature.title}
               className={cn(
-                "group transition hover:-translate-x-1er:translate-y-[-4px] hover:shadow-[8px_8px_0px_hsl(var(--shadow-color))]",
+                "group hover:-translate-x-1er:translate-y-[-4px] transition hover:shadow-[8px_8px_0px_hsl(var(--shadow-color))]",
                 featureColors[index % 6],
               )}
             >

@@ -9,7 +9,7 @@ const Card = React.forwardRef<
     ref={ref}
     role={role}
     className={cn(
-      "bk-interactive border-3 border-foreground bg-card text-card-foreground shadow-[4px_4px_0px_hsl(var(--shadow-color))]",
+      "bk-interactive surface-card",
       interactive &&
         "cursor-pointer hover:translate-x-[4px] hover:translate-y-[4px] hover:shadow-none active:translate-x-[4px] active:translate-y-[4px] active:shadow-none",
       className,
@@ -23,14 +23,7 @@ const CardHeader = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn(
-      "flex flex-col space-y-1.5 border-b-3 border-foreground p-6",
-      className,
-    )}
-    {...props}
-  />
+  <div ref={ref} className={cn("surface-header", className)} {...props} />
 ));
 CardHeader.displayName = "CardHeader";
 
@@ -52,7 +45,7 @@ const CardDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn("text-sm leading-relaxed text-card-foreground/90", className)}
+    className={cn("text-sm leading-relaxed text-foreground/80", className)}
     {...props}
   />
 ));
@@ -62,7 +55,7 @@ const CardContent = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => (
-  <div ref={ref} className={cn("p-6", className)} {...props} />
+  <div ref={ref} className={cn("surface-body", className)} {...props} />
 ));
 CardContent.displayName = "CardContent";
 
@@ -70,14 +63,7 @@ const CardFooter = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn(
-      "flex items-center border-t-3 border-foreground bg-muted/50 p-6",
-      className,
-    )}
-    {...props}
-  />
+  <div ref={ref} className={cn("surface-footer", className)} {...props} />
 ));
 CardFooter.displayName = "CardFooter";
 

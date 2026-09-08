@@ -245,3 +245,28 @@ use contrast, size, weight, and spacing together to establish hierarchy. Input t
 remains at 1rem. Auth content aligns left, password visibility sits beside its
 label, and secondary navigation follows a divider below the primary action.
 Preserve authored copy when changing presentation.
+
+## 14. Palette and navigation refinement
+
+The four palette sources in `app/globals.css` are `background`, `foreground`,
+`primary`, and `muted-primary`. Semantic component aliases remain compatible but
+must derive from these four sources. Use opacity in 10-percent steps for surface
+depth, borders, selection, and emphasis; do not introduce independent gray or
+status palettes. Low-opacity accents are decorative. Text and control indicators
+must retain sufficient contrast against the actual composited surface.
+
+`TenantShell` owns the one collapsible application sidebar. Domains have controlled
+expansion and route children, with a mobile navigation disclosure. `DashboardLayout`
+owns page content and optional contextual content, not a second navigation rail.
+Branding uses the supplied favicon mark and a two-line text lockup.
+
+Shared composition utilities also live in `app/globals.css`: `surface-card`,
+`surface-popover`, `surface-inset`, `surface-header`, `surface-body`,
+`surface-footer`, `control-field`, `control-action`, `navigation-item`, and
+`navigation-active`. Shared card, input, button, dashboard, and navigation
+components consume these roles. Use native Tailwind utilities for local layout
+exceptions rather than repeating an entire surface definition.
+
+### Owner-directed surface corrections (2026-09-08)
+
+All button controls use a 3px foreground border, including ghost and link variants. Dashboard supplemental content follows the main content vertically; no right-hand rail may reserve main-content width.

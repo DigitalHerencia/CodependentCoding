@@ -3,7 +3,7 @@
   "file": ".agents/execution/handoff.json",
   "product": "The Maximal Template",
   "purpose": "Current handoff state for the next implementation agent.",
-  "updated_at": "2026-09-07T22:38:25.235610+00:00",
+  "updated_at": "2026-09-08T19:48:23.0275522Z",
   "tenant_auth_migration": {
     "status": "implemented",
     "evidence": ".agents/execution/progress.json#tenant_auth_migration",
@@ -123,6 +123,42 @@
     "resume_notes": [
       "Typography authority: context/docs/design.md section 13 and app/globals.css.",
       "Auth and shared primitives updated; copy and provider logic preserved. Browser verification remains unrun."
+    ]
+  },
+  "frontend_browser_review": {
+    "status": "visual_review_complete_functional_gaps_remaining",
+    "updated_at": "2026-09-08T19:48:22.8375118Z",
+    "screenshots": "C:/Users/scree/.codex/visualizations/2026/09/07/01a07e01-3ab4-7210-95b3-eb8480cd6b00/frontend-review/index.html",
+    "executed": [
+      "118 screenshots: 50 static/auth route requests and 9 existing record URLs at desktop and mobile widths; no detected page-error screen or document overflow",
+      "Sidebar collapse and CRM tree link navigation; mobile Escape dismissal; landing Features anchor",
+      "Computed global styles: input font 16px, minimum height 44px, token-derived card background",
+      "pnpm exec tsc --noEmit --incremental false: passed",
+      "Focused ESLint across changed tracked TypeScript files: passed",
+      "pnpm exec tsx --test tests/onboarding.test.ts: 5 passed"
+    ],
+    "changes": [
+      "Corrected /signup to /sign-up and /features to /#features",
+      "Added actual Features anchor and reduced landing primary slab to primary/10",
+      "Mobile menu uses in-flow disclosure and Escape restores trigger focus",
+      "Repeated forms use global surface and typography utilities; removed nested labels and hardcoded palette values"
+    ],
+    "blocked": [
+      "Most record detail/edit views lack records in the signed-in workspace",
+      "Completed onboarding redirects to dashboard",
+      "SendGrid and Vercel Blob missing configuration in rendered integration status"
+    ],
+    "remaining": [
+      "Generic command controls echo local input without executing search or business operations",
+      "Create/edit forms review locally without persistent writes",
+      "Full CRUD acceptance and cross-tenant negative testing remain unverified",
+      "Production performance and provider health checks not run"
+    ],
+    "skipped": [
+      "No production build, deployment, migration, seeding, commit, push, or live provider mutation"
+    ],
+    "inferred": [
+      "Inspected admin fetchers derive tenant context server-side, apply permission checks and organization filters; this is not an adversarial runtime security test"
     ]
   }
 }

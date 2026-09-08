@@ -9,17 +9,30 @@
   --font-mono: var(--font-code), ui-monospace, monospace;
   --color-background: hsl(var(--background));
   --color-foreground: hsl(var(--foreground));
-  --color-card: hsl(var(--card));
+  --color-card: color-mix(
+    in srgb,
+    hsl(var(--muted-primary)) 10%,
+    hsl(var(--background))
+  );
   --color-card-foreground: hsl(var(--card-foreground));
-  --color-popover: hsl(var(--popover));
+  --color-popover: color-mix(
+    in srgb,
+    hsl(var(--muted-primary)) 20%,
+    hsl(var(--background))
+  );
   --color-popover-foreground: hsl(var(--popover-foreground));
   --color-primary: hsl(var(--primary));
+  --color-muted-primary: hsl(var(--muted-primary));
   --color-primary-foreground: hsl(var(--primary-foreground));
   --color-secondary: hsl(var(--secondary));
   --color-secondary-foreground: hsl(var(--secondary-foreground));
   --color-accent: hsl(var(--accent));
   --color-accent-foreground: hsl(var(--accent-foreground));
-  --color-muted: hsl(var(--muted));
+  --color-muted: color-mix(
+    in srgb,
+    hsl(var(--foreground)) 10%,
+    hsl(var(--background))
+  );
   --color-muted-foreground: hsl(var(--muted-foreground));
   --color-destructive: hsl(var(--destructive));
   --color-destructive-foreground: hsl(var(--destructive-foreground));
@@ -90,76 +103,77 @@
   --motion-base: 160ms;
   --motion-slow: 240ms;
   --motion-ease: cubic-bezier(0.2, 0, 0, 1);
-  /* Base Colors */
+  /* The only four palette sources. All other colors are compatibility aliases. */
   --background: 248 50% 3%;
   --foreground: 42 74% 94%;
+  --muted-primary: 193 23% 59%;
 
   /* Primary */
   --primary: 193 50% 32%;
-  --primary-foreground: 42 74% 94%;
+  --primary-foreground: var(--foreground);
 
   /* Secondary */
-  --secondary: 193 50% 32%;
-  --secondary-foreground: 42 74% 94%;
+  --secondary: var(--primary);
+  --secondary-foreground: var(--foreground);
 
   /* Accent */
-  --accent: 193 50% 32%;
-  --accent-foreground: 42 74% 94%;
+  --accent: var(--primary);
+  --accent-foreground: var(--foreground);
 
   /* Muted */
-  --muted: 193 23% 59%;
-  --muted-foreground: 0 0% 0%;
+  --muted: var(--background);
+  --muted-foreground: var(--muted-primary);
 
   /* Card & Popover */
-  --card: 193 50% 32%;
-  --card-foreground: 42 74% 94%;
-  --popover: 193 50% 32%;
-  --popover-foreground: 42 74% 94%;
+  --card: var(--background);
+  --card-foreground: var(--foreground);
+  --popover: var(--background);
+  --popover-foreground: var(--foreground);
 
   /* Destructive */
-  --destructive: 193 23% 59%;
-  --destructive-foreground: 0 0% 0%;
+  --destructive: var(--muted-primary);
+  --destructive-foreground: var(--background);
 
   /* Status — success / warning / info */
-  --success: 193 50% 32%;
-  --success-foreground: 42 74% 94%;
-  --warning: 193 23% 59%;
-  --warning-foreground: 0 0% 0%;
-  --info: 193 50% 32%;
-  --info-foreground: 42 74% 94%;
+  --success: var(--primary);
+  --success-foreground: var(--foreground);
+  --warning: var(--muted-primary);
+  --warning-foreground: var(--background);
+  --info: var(--primary);
+  --info-foreground: var(--foreground);
 
   /* Border & Input */
-  --border: 42 74% 94%;
-  --input: 42 74% 94%;
-  --ring: 42 74% 94%;
+  --border: var(--foreground);
+  --input: var(--foreground);
+  --ring: var(--foreground);
 
   /* Radius - Minimal for neubrutalism */
   --radius: 0rem;
 
   /* BoldKit specific */
-  --shadow-color: 193 50% 32%;
+  --shadow-color: var(--primary);
   --shadow-offset: 12px;
   --border-width: 5px;
 
   /* Chart colors */
-  --chart-1: 193 50% 32%;
-  --chart-2: 193 23% 59%;
-  --chart-3: 193 50% 32%;
-  --chart-4: 193 50% 32%;
-  --chart-5: 193 23% 59%;
+  --chart-1: var(--primary);
+  --chart-2: var(--muted-primary);
+  --chart-3: var(--primary);
+  --chart-4: var(--primary);
+  --chart-5: var(--muted-primary);
 
   /* Neon colors */
-  --neon-pink: 193 50% 32%;
-  --neon-green: 193 23% 59%;
-  --neon-blue: 193 50% 32%;
-  --neon-orange: 193 23% 59%;
-  --neon-purple: 193 50% 32%;
+  --neon-pink: var(--primary);
+  --neon-green: var(--muted-primary);
+  --neon-blue: var(--primary);
+  --neon-orange: var(--muted-primary);
+  --neon-purple: var(--primary);
 
   /* Clash colors */
-  --clash-1: 193 23% 59%;
-  --clash-2: 193 50% 32%;
-  --clash-3: 193 23% 59%;
-  --clash-4: 193 50% 32%;
+  --clash-1: var(--muted-primary);
+  --clash-2: var(--primary);
+  --clash-3: var(--muted-primary);
+  --clash-4: var(--primary);
 }
 
 @layer base {
@@ -283,6 +297,62 @@
 
 @utility form-field {
   @apply grid gap-1.5 text-left;
+}
+
+/* Shared surfaces: opaque composites keep text contrast independent of parents. */
+@utility surface-card {
+  @apply border border-foreground/20 text-foreground;
+  background-color: color-mix(
+    in srgb,
+    hsl(var(--muted-primary)) 10%,
+    hsl(var(--background))
+  );
+}
+
+@utility surface-popover {
+  @apply border border-foreground/30 text-foreground;
+  background-color: color-mix(
+    in srgb,
+    hsl(var(--muted-primary)) 20%,
+    hsl(var(--background))
+  );
+}
+
+@utility surface-inset {
+  @apply border border-foreground/20 bg-background text-foreground;
+}
+
+@utility surface-header {
+  @apply flex flex-col gap-2 border-b border-foreground/20 px-5 py-4;
+}
+
+@utility surface-body {
+  @apply p-5;
+}
+
+@utility surface-footer {
+  @apply flex flex-wrap items-center gap-3 border-t border-foreground/20 px-5 py-4;
+}
+
+@utility control-field {
+  @apply min-h-11 w-full border border-foreground/40 bg-background px-3 py-2 font-sans text-base leading-normal tracking-normal text-foreground placeholder:text-foreground/60 focus-visible:border-muted-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-muted-primary disabled:cursor-not-allowed disabled:opacity-50;
+}
+
+@utility control-action {
+  @apply inline-flex min-h-11 items-center justify-center gap-2 border-3 border-foreground px-4 py-2 type-action focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-muted-primary disabled:pointer-events-none disabled:opacity-50;
+}
+
+/* Button borders are a sitewide invariant, including provider and custom controls. */
+:is(button, [role="button"], .control-action) {
+  border: 3px solid hsl(var(--foreground)) !important;
+}
+
+@utility navigation-item {
+  @apply flex min-h-11 items-center gap-2 px-3 py-2 type-label text-foreground no-underline hover:bg-primary/10 focus-visible:outline-2 focus-visible:outline-muted-primary;
+}
+
+@utility navigation-active {
+  @apply bg-primary/20 font-semibold text-foreground;
 }
 
 @layer utilities {

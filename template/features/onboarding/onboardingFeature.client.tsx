@@ -1,40 +1,45 @@
 "use client";
-
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { WorkspaceSetup } from "@/components/blocks/onboarding-flow";
+import { completeOnboarding } from "@/lib/actions/onboardingActions";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-
-export function OnboardingFeatureClient() {
-  const [command, setCommand] = useState("");
-  const [applied, setApplied] = useState("");
-
+export function OnboardingFeatureClient({
+  workspaceName,
+  canRename,
+}: {
+  workspaceName: string;
+  canRename: boolean;
+}) {
+  const router = useRouter();
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
   return (
-    <form
-      aria-label="onboarding command"
-      className="flex items-center gap-2"
-      onSubmit={(event) => {
-        event.preventDefault();
-        setApplied(command.trim());
+    <WorkspaceSetup
+      initialName={workspaceName}
+      canRename={canRename}
+      enableInvites={false}
+      title="Your workspace"
+      description={
+        canRename
+          ? "Confirm your workspace name to get started."
+          : "Confirm your workspace to get started. Your administrator manages its name."
+      }
+      submitLabel="Save and continue"
+      submitting={submitting}
+      error={error}
+      onSubmit={async ({ name }) => {
+        setError("");
+        setSubmitting(true);
+        try {
+          await completeOnboarding({ name });
+          router.replace("/dashboard");
+          router.refresh();
+        } catch {
+          setError("Unable to save workspace setup. Please try again.");
+          setSubmitting(false);
+        }
       }}
-    >
-      <Input
-        aria-label="Filter or command"
-        className="h-8 w-48 rounded-none border-[#5b737a] bg-[#05070a] font-mono text-[0.65rem]"
-        onChange={(event) => setCommand(event.target.value)}
-        placeholder="Type a command or search…"
-        value={command}
-      />
-      <Button
-        className="h-8 rounded-none font-mono text-[0.62rem]"
-        size="sm"
-        type="submit"
-      >
-        Apply
-      </Button>
-      <span aria-live="polite" className="sr-only">
-        {applied ? `Applied: ${applied}` : "No command applied"}
-      </span>
-    </form>
+    />
   );
 }

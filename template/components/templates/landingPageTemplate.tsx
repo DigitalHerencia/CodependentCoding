@@ -31,13 +31,14 @@ export function LandingPageTemplate() {
         className="h-auto w-full"
       />
       <FeatureContentGrid
+        id="features"
         title={landingCopy.pipelineTitle}
         items={pipelineCards}
-        className="bg-background py-32 text-foreground"
+        className="scroll-mt-20 bg-background py-16 text-foreground md:py-24"
       />
       <TestimonialsGrid
         title={landingCopy.testimonialsTitle}
-        className="bg-primary py-24 text-background"
+        className="border-y border-foreground/20 bg-primary/10 py-16 text-foreground md:py-24"
         cardClassName="bg-background text-foreground [&_svg]:text-foreground"
         testimonials={landingCopy.testimonials}
       />
