@@ -137,7 +137,6 @@ export function SignInFeature() {
 
   return (
     <LoginForm
-      className="text-center text-2xl"
       title={
         step === "password"
           ? "Welcome back"
@@ -157,12 +156,12 @@ export function SignInFeature() {
     >
       <form
         onSubmit={form.handleSubmit(submit)}
-        className="space-y-5"
+        className="space-y-4"
         aria-busy={busy}
       >
-        <fieldset disabled={busy} className="space-y-5 disabled:opacity-70">
+        <fieldset disabled={busy} className="space-y-4 disabled:opacity-70">
           {(step === "password" || step === "recover") && (
-            <div className="space-y-2">
+            <div className="form-field">
               <Label htmlFor="signin-username">Username</Label>
               <Input
                 id="signin-username"
@@ -173,10 +172,22 @@ export function SignInFeature() {
             </div>
           )}
           {(step === "password" || step === "new-password") && (
-            <div className="space-y-2">
-              <Label htmlFor="signin-password">
-                {step === "new-password" ? "New password" : "Password"}
-              </Label>
+            <div className="form-field">
+              <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
+                <Label htmlFor="signin-password">
+                  {step === "new-password" ? "New password" : "Password"}
+                </Label>
+                <Button
+                  type="button"
+                  variant="link"
+                  size="sm"
+                  className="h-auto min-h-8 px-0 py-1"
+                  aria-pressed={showPassword}
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? "Hide password" : "Show password"}
+                </Button>
+              </div>
               <Input
                 id="signin-password"
                 type={showPassword ? "text" : "password"}
@@ -186,19 +197,10 @@ export function SignInFeature() {
                 required
                 {...form.register("password", { required: true })}
               />
-              <Button
-                type="button"
-                variant="link"
-                size="sm"
-                aria-pressed={showPassword}
-                onClick={() => setShowPassword(!showPassword)}
-              >
-                {showPassword ? "Hide password" : "Show password"}
-              </Button>
             </div>
           )}
           {(step === "reset-code" || step === "mfa") && (
-            <div className="space-y-2">
+            <div className="form-field">
               <Label htmlFor="signin-code">
                 {factor === "backup_code" && step === "mfa"
                   ? "Backup code"
@@ -214,7 +216,7 @@ export function SignInFeature() {
             </div>
           )}
           {message && (
-            <p role="alert" className="text-sm">
+            <p role="alert" className="text-sm leading-relaxed">
               {message}
             </p>
           )}
@@ -233,6 +235,7 @@ export function SignInFeature() {
             <Button
               type="button"
               variant="link"
+              className="h-auto min-h-9 px-0 py-1"
               onClick={async () => {
                 setMessage("");
                 try {
@@ -294,6 +297,7 @@ export function SignInFeature() {
             <Button
               type="button"
               variant="link"
+              className="h-auto min-h-9 px-0 py-1"
               onClick={async () => {
                 await signIn.reset();
                 form.reset();
@@ -305,11 +309,12 @@ export function SignInFeature() {
             </Button>
           )}
         </fieldset>
-        <div className="flex flex-row flex-wrap items-center justify-center gap-2 text-sm">
+        <div className="flex flex-col items-start gap-2 border-t border-foreground/30 pt-4 text-sm">
           {step === "password" && (
             <Button
               type="button"
               variant="link"
+              className="h-auto min-h-9 px-0 py-1"
               onClick={() => {
                 form.resetField("password");
                 setMessage("");
@@ -321,10 +326,7 @@ export function SignInFeature() {
           )}
           <span>
             New here?{" "}
-            <Link
-              href="/sign-up"
-              className="font-bold underline underline-offset-4"
-            >
+            <Link href="/sign-up" className="type-link">
               Create an account
             </Link>
           </span>

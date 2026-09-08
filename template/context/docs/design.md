@@ -220,3 +220,28 @@ Preferred calls to action demonstrate exploration:
 - see architecture in action.
 
 Sign-in/sign-up remain available as demonstrated capabilities but are not the primary gateway to the public demo.
+
+## 13. Typography
+
+`app/globals.css` owns the sitewide Tailwind v4 typography system. Keep the
+three existing font families: Archivo Black for display headings, JetBrains Mono
+for reading and controls, and Fira Code for code, keyboard notation, and samples.
+Archivo Black uses its native 400 weight; small h5/h6 headings use body-font weight
+for hierarchy without oversized display lettering.
+
+- `text-heading-1` through `text-heading-6` define the heading scale, leading, and
+  tracking. Semantic h1–h6 elements inherit these defaults; h1–h3 scale fluidly.
+- `type-title` is the compact display title for cards and auth form headings.
+- `type-body`, `type-lead`, and `type-caption` distinguish reading, introductions,
+  and supporting metadata. `reading-copy` adds a prose measure and paragraph rhythm.
+- `eyebrow` is the restrained uppercase context label, not a competing headline.
+- `type-label` uses sentence case, normal tracking, and sufficient line height.
+  `form-field` groups a left-aligned label and control with a compact gap.
+- `type-action` standardizes button text; `type-link` uses a persistent underline
+  and a heavier hover underline so links do not depend on color alone.
+
+Type roles do not assign surface colors. Pair foreground with its owning surface;
+use contrast, size, weight, and spacing together to establish hierarchy. Input text
+remains at 1rem. Auth content aligns left, password visibility sits beside its
+label, and secondary navigation follows a divider below the primary action.
+Preserve authored copy when changing presentation.

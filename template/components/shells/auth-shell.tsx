@@ -23,12 +23,12 @@ export function AuthShell({ children }: AuthShellProps) {
       >
         <AuthHeader />
         <div className="flex flex-1 items-center px-6 pb-8 md:p-12">
-          <div className="max-w-xl space-y-4 uppercase">
-            <p className="eyebrow text-lg text-primary">
-              {authContent.eyebrow}
-            </p>
+          <div className="max-w-xl space-y-5">
+            <p className="eyebrow text-muted">{authContent.eyebrow}</p>
             <h1 className="uppercase">{authContent.title}</h1>
-            <p className="text-foreground/80">{authContent.description}</p>
+            <p className="reading-copy text-foreground/80">
+              {authContent.description}
+            </p>
           </div>
         </div>
       </section>
@@ -38,10 +38,10 @@ export function AuthShell({ children }: AuthShellProps) {
           formOnLeft && "md:order-1",
         )}
       >
-        <div className="mt-28 flex flex-1 flex-col items-center justify-center px-6 pb-8 md:p-12">
+        <div className="flex flex-1 flex-col items-center justify-center px-6 py-10 md:p-12">
           <div className="w-full max-w-md">
-            <div className="mb-2 flex scale-125 justify-center">
-              <LogoLockup />
+            <div className="mb-6 border-b border-foreground/30 pb-4">
+              <LogoLockup className="inline-block bg-foreground px-2 py-1 eyebrow text-xs text-background" />
             </div>
             {children}
           </div>

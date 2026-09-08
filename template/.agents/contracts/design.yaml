@@ -113,3 +113,26 @@ public_positioning:
   primary_goal: explore_the_application_factory
   signup_funnel_as_primary_frame: forbidden
   sign_in_and_sign_up_as_capability_examples: allowed
+
+typography:
+  source: app/globals.css
+  display_font: Archivo Black
+  body_font: JetBrains Mono
+  code_font: Fira Code
+  heading_scale: text-heading-1 through text-heading-6
+  roles:
+    [
+      type-title,
+      type-body,
+      type-lead,
+      type-caption,
+      eyebrow,
+      type-label,
+      type-action,
+      type-link,
+    ]
+  reading_composition: reading-copy
+  field_composition: form-field
+  auth_alignment: left
+  input_font_size: 1rem
+  preserve_authored_copy: true

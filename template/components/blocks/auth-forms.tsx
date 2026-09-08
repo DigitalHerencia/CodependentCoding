@@ -70,11 +70,13 @@ export function LoginForm({
   // Features supply their own controlled form; the block owns presentation only.
   if (children) {
     return (
-      <div className={cn("w-full space-y-4 bg-transparent", className)}>
+      <div
+        className={cn("w-full space-y-6 bg-transparent text-left", className)}
+      >
         {logo}
         <div className="space-y-2">
-          <h2 className="text-center text-3xl font-black uppercase">{title}</h2>
-          <p className="text-base leading-relaxed">{description}</p>
+          <h2 className="type-title uppercase">{title}</h2>
+          <p className="max-w-prose type-body">{description}</p>
         </div>
         {children}
       </div>
@@ -284,11 +286,13 @@ export function SignUpForm({
   // Features supply their own controlled form; the block owns presentation only.
   if (children) {
     return (
-      <div className={cn("w-full space-y-6 bg-transparent", className)}>
+      <div
+        className={cn("w-full space-y-6 bg-transparent text-left", className)}
+      >
         {logo}
         <div className="space-y-2">
-          <h2 className="text-2xl font-black uppercase">{title}</h2>
-          <p className="text-base leading-relaxed">{description}</p>
+          <h2 className="type-title uppercase">{title}</h2>
+          <p className="max-w-prose type-body">{description}</p>
         </div>
         {children}
       </div>

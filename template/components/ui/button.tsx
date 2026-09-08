@@ -4,7 +4,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils/cn";
 
 const buttonVariants = cva(
-  "bk-interactive inline-flex items-center justify-center gap-2 border-3 border-foreground text-sm font-bold tracking-wide whitespace-nowrap uppercase focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+  "bk-interactive inline-flex items-center justify-center gap-2 border-3 border-foreground type-action whitespace-nowrap uppercase focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
   {
     variants: {
       variant: {
@@ -20,7 +20,7 @@ const buttonVariants = cva(
           "bg-background text-foreground shadow-[4px_4px_0px_hsl(var(--shadow-color))] hover:translate-x-[4px] hover:translate-y-[4px] hover:shadow-none active:translate-x-[4px] active:translate-y-[4px] active:shadow-none",
         ghost:
           "border-transparent shadow-none hover:border-foreground hover:bg-muted",
-        link: "border-transparent text-foreground underline-offset-6 shadow-none hover:scale-115 hover:text-primary hover:underline",
+        link: "border-transparent type-link tracking-normal text-foreground normal-case shadow-none",
         noShadow: "bg-primary text-primary-foreground",
         reverse:
           "bg-primary text-primary-foreground hover:translate-x-[-4px] hover:translate-y-[-4px] hover:shadow-[4px_4px_0px_hsl(var(--shadow-color))]",

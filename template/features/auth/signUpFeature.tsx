@@ -92,7 +92,6 @@ export function SignUpFeature() {
 
   return (
     <SignUpForm
-      className="mx-auto text-center text-2xl"
       title={verifying ? "Verify your email" : "Create an account"}
       description={
         verifying
@@ -102,13 +101,13 @@ export function SignUpFeature() {
     >
       <form
         onSubmit={form.handleSubmit(submit)}
-        className="space-y-5"
+        className="space-y-4"
         aria-busy={busy}
       >
-        <fieldset disabled={busy} className="space-y-3 disabled:opacity-70">
+        <fieldset disabled={busy} className="space-y-4 disabled:opacity-70">
           {!verifying ? (
             <>
-              <div className="space-y-2">
+              <div className="form-field">
                 <Label htmlFor="signup-username" className="text-left">
                   Username
                 </Label>
@@ -119,7 +118,7 @@ export function SignUpFeature() {
                   {...form.register("username", { required: true })}
                 />
               </div>
-              <div className="space-y-2">
+              <div className="form-field">
                 <Label htmlFor="signup-email" className="text-left">
                   Email
                 </Label>
@@ -131,10 +130,22 @@ export function SignUpFeature() {
                   {...form.register("emailAddress", { required: true })}
                 />
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="signup-password" className="text-left">
-                  Password
-                </Label>
+              <div className="form-field">
+                <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
+                  <Label htmlFor="signup-password" className="text-left">
+                    Password
+                  </Label>
+                  <Button
+                    type="button"
+                    variant="link"
+                    size="sm"
+                    className="h-auto min-h-8 px-0 py-1"
+                    aria-pressed={showPassword}
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? "Hide password" : "Show password"}
+                  </Button>
+                </div>
                 <Input
                   id="signup-password"
                   type={showPassword ? "text" : "password"}
@@ -142,23 +153,13 @@ export function SignUpFeature() {
                   required
                   {...form.register("password", { required: true })}
                 />
-                <Button
-                  type="button"
-                  variant="link"
-                  size="sm"
-                  aria-pressed={showPassword}
-                  onClick={() => setShowPassword(!showPassword)}
-                >
-                  {showPassword ? "Hide password" : "Show password"}
-                </Button>
               </div>
             </>
           ) : (
-            <div className="text-left">
+            <div className="form-field">
               <Label htmlFor="signup-code">Verification code</Label>
               <Input
                 id="signup-code"
-                className="mt-2"
                 autoComplete="one-time-code"
                 inputMode="numeric"
                 required
@@ -167,7 +168,7 @@ export function SignUpFeature() {
             </div>
           )}
           {message && (
-            <p role="alert" className="text-left text-sm">
+            <p role="alert" className="text-left text-sm leading-relaxed">
               {message}
             </p>
           )}
@@ -179,7 +180,7 @@ export function SignUpFeature() {
                 : "Create account"}
           </Button>
           {verifying && (
-            <div className="flex flex-row justify-center gap-2">
+            <div className="flex flex-wrap gap-2">
               <Button
                 type="button"
                 variant="link"
@@ -212,12 +213,9 @@ export function SignUpFeature() {
         </fieldset>
         {/* Smart CAPTCHA stays mounted and may display a challenge when Clerk requires one. */}
         <div id="clerk-captcha" />
-        <p className="text-center text-sm">
+        <p className="border-t border-foreground/30 pt-4 text-sm">
           Already have an account?{" "}
-          <Link
-            href="/sign-in"
-            className="font-bold underline underline-offset-4"
-          >
+          <Link href="/sign-in" className="type-link">
             Sign in
           </Link>
         </p>
