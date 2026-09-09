@@ -218,3 +218,19 @@ Visual governance follows the implemented token system and component architectur
 Do not restyle the codebase to satisfy stale prose.
 
 When a design decision is ambiguous, ask the owner before changing the visual system.
+
+## Domain compositions and interactions
+
+The owner requires distinct page compositions matched to business workflows. A shared shell is not a complete domain interface, and repeating a stats row, generic record table, and duplicate summary cards does not satisfy this requirement.
+
+- CRM uses an opportunity stage board, lead qualification queue, contact directory, account profiles, and currency-separated pipeline analysis.
+- Projects uses a portfolio, project brief and upcoming-work agenda, status board, task brief and assignment, deadline timeline, and personal priority queue.
+- Support uses a triage inbox, persisted conversation, knowledge-article reading/writing, and queue analysis.
+- Marketing uses campaign phases, audience rules, planning forms, and lifecycle reporting.
+- Invoicing uses itemized invoice entry, a receivables ledger, an invoice document, and an expense ledger/submission flow.
+- Social uses a composer with preview, approval/scheduling calendar, and private media library.
+- AI uses prompt/output composition, generation history, and recorded usage.
+- Portal uses document navigation, private file versions/downloads, client sharing, and billing information.
+- Administration uses membership access controls, resource inventory, and chronological audit records. Settings presents actual workspace preferences, members, and integration configuration.
+
+Controls must filter data, navigate, or invoke a real validated operation. Forms must report success only after the server action succeeds. Empty states use actual absence of data, and analytics may not invent trends or provider metrics. Preserve explicit pending, error, and success feedback. Server authorization remains authoritative regardless of control visibility.

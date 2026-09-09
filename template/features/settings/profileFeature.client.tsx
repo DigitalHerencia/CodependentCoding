@@ -1,36 +1,63 @@
 "use client";
-
-import { useState } from "react";
-
+import { useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
+import { updateOrganizationSettings } from "@/lib/actions/commonActions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-
-export function ProfileFeatureClient() {
-  const [command, setCommand] = useState("");
-  const [applied, setApplied] = useState("");
-
+import { Label } from "@/components/ui/label";
+import type { OrganizationDTO } from "@/types/commonTypes";
+export function ProfileFeatureClient({
+  organization,
+}: {
+  organization: OrganizationDTO;
+}) {
+  const router = useRouter();
+  const [pending, startTransition] = useTransition();
+  const [message, setMessage] = useState("");
   return (
     <form
-      aria-label="settings profile command"
-      className="flex w-full flex-wrap items-center gap-2 sm:w-auto"
-      onSubmit={(event) => {
-        event.preventDefault();
-        setApplied(command.trim());
-      }}
+      className="space-y-4"
+      action={(data) =>
+        startTransition(async () => {
+          try {
+            await updateOrganizationSettings({
+              timezone: data.get("timezone"),
+              locale: data.get("locale"),
+              defaultCurrency: data.get("defaultCurrency"),
+            });
+            setMessage("Workspace preferences saved.");
+            router.refresh();
+          } catch {
+            setMessage(
+              "Preferences could not be saved. Check input and workspace permissions.",
+            );
+          }
+        })
+      }
     >
-      <Input
-        aria-label="Filter or command"
-        className="w-full min-w-0 sm:w-48"
-        onChange={(event) => setCommand(event.target.value)}
-        placeholder="Type a command or search…"
-        value={command}
-      />
-      <Button className="shrink-0" size="sm" type="submit">
-        Apply
+      {(["timezone", "locale", "defaultCurrency"] as const).map((field) => (
+        <div className="form-field" key={field}>
+          <Label htmlFor={`settings-${field}`}>
+            {
+              {
+                timezone: "Time zone",
+                locale: "Locale",
+                defaultCurrency: "Default currency",
+              }[field]
+            }
+          </Label>
+          <Input
+            id={`settings-${field}`}
+            name={field}
+            defaultValue={organization[field]}
+            required
+          />
+        </div>
+      ))}
+      <Button type="submit" disabled={pending}>
+        Save preferences
       </Button>
-      <span aria-live="polite" className="sr-only">
-        {applied ? `Applied: ${applied}` : "No command applied"}
-      </span>
+      <p role="status">{message}</p>
     </form>
   );
 }

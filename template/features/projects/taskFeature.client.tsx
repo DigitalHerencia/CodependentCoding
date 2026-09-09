@@ -1,36 +1,61 @@
 "use client";
-
-import { useState } from "react";
-
+import { useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
+import { assignProjectTask } from "@/lib/actions/projectsActions";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-
-export function TaskFeatureClient() {
-  const [command, setCommand] = useState("");
-  const [applied, setApplied] = useState("");
-
+import { Label } from "@/components/ui/label";
+import type { TaskDTO } from "@/types/projectsTypes";
+export function TaskFeatureClient({
+  task,
+  members,
+}: {
+  task: TaskDTO;
+  members: { id: string; name: string; status: string }[];
+}) {
+  const router = useRouter();
+  const [pending, startTransition] = useTransition();
+  const [message, setMessage] = useState("");
   return (
     <form
-      aria-label="projects projectId tasks taskId command"
-      className="flex w-full flex-wrap items-center gap-2 sm:w-auto"
-      onSubmit={(event) => {
-        event.preventDefault();
-        setApplied(command.trim());
-      }}
+      className="mt-5 space-y-3"
+      action={(data) =>
+        startTransition(async () => {
+          try {
+            await assignProjectTask({
+              taskId: task.id,
+              expectedVersion: task.version,
+              assigneeMembershipId: data.get("assignee") || null,
+            });
+            setMessage("Assignee saved.");
+            router.refresh();
+          } catch {
+            setMessage(
+              "Assignment failed. Check access, membership, or reload the latest task.",
+            );
+          }
+        })
+      }
     >
-      <Input
-        aria-label="Filter or command"
-        className="w-full min-w-0 sm:w-48"
-        onChange={(event) => setCommand(event.target.value)}
-        placeholder="Type a command or search…"
-        value={command}
-      />
-      <Button className="shrink-0" size="sm" type="submit">
-        Apply
+      <Label htmlFor="task-assignee">Assign to</Label>
+      <select
+        id="task-assignee"
+        className="control-field"
+        name="assignee"
+        defaultValue={task.assignee?.membershipId ?? ""}
+      >
+        <option value="">Unassigned</option>
+        {members
+          .filter((member) => member.status === "ACTIVE")
+          .map((member) => (
+            <option key={member.id} value={member.id}>
+              {member.name}
+            </option>
+          ))}
+      </select>
+      <Button type="submit" disabled={pending}>
+        Save assignment
       </Button>
-      <span aria-live="polite" className="sr-only">
-        {applied ? `Applied: ${applied}` : "No command applied"}
-      </span>
+      <p role="status">{message}</p>
     </form>
   );
 }

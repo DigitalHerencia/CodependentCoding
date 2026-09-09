@@ -172,3 +172,16 @@ export async function getCrmAccount(accountId: string) {
     return row ? toCrmAccountDTO(row) : null;
   });
 }
+
+export async function getCrmAccounts(limit = 100) {
+  return withAuthenticatedRead(async (tx, access) => {
+    assertPermission(access, "crm:read");
+    const rows = await tx.crmAccount.findMany({
+      where: { organizationId: access.organizationId, archivedAt: null },
+      orderBy: { name: "asc" },
+      take: Math.min(Math.max(limit, 1), 200),
+      select: crmAccountSelect,
+    });
+    return rows.map(toCrmAccountDTO);
+  });
+}

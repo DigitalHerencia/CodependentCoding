@@ -1,64 +1,32 @@
-import {
-  DashboardBars,
-  DashboardLayout,
-  DashboardPanel,
-  DashboardRailList,
-  DashboardTable,
-  type CanonicalDashboardTemplateProps,
-} from "@/components/blocks/dashboard-layout";
-
-const nav = [
-  { label: "Dashboard", href: "/dashboard", active: false },
-  { label: "Audit", href: "/admin/audit", active: true },
-  { label: "Records", href: "/admin/records", active: false },
-  { label: "Users", href: "/admin/users", active: false },
-] as const;
-
-const defaultColumns = [
-  { key: "name", label: "Name" },
-  { key: "state", label: "State" },
-  { key: "owner", label: "Owner" },
-  { key: "updated", label: "Updated" },
-] as const;
-
+import type { ReactNode } from "react";
+import type { AuditEventDTO } from "@/types/adminTypes";
+import { DashboardLayout } from "@/components/blocks/dashboard-layout";
 export function AdminAuditTemplate({
-  stats = [],
-  columns = defaultColumns,
-  rows = [],
+  events,
   toolbar,
-  aside,
-  children,
-  chartValues,
-}: CanonicalDashboardTemplateProps) {
-  const labelKey = columns[0]?.key ?? "name";
-  const valueKey = columns[1]?.key ?? "state";
-
+}: {
+  events: AuditEventDTO[];
+  toolbar: ReactNode;
+}) {
   return (
-    <DashboardLayout
-      aside={
-        aside ?? (
-          <DashboardRailList
-            items={rows.slice(0, 4).map((row) => ({
-              label: String(row.cells[labelKey] ?? row.id),
-              value: String(row.cells[valueKey] ?? ""),
-            }))}
-          />
-        )
-      }
-      nav={nav}
-      stats={stats}
-      title="Audit"
-      toolbar={toolbar}
-    >
-      <DashboardPanel title="Audit events">
-        <DashboardTable columns={columns} rows={rows} />
-      </DashboardPanel>
-      {chartValues?.length ? (
-        <DashboardPanel title="Activity trend">
-          <DashboardBars label="Activity trend" values={chartValues} />
-        </DashboardPanel>
-      ) : null}
-      {children}
+    <DashboardLayout title="Audit trail" nav={[]} toolbar={toolbar}>
+      <ol className="space-y-3 border-l-4 border-primary pl-5">
+        {events.map((event) => (
+          <li key={event.id} className="surface-card p-4">
+            <p className="type-label">{event.action}</p>
+            <p className="mt-2">
+              {event.actor?.displayName ?? "System"} · {event.resourceType}
+            </p>
+            <time className="text-sm text-muted-primary">
+              {event.createdAt}
+            </time>
+            <p className="mt-2 text-xs break-all">
+              Resource: {event.resourceId ?? "—"}
+            </p>
+          </li>
+        ))}
+      </ol>
+      {!events.length && <p>No matching audit events.</p>}
     </DashboardLayout>
   );
 }

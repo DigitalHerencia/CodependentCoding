@@ -1,64 +1,21 @@
-import {
-  DashboardBars,
-  DashboardLayout,
-  DashboardPanel,
-  DashboardRailList,
-  DashboardTable,
-  type CanonicalDashboardTemplateProps,
-} from "@/components/blocks/dashboard-layout";
-
-const nav = [
-  { label: "Dashboard", href: "/dashboard", active: false },
-  { label: "Calendar", href: "/social/calendar", active: false },
-  { label: "Compose", href: "/social/compose", active: true },
-  { label: "Media", href: "/social/media", active: false },
-] as const;
-
-const defaultColumns = [
-  { key: "name", label: "Name" },
-  { key: "state", label: "State" },
-  { key: "owner", label: "Owner" },
-  { key: "updated", label: "Updated" },
-] as const;
-
+import type { ReactNode } from "react";
 export function SocialComposeTemplate({
-  stats = [],
-  columns = defaultColumns,
-  rows = [],
-  toolbar,
-  aside,
   children,
-  chartValues,
-}: CanonicalDashboardTemplateProps) {
-  const labelKey = columns[0]?.key ?? "name";
-  const valueKey = columns[1]?.key ?? "state";
-
+  preview,
+}: {
+  children: ReactNode;
+  preview: ReactNode;
+}) {
   return (
-    <DashboardLayout
-      aside={
-        aside ?? (
-          <DashboardRailList
-            items={rows.slice(0, 4).map((row) => ({
-              label: String(row.cells[labelKey] ?? row.id),
-              value: String(row.cells[valueKey] ?? ""),
-            }))}
-          />
-        )
-      }
-      nav={nav}
-      stats={stats}
-      title="Post Composer"
-      toolbar={toolbar}
-    >
-      <DashboardPanel title="Publishing controls">
-        <DashboardTable columns={columns} rows={rows} />
-      </DashboardPanel>
-      {chartValues?.length ? (
-        <DashboardPanel title="Activity trend">
-          <DashboardBars label="Activity trend" values={chartValues} />
-        </DashboardPanel>
-      ) : null}
-      {children}
-    </DashboardLayout>
+    <section className="space-y-5 p-5">
+      <h1 className="type-title">Compose a social post</h1>
+      <div className="grid gap-5 lg:grid-cols-[3fr_2fr]">
+        <section className="surface-card p-5">{children}</section>
+        <aside className="space-y-4 surface-inset p-5">
+          <h2 className="type-label">Post preview</h2>
+          {preview}
+        </aside>
+      </div>
+    </section>
   );
 }

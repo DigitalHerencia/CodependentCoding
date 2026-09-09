@@ -1,64 +1,70 @@
+import Link from "next/link";
+import type { ReactNode } from "react";
+import type { ProjectSummaryDTO, TaskDTO } from "@/types/projectsTypes";
 import {
-  DashboardBars,
   DashboardLayout,
   DashboardPanel,
-  DashboardRailList,
-  DashboardTable,
-  type CanonicalDashboardTemplateProps,
 } from "@/components/blocks/dashboard-layout";
-
-const nav = [
-  { label: "Dashboard", href: "/dashboard", active: false },
-  { label: "Projects", href: "/projects", active: false },
-  { label: "My Tasks", href: "/my-tasks", active: false },
-  { label: "Timeline", href: "#timeline", active: false },
-] as const;
-
-const defaultColumns = [
-  { key: "name", label: "Name" },
-  { key: "state", label: "State" },
-  { key: "owner", label: "Owner" },
-  { key: "updated", label: "Updated" },
-] as const;
-
 export function ProjectDetailTemplate({
-  stats = [],
-  columns = defaultColumns,
-  rows = [],
-  toolbar,
-  aside,
+  project,
+  tasks,
   children,
-  chartValues,
-}: CanonicalDashboardTemplateProps) {
-  const labelKey = columns[0]?.key ?? "name";
-  const valueKey = columns[1]?.key ?? "state";
-
+}: {
+  project: ProjectSummaryDTO;
+  tasks: TaskDTO[];
+  children: ReactNode;
+}) {
   return (
     <DashboardLayout
-      aside={
-        aside ?? (
-          <DashboardRailList
-            items={rows.slice(0, 4).map((row) => ({
-              label: String(row.cells[labelKey] ?? row.id),
-              value: String(row.cells[valueKey] ?? ""),
-            }))}
-          />
-        )
+      title={project.name}
+      nav={[]}
+      toolbar={
+        <Link className="type-link" href={`/projects/${project.id}/edit`}>
+          Edit project
+        </Link>
       }
-      nav={nav}
-      stats={stats}
-      title="Project Overview"
-      toolbar={toolbar}
     >
-      <DashboardPanel title="Milestones and progress trend">
-        <DashboardBars
-          label="Project Overview trend"
-          values={chartValues ?? [18, 28, 23, 42, 48, 66, 74]}
-        />
-      </DashboardPanel>
-      <DashboardPanel title="Milestones and progress">
-        <DashboardTable columns={columns} rows={rows} />
-      </DashboardPanel>
+      <div className="grid gap-4 lg:grid-cols-[2fr_1fr]">
+        <DashboardPanel title="Project brief">
+          <p className="whitespace-pre-wrap">
+            {project.description ?? "No brief has been written."}
+          </p>
+          <nav className="mt-6 flex flex-wrap gap-4">
+            <Link className="type-link" href={`/projects/${project.id}/tasks`}>
+              Task board
+            </Link>
+            <Link
+              className="type-link"
+              href={`/projects/${project.id}/timeline`}
+            >
+              Delivery timeline
+            </Link>
+            <Link
+              className="type-link"
+              href={`/projects/${project.id}/tasks/new`}
+            >
+              Add task
+            </Link>
+          </nav>
+        </DashboardPanel>
+        <DashboardPanel title="Delivery">
+          <dl className="space-y-2">
+            <dt>Status</dt>
+            <dd>{project.status}</dd>
+            <dt>Start / due</dt>
+            <dd>
+              {project.startsAt?.slice(0, 10) ?? "Unscheduled"} /{" "}
+              {project.dueAt?.slice(0, 10) ?? "Unscheduled"}
+            </dd>
+            <dt>Remaining work</dt>
+            <dd>
+              {project.openTaskCount} open of {project.taskCount} tasks
+            </dd>
+            <dt>Blocked in loaded tasks</dt>
+            <dd>{tasks.filter((task) => task.status === "BLOCKED").length}</dd>
+          </dl>
+        </DashboardPanel>
+      </div>
       {children}
     </DashboardLayout>
   );

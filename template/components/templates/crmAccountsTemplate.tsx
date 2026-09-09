@@ -1,64 +1,39 @@
-import {
-  DashboardBars,
-  DashboardLayout,
-  DashboardPanel,
-  DashboardRailList,
-  DashboardTable,
-  type CanonicalDashboardTemplateProps,
-} from "@/components/blocks/dashboard-layout";
-
-const nav = [
-  { label: "Pipeline", href: "/crm/pipeline", active: false },
-  { label: "Contacts", href: "/crm/contacts", active: false },
-  { label: "Accounts", href: "/crm/accounts", active: true },
-  { label: "Analytics", href: "/crm/analytics", active: false },
-] as const;
-
-const defaultColumns = [
-  { key: "name", label: "Name" },
-  { key: "state", label: "State" },
-  { key: "owner", label: "Owner" },
-  { key: "updated", label: "Updated" },
-] as const;
-
+import Link from "next/link";
+import type { ReactNode } from "react";
+import type { CrmAccountDTO } from "@/types/crmTypes";
+import { DashboardLayout } from "@/components/blocks/dashboard-layout";
 export function CrmAccountsTemplate({
-  stats = [],
-  columns = defaultColumns,
-  rows = [],
+  accounts,
   toolbar,
-  aside,
-  children,
-  chartValues,
-}: CanonicalDashboardTemplateProps) {
-  const labelKey = columns[0]?.key ?? "name";
-  const valueKey = columns[1]?.key ?? "state";
-
+}: {
+  accounts: CrmAccountDTO[];
+  toolbar: ReactNode;
+}) {
   return (
-    <DashboardLayout
-      aside={
-        aside ?? (
-          <DashboardRailList
-            items={rows.slice(0, 4).map((row) => ({
-              label: String(row.cells[labelKey] ?? row.id),
-              value: String(row.cells[valueKey] ?? ""),
-            }))}
-          />
-        )
-      }
-      nav={nav}
-      stats={stats}
-      title="Accounts"
-      toolbar={toolbar}
-    >
-      <DashboardPanel title="Account registry">
-        <DashboardTable columns={columns} rows={rows} />
-      </DashboardPanel>
-      {chartValues?.length ? (
-        <DashboardPanel title="Activity trend">
-          <DashboardBars label="Activity trend" values={chartValues} />
-        </DashboardPanel>
-      ) : null}
-      {children}
+    <DashboardLayout title="Account relationships" nav={[]} toolbar={toolbar}>
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+        {accounts.map((account) => (
+          <article key={account.id} className="space-y-3 surface-card p-5">
+            <Link
+              className="type-title hover:underline"
+              href={`/crm/accounts/${account.id}`}
+            >
+              {account.name}
+            </Link>
+            <p>
+              {account.industry ?? "Industry not recorded"} · {account.status}
+            </p>
+            <p>
+              {account.contactCount} contacts · {account.dealCount}{" "}
+              opportunities
+            </p>
+            <p className="line-clamp-3 text-muted-primary">
+              {account.notes ?? "No relationship notes."}
+            </p>
+          </article>
+        ))}
+      </div>
+      {!accounts.length && <p>No matching accounts.</p>}
     </DashboardLayout>
   );
 }

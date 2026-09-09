@@ -13,6 +13,7 @@ export interface CampaignDTO {
   updatedAt: string;
 }
 export interface AudienceDTO {
+  definition: unknown;
   id: string;
   name: string;
   status: string;

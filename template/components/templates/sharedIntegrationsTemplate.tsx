@@ -1,57 +1,32 @@
-import { SettingsSurface } from "@/components/blocks/settings-page";
-import {
-  DashboardLayout,
-  DashboardRailList,
-  DashboardTable,
-  type CanonicalDashboardTemplateProps,
-} from "@/components/blocks/dashboard-layout";
-
-const nav = [
-  { label: "Profile", href: "/settings/profile", active: false },
-  { label: "Members", href: "/settings/members", active: false },
-  { label: "Integrations", href: "/settings/integrations", active: true },
-  { label: "Billing", href: "/settings/billing", active: false },
-] as const;
-
-const defaultColumns = [
-  { key: "name", label: "Name" },
-  { key: "state", label: "State" },
-  { key: "owner", label: "Owner" },
-  { key: "updated", label: "Updated" },
-] as const;
-
+import type { IntegrationStatus } from "@/types/integrationTypes";
+import { DashboardLayout } from "@/components/blocks/dashboard-layout";
 export function SharedIntegrationsTemplate({
-  stats = [],
-  columns = defaultColumns,
-  rows = [],
-  toolbar,
-  aside,
-  children,
-}: CanonicalDashboardTemplateProps) {
+  integrations,
+}: {
+  integrations: IntegrationStatus[];
+}) {
   return (
-    <DashboardLayout
-      aside={
-        aside ?? (
-          <DashboardRailList
-            items={rows.slice(0, 4).map((row) => ({
-              label: String(row.cells[columns[0]?.key ?? "name"] ?? row.id),
-              value: String(row.cells[columns[1]?.key ?? "state"] ?? ""),
-            }))}
-          />
-        )
-      }
-      nav={nav}
-      stats={stats}
-      title="Integrations"
-      toolbar={toolbar}
-    >
-      <SettingsSurface
-        description="Provider connections uses server-authoritative values and explicit workflow-backed actions."
-        title="Integrations"
-      >
-        <DashboardTable columns={columns} rows={rows} />
-      </SettingsSurface>
-      {children}
+    <DashboardLayout title="Integration configuration" nav={[]}>
+      <p>
+        Configuration presence only. These checks do not contact providers or
+        verify connectivity.
+      </p>
+      <div className="grid gap-4 md:grid-cols-2">
+        {integrations.map((integration) => (
+          <article
+            key={integration.name}
+            className="space-y-3 surface-card p-5"
+          >
+            <h2 className="type-title">{integration.name}</h2>
+            <p>{integration.purpose}</p>
+            <p>
+              {integration.state === "CONFIGURED"
+                ? "Required configuration present"
+                : "Required configuration missing"}
+            </p>
+          </article>
+        ))}
+      </div>
     </DashboardLayout>
   );
 }

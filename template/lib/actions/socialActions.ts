@@ -1,4 +1,6 @@
 "use server";
+import { z } from "zod";
+import { downloadWorkspaceFileWorkflow } from "@/lib/workflows/assetWorkflows";
 
 import {
   approveSocialPostSchema,
@@ -121,4 +123,30 @@ export async function approveSocialPost(rawInput: unknown) {
     });
     return toSocialPostDTO(record);
   });
+}
+
+export async function downloadSocialMedia(rawInput: unknown) {
+  const assetId = z.string().uuid().parse(rawInput);
+  const identity = await requireIdentity();
+  const asset = await withTenantTransaction(identity, async (tx, access) => {
+    assertPermission(access, "social:read");
+    const asset = await tx.asset.findFirst({
+      where: { id: assetId, organizationId: access.organizationId },
+      select: {
+        storageProvider: true,
+        storageKey: true,
+        filename: true,
+        contentType: true,
+        byteSize: true,
+      },
+    });
+    if (!asset || asset.byteSize > 10485760n)
+      throw new Error("File unavailable or too large.");
+    return asset;
+  });
+  return {
+    filename: asset.filename,
+    contentType: asset.contentType,
+    base64: await downloadWorkspaceFileWorkflow(asset),
+  };
 }

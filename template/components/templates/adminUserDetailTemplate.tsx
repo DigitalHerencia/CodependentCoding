@@ -1,64 +1,29 @@
+import type { ReactNode } from "react";
+import type { AdminMembershipDTO } from "@/types/adminTypes";
 import {
-  DashboardBars,
   DashboardLayout,
   DashboardPanel,
-  DashboardRailList,
-  DashboardTable,
-  type CanonicalDashboardTemplateProps,
 } from "@/components/blocks/dashboard-layout";
-
-const nav = [
-  { label: "Dashboard", href: "/dashboard", active: false },
-  { label: "Audit", href: "/admin/audit", active: false },
-  { label: "Records", href: "/admin/records", active: false },
-  { label: "Users", href: "/admin/users", active: false },
-] as const;
-
-const defaultColumns = [
-  { key: "name", label: "Name" },
-  { key: "state", label: "State" },
-  { key: "owner", label: "Owner" },
-  { key: "updated", label: "Updated" },
-] as const;
-
 export function AdminUserDetailTemplate({
-  stats = [],
-  columns = defaultColumns,
-  rows = [],
-  toolbar,
-  aside,
+  membership,
   children,
-  chartValues,
-}: CanonicalDashboardTemplateProps) {
-  const labelKey = columns[0]?.key ?? "name";
-  const valueKey = columns[1]?.key ?? "state";
-
+}: {
+  membership: AdminMembershipDTO;
+  children: ReactNode;
+}) {
   return (
     <DashboardLayout
-      aside={
-        aside ?? (
-          <DashboardRailList
-            items={rows.slice(0, 4).map((row) => ({
-              label: String(row.cells[labelKey] ?? row.id),
-              value: String(row.cells[valueKey] ?? ""),
-            }))}
-          />
-        )
-      }
-      nav={nav}
-      stats={stats}
-      title="User Detail"
-      toolbar={toolbar}
+      title={membership.user.displayName ?? membership.user.email ?? "Member"}
+      nav={[]}
     >
-      <DashboardPanel title="Membership context">
-        <DashboardTable columns={columns} rows={rows} />
-      </DashboardPanel>
-      {chartValues?.length ? (
-        <DashboardPanel title="Activity trend">
-          <DashboardBars label="Activity trend" values={chartValues} />
+      <div className="grid gap-4 lg:grid-cols-2">
+        <DashboardPanel title="Identity">
+          <p>{membership.user.email}</p>
+          <p className="mt-4">Joined {membership.createdAt.slice(0, 10)}</p>
+          <p>Access: {membership.status}</p>
         </DashboardPanel>
-      ) : null}
-      {children}
+        <DashboardPanel title="Access management">{children}</DashboardPanel>
+      </div>
     </DashboardLayout>
   );
 }

@@ -1,36 +1,51 @@
 "use client";
-
+import Link from "next/link";
 import { useState } from "react";
-
-import { Button } from "@/components/ui/button";
+import { SupportInboxTemplate } from "@/components/templates/supportInboxTemplate";
 import { Input } from "@/components/ui/input";
-
-export function InboxFeatureClient() {
-  const [command, setCommand] = useState("");
-  const [applied, setApplied] = useState("");
-
+import type { SupportTicketDTO } from "@/types/supportTypes";
+export function InboxFeatureClient({
+  tickets,
+}: {
+  tickets: SupportTicketDTO[];
+}) {
+  const [query, setQuery] = useState("");
+  const [status, setStatus] = useState("");
   return (
-    <form
-      aria-label="support inbox command"
-      className="flex w-full flex-wrap items-center gap-2 sm:w-auto"
-      onSubmit={(event) => {
-        event.preventDefault();
-        setApplied(command.trim());
-      }}
-    >
-      <Input
-        aria-label="Filter or command"
-        className="w-full min-w-0 sm:w-48"
-        onChange={(event) => setCommand(event.target.value)}
-        placeholder="Type a command or search…"
-        value={command}
-      />
-      <Button className="shrink-0" size="sm" type="submit">
-        Apply
-      </Button>
-      <span aria-live="polite" className="sr-only">
-        {applied ? `Applied: ${applied}` : "No command applied"}
-      </span>
-    </form>
+    <SupportInboxTemplate
+      tickets={tickets.filter(
+        (ticket) =>
+          (!status || ticket.status === status) &&
+          `${ticket.number} ${ticket.subject} ${ticket.requester?.displayName ?? ""}`
+            .toLowerCase()
+            .includes(query.toLowerCase()),
+      )}
+      toolbar={
+        <div className="flex flex-wrap gap-3">
+          <Input
+            aria-label="Search tickets"
+            placeholder="Search subject, number or requester"
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+          />
+          <select
+            className="control-field"
+            aria-label="Ticket status"
+            value={status}
+            onChange={(event) => setStatus(event.target.value)}
+          >
+            <option value="">All open statuses</option>
+            {[...new Set(tickets.map((ticket) => ticket.status))].map(
+              (value) => (
+                <option key={value}>{value}</option>
+              ),
+            )}
+          </select>
+          <Link className="type-link" href="/support/tickets/new">
+            New ticket
+          </Link>
+        </div>
+      }
+    />
   );
 }

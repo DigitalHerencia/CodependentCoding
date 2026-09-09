@@ -46,6 +46,7 @@ export type InvoiceRecord = Prisma.InvoiceGetPayload<{
 }>;
 
 export const expenseSelect = {
+  updatedAt: true,
   id: true,
   vendor: true,
   description: true,

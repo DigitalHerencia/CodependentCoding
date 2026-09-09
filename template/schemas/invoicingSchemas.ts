@@ -36,3 +36,22 @@ export const updateInvoiceStatusSchema = z.object({
   status: z.enum(InvoiceStatus),
   expectedVersion: z.number().int().positive(),
 });
+
+export const updateInvoiceSchema = createInvoiceSchema.extend({
+  invoiceId: z.string().uuid(),
+  expectedVersion: z.number().int().positive(),
+});
+export const expenseFormSchema = z.object({
+  vendor: z.string().trim().min(1).max(200),
+  description: z.string().max(10000),
+  amount: money.refine(
+    (value) => Number(value) > 0,
+    "Amount must be positive.",
+  ),
+  currency,
+  incurredAt: z.coerce.date(),
+});
+export const updateExpenseSchema = expenseFormSchema.extend({
+  expenseId: z.string().uuid(),
+  expectedUpdatedAt: z.coerce.date(),
+});

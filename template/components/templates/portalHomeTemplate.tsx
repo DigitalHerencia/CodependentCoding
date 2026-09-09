@@ -1,64 +1,52 @@
+import Link from "next/link";
+import type { PortalDocumentDTO } from "@/types/portalTypes";
 import {
-  DashboardBars,
   DashboardLayout,
   DashboardPanel,
-  DashboardRailList,
-  DashboardTable,
-  type CanonicalDashboardTemplateProps,
 } from "@/components/blocks/dashboard-layout";
-
-const nav = [
-  { label: "Overview", href: "/portal", active: false },
-  { label: "Projects", href: "/projects", active: false },
-  { label: "Documents", href: "/portal/documents", active: false },
-  { label: "Billing", href: "/portal/billing", active: false },
-] as const;
-
-const defaultColumns = [
-  { key: "name", label: "Name" },
-  { key: "state", label: "State" },
-  { key: "owner", label: "Owner" },
-  { key: "updated", label: "Updated" },
-] as const;
-
 export function PortalHomeTemplate({
-  stats = [],
-  columns = defaultColumns,
-  rows = [],
-  toolbar,
-  aside,
-  children,
-  chartValues,
-}: CanonicalDashboardTemplateProps) {
-  const labelKey = columns[0]?.key ?? "name";
-  const valueKey = columns[1]?.key ?? "state";
-
+  documents,
+}: {
+  documents: PortalDocumentDTO[];
+}) {
   return (
-    <DashboardLayout
-      aside={
-        aside ?? (
-          <DashboardRailList
-            items={rows.slice(0, 4).map((row) => ({
-              label: String(row.cells[labelKey] ?? row.id),
-              value: String(row.cells[valueKey] ?? ""),
-            }))}
-          />
-        )
-      }
-      nav={nav}
-      stats={stats}
-      title="Portal Home"
-      toolbar={toolbar}
-    >
-      <DashboardPanel title="Project overview">
-        <DashboardTable columns={columns} rows={rows} />
-      </DashboardPanel>
-      {chartValues?.length ? (
-        <DashboardPanel title="Activity trend">
-          <DashboardBars label="Activity trend" values={chartValues} />
+    <DashboardLayout title="Client workspace" nav={[]}>
+      <div className="grid gap-5 lg:grid-cols-[2fr_1fr]">
+        <DashboardPanel title="Recent documents">
+          <ul className="space-y-4">
+            {documents.slice(0, 8).map((document) => (
+              <li
+                key={document.id}
+                className="flex flex-wrap justify-between gap-3 border-b border-border pb-3"
+              >
+                <Link
+                  className="type-link"
+                  href={`/portal/documents/${document.id}`}
+                >
+                  {document.title}
+                </Link>
+                <span>
+                  Version {document.currentVersionNumber} · {document.status}
+                </span>
+              </li>
+            ))}
+          </ul>
+          {!documents.length && <p>No documents have been shared with you.</p>}
         </DashboardPanel>
-      ) : null}
-      {children}
+        <DashboardPanel title="Workspace services">
+          <nav className="flex flex-col gap-4">
+            <Link className="type-link" href="/portal/documents">
+              Browse document vault
+            </Link>
+            <Link className="type-link" href="/portal/billing">
+              Billing overview
+            </Link>
+            <Link className="type-link" href="/support/tickets/new">
+              Request support
+            </Link>
+          </nav>
+        </DashboardPanel>
+      </div>
     </DashboardLayout>
   );
 }

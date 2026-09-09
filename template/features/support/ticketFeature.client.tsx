@@ -1,36 +1,88 @@
 "use client";
-
-import { useState } from "react";
-
+import { useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-
-export function TicketFeatureClient() {
-  const [command, setCommand] = useState("");
-  const [applied, setApplied] = useState("");
-
+import { Label } from "@/components/ui/label";
+import {
+  replyToSupportTicket,
+  updateSupportTicketStatus,
+} from "@/lib/actions/supportActions";
+import { TicketStatus } from "@/schemas/supportSchemas";
+import type { SupportTicketDTO } from "@/types/supportTypes";
+export function TicketFeatureClient({ ticket }: { ticket: SupportTicketDTO }) {
+  const router = useRouter();
+  const [pending, startTransition] = useTransition();
+  const [message, setMessage] = useState("");
   return (
-    <form
-      aria-label="support tickets ticketId command"
-      className="flex w-full flex-wrap items-center gap-2 sm:w-auto"
-      onSubmit={(event) => {
-        event.preventDefault();
-        setApplied(command.trim());
-      }}
-    >
-      <Input
-        aria-label="Filter or command"
-        className="w-full min-w-0 sm:w-48"
-        onChange={(event) => setCommand(event.target.value)}
-        placeholder="Type a command or search…"
-        value={command}
-      />
-      <Button className="shrink-0" size="sm" type="submit">
-        Apply
-      </Button>
-      <span aria-live="polite" className="sr-only">
-        {applied ? `Applied: ${applied}` : "No command applied"}
-      </span>
-    </form>
+    <div className="space-y-5">
+      <form
+        className="space-y-3"
+        action={(data) =>
+          startTransition(async () => {
+            setMessage("");
+            try {
+              await replyToSupportTicket({
+                ticketId: ticket.id,
+                body: data.get("body"),
+              });
+              setMessage("Reply saved.");
+              router.refresh();
+            } catch {
+              setMessage(
+                "Reply could not be saved. Check access and try again.",
+              );
+            }
+          })
+        }
+      >
+        <Label htmlFor="ticket-reply">Reply to conversation</Label>
+        <textarea
+          id="ticket-reply"
+          name="body"
+          className="control-field min-h-32 w-full"
+          required
+          maxLength={30000}
+        />
+        <Button disabled={pending} type="submit">
+          Save reply
+        </Button>
+      </form>
+      <form
+        className="flex flex-wrap gap-3"
+        action={(data) =>
+          startTransition(async () => {
+            setMessage("");
+            try {
+              await updateSupportTicketStatus({
+                ticketId: ticket.id,
+                expectedVersion: ticket.version,
+                status: data.get("status"),
+              });
+              setMessage("Ticket status updated.");
+              router.refresh();
+            } catch {
+              setMessage(
+                "Status could not be changed. Check access, transition, or reload the latest ticket.",
+              );
+            }
+          })
+        }
+      >
+        <select
+          aria-label="Ticket status"
+          className="control-field"
+          defaultValue={ticket.status}
+          name="status"
+        >
+          {Object.values(TicketStatus).map((status) => (
+            <option key={status}>{status}</option>
+          ))}
+        </select>
+        <Button disabled={pending} type="submit">
+          Update status
+        </Button>
+      </form>
+      <p role="status">{message}</p>
+    </div>
   );
 }

@@ -160,3 +160,13 @@ implementation_alignment:
   feature_specific_css_patchwork_preferred: false
   flatten_presentation_layers_for_theoretical_purity: false
   redesign_code_to_match_stale_governance: false
+
+workflow_compositions:
+  owner_directed: true
+  domain_dto_props_required: true
+  generic_record_reflection: false
+  invented_analytics: false
+  command_echo_controls: false
+  local_review_only_domain_forms: false
+  search_scope: loaded_records_unless_server_query_is_explicit
+  provider_runtime_evidence_separate: true

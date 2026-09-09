@@ -6,6 +6,7 @@ import type {
 
 export function toExpenseDTO(record: ExpenseRecord): ExpenseDTO {
   return {
+    updatedAt: record.updatedAt.toISOString(),
     id: record.id,
     vendor: record.vendor,
     description: record.description,

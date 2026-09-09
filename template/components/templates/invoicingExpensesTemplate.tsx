@@ -1,64 +1,40 @@
+import type { ReactNode } from "react";
+import type { ExpenseDTO } from "@/types/invoicingTypes";
 import {
-  DashboardBars,
   DashboardLayout,
-  DashboardPanel,
-  DashboardRailList,
   DashboardTable,
-  type CanonicalDashboardTemplateProps,
 } from "@/components/blocks/dashboard-layout";
-
-const nav = [
-  { label: "Dashboard", href: "/dashboard", active: false },
-  { label: "Invoices", href: "/invoices", active: false },
-  { label: "Expenses", href: "/expenses", active: true },
-  { label: "Billing", href: "/settings/billing", active: false },
-] as const;
-
-const defaultColumns = [
-  { key: "name", label: "Name" },
-  { key: "state", label: "State" },
-  { key: "owner", label: "Owner" },
-  { key: "updated", label: "Updated" },
-] as const;
-
 export function InvoicingExpensesTemplate({
-  stats = [],
-  columns = defaultColumns,
-  rows = [],
+  expenses,
   toolbar,
-  aside,
-  children,
-  chartValues,
-}: CanonicalDashboardTemplateProps) {
-  const labelKey = columns[0]?.key ?? "name";
-  const valueKey = columns[1]?.key ?? "state";
-
+}: {
+  expenses: ExpenseDTO[];
+  toolbar: ReactNode;
+}) {
   return (
-    <DashboardLayout
-      aside={
-        aside ?? (
-          <DashboardRailList
-            items={rows.slice(0, 4).map((row) => ({
-              label: String(row.cells[labelKey] ?? row.id),
-              value: String(row.cells[valueKey] ?? ""),
-            }))}
-          />
-        )
-      }
-      nav={nav}
-      stats={stats}
-      title="Expenses"
-      toolbar={toolbar}
-    >
-      <DashboardPanel title="Expense registry">
-        <DashboardTable columns={columns} rows={rows} />
-      </DashboardPanel>
-      {chartValues?.length ? (
-        <DashboardPanel title="Activity trend">
-          <DashboardBars label="Activity trend" values={chartValues} />
-        </DashboardPanel>
-      ) : null}
-      {children}
+    <DashboardLayout title="Expense ledger" nav={[]} toolbar={toolbar}>
+      <DashboardTable
+        columns={[
+          { key: "vendor", label: "Vendor" },
+          { key: "purpose", label: "Business purpose" },
+          { key: "amount", label: "Amount" },
+          { key: "date", label: "Incurred" },
+          { key: "submitter", label: "Submitted by" },
+          { key: "review", label: "Review status" },
+        ]}
+        rows={expenses.map((expense) => ({
+          id: expense.id,
+          href: `/expenses/${expense.id}`,
+          cells: {
+            vendor: expense.vendor,
+            purpose: expense.description,
+            amount: `${expense.amount} ${expense.currency}`,
+            date: expense.incurredAt.slice(0, 10),
+            submitter: expense.submitter,
+            review: expense.status,
+          },
+        }))}
+      />
     </DashboardLayout>
   );
 }

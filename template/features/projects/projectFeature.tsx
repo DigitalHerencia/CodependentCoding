@@ -1,104 +1,37 @@
+import Link from "next/link";
 import { ProjectDetailTemplate } from "@/components/templates/projectDetailTemplate";
-import { ProjectFeatureClient } from "@/features/projects/projectFeature.client";
+import { DashboardPanel } from "@/components/blocks/dashboard-layout";
 import { getProjectWorkspaceWorkflow } from "@/lib/workflows/projectsWorkflows";
-
-function displayValue(
-  record: object,
-  keys: readonly string[],
-  fallback: string,
-) {
-  const values = record as Record<string, unknown>;
-  for (const key of keys) {
-    const value = values[key];
-    if (value instanceof Date) return value.toLocaleDateString();
-    if (
-      typeof value === "string" ||
-      typeof value === "number" ||
-      typeof value === "bigint"
-    ) {
-      return String(value);
-    }
-    if (value && typeof value === "object") {
-      const nested = value as Record<string, unknown>;
-      const label = nested.displayName ?? nested.name ?? nested.email;
-      if (typeof label === "string") return label;
-    }
-  }
-  return fallback;
-}
-
 export async function ProjectFeature({ projectId }: { projectId: string }) {
-  const workspace = await getProjectWorkspaceWorkflow(projectId);
-  const records = [workspace.project, ...workspace.tasks];
-  const rows = records.map((record, index) => {
-    const item = record as object;
-    const id = displayValue(
-      item,
-      ["id", "resource", "number"],
-      String(index + 1),
+  const { project, tasks } = await getProjectWorkspaceWorkflow(projectId);
+  const open = tasks
+    .filter((task) => !["DONE", "CANCELED"].includes(task.status))
+    .sort((left, right) =>
+      (left.dueAt ?? "9999").localeCompare(right.dueAt ?? "9999"),
     );
-    return {
-      id,
-      href: undefined,
-      cells: {
-        name: displayValue(
-          item,
-          [
-            "name",
-            "title",
-            "subject",
-            "resource",
-            "invoiceNumber",
-            "email",
-            "id",
-          ],
-          id,
-        ),
-        state: displayValue(
-          item,
-          ["status", "state", "stage", "role", "count"],
-          "ACTIVE",
-        ),
-        owner: displayValue(
-          item,
-          [
-            "owner",
-            "assignee",
-            "client",
-            "organization",
-            "channel",
-            "provider",
-          ],
-          "—",
-        ),
-        updated: displayValue(
-          item,
-          ["updatedAt", "createdAt", "dueAt", "publishedAt", "date"],
-          "—",
-        ),
-      },
-    };
-  });
-
   return (
-    <ProjectDetailTemplate
-      rows={rows}
-      stats={[
-        {
-          label: "Records",
-          value: String(rows.length),
-          trend: "server workflow",
-        },
-        {
-          label: "Active",
-          value: String(
-            rows.filter((row) => row.cells.state !== "ARCHIVED").length,
-          ),
-        },
-        { label: "Updated", value: rows[0]?.cells.updated ?? "—" },
-        { label: "Source", value: "SERVER" },
-      ]}
-      toolbar={<ProjectFeatureClient />}
-    />
+    <ProjectDetailTemplate project={project} tasks={tasks}>
+      <DashboardPanel title="Upcoming work">
+        <ol className="space-y-3">
+          {open.slice(0, 8).map((task) => (
+            <li
+              key={task.id}
+              className="flex flex-wrap justify-between gap-3 border-b border-border py-3"
+            >
+              <Link
+                className="type-link"
+                href={`/projects/${projectId}/tasks/${task.id}`}
+              >
+                {task.title}
+              </Link>
+              <span>
+                {task.dueAt?.slice(0, 10) ?? "Unscheduled"} · {task.status}
+              </span>
+            </li>
+          ))}
+        </ol>
+        {!open.length && <p>No open tasks in the loaded project work.</p>}
+      </DashboardPanel>
+    </ProjectDetailTemplate>
   );
 }

@@ -1,64 +1,41 @@
+import type { ReactNode } from "react";
+import type { AdminMembershipDTO } from "@/types/adminTypes";
 import {
-  DashboardBars,
   DashboardLayout,
-  DashboardPanel,
-  DashboardRailList,
   DashboardTable,
-  type CanonicalDashboardTemplateProps,
 } from "@/components/blocks/dashboard-layout";
-
-const nav = [
-  { label: "Dashboard", href: "/dashboard", active: false },
-  { label: "Audit", href: "/admin/audit", active: false },
-  { label: "Records", href: "/admin/records", active: false },
-  { label: "Users", href: "/admin/users", active: true },
-] as const;
-
-const defaultColumns = [
-  { key: "name", label: "Name" },
-  { key: "state", label: "State" },
-  { key: "owner", label: "Owner" },
-  { key: "updated", label: "Updated" },
-] as const;
-
 export function AdminUsersTemplate({
-  stats = [],
-  columns = defaultColumns,
-  rows = [],
+  memberships,
   toolbar,
-  aside,
-  children,
-  chartValues,
-}: CanonicalDashboardTemplateProps) {
-  const labelKey = columns[0]?.key ?? "name";
-  const valueKey = columns[1]?.key ?? "state";
-
+}: {
+  memberships: AdminMembershipDTO[];
+  toolbar: ReactNode;
+}) {
   return (
-    <DashboardLayout
-      aside={
-        aside ?? (
-          <DashboardRailList
-            items={rows.slice(0, 4).map((row) => ({
-              label: String(row.cells[labelKey] ?? row.id),
-              value: String(row.cells[valueKey] ?? ""),
-            }))}
-          />
-        )
-      }
-      nav={nav}
-      stats={stats}
-      title="Users"
-      toolbar={toolbar}
-    >
-      <DashboardPanel title="Membership registry">
-        <DashboardTable columns={columns} rows={rows} />
-      </DashboardPanel>
-      {chartValues?.length ? (
-        <DashboardPanel title="Activity trend">
-          <DashboardBars label="Activity trend" values={chartValues} />
-        </DashboardPanel>
-      ) : null}
-      {children}
+    <DashboardLayout title="Member administration" nav={[]} toolbar={toolbar}>
+      <DashboardTable
+        columns={[
+          { key: "person", label: "Member" },
+          { key: "email", label: "Email" },
+          { key: "role", label: "Application role" },
+          { key: "status", label: "Access status" },
+          { key: "joined", label: "Joined" },
+        ]}
+        rows={memberships.map((membership) => ({
+          id: membership.id,
+          href: `/admin/users/${membership.user.id}`,
+          cells: {
+            person:
+              membership.user.displayName ??
+              membership.user.email ??
+              "Unnamed user",
+            email: membership.user.email,
+            role: membership.role,
+            status: membership.status,
+            joined: membership.createdAt.slice(0, 10),
+          },
+        }))}
+      />
     </DashboardLayout>
   );
 }

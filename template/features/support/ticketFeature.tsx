@@ -1,104 +1,17 @@
+import { notFound } from "next/navigation";
+import {
+  getSupportTicket,
+  getSupportMessages,
+} from "@/lib/fetchers/supportFetchers";
 import { SupportTicketTemplate } from "@/components/templates/supportTicketTemplate";
-import { TicketFeatureClient } from "@/features/support/ticketFeature.client";
-import { getSupportTicketWorkflow } from "@/lib/workflows/supportWorkflows";
-
-function displayValue(
-  record: object,
-  keys: readonly string[],
-  fallback: string,
-) {
-  const values = record as Record<string, unknown>;
-  for (const key of keys) {
-    const value = values[key];
-    if (value instanceof Date) return value.toLocaleDateString();
-    if (
-      typeof value === "string" ||
-      typeof value === "number" ||
-      typeof value === "bigint"
-    ) {
-      return String(value);
-    }
-    if (value && typeof value === "object") {
-      const nested = value as Record<string, unknown>;
-      const label = nested.displayName ?? nested.name ?? nested.email;
-      if (typeof label === "string") return label;
-    }
-  }
-  return fallback;
-}
-
+import { TicketFeatureClient } from "./ticketFeature.client";
 export async function TicketFeature({ ticketId }: { ticketId: string }) {
-  const record = await getSupportTicketWorkflow(ticketId);
-  const records = record ? [record] : [];
-  const rows = records.map((record, index) => {
-    const item = record as object;
-    const id = displayValue(
-      item,
-      ["id", "resource", "number"],
-      String(index + 1),
-    );
-    return {
-      id,
-      href: undefined,
-      cells: {
-        name: displayValue(
-          item,
-          [
-            "name",
-            "title",
-            "subject",
-            "resource",
-            "invoiceNumber",
-            "email",
-            "id",
-          ],
-          id,
-        ),
-        state: displayValue(
-          item,
-          ["status", "state", "stage", "role", "count"],
-          "ACTIVE",
-        ),
-        owner: displayValue(
-          item,
-          [
-            "owner",
-            "assignee",
-            "client",
-            "organization",
-            "channel",
-            "provider",
-          ],
-          "—",
-        ),
-        updated: displayValue(
-          item,
-          ["updatedAt", "createdAt", "dueAt", "publishedAt", "date"],
-          "—",
-        ),
-      },
-    };
-  });
-
+  const ticket = await getSupportTicket(ticketId);
+  if (!ticket) notFound();
+  const messages = await getSupportMessages(ticketId);
   return (
-    <SupportTicketTemplate
-      rows={rows}
-      stats={[
-        {
-          label: "Records",
-          value: String(rows.length),
-          trend: "server workflow",
-        },
-        {
-          label: "Active",
-          value: String(
-            rows.filter((row) => row.cells.state !== "ARCHIVED").length,
-          ),
-        },
-        { label: "Updated", value: rows[0]?.cells.updated ?? "—" },
-        { label: "Source", value: "SERVER" },
-      ]}
-      toolbar={<TicketFeatureClient />}
-    />
+    <SupportTicketTemplate ticket={ticket} messages={messages}>
+      <TicketFeatureClient key={ticket.version} ticket={ticket} />
+    </SupportTicketTemplate>
   );
 }

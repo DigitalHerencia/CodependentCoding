@@ -1,6 +1,7 @@
 "use server";
 
 import {
+  addAdminMembershipSchema,
   changeAdminMembershipSchema,
   reconcileAdminProviderStateSchema,
   updateAdminMembershipStatusSchema,
@@ -16,6 +17,7 @@ import {
   reconcileAdministrativeProviderStateTx,
   updateMembershipAdministrationTx,
 } from "@/lib/db/transactions/admin.tx";
+import { adminMembershipSelect } from "@/lib/db/selects/admin.selects";
 import { InvariantViolationError } from "@/lib/db/transactions/errors";
 
 export async function changeAdminMembership(rawInput: unknown) {
@@ -96,5 +98,38 @@ export async function reconcileAdminProviderState(rawInput: unknown) {
       cancelAtPeriodEnd: input.cancelAtPeriodEnd,
     });
     return toAdminProviderStateDTO(subscription);
+  });
+}
+
+export async function addAdminMembership(rawInput: unknown) {
+  const input = addAdminMembershipSchema.parse(rawInput);
+  const identity = await requireIdentity();
+  return withTenantTransaction(identity, async (tx, access) => {
+    assertPermission(access, "admin:users");
+    const user = await tx.user.findFirst({
+      where: { email: { equals: input.email, mode: "insensitive" } },
+      select: { id: true },
+    });
+    if (!user) throw new Error("The user must register before being added.");
+    const membership = await tx.membership.create({
+      data: {
+        organizationId: access.organizationId,
+        userId: user.id,
+        role: input.role,
+        status: "ACTIVE",
+      },
+      select: adminMembershipSelect,
+    });
+    await tx.auditEvent.create({
+      data: {
+        organizationId: access.organizationId,
+        actorUserId: access.userId,
+        action: "admin.membership.created",
+        resourceType: "Membership",
+        resourceId: membership.id,
+        metadata: { role: input.role },
+      },
+    });
+    return toAdminMembershipDTO(membership);
   });
 }

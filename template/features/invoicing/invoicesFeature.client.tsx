@@ -1,36 +1,51 @@
 "use client";
-
+import Link from "next/link";
 import { useState } from "react";
-
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-
-export function InvoicesFeatureClient() {
-  const [command, setCommand] = useState("");
-  const [applied, setApplied] = useState("");
-
+import { InvoicingInvoicesTemplate } from "@/components/templates/invoicingInvoicesTemplate";
+import type { InvoiceDTO } from "@/types/invoicingTypes";
+export function InvoicesFeatureClient({
+  invoices,
+}: {
+  invoices: InvoiceDTO[];
+}) {
+  const [query, setQuery] = useState("");
+  const [status, setStatus] = useState("");
   return (
-    <form
-      aria-label="invoices command"
-      className="flex w-full flex-wrap items-center gap-2 sm:w-auto"
-      onSubmit={(event) => {
-        event.preventDefault();
-        setApplied(command.trim());
-      }}
-    >
-      <Input
-        aria-label="Filter or command"
-        className="w-full min-w-0 sm:w-48"
-        onChange={(event) => setCommand(event.target.value)}
-        placeholder="Type a command or search…"
-        value={command}
-      />
-      <Button className="shrink-0" size="sm" type="submit">
-        Apply
-      </Button>
-      <span aria-live="polite" className="sr-only">
-        {applied ? `Applied: ${applied}` : "No command applied"}
-      </span>
-    </form>
+    <InvoicingInvoicesTemplate
+      invoices={invoices.filter(
+        (invoice) =>
+          (!status || invoice.status === status) &&
+          `${invoice.number} ${invoice.customerName}`
+            .toLowerCase()
+            .includes(query.toLowerCase()),
+      )}
+      toolbar={
+        <div className="flex flex-wrap gap-3">
+          <Input
+            aria-label="Search invoices"
+            placeholder="Search invoice or customer"
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+          />
+          <select
+            className="control-field"
+            aria-label="Invoice status"
+            value={status}
+            onChange={(event) => setStatus(event.target.value)}
+          >
+            <option value="">All statuses</option>
+            {[...new Set(invoices.map((invoice) => invoice.status))].map(
+              (value) => (
+                <option key={value}>{value}</option>
+              ),
+            )}
+          </select>
+          <Link className="type-link" href="/invoices/new">
+            Draft invoice
+          </Link>
+        </div>
+      }
+    />
   );
 }

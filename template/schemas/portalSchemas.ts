@@ -19,3 +19,8 @@ export const decidePortalApprovalSchema = z.object({
   status: z.enum(ApprovalStatus).exclude(["PENDING"]),
   note: z.string().max(10_000).nullable().optional(),
 });
+
+export const portalDocumentCommandSchema = z.object({
+  documentId: z.string().uuid(),
+  expectedVersion: z.number().int().positive(),
+});

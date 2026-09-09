@@ -1,36 +1,34 @@
 "use client";
-
+import { WorkspaceFileUpload } from "@/features/portal/workspaceFileUpload.client";
 import { useState } from "react";
-
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-
-export function MediaLibraryFeatureClient() {
-  const [command, setCommand] = useState("");
-  const [applied, setApplied] = useState("");
-
+import { SocialMediaTemplate } from "@/components/templates/socialMediaTemplate";
+import type { MediaAssetDTO } from "@/types/socialTypes";
+import { MediaAssetControls } from "./mediaAssetControls.client";
+export function MediaLibraryFeatureClient({
+  assets,
+}: {
+  assets: MediaAssetDTO[];
+}) {
+  const [query, setQuery] = useState("");
   return (
-    <form
-      aria-label="social media command"
-      className="flex w-full flex-wrap items-center gap-2 sm:w-auto"
-      onSubmit={(event) => {
-        event.preventDefault();
-        setApplied(command.trim());
-      }}
+    <SocialMediaTemplate
+      renderControls={(asset) => <MediaAssetControls asset={asset} />}
+      assets={assets.filter((asset) =>
+        `${asset.filename} ${asset.contentType}`
+          .toLowerCase()
+          .includes(query.toLowerCase()),
+      )}
+      toolbar={
+        <Input
+          aria-label="Search media"
+          placeholder="Search filename or media type"
+          value={query}
+          onChange={(event) => setQuery(event.target.value)}
+        />
+      }
     >
-      <Input
-        aria-label="Filter or command"
-        className="w-full min-w-0 sm:w-48"
-        onChange={(event) => setCommand(event.target.value)}
-        placeholder="Type a command or search…"
-        value={command}
-      />
-      <Button className="shrink-0" size="sm" type="submit">
-        Apply
-      </Button>
-      <span aria-live="polite" className="sr-only">
-        {applied ? `Applied: ${applied}` : "No command applied"}
-      </span>
-    </form>
+      <WorkspaceFileUpload domain="social" />
+    </SocialMediaTemplate>
   );
 }

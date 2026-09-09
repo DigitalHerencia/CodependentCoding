@@ -60,20 +60,15 @@ export const pipelineCards = [
   {
     title: "Intent Ingestion",
     content: (
-      <p>
-        You don’t think about the specifications.
-        <br />
-        You compress them.
-      </p>
+      <p>You don’t think about the specifications. You compress them.</p>
     ),
   },
   {
     title: "Scope Laundering",
     content: (
       <p>
-        We remove obvious slop and replace it with
-        <br />
-        “interesting implementations.”
+        We remove obvious slop and replace it with “interesting
+        implementations.”
       </p>
     ),
   },

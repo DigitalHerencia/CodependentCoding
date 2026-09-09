@@ -33,6 +33,7 @@ export interface InvoiceDTO {
   updatedAt: string;
 }
 export interface ExpenseDTO {
+  updatedAt: string;
   id: string;
   vendor: string;
   description: string | null;

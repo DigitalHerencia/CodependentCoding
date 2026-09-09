@@ -1,36 +1,35 @@
 "use client";
-
+import Link from "next/link";
 import { useState } from "react";
-
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-
-export function KnowledgeBaseFeatureClient() {
-  const [command, setCommand] = useState("");
-  const [applied, setApplied] = useState("");
-
+import { SupportKnowledgeBaseTemplate } from "@/components/templates/supportKnowledgeBaseTemplate";
+import type { KnowledgeArticleDTO } from "@/types/supportTypes";
+export function KnowledgeBaseFeatureClient({
+  articles,
+}: {
+  articles: KnowledgeArticleDTO[];
+}) {
+  const [query, setQuery] = useState("");
   return (
-    <form
-      aria-label="support knowledge-base command"
-      className="flex w-full flex-wrap items-center gap-2 sm:w-auto"
-      onSubmit={(event) => {
-        event.preventDefault();
-        setApplied(command.trim());
-      }}
-    >
-      <Input
-        aria-label="Filter or command"
-        className="w-full min-w-0 sm:w-48"
-        onChange={(event) => setCommand(event.target.value)}
-        placeholder="Type a command or search…"
-        value={command}
-      />
-      <Button className="shrink-0" size="sm" type="submit">
-        Apply
-      </Button>
-      <span aria-live="polite" className="sr-only">
-        {applied ? `Applied: ${applied}` : "No command applied"}
-      </span>
-    </form>
+    <SupportKnowledgeBaseTemplate
+      articles={articles.filter((article) =>
+        `${article.title} ${article.body}`
+          .toLowerCase()
+          .includes(query.toLowerCase()),
+      )}
+      toolbar={
+        <div className="flex flex-wrap gap-3">
+          <Input
+            aria-label="Search knowledge base"
+            placeholder="Search articles"
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+          />
+          <Link className="type-link" href="/support/knowledge-base/new">
+            Write article
+          </Link>
+        </div>
+      }
+    />
   );
 }

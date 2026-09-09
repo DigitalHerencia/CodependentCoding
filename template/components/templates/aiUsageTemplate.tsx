@@ -1,65 +1,28 @@
+import type { AiUsageSummaryDTO } from "@/types/aiTypes";
 import {
-  DashboardBars,
   DashboardLayout,
   DashboardPanel,
-  DashboardRailList,
-  DashboardTable,
-  type CanonicalDashboardTemplateProps,
 } from "@/components/blocks/dashboard-layout";
-
-const nav = [
-  { label: "Dashboard", href: "/dashboard", active: false },
-  { label: "Generation", href: "/ai", active: false },
-  { label: "Playground", href: "/ai/playground", active: false },
-  { label: "Usage", href: "/ai/usage", active: true },
-] as const;
-
-const defaultColumns = [
-  { key: "name", label: "Name" },
-  { key: "state", label: "State" },
-  { key: "owner", label: "Owner" },
-  { key: "updated", label: "Updated" },
-] as const;
-
-export function AiUsageTemplate({
-  stats = [],
-  columns = defaultColumns,
-  rows = [],
-  toolbar,
-  aside,
-  children,
-  chartValues,
-}: CanonicalDashboardTemplateProps) {
-  const labelKey = columns[0]?.key ?? "name";
-  const valueKey = columns[1]?.key ?? "state";
-
+export function AiUsageTemplate({ usage }: { usage: AiUsageSummaryDTO }) {
   return (
-    <DashboardLayout
-      aside={
-        aside ?? (
-          <DashboardRailList
-            items={rows.slice(0, 4).map((row) => ({
-              label: String(row.cells[labelKey] ?? row.id),
-              value: String(row.cells[valueKey] ?? ""),
-            }))}
-          />
-        )
-      }
-      nav={nav}
-      stats={stats}
-      title="AI Usage"
-      toolbar={toolbar}
-    >
-      <DashboardPanel title="Usage trend trend">
-        <DashboardBars
-          label="AI Usage trend"
-          values={chartValues ?? [18, 28, 23, 42, 48, 66, 74]}
-        />
+    <DashboardLayout title="My AI usage" nav={[]}>
+      <DashboardPanel title="Recorded usage ledger">
+        <dl className="grid gap-4 sm:grid-cols-2">
+          <dt>Generation entries</dt>
+          <dd>{usage.generationCount}</dd>
+          <dt>Input tokens recorded</dt>
+          <dd>{usage.inputTokens}</dd>
+          <dt>Output tokens recorded</dt>
+          <dd>{usage.outputTokens}</dd>
+          <dt>Cost recorded (USD)</dt>
+          <dd>{usage.cost}</dd>
+        </dl>
       </DashboardPanel>
-      <DashboardPanel title="Usage trend">
-        <DashboardTable columns={columns} rows={rows} />
-      </DashboardPanel>
-      {children}
+      <p className="text-muted-primary">
+        The current generation adapter records zero token and cost values when
+        usage is not supplied. These totals are not a provider billing
+        statement.
+      </p>
     </DashboardLayout>
   );
 }

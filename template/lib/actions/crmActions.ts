@@ -1,6 +1,8 @@
 "use server";
 
 import {
+  crmAccountFormSchema,
+  updateCrmAccountSchema,
   archiveContactSchema,
   createContactSchema,
   createCrmDealSchema,
@@ -10,8 +12,13 @@ import {
 import { requireIdentity } from "@/lib/auth/auth";
 import { assertPermission } from "@/lib/authz/permissions";
 import { authorizeOwnedOrAssignedWrite } from "@/lib/authz/policies";
-import { toCrmContactDTO, toCrmDealDTO } from "@/lib/db/dto/crm.dto";
 import {
+  toCrmAccountDTO,
+  toCrmContactDTO,
+  toCrmDealDTO,
+} from "@/lib/db/dto/crm.dto";
+import {
+  crmAccountSelect,
   crmContactAccessSelect,
   crmContactSelect,
   crmDealDetailSelect,
@@ -37,6 +44,30 @@ export async function createCrmDeal(rawInput: unknown) {
       select: { id: true },
     });
     if (!account) throw new ResourceNotFoundError("CRM account");
+    if (
+      input.primaryContactId &&
+      !(await tx.crmContact.findFirst({
+        where: {
+          id: input.primaryContactId,
+          organizationId: access.organizationId,
+          archivedAt: null,
+        },
+        select: { id: true },
+      }))
+    )
+      throw new ResourceNotFoundError("CRM contact");
+    if (
+      input.ownerMembershipId &&
+      !(await tx.membership.findFirst({
+        where: {
+          id: input.ownerMembershipId,
+          organizationId: access.organizationId,
+          status: "ACTIVE",
+        },
+        select: { id: true },
+      }))
+    )
+      throw new ResourceNotFoundError("CRM owner");
     const record = await tx.crmDeal.create({
       data: {
         organizationId: access.organizationId,
@@ -219,5 +250,65 @@ export async function archiveContact(rawInput: unknown) {
       },
     });
     return { id: existing.id };
+  });
+}
+
+export async function createCrmAccount(rawInput: unknown) {
+  const input = crmAccountFormSchema.parse(rawInput);
+  const identity = await requireIdentity();
+  return withTenantTransaction(identity, async (tx, access) => {
+    assertPermission(access, "crm:write");
+    const record = await tx.crmAccount.create({
+      data: {
+        organizationId: access.organizationId,
+        ownerMembershipId: access.membershipId,
+        name: input.name,
+        website: input.website || null,
+        industry: input.industry || null,
+        notes: input.notes || null,
+      },
+      select: crmAccountSelect,
+    });
+    return toCrmAccountDTO(record);
+  });
+}
+export async function updateCrmAccount(rawInput: unknown) {
+  const input = updateCrmAccountSchema.parse(rawInput);
+  const identity = await requireIdentity();
+  return withTenantTransaction(identity, async (tx, access) => {
+    const existing = await tx.crmAccount.findFirst({
+      where: {
+        id: input.accountId,
+        organizationId: access.organizationId,
+        archivedAt: null,
+      },
+      select: { organizationId: true, ownerMembershipId: true },
+    });
+    if (!existing) throw new ResourceNotFoundError("Account");
+    authorizeOwnedOrAssignedWrite(access, "crm:write", {
+      kind: "crm",
+      ...existing,
+    });
+    const result = await tx.crmAccount.updateMany({
+      where: {
+        id: input.accountId,
+        organizationId: access.organizationId,
+        updatedAt: input.expectedUpdatedAt,
+        archivedAt: null,
+      },
+      data: {
+        name: input.name,
+        website: input.website || null,
+        industry: input.industry || null,
+        notes: input.notes || null,
+      },
+    });
+    if (result.count !== 1) throw new ConcurrencyConflictError("Account");
+    return toCrmAccountDTO(
+      await tx.crmAccount.findFirstOrThrow({
+        where: { id: input.accountId, organizationId: access.organizationId },
+        select: crmAccountSelect,
+      }),
+    );
   });
 }

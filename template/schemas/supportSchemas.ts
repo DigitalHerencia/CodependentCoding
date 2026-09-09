@@ -12,3 +12,24 @@ export const updateSupportTicketStatusSchema = z.object({
   status: z.enum(TicketStatus),
   expectedVersion: z.number().int().positive(),
 });
+
+export const supportReplySchema = z.object({
+  ticketId: z.string().uuid(),
+  body: z.string().trim().min(1).max(30000),
+});
+export const knowledgeArticleFormSchema = z.object({
+  title: z.string().trim().min(1).max(300),
+  slug: z
+    .string()
+    .trim()
+    .min(1)
+    .max(200)
+    .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
+  body: z.string().trim().min(1).max(100000),
+});
+export const updateKnowledgeArticleSchema = knowledgeArticleFormSchema.extend({
+  articleId: z.string().uuid(),
+  expectedUpdatedAt: z.coerce.date(),
+});
+
+export { TicketStatus, TicketPriority } from "@/generated/prisma/enums";

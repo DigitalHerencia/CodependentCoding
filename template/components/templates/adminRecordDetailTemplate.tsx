@@ -1,64 +1,19 @@
+import type { AdminRecordSummaryDTO } from "@/types/adminTypes";
 import {
-  DashboardBars,
   DashboardLayout,
   DashboardPanel,
-  DashboardRailList,
-  DashboardTable,
-  type CanonicalDashboardTemplateProps,
 } from "@/components/blocks/dashboard-layout";
-
-const nav = [
-  { label: "Dashboard", href: "/dashboard", active: false },
-  { label: "Audit", href: "/admin/audit", active: false },
-  { label: "Records", href: "/admin/records", active: false },
-  { label: "Users", href: "/admin/users", active: false },
-] as const;
-
-const defaultColumns = [
-  { key: "name", label: "Name" },
-  { key: "state", label: "State" },
-  { key: "owner", label: "Owner" },
-  { key: "updated", label: "Updated" },
-] as const;
-
 export function AdminRecordDetailTemplate({
-  stats = [],
-  columns = defaultColumns,
-  rows = [],
-  toolbar,
-  aside,
-  children,
-  chartValues,
-}: CanonicalDashboardTemplateProps) {
-  const labelKey = columns[0]?.key ?? "name";
-  const valueKey = columns[1]?.key ?? "state";
-
+  record,
+}: {
+  record: AdminRecordSummaryDTO;
+}) {
   return (
-    <DashboardLayout
-      aside={
-        aside ?? (
-          <DashboardRailList
-            items={rows.slice(0, 4).map((row) => ({
-              label: String(row.cells[labelKey] ?? row.id),
-              value: String(row.cells[valueKey] ?? ""),
-            }))}
-          />
-        )
-      }
-      nav={nav}
-      stats={stats}
-      title="Record Detail"
-      toolbar={toolbar}
-    >
-      <DashboardPanel title="Record controls">
-        <DashboardTable columns={columns} rows={rows} />
+    <DashboardLayout title={record.resource} nav={[]}>
+      <DashboardPanel title="Tenant inventory">
+        <p className="text-3xl">{record.count}</p>
+        <p className="mt-3">Persisted records in the active workspace.</p>
       </DashboardPanel>
-      {chartValues?.length ? (
-        <DashboardPanel title="Activity trend">
-          <DashboardBars label="Activity trend" values={chartValues} />
-        </DashboardPanel>
-      ) : null}
-      {children}
     </DashboardLayout>
   );
 }

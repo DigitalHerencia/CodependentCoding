@@ -64,3 +64,22 @@ export const updateCrmDealStageSchema = z.object({
   stage: z.enum(CrmDealStage),
   expectedVersion: z.number().int().positive(),
 });
+
+export const crmAccountFormSchema = z.object({
+  name: z.string().trim().min(1).max(200),
+  website: z.union([
+    z.literal(""),
+    z
+      .string()
+      .url()
+      .regex(/^https?:\/\//),
+  ]),
+  industry: z.string().trim().max(200),
+  notes: z.string().max(20000),
+});
+export const updateCrmAccountSchema = crmAccountFormSchema.extend({
+  accountId: uuid,
+  expectedUpdatedAt: z.coerce.date(),
+});
+
+export { CrmDealStage } from "@/generated/prisma/enums";

@@ -6,6 +6,7 @@ import type {
 
 export function toAudienceDTO(record: AudienceRecord): AudienceDTO {
   return {
+    definition: record.definition,
     id: record.id,
     name: record.name,
     status: record.status,

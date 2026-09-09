@@ -1,64 +1,29 @@
-import {
-  DashboardBars,
-  DashboardLayout,
-  DashboardPanel,
-  DashboardRailList,
-  DashboardTable,
-  type CanonicalDashboardTemplateProps,
-} from "@/components/blocks/dashboard-layout";
-
-const nav = [
-  { label: "Dashboard", href: "/dashboard", active: false },
-  { label: "Generation", href: "/ai", active: false },
-  { label: "Playground", href: "/ai/playground", active: true },
-  { label: "Usage", href: "/ai/usage", active: false },
-] as const;
-
-const defaultColumns = [
-  { key: "name", label: "Name" },
-  { key: "state", label: "State" },
-  { key: "owner", label: "Owner" },
-  { key: "updated", label: "Updated" },
-] as const;
-
+import type { ReactNode } from "react";
 export function AiPlaygroundTemplate({
-  stats = [],
-  columns = defaultColumns,
-  rows = [],
-  toolbar,
-  aside,
+  model,
   children,
-  chartValues,
-}: CanonicalDashboardTemplateProps) {
-  const labelKey = columns[0]?.key ?? "name";
-  const valueKey = columns[1]?.key ?? "state";
-
+  output,
+}: {
+  model: string;
+  children: ReactNode;
+  output: ReactNode;
+}) {
   return (
-    <DashboardLayout
-      aside={
-        aside ?? (
-          <DashboardRailList
-            items={rows.slice(0, 4).map((row) => ({
-              label: String(row.cells[labelKey] ?? row.id),
-              value: String(row.cells[valueKey] ?? ""),
-            }))}
-          />
-        )
-      }
-      nav={nav}
-      stats={stats}
-      title="AI Playground"
-      toolbar={toolbar}
-    >
-      <DashboardPanel title="Prompt and output comparison">
-        <DashboardTable columns={columns} rows={rows} />
-      </DashboardPanel>
-      {chartValues?.length ? (
-        <DashboardPanel title="Activity trend">
-          <DashboardBars label="Activity trend" values={chartValues} />
-        </DashboardPanel>
-      ) : null}
-      {children}
-    </DashboardLayout>
+    <section className="space-y-5 p-5">
+      <header>
+        <h1 className="type-title">AI playground</h1>
+        <p className="mt-2 text-muted-primary">Model: {model}</p>
+      </header>
+      <div className="grid gap-5 lg:grid-cols-2">
+        <section className="surface-card p-5">
+          <h2 className="mb-4 type-label">Prompt</h2>
+          {children}
+        </section>
+        <section className="surface-card p-5">
+          <h2 className="mb-4 type-label">Generated response</h2>
+          {output}
+        </section>
+      </div>
+    </section>
   );
 }

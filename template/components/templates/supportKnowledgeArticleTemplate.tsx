@@ -1,64 +1,26 @@
-import {
-  DashboardBars,
-  DashboardLayout,
-  DashboardPanel,
-  DashboardRailList,
-  DashboardTable,
-  type CanonicalDashboardTemplateProps,
-} from "@/components/blocks/dashboard-layout";
-
-const nav = [
-  { label: "Dashboard", href: "/dashboard", active: false },
-  { label: "Inbox", href: "/support/inbox", active: false },
-  { label: "Knowledge", href: "/support/knowledge-base", active: true },
-  { label: "Analytics", href: "/support/analytics", active: false },
-] as const;
-
-const defaultColumns = [
-  { key: "name", label: "Name" },
-  { key: "state", label: "State" },
-  { key: "owner", label: "Owner" },
-  { key: "updated", label: "Updated" },
-] as const;
-
+import Link from "next/link";
+import type { KnowledgeArticleDTO } from "@/types/supportTypes";
 export function SupportKnowledgeArticleTemplate({
-  stats = [],
-  columns = defaultColumns,
-  rows = [],
-  toolbar,
-  aside,
-  children,
-  chartValues,
-}: CanonicalDashboardTemplateProps) {
-  const labelKey = columns[0]?.key ?? "name";
-  const valueKey = columns[1]?.key ?? "state";
-
+  article,
+}: {
+  article: KnowledgeArticleDTO;
+}) {
   return (
-    <DashboardLayout
-      aside={
-        aside ?? (
-          <DashboardRailList
-            items={rows.slice(0, 4).map((row) => ({
-              label: String(row.cells[labelKey] ?? row.id),
-              value: String(row.cells[valueKey] ?? ""),
-            }))}
-          />
-        )
-      }
-      nav={nav}
-      stats={stats}
-      title="Knowledge Article"
-      toolbar={toolbar}
-    >
-      <DashboardPanel title="Article detail">
-        <DashboardTable columns={columns} rows={rows} />
-      </DashboardPanel>
-      {chartValues?.length ? (
-        <DashboardPanel title="Activity trend">
-          <DashboardBars label="Activity trend" values={chartValues} />
-        </DashboardPanel>
-      ) : null}
-      {children}
-    </DashboardLayout>
+    <article className="mx-auto max-w-4xl space-y-6 p-5">
+      <Link className="type-link" href="/support/knowledge-base">
+        Knowledge base
+      </Link>
+      <header className="space-y-3 border-b border-border pb-5">
+        <h1 className="type-title">{article.title}</h1>
+        <p>Updated {article.updatedAt.slice(0, 10)}</p>
+        <Link
+          className="type-link"
+          href={`/support/knowledge-base/${article.id}/edit`}
+        >
+          Edit article
+        </Link>
+      </header>
+      <div className="reading-copy whitespace-pre-wrap">{article.body}</div>
+    </article>
   );
 }

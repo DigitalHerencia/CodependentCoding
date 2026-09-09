@@ -1,64 +1,63 @@
+import Link from "next/link";
+import type { ReactNode } from "react";
+import type { TaskDTO } from "@/types/projectsTypes";
+import { TaskStatus } from "@/schemas/projectsSchemas";
 import {
-  DashboardBars,
   DashboardLayout,
   DashboardPanel,
-  DashboardRailList,
-  DashboardTable,
-  type CanonicalDashboardTemplateProps,
 } from "@/components/blocks/dashboard-layout";
-
-const nav = [
-  { label: "Dashboard", href: "/dashboard", active: false },
-  { label: "Projects", href: "/projects", active: false },
-  { label: "My Tasks", href: "/my-tasks", active: false },
-  { label: "Timeline", href: "#timeline", active: false },
-] as const;
-
-const defaultColumns = [
-  { key: "name", label: "Name" },
-  { key: "state", label: "State" },
-  { key: "owner", label: "Owner" },
-  { key: "updated", label: "Updated" },
-] as const;
-
 export function ProjectTasksTemplate({
-  stats = [],
-  columns = defaultColumns,
-  rows = [],
+  title,
+  tasks,
   toolbar,
-  aside,
-  children,
-  chartValues,
-}: CanonicalDashboardTemplateProps) {
-  const labelKey = columns[0]?.key ?? "name";
-  const valueKey = columns[1]?.key ?? "state";
-
+  renderControls,
+}: {
+  title: string;
+  tasks: readonly TaskDTO[];
+  toolbar: ReactNode;
+  renderControls: (task: TaskDTO) => ReactNode;
+}) {
   return (
-    <DashboardLayout
-      aside={
-        aside ?? (
-          <DashboardRailList
-            items={rows.slice(0, 4).map((row) => ({
-              label: String(row.cells[labelKey] ?? row.id),
-              value: String(row.cells[valueKey] ?? ""),
-            }))}
-          />
-        )
-      }
-      nav={nav}
-      stats={stats}
-      title="Project Tasks"
-      toolbar={toolbar}
-    >
-      <DashboardPanel title="Task registry">
-        <DashboardTable columns={columns} rows={rows} />
-      </DashboardPanel>
-      {chartValues?.length ? (
-        <DashboardPanel title="Activity trend">
-          <DashboardBars label="Activity trend" values={chartValues} />
-        </DashboardPanel>
-      ) : null}
-      {children}
+    <DashboardLayout title={title} nav={[]} toolbar={toolbar}>
+      <p className="text-muted-primary">
+        Showing up to 100 tasks. Open a task to review its brief or edit its
+        schedule.
+      </p>
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+        {Object.values(TaskStatus).map((status) => (
+          <DashboardPanel
+            key={status}
+            title={`${status.replaceAll("_", " ")} · ${tasks.filter((task) => task.status === status).length}`}
+          >
+            <div className="space-y-3">
+              {tasks
+                .filter((task) => task.status === status)
+                .map((task) => (
+                  <article
+                    className="space-y-3 surface-inset p-4"
+                    key={task.id}
+                  >
+                    <Link
+                      className="type-label hover:underline"
+                      href={`/projects/${task.projectId}/tasks/${task.id}`}
+                    >
+                      {task.title}
+                    </Link>
+                    <p>{task.priority} priority</p>
+                    <p className="text-sm text-muted-primary">
+                      {task.assignee?.displayName ?? "Unassigned"} ·{" "}
+                      {task.dueAt?.slice(0, 10) ?? "No due date"}
+                    </p>
+                    {renderControls(task)}
+                  </article>
+                ))}
+              {!tasks.some((task) => task.status === status) && (
+                <p className="p-3 text-muted-primary">No tasks.</p>
+              )}
+            </div>
+          </DashboardPanel>
+        ))}
+      </div>
     </DashboardLayout>
   );
 }

@@ -17,6 +17,10 @@ export interface AiUsageSummaryDTO {
   cost: string;
   generationCount: number;
 }
+export interface AiGenerationHistoryDTO extends AiGenerationDTO {
+  prompt: string | null;
+  response: string | null;
+}
 export interface AiUsageItem {
   inputTokens: number;
   outputTokens: number;

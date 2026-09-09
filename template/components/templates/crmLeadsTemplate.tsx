@@ -1,65 +1,61 @@
-import {
-  DashboardBars,
-  DashboardLayout,
-  DashboardPanel,
-  DashboardRailList,
-  DashboardTable,
-  type CanonicalDashboardTemplateProps,
-} from "@/components/blocks/dashboard-layout";
-
-const nav = [
-  { label: "Pipeline", href: "/crm/pipeline", active: false },
-  { label: "Leads", href: "/crm/leads", active: true },
-  { label: "Contacts", href: "/crm/contacts", active: false },
-  { label: "Accounts", href: "/crm/accounts", active: false },
-  { label: "Analytics", href: "/crm/analytics", active: false },
-] as const;
-
-const defaultColumns = [
-  { key: "name", label: "Name" },
-  { key: "state", label: "State" },
-  { key: "owner", label: "Owner" },
-  { key: "updated", label: "Updated" },
-] as const;
-
+import Link from "next/link";
+import type { ReactNode } from "react";
+import type { CrmContactDTO } from "@/types/crmTypes";
+import { DashboardLayout } from "@/components/blocks/dashboard-layout";
 export function CrmLeadsTemplate({
-  stats = [],
-  columns = defaultColumns,
-  rows = [],
+  contacts,
   toolbar,
-  aside,
-  children,
-  chartValues,
-}: CanonicalDashboardTemplateProps) {
-  const labelKey = columns[0]?.key ?? "name";
-  const valueKey = columns[1]?.key ?? "state";
-
+}: {
+  contacts: CrmContactDTO[];
+  toolbar: ReactNode;
+  lead?: boolean;
+}) {
   return (
     <DashboardLayout
-      aside={
-        aside ?? (
-          <DashboardRailList
-            items={rows.slice(0, 4).map((row) => ({
-              label: String(row.cells[labelKey] ?? row.id),
-              value: String(row.cells[valueKey] ?? ""),
-            }))}
-          />
-        )
-      }
-      nav={nav}
-      stats={stats}
-      title="Leads"
+      title="Lead qualification queue"
+      nav={[]}
       toolbar={toolbar}
     >
-      <DashboardPanel title="Lead registry">
-        <DashboardTable columns={columns} rows={rows} />
-      </DashboardPanel>
-      {chartValues?.length ? (
-        <DashboardPanel title="Activity trend">
-          <DashboardBars label="Activity trend" values={chartValues} />
-        </DashboardPanel>
-      ) : null}
-      {children}
+      <p>
+        Review new relationships, reach out, and update qualified leads to
+        Active.
+      </p>
+      <div className="space-y-3">
+        {contacts.map((contact) => (
+          <article
+            key={contact.id}
+            className="grid gap-4 surface-card p-5 md:grid-cols-[1fr_1fr_auto]"
+          >
+            <div>
+              <Link
+                className="type-label hover:underline"
+                href={`/crm/leads/${contact.id}`}
+              >
+                {contact.firstName} {contact.lastName}
+              </Link>
+              <p>{contact.title ?? "Role not recorded"}</p>
+              <p className="text-sm text-muted-primary">
+                Added {contact.createdAt.slice(0, 10)}
+              </p>
+            </div>
+            <div>
+              {contact.email ? (
+                <a className="type-link" href={`mailto:${contact.email}`}>
+                  {contact.email}
+                </a>
+              ) : (
+                <p>Email needed</p>
+              )}
+              <p>{contact.phone ?? "Phone not recorded"}</p>
+              <p>{contact.account?.name ?? "No account linked"}</p>
+            </div>
+            <Link className="type-link" href={`/crm/leads/${contact.id}/edit`}>
+              Review and qualify
+            </Link>
+          </article>
+        ))}
+      </div>
+      {!contacts.length && <p>No leads awaiting qualification.</p>}
     </DashboardLayout>
   );
 }

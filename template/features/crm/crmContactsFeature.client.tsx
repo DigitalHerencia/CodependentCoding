@@ -1,36 +1,43 @@
 "use client";
-
+import Link from "next/link";
 import { useState } from "react";
-
-import { Button } from "@/components/ui/button";
+import { CrmLeadsTemplate } from "@/components/templates/crmLeadsTemplate";
+import { CrmContactsTemplate } from "@/components/templates/crmContactsTemplate";
 import { Input } from "@/components/ui/input";
-
-export function CrmContactsFeatureClient() {
-  const [command, setCommand] = useState("");
-  const [applied, setApplied] = useState("");
-
+import type { CrmContactDTO } from "@/types/crmTypes";
+export function CrmContactsFeatureClient({
+  contacts,
+  lead = false,
+}: {
+  contacts: CrmContactDTO[];
+  lead?: boolean;
+}) {
+  const [query, setQuery] = useState("");
+  const Template = lead ? CrmLeadsTemplate : CrmContactsTemplate;
   return (
-    <form
-      aria-label="crm contacts command"
-      className="flex w-full flex-wrap items-center gap-2 sm:w-auto"
-      onSubmit={(event) => {
-        event.preventDefault();
-        setApplied(command.trim());
-      }}
-    >
-      <Input
-        aria-label="Filter or command"
-        className="w-full min-w-0 sm:w-48"
-        onChange={(event) => setCommand(event.target.value)}
-        placeholder="Type a command or search…"
-        value={command}
-      />
-      <Button className="shrink-0" size="sm" type="submit">
-        Apply
-      </Button>
-      <span aria-live="polite" className="sr-only">
-        {applied ? `Applied: ${applied}` : "No command applied"}
-      </span>
-    </form>
+    <Template
+      lead={lead}
+      contacts={contacts.filter((contact) =>
+        `${contact.firstName} ${contact.lastName} ${contact.email ?? ""} ${contact.account?.name ?? ""}`
+          .toLowerCase()
+          .includes(query.toLowerCase()),
+      )}
+      toolbar={
+        <div className="flex flex-wrap gap-3">
+          <Input
+            aria-label="Search contacts"
+            placeholder="Search person, email or account"
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+          />
+          <Link
+            className="type-link"
+            href={`/crm/${lead ? "leads" : "contacts"}/new`}
+          >
+            Add {lead ? "lead" : "contact"}
+          </Link>
+        </div>
+      }
+    />
   );
 }

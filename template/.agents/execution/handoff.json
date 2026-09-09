@@ -3,7 +3,7 @@
   "file": ".agents/execution/handoff.json",
   "product": "The Maximal Template",
   "purpose": "Current handoff state for the next implementation agent.",
-  "updated_at": "2026-09-08T19:48:23.0275522Z",
+  "updated_at": "2026-09-09T04:48:21.0872556Z",
   "tenant_auth_migration": {
     "status": "implemented",
     "evidence": ".agents/execution/progress.json#tenant_auth_migration",
@@ -160,5 +160,48 @@
     "inferred": [
       "Inspected admin fetchers derive tenant context server-side, apply permission checks and organization filters; this is not an adversarial runtime security test"
     ]
+  },
+  "domain_workflow_implementation": {
+    "status": "implemented_static_verified",
+    "authority": "Owner request on 2026-09-08 to replace repeated generic compositions, command echoes, and non-persisting forms with domain implementation.",
+    "revision": "main working tree; no commit created",
+    "executed": [
+      "template/: pnpm exec prettier --write <changed files>: passed; final check recorded separately",
+      "template/: pnpm exec eslint <changed TypeScript files excluding generated next-env.d.ts> --max-warnings=0: passed",
+      "template/: pnpm typecheck (next typegen && tsc --noEmit): passed",
+      "template/: pnpm exec tsx --test tests/domain-workflows.test.ts: 12 passed",
+      "git diff --check: passed",
+      "Static scaffold scan: no setApplied, setReviewed, No persistent write, defaultColumns, displayValue, or invented trend arrays in features/templates",
+      "Read-only TCP listener check: no existing app listener found on ports 3000 or 3001"
+    ],
+    "skipped": [
+      "Browser and live CRUD: no existing local app listener; starting a server was not authorized by repository instructions",
+      "Production build",
+      "Live database writes and restricted-role cross-tenant RLS testing",
+      "Live provider operations, deployments, migrations, seeding, commit and push"
+    ],
+    "blocked": [],
+    "inferred": [
+      "Protected actions are wired to UI, but live persistence and provider success have not been exercised in this correction."
+    ],
+    "remaining": [
+      "Browser rendering, authenticated end-to-end CRUD and reload checks, restricted-role/cross-tenant RLS, and live provider operation are unverified. No development server, database writes, or provider operations were started."
+    ],
+    "changes": [
+      "Domain-specific compositions across CRM, projects, support, marketing, invoicing, social, AI, portal, admin, dashboard and settings",
+      "Persistent create/edit forms; task assignment/status, opportunity stage changes, ticket replies, invoice approval/issuance, campaign lifecycle, social approval/scheduling, document versions/sharing",
+      "Private workspace asset upload/download adapters with explicit limits",
+      "Removed 23 unreferenced command-echo companions; preserved owner catalog edits and public-copy deletions"
+    ],
+    "base_commit": "404d88b2bd9432058d87553e907b005ed0fe6308",
+    "limitations": [
+      "Search filters loaded bounded lists; it is not full-dataset search.",
+      "Campaign lifecycle is persisted planning; it does not send messages. Social scheduling does not establish successful external publication.",
+      "Invoice issuance opens an approved draft locally without emailing or charging customers.",
+      "Private file uploads are limited to 750 KB; downloads to 10 MB. Storage must be configured.",
+      "New administration membership form adds an already registered user; it does not send invitations.",
+      "AI usage ledger can contain zero token/cost values because the current provider adapter does not supply these measurements."
+    ],
+    "verification_note": "Initial lint reported a test formatting issue and later an intentionally ignored generated file. Both were corrected in invocation/source and focused lint passed. One accidental root-app tsc invocation failed on root-app errors; root app was not changed as part of this implementation."
   }
 }

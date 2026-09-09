@@ -1,36 +1,35 @@
 "use client";
-
+import Link from "next/link";
 import { useState } from "react";
-
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-
-export function CampaignsFeatureClient() {
-  const [command, setCommand] = useState("");
-  const [applied, setApplied] = useState("");
-
+import { MarketingCampaignsTemplate } from "@/components/templates/marketingCampaignsTemplate";
+import type { CampaignDTO } from "@/types/marketingTypes";
+export function CampaignsFeatureClient({
+  campaigns,
+}: {
+  campaigns: CampaignDTO[];
+}) {
+  const [query, setQuery] = useState("");
   return (
-    <form
-      aria-label="marketing campaigns command"
-      className="flex w-full flex-wrap items-center gap-2 sm:w-auto"
-      onSubmit={(event) => {
-        event.preventDefault();
-        setApplied(command.trim());
-      }}
-    >
-      <Input
-        aria-label="Filter or command"
-        className="w-full min-w-0 sm:w-48"
-        onChange={(event) => setCommand(event.target.value)}
-        placeholder="Type a command or search…"
-        value={command}
-      />
-      <Button className="shrink-0" size="sm" type="submit">
-        Apply
-      </Button>
-      <span aria-live="polite" className="sr-only">
-        {applied ? `Applied: ${applied}` : "No command applied"}
-      </span>
-    </form>
+    <MarketingCampaignsTemplate
+      campaigns={campaigns.filter((campaign) =>
+        `${campaign.name} ${campaign.audience?.name ?? ""}`
+          .toLowerCase()
+          .includes(query.toLowerCase()),
+      )}
+      toolbar={
+        <div className="flex flex-wrap gap-3">
+          <Input
+            aria-label="Search campaigns"
+            placeholder="Search campaign or audience"
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+          />
+          <Link className="type-link" href="/marketing/campaigns/new">
+            Plan campaign
+          </Link>
+        </div>
+      }
+    />
   );
 }

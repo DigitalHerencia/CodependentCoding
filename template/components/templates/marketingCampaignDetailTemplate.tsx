@@ -1,64 +1,78 @@
+import type { ReactNode } from "react";
+import Link from "next/link";
+import type { CampaignDTO } from "@/types/marketingTypes";
 import {
-  DashboardBars,
   DashboardLayout,
   DashboardPanel,
-  DashboardRailList,
-  DashboardTable,
-  type CanonicalDashboardTemplateProps,
 } from "@/components/blocks/dashboard-layout";
-
-const nav = [
-  { label: "Dashboard", href: "/dashboard", active: false },
-  { label: "Campaigns", href: "/marketing/campaigns", active: false },
-  { label: "Audiences", href: "/marketing/audiences", active: false },
-  { label: "Analytics", href: "/marketing/analytics", active: false },
-] as const;
-
-const defaultColumns = [
-  { key: "name", label: "Name" },
-  { key: "state", label: "State" },
-  { key: "owner", label: "Owner" },
-  { key: "updated", label: "Updated" },
-] as const;
-
 export function MarketingCampaignDetailTemplate({
-  stats = [],
-  columns = defaultColumns,
-  rows = [],
-  toolbar,
-  aside,
+  campaign,
   children,
-  chartValues,
-}: CanonicalDashboardTemplateProps) {
-  const labelKey = columns[0]?.key ?? "name";
-  const valueKey = columns[1]?.key ?? "state";
-
+  steps,
+}: {
+  campaign: CampaignDTO;
+  children: ReactNode;
+  steps: {
+    id: string;
+    position: number;
+    type: string;
+    templateKey: string | null;
+  }[];
+}) {
   return (
     <DashboardLayout
-      aside={
-        aside ?? (
-          <DashboardRailList
-            items={rows.slice(0, 4).map((row) => ({
-              label: String(row.cells[labelKey] ?? row.id),
-              value: String(row.cells[valueKey] ?? ""),
-            }))}
-          />
-        )
+      title={campaign.name}
+      nav={[]}
+      toolbar={
+        <Link
+          className="type-link"
+          href={`/marketing/campaigns/${campaign.id}/edit`}
+        >
+          Edit plan
+        </Link>
       }
-      nav={nav}
-      stats={stats}
-      title="Campaign Detail"
-      toolbar={toolbar}
     >
-      <DashboardPanel title="Campaign context">
-        <DashboardTable columns={columns} rows={rows} />
-      </DashboardPanel>
-      {chartValues?.length ? (
-        <DashboardPanel title="Activity trend">
-          <DashboardBars label="Activity trend" values={chartValues} />
+      <div className="grid gap-4 lg:grid-cols-[2fr_1fr]">
+        <DashboardPanel title="Campaign brief">
+          <p className="whitespace-pre-wrap">
+            {campaign.description ?? "No brief recorded."}
+          </p>
         </DashboardPanel>
-      ) : null}
-      {children}
+        <DashboardPanel title="Target and schedule">
+          <p>
+            {campaign.audience ? (
+              <Link
+                className="type-link"
+                href={`/marketing/audiences/${campaign.audience.id}`}
+              >
+                {campaign.audience.name}
+              </Link>
+            ) : (
+              "No audience selected"
+            )}
+          </p>
+          <p className="mt-3">Status: {campaign.status}</p>
+          <p>Scheduled: {campaign.scheduledAt ?? "Not scheduled"}</p>
+          <p>Started: {campaign.startedAt ?? "Not started"}</p>
+          <p>Completed: {campaign.completedAt ?? "Not completed"}</p>
+        </DashboardPanel>
+      </div>
+      <DashboardPanel title="Workflow">
+        <ol className="space-y-3 border-l-4 border-primary pl-4">
+          {steps.map((step) => (
+            <li className="surface-inset p-4" key={step.id}>
+              <p className="type-label">
+                {step.position}. {step.type}
+              </p>
+              {step.templateKey && (
+                <p className="mt-2">Template: {step.templateKey}</p>
+              )}
+            </li>
+          ))}
+        </ol>
+        {!steps.length && <p>No workflow steps are configured.</p>}
+        {children}
+      </DashboardPanel>
     </DashboardLayout>
   );
 }

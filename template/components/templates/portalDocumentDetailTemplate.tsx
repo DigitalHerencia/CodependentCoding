@@ -1,64 +1,51 @@
+import Link from "next/link";
+import type { ReactNode } from "react";
+import type { PortalDocumentDTO } from "@/types/portalTypes";
 import {
-  DashboardBars,
   DashboardLayout,
   DashboardPanel,
-  DashboardRailList,
-  DashboardTable,
-  type CanonicalDashboardTemplateProps,
 } from "@/components/blocks/dashboard-layout";
-
-const nav = [
-  { label: "Overview", href: "/portal", active: false },
-  { label: "Projects", href: "/projects", active: false },
-  { label: "Documents", href: "/portal/documents", active: false },
-  { label: "Billing", href: "/portal/billing", active: false },
-] as const;
-
-const defaultColumns = [
-  { key: "name", label: "Name" },
-  { key: "state", label: "State" },
-  { key: "owner", label: "Owner" },
-  { key: "updated", label: "Updated" },
-] as const;
-
 export function PortalDocumentDetailTemplate({
-  stats = [],
-  columns = defaultColumns,
-  rows = [],
-  toolbar,
-  aside,
+  document,
   children,
-  chartValues,
-}: CanonicalDashboardTemplateProps) {
-  const labelKey = columns[0]?.key ?? "name";
-  const valueKey = columns[1]?.key ?? "state";
-
+}: {
+  document: PortalDocumentDTO;
+  children: ReactNode;
+}) {
   return (
-    <DashboardLayout
-      aside={
-        aside ?? (
-          <DashboardRailList
-            items={rows.slice(0, 4).map((row) => ({
-              label: String(row.cells[labelKey] ?? row.id),
-              value: String(row.cells[valueKey] ?? ""),
-            }))}
-          />
-        )
-      }
-      nav={nav}
-      stats={stats}
-      title="Portal Document"
-      toolbar={toolbar}
-    >
-      <DashboardPanel title="Document lifecycle">
-        <DashboardTable columns={columns} rows={rows} />
-      </DashboardPanel>
-      {chartValues?.length ? (
-        <DashboardPanel title="Activity trend">
-          <DashboardBars label="Activity trend" values={chartValues} />
+    <DashboardLayout title={document.title} nav={[]}>
+      <Link className="type-link" href="/portal/documents">
+        Document vault
+      </Link>
+      <div className="grid gap-4 lg:grid-cols-[2fr_1fr]">
+        <DashboardPanel title="Document">
+          <p className="whitespace-pre-wrap">
+            {document.description ?? "No description."}
+          </p>
+          {document.latestVersion ? (
+            <dl className="mt-6 space-y-2">
+              <dt>Current file</dt>
+              <dd>{document.latestVersion.filename}</dd>
+              <dt>Format</dt>
+              <dd>{document.latestVersion.contentType}</dd>
+              <dt>Size</dt>
+              <dd>{document.latestVersion.byteSize} bytes</dd>
+              <dt>Added</dt>
+              <dd>{document.latestVersion.createdAt.slice(0, 10)}</dd>
+            </dl>
+          ) : (
+            <p className="mt-5">
+              This document does not have a file version yet.
+            </p>
+          )}
         </DashboardPanel>
-      ) : null}
-      {children}
+        <DashboardPanel title="Version and review">
+          <p>Version {document.currentVersionNumber}</p>
+          <p>Status: {document.status}</p>
+          <p>Client visible: {document.clientVisible ? "Yes" : "No"}</p>
+          {children}
+        </DashboardPanel>
+      </div>
     </DashboardLayout>
   );
 }

@@ -32,10 +32,26 @@ export async function getMyAiGenerations(limit = 50) {
         createdAt: "desc",
       },
       take: Math.min(Math.max(limit, 1), 100),
-      select: aiGenerationSelect,
+      select: { ...aiGenerationSelect, input: true, output: true },
     });
 
-    return rows.map(toAiGenerationDTO);
+    return rows.map((row) => ({
+      ...toAiGenerationDTO(row),
+      prompt:
+        row.input &&
+        typeof row.input === "object" &&
+        "prompt" in row.input &&
+        typeof row.input.prompt === "string"
+          ? row.input.prompt
+          : null,
+      response:
+        row.output &&
+        typeof row.output === "object" &&
+        "text" in row.output &&
+        typeof row.output.text === "string"
+          ? row.output.text
+          : null,
+    }));
   });
 }
 

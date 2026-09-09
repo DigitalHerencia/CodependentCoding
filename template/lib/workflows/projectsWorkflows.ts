@@ -1,4 +1,5 @@
 import {
+  getProjectTask,
   getProject,
   getProjects,
   getProjectTaskDependencyFacts,
@@ -15,8 +16,7 @@ export async function getProjectsDashboardWorkflow(limit = 100) {
 }
 
 export async function getTaskWorkflow(projectId: string, taskId: string) {
-  const tasks = await getProjectTasks(projectId);
-  return tasks.find((task) => task.id === taskId) ?? null;
+  return getProjectTask(projectId, taskId);
 }
 
 export async function getProjectWorkspaceWorkflow(projectId: string) {

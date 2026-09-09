@@ -1,64 +1,33 @@
-import {
-  DashboardBars,
-  DashboardLayout,
-  DashboardPanel,
-  DashboardRailList,
-  DashboardTable,
-  type CanonicalDashboardTemplateProps,
-} from "@/components/blocks/dashboard-layout";
-
-const nav = [
-  { label: "Dashboard", href: "/dashboard", active: false },
-  { label: "Inbox", href: "/support/inbox", active: false },
-  { label: "Knowledge", href: "/support/knowledge-base", active: true },
-  { label: "Analytics", href: "/support/analytics", active: false },
-] as const;
-
-const defaultColumns = [
-  { key: "name", label: "Name" },
-  { key: "state", label: "State" },
-  { key: "owner", label: "Owner" },
-  { key: "updated", label: "Updated" },
-] as const;
-
+import Link from "next/link";
+import type { ReactNode } from "react";
+import type { KnowledgeArticleDTO } from "@/types/supportTypes";
+import { DashboardLayout } from "@/components/blocks/dashboard-layout";
 export function SupportKnowledgeBaseTemplate({
-  stats = [],
-  columns = defaultColumns,
-  rows = [],
+  articles,
   toolbar,
-  aside,
-  children,
-  chartValues,
-}: CanonicalDashboardTemplateProps) {
-  const labelKey = columns[0]?.key ?? "name";
-  const valueKey = columns[1]?.key ?? "state";
-
+}: {
+  articles: KnowledgeArticleDTO[];
+  toolbar: ReactNode;
+}) {
   return (
-    <DashboardLayout
-      aside={
-        aside ?? (
-          <DashboardRailList
-            items={rows.slice(0, 4).map((row) => ({
-              label: String(row.cells[labelKey] ?? row.id),
-              value: String(row.cells[valueKey] ?? ""),
-            }))}
-          />
-        )
-      }
-      nav={nav}
-      stats={stats}
-      title="Knowledge Base"
-      toolbar={toolbar}
-    >
-      <DashboardPanel title="Article catalog">
-        <DashboardTable columns={columns} rows={rows} />
-      </DashboardPanel>
-      {chartValues?.length ? (
-        <DashboardPanel title="Activity trend">
-          <DashboardBars label="Activity trend" values={chartValues} />
-        </DashboardPanel>
-      ) : null}
-      {children}
+    <DashboardLayout title="Knowledge base" nav={[]} toolbar={toolbar}>
+      <div className="grid gap-4 md:grid-cols-2">
+        {articles.map((article) => (
+          <article key={article.id} className="space-y-3 surface-card p-5">
+            <Link
+              className="type-title hover:underline"
+              href={`/support/knowledge-base/${article.id}`}
+            >
+              {article.title}
+            </Link>
+            <p className="line-clamp-3 whitespace-pre-wrap text-muted-primary">
+              {article.body}
+            </p>
+            <p className="text-xs">Updated {article.updatedAt.slice(0, 10)}</p>
+          </article>
+        ))}
+      </div>
+      {!articles.length && <p>No matching articles.</p>}
     </DashboardLayout>
   );
 }

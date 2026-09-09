@@ -1,64 +1,36 @@
-import {
-  DashboardBars,
-  DashboardLayout,
-  DashboardPanel,
-  DashboardRailList,
-  DashboardTable,
-  type CanonicalDashboardTemplateProps,
-} from "@/components/blocks/dashboard-layout";
-
-const nav = [
-  { label: "Dashboard", href: "/dashboard", active: false },
-  { label: "Calendar", href: "/social/calendar", active: false },
-  { label: "Compose", href: "/social/compose", active: false },
-  { label: "Media", href: "/social/media", active: true },
-] as const;
-
-const defaultColumns = [
-  { key: "name", label: "Name" },
-  { key: "state", label: "State" },
-  { key: "owner", label: "Owner" },
-  { key: "updated", label: "Updated" },
-] as const;
-
+import type { ReactNode } from "react";
+import type { MediaAssetDTO } from "@/types/socialTypes";
+import { DashboardLayout } from "@/components/blocks/dashboard-layout";
 export function SocialMediaTemplate({
-  stats = [],
-  columns = defaultColumns,
-  rows = [],
+  assets,
   toolbar,
-  aside,
   children,
-  chartValues,
-}: CanonicalDashboardTemplateProps) {
-  const labelKey = columns[0]?.key ?? "name";
-  const valueKey = columns[1]?.key ?? "state";
-
+  renderControls,
+}: {
+  assets: MediaAssetDTO[];
+  toolbar: ReactNode;
+  children: ReactNode;
+  renderControls: (asset: MediaAssetDTO) => ReactNode;
+}) {
   return (
-    <DashboardLayout
-      aside={
-        aside ?? (
-          <DashboardRailList
-            items={rows.slice(0, 4).map((row) => ({
-              label: String(row.cells[labelKey] ?? row.id),
-              value: String(row.cells[valueKey] ?? ""),
-            }))}
-          />
-        )
-      }
-      nav={nav}
-      stats={stats}
-      title="Media Library"
-      toolbar={toolbar}
-    >
-      <DashboardPanel title="Reusable media">
-        <DashboardTable columns={columns} rows={rows} />
-      </DashboardPanel>
-      {chartValues?.length ? (
-        <DashboardPanel title="Activity trend">
-          <DashboardBars label="Activity trend" values={chartValues} />
-        </DashboardPanel>
-      ) : null}
+    <DashboardLayout title="Media library" nav={[]} toolbar={toolbar}>
       {children}
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        {assets.map((asset) => (
+          <article className="surface-card p-5" key={asset.id}>
+            <div className="mb-4 flex aspect-video items-center justify-center surface-inset p-3 text-center type-label">
+              {asset.contentType}
+            </div>
+            <h2 className="type-label break-all">{asset.filename}</h2>
+            <p className="mt-3 text-sm">{asset.byteSize} bytes</p>
+            <p className="text-sm text-muted-primary">
+              Added {asset.createdAt.slice(0, 10)}
+            </p>
+            {renderControls(asset)}
+          </article>
+        ))}
+      </div>
+      {!assets.length && <p>No matching media assets.</p>}
     </DashboardLayout>
   );
 }

@@ -52,3 +52,14 @@ export async function getExpenses(limit = 100) {
     return rows.map(toExpenseDTO);
   });
 }
+
+export async function getExpense(expenseId: string) {
+  return withAuthenticatedRead(async (tx, access) => {
+    assertPermission(access, "invoicing:read");
+    const row = await tx.expense.findFirst({
+      where: { id: expenseId, organizationId: access.organizationId },
+      select: expenseSelect,
+    });
+    return row ? toExpenseDTO(row) : null;
+  });
+}

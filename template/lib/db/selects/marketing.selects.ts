@@ -29,6 +29,7 @@ export type CampaignRecord = Prisma.CampaignGetPayload<{
 }>;
 
 export const audienceSelect = {
+  definition: true,
   id: true,
   name: true,
   status: true,

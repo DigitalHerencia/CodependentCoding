@@ -1,64 +1,54 @@
-import {
-  DashboardBars,
-  DashboardLayout,
-  DashboardPanel,
-  DashboardRailList,
-  DashboardTable,
-  type CanonicalDashboardTemplateProps,
-} from "@/components/blocks/dashboard-layout";
-
-const nav = [
-  { label: "Dashboard", href: "/dashboard", active: false },
-  { label: "Inbox", href: "/support/inbox", active: true },
-  { label: "Knowledge", href: "/support/knowledge-base", active: false },
-  { label: "Analytics", href: "/support/analytics", active: false },
-] as const;
-
-const defaultColumns = [
-  { key: "name", label: "Name" },
-  { key: "state", label: "State" },
-  { key: "owner", label: "Owner" },
-  { key: "updated", label: "Updated" },
-] as const;
-
+import Link from "next/link";
+import type { ReactNode } from "react";
+import type { SupportTicketDTO } from "@/types/supportTypes";
+import { DashboardLayout } from "@/components/blocks/dashboard-layout";
 export function SupportInboxTemplate({
-  stats = [],
-  columns = defaultColumns,
-  rows = [],
+  tickets,
   toolbar,
-  aside,
-  children,
-  chartValues,
-}: CanonicalDashboardTemplateProps) {
-  const labelKey = columns[0]?.key ?? "name";
-  const valueKey = columns[1]?.key ?? "state";
-
+}: {
+  tickets: SupportTicketDTO[];
+  toolbar: ReactNode;
+}) {
   return (
-    <DashboardLayout
-      aside={
-        aside ?? (
-          <DashboardRailList
-            items={rows.slice(0, 4).map((row) => ({
-              label: String(row.cells[labelKey] ?? row.id),
-              value: String(row.cells[valueKey] ?? ""),
-            }))}
-          />
-        )
-      }
-      nav={nav}
-      stats={stats}
-      title="Support Inbox"
-      toolbar={toolbar}
-    >
-      <DashboardPanel title="Ticket queue">
-        <DashboardTable columns={columns} rows={rows} />
-      </DashboardPanel>
-      {chartValues?.length ? (
-        <DashboardPanel title="Activity trend">
-          <DashboardBars label="Activity trend" values={chartValues} />
-        </DashboardPanel>
-      ) : null}
-      {children}
+    <DashboardLayout title="Support inbox" nav={[]} toolbar={toolbar}>
+      <p className="text-muted-primary">
+        Open conversations ordered by priority. Showing up to 100 tickets.
+      </p>
+      <div className="divide-y divide-border border border-border">
+        {tickets.map((ticket) => (
+          <Link
+            key={ticket.id}
+            href={`/support/tickets/${ticket.id}`}
+            className="grid gap-3 p-4 hover:bg-primary/10 md:grid-cols-[8rem_1fr_14rem]"
+          >
+            <div>
+              <p className="type-label">#{ticket.number}</p>
+              <p>{ticket.priority}</p>
+            </div>
+            <div>
+              <h2 className="type-label">{ticket.subject}</h2>
+              <p className="mt-1 text-muted-primary">
+                {ticket.requester?.displayName ??
+                  ticket.requester?.email ??
+                  "Requester"}{" "}
+                · {ticket.messageCount} messages
+              </p>
+            </div>
+            <div>
+              <p>{ticket.status.replaceAll("_", " ")}</p>
+              <p className="text-sm">
+                {ticket.assignee?.displayName ?? "Unassigned"}
+              </p>
+              <p className="text-sm">
+                Response due:{" "}
+                {ticket.firstResponseDueAt?.slice(0, 16).replace("T", " ") ??
+                  "Not set"}
+              </p>
+            </div>
+          </Link>
+        ))}
+      </div>
+      {!tickets.length && <p>No matching open tickets.</p>}
     </DashboardLayout>
   );
 }

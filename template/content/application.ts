@@ -1,5 +1,11 @@
 export const applicationProduct = {
   name: "The Maximal Template™ Domain Library",
+  brand: {
+    title: "The Maximal Template™",
+    subtitle: "Domain Library",
+    image: "/favicon.png",
+    homeLabel: "The Maximal Template™ Domain Library home",
+  },
   description: "Productivity is dead. Long live product.",
 } as const;
 

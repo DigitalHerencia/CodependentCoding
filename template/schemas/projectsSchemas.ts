@@ -26,3 +26,26 @@ export const updateTaskStatusSchema = z.object({
   status: z.enum(TaskStatus),
   expectedVersion: z.number().int().positive(),
 });
+
+export const updateProjectSchema = createProjectSchema.extend({
+  projectId: uuid,
+  expectedVersion: z.number().int().positive(),
+});
+
+export const updateTaskSchema = createTaskSchema
+  .pick({
+    projectId: true,
+    title: true,
+    description: true,
+    priority: true,
+    dueAt: true,
+  })
+  .extend({ taskId: uuid, expectedVersion: z.number().int().positive() });
+
+export const assignTaskSchema = z.object({
+  taskId: uuid,
+  assigneeMembershipId: uuid.nullable(),
+  expectedVersion: z.number().int().positive(),
+});
+
+export { TaskStatus, TaskPriority } from "@/generated/prisma/enums";

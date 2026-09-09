@@ -110,3 +110,14 @@ export async function getProjectTaskDependencyFacts(projectId: string) {
     });
   });
 }
+
+export async function getProjectTask(projectId: string, taskId: string) {
+  return withAuthenticatedRead(async (tx, access) => {
+    assertPermission(access, "projects:read");
+    const row = await tx.task.findFirst({
+      where: { id: taskId, projectId, organizationId: access.organizationId },
+      select: taskSelect,
+    });
+    return row ? toTaskDTO(row) : null;
+  });
+}

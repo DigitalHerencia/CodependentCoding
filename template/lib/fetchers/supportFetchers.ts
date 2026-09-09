@@ -68,3 +68,52 @@ export async function getKnowledgeArticles(limit = 100) {
     return rows.map(toKnowledgeArticleDTO);
   });
 }
+
+export async function getSupportMessages(ticketId: string) {
+  return withAuthenticatedRead(async (tx, access) => {
+    assertPermission(access, "support:read");
+    const ticket = await tx.supportTicket.findFirst({
+      where: {
+        id: ticketId,
+        organizationId: access.organizationId,
+        ...(access.role === "CLIENT" ? { requesterUserId: access.userId } : {}),
+      },
+      select: { id: true },
+    });
+    if (!ticket) throw new Error("Ticket not found.");
+    const messages = await tx.supportMessage.findMany({
+      where: {
+        ticketId,
+        organizationId: access.organizationId,
+        ...(access.role === "CLIENT" ? { isInternal: false } : {}),
+      },
+      orderBy: { createdAt: "asc" },
+      select: {
+        id: true,
+        authorLabel: true,
+        body: true,
+        isInternal: true,
+        createdAt: true,
+      },
+    });
+    return messages.map((message) => ({
+      ...message,
+      createdAt: message.createdAt.toISOString(),
+    }));
+  });
+}
+
+export async function getKnowledgeArticle(articleId: string) {
+  return withAuthenticatedRead(async (tx, access) => {
+    assertPermission(access, "support:read");
+    const row = await tx.knowledgeArticle.findFirst({
+      where: {
+        id: articleId,
+        organizationId: access.organizationId,
+        status: "PUBLISHED",
+      },
+      select: knowledgeArticleSelect,
+    });
+    return row ? toKnowledgeArticleDTO(row) : null;
+  });
+}

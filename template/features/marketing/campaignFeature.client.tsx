@@ -1,36 +1,52 @@
 "use client";
-
-import { useState } from "react";
-
+import { useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-
-export function CampaignFeatureClient() {
-  const [command, setCommand] = useState("");
-  const [applied, setApplied] = useState("");
-
+import { updateCampaignStatus } from "@/lib/actions/marketingActions";
+import { CampaignStatus } from "@/schemas/marketingSchemas";
+import type { CampaignDTO } from "@/types/marketingTypes";
+export function CampaignFeatureClient({ campaign }: { campaign: CampaignDTO }) {
+  const router = useRouter();
+  const [pending, startTransition] = useTransition();
+  const [message, setMessage] = useState("");
   return (
     <form
-      aria-label="marketing campaigns campaignId command"
-      className="flex w-full flex-wrap items-center gap-2 sm:w-auto"
-      onSubmit={(event) => {
-        event.preventDefault();
-        setApplied(command.trim());
-      }}
+      className="mt-5 space-y-3"
+      action={(data) =>
+        startTransition(async () => {
+          try {
+            await updateCampaignStatus({
+              campaignId: campaign.id,
+              expectedVersion: campaign.version,
+              status: data.get("status"),
+            });
+            setMessage("Campaign lifecycle saved.");
+            router.refresh();
+          } catch {
+            setMessage(
+              "Lifecycle update failed. Check access or refresh the campaign.",
+            );
+          }
+        })
+      }
     >
-      <Input
-        aria-label="Filter or command"
-        className="w-full min-w-0 sm:w-48"
-        onChange={(event) => setCommand(event.target.value)}
-        placeholder="Type a command or search…"
-        value={command}
-      />
-      <Button className="shrink-0" size="sm" type="submit">
-        Apply
+      <select
+        className="control-field"
+        name="status"
+        aria-label="Campaign lifecycle"
+        defaultValue={campaign.status}
+      >
+        {Object.values(CampaignStatus).map((status) => (
+          <option key={status}>{status}</option>
+        ))}
+      </select>
+      <Button type="submit" disabled={pending}>
+        Save lifecycle
       </Button>
-      <span aria-live="polite" className="sr-only">
-        {applied ? `Applied: ${applied}` : "No command applied"}
-      </span>
+      <p className="text-sm text-muted-primary">
+        This updates campaign planning state. It does not send messages.
+      </p>
+      <p role="status">{message}</p>
     </form>
   );
 }

@@ -1,57 +1,26 @@
-import { SettingsSurface } from "@/components/blocks/settings-page";
+import type { ReactNode } from "react";
+import type { OrganizationDTO } from "@/types/commonTypes";
 import {
   DashboardLayout,
-  DashboardRailList,
-  DashboardTable,
-  type CanonicalDashboardTemplateProps,
+  DashboardPanel,
 } from "@/components/blocks/dashboard-layout";
-
-const nav = [
-  { label: "Profile", href: "/settings/profile", active: true },
-  { label: "Members", href: "/settings/members", active: false },
-  { label: "Integrations", href: "/settings/integrations", active: false },
-  { label: "Billing", href: "/settings/billing", active: false },
-] as const;
-
-const defaultColumns = [
-  { key: "name", label: "Name" },
-  { key: "state", label: "State" },
-  { key: "owner", label: "Owner" },
-  { key: "updated", label: "Updated" },
-] as const;
-
 export function SharedProfileSettingsTemplate({
-  stats = [],
-  columns = defaultColumns,
-  rows = [],
-  toolbar,
-  aside,
+  organization,
   children,
-}: CanonicalDashboardTemplateProps) {
+}: {
+  organization: OrganizationDTO;
+  children: ReactNode;
+}) {
   return (
-    <DashboardLayout
-      aside={
-        aside ?? (
-          <DashboardRailList
-            items={rows.slice(0, 4).map((row) => ({
-              label: String(row.cells[columns[0]?.key ?? "name"] ?? row.id),
-              value: String(row.cells[columns[1]?.key ?? "state"] ?? ""),
-            }))}
-          />
-        )
-      }
-      nav={nav}
-      stats={stats}
-      title="Profile Settings"
-      toolbar={toolbar}
-    >
-      <SettingsSurface
-        description="Profile and appearance uses server-authoritative values and explicit workflow-backed actions."
-        title="Profile Settings"
-      >
-        <DashboardTable columns={columns} rows={rows} />
-      </SettingsSurface>
-      {children}
+    <DashboardLayout title="Workspace settings" nav={[]}>
+      <div className="grid gap-5 lg:grid-cols-[1fr_2fr]">
+        <DashboardPanel title="Workspace">
+          <h2 className="type-title">{organization.name}</h2>
+          <p className="mt-3">{organization.slug}</p>
+          <p>{organization.memberCount} members</p>
+        </DashboardPanel>
+        <DashboardPanel title="Regional preferences">{children}</DashboardPanel>
+      </div>
     </DashboardLayout>
   );
 }

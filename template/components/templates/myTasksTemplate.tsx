@@ -1,63 +1,54 @@
+import Link from "next/link";
+import type { ReactNode } from "react";
+import type { TaskDTO } from "@/types/projectsTypes";
 import {
-  DashboardBars,
   DashboardLayout,
   DashboardPanel,
-  DashboardRailList,
-  DashboardTable,
-  type CanonicalDashboardTemplateProps,
 } from "@/components/blocks/dashboard-layout";
-
-const nav = [
-  { label: "Dashboard", href: "/dashboard", active: false },
-  { label: "Projects", href: "/projects", active: false },
-  { label: "My Tasks", href: "/my-tasks", active: true },
-] as const;
-
-const defaultColumns = [
-  { key: "name", label: "Name" },
-  { key: "state", label: "State" },
-  { key: "owner", label: "Owner" },
-  { key: "updated", label: "Updated" },
-] as const;
-
 export function MyTasksTemplate({
-  stats = [],
-  columns = defaultColumns,
-  rows = [],
+  title,
+  tasks,
   toolbar,
-  aside,
-  children,
-  chartValues,
-}: CanonicalDashboardTemplateProps) {
-  const labelKey = columns[0]?.key ?? "name";
-  const valueKey = columns[1]?.key ?? "state";
-
+  renderControls,
+}: {
+  title: string;
+  tasks: readonly TaskDTO[];
+  toolbar: ReactNode;
+  renderControls: (task: TaskDTO) => ReactNode;
+}) {
   return (
-    <DashboardLayout
-      aside={
-        aside ?? (
-          <DashboardRailList
-            items={rows.slice(0, 4).map((row) => ({
-              label: String(row.cells[labelKey] ?? row.id),
-              value: String(row.cells[valueKey] ?? ""),
-            }))}
-          />
-        )
-      }
-      nav={nav}
-      stats={stats}
-      title="My Tasks"
-      toolbar={toolbar}
-    >
-      <DashboardPanel title="Personal task surface">
-        <DashboardTable columns={columns} rows={rows} />
-      </DashboardPanel>
-      {chartValues?.length ? (
-        <DashboardPanel title="Activity trend">
-          <DashboardBars label="Activity trend" values={chartValues} />
+    <DashboardLayout title={title} nav={[]} toolbar={toolbar}>
+      {["URGENT", "HIGH", "MEDIUM", "LOW"].map((priority) => (
+        <DashboardPanel key={priority} title={`${priority} priority`}>
+          <ul className="space-y-3">
+            {tasks
+              .filter((task) => task.priority === priority)
+              .map((task) => (
+                <li
+                  key={task.id}
+                  className="grid gap-4 border-b border-border py-3 lg:grid-cols-[1fr_auto]"
+                >
+                  <div>
+                    <Link
+                      className="type-label hover:underline"
+                      href={`/projects/${task.projectId}/tasks/${task.id}`}
+                    >
+                      {task.title}
+                    </Link>
+                    <p className="mt-2">
+                      Due {task.dueAt?.slice(0, 10) ?? "date not set"} ·{" "}
+                      {task.status}
+                    </p>
+                  </div>
+                  {renderControls(task)}
+                </li>
+              ))}
+          </ul>
+          {!tasks.some((task) => task.priority === priority) && (
+            <p>No open tasks at this priority.</p>
+          )}
         </DashboardPanel>
-      ) : null}
-      {children}
+      ))}
     </DashboardLayout>
   );
 }

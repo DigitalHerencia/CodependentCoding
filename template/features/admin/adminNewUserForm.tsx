@@ -1,75 +1,54 @@
 "use client";
-
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-
-import { Alert, AlertDescription } from "@/components/ui/alert";
+import { useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
+import { addAdminMembership } from "@/lib/actions/adminActions";
+import { appRoles } from "@/lib/authz/roles";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-
-interface FormValues {
-  name: string;
-  email: string;
-  status: string;
-}
-
 export function AdminNewUserForm() {
-  const recordId = "new";
-  const [reviewed, setReviewed] = useState<FormValues | null>(null);
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<FormValues>({
-    defaultValues: { name: "", email: "", status: "ACTIVE" },
-  });
-
+  const router = useRouter();
+  const [pending, startTransition] = useTransition();
+  const [error, setError] = useState("");
   return (
     <form
-      className="mx-auto w-full max-w-4xl space-y-5 surface-card p-5"
-      onSubmit={handleSubmit((values) => setReviewed(values))}
+      className="mx-auto max-w-3xl space-y-5 surface-card p-5"
+      action={(data) =>
+        startTransition(async () => {
+          try {
+            const membership = await addAdminMembership({
+              email: data.get("email"),
+              role: data.get("role"),
+            });
+            router.push(`/admin/users/${membership.user.id}`);
+            router.refresh();
+          } catch {
+            setError(
+              "Member could not be added. They must already be registered and not already belong to this workspace; administrative access is required.",
+            );
+          }
+        })
+      }
     >
-      <header className="border-b border-border pb-4">
-        <p className="type-caption text-muted-primary uppercase">
-          /admin/users/new
-        </p>
-        <h1 className="mt-1 type-title">New User</h1>
-      </header>
-      <div className="grid gap-4 md:grid-cols-2">
-        <div className="form-field">
-          <Label htmlFor={`name-${recordId}`}>Name</Label>
-          <Input
-            id={`name-${recordId}`}
-            {...register("name", { required: "Name is required." })}
-          />
-          {errors.name ? (
-            <span className="text-xs text-destructive">
-              {errors.name.message}
-            </span>
-          ) : null}
-        </div>
-        <div className="form-field">
-          <Label htmlFor={`email-${recordId}`}>Email or owner</Label>
-          <Input id={`email-${recordId}`} {...register("email")} />
-        </div>
-        <div className="form-field md:col-span-2">
-          <Label htmlFor={`status-${recordId}`}>Status</Label>
-          <Input
-            id={`status-${recordId}`}
-            {...register("status", { required: "Status is required." })}
-          />
-        </div>
-      </div>
-      <Button type="submit">Review record</Button>
-      {reviewed ? (
-        <Alert>
-          <AlertDescription>
-            Review ready for the protected server workflow: {reviewed.name} (
-            {reviewed.status}). No persistent write has been issued.
-          </AlertDescription>
-        </Alert>
-      ) : null}
+      <h1 className="type-title">Add a registered member</h1>
+      <p>Add workspace access for an existing application user.</p>
+      <Label htmlFor="member-email">Registered email</Label>
+      <Input id="member-email" name="email" type="email" required />
+      <Label htmlFor="new-member-role">Application role</Label>
+      <select
+        id="new-member-role"
+        name="role"
+        defaultValue="MEMBER"
+        className="control-field"
+      >
+        {appRoles.map((role) => (
+          <option key={role}>{role}</option>
+        ))}
+      </select>
+      {error && <p role="alert">{error}</p>}
+      <Button type="submit" disabled={pending}>
+        Add member
+      </Button>
     </form>
   );
 }

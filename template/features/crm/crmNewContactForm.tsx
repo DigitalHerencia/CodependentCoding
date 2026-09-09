@@ -1,75 +1,104 @@
 "use client";
-
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
-
-import { Alert, AlertDescription } from "@/components/ui/alert";
+import { createContact, updateContact } from "@/lib/actions/crmActions";
+import type { ContactFormValues, CrmContactDTO } from "@/types/crmTypes";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-
-interface FormValues {
-  name: string;
-  email: string;
-  status: string;
-}
-
-export function CrmNewContactForm() {
-  const recordId = "new";
-  const [reviewed, setReviewed] = useState<FormValues | null>(null);
+export function CrmNewContactForm({
+  contact,
+  lead = false,
+}: {
+  contact?: CrmContactDTO;
+  lead?: boolean;
+}) {
+  const router = useRouter();
+  const [error, setError] = useState("");
   const {
     register,
     handleSubmit,
-    formState: { errors },
-  } = useForm<FormValues>({
-    defaultValues: { name: "", email: "", status: "ACTIVE" },
+    formState: { isSubmitting },
+  } = useForm<ContactFormValues>({
+    defaultValues: {
+      firstName: contact?.firstName ?? "",
+      lastName: contact?.lastName ?? "",
+      email: contact?.email ?? "",
+      phone: contact?.phone ?? "",
+      title: contact?.title ?? "",
+      status:
+        contact?.status === "ARCHIVED"
+          ? "INACTIVE"
+          : (contact?.status ?? (lead ? "LEAD" : "ACTIVE")),
+    },
   });
-
   return (
     <form
-      className="mx-auto w-full max-w-4xl space-y-5 surface-card p-5"
-      onSubmit={handleSubmit((values) => setReviewed(values))}
+      className="mx-auto max-w-3xl space-y-5 surface-card p-5"
+      onSubmit={handleSubmit(async (values) => {
+        setError("");
+        try {
+          const saved = contact
+            ? await updateContact({
+                ...values,
+                contactId: contact.id,
+                expectedUpdatedAt: contact.updatedAt,
+              })
+            : await createContact(values);
+          router.push(`/crm/${lead ? "leads" : "contacts"}/${saved.id}`);
+          router.refresh();
+        } catch {
+          setError(
+            "Contact could not be saved. Check the fields and your permissions. Reload if the record has changed.",
+          );
+        }
+      })}
     >
-      <header className="border-b border-border pb-4">
-        <p className="type-caption text-muted-primary uppercase">
-          /crm/contacts/new
-        </p>
-        <h1 className="mt-1 type-title">New Contact</h1>
-      </header>
-      <div className="grid gap-4 md:grid-cols-2">
+      <h1 className="type-title">
+        {contact ? "Edit" : "New"} {lead ? "lead" : "contact"}
+      </h1>
+      <div className="grid gap-4 sm:grid-cols-2">
+        {(["firstName", "lastName", "email", "phone", "title"] as const).map(
+          (field) => (
+            <div className="form-field" key={field}>
+              <Label htmlFor={field}>
+                {
+                  {
+                    firstName: "First name",
+                    lastName: "Last name",
+                    email: "Email",
+                    phone: "Phone",
+                    title: "Job title",
+                  }[field]
+                }
+              </Label>
+              <Input
+                id={field}
+                type={field === "email" ? "email" : "text"}
+                required={field === "firstName" || field === "lastName"}
+                {...register(field)}
+              />
+            </div>
+          ),
+        )}
         <div className="form-field">
-          <Label htmlFor={`name-${recordId}`}>Name</Label>
-          <Input
-            id={`name-${recordId}`}
-            {...register("name", { required: "Name is required." })}
-          />
-          {errors.name ? (
-            <span className="text-xs text-destructive">
-              {errors.name.message}
-            </span>
-          ) : null}
-        </div>
-        <div className="form-field">
-          <Label htmlFor={`email-${recordId}`}>Email or owner</Label>
-          <Input id={`email-${recordId}`} {...register("email")} />
-        </div>
-        <div className="form-field md:col-span-2">
-          <Label htmlFor={`status-${recordId}`}>Status</Label>
-          <Input
-            id={`status-${recordId}`}
-            {...register("status", { required: "Status is required." })}
-          />
+          <Label htmlFor="contact-status">Relationship status</Label>
+          <select
+            id="contact-status"
+            className="control-field"
+            {...register("status")}
+          >
+            <option>LEAD</option>
+            <option>ACTIVE</option>
+            <option>INACTIVE</option>
+          </select>
         </div>
       </div>
-      <Button type="submit">Review record</Button>
-      {reviewed ? (
-        <Alert>
-          <AlertDescription>
-            Review ready for the protected server workflow: {reviewed.name} (
-            {reviewed.status}). No persistent write has been issued.
-          </AlertDescription>
-        </Alert>
-      ) : null}
+      {error && <p role="alert">{error}</p>}
+      <Button disabled={isSubmitting} type="submit">
+        {isSubmitting ? "Saving…" : "Save contact"}
+      </Button>
     </form>
   );
 }

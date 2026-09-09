@@ -1,36 +1,35 @@
 "use client";
-
+import Link from "next/link";
 import { useState } from "react";
-
-import { Button } from "@/components/ui/button";
+import { CrmAccountsTemplate } from "@/components/templates/crmAccountsTemplate";
 import { Input } from "@/components/ui/input";
-
-export function CrmAccountsFeatureClient() {
-  const [command, setCommand] = useState("");
-  const [applied, setApplied] = useState("");
-
+import type { CrmAccountDTO } from "@/types/crmTypes";
+export function CrmAccountsFeatureClient({
+  accounts,
+}: {
+  accounts: CrmAccountDTO[];
+}) {
+  const [query, setQuery] = useState("");
   return (
-    <form
-      aria-label="crm accounts command"
-      className="flex w-full flex-wrap items-center gap-2 sm:w-auto"
-      onSubmit={(event) => {
-        event.preventDefault();
-        setApplied(command.trim());
-      }}
-    >
-      <Input
-        aria-label="Filter or command"
-        className="w-full min-w-0 sm:w-48"
-        onChange={(event) => setCommand(event.target.value)}
-        placeholder="Type a command or search…"
-        value={command}
-      />
-      <Button className="shrink-0" size="sm" type="submit">
-        Apply
-      </Button>
-      <span aria-live="polite" className="sr-only">
-        {applied ? `Applied: ${applied}` : "No command applied"}
-      </span>
-    </form>
+    <CrmAccountsTemplate
+      accounts={accounts.filter((account) =>
+        `${account.name} ${account.industry ?? ""}`
+          .toLowerCase()
+          .includes(query.toLowerCase()),
+      )}
+      toolbar={
+        <div className="flex flex-wrap gap-3">
+          <Input
+            aria-label="Search accounts"
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder="Search company or industry"
+          />
+          <Link className="type-link" href="/crm/accounts/new">
+            New account
+          </Link>
+        </div>
+      }
+    />
   );
 }

@@ -1,64 +1,53 @@
+import Link from "next/link";
+import type { CrmAccountDTO } from "@/types/crmTypes";
 import {
-  DashboardBars,
   DashboardLayout,
   DashboardPanel,
-  DashboardRailList,
-  DashboardTable,
-  type CanonicalDashboardTemplateProps,
 } from "@/components/blocks/dashboard-layout";
-
-const nav = [
-  { label: "Pipeline", href: "/crm/pipeline", active: false },
-  { label: "Contacts", href: "/crm/contacts", active: false },
-  { label: "Accounts", href: "/crm/accounts", active: false },
-  { label: "Analytics", href: "/crm/analytics", active: false },
-] as const;
-
-const defaultColumns = [
-  { key: "name", label: "Name" },
-  { key: "state", label: "State" },
-  { key: "owner", label: "Owner" },
-  { key: "updated", label: "Updated" },
-] as const;
-
 export function CrmAccountDetailTemplate({
-  stats = [],
-  columns = defaultColumns,
-  rows = [],
-  toolbar,
-  aside,
-  children,
-  chartValues,
-}: CanonicalDashboardTemplateProps) {
-  const labelKey = columns[0]?.key ?? "name";
-  const valueKey = columns[1]?.key ?? "state";
-
+  account,
+}: {
+  account: CrmAccountDTO;
+}) {
   return (
     <DashboardLayout
-      aside={
-        aside ?? (
-          <DashboardRailList
-            items={rows.slice(0, 4).map((row) => ({
-              label: String(row.cells[labelKey] ?? row.id),
-              value: String(row.cells[valueKey] ?? ""),
-            }))}
-          />
-        )
+      title={account.name}
+      nav={[]}
+      toolbar={
+        <Link className="type-link" href={`/crm/accounts/${account.id}/edit`}>
+          Edit account
+        </Link>
       }
-      nav={nav}
-      stats={stats}
-      title="Account Detail"
-      toolbar={toolbar}
     >
-      <DashboardPanel title="Account profile">
-        <DashboardTable columns={columns} rows={rows} />
-      </DashboardPanel>
-      {chartValues?.length ? (
-        <DashboardPanel title="Activity trend">
-          <DashboardBars label="Activity trend" values={chartValues} />
+      <div className="grid gap-4 lg:grid-cols-[2fr_1fr]">
+        <DashboardPanel title="Relationship notes">
+          <p className="whitespace-pre-wrap">
+            {account.notes ?? "No notes yet."}
+          </p>
         </DashboardPanel>
-      ) : null}
-      {children}
+        <DashboardPanel title="Company profile">
+          <dl className="space-y-2">
+            <dt>Industry</dt>
+            <dd>{account.industry ?? "Not recorded"}</dd>
+            <dt>Website</dt>
+            <dd>
+              {account.website && /^https?:\/\//.test(account.website) ? (
+                <a className="type-link" href={account.website}>
+                  {account.website}
+                </a>
+              ) : (
+                "Not recorded"
+              )}
+            </dd>
+            <dt>Relationship</dt>
+            <dd>{account.status}</dd>
+            <dt>Contacts / opportunities</dt>
+            <dd>
+              {account.contactCount} / {account.dealCount}
+            </dd>
+          </dl>
+        </DashboardPanel>
+      </div>
     </DashboardLayout>
   );
 }

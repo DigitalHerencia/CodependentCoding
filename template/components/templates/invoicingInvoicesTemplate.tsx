@@ -1,64 +1,40 @@
+import type { ReactNode } from "react";
+import type { InvoiceDTO } from "@/types/invoicingTypes";
 import {
-  DashboardBars,
   DashboardLayout,
-  DashboardPanel,
-  DashboardRailList,
   DashboardTable,
-  type CanonicalDashboardTemplateProps,
 } from "@/components/blocks/dashboard-layout";
-
-const nav = [
-  { label: "Dashboard", href: "/dashboard", active: false },
-  { label: "Invoices", href: "/invoices", active: true },
-  { label: "Expenses", href: "/expenses", active: false },
-  { label: "Billing", href: "/settings/billing", active: false },
-] as const;
-
-const defaultColumns = [
-  { key: "name", label: "Name" },
-  { key: "state", label: "State" },
-  { key: "owner", label: "Owner" },
-  { key: "updated", label: "Updated" },
-] as const;
-
 export function InvoicingInvoicesTemplate({
-  stats = [],
-  columns = defaultColumns,
-  rows = [],
+  invoices,
   toolbar,
-  aside,
-  children,
-  chartValues,
-}: CanonicalDashboardTemplateProps) {
-  const labelKey = columns[0]?.key ?? "name";
-  const valueKey = columns[1]?.key ?? "state";
-
+}: {
+  invoices: InvoiceDTO[];
+  toolbar: ReactNode;
+}) {
   return (
-    <DashboardLayout
-      aside={
-        aside ?? (
-          <DashboardRailList
-            items={rows.slice(0, 4).map((row) => ({
-              label: String(row.cells[labelKey] ?? row.id),
-              value: String(row.cells[valueKey] ?? ""),
-            }))}
-          />
-        )
-      }
-      nav={nav}
-      stats={stats}
-      title="Invoices"
-      toolbar={toolbar}
-    >
-      <DashboardPanel title="Invoice registry">
-        <DashboardTable columns={columns} rows={rows} />
-      </DashboardPanel>
-      {chartValues?.length ? (
-        <DashboardPanel title="Activity trend">
-          <DashboardBars label="Activity trend" values={chartValues} />
-        </DashboardPanel>
-      ) : null}
-      {children}
+    <DashboardLayout title="Accounts receivable" nav={[]} toolbar={toolbar}>
+      <p>Track customer invoices and due dates. Showing up to 100 invoices.</p>
+      <DashboardTable
+        columns={[
+          { key: "number", label: "Invoice" },
+          { key: "customer", label: "Customer" },
+          { key: "total", label: "Amount" },
+          { key: "status", label: "Payment status" },
+          { key: "due", label: "Due date" },
+        ]}
+        rows={invoices.map((invoice) => ({
+          id: invoice.id,
+          href: `/invoices/${invoice.id}`,
+          cells: {
+            number: `#${invoice.number}`,
+            customer: invoice.customerName,
+            total: `${invoice.total} ${invoice.currency}`,
+            status: invoice.status,
+            due: invoice.dueAt?.slice(0, 10) ?? "Not set",
+          },
+        }))}
+        emptyLabel="No matching invoices."
+      />
     </DashboardLayout>
   );
 }

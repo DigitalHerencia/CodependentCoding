@@ -1,64 +1,70 @@
+import Link from "next/link";
+import type { ReactNode } from "react";
+import type { SocialPostDTO } from "@/types/socialTypes";
 import {
-  DashboardBars,
   DashboardLayout,
   DashboardPanel,
-  DashboardRailList,
-  DashboardTable,
-  type CanonicalDashboardTemplateProps,
 } from "@/components/blocks/dashboard-layout";
-
-const nav = [
-  { label: "Dashboard", href: "/dashboard", active: false },
-  { label: "Calendar", href: "/social/calendar", active: true },
-  { label: "Compose", href: "/social/compose", active: false },
-  { label: "Media", href: "/social/media", active: false },
-] as const;
-
-const defaultColumns = [
-  { key: "name", label: "Name" },
-  { key: "state", label: "State" },
-  { key: "owner", label: "Owner" },
-  { key: "updated", label: "Updated" },
-] as const;
-
 export function SocialCalendarTemplate({
-  stats = [],
-  columns = defaultColumns,
-  rows = [],
+  posts,
   toolbar,
-  aside,
-  children,
-  chartValues,
-}: CanonicalDashboardTemplateProps) {
-  const labelKey = columns[0]?.key ?? "name";
-  const valueKey = columns[1]?.key ?? "state";
-
+  renderControls,
+}: {
+  posts: SocialPostDTO[];
+  toolbar: ReactNode;
+  renderControls: (post: SocialPostDTO) => ReactNode;
+}) {
+  const dates = [
+    ...new Set(
+      posts.map(
+        (post) => post.scheduledAt?.slice(0, 10) ?? "Unscheduled drafts",
+      ),
+    ),
+  ].sort();
   return (
-    <DashboardLayout
-      aside={
-        aside ?? (
-          <DashboardRailList
-            items={rows.slice(0, 4).map((row) => ({
-              label: String(row.cells[labelKey] ?? row.id),
-              value: String(row.cells[valueKey] ?? ""),
-            }))}
-          />
-        )
-      }
-      nav={nav}
-      stats={stats}
-      title="Publishing Calendar"
-      toolbar={toolbar}
-    >
-      <DashboardPanel title="Scheduled posts">
-        <DashboardTable columns={columns} rows={rows} />
-      </DashboardPanel>
-      {chartValues?.length ? (
-        <DashboardPanel title="Activity trend">
-          <DashboardBars label="Activity trend" values={chartValues} />
-        </DashboardPanel>
-      ) : null}
-      {children}
+    <DashboardLayout title="Publishing calendar" nav={[]} toolbar={toolbar}>
+      <Link className="type-link" href="/social/compose">
+        Compose post
+      </Link>
+      <div className="space-y-5">
+        {dates.map((date) => (
+          <DashboardPanel key={date} title={date}>
+            <div className="grid gap-4 lg:grid-cols-2">
+              {posts
+                .filter(
+                  (post) =>
+                    (post.scheduledAt?.slice(0, 10) ?? "Unscheduled drafts") ===
+                    date,
+                )
+                .map((post) => (
+                  <article
+                    key={post.id}
+                    className="space-y-3 surface-inset p-4"
+                  >
+                    <h3 className="type-label">
+                      {post.title ?? "Untitled post"}
+                    </h3>
+                    <p className="whitespace-pre-wrap">{post.content}</p>
+                    <p>
+                      {post.status} ·{" "}
+                      {post.scheduledAt?.slice(11, 16) ?? "No time set"} UTC
+                    </p>
+                    <ul>
+                      {post.variants.map((variant) => (
+                        <li key={variant.id}>
+                          {variant.accountDisplayName} · {variant.provider} ·{" "}
+                          {variant.status}
+                        </li>
+                      ))}
+                    </ul>
+                    {renderControls(post)}
+                  </article>
+                ))}
+            </div>
+          </DashboardPanel>
+        ))}
+      </div>
+      {!posts.length && <p>No posts in this view.</p>}
     </DashboardLayout>
   );
 }

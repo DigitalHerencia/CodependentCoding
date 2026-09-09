@@ -15,7 +15,7 @@ function calculateTaxes(
   return amount.mul(rate).toDecimalPlaces(4);
 }
 
-function calculateInvoiceTotals(
+export function calculateInvoiceTotals(
   lines: Array<{ quantity: string; unitPrice: string; taxRate: string }>,
 ) {
   let subtotal = new Prisma.Decimal(0);

@@ -1,6 +1,6 @@
 import "server-only";
 
-import { assertPermission } from "../authz/permissions";
+import { assertPermission, hasPermission } from "../authz/permissions";
 import {
   toPortalBillingSubscriptionDTO,
   toPortalDocumentDTO,
@@ -63,5 +63,40 @@ export async function getPortalBilling() {
         : null,
       invoices: invoices.map(toPortalInvoiceDTO),
     };
+  });
+}
+
+export async function getPortalWriteAccess() {
+  return withAuthenticatedRead(async (_tx, access) => {
+    return hasPermission(access, "portal:write");
+  });
+}
+
+export async function getPortalAssets() {
+  return withAuthenticatedRead(async (tx, access) => {
+    assertPermission(access, "portal:write");
+    return tx.asset.findMany({
+      where: { organizationId: access.organizationId },
+      orderBy: { createdAt: "desc" },
+      take: 100,
+      select: { id: true, filename: true },
+    });
+  });
+}
+
+export async function getPortalDocument(documentId: string) {
+  return withAuthenticatedRead(async (tx, access) => {
+    assertPermission(access, "portal:read");
+    const row = await tx.portalDocument.findFirst({
+      where: {
+        id: documentId,
+        organizationId: access.organizationId,
+        ...(access.role === "CLIENT"
+          ? { clientVisible: true, status: { not: "ARCHIVED" as const } }
+          : {}),
+      },
+      select: portalDocumentSelect,
+    });
+    return row ? toPortalDocumentDTO(row) : null;
   });
 }

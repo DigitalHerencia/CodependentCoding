@@ -1,64 +1,38 @@
-import {
-  DashboardBars,
-  DashboardLayout,
-  DashboardPanel,
-  DashboardRailList,
-  DashboardTable,
-  type CanonicalDashboardTemplateProps,
-} from "@/components/blocks/dashboard-layout";
-
-const nav = [
-  { label: "Dashboard", href: "/dashboard", active: false },
-  { label: "Invoices", href: "/invoices", active: false },
-  { label: "Expenses", href: "/expenses", active: false },
-  { label: "Billing", href: "/settings/billing", active: false },
-] as const;
-
-const defaultColumns = [
-  { key: "name", label: "Name" },
-  { key: "state", label: "State" },
-  { key: "owner", label: "Owner" },
-  { key: "updated", label: "Updated" },
-] as const;
-
+import Link from "next/link";
+import type { ExpenseDTO } from "@/types/invoicingTypes";
 export function InvoicingExpenseDetailTemplate({
-  stats = [],
-  columns = defaultColumns,
-  rows = [],
-  toolbar,
-  aside,
-  children,
-  chartValues,
-}: CanonicalDashboardTemplateProps) {
-  const labelKey = columns[0]?.key ?? "name";
-  const valueKey = columns[1]?.key ?? "state";
-
+  expense,
+}: {
+  expense: ExpenseDTO;
+}) {
   return (
-    <DashboardLayout
-      aside={
-        aside ?? (
-          <DashboardRailList
-            items={rows.slice(0, 4).map((row) => ({
-              label: String(row.cells[labelKey] ?? row.id),
-              value: String(row.cells[valueKey] ?? ""),
-            }))}
-          />
-        )
-      }
-      nav={nav}
-      stats={stats}
-      title="Expense Detail"
-      toolbar={toolbar}
-    >
-      <DashboardPanel title="Expense context">
-        <DashboardTable columns={columns} rows={rows} />
-      </DashboardPanel>
-      {chartValues?.length ? (
-        <DashboardPanel title="Activity trend">
-          <DashboardBars label="Activity trend" values={chartValues} />
-        </DashboardPanel>
-      ) : null}
-      {children}
-    </DashboardLayout>
+    <article className="mx-auto max-w-3xl space-y-6 surface-card p-6">
+      <header>
+        <p className="type-caption">EXPENSE</p>
+        <h1 className="type-title">{expense.vendor}</h1>
+        <p className="mt-4 text-3xl">
+          {expense.amount} {expense.currency}
+        </p>
+      </header>
+      <dl className="grid grid-cols-2 gap-4">
+        <dt>Incurred</dt>
+        <dd>{expense.incurredAt.slice(0, 10)}</dd>
+        <dt>Submitted by</dt>
+        <dd>{expense.submitter ?? "Not recorded"}</dd>
+        <dt>Review status</dt>
+        <dd>{expense.status}</dd>
+      </dl>
+      <section>
+        <h2 className="type-label">Business purpose</h2>
+        <p className="mt-3 whitespace-pre-wrap">
+          {expense.description ?? "Not recorded"}
+        </p>
+      </section>
+      {["DRAFT", "SUBMITTED"].includes(expense.status) && (
+        <Link className="type-link" href={`/expenses/${expense.id}/edit`}>
+          Edit expense
+        </Link>
+      )}
+    </article>
   );
 }

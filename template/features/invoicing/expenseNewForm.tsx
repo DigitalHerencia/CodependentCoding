@@ -1,75 +1,87 @@
 "use client";
-
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
-
-import { Alert, AlertDescription } from "@/components/ui/alert";
+import { createExpense, updateExpense } from "@/lib/actions/invoicingActions";
+import type { ExpenseDTO } from "@/types/invoicingTypes";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-
-interface FormValues {
-  name: string;
-  email: string;
-  status: string;
-}
-
-export function ExpenseNewForm() {
-  const recordId = "new";
-  const [reviewed, setReviewed] = useState<FormValues | null>(null);
+export function ExpenseNewForm({ expense }: { expense?: ExpenseDTO }) {
+  const router = useRouter();
+  const [error, setError] = useState("");
   const {
     register,
     handleSubmit,
-    formState: { errors },
-  } = useForm<FormValues>({
-    defaultValues: { name: "", email: "", status: "ACTIVE" },
+    formState: { isSubmitting },
+  } = useForm<{
+    vendor: string;
+    description: string;
+    amount: string;
+    currency: string;
+    incurredAt: string;
+  }>({
+    defaultValues: {
+      vendor: expense?.vendor ?? "",
+      description: expense?.description ?? "",
+      amount: expense?.amount ?? "",
+      currency: expense?.currency ?? "USD",
+      incurredAt: expense?.incurredAt.slice(0, 10) ?? "",
+    },
   });
-
   return (
     <form
-      className="mx-auto w-full max-w-4xl space-y-5 surface-card p-5"
-      onSubmit={handleSubmit((values) => setReviewed(values))}
+      className="mx-auto max-w-3xl space-y-5 surface-card p-5"
+      onSubmit={handleSubmit(async (values) => {
+        setError("");
+        try {
+          const saved = expense
+            ? await updateExpense({
+                ...values,
+                expenseId: expense.id,
+                expectedUpdatedAt: expense.updatedAt,
+              })
+            : await createExpense(values);
+          router.push(`/expenses/${saved.id}`);
+          router.refresh();
+        } catch {
+          setError(
+            "Expense could not be saved. Check fields, access, or whether this expense has already been reviewed.",
+          );
+        }
+      })}
     >
-      <header className="border-b border-border pb-4">
-        <p className="type-caption text-muted-primary uppercase">
-          /expenses/new
-        </p>
-        <h1 className="mt-1 type-title">New Expense</h1>
-      </header>
-      <div className="grid gap-4 md:grid-cols-2">
-        <div className="form-field">
-          <Label htmlFor={`name-${recordId}`}>Name</Label>
+      <h1 className="type-title">
+        {expense ? "Edit expense" : "Submit expense"}
+      </h1>
+      {(
+        ["vendor", "description", "amount", "currency", "incurredAt"] as const
+      ).map((field) => (
+        <div className="form-field" key={field}>
+          <Label htmlFor={`expense-${field}`}>
+            {
+              {
+                vendor: "Vendor",
+                description: "Business purpose",
+                amount: "Amount",
+                currency: "Currency (ISO code)",
+                incurredAt: "Expense date",
+              }[field]
+            }
+          </Label>
           <Input
-            id={`name-${recordId}`}
-            {...register("name", { required: "Name is required." })}
-          />
-          {errors.name ? (
-            <span className="text-xs text-destructive">
-              {errors.name.message}
-            </span>
-          ) : null}
-        </div>
-        <div className="form-field">
-          <Label htmlFor={`email-${recordId}`}>Email or owner</Label>
-          <Input id={`email-${recordId}`} {...register("email")} />
-        </div>
-        <div className="form-field md:col-span-2">
-          <Label htmlFor={`status-${recordId}`}>Status</Label>
-          <Input
-            id={`status-${recordId}`}
-            {...register("status", { required: "Status is required." })}
+            id={`expense-${field}`}
+            required={field !== "description"}
+            type={field === "incurredAt" ? "date" : "text"}
+            inputMode={field === "amount" ? "decimal" : "text"}
+            {...register(field)}
           />
         </div>
-      </div>
-      <Button type="submit">Review record</Button>
-      {reviewed ? (
-        <Alert>
-          <AlertDescription>
-            Review ready for the protected server workflow: {reviewed.name} (
-            {reviewed.status}). No persistent write has been issued.
-          </AlertDescription>
-        </Alert>
-      ) : null}
+      ))}
+      {error && <p role="alert">{error}</p>}
+      <Button type="submit" disabled={isSubmitting}>
+        {isSubmitting ? "Saving…" : "Save expense"}
+      </Button>
     </form>
   );
 }

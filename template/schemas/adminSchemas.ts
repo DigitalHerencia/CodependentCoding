@@ -28,3 +28,8 @@ export const reconcileAdminProviderStateSchema = z.object({
   currentPeriodEnd: z.coerce.date().nullable().optional(),
   cancelAtPeriodEnd: z.boolean(),
 });
+
+export const addAdminMembershipSchema = z.object({
+  email: z.string().trim().email(),
+  role: adminRoleSchema,
+});

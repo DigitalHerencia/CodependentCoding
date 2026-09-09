@@ -1,64 +1,44 @@
-import {
-  DashboardBars,
-  DashboardLayout,
-  DashboardPanel,
-  DashboardRailList,
-  DashboardTable,
-  type CanonicalDashboardTemplateProps,
-} from "@/components/blocks/dashboard-layout";
-
-const nav = [
-  { label: "Overview", href: "/portal", active: false },
-  { label: "Projects", href: "/projects", active: false },
-  { label: "Documents", href: "/portal/documents", active: true },
-  { label: "Billing", href: "/portal/billing", active: false },
-] as const;
-
-const defaultColumns = [
-  { key: "name", label: "Name" },
-  { key: "state", label: "State" },
-  { key: "owner", label: "Owner" },
-  { key: "updated", label: "Updated" },
-] as const;
-
+import Link from "next/link";
+import type { ReactNode } from "react";
+import type { PortalDocumentDTO } from "@/types/portalTypes";
+import { DashboardLayout } from "@/components/blocks/dashboard-layout";
 export function PortalDocumentsTemplate({
-  stats = [],
-  columns = defaultColumns,
-  rows = [],
+  documents,
   toolbar,
-  aside,
   children,
-  chartValues,
-}: CanonicalDashboardTemplateProps) {
-  const labelKey = columns[0]?.key ?? "name";
-  const valueKey = columns[1]?.key ?? "state";
-
+}: {
+  documents: PortalDocumentDTO[];
+  toolbar: ReactNode;
+  children?: ReactNode;
+}) {
   return (
-    <DashboardLayout
-      aside={
-        aside ?? (
-          <DashboardRailList
-            items={rows.slice(0, 4).map((row) => ({
-              label: String(row.cells[labelKey] ?? row.id),
-              value: String(row.cells[valueKey] ?? ""),
-            }))}
-          />
-        )
-      }
-      nav={nav}
-      stats={stats}
-      title="Portal Documents"
-      toolbar={toolbar}
-    >
-      <DashboardPanel title="Shared documents">
-        <DashboardTable columns={columns} rows={rows} />
-      </DashboardPanel>
-      {chartValues?.length ? (
-        <DashboardPanel title="Activity trend">
-          <DashboardBars label="Activity trend" values={chartValues} />
-        </DashboardPanel>
-      ) : null}
+    <DashboardLayout title="Document vault" nav={[]} toolbar={toolbar}>
       {children}
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+        {documents.map((document) => (
+          <article key={document.id} className="space-y-3 surface-card p-5">
+            <p className="type-caption">
+              {document.latestVersion?.contentType ?? "Document folder"}
+            </p>
+            <Link
+              className="type-title hover:underline"
+              href={`/portal/documents/${document.id}`}
+            >
+              {document.title}
+            </Link>
+            <p className="line-clamp-3 text-muted-primary">
+              {document.description}
+            </p>
+            <p>
+              Version {document.currentVersionNumber} · {document.status}
+            </p>
+            <p className="text-sm">
+              {document.latestVersion?.filename ?? "No file version yet"}
+            </p>
+          </article>
+        ))}
+      </div>
+      {!documents.length && <p>No matching documents.</p>}
     </DashboardLayout>
   );
 }

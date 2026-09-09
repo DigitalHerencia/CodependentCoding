@@ -13,3 +13,31 @@ export const updateCampaignStatusSchema = z.object({
   status: z.enum(CampaignStatus),
   expectedVersion: z.number().int().positive(),
 });
+
+export const updateCampaignSchema = createCampaignSchema.extend({
+  campaignId: z.string().uuid(),
+  expectedVersion: z.number().int().positive(),
+});
+
+export const audienceFormSchema = z.object({
+  name: z.string().trim().min(1).max(200),
+  status: z.enum(["DRAFT", "ACTIVE", "ARCHIVED"]),
+  definition: z.object({
+    operator: z.literal("and"),
+    rules: z
+      .array(
+        z.object({
+          field: z.literal("status"),
+          operator: z.literal("equals"),
+          value: z.enum(["active", "lead", "inactive"]),
+        }),
+      )
+      .length(1),
+  }),
+});
+export const updateAudienceSchema = audienceFormSchema.extend({
+  audienceId: z.string().uuid(),
+  expectedUpdatedAt: z.coerce.date(),
+});
+
+export { CampaignStatus } from "@/generated/prisma/enums";

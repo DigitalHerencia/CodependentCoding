@@ -3,7 +3,7 @@
   "file": ".agents/execution/decisions.json",
   "product": "The Maximal Template",
   "purpose": "Durable accepted product-specific architecture decisions derived from explicit user intent. Execution state does not override context docs or active specs.",
-  "updated_at": "2026-08-14T00:00:00-06:00",
+  "updated_at": "2026-09-09T04:48:21.0872556Z",
   "decisions": [
     {
       "id": "MAX-DEC-001",
@@ -81,6 +81,15 @@
       "title": "Product-specific doctrine specializes reusable Knowledge System doctrine",
       "decision": "The Codependent Coding Knowledge System supplies the governance model and reusable doctrine. Explicit Maximal Template context/specs control deliberate product-specific specializations and may reject generic optional layers such as query/command/webhook service structures.",
       "affected_specs": ["00", "05"]
+    },
+    {
+      "title": "Domain implementation must match business workflows",
+      "decision": "Owner explicitly rejects repeated generic stats/table/summary pages, command echoes, and local review-only forms. Domain templates own distinct workflow compositions; real forms call validated protected persistence. Static evidence is separate from live CRUD/provider evidence.",
+      "evidence": "progress.json#domain_workflow_implementation",
+      "id": "MAX-DEC-012",
+      "date": "2026-09-08",
+      "authority": "Current owner request",
+      "status": "accepted"
     }
   ]
 }

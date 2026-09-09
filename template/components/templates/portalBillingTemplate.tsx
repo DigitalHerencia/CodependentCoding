@@ -1,64 +1,60 @@
+import type { PortalBillingDTO } from "@/types/portalTypes";
 import {
-  DashboardBars,
   DashboardLayout,
   DashboardPanel,
-  DashboardRailList,
   DashboardTable,
-  type CanonicalDashboardTemplateProps,
 } from "@/components/blocks/dashboard-layout";
-
-const nav = [
-  { label: "Overview", href: "/portal", active: false },
-  { label: "Projects", href: "/projects", active: false },
-  { label: "Documents", href: "/portal/documents", active: false },
-  { label: "Billing", href: "/portal/billing", active: true },
-] as const;
-
-const defaultColumns = [
-  { key: "name", label: "Name" },
-  { key: "state", label: "State" },
-  { key: "owner", label: "Owner" },
-  { key: "updated", label: "Updated" },
-] as const;
-
 export function PortalBillingTemplate({
-  stats = [],
-  columns = defaultColumns,
-  rows = [],
-  toolbar,
-  aside,
-  children,
-  chartValues,
-}: CanonicalDashboardTemplateProps) {
-  const labelKey = columns[0]?.key ?? "name";
-  const valueKey = columns[1]?.key ?? "state";
-
+  billing,
+}: {
+  billing: PortalBillingDTO;
+}) {
   return (
-    <DashboardLayout
-      aside={
-        aside ?? (
-          <DashboardRailList
-            items={rows.slice(0, 4).map((row) => ({
-              label: String(row.cells[labelKey] ?? row.id),
-              value: String(row.cells[valueKey] ?? ""),
-            }))}
-          />
-        )
-      }
-      nav={nav}
-      stats={stats}
-      title="Portal Billing"
-      toolbar={toolbar}
-    >
-      <DashboardPanel title="Invoices and plan">
-        <DashboardTable columns={columns} rows={rows} />
+    <DashboardLayout title="Billing overview" nav={[]}>
+      <DashboardPanel title="Subscription">
+        {billing.subscription ? (
+          <dl className="grid gap-3 sm:grid-cols-2">
+            <dt>Plan</dt>
+            <dd>{billing.subscription.planKey}</dd>
+            <dt>Status</dt>
+            <dd>{billing.subscription.status}</dd>
+            <dt>Current period ends</dt>
+            <dd>
+              {billing.subscription.currentPeriodEnd?.slice(0, 10) ??
+                "Not recorded"}
+            </dd>
+            <dt>Renewal</dt>
+            <dd>
+              {billing.subscription.cancelAtPeriodEnd
+                ? "Cancels at period end"
+                : "Continues"}
+            </dd>
+          </dl>
+        ) : (
+          <p>No subscription is recorded for this workspace.</p>
+        )}
       </DashboardPanel>
-      {chartValues?.length ? (
-        <DashboardPanel title="Activity trend">
-          <DashboardBars label="Activity trend" values={chartValues} />
-        </DashboardPanel>
-      ) : null}
-      {children}
+      <DashboardPanel title="Recent invoices">
+        <DashboardTable
+          columns={[
+            { key: "number", label: "Invoice" },
+            { key: "customer", label: "Customer" },
+            { key: "amount", label: "Amount" },
+            { key: "status", label: "Status" },
+            { key: "due", label: "Due" },
+          ]}
+          rows={billing.invoices.map((invoice) => ({
+            id: invoice.id,
+            cells: {
+              number: `#${invoice.number}`,
+              customer: invoice.customerName,
+              amount: `${invoice.total} ${invoice.currency}`,
+              status: invoice.status,
+              due: invoice.dueAt?.slice(0, 10),
+            },
+          }))}
+        />
+      </DashboardPanel>
     </DashboardLayout>
   );
 }

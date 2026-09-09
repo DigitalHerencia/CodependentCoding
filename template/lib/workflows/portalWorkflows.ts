@@ -1,4 +1,5 @@
 import {
+  getPortalDocument,
   getPortalBilling,
   getPortalDocuments,
 } from "@/lib/fetchers/portalFetchers";
@@ -13,8 +14,7 @@ export async function getPortalWorkspaceWorkflow(limit = 100) {
 }
 
 export async function getPortalDocumentWorkflow(documentId: string) {
-  const documents = await getPortalDocuments(100);
-  return documents.find((document) => document.id === documentId) ?? null;
+  return getPortalDocument(documentId);
 }
 
 export function determineApprovalState(decisions: PortalApprovalDecision[]) {

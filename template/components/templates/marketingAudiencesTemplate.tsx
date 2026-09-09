@@ -1,64 +1,46 @@
-import {
-  DashboardBars,
-  DashboardLayout,
-  DashboardPanel,
-  DashboardRailList,
-  DashboardTable,
-  type CanonicalDashboardTemplateProps,
-} from "@/components/blocks/dashboard-layout";
-
-const nav = [
-  { label: "Dashboard", href: "/dashboard", active: false },
-  { label: "Campaigns", href: "/marketing/campaigns", active: false },
-  { label: "Audiences", href: "/marketing/audiences", active: true },
-  { label: "Analytics", href: "/marketing/analytics", active: false },
-] as const;
-
-const defaultColumns = [
-  { key: "name", label: "Name" },
-  { key: "state", label: "State" },
-  { key: "owner", label: "Owner" },
-  { key: "updated", label: "Updated" },
-] as const;
-
+import Link from "next/link";
+import type { ReactNode } from "react";
+import type { AudienceDTO } from "@/types/marketingTypes";
+import { DashboardLayout } from "@/components/blocks/dashboard-layout";
+import { audienceFormSchema } from "@/schemas/marketingSchemas";
 export function MarketingAudiencesTemplate({
-  stats = [],
-  columns = defaultColumns,
-  rows = [],
+  audiences,
   toolbar,
-  aside,
-  children,
-  chartValues,
-}: CanonicalDashboardTemplateProps) {
-  const labelKey = columns[0]?.key ?? "name";
-  const valueKey = columns[1]?.key ?? "state";
-
+}: {
+  audiences: AudienceDTO[];
+  toolbar: ReactNode;
+}) {
   return (
-    <DashboardLayout
-      aside={
-        aside ?? (
-          <DashboardRailList
-            items={rows.slice(0, 4).map((row) => ({
-              label: String(row.cells[labelKey] ?? row.id),
-              value: String(row.cells[valueKey] ?? ""),
-            }))}
-          />
-        )
-      }
-      nav={nav}
-      stats={stats}
-      title="Audiences"
-      toolbar={toolbar}
-    >
-      <DashboardPanel title="Audience registry">
-        <DashboardTable columns={columns} rows={rows} />
-      </DashboardPanel>
-      {chartValues?.length ? (
-        <DashboardPanel title="Activity trend">
-          <DashboardBars label="Activity trend" values={chartValues} />
-        </DashboardPanel>
-      ) : null}
-      {children}
+    <DashboardLayout title="Audience segments" nav={[]} toolbar={toolbar}>
+      <div className="grid gap-4 md:grid-cols-2">
+        {audiences.map((audience) => {
+          const parsed = audienceFormSchema.safeParse(audience);
+          return (
+            <article key={audience.id} className="space-y-4 surface-card p-5">
+              <Link
+                className="type-title hover:underline"
+                href={`/marketing/audiences/${audience.id}`}
+              >
+                {audience.name}
+              </Link>
+              <p>{audience.status}</p>
+              <p>
+                Contact relationship:{" "}
+                {parsed.success
+                  ? parsed.data.definition.rules[0]!.value
+                  : "Custom rules"}
+              </p>
+              <Link
+                className="type-link"
+                href={`/marketing/audiences/${audience.id}/edit`}
+              >
+                Edit segment
+              </Link>
+            </article>
+          );
+        })}
+      </div>
+      {!audiences.length && <p>No matching audiences.</p>}
     </DashboardLayout>
   );
 }

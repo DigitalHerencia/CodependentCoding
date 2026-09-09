@@ -1,64 +1,51 @@
-import {
-  DashboardBars,
-  DashboardLayout,
-  DashboardPanel,
-  DashboardRailList,
-  DashboardTable,
-  type CanonicalDashboardTemplateProps,
-} from "@/components/blocks/dashboard-layout";
-
-const nav = [
-  { label: "Dashboard", href: "/dashboard", active: false },
-  { label: "Generation", href: "/ai", active: true },
-  { label: "Playground", href: "/ai/playground", active: false },
-  { label: "Usage", href: "/ai/usage", active: false },
-] as const;
-
-const defaultColumns = [
-  { key: "name", label: "Name" },
-  { key: "state", label: "State" },
-  { key: "owner", label: "Owner" },
-  { key: "updated", label: "Updated" },
-] as const;
-
+import Link from "next/link";
+import type { AiGenerationHistoryDTO } from "@/types/aiTypes";
+import { DashboardLayout } from "@/components/blocks/dashboard-layout";
 export function AiGenerationTemplate({
-  stats = [],
-  columns = defaultColumns,
-  rows = [],
-  toolbar,
-  aside,
-  children,
-  chartValues,
-}: CanonicalDashboardTemplateProps) {
-  const labelKey = columns[0]?.key ?? "name";
-  const valueKey = columns[1]?.key ?? "state";
-
+  generations,
+}: {
+  generations: AiGenerationHistoryDTO[];
+}) {
   return (
     <DashboardLayout
-      aside={
-        aside ?? (
-          <DashboardRailList
-            items={rows.slice(0, 4).map((row) => ({
-              label: String(row.cells[labelKey] ?? row.id),
-              value: String(row.cells[valueKey] ?? ""),
-            }))}
-          />
-        )
+      title="Generation history"
+      nav={[]}
+      toolbar={
+        <Link className="type-link" href="/ai/playground">
+          New generation
+        </Link>
       }
-      nav={nav}
-      stats={stats}
-      title="AI Generation"
-      toolbar={toolbar}
     >
-      <DashboardPanel title="Generation history">
-        <DashboardTable columns={columns} rows={rows} />
-      </DashboardPanel>
-      {chartValues?.length ? (
-        <DashboardPanel title="Activity trend">
-          <DashboardBars label="Activity trend" values={chartValues} />
-        </DashboardPanel>
-      ) : null}
-      {children}
+      <div className="space-y-4">
+        {generations.map((generation) => (
+          <details key={generation.id} className="surface-card p-5">
+            <summary className="cursor-pointer">
+              <span className="type-label">
+                {generation.prompt?.slice(0, 100) ?? generation.model}
+              </span>
+              <span className="mt-2 block text-sm text-muted-primary">
+                {generation.status} · {generation.model} ·{" "}
+                {generation.createdAt.slice(0, 16).replace("T", " ")}
+              </span>
+            </summary>
+            <div className="mt-5 grid gap-5 lg:grid-cols-2">
+              <section>
+                <h2 className="type-label">Prompt</h2>
+                <p className="mt-3 whitespace-pre-wrap">
+                  {generation.prompt ?? "No text prompt was recorded."}
+                </p>
+              </section>
+              <section>
+                <h2 className="type-label">Saved response</h2>
+                <p className="mt-3 whitespace-pre-wrap">
+                  {generation.response ?? "No response was recorded."}
+                </p>
+              </section>
+            </div>
+          </details>
+        ))}
+      </div>
+      {!generations.length && <p>No generations yet.</p>}
     </DashboardLayout>
   );
 }

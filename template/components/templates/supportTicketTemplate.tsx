@@ -1,64 +1,66 @@
+import type { ReactNode } from "react";
+import type { SupportTicketDTO } from "@/types/supportTypes";
 import {
-  DashboardBars,
   DashboardLayout,
   DashboardPanel,
-  DashboardRailList,
-  DashboardTable,
-  type CanonicalDashboardTemplateProps,
 } from "@/components/blocks/dashboard-layout";
-
-const nav = [
-  { label: "Dashboard", href: "/dashboard", active: false },
-  { label: "Inbox", href: "/support/inbox", active: false },
-  { label: "Knowledge", href: "/support/knowledge-base", active: false },
-  { label: "Analytics", href: "/support/analytics", active: false },
-] as const;
-
-const defaultColumns = [
-  { key: "name", label: "Name" },
-  { key: "state", label: "State" },
-  { key: "owner", label: "Owner" },
-  { key: "updated", label: "Updated" },
-] as const;
-
 export function SupportTicketTemplate({
-  stats = [],
-  columns = defaultColumns,
-  rows = [],
-  toolbar,
-  aside,
+  ticket,
+  messages,
   children,
-  chartValues,
-}: CanonicalDashboardTemplateProps) {
-  const labelKey = columns[0]?.key ?? "name";
-  const valueKey = columns[1]?.key ?? "state";
-
+}: {
+  ticket: SupportTicketDTO;
+  messages: {
+    id: string;
+    body: string;
+    authorLabel: string;
+    isInternal: boolean;
+    createdAt: string;
+  }[];
+  children: ReactNode;
+}) {
   return (
-    <DashboardLayout
-      aside={
-        aside ?? (
-          <DashboardRailList
-            items={rows.slice(0, 4).map((row) => ({
-              label: String(row.cells[labelKey] ?? row.id),
-              value: String(row.cells[valueKey] ?? ""),
-            }))}
-          />
-        )
-      }
-      nav={nav}
-      stats={stats}
-      title="Ticket Workspace"
-      toolbar={toolbar}
-    >
-      <DashboardPanel title="Conversation and ticket context">
-        <DashboardTable columns={columns} rows={rows} />
-      </DashboardPanel>
-      {chartValues?.length ? (
-        <DashboardPanel title="Activity trend">
-          <DashboardBars label="Activity trend" values={chartValues} />
+    <DashboardLayout title={`#${ticket.number} · ${ticket.subject}`} nav={[]}>
+      <div className="grid gap-4 lg:grid-cols-[2fr_1fr]">
+        <DashboardPanel title="Conversation">
+          <p className="border-b border-border pb-5 whitespace-pre-wrap">
+            {ticket.description ?? "No opening description."}
+          </p>
+          <ol className="space-y-4 py-5">
+            {messages.map((message) => (
+              <li key={message.id} className="surface-inset p-4">
+                <p className="type-label">
+                  {message.authorLabel}{" "}
+                  {message.isInternal && "· Internal note"}
+                </p>
+                <time className="text-xs text-muted-primary">
+                  {message.createdAt.slice(0, 16).replace("T", " ")}
+                </time>
+                <p className="mt-3 whitespace-pre-wrap">{message.body}</p>
+              </li>
+            ))}
+          </ol>
+          {children}
         </DashboardPanel>
-      ) : null}
-      {children}
+        <DashboardPanel title="Triage">
+          <dl className="space-y-2">
+            <dt>Requester</dt>
+            <dd>
+              {ticket.requester?.displayName ??
+                ticket.requester?.email ??
+                "Unknown"}
+            </dd>
+            <dt>Assignee</dt>
+            <dd>{ticket.assignee?.displayName ?? "Unassigned"}</dd>
+            <dt>Priority</dt>
+            <dd>{ticket.priority}</dd>
+            <dt>Status</dt>
+            <dd>{ticket.status}</dd>
+            <dt>Resolution due</dt>
+            <dd>{ticket.resolutionDueAt ?? "Not set"}</dd>
+          </dl>
+        </DashboardPanel>
+      </div>
     </DashboardLayout>
   );
 }

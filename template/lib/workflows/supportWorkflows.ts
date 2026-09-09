@@ -1,5 +1,6 @@
 import { updateSupportTicketStatus } from "@/lib/actions/supportActions";
 import {
+  getKnowledgeArticle,
   getKnowledgeArticles,
   getSupportInbox,
   getSupportTicket,
@@ -31,8 +32,7 @@ export async function getSupportTicketWorkflow(ticketId: string) {
 }
 
 export async function getKnowledgeArticleWorkflow(articleId: string) {
-  const articles = await getKnowledgeArticles(100);
-  return articles.find((article) => article.id === articleId) ?? null;
+  return getKnowledgeArticle(articleId);
 }
 
 export async function determineEscalationWorkflow(ticketId: string) {

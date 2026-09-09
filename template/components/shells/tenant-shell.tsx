@@ -247,7 +247,7 @@ export function TenantShell({ children }: { children: ReactNode }) {
           aria-label="Sidebar"
           className="sticky top-0 hidden h-dvh min-w-0 flex-col gap-5 border-r bg-background p-3 md:flex"
         >
-          <Wordmark collapsed={collapsed} />
+          <Wordmark collapsed={collapsed} compact />
           <Button
             variant="ghost"
             size="icon"
@@ -304,7 +304,7 @@ export function TenantShell({ children }: { children: ReactNode }) {
             sidebar && "md:hidden",
           )}
         >
-          <Wordmark />
+          <Wordmark compact />
           <Button
             ref={menuButtonRef}
             variant="ghost"

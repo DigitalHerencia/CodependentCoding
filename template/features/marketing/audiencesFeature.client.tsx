@@ -1,36 +1,33 @@
 "use client";
-
+import Link from "next/link";
 import { useState } from "react";
-
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-
-export function AudiencesFeatureClient() {
-  const [command, setCommand] = useState("");
-  const [applied, setApplied] = useState("");
-
+import { MarketingAudiencesTemplate } from "@/components/templates/marketingAudiencesTemplate";
+import type { AudienceDTO } from "@/types/marketingTypes";
+export function AudiencesFeatureClient({
+  audiences,
+}: {
+  audiences: AudienceDTO[];
+}) {
+  const [query, setQuery] = useState("");
   return (
-    <form
-      aria-label="marketing audiences command"
-      className="flex w-full flex-wrap items-center gap-2 sm:w-auto"
-      onSubmit={(event) => {
-        event.preventDefault();
-        setApplied(command.trim());
-      }}
-    >
-      <Input
-        aria-label="Filter or command"
-        className="w-full min-w-0 sm:w-48"
-        onChange={(event) => setCommand(event.target.value)}
-        placeholder="Type a command or search…"
-        value={command}
-      />
-      <Button className="shrink-0" size="sm" type="submit">
-        Apply
-      </Button>
-      <span aria-live="polite" className="sr-only">
-        {applied ? `Applied: ${applied}` : "No command applied"}
-      </span>
-    </form>
+    <MarketingAudiencesTemplate
+      audiences={audiences.filter((audience) =>
+        audience.name.toLowerCase().includes(query.toLowerCase()),
+      )}
+      toolbar={
+        <div className="flex flex-wrap gap-3">
+          <Input
+            aria-label="Search audiences"
+            placeholder="Search audiences"
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+          />
+          <Link className="type-link" href="/marketing/audiences/new">
+            Define audience
+          </Link>
+        </div>
+      }
+    />
   );
 }

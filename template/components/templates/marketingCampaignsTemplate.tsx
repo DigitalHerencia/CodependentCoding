@@ -1,64 +1,63 @@
+import Link from "next/link";
+import type { ReactNode } from "react";
+import type { CampaignDTO } from "@/types/marketingTypes";
 import {
-  DashboardBars,
   DashboardLayout,
   DashboardPanel,
-  DashboardRailList,
-  DashboardTable,
-  type CanonicalDashboardTemplateProps,
 } from "@/components/blocks/dashboard-layout";
-
-const nav = [
-  { label: "Dashboard", href: "/dashboard", active: false },
-  { label: "Campaigns", href: "/marketing/campaigns", active: true },
-  { label: "Audiences", href: "/marketing/audiences", active: false },
-  { label: "Analytics", href: "/marketing/analytics", active: false },
-] as const;
-
-const defaultColumns = [
-  { key: "name", label: "Name" },
-  { key: "state", label: "State" },
-  { key: "owner", label: "Owner" },
-  { key: "updated", label: "Updated" },
-] as const;
-
 export function MarketingCampaignsTemplate({
-  stats = [],
-  columns = defaultColumns,
-  rows = [],
+  campaigns,
   toolbar,
-  aside,
-  children,
-  chartValues,
-}: CanonicalDashboardTemplateProps) {
-  const labelKey = columns[0]?.key ?? "name";
-  const valueKey = columns[1]?.key ?? "state";
-
+}: {
+  campaigns: CampaignDTO[];
+  toolbar: ReactNode;
+}) {
   return (
-    <DashboardLayout
-      aside={
-        aside ?? (
-          <DashboardRailList
-            items={rows.slice(0, 4).map((row) => ({
-              label: String(row.cells[labelKey] ?? row.id),
-              value: String(row.cells[valueKey] ?? ""),
-            }))}
-          />
-        )
-      }
-      nav={nav}
-      stats={stats}
-      title="Campaigns"
-      toolbar={toolbar}
-    >
-      <DashboardPanel title="Campaign registry">
-        <DashboardTable columns={columns} rows={rows} />
-      </DashboardPanel>
-      {chartValues?.length ? (
-        <DashboardPanel title="Activity trend">
-          <DashboardBars label="Activity trend" values={chartValues} />
-        </DashboardPanel>
-      ) : null}
-      {children}
+    <DashboardLayout title="Campaign planner" nav={[]} toolbar={toolbar}>
+      <div className="space-y-4">
+        {[
+          "DRAFT",
+          "SCHEDULED",
+          "ACTIVE",
+          "PAUSED",
+          "COMPLETED",
+          "CANCELED",
+        ].map((status) => {
+          const group = campaigns.filter(
+            (campaign) => campaign.status === status,
+          );
+          return (
+            <DashboardPanel key={status} title={`${status} · ${group.length}`}>
+              <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+                {group.map((campaign) => (
+                  <article
+                    className="space-y-3 surface-inset p-4"
+                    key={campaign.id}
+                  >
+                    <Link
+                      className="type-label hover:underline"
+                      href={`/marketing/campaigns/${campaign.id}`}
+                    >
+                      {campaign.name}
+                    </Link>
+                    <p className="line-clamp-2 text-muted-primary">
+                      {campaign.description ?? "No campaign brief."}
+                    </p>
+                    <p>Audience: {campaign.audience?.name ?? "Not selected"}</p>
+                    <p>
+                      Planned:{" "}
+                      {campaign.scheduledAt?.slice(0, 16).replace("T", " ") ??
+                        "Unscheduled"}
+                    </p>
+                    <p>{campaign.stepCount} workflow steps</p>
+                  </article>
+                ))}
+              </div>
+              {!group.length && <p>No campaigns in this phase.</p>}
+            </DashboardPanel>
+          );
+        })}
+      </div>
     </DashboardLayout>
   );
 }

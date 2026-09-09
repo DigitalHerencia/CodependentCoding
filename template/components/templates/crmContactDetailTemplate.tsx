@@ -1,64 +1,74 @@
+import Link from "next/link";
+import type { CrmContactDTO } from "@/types/crmTypes";
 import {
-  DashboardBars,
   DashboardLayout,
   DashboardPanel,
-  DashboardRailList,
-  DashboardTable,
-  type CanonicalDashboardTemplateProps,
 } from "@/components/blocks/dashboard-layout";
-
-const nav = [
-  { label: "Pipeline", href: "/crm/pipeline", active: false },
-  { label: "Contacts", href: "/crm/contacts", active: false },
-  { label: "Accounts", href: "/crm/accounts", active: false },
-  { label: "Analytics", href: "/crm/analytics", active: false },
-] as const;
-
-const defaultColumns = [
-  { key: "name", label: "Name" },
-  { key: "state", label: "State" },
-  { key: "owner", label: "Owner" },
-  { key: "updated", label: "Updated" },
-] as const;
-
 export function CrmContactDetailTemplate({
-  stats = [],
-  columns = defaultColumns,
-  rows = [],
-  toolbar,
-  aside,
-  children,
-  chartValues,
-}: CanonicalDashboardTemplateProps) {
-  const labelKey = columns[0]?.key ?? "name";
-  const valueKey = columns[1]?.key ?? "state";
-
+  contact,
+  lead = false,
+}: {
+  contact: CrmContactDTO;
+  lead?: boolean;
+}) {
   return (
     <DashboardLayout
-      aside={
-        aside ?? (
-          <DashboardRailList
-            items={rows.slice(0, 4).map((row) => ({
-              label: String(row.cells[labelKey] ?? row.id),
-              value: String(row.cells[valueKey] ?? ""),
-            }))}
-          />
-        )
+      title={`${contact.firstName} ${contact.lastName}`}
+      nav={[]}
+      toolbar={
+        <Link
+          className="type-link"
+          href={`/crm/${lead ? "leads" : "contacts"}/${contact.id}/edit`}
+        >
+          {lead ? "Qualify or edit lead" : "Edit contact"}
+        </Link>
       }
-      nav={nav}
-      stats={stats}
-      title="Contact Detail"
-      toolbar={toolbar}
     >
-      <DashboardPanel title="Contact profile">
-        <DashboardTable columns={columns} rows={rows} />
-      </DashboardPanel>
-      {chartValues?.length ? (
-        <DashboardPanel title="Activity trend">
-          <DashboardBars label="Activity trend" values={chartValues} />
+      <div className="grid gap-4 lg:grid-cols-[2fr_1fr]">
+        <DashboardPanel title="Contact profile">
+          <p className="text-xl">{contact.title ?? "Job title not recorded"}</p>
+          <div className="mt-5 space-y-3">
+            {contact.email && (
+              <p>
+                <a className="type-link" href={`mailto:${contact.email}`}>
+                  {contact.email}
+                </a>
+              </p>
+            )}
+            {contact.phone && (
+              <p>
+                <a className="type-link" href={`tel:${contact.phone}`}>
+                  {contact.phone}
+                </a>
+              </p>
+            )}
+            <p>
+              {contact.account ? (
+                <Link
+                  className="type-link"
+                  href={`/crm/accounts/${contact.account.id}`}
+                >
+                  {contact.account.name}
+                </Link>
+              ) : (
+                "No account linked"
+              )}
+            </p>
+          </div>
         </DashboardPanel>
-      ) : null}
-      {children}
+        <DashboardPanel title="Relationship">
+          <dl className="space-y-2">
+            <dt>Status</dt>
+            <dd>{contact.status}</dd>
+            <dt>Relationship owner</dt>
+            <dd>{contact.owner?.displayName ?? "Unassigned"}</dd>
+            <dt>Added</dt>
+            <dd>{contact.createdAt.slice(0, 10)}</dd>
+            <dt>Last updated</dt>
+            <dd>{contact.updatedAt.slice(0, 10)}</dd>
+          </dl>
+        </DashboardPanel>
+      </div>
     </DashboardLayout>
   );
 }

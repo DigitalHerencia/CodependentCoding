@@ -319,3 +319,11 @@ Governance describes the implementation that the owner has accepted.
 Do not refactor the codebase solely because an older governance file, generic doctrine, naming convention, or architecture diagram describes a different structure.
 
 If implementation intent is unclear, ask the owner.
+
+## Domain workflow delivery boundaries
+
+Domain templates receive explicit domain DTOs instead of reflecting arbitrary records into generic Name/State/Owner/Updated cells. Feature client companions exist only where there is actual interaction. Server form entrypoints load persisted edit values before rendering client forms.
+
+File upload uses `lib/workflows/assetWorkflows.ts` to authorize, upload through the private storage adapter, persist asset metadata, and attempt cleanup when persistence fails. Uploads are limited to 750 KB by this form transport. Authorized downloads are limited to 10 MB and do not expose storage credentials. A configured environment variable is not evidence of provider connectivity.
+
+Social approval/scheduling and marketing lifecycle changes represent persisted planning state; they do not establish successful external publication or delivery. Invoice issuance opens an approved draft locally and does not charge or email a customer. Do not claim these external effects from local state transitions.

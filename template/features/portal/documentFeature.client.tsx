@@ -1,36 +1,67 @@
 "use client";
-
-import { useState } from "react";
-
+import { useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-
-export function DocumentFeatureClient() {
-  const [command, setCommand] = useState("");
-  const [applied, setApplied] = useState("");
-
+import { Label } from "@/components/ui/label";
+import { addPortalDocumentVersion } from "@/lib/actions/portalActions";
+import type { PortalDocumentDTO } from "@/types/portalTypes";
+export function DocumentFeatureClient({
+  document,
+  assets,
+}: {
+  document: PortalDocumentDTO;
+  assets: { id: string; filename: string }[];
+}) {
+  const router = useRouter();
+  const [pending, startTransition] = useTransition();
+  const [message, setMessage] = useState("");
   return (
     <form
-      aria-label="portal documents documentId command"
-      className="flex w-full flex-wrap items-center gap-2 sm:w-auto"
-      onSubmit={(event) => {
-        event.preventDefault();
-        setApplied(command.trim());
-      }}
+      className="mt-5 space-y-3"
+      action={(data) =>
+        startTransition(async () => {
+          try {
+            await addPortalDocumentVersion({
+              documentId: document.id,
+              expectedVersion: document.version,
+              assetId: data.get("assetId"),
+              notes: data.get("notes"),
+            });
+            setMessage("Version added for review.");
+            router.refresh();
+          } catch {
+            setMessage(
+              "Version could not be added. Check access and reload the latest document.",
+            );
+          }
+        })
+      }
     >
-      <Input
-        aria-label="Filter or command"
-        className="w-full min-w-0 sm:w-48"
-        onChange={(event) => setCommand(event.target.value)}
-        placeholder="Type a command or search…"
-        value={command}
+      <Label htmlFor="version-asset">Add a version from workspace files</Label>
+      <select
+        id="version-asset"
+        name="assetId"
+        className="control-field w-full"
+        required
+      >
+        <option value="">Select a file</option>
+        {assets.map((asset) => (
+          <option key={asset.id} value={asset.id}>
+            {asset.filename}
+          </option>
+        ))}
+      </select>
+      <Label htmlFor="version-notes">Version notes</Label>
+      <textarea
+        id="version-notes"
+        name="notes"
+        className="control-field w-full"
       />
-      <Button className="shrink-0" size="sm" type="submit">
-        Apply
+      {!assets.length && <p>No workspace files are available.</p>}
+      <Button type="submit" disabled={pending || !assets.length}>
+        Add version
       </Button>
-      <span aria-live="polite" className="sr-only">
-        {applied ? `Applied: ${applied}` : "No command applied"}
-      </span>
+      <p role="status">{message}</p>
     </form>
   );
 }

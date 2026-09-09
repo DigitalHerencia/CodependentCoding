@@ -1,63 +1,53 @@
+import Link from "next/link";
+import type { ReactNode } from "react";
+import type { TaskDTO } from "@/types/projectsTypes";
 import {
-  DashboardBars,
   DashboardLayout,
   DashboardPanel,
-  DashboardRailList,
-  DashboardTable,
-  type CanonicalDashboardTemplateProps,
 } from "@/components/blocks/dashboard-layout";
-
-const nav = [
-  { label: "Dashboard", href: "/dashboard", active: false },
-  { label: "Projects", href: "/projects", active: false },
-  { label: "My Tasks", href: "/my-tasks", active: false },
-] as const;
-
-const defaultColumns = [
-  { key: "name", label: "Name" },
-  { key: "state", label: "State" },
-  { key: "owner", label: "Owner" },
-  { key: "updated", label: "Updated" },
-] as const;
-
 export function ProjectTaskDetailTemplate({
-  stats = [],
-  columns = defaultColumns,
-  rows = [],
-  toolbar,
-  aside,
+  task,
   children,
-  chartValues,
-}: CanonicalDashboardTemplateProps) {
-  const labelKey = columns[0]?.key ?? "name";
-  const valueKey = columns[1]?.key ?? "state";
-
+}: {
+  task: TaskDTO;
+  children: ReactNode;
+}) {
   return (
     <DashboardLayout
-      aside={
-        aside ?? (
-          <DashboardRailList
-            items={rows.slice(0, 4).map((row) => ({
-              label: String(row.cells[labelKey] ?? row.id),
-              value: String(row.cells[valueKey] ?? ""),
-            }))}
-          />
-        )
+      title={task.title}
+      nav={[]}
+      toolbar={
+        <Link
+          className="type-link"
+          href={`/projects/${task.projectId}/tasks/${task.id}/edit`}
+        >
+          Edit task
+        </Link>
       }
-      nav={nav}
-      stats={stats}
-      title="Task Detail"
-      toolbar={toolbar}
     >
-      <DashboardPanel title="Task context">
-        <DashboardTable columns={columns} rows={rows} />
-      </DashboardPanel>
-      {chartValues?.length ? (
-        <DashboardPanel title="Activity trend">
-          <DashboardBars label="Activity trend" values={chartValues} />
+      <Link className="type-link" href={`/projects/${task.projectId}/tasks`}>
+        Back to task board
+      </Link>
+      <div className="grid gap-4 lg:grid-cols-[2fr_1fr]">
+        <DashboardPanel title="Brief and acceptance criteria">
+          <p className="whitespace-pre-wrap">
+            {task.description ?? "No description provided."}
+          </p>
         </DashboardPanel>
-      ) : null}
-      {children}
+        <DashboardPanel title="Task delivery">
+          <dl className="space-y-2">
+            <dt>Priority</dt>
+            <dd>{task.priority}</dd>
+            <dt>Assigned to</dt>
+            <dd>{task.assignee?.displayName ?? "Unassigned"}</dd>
+            <dt>Due date</dt>
+            <dd>{task.dueAt?.slice(0, 10) ?? "Unscheduled"}</dd>
+            <dt>Completed</dt>
+            <dd>{task.completedAt?.slice(0, 10) ?? "Not completed"}</dd>
+          </dl>
+          <div className="mt-4">{children}</div>
+        </DashboardPanel>
+      </div>
     </DashboardLayout>
   );
 }

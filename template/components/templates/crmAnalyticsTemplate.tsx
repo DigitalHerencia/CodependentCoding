@@ -1,65 +1,63 @@
+import type { CrmDealSummaryDTO } from "@/types/crmTypes";
 import {
-  DashboardBars,
   DashboardLayout,
   DashboardPanel,
-  DashboardRailList,
   DashboardTable,
-  type CanonicalDashboardTemplateProps,
 } from "@/components/blocks/dashboard-layout";
-
-const nav = [
-  { label: "Pipeline", href: "/crm/pipeline", active: false },
-  { label: "Contacts", href: "/crm/contacts", active: false },
-  { label: "Accounts", href: "/crm/accounts", active: false },
-  { label: "Analytics", href: "/crm/analytics", active: true },
-] as const;
-
-const defaultColumns = [
-  { key: "name", label: "Name" },
-  { key: "state", label: "State" },
-  { key: "owner", label: "Owner" },
-  { key: "updated", label: "Updated" },
-] as const;
-
 export function CrmAnalyticsTemplate({
-  stats = [],
-  columns = defaultColumns,
-  rows = [],
-  toolbar,
-  aside,
-  children,
-  chartValues,
-}: CanonicalDashboardTemplateProps) {
-  const labelKey = columns[0]?.key ?? "name";
-  const valueKey = columns[1]?.key ?? "state";
-
+  deals,
+}: {
+  deals: CrmDealSummaryDTO[];
+}) {
+  const currencies = [...new Set(deals.map((deal) => deal.currency))];
   return (
-    <DashboardLayout
-      aside={
-        aside ?? (
-          <DashboardRailList
-            items={rows.slice(0, 4).map((row) => ({
-              label: String(row.cells[labelKey] ?? row.id),
-              value: String(row.cells[valueKey] ?? ""),
-            }))}
+    <DashboardLayout title="Pipeline analysis" nav={[]}>
+      <p>
+        Analysis of the latest {deals.length} opportunities (maximum 100).
+        Values are kept separate by currency.
+      </p>
+      {currencies.map((currency) => (
+        <DashboardPanel key={currency} title={currency}>
+          <DashboardTable
+            columns={[
+              { key: "stage", label: "Sales stage" },
+              { key: "count", label: "Opportunities" },
+              { key: "value", label: "Pipeline value" },
+              { key: "weighted", label: "Probability-weighted value" },
+            ]}
+            rows={[
+              "LEAD",
+              "QUALIFIED",
+              "PROPOSAL",
+              "NEGOTIATION",
+              "WON",
+              "LOST",
+            ].map((stage) => {
+              const group = deals.filter(
+                (deal) => deal.currency === currency && deal.stage === stage,
+              );
+              return {
+                id: stage,
+                cells: {
+                  stage,
+                  count: group.length,
+                  value: group
+                    .reduce((sum, deal) => sum + Number(deal.value), 0)
+                    .toFixed(2),
+                  weighted: group
+                    .reduce(
+                      (sum, deal) =>
+                        sum + (Number(deal.value) * deal.probability) / 100,
+                      0,
+                    )
+                    .toFixed(2),
+                },
+              };
+            })}
           />
-        )
-      }
-      nav={nav}
-      stats={stats}
-      title="CRM Analytics"
-      toolbar={toolbar}
-    >
-      <DashboardPanel title="Pipeline performance trend">
-        <DashboardBars
-          label="CRM Analytics trend"
-          values={chartValues ?? [18, 28, 23, 42, 48, 66, 74]}
-        />
-      </DashboardPanel>
-      <DashboardPanel title="Pipeline performance">
-        <DashboardTable columns={columns} rows={rows} />
-      </DashboardPanel>
-      {children}
+        </DashboardPanel>
+      ))}
+      {!deals.length && <p>No opportunities available for analysis.</p>}
     </DashboardLayout>
   );
 }

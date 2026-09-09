@@ -309,7 +309,7 @@ export function SignInFeature() {
             </Button>
           )}
         </fieldset>
-        <div className="flex flex-col items-start gap-2 border-t border-foreground/30 pt-4 text-sm">
+        <div className="auth-secondary-actions">
           {step === "password" && (
             <Button
               type="button"

@@ -57,3 +57,16 @@ export async function getMediaAssets(limit = 100) {
     return rows.map(toMediaAssetDTO);
   });
 }
+
+export async function getSocialPosts(limit = 100) {
+  return withAuthenticatedRead(async (tx, access) => {
+    assertPermission(access, "social:read");
+    const rows = await tx.socialPost.findMany({
+      where: { organizationId: access.organizationId },
+      orderBy: [{ scheduledAt: "asc" }, { createdAt: "desc" }],
+      take: Math.min(Math.max(limit, 1), 200),
+      select: socialPostSelect,
+    });
+    return rows.map(toSocialPostDTO);
+  });
+}

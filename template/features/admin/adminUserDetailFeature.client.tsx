@@ -1,36 +1,84 @@
 "use client";
-
-import { useState } from "react";
-
+import { useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-
-export function AdminUserDetailFeatureClient() {
-  const [command, setCommand] = useState("");
-  const [applied, setApplied] = useState("");
-
+import { Label } from "@/components/ui/label";
+import {
+  changeAdminMembership,
+  suspendAdminMembership,
+  restoreAdminMembership,
+} from "@/lib/actions/adminActions";
+import { appRoles } from "@/lib/authz/roles";
+import type { AdminMembershipDTO } from "@/types/adminTypes";
+export function AdminUserDetailFeatureClient({
+  membership,
+}: {
+  membership: AdminMembershipDTO;
+}) {
+  const router = useRouter();
+  const [pending, startTransition] = useTransition();
+  const [message, setMessage] = useState("");
   return (
-    <form
-      aria-label="admin users userId command"
-      className="flex w-full flex-wrap items-center gap-2 sm:w-auto"
-      onSubmit={(event) => {
-        event.preventDefault();
-        setApplied(command.trim());
-      }}
-    >
-      <Input
-        aria-label="Filter or command"
-        className="w-full min-w-0 sm:w-48"
-        onChange={(event) => setCommand(event.target.value)}
-        placeholder="Type a command or search…"
-        value={command}
-      />
-      <Button className="shrink-0" size="sm" type="submit">
-        Apply
+    <div className="space-y-5">
+      <form
+        className="space-y-3"
+        action={(data) =>
+          startTransition(async () => {
+            try {
+              await changeAdminMembership({
+                membershipId: membership.id,
+                role: data.get("role"),
+              });
+              setMessage("Role updated.");
+              router.refresh();
+            } catch {
+              setMessage(
+                "Role could not be changed. Check permissions; changing your own role is prohibited.",
+              );
+            }
+          })
+        }
+      >
+        <Label htmlFor="member-role">Application role</Label>
+        <select
+          id="member-role"
+          name="role"
+          className="control-field"
+          defaultValue={membership.role}
+        >
+          {appRoles.map((role) => (
+            <option key={role}>{role}</option>
+          ))}
+        </select>
+        <Button type="submit" disabled={pending}>
+          Save role
+        </Button>
+      </form>
+      <Button
+        variant="outline"
+        disabled={pending}
+        onClick={() =>
+          startTransition(async () => {
+            try {
+              if (membership.status === "SUSPENDED")
+                await restoreAdminMembership({ membershipId: membership.id });
+              else
+                await suspendAdminMembership({ membershipId: membership.id });
+              setMessage("Membership access updated.");
+              router.refresh();
+            } catch {
+              setMessage(
+                "Access could not be updated. Check permissions; suspending your own membership is prohibited.",
+              );
+            }
+          })
+        }
+      >
+        {membership.status === "SUSPENDED"
+          ? "Restore access"
+          : "Suspend access"}
       </Button>
-      <span aria-live="polite" className="sr-only">
-        {applied ? `Applied: ${applied}` : "No command applied"}
-      </span>
-    </form>
+      <p role="status">{message}</p>
+    </div>
   );
 }

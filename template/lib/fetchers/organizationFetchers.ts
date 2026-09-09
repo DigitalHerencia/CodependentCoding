@@ -19,3 +19,25 @@ export async function getCurrentOrganization() {
     return toOrganizationDTO(record);
   });
 }
+
+export async function getOrganizationMembers() {
+  return withAuthenticatedRead(async (tx, access) => {
+    assertPermission(access, "organization:read");
+    const rows = await tx.membership.findMany({
+      where: { organizationId: access.organizationId },
+      orderBy: { createdAt: "asc" },
+      select: {
+        id: true,
+        role: true,
+        status: true,
+        user: { select: { displayName: true } },
+      },
+    });
+    return rows.map((row) => ({
+      id: row.id,
+      role: row.role,
+      status: row.status,
+      name: row.user.displayName ?? "Member",
+    }));
+  });
+}
