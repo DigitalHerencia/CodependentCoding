@@ -1,164 +1,203 @@
 # Technical Requirements — The Maximal Template™
 
-## 1. Scope
+## Purpose
 
-This document defines repository-specific technical requirements for implementing and maintaining The Maximal Template™.
+This document records technical requirements that match the current Maximal Template implementation.
 
-The architecture document owns responsibility boundaries. The numbered specs own the active build/repair sequence.
+`package.json`, the lockfile, framework configuration, and source code remain authoritative for exact installed versions and executable scripts.
 
-## 2. Current technical baseline
+## Runtime and framework baseline
 
-The repository currently targets:
+The template currently uses:
 
 - Next.js App Router;
-- React Server Components by default;
 - React 19;
+- React Server Components by default;
 - TypeScript;
 - pnpm;
 - Tailwind CSS 4;
-- shadcn/BoldKit-style UI primitives;
+- shadcn/Radix-style UI primitives;
 - React Hook Form;
 - Zod;
-- Prisma ORM 7+;
-- Neon Serverless PostgreSQL;
+- Prisma 7;
+- Neon PostgreSQL;
 - Clerk;
 - Stripe;
-- Vercel deployment.
+- Vercel deployment tooling and provider integrations.
 
-Current repository package versions are controlled by `package.json` and the lockfile. Do not duplicate package-version authority into governance unless a compatibility rule requires it.
+Do not duplicate exact dependency versions into this document when `package.json` already owns them.
 
-## 3. Server-first requirement
+## Route organization
 
-React Server Components are the default.
+Current application route categories are:
 
-Client Components exist only when browser-side behavior requires them, including:
+```text
+app/page.tsx      → root landing page
+app/(public)      → public informational routes
+app/(auth)        → sign-in/sign-up
+app/(setup)       → onboarding/setup
+app/(tenant)      → authenticated application
+app/api           → HTTP Route Handlers
+```
 
-- local interaction state;
+Do not assume every public route lives under `(public)`.
+
+Do not assume a conceptual business-domain name is also a URL segment.
+
+Current tenant URLs include `/invoices` and `/expenses`; there is no requirement for a `/invoicing` URL merely because the code organization uses an invoicing domain.
+
+## Server/client model
+
+Server Components are the default where the surface does not require browser-only behavior.
+
+Client Components are appropriate for:
+
 - browser APIs;
-- drag/drop;
-- rich editor behavior;
-- streaming UI coordination;
-- client-only search/filter/sort interaction;
-- React Hook Form feature forms.
+- local interaction state;
+- rich controls;
+- client-side filtering/sorting/selection;
+- React Hook Form;
+- Clerk client flows;
+- other browser-only provider behavior.
 
-A `.client.tsx` suffix should communicate an actual browser boundary, not stylistic preference.
+The `.client.tsx` suffix should identify a meaningful browser boundary.
 
-## 4. Route requirements
+## Presentation layers
 
-`app/` owns:
-
-- URL topology;
-- route groups;
-- route parameters;
-- search parameters;
-- layouts;
-- metadata;
-- `loading.tsx`;
-- error/not-found boundaries;
-- HTTP Route Handlers;
-- Suspense placement;
-- redirects/not-found framework outcomes.
-
-Pages remain thin and do not own persisted data access, provider SDK calls, authorization policy, or multi-step business logic.
-
-## 5. Static public content
-
-Static public routes live under `app/(public)/`.
-
-When a public page has no persisted data, mutation, auth/authz orchestration, provider behavior, or business workflow:
-
-- the page directly imports blocks;
-- no feature wrapper is created;
-- no actions, fetchers, schemas, or types are created merely for symmetry.
-
-## 6. Application route pattern
-
-Domain resources should use the recognizable list/detail/new/edit grammar where applicable.
-
-Example:
+The current presentation families are:
 
 ```text
-app/(tenant)/crm/contacts/page.tsx
-app/(tenant)/crm/contacts/[contactId]/page.tsx
-app/(tenant)/crm/contacts/new/page.tsx
-app/(tenant)/crm/contacts/[contactId]/edit/page.tsx
+components/ui
+components/blocks
+components/templates
+components/chart
+components/brand
+components/nav
+components/shells
+features
 ```
 
-Expected feature family:
+Responsibilities:
+
+- `ui` — reusable controls and lower-level UI;
+- `blocks` — reusable composed UI, including local interactive/demo compositions;
+- `templates` — complete page/surface presentation compositions;
+- `features` — application behavior, data adaptation, server/client orchestration;
+- `shells` and `nav` — application/public structure and navigation;
+- `brand` — shared product identity presentation;
+- `chart` — chart-specific presentation infrastructure.
+
+No artificial rule requires a feature or route to traverse every layer.
+
+## Thin routes
+
+Tenant route pages should remain thin when an existing feature owns the surface.
+
+A common current pattern is:
 
 ```text
-contactsFeature.tsx
-contactsClientFeature.tsx
-contactDetailFeature.tsx
-contactDetailClientFeature.tsx
-contactNewForm.tsx
-contactEditForm.tsx
+route
+  → Suspense
+  → server feature
+  → workflow/fetcher
+  → template
+  → blocks/ui
 ```
 
-Only create the client companion that is actually needed.
+Static public routes may render templates directly.
 
-## 7. Suspense and loading
+## Persistence
 
-- static/content routes may use Next.js `loading.tsx`;
-- dynamic or persisted-read routes should use Suspense around server feature entrypoints where streaming/loading behavior is useful;
-- custom skeletons should match the real feature layout and live with the relevant feature.
+Read-oriented application data access lives under:
 
-## 8. Persistence requirements
+```text
+lib/fetchers/
+```
 
-All persisted application reads are read-only fetchers under `lib/fetchers/`.
+Application mutation entrypoints live under:
 
-Ordinary application CRUD writes are actions under `lib/actions/`.
+```text
+lib/actions/
+```
 
-`lib/db/` owns reusable database mechanics:
+Cross-operation/domain orchestration lives under:
+
+```text
+lib/workflows/
+```
+
+Reusable database mechanics live under:
 
 ```text
 lib/db/
 ├── client.ts
+├── provider.ts
+├── tenant.ts
 ├── selects/
 ├── dto/
 └── transactions/
 ```
 
-Prisma lifecycle remains under root `prisma/`.
+Root Prisma lifecycle remains under:
 
-Do not invent a second repository/query/service architecture.
+```text
+prisma/
+```
 
-## 9. Runtime validation
+Do not invent a second repository/service architecture unless the owner explicitly changes the implementation.
 
-Untrusted boundaries use Zod or an equivalent explicit runtime schema.
+## Runtime validation and shared types
 
-Shared schemas live in `schemas/` and are organized by useful domain responsibility.
+Runtime validation contracts live under:
 
-TypeScript types do not substitute for runtime validation.
+```text
+schemas/
+```
 
-## 10. Type contracts
+Shared TypeScript contracts live under:
 
-Shared application contracts live in `types/` and are organized by useful domain responsibility.
+```text
+types/
+```
 
-Do not wrap generated Prisma types simply to create symmetry.
+The current organization includes domain files plus cross-cutting files such as access, integration, UI, and common contracts.
 
-Persistence representations should not leak into UI surfaces when a transport-safe DTO is required.
+Do not create or rename files solely for naming symmetry.
 
-## 11. Authentication and authorization
+## Authentication and authorization
 
-Clerk owns external identity/session truth.
+Clerk owns external authentication/session identity.
 
-The application database owns:
+Application identity and tenancy are local application concerns.
 
-- local users;
-- organizations/workspaces;
-- memberships;
-- product roles/capabilities;
-- tenant/resource relationships;
-- workflow/product state.
+Current tenant admission requires:
 
-Application authz remains under `lib/authz/`.
+- authenticated application identity;
+- completed onboarding.
 
-PostgreSQL RLS provides tenant containment and defense in depth; it does not replace application authorization.
+Application authorization remains under:
 
-## 12. Provider requirements
+```text
+lib/authz/
+```
 
-Provider-specific behavior belongs under `lib/integrations/{provider}` with three explicit exceptions:
+Authentication does not replace resource-level authorization.
+
+## Provider integration
+
+Provider-specific code currently lives under:
+
+```text
+lib/integrations/
+├── cloudinary/
+├── hugging-face/
+├── sendgrid/
+├── stripe/
+├── vercel-blob/
+└── status.ts
+```
+
+Exceptions:
 
 ```text
 Clerk  → lib/auth
@@ -166,115 +205,76 @@ Neon   → lib/db
 Prisma → lib/db runtime + root prisma lifecycle
 ```
 
-Provider SDK objects do not become application-domain contracts.
+Current provider HTTP Route Handlers include Clerk, Stripe, SendGrid, and AI API families under `app/api`.
 
-Missing provider configuration must not crash unrelated public demo surfaces.
+## Environment behavior
 
-## 13. Webhook requirements
+`.env.example` must match the environment variable names used by the implementation.
 
-Webhook HTTP lifecycle remains in `app/api/{provider}/.../route.ts`.
+Secrets must remain server-side unless a provider explicitly requires a public publishable value.
 
-A webhook route owns:
+Missing optional provider configuration must fail narrowly.
 
-- request receipt;
-- signature/authenticity verification;
-- payload parsing and validation;
-- event type interpretation;
-- idempotency lifecycle coordination;
-- invocation of reusable provider/database helpers;
-- provider-compatible response.
+Do not report an unconfigured provider as live.
 
-Reusable atomic persistence belongs in `lib/db/transactions/`.
+## Tailwind and design
 
-Do not hide the entire webhook HTTP lifecycle in `lib`.
+Tailwind v4 configuration is CSS-first and remains centered in `app/globals.css`.
 
-## 14. Naming requirements
+The current root visual system is dark-only.
 
-Use domain + responsibility names where useful:
+Shared semantic surface, typography, navigation, field, and action utilities should be reused.
 
-```text
-crmActions.ts
-crmFetchers.ts
-crmTypes.ts
-crmSchemas.ts
-projectsActions.ts
-projectsFetchers.ts
-```
+The sitewide button/control border invariant is 3px.
 
-Workflow directories remain shallow:
+## Repository-native commands
+
+Run template commands from `template/`.
+
+Current scripts include:
 
 ```text
-lib/workflows/crm/
-lib/workflows/projects/
+pnpm dev
+pnpm build
+pnpm format
+pnpm format:check
+pnpm lint
+pnpm lint:fix
+pnpm prisma:generate
+pnpm prisma:validate
+pnpm typecheck
+pnpm validate
+pnpm start
 ```
 
-Block filenames use lowercase kebab-case category names:
-
-```text
-hero-sections.tsx
-cta-sections.tsx
-data-tables.tsx
-record-details.tsx
-```
-
-## 15. Environment requirements
-
-- secrets remain server-only;
-- `.env.example` documents required/optional keys without real credentials;
-- provider code must fail locally and narrowly when its required secret is used but missing;
-- unrelated public-demo routes must remain usable when optional provider secrets are absent;
-- environment variable names in code and `.env.example` must match exactly.
-
-## 16. Repository-native validation
-
-Current package scripts are the source of truth for available commands.
-
-At minimum, affected implementation work should use the narrowest relevant subset of:
+`pnpm validate` currently runs:
 
 ```text
 pnpm format:check
 pnpm lint
 pnpm typecheck
-pnpm prisma:validate
-pnpm build
 ```
 
-Do not claim a check passed unless it actually ran.
+`pnpm prisma:validate` and `pnpm build` remain separate checks.
 
-Do not invent a parallel validation system solely to create activity. Machine contracts may define deterministic expectations that repository-native validators can enforce when such validators exist or are deliberately added by an approved spec.
+Use the narrowest relevant check first.
 
-### Template tooling
+Never report an unexecuted command as passed.
 
-Run package commands from `template/`, which has its own pnpm workspace and lockfile.
-Install explicitly with `pnpm install` after dependency changes; pnpm reports stale
-dependencies before running scripts instead of silently reinstalling them.
-Keep TypeScript and ESLint within the peer ranges supported by Next's lint plugins;
-do not disable rules or parser diagnostics to accommodate an unsupported major.
-Node typings follow the Node runtime major declared in `package.json`.
+## Destructive and live operations
 
-ESLint combines Next Core Web Vitals, TypeScript, and template architecture rules.
-Prettier owns formatting: two spaces, double quotes, semicolons, trailing commas,
-and LF endings. Its Tailwind plugin reads `app/globals.css` and sorts classes in
-JSX and `cn`, `clsx`, and `cva` calls. Generated output and local provider state
-are excluded from formatting and linting. `pnpm typecheck` regenerates Next route
-types before checking TypeScript so route edits do not leave stale validators.
-
-Tailwind v4 configuration stays in `app/globals.css`; shadcn's
-`tailwind.config` field is intentionally empty. The Tailwind import scopes source
-detection to this template and supplies the standard mobile-first `sm`, `md`,
-`lg`, `xl`, and `2xl` breakpoints (40, 48, 64, 80, and 96rem). Add custom
-breakpoints through CSS `@theme` only when the design requires them. Do not
-duplicate the CSS theme, animations, or breakpoints in a legacy config file.
-
-## 17. Destructive/live operations
-
-Do not perform without explicit user instruction:
+Do not perform without explicit owner instruction:
 
 - production deployment;
-- destructive database change;
-- live provider mutation;
-- secret rotation;
+- destructive database changes;
+- irreversible migrations;
 - provider account provisioning;
-- irreversible migration.
+- secret creation or rotation;
+- live billing mutation;
+- live provider configuration changes.
 
-Normal Prisma migration generation is allowed only when the active implementation spec requires a schema change and the user has authorized that work.
+## Governing rule
+
+Technical requirements conform to the implementation unless the owner explicitly requests an implementation change.
+
+Governance cleanup is not permission to refactor working code.

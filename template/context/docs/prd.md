@@ -1,170 +1,165 @@
 # Product Requirements — The Maximal Template™
 
-## 1. Product definition
+## Product
 
-**The Maximal Template™** is the canonical maximal implementation from which Loaded Vibes™ / the Hipster Stack™ generator can select, configure, and prune recipe-specific applications.
+The Maximal Template™ is the maximal runnable application used as the reference implementation and source material for the broader Codependent Coding / Loaded Vibes generation system.
 
-It is one coherent superset application containing:
+It is one coherent application, not a set of independent starter apps.
 
-- shared application foundation;
-- reusable presentation primitives and blocks;
-- authentication and authorization examples;
-- tenant-aware database behavior;
-- all supported recipe domains;
-- provider integration boundaries;
-- webhook examples;
-- seeded demonstration data;
-- architecture and validation contracts.
+Its purpose is to demonstrate and preserve a broad modern application architecture in working form.
 
-It is not nine independently implemented applications.
+## Product objective
 
-## 2. Primary product goal
+The template should make the supported application patterns concrete enough that they can be:
 
-Provide a publicly explorable, visually compelling maximal application that demonstrates how the architecture works while remaining structurally useful as the canonical generator source.
+- inspected;
+- run;
+- reused;
+- generated from;
+- extended;
+- compared;
+- validated.
 
-The application itself should make the system understandable. A visitor should be able to walk through recipe surfaces, inspect seeded data, see capability/security labels, and understand that the same architectural grammar powers every domain.
+The implementation is the product baseline.
 
-## 3. Public demo requirement
+Governance exists to describe and guide that implementation, not to redesign it from stale assumptions.
 
-The public deployment must be browseable without requiring:
+## Access model
 
+The product has separate public, authentication/setup, and tenant experiences.
+
+### Public
+
+Current public-facing surfaces include:
+
+- the root landing page;
+- FAQ;
+- privacy;
+- terms;
 - sign-in;
-- sign-up;
-- onboarding completion;
-- organization selection;
-- membership;
-- privileged roles.
+- sign-up.
 
-Authentication and onboarding remain visible as capabilities and examples, not as the entrance gate to the demo.
+These surfaces do not require tenant access.
 
-Public browseability does not grant protected mutation permission.
+### Setup
 
-Signed-out visitors may inspect seeded/read-only demonstration state. Real protected operations continue to require the relevant combination of:
+Onboarding is a real setup flow.
 
-- server-side authentication;
+### Tenant application
+
+Application recipe surfaces under `(tenant)` require:
+
+- authenticated application identity;
+- completed onboarding.
+
+This includes major application areas such as dashboard, CRM, projects, support, marketing, invoicing surfaces, social, AI, portal, admin, settings, and personal-task views.
+
+The product is not currently an anonymous tenant-browser demo.
+
+## Application areas
+
+The current tenant application demonstrates multiple business/application concerns.
+
+### CRM
+
+Includes accounts, contacts, deals/pipeline, analytics, and related workflows.
+
+### Projects
+
+Includes projects, tasks, milestones/timelines, project membership, and related workflow behavior.
+
+### Support
+
+Includes support tickets/inbox, knowledge-base concepts, analytics, and support workflow.
+
+### Marketing
+
+Represents the marketing automation/business domain rather than generic public-site content.
+
+### Invoicing and expenses
+
+The code organization uses invoicing concepts while the current application routes include:
+
+```text
+/invoices
+/expenses
+```
+
+### Social
+
+Includes social account/post scheduling and related workflow concepts.
+
+### AI
+
+Includes generation/playground/usage concepts and provider integration.
+
+### Portal
+
+Includes portal home, documents, approvals, billing-related surfaces, and portal-specific presentation.
+
+### Admin
+
+Uses a real `/admin` URL segment and includes administrative application surfaces.
+
+### Shared application surfaces
+
+The tenant application also includes dashboard, settings, onboarding, integrations/status, and personal-task experiences.
+
+## Presentation system
+
+The product includes a substantial reusable presentation system:
+
+```text
+components/ui
+components/blocks
+components/templates
+components/chart
+components/brand
+components/nav
+components/shells
+```
+
+Features connect application behavior and data to those presentation layers.
+
+The existence of `components/templates` is intentional and part of the product architecture.
+
+## Application architecture
+
+The product demonstrates:
+
+- Next.js App Router;
+- React Server Components;
+- explicit client boundaries;
+- thin route entrypoints;
+- Suspense;
+- feature modules;
+- workflows;
+- fetchers;
+- actions;
+- Prisma/Neon persistence;
+- local tenancy;
+- Clerk authentication;
 - application authorization;
-- tenant/resource scope;
-- RBAC/ABAC policy;
-- PostgreSQL RLS where applicable;
-- validated mutation input.
+- provider integrations;
+- runtime schemas;
+- shared DTO/type boundaries;
+- webhooks;
+- idempotency;
+- provider status surfaces.
 
-## 4. Product positioning
+## Tenancy and authorization
 
-The public application should feel less like:
+Clerk owns external identity/session truth.
 
-> "Here is a SaaS starter. Create an account."
+The application database owns local users, organizations, memberships, product roles, resource relationships, and application state.
 
-and more like:
+Tenant-layout admission does not eliminate resource-specific authorization.
 
-> "Here is the entire application factory. Walk around."
+Database containment such as RLS is a separate security boundary and must be evidenced separately.
 
-The demo should expose the breadth of the system directly through navigation and application surfaces rather than forcing the visitor to derive everything from README prose.
+## External providers
 
-## 5. Canonical business domains
-
-The canonical application-domain vocabulary is:
-
-```text
-crm
-projects
-support
-marketing
-invoicing
-social
-ai
-portal
-admin
-user
-common
-```
-
-`marketing` means the **marketing automation and analytics business domain**.
-
-Static landing, pricing, features, FAQ, contact, terms, privacy, and similar routes are **public content**, not the marketing domain.
-
-## 6. Supported recipe capabilities
-
-### CRM / Pipeline Tracker
-
-Demonstrates contacts, accounts, deals, pipeline state, sales activity, record ownership, filters, detail views, editing, and CRM analytics.
-
-### Project Management / Task Tracker
-
-Demonstrates projects, tasks, milestones, dependencies, assignment, status, timelines, and personal work queues.
-
-### Customer Support / Ticketing
-
-Demonstrates ticket queues, assignment, SLA/escalation behavior, customer/agent distinctions, knowledge content, and support analytics.
-
-### Marketing Automation & Analytics
-
-Demonstrates campaigns, audiences, campaign sequencing, attribution/metrics, and delivery-provider boundaries.
-
-### Invoicing & Expense Tracking
-
-Demonstrates invoices, line items, expenses, calculations, billing settings, payment-provider boundaries, and financial authorization.
-
-### Social Media Scheduling
-
-Demonstrates scheduled content, platform variants, media associations, calendar/composer interaction, and storage/media-provider boundaries.
-
-### AI / Micro-SaaS
-
-Demonstrates model/provider boundaries, usage, credits, rate limiting, prompt/model selection, and browser streaming/interactivity where appropriate.
-
-### B2B Client Portal
-
-Demonstrates client-facing project/documents/billing surfaces, client-vs-internal identity, document/version lifecycle, and approval permissions.
-
-### Internal / Admin
-
-Demonstrates users, records, audit state, bulk operations, and explicit administrative capability checks.
-
-## 7. Shared foundation
-
-Shared material includes:
-
-- public routes;
-- authentication examples;
-- onboarding demonstration;
-- dashboard;
-- settings;
-- user surfaces;
-- navigation and shells;
-- grouped reusable blocks;
-- Prisma/Neon infrastructure;
-- application auth/authz;
-- cache helpers;
-- schemas and shared types;
-- provider integration infrastructure;
-- webhook route handlers;
-- seeded demo data.
-
-## 8. Architecture-as-product requirement
-
-The public demo should expose useful architecture indicators where they improve understanding, for example:
-
-```text
-SEED DATA
-DATABASE READ
-RLS SCOPED
-RBAC
-ABAC
-CLERK
-PRISMA
-NEON
-STRIPE
-WEBHOOK
-SERVER COMPONENT
-CLIENT FEATURE
-REACT HOOK FORM
-```
-
-These indicators should remain compact and contextual. The Maximal Template is an application demo, not a documentation site bolted onto an app.
-
-## 9. Provider set
-
-The intended provider set is:
+The current integration layer includes:
 
 - Clerk;
 - Neon;
@@ -175,36 +170,44 @@ The intended provider set is:
 - SendGrid;
 - Hugging Face.
 
-Additional provider stubs must not become canonical merely because they happen to exist in the repository.
+Provider code may exist without the provider being live or fully configured.
 
-Provider integrations remain optional capabilities that Loaded Vibes can later prune.
+The application must represent missing configuration honestly rather than faking provider success.
 
-## 10. Product non-goals
+## Design requirement
 
-The Maximal Template is not:
+The Maximal Template uses a dark-only, mature neo-brutalist visual system with:
 
-- nine separate full applications;
-- a generic enterprise service-layer framework;
-- a reason to add deep domain hierarchy;
-- a reason to create `services/`, `repositories/`, `use-cases/`, or similar duplicate abstractions;
-- a client-side source-of-truth architecture;
-- a requirement to enable Clerk Organizations;
-- a requirement that public visitors authenticate before seeing the demo;
-- a light-mode application;
-- a cartoonish neo-brutalist theme;
-- a reason to provision every provider before core architecture is correct.
+- restrained color;
+- strong 3px button/control borders;
+- square geometry;
+- dense typography;
+- hard shadows;
+- mechanical motion;
+- accessible focus and contrast.
 
-## 11. Success criteria
+## Non-goals
 
-The product is successful when:
+Governance updates must not:
 
-1. public visitors can inspect all major recipe surfaces without authentication;
-2. protected writes still demonstrate real auth/authz/tenant/RLS behavior;
-3. public static pages are clearly separated from the marketing business domain;
-4. all recipe domains use one recognizable route/feature/lib architecture;
-5. one golden vertical slice establishes the canonical CRUD/read/form pattern;
-6. the grouped block library is reusable and pure;
-7. the visual language is consistently dark, mature, and technical;
-8. optional providers are isolated and removable;
-9. all supported recipes can be described as subsets of one maximal architecture;
-10. Loaded Vibes can later prune capabilities without inventing replacement architecture.
+- move code solely to satisfy old documentation;
+- invent missing routes for naming symmetry;
+- force every feature through every presentation layer;
+- remove an implemented template or block category because a generic architecture omits it;
+- make tenant routes anonymous to restore an older public-demo concept;
+- perform destructive database or live provider changes without explicit owner instruction.
+
+## Success criteria
+
+The template succeeds when:
+
+- the application remains internally coherent;
+- public and tenant access boundaries behave as implemented;
+- tenant routes require authentication and completed onboarding;
+- major recipe domains remain discoverable after tenant admission;
+- presentation layers remain reusable without obscuring responsibility;
+- server data/mutation/provider boundaries remain explicit;
+- security claims are supported by appropriate evidence;
+- optional provider configuration fails narrowly;
+- repository-native validation can be executed and reported accurately;
+- governance accurately describes the codebase.

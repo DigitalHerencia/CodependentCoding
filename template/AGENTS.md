@@ -1,147 +1,106 @@
-# The Maximal Template™ — Repository Governance Map
+# The Maximal Template™ — Governance Directory
 
-## Purpose
+This file is the directory for repository governance.
 
-This file is the repository-level governance and epistemology entrypoint for **The Maximal Template™**.
+It does not define product requirements, architecture, design rules, implementation instructions, validation policy, or execution state. Those responsibilities belong to the files listed below.
 
-It does **not** define a universal coding workflow. Repository-, language-, and framework-agnostic execution behavior is supplied by the user's global `AGENTS.md`. This file only tells an agent what this repository is, where authoritative intent lives, how truth is ranked, and which product-specific boundaries must not drift.
+## Human-readable intent
 
-The Maximal Template™ is the canonical superset implementation used by Loaded Vibes™ / the Hipster Stack™ generator. It is one coherent maximal application, not a collection of independent starter apps.
-
-## Governance map
-
-Human intent lives in `context/`.
+`context/docs/` contains the durable human-readable description of the product and implemented system.
 
 ```text
-context/
-├── docs/
-│   ├── prd.md
-│   ├── tech-requirements.md
-│   ├── architecture.md
-│   ├── design.md
-│   └── auth.md
-└── specs/
-    ├── 00.architectural-contract.md
-    ├── 01.route-topology-public-demo.md
-    ├── 02.design-system.md
-    ├── 03.block-library.md
-    ├── 04.crm-golden-vertical-slice.md
-    ├── 05.application-library-normalization.md
-    ├── 06.maximal-template-explorer.md
-    └── 07.provider-integrations.md
+context/docs/
+├── architecture.md
+├── auth.md
+├── design.md
+├── prd.md
+└── tech-requirements.md
 ```
 
-Machine-readable interpretations and execution state live in `.agents/`.
+| File | Responsibility |
+| --- | --- |
+| `architecture.md` | Implemented application architecture and responsibility boundaries |
+| `auth.md` | Authentication, authorization, tenancy, onboarding, and access intent |
+| `design.md` | Visual system and presentation intent |
+| `prd.md` | Product purpose, capabilities, access model, and product requirements |
+| `tech-requirements.md` | Technical implementation and validation requirements |
+
+## Build instructions
+
+`context/specs/` contains scoped implementation instructions formatted as issues.
 
 ```text
-.agents/
-├── contracts/
-│   ├── product.yaml
-│   ├── design.yaml
-│   └── validation.yaml
-└── execution/
-    ├── decisions.json
-    ├── progress.json
-    └── handoff.json
+context/specs/
+├── 00.architectural-contract.md
+├── 01.route-topology-public-demo.md
+├── 02.design-system.md
+├── 03.block-library.md
+├── 04.crm-golden-vertical-slice.md
+├── 05.application-library-normalization.md
+├── 06.maximal-template-explorer.md
+└── 07.provider-integrations.md
 ```
 
-## Epistemology
+Specs describe implementation work and acceptance criteria.
 
-Truth is fact-specific.
+They do not override current explicit owner instruction.
 
-- **Current explicit user instruction** owns present human intent.
-- **`context/docs/*.md`** owns durable product-specific human intent and architectural explanation.
-- **`context/specs/*.md`** owns approved scoped implementation intent and objective acceptance criteria.
-- **`.agents/contracts/*.yaml`** is a deterministic machine-readable interpretation of stable human intent. It never silently overrides the Markdown that produced it.
-- **`.agents/execution/*.json`** records mutable execution state and evidence. It does not create product or architecture requirements.
-- **Implementation, tests, repository state, and deployed behavior** are evidence of what exists, not automatic proof of what was intended.
-- **Implementation judgment** may fill only narrow gaps that do not change product semantics, architecture, security, or accepted scope.
+## Machine-readable contracts
 
-### Source precedence
+`.agents/contracts/` contains deterministic machine-readable translations of human intent.
 
-When sources conflict, use this order:
+```text
+.agents/contracts/
+├── product.yaml
+├── design.yaml
+└── validation.yaml
+```
 
-1. current explicit user instruction;
-2. `context/docs/*.md`;
-3. the active `context/specs/*.md`;
-4. `.agents/contracts/*.yaml`;
-5. accepted entries in `.agents/execution/decisions.json` that do not conflict with higher authority;
-6. observed implementation and runtime evidence;
-7. implementation judgment.
+| File | Responsibility |
+| --- | --- |
+| `product.yaml` | Product, architecture, route, access, and application-boundary contract |
+| `design.yaml` | Design-system and presentation contract |
+| `validation.yaml` | Validation commands, evidence rules, and deterministic checks |
 
-Do not keep two incompatible rules canonical. Resolve the conflict or stop before mutation.
+Contracts translate the human governance.
 
-## Product-specific specialization
+They do not create independent product intent.
 
-The reusable Codependent Coding™ Knowledge System supplies the governance model and general engineering doctrine. This repository intentionally specializes that doctrine.
+## Codex execution state
 
-For this repository, the following rules are canonical even if a generic Loaded Vibes reference shows a different optional structure:
+`.agents/execution/` contains mutable Codex execution records.
 
-- public static content belongs to `app/(public)`, not a marketing route group;
-- `marketing` is the marketing-automation business domain;
-- normal presentation flows `components/ui → components/blocks → features → app`;
-- **React Hook Form feature forms are the explicit exception**: form features compose UI primitives directly and do not create form blocks;
-- blocks are grouped by presentation category and remain pure UI;
-- all persisted application reads use `lib/fetchers/`;
-- ordinary authenticated/authorized CRUD writes use `lib/actions/`;
-- `lib/db/` owns the Prisma/Neon runtime plus selects, DTOs, and transaction helpers;
-- Clerk lives under `lib/auth`;
-- RBAC/ABAC and resource policy live under `lib/authz`;
-- provider-specific behavior lives under `lib/integrations/{provider}`, except Clerk, Neon, and Prisma;
-- webhook HTTP lifecycle lives under `app/api/{provider}/.../route.ts`;
-- remaining business logic lives in shallow `lib/workflows/{domain}/`;
-- Prisma schema, migrations, generation, and seed lifecycle remain root `prisma/`;
-- the public demo is browseable signed out; public visibility never grants protected mutation authority;
-- the visual system is dark-only, mature neo-brutalist, technical, restrained, and not cartoonish;
-- application-domain vocabulary is `crm`, `projects`, `support`, `marketing`, `invoicing`, `social`, `ai`, `portal`, `admin`, `user`, `common`.
+```text
+.agents/execution/
+├── decisions.json
+├── progress.json
+└── handoff.json
+```
 
-## Active build order
+| File | Responsibility |
+| --- | --- |
+| `decisions.json` | Decisions recorded during implementation work |
+| `progress.json` | Work performed, status, and validation evidence |
+| `handoff.json` | Current state and continuation information for the next Codex session |
 
-The active repair/build sequence is the numbered spec set in `context/specs/`.
+Execution files record actions and evidence.
 
-Do not replace it with a generic scaffolding/auth/database sequence.
+They do not define product, architecture, or design requirements.
 
-1. `00.architectural-contract.md`
-2. `01.route-topology-public-demo.md`
-3. `02.design-system.md`
-4. `03.block-library.md`
-5. `04.crm-golden-vertical-slice.md`
-6. `05.application-library-normalization.md`
-7. `06.maximal-template-explorer.md`
-8. `07.provider-integrations.md`
+## Governance relationship
 
-Each spec is intended to become one GitHub Issue and to provide enough scope and acceptance detail that Codex does not have to redesign the system.
+```text
+Owner intent
+    ↓
+context/docs
+    ↓
+context/specs
+    ↓
+.agents/contracts
 
-## Stop conditions
+Codex work
+    ↓
+.agents/execution
+```
 
-Stop and report the exact conflict before editing when:
-
-- a lower-authority file contradicts current user intent or `context/docs`;
-- a requested implementation would make public-demo visibility equivalent to mutation permission;
-- an implementation would move persisted reads outside fetchers or CRUD writes outside actions without an explicit special boundary;
-- a proposed form-block abstraction would contradict the React Hook Form feature exception;
-- a provider or webhook change would move provider truth or HTTP lifecycle into the wrong layer;
-- a route-group change would alter public URLs unintentionally;
-- a change weakens authz, tenant scope, RLS, webhook verification, idempotency, or provider-secret handling;
-- a destructive migration or live provider mutation is required without explicit approval.
-
-## Evidence rule
-
-Never report an unexecuted check as passing.
-
-Use these evidence labels consistently:
-
-- `executed` — the command/review actually ran;
-- `skipped` — known but deliberately not run;
-- `blocked` — could not run because a prerequisite was unresolved;
-- `inferred` — conclusion from inspection or reasoning rather than execution.
-
-<!-- BEGIN:nextjs-agent-rules -->
-
-# This is NOT the Next.js you know
-
-This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
-
-This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
-
-<!-- END:nextjs-agent-rules -->
+When clarification of intent is required, the owner is the source of truth.

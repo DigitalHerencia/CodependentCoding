@@ -1,261 +1,211 @@
-# Authentication, Authorization, Tenancy, and Demo Access — The Maximal Template™
+# Authentication, Authorization, Tenancy, and Access — The Maximal Template™
 
-## 1. Purpose
+## Purpose
 
-This document defines the Maximal Template™ identity, access, tenant, RLS, and public-demo boundaries.
+This document describes the authentication, authorization, tenancy, onboarding, and access model implemented by the Maximal Template.
 
-## 2. Clerk role
+The current implementation is the baseline. This document does not authorize changing the application to restore an older anonymous-demo model.
 
-Clerk owns external authentication identity and session truth.
+## Identity provider
 
-Clerk Organizations are **not enabled** for the canonical template.
+Clerk owns external authentication and session identity.
 
-Application organization/workspace membership is owned by the local database.
+The root application installs `ClerkProvider`.
 
-## 3. Sign-in and sign-up
+`proxy.ts` installs `clerkMiddleware()` for the configured matcher. It does not currently use route matching to define the tenant authorization policy.
 
-The Clerk authentication example is configured around username/password authentication.
+Application access decisions are made inside application boundaries rather than being delegated entirely to the proxy.
 
-Sign-in and sign-up routes remain publicly reachable as demonstrations of the auth capability.
+## Application identity and tenancy
 
-They are not the admission gate to the rest of the public demo.
+The application database owns local product identity and tenancy.
 
-## 4. Local application identity
+Core entities include:
 
-The application database owns the local `User` representation that maps Clerk identity into application state.
-
-It also owns:
-
+- `User`;
 - `Organization`;
-- `Membership`;
+- `Membership`.
+
+A Clerk identity is mapped to the local application identity.
+
+Product roles, membership state, organization relationships, and domain-resource relationships are application data.
+
+Clerk does not replace the local tenancy model.
+
+## Public access
+
+The application has genuinely public surfaces.
+
+Current examples include:
+
+- `/`;
+- `/faq`;
+- `/privacy`;
+- `/terms`;
+- `/sign-in`;
+- `/sign-up`.
+
+Public access does not imply tenant access or mutation authority.
+
+## Tenant access
+
+Tenant routes live under `app/(tenant)/`.
+
+The current tenant layout is an authentication and onboarding gate.
+
+Before rendering a tenant surface it:
+
+1. calls `getIdentity()`;
+2. redirects to sign-in when no application identity is available;
+3. calls `getOnboardingState()`;
+4. redirects to `/onboarding` when onboarding is incomplete;
+5. renders `TenantShell` only after both conditions are satisfied.
+
+Therefore:
+
+```text
+tenant access = authenticated identity + completed onboarding
+```
+
+The old rule that signed-out visitors can browse tenant recipe surfaces is superseded.
+
+Do not make tenant routes anonymous merely to create a public demo.
+
+## Onboarding
+
+Onboarding is a real setup boundary under `app/(setup)/onboarding`.
+
+It is part of tenant admission rather than an optional public showcase.
+
+Tenant routes may assume the tenant layout has completed the top-level identity/onboarding gate, but resource-specific authorization still belongs at the relevant server boundary.
+
+## Sign-in and sign-up
+
+Custom auth features live under:
+
+```text
+features/auth/
+```
+
+The current sign-in and sign-up features use Clerk client APIs and React Hook Form.
+
+They may compose both:
+
+```text
+components/blocks/auth-forms.tsx
+components/ui/*
+```
+
+The auth block provides reusable presentation and local/demo behavior. The feature owns the real Clerk flow and RHF-controlled application behavior.
+
+Do not move Clerk workflow state into generic presentation components.
+
+## Server authentication
+
+Server identity behavior lives under:
+
+```text
+lib/auth/
+```
+
+Current responsibilities include:
+
+- resolving application identity;
+- Clerk integration helpers;
+- redirects;
+- Clerk webhook interpretation.
+
+Authentication answers who the user is.
+
+It does not by itself answer whether the user may perform a domain operation.
+
+## Authorization
+
+Application authorization lives under:
+
+```text
+lib/authz/
+```
+
+Current modules include:
+
+- permissions;
+- policies;
+- resources;
+- roles.
+
+Authorization may use:
+
 - membership status;
-- application role/capability relationships;
-- product/resource ownership;
-- tenant-scoped workflow state.
+- product role;
+- capability/permission;
+- tenant scope;
+- resource relationships;
+- operation-specific policy.
 
-Do not treat Clerk metadata as canonical application role or tenant truth.
+Do not rely on hidden UI controls as authorization enforcement.
 
-## 5. Authentication vs authorization
+## Persistence scope and RLS
 
-Authentication answers:
+Application persistence is organization-aware.
 
-> Who is this identity?
-
-Authorization answers:
-
-> What may this identity do to this resource, in this tenant, in this state?
-
-`lib/auth/` owns authentication/session helpers.
-
-`lib/authz/` owns:
-
-- roles;
-- permissions/capabilities;
-- RBAC;
-- ABAC;
-- tenant membership;
-- ownership/assignment policy;
-- resource policy;
-- privileged administration policy.
-
-## 6. Public demo access
-
-The public demo is browseable signed out.
-
-Signed-out visitors may inspect seeded/read-only demonstration surfaces including:
-
-- dashboard;
-- CRM;
-- projects;
-- support;
-- marketing;
-- invoicing;
-- social;
-- AI;
-- portal;
-- admin;
-- user/settings;
-- onboarding examples.
-
-Public browseability never grants write permission.
-
-A page being visible does not imply that its mutations are authorized for an anonymous visitor.
-
-## 7. Protected mutation path
-
-A protected mutation should follow:
-
-```text
-browser intent
-    ↓
-server action / approved HTTP boundary
-    ↓
-runtime validation
-    ↓
-Clerk authentication
-    ↓
-local User
-    ↓
-Membership / tenant context
-    ↓
-RBAC / ABAC / resource policy
-    ↓
-CRUD write / transaction helper
-    ↓
-RLS containment
-```
-
-## 8. Protected read path
-
-Real protected reads should follow:
-
-```text
-route/feature
-    ↓
-fetcher
-    ↓
-runtime criteria validation
-    ↓
-authentication/authz as required
-    ↓
-tenant/resource scope
-    ↓
-RLS-scoped database read
-    ↓
-explicit select
-    ↓
-DTO
-```
-
-The public demo may also use explicitly safe seeded/demo read behavior. That exception must remain clearly demo-oriented and must not silently become production authorization policy.
-
-## 9. PostgreSQL RLS
-
-RLS is part of the production security model.
-
-RLS is defense in depth:
-
-- application authz decides whether an operation is legal;
-- query/write scope limits application behavior;
-- RLS contains tenant rows if application code makes a mistake.
+Where RLS or equivalent database containment exists, it is defense in depth and must be evaluated at the database boundary.
 
 RLS does not replace application authorization.
 
-## 10. Clerk webhook boundary
+Conversely, application authorization does not prove that an RLS policy is correct.
 
-Canonical route:
+Claims about cross-tenant containment require direct evidence appropriate to that boundary.
 
-```text
-app/api/clerk/webhooks/route.ts
-```
+## Clerk webhook boundary
 
-The HTTP handler owns:
-
-- webhook receipt;
-- Clerk/Svix verification;
-- payload parsing;
-- event interpretation;
-- idempotency lifecycle;
-- invocation of reusable persistence helpers;
-- response.
-
-Canonical subscribed events currently include:
+Clerk webhook HTTP handling lives under:
 
 ```text
-email.created
-session.created
-session.ended
-session.pending
-session.removed
-session.revoked
-user.created
-user.deleted
-user.updated
+app/api/clerk/
 ```
 
-Provider/auth-specific event interpretation may use helpers under `lib/auth/`.
+Clerk-specific interpretation helpers live under `lib/auth`.
 
-Reusable multi-write persistence belongs in `lib/db/transactions/`.
+Reusable atomic database behavior belongs in the existing database transaction boundary.
 
-Do not allow an auth helper to become an unclassified database service.
+Webhook requests must be verified before their payload is trusted.
 
-## 11. Clerk webhook environment key
-
-The code and `.env.example` must use one canonical secret name.
-
-The route implementation uses Clerk's canonical environment name:
+The configured signing-secret name is:
 
 ```text
 CLERK_WEBHOOK_SIGNING_SECRET
 ```
 
-This name stays aligned with Clerk's `verifyWebhook` helper.
+The current development webhook configuration tracks the user lifecycle events required by the implemented synchronization flow.
 
-## 12. Administrative demo routes
+Do not broaden provider subscriptions or perform live provider changes without explicit owner instruction.
 
-Admin routes may be publicly visible in the demo.
+## Environment variables
 
-The URL must still be explicit:
+Current authentication-related environment names are:
 
 ```text
-/admin/users
-/admin/records
-/admin/audit
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+CLERK_SECRET_KEY
+CLERK_WEBHOOK_SIGNING_SECRET
+DATABASE_URL
+DIRECT_DATABASE_URL
 ```
 
-A route called `/admin/...` does not imply that the caller has admin mutation permission.
+`.env.example` documents names only and must not contain credentials.
 
-Privileged actions remain explicitly authorized.
+## Security invariants
 
-## 13. Failure semantics
+The following are implementation invariants unless the owner explicitly changes them:
 
-Expected server-side access outcomes should distinguish:
-
-- unauthenticated;
-- forbidden;
-- not found / intentionally hidden;
-- invalid input;
-- conflict;
-- provider failure.
-
-Do not expose sensitive existence or authorization details across tenant boundaries.
-
-## 14. Secret handling
-
-Never expose:
-
-- Clerk secret keys;
-- webhook signing secrets;
-- session tokens;
-- raw provider payloads containing sensitive data.
-
-Public publishable keys may be present where the provider requires them, but server secrets remain server-only.
-
-## Custom authentication UI and configuration
-
-`features/auth/signInFeature.tsx` and `signUpFeature.tsx` own self-contained React Hook Form state and Clerk hooks. The existing auth blocks accept controlled form content without nesting forms. The shared shell maps presentation copy from `content/auth.ts`, swaps desktop columns by auth route, and owns the logo, content header, and copyright footer.
-
-The canonical development configuration requires username and password, plus a verified email address for recovery and device trust. Password rules remain authoritative in Clerk; the client does not duplicate a policy that template owners may change. Smart CAPTCHA remains mounted during signup and must be allowed to display a challenge. Custom flows handle email verification, recovery, password reset, device trust, and available MFA factors. Clerk's SignIn/SignUp components handle additional instance requirements and pending session tasks.
-
-The webhook endpoint must subscribe to `user.created`, `user.updated`, and `user.deleted`. Local delivery uses the configured ngrok endpoint and requires the application and tunnel to be running. A configured subscription alone is not delivery evidence.
-
-`DATABASE_URL` must target the same migrated template database as `DIRECT_DATABASE_URL`. In development, the database client prefers the explicit `.env.local` DATABASE_URL over inherited shell values and refreshes its cached client when the connection changes. Production retains environment-variable precedence. Do not migrate an unrelated database to hide a targeting error.
-
-Focused webhook verification: `pnpm exec tsx --test tests/auth-webhooks.integration.test.ts`. Set `AUTH_WEBHOOK_DB_TEST=1` and the intended development `DATABASE_URL` to include the live Neon transaction test. The test deliberately rolls back all writes. Browser authentication and webhook delivery through ngrok remain separate checks.
-
-## Required first-sign-in setup
-
-Tenant pages require completed workspace confirmation after authentication.
-`/onboarding` lives in the authenticated `(setup)` group to avoid redirect loops.
-It reuses `WorkspaceSetup`; the client calls `completeOnboarding`, whose transaction
-resolves membership from the authenticated identity. Client-supplied tenant IDs are
-rejected. Workspace renaming requires `organization:write`; other members can
-confirm the existing name. Invitations are hidden until backed by a delivery flow.
-
-The durable `membership.onboarding.completed` audit event records completion per
-membership. Preserve these events when applying audit retention: they are lifecycle
-state, not disposable diagnostic logs. Membership locking serializes repeat submits.
-No event means setup is required, including for previously provisioned users.
-The layout gate controls navigation; existing resource-level authorization remains
-mandatory for every read and mutation. No seed data or new organization is created
-by completing setup.
+- tenant routes require an authenticated application identity;
+- tenant routes require completed onboarding;
+- resource-level authz remains necessary after the tenant-layout gate;
+- local membership/product state remains application-owned;
+- provider identity is not a substitute for application authorization;
+- secrets stay server-side;
+- webhook authenticity is verified before trust;
+- UI visibility is never treated as proof of permission;
+- RLS claims require database-level evidence;
+- live provider or destructive database changes require explicit owner authorization.

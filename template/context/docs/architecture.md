@@ -1,525 +1,321 @@
 # Architecture — The Maximal Template™
 
-## 1. Architectural identity
+## Purpose
 
-The Maximal Template™ is a single maximal Next.js application whose recipe domains share one architectural grammar.
+This document describes the architecture that exists in the Maximal Template.
 
-The governing principle is:
+It is descriptive governance for the current codebase. It must not be used to force the implementation into an older or more theoretically tidy structure.
 
-> Put code where its actual responsibility says it belongs. Do not invent an abstraction when the responsibility already has a name.
+When this document and the implementation disagree, inspect the implementation and ask the owner before changing product semantics or architecture.
 
-## 2. Canonical domain vocabulary
+## Application topology
 
-```text
-crm
-projects
-support
-marketing
-invoicing
-social
-ai
-portal
-admin
-user
-common
-```
+The application is one Next.js App Router application.
 
-`marketing` is a business domain. Public static content is not marketing architecture.
-
-## 3. Top-level ownership
+Current route organization is:
 
 ```text
-app/                 URL and HTTP boundaries
-features/            application/presentation orchestration
-components/ui/       raw UI primitives
-components/blocks/   grouped pure UI compositions
-components/nav/      navigation presentation
-components/shells/   structural application frames
-lib/actions/         ordinary authenticated/authorized CRUD writes
-lib/fetchers/        all persisted application reads; read-only
-lib/db/              Prisma/Neon runtime helpers
-lib/auth/            Clerk authentication and identity adaptation
-lib/authz/           RBAC/ABAC/resource authorization
-lib/integrations/    provider-specific external behavior
-lib/workflows/       remaining domain/business logic
-lib/cache/           cache tags/lifetimes/invalidation helpers
-lib/constants/       constants
-lib/utils/           true generic utilities
-schemas/             reusable runtime validation
-types/               shared TypeScript contracts
-prisma/              Prisma schema/migration/seed lifecycle
-generated/           generated outputs as configured
-context/             human intent and scoped specs
-.agents/             machine contracts and execution state
+app/
+├── page.tsx
+├── (public)/
+├── (auth)/
+├── (setup)/
+├── (tenant)/
+└── api/
 ```
 
-## 4. Presentation architecture
+### Root public route
 
-Normal flow:
+`app/page.tsx` owns `/`.
+
+It uses `PublicShell` and the landing-page template directly.
+
+The root route is intentionally not required to live inside `(public)`.
+
+### Public route group
+
+`app/(public)/` currently owns public informational routes that share the public layout, including:
+
+- `/faq`;
+- `/privacy`;
+- `/terms`.
+
+A route does not need to be moved into `(public)` merely for conceptual symmetry.
+
+### Authentication routes
+
+`app/(auth)/` owns:
+
+- `/sign-in`;
+- `/sign-up`.
+
+### Setup routes
+
+`app/(setup)/` owns setup flows, currently including:
+
+- `/onboarding`.
+
+### Tenant routes
+
+`app/(tenant)/` owns authenticated application surfaces.
+
+Current top-level tenant surfaces include:
+
+- `/dashboard`;
+- `/crm`;
+- `/projects`;
+- `/support`;
+- `/marketing`;
+- `/invoices`;
+- `/expenses`;
+- `/social`;
+- `/ai`;
+- `/portal`;
+- `/admin`;
+- `/settings`;
+- `/my-tasks`.
+
+The business concept may be named `invoicing` in code organization while its current URLs are `/invoices` and `/expenses`.
+
+Do not invent a `/invoicing` route solely to make route names match a domain label.
+
+### API routes
+
+`app/api/` owns HTTP Route Handlers.
+
+Current provider/application families include:
+
+- `ai`;
+- `clerk`;
+- `sendgrid`;
+- `stripe`.
+
+HTTP lifecycle concerns remain in Route Handlers even when reusable provider or persistence helpers live elsewhere.
+
+## Route responsibility
+
+Route files and layouts own framework behavior such as:
+
+- URL topology;
+- route groups and dynamic segments;
+- layouts;
+- metadata;
+- params and search-param adaptation;
+- Suspense placement;
+- loading/error/not-found behavior;
+- redirects;
+- HTTP request/response boundaries.
+
+Application pages should remain thin when a feature already owns the corresponding orchestration.
+
+The current CRM list route is representative:
 
 ```text
-components/ui
-    ↓
-components/blocks
-    ↓
-features
-    ↓
-app
+app page
+  → server feature
+  → workflow/data
+  → presentation template
 ```
 
-### UI primitives
+Static public pages may also render a presentation template directly without creating a feature wrapper.
 
-Primitives are domain-agnostic building pieces.
+## Presentation architecture
 
-They do not perform:
+The implemented presentation system has multiple distinct layers.
 
-- persisted reads;
-- persisted writes;
-- auth/authz;
-- provider operations;
-- domain workflows.
+### `components/ui`
 
-### Blocks
+Reusable controls, primitives, and low-level UI infrastructure.
 
-Blocks are pure reusable UI compositions.
+Examples include buttons, inputs, dialogs, tables, navigation primitives, charts, motion helpers, and form controls.
 
-They are grouped by presentation category and should normally expose multiple named variations.
+### `components/blocks`
 
-Examples:
+Reusable composed UI.
+
+Blocks may:
+
+- compose primitives;
+- expose typed props and slots;
+- own local presentation state;
+- own local demo interaction when appropriate;
+- provide reusable form-shaped presentation.
+
+Blocks must not become an alternate application-service layer.
+
+Application database access, server authorization policy, provider account truth, and cross-domain business orchestration remain outside blocks.
+
+`components/blocks/auth-forms.tsx` is an intentional example: it can render a self-contained local form variation, while the real Clerk/RHF auth feature can inject controlled form content.
+
+### `components/templates`
+
+Page- and surface-level presentation compositions.
+
+This is a first-class layer in the current codebase.
+
+Templates include public, CRM, projects, support, marketing, invoicing, social, AI, portal, admin, shared, and settings-oriented compositions.
+
+Templates receive data and callbacks from the surrounding feature or route and define the presentation structure for a complete surface.
+
+### `features`
+
+Feature modules own application-facing orchestration and behavior for a surface.
+
+A feature may:
+
+- call a workflow or fetcher;
+- adapt server data for presentation;
+- compose a template;
+- own client-only interaction;
+- use React Hook Form;
+- integrate an approved client provider API such as Clerk where that behavior belongs to the feature.
+
+Client companions use the `.client.tsx` suffix where the browser boundary is meaningful.
+
+### Shell, navigation, brand, and chart families
+
+The repository also contains dedicated presentation families:
 
 ```text
-hero-sections.tsx
-cta-sections.tsx
-feature-sections.tsx
-data-tables.tsx
-record-details.tsx
-dashboard-sections.tsx
-invoice-sections.tsx
-onboarding-sections.tsx
-empty-states.tsx
-error-states.tsx
+components/shells/
+components/nav/
+components/brand/
+components/chart/
 ```
 
-Blocks do not own:
+These are real architectural categories and should remain explicit rather than being forced into `ui`, `blocks`, or `features`.
 
-- React Hook Form state;
-- provider components;
-- Clerk behavior;
-- persisted data access;
-- auth/authz;
-- domain/workflow logic.
+## Common presentation flows
 
-### Features
+There is no single mandatory import chain.
 
-Features own application orchestration for a route or use-case surface.
-
-A normal feature may use:
-
-- fetchers;
-- actions;
-- auth/authz;
-- workflows;
-- integrations;
-- cache helpers;
-- schemas/types;
-- blocks.
-
-Normal features compose blocks rather than scattering primitive UI.
-
-## 5. React Hook Form exception
-
-Form features are an explicit exception to the normal feature → block presentation rule.
-
-A form feature:
-
-- uses React Hook Form;
-- composes UI primitives directly;
-- owns browser form state and interaction;
-- calls the relevant action;
-- uses the relevant shared schema;
-- is rendered by a thin page.
-
-Examples:
+Current valid patterns include:
 
 ```text
-authSignInForm.tsx
-authSignUpForm.tsx
-contactNewForm.tsx
-contactEditForm.tsx
-projectNewForm.tsx
-projectEditForm.tsx
+app → feature → template → blocks/ui
+app → template → blocks/ui
+feature → template
+feature → block
+feature → ui
+template → blocks/ui
+block → ui
 ```
 
-Do not create `ContactEditorBlock`, `AuthFormsBlock`, or other form blocks merely to preserve a rigid layering slogan.
+The important boundary is responsibility, not artificial layer traversal.
 
-## 6. Public routes
+## Server application libraries
 
-Static public content lives under:
+### `lib/fetchers`
 
-```text
-app/(public)/
-```
+Read-oriented application data access.
 
-Examples:
+The repository currently groups fetchers by useful responsibility, including CRM, projects, support, marketing, invoicing, AI, portal, admin, onboarding, organization, integration, and social concerns.
 
-```text
-/
-features
-pricing
-faq
-contact
-terms
-privacy
-```
+### `lib/actions`
 
-Static public pages directly compose blocks.
+Application mutations and mutation entrypoints.
 
-They do not receive meaningless feature wrappers.
+The repository currently groups actions by useful responsibility, including CRM, projects, support, marketing, invoicing, AI, portal, admin, onboarding, social, and common behavior.
 
-## 7. Tenant/domain routes
+Actions are not the only possible write boundary: webhook processing and reusable transaction helpers have their own explicit boundaries.
 
-The route group `(tenant)` may provide a shared shell while real URL segments remain domain-named.
+### `lib/workflows`
 
-Canonical direction:
+Business and application orchestration that coordinates lower-level operations.
 
-```text
-app/(tenant)/
-├── dashboard/
-├── crm/
-├── projects/
-├── support/
-├── marketing/
-├── invoicing/
-├── social/
-├── ai/
-├── portal/
-├── admin/
-├── user/
-└── settings/
-```
+Workflows may combine fetchers, actions, calculations, and domain rules.
 
-A route group never substitutes for a required URL segment.
+For example, CRM workflows compose CRM fetchers and actions rather than duplicating their persistence mechanics.
 
-If the desired public URL is `/admin/users`, the filesystem must contain an actual `admin` segment.
+### `lib/db`
 
-## 8. Resource route grammar
+Database runtime and reusable persistence mechanics.
 
-Where the domain supports CRUD, prefer:
-
-```text
-/{domain}/{resource}
-/{domain}/{resource}/new
-/{domain}/{resource}/[resourceId]
-/{domain}/{resource}/[resourceId]/edit
-```
-
-A list feature may have a narrow browser companion for search/filter/sort/selection.
-
-A detail feature may have a narrow browser companion for interactive detail behavior.
-
-New/edit routes render RHF form features.
-
-## 9. Suspense and route loading
-
-- static content can use `loading.tsx`;
-- persisted/dynamic routes should use Suspense around server feature entrypoints where appropriate;
-- custom skeletons live with their feature and match the eventual rendered shape.
-
-## 10. Application library classifier
-
-```text
-Static public presentation only?
-    → app/(public) + components/blocks
-
-React Hook Form?
-    → feature form + components/ui
-
-Application orchestration?
-    → features/
-
-Persisted application read?
-    → lib/fetchers/
-
-Ordinary persisted CRUD write?
-    → lib/actions/
-
-Prisma projection?
-    → lib/db/selects/
-
-DTO mapping?
-    → lib/db/dto/
-
-Atomic database helper?
-    → lib/db/transactions/
-
-Clerk/authentication?
-    → lib/auth/
-
-RBAC/ABAC/resource authorization?
-    → lib/authz/
-
-Provider-specific external behavior?
-    → lib/integrations/{provider}/
-
-Webhook HTTP lifecycle?
-    → app/api/{provider}/.../route.ts
-
-Remaining business/domain logic?
-    → lib/workflows/{domain}/
-
-Cache?
-    → lib/cache/
-
-Constant?
-    → lib/constants/
-
-True generic utility?
-    → lib/utils/
-```
-
-## 11. Actions
-
-`lib/actions/` owns ordinary persisted CRUD writes.
-
-Actions authenticate/authorize/validate as required and perform the write, optionally using transaction helpers and cache invalidation.
-
-They are not a generic business-service layer.
-
-Examples of action responsibilities:
-
-- create contact;
-- update project;
-- archive ticket;
-- delete campaign.
-
-Non-CRUD provider or business orchestration does not become an action simply because a button triggered it.
-
-## 12. Fetchers
-
-`lib/fetchers/` owns all persisted application reads.
-
-Fetchers are read-only and may:
-
-- validate criteria;
-- resolve auth/authz when required;
-- apply tenant/resource scope;
-- use Prisma selects;
-- map DTOs;
-- apply explicitly safe caching.
-
-No hidden sync writes.
-
-## 13. Database layer
-
-Canonical runtime structure:
+The current structure includes:
 
 ```text
 lib/db/
 ├── client.ts
+├── provider.ts
+├── tenant.ts
 ├── selects/
 ├── dto/
 └── transactions/
 ```
 
-Neon and Prisma runtime concerns terminate here.
+Do not remove an existing database helper merely because a smaller conceptual diagram omitted it.
 
-Prisma lifecycle remains root:
+### `lib/auth`
 
-```text
-prisma/
-├── schema.prisma
-├── migrations/
-└── seed.ts
-```
+Clerk-facing authentication and identity behavior.
 
-Prisma should generate its own migrations. Do not create an alternate migration framework.
+### `lib/authz`
 
-## 14. Authentication
+Application authorization behavior, including roles, permissions, resources, and policies.
 
-`lib/auth/` owns Clerk server integration and server-side identity/session helpers.
+### `lib/integrations`
 
-Clerk does not own application tenant membership, roles, or permissions.
+External-provider adapters and status behavior.
 
-## 15. Authorization
-
-`lib/authz/` owns application authorization:
-
-- roles;
-- permissions/capabilities;
-- resources;
-- RBAC;
-- ABAC;
-- ownership checks;
-- assignment checks;
-- tenant checks;
-- policy helpers.
-
-Authentication answers who the identity is.
-
-Authorization answers what that identity may do to a resource in context.
-
-## 16. Tenant/RLS model
-
-The application database owns Organization and Membership state.
-
-A normal protected path is:
-
-```text
-Clerk identity
-    ↓
-local User
-    ↓
-Membership
-    ↓
-RBAC/ABAC/resource policy
-    ↓
-tenant-scoped query/write
-    ↓
-PostgreSQL RLS
-```
-
-RLS is defense in depth. It does not replace application authz.
-
-## 17. Workflows
-
-`lib/workflows/{domain}/` owns remaining business logic only after more precise categories have been excluded.
-
-Workflows should remain shallow.
-
-Do not introduce generic:
-
-```text
-services/
-use-cases/
-repositories/
-domain/
-application/
-managers/
-processors/
-```
-
-unless a future explicit decision establishes a real architectural distinction.
-
-## 18. Integrations
-
-Provider-specific code belongs in:
-
-```text
-lib/integrations/{provider}/
-```
-
-Intended providers include:
+Current integration families include:
 
 - Stripe;
-- Cloudinary;
 - Vercel Blob;
+- Cloudinary;
 - SendGrid;
 - Hugging Face.
 
-Explicit exceptions:
+Clerk remains under `lib/auth`. Prisma/Neon runtime behavior remains under `lib/db` and root Prisma lifecycle remains under `prisma/`.
 
-```text
-Clerk  → lib/auth
-Neon   → lib/db
-Prisma → lib/db runtime + root prisma lifecycle
-```
+## Schemas and types
 
-## 19. Webhooks
+`schemas/` contains runtime validation contracts organized by useful responsibility.
 
-Webhook HTTP lifecycle remains under `app/api`.
+`types/` contains shared TypeScript contracts, including domain, access, integration, UI, and common types.
 
-A route handler owns:
+The current filenames are authoritative evidence of the organization that exists. Do not create or rename files merely to produce perfect domain symmetry.
 
-1. request receipt;
-2. provider verification;
-3. payload parsing/validation;
-4. event interpretation;
-5. idempotency coordination;
-6. reusable helper invocation;
-7. provider response.
+## Persistence and tenancy
 
-Reusable atomic persistence belongs in `lib/db/transactions`.
+Prisma owns the application persistence model.
 
-Provider verification/parsing helpers may live with the relevant provider.
+The application database contains local tenancy and product state, including:
 
-For Clerk, provider-specific auth integration remains under `lib/auth`.
+- `User`;
+- `Organization`;
+- `Membership`;
+- domain entities for CRM, projects, support, marketing, invoicing, social, AI, portal, billing, assets, audit, webhook, and idempotency concerns.
 
-Do not turn `lib/auth/syncWebhook.ts` or a generic workflow into a hidden database service.
+Tenant-aware application behavior is enforced through application identity, membership/resource policy, scoped persistence behavior, and database protections where implemented.
 
-## 20. Types and schemas
+Do not treat UI visibility as proof of authorization or RLS behavior.
 
-Shared files are domain-oriented where useful:
+## Authentication boundary
 
-```text
-types/crmTypes.ts
-schemas/crmSchemas.ts
-types/projectsTypes.ts
-schemas/projectsSchemas.ts
-```
+`proxy.ts` installs Clerk middleware for matched requests.
 
-Do not create files only for symmetry.
+Tenant access is enforced by `app/(tenant)/layout.tsx`, which:
 
-## 21. Minimal hierarchy
+1. resolves application identity;
+2. redirects an unauthenticated visitor to sign-in;
+3. checks onboarding state;
+4. redirects incomplete setup to `/onboarding`;
+5. renders `TenantShell` only after those gates pass.
 
-Prefer:
+Route-level authentication does not replace resource-level authorization.
 
-```text
-lib/actions/crmActions.ts
-lib/fetchers/crmFetchers.ts
-```
+## Design architecture
 
-over deep folder trees unless actual implementation scale forces a new boundary.
+`app/globals.css` is the canonical Tailwind v4 theme and shared style layer.
 
-## 22. Public demo architecture
+`app/layout.tsx` installs the root fonts, dark document defaults, metadata, and `ClerkProvider`.
 
-The public demo may render seeded data while signed out.
+The visual system is intentionally dark-only and uses the current semantic CSS/token system described in `context/docs/design.md`.
 
-Public visibility does not make real writes public.
+## Governing rule
 
-A visitor can browse Admin, CRM, Projects, Support, Marketing, Invoicing, Social, AI, Portal, User/Settings, Auth, and Onboarding surfaces while real protected operations still demonstrate the production security path.
+Governance describes the implementation that the owner has accepted.
 
-## 23. Explicit anti-patterns
+Do not refactor the codebase solely because an older governance file, generic doctrine, naming convention, or architecture diagram describes a different structure.
 
-Do not reintroduce:
-
-- `(marketing)` for public static content;
-- public static pages wrapped in meaningless features;
-- `features/marketing/*` for landing/pricing/contact purely because they are public-facing;
-- form logic in blocks;
-- Clerk components or provider behavior in generic blocks;
-- database reads outside fetchers;
-- CRUD writes scattered through auth/helpers/features;
-- provider operations shoved into actions;
-- webhook HTTP lifecycle hidden in `lib`;
-- admin route groups that accidentally produce `/users` instead of `/admin/users`;
-- optional light mode;
-- cartoonish pastel neo-brutalism;
-- generic service layers;
-- unnecessary hierarchy.
-
-## 24. Golden vertical slice
-
-CRM contacts is the reference implementation for the canonical domain/resource grammar.
-
-It should demonstrate:
-
-```text
-list
-search/filter client behavior
-detail
-new RHF form
-edit RHF form
-fetcher
-CRUD actions
-Zod schema
-types
-select
-DTO
-auth/authz
-tenant scope
-RLS
-Suspense
-custom skeleton
-```
-
-Other domain implementations should follow this grammar unless a concrete domain difference requires otherwise.
+If implementation intent is unclear, ask the owner.
