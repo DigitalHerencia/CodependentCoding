@@ -34,14 +34,9 @@ export function DashboardLayout({
   className,
 }: DashboardLayoutProps) {
   return (
-    <section
-      className={cn(
-        "min-h-[42rem] w-full border-foreground/30 bg-background",
-        className,
-      )}
-    >
+    <section className={cn("dashboard-layout w-full bg-background", className)}>
       <div className="min-w-0 bg-background">
-        <header className="flex min-h-14 flex-wrap items-center justify-between gap-4 border-b border-foreground/30 px-4 py-3">
+        <header className="dashboard-header grid min-h-14 gap-3 border-b border-foreground/30 px-4 py-4 md:flex md:justify-between">
           <h1 className="type-title text-foreground">{title}</h1>
           {toolbar}
         </header>

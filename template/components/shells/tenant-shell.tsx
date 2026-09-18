@@ -235,11 +235,11 @@ export function TenantShell({ children }: { children: ReactNode }) {
         }
       }}
       className={cn(
-        "min-h-dvh",
+        "tenant-shell min-h-dvh",
         sidebar &&
           (collapsed
             ? "md:grid md:grid-cols-[4.5rem_minmax(0,1fr)]"
-            : "md:grid md:grid-cols-[19rem_minmax(0,1fr)]"),
+            : "md:grid md:grid-cols-[16rem_minmax(0,1fr)]"),
       )}
     >
       {sidebar && (
