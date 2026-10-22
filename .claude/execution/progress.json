@@ -1,13 +1,16 @@
 {
   "$schema": "codependent-coding/execution/progress/v1",
-  "updated": "2026-10-22T00:00:00Z",
+  "updated": "2026-10-22T23:30:00Z",
   "format": "Evidence states: EXECUTED | INSPECTED | NOT_RUN | BLOCKED. Never mark an issue done without EXECUTED evidence for its Validation commands.",
   "milestones": {
     "M0": {
       "status": "in-progress",
       "issues": ["CC-001", "CC-002", "CC-003", "CC-004", "CC-005"]
     },
-    "M1": { "status": "todo", "issues": ["CC-006", "CC-007", "CC-008"] },
+    "M1": {
+      "status": "todo",
+      "issues": ["CC-006", "CC-007", "CC-008"]
+    },
     "M2": {
       "status": "todo",
       "issues": [
@@ -54,9 +57,19 @@
       "status": "todo",
       "issues": ["CC-036", "CC-037", "CC-038", "CC-039", "CC-040", "CC-041"]
     },
-    "M6": { "status": "todo", "issues": ["CC-042", "CC-043", "CC-044"] }
+    "M6": {
+      "status": "todo",
+      "issues": ["CC-042", "CC-043", "CC-044"]
+    }
   },
-  "issues": {},
+  "issues": {
+    "CC-001": {
+      "status": "done",
+      "github": 161,
+      "pr": 208,
+      "note": "Squash-merged with owner approval while root CI was red on pre-existing findings"
+    }
+  },
   "completed": [
     {
       "what": "Governance package authored: 5 intent docs, 3 YAML contracts, 3 execution files, 44 issues, GitHub templates, labels, CI, issue sync script, CLAUDE.md, hooks, doctrine ESLint plugin",
@@ -81,7 +94,7 @@
       "date": "2026-10-22",
       "state": "EXECUTED",
       "command": "eslint . --fix (copy of template)",
-      "result": "241 → 73 findings; tsc error count unchanged at 123 (pre-existing, Prisma client not generated in sandbox)"
+      "result": "241 \u2192 73 findings; tsc error count unchanged at 123 (pre-existing, Prisma client not generated in sandbox)"
     },
     {
       "date": "2026-10-22",
@@ -103,18 +116,68 @@
     },
     {
       "date": "2026-10-22",
-      "state": "NOT_RUN",
-      "command": "pnpm validate (root) with new configs",
-      "result": "requires CC-001 toolchain pins + prettier-plugin-tailwindcss at root"
+      "state": "EXECUTED",
+      "command": "pnpm install --frozen-lockfile (root, node 24.22.1, pnpm 12.3.4)",
+      "result": "exit 0",
+      "issue": "CC-001"
+    },
+    {
+      "date": "2026-10-22",
+      "state": "EXECUTED",
+      "command": "pnpm lint (root)",
+      "result": "runs to completion: 167 problems (137 errors, 30 warnings), exit 1; no crash (TS 6.0.3 + ESLint 9.39.5)",
+      "issue": "CC-001"
+    },
+    {
+      "date": "2026-10-22",
+      "state": "EXECUTED",
+      "command": "pnpm --dir template install --frozen-lockfile",
+      "result": "exit 0; template lockfile already in sync, no diff",
+      "issue": "CC-001"
+    },
+    {
+      "date": "2026-10-22",
+      "state": "EXECUTED",
+      "command": "pnpm --dir template lint",
+      "result": "runs to completion: 241 problems (231 errors, 10 warnings), exit 1; no crash",
+      "issue": "CC-001"
+    },
+    {
+      "date": "2026-10-22",
+      "state": "EXECUTED",
+      "command": "grep for ^/~ version ranges in package.json and template/package.json",
+      "result": "none",
+      "issue": "CC-001"
+    },
+    {
+      "date": "2026-10-22",
+      "state": "EXECUTED",
+      "command": "pnpm test (root, vitest run --passWithNoTests)",
+      "result": "exit 0, no test files",
+      "issue": "CC-001"
+    },
+    {
+      "date": "2026-10-22",
+      "state": "EXECUTED",
+      "command": "pnpm typecheck (root)",
+      "result": "250 TS errors, all in components/** + playwright.config.ts (pre-existing site code slated for CC-006); not a CC-001 criterion",
+      "issue": "CC-001"
+    },
+    {
+      "date": "2026-10-22",
+      "state": "EXECUTED",
+      "command": "CI Factory (root) on PR #208",
+      "result": "failure at format:check: prettier-plugin-tailwindcss cannot resolve 'tw-animate-css' for template/** files because the root job does not install template deps; plus pre-existing lint/typecheck findings",
+      "issue": "CC-001"
     }
   ],
   "known_findings": [
-    "Root lint crashes on TypeScript 7 (CC-001)",
-    "Root `pnpm test` targets a non-existent tests/ folder (CC-001)",
     "Template dev script contains a personal ngrok URL (CC-014)",
     "No real-Postgres RLS cross-tenant test (CC-016)",
     "No ISR revalidate config in app/ despite ISR being the stated public caching strategy (CC-015)",
-    "RATE_LIMITED error code has no backing mechanism (CC-026)"
+    "RATE_LIMITED error code has no backing mechanism (CC-026)",
+    "Root typecheck: 250 errors in legacy components/** (expected to clear with CC-006); root lint: 167 findings (CC-009 onward)",
+    "Root format:check scans template/** but template deps are not installed in the root CI job, so prettier-plugin-tailwindcss errors on 'tw-animate-css' (CC-004 / prettierignore)"
   ],
   "blocked": []
 }
