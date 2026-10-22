@@ -1,14 +1,16 @@
 {
   "$schema": "codependent-coding/execution/handoff/v1",
-  "updated": "2026-10-22T23:55:00Z",
+  "updated": "2026-10-22T23:59:00Z",
   "format": "Overwrite each session. Minimum state the next session needs to resume safely.",
   "status": "ready-for-claude-code",
   "milestone": "M0",
-  "current_issue": null,
+  "current_issue": "CC-005",
   "next_issue": "CC-005",
   "queue": ["CC-005"],
-  "branch": null,
-  "in_flight": [],
+  "branch": "chore/165-windows-hook-check",
+  "in_flight": [
+    "CC-005: hooks pass sample-payload validation on Linux; waiting on owner's manual VS Code-on-Windows check. If owner can't run it soon, label #165 blocked and move to CC-006."
+  ],
   "notes": [
     "Governance package is uncommitted in the owner's working tree; owner reviews with `git status` / `git diff`, then commits on a branch `chore/governance-package`.",
     "Template already contains the doctrine ESLint plugin (template/eslint/) and the new eslint.config.mjs; CC-009 turns findings into fixes.",

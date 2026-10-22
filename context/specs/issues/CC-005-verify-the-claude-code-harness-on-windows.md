@@ -8,7 +8,7 @@ priority: p0
 size: xs
 labels: [type:chore, area:governance, priority:p0, size:xs]
 depends_on: [CC-001]
-status: todo
+status: in-progress
 ---
 
 # CC-005 · Verify the Claude Code harness on Windows
