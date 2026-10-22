@@ -70,10 +70,11 @@
       "note": "Squash-merged with owner approval while root CI was red on pre-existing findings"
     },
     "CC-002": {
-      "status": "in-review",
+      "status": "done",
       "github": 162,
       "branch": "claude/project-thread-ula1vk",
-      "note": "Legacy governance removed, books moved to context/doctrine/. Remaining retired-vocabulary hits live in code owned by CC-006/007/008/014/043."
+      "note": "Legacy governance removed, books moved to context/doctrine/. Remaining retired-vocabulary hits live in code owned by CC-006/007/008/014/043. Squash-merged with owner approval while root CI was red on pre-existing format/lint findings.",
+      "pr": 210
     }
   },
   "completed": [
