@@ -53,7 +53,7 @@ Body sections: Summary · Scope (checklist) · Acceptance criteria (checklist) �
 ```powershell
 pnpm issues:sync                         # dry run: shows labels, milestones, issues to create
 pnpm issues:sync -- --apply              # create/update labels + milestones, create missing issues
-pnpm issues:sync -- --apply --project 3  # also add every issue to Project #3 (owner DigitalHerencia)
+pnpm issues:sync -- --apply --project 19  # also add every issue to Project #19 (owner DigitalHerencia)
 ```
 
 - Idempotent: issues are matched by `CC-NNN` title prefix; existing ones are skipped.

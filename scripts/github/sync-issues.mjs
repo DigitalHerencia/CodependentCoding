@@ -4,7 +4,7 @@
  *
  *   node scripts/github/sync-issues.mjs                    dry run (default)
  *   node scripts/github/sync-issues.mjs --apply            create labels/milestones/missing issues
- *   node scripts/github/sync-issues.mjs --apply --project 3 [--owner DigitalHerencia]
+ *   node scripts/github/sync-issues.mjs --apply --project 19 [--owner DigitalHerencia]
  *   node scripts/github/sync-issues.mjs --repo owner/name  override repo detection
  *
  * Idempotent: issues are matched by their "CC-NNN" title prefix. Requires `gh` (authenticated).

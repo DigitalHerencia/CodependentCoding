@@ -1,0 +1,222 @@
+{
+  "CC-001": {
+    "number": 161,
+    "url": "https://github.com/DigitalHerencia/CodependentCoding/issues/161",
+    "file": "CC-001-pin-the-toolchain-across-root-and-template.md"
+  },
+  "CC-002": {
+    "number": 162,
+    "url": "https://github.com/DigitalHerencia/CodependentCoding/issues/162",
+    "file": "CC-002-remove-legacy-governance-and-relocate-reference-doctrine.md"
+  },
+  "CC-003": {
+    "number": 163,
+    "url": "https://github.com/DigitalHerencia/CodependentCoding/issues/163",
+    "file": "CC-003-create-labels-milestones-and-the-github-project-sync-issues.md"
+  },
+  "CC-004": {
+    "number": 164,
+    "url": "https://github.com/DigitalHerencia/CodependentCoding/issues/164",
+    "file": "CC-004-ci-baseline-workflow.md"
+  },
+  "CC-005": {
+    "number": 165,
+    "url": "https://github.com/DigitalHerencia/CodependentCoding/issues/165",
+    "file": "CC-005-verify-the-claude-code-harness-on-windows.md"
+  },
+  "CC-006": {
+    "number": 166,
+    "url": "https://github.com/DigitalHerencia/CodependentCoding/issues/166",
+    "file": "CC-006-reduce-the-site-to-the-landing-page.md"
+  },
+  "CC-007": {
+    "number": 167,
+    "url": "https://github.com/DigitalHerencia/CodependentCoding/issues/167",
+    "file": "CC-007-remove-legacy-generator-packages.md"
+  },
+  "CC-008": {
+    "number": 168,
+    "url": "https://github.com/DigitalHerencia/CodependentCoding/issues/168",
+    "file": "CC-008-update-landing-page-content-and-navigation.md"
+  },
+  "CC-009": {
+    "number": 169,
+    "url": "https://github.com/DigitalHerencia/CodependentCoding/issues/169",
+    "file": "CC-009-adopt-doctrine-lint-in-the-template-and-apply-auto-fixes.md"
+  },
+  "CC-010": {
+    "number": 170,
+    "url": "https://github.com/DigitalHerencia/CodependentCoding/issues/170",
+    "file": "CC-010-fix-route-and-feature-boundary-findings.md"
+  },
+  "CC-011": {
+    "number": 171,
+    "url": "https://github.com/DigitalHerencia/CodependentCoding/issues/171",
+    "file": "CC-011-fix-server-layer-boundary-and-naming-findings.md"
+  },
+  "CC-012": {
+    "number": 172,
+    "url": "https://github.com/DigitalHerencia/CodependentCoding/issues/172",
+    "file": "CC-012-template-typecheck-green.md"
+  },
+  "CC-013": {
+    "number": 173,
+    "url": "https://github.com/DigitalHerencia/CodependentCoding/issues/173",
+    "file": "CC-013-prettier-baseline-across-the-repo.md"
+  },
+  "CC-014": {
+    "number": 174,
+    "url": "https://github.com/DigitalHerencia/CodependentCoding/issues/174",
+    "file": "CC-014-remove-generator-debris-from-the-template.md"
+  },
+  "CC-015": {
+    "number": 175,
+    "url": "https://github.com/DigitalHerencia/CodependentCoding/issues/175",
+    "file": "CC-015-error-loading-and-isr-conventions.md"
+  },
+  "CC-016": {
+    "number": 176,
+    "url": "https://github.com/DigitalHerencia/CodependentCoding/issues/176",
+    "file": "CC-016-rls-cross-tenant-test-harness-against-real-postgres.md"
+  },
+  "CC-017": {
+    "number": 177,
+    "url": "https://github.com/DigitalHerencia/CodependentCoding/issues/177",
+    "file": "CC-017-test-baseline-vitest-and-playwright-green.md"
+  },
+  "CC-018": {
+    "number": 178,
+    "url": "https://github.com/DigitalHerencia/CodependentCoding/issues/178",
+    "file": "CC-018-module-manifest-and-schema.md"
+  },
+  "CC-019": {
+    "number": 179,
+    "url": "https://github.com/DigitalHerencia/CodependentCoding/issues/179",
+    "file": "CC-019-ownership-resolver-and-orphan-check.md"
+  },
+  "CC-020": {
+    "number": 180,
+    "url": "https://github.com/DigitalHerencia/CodependentCoding/issues/180",
+    "file": "CC-020-rename-files-to-satisfy-ownership-conventions.md"
+  },
+  "CC-021": {
+    "number": 181,
+    "url": "https://github.com/DigitalHerencia/CodependentCoding/issues/181",
+    "file": "CC-021-module-runtime-definitions-and-generated-registry.md"
+  },
+  "CC-022": {
+    "number": 182,
+    "url": "https://github.com/DigitalHerencia/CodependentCoding/issues/182",
+    "file": "CC-022-prisma-multi-file-schema-with-module-tags.md"
+  },
+  "CC-023": {
+    "number": 183,
+    "url": "https://github.com/DigitalHerencia/CodependentCoding/issues/183",
+    "file": "CC-023-rls-sql-per-owner-and-dbinit.md"
+  },
+  "CC-024": {
+    "number": 184,
+    "url": "https://github.com/DigitalHerencia/CodependentCoding/issues/184",
+    "file": "CC-024-module-boundary-lint-rules-cc-mod-001002.md"
+  },
+  "CC-025": {
+    "number": 185,
+    "url": "https://github.com/DigitalHerencia/CodependentCoding/issues/185",
+    "file": "CC-025-validated-env-per-owner.md"
+  },
+  "CC-026": {
+    "number": 186,
+    "url": "https://github.com/DigitalHerencia/CodependentCoding/issues/186",
+    "file": "CC-026-add-on-modules-billing-uploads-media-email-inference-ratelim.md"
+  },
+  "CC-027": {
+    "number": 187,
+    "url": "https://github.com/DigitalHerencia/CodependentCoding/issues/187",
+    "file": "CC-027-golden-module-projects.md"
+  },
+  "CC-028": {
+    "number": 188,
+    "url": "https://github.com/DigitalHerencia/CodependentCoding/issues/188",
+    "file": "CC-028-cli-skeleton-and-local-install.md"
+  },
+  "CC-029": {
+    "number": 189,
+    "url": "https://github.com/DigitalHerencia/CodependentCoding/issues/189",
+    "file": "CC-029-composition-engine-and-new-command.md"
+  },
+  "CC-030": {
+    "number": 190,
+    "url": "https://github.com/DigitalHerencia/CodependentCoding/issues/190",
+    "file": "CC-030-generated-app-governance-assets.md"
+  },
+  "CC-031": {
+    "number": 191,
+    "url": "https://github.com/DigitalHerencia/CodependentCoding/issues/191",
+    "file": "CC-031-post-compose-setup-and-optional-provisioning.md"
+  },
+  "CC-032": {
+    "number": 192,
+    "url": "https://github.com/DigitalHerencia/CodependentCoding/issues/192",
+    "file": "CC-032-slice-scaffolder.md"
+  },
+  "CC-033": {
+    "number": 193,
+    "url": "https://github.com/DigitalHerencia/CodependentCoding/issues/193",
+    "file": "CC-033-add-command.md"
+  },
+  "CC-034": {
+    "number": 194,
+    "url": "https://github.com/DigitalHerencia/CodependentCoding/issues/194",
+    "file": "CC-034-doctor-command.md"
+  },
+  "CC-035": {
+    "number": 195,
+    "url": "https://github.com/DigitalHerencia/CodependentCoding/issues/195",
+    "file": "CC-035-ci-composition-matrix.md"
+  },
+  "CC-036": {
+    "number": 196,
+    "url": "https://github.com/DigitalHerencia/CodependentCoding/issues/196",
+    "file": "CC-036-plugin-skeleton-and-local-marketplace.md"
+  },
+  "CC-037": {
+    "number": 197,
+    "url": "https://github.com/DigitalHerencia/CodependentCoding/issues/197",
+    "file": "CC-037-skill-idea-grill-session.md"
+  },
+  "CC-038": {
+    "number": 198,
+    "url": "https://github.com/DigitalHerencia/CodependentCoding/issues/198",
+    "file": "CC-038-skill-plan-docs-issues.md"
+  },
+  "CC-039": {
+    "number": 199,
+    "url": "https://github.com/DigitalHerencia/CodependentCoding/issues/199",
+    "file": "CC-039-skills-slice-and-classify.md"
+  },
+  "CC-040": {
+    "number": 200,
+    "url": "https://github.com/DigitalHerencia/CodependentCoding/issues/200",
+    "file": "CC-040-skills-check-ship-handoff-plugin-hooks.md"
+  },
+  "CC-041": {
+    "number": 201,
+    "url": "https://github.com/DigitalHerencia/CodependentCoding/issues/201",
+    "file": "CC-041-agents-reviewer-and-verifier.md"
+  },
+  "CC-042": {
+    "number": 202,
+    "url": "https://github.com/DigitalHerencia/CodependentCoding/issues/202",
+    "file": "CC-042-dogfood-run-idea-to-deployed-mvp.md"
+  },
+  "CC-043": {
+    "number": 203,
+    "url": "https://github.com/DigitalHerencia/CodependentCoding/issues/203",
+    "file": "CC-043-docs-readme-and-doctrine-sync-check.md"
+  },
+  "CC-044": {
+    "number": 204,
+    "url": "https://github.com/DigitalHerencia/CodependentCoding/issues/204",
+    "file": "CC-044-release-v1-0-0.md"
+  }
+}
