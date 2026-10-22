@@ -1,19 +1,21 @@
 {
   "$schema": "codependent-coding/execution/handoff/v1",
-  "updated": "2026-10-22T23:30:00Z",
+  "updated": "2026-10-22T23:45:00Z",
   "format": "Overwrite each session. Minimum state the next session needs to resume safely.",
   "status": "ready-for-claude-code",
   "milestone": "M0",
   "current_issue": null,
-  "next_issue": "CC-003",
-  "queue": ["CC-003", "CC-002", "CC-004", "CC-005"],
+  "next_issue": "CC-002",
+  "queue": ["CC-002", "CC-004", "CC-005"],
   "branch": null,
   "in_flight": [],
   "notes": [
     "Governance package is uncommitted in the owner's working tree; owner reviews with `git status` / `git diff`, then commits on a branch `chore/governance-package`.",
     "Template already contains the doctrine ESLint plugin (template/eslint/) and the new eslint.config.mjs; CC-009 turns findings into fixes.",
     "Old .agents/ files are stale (2026-08-31) and superseded; ignore until CC-002 deletes them.",
-    "Toolchain now pinned: node 24.x, pnpm 12.3.4, TS 6.0.3, ESLint 9.39.5 at root and template. Root lint/typecheck run but have findings (CC-006/CC-009 onward)."
+    "Toolchain now pinned: node 24.x, pnpm 12.3.4, TS 6.0.3, ESLint 9.39.5 at root and template. Root lint/typecheck run but have findings (CC-006/CC-009 onward).",
+    "CC-003 done: 44 issues (#161-#204) on GitHub with labels+milestones, all on Project #19 (DEC-016). Project #21 holds the older LV/HS backlog and is not used.",
+    "Owner's local checkout at D:\\ was still at 9826e2a with an untracked .github-map.json identical to main; owner must remove it and git pull --ff-only."
   ],
   "risks": [
     "Hooks untested on Windows inside the VS Code extension (CC-005).",

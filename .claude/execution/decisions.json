@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/decisions/v1",
-  "updated": "2026-10-22T23:40:00Z",
+  "updated": "2026-10-22T23:45:00Z",
   "format": "Append new decisions; never rewrite history. Supersede by adding a new entry and setting status=superseded + superseded_by on the old one.",
   "decisions": [
     {
@@ -146,6 +146,15 @@
       "context": "CC-001 asked for `yaml` (exact) without a version and for a root test script that works before M4 tests exist.",
       "decision": "Pin yaml 2.9.1 (latest stable on 2026-10-22). Root `test` is `vitest run --passWithNoTests` until M4 adds real tests. typescript-eslint dropped as a direct dependency: no config imports it (eslint-config-next brings it transitively).",
       "refs": ["CC-001"]
+    },
+    {
+      "id": "DEC-016",
+      "date": "2026-10-22",
+      "status": "accepted",
+      "title": "Project board is user Project #19",
+      "context": "context/specs/README.md named Project #3, which is an unrelated closed board. Two candidates existed: #19 'Codependent Coding\u2122 \u2014 Canonical Remediation' (open, all 8 built-in workflows on) and #21 'Loaded Vibes Generator' (holds 34 older LV-/HS- issues, none of CC-001..044). Owner said either is fine.",
+      "decision": "Use Project #19. issues:sync docs and script usage point at --project 19. #21 is left untouched.",
+      "refs": ["CC-003", "PR #207", "context/specs/README.md"]
     }
   ]
 }

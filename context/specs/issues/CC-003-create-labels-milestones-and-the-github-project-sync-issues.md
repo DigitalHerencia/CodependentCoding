@@ -8,7 +8,7 @@ priority: p0
 size: s
 labels: [type:chore, area:governance, priority:p0, size:s]
 depends_on: []
-status: todo
+status: done
 ---
 
 # CC-003 · Create labels, milestones and the GitHub Project; sync issues
