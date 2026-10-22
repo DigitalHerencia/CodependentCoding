@@ -1,4 +1,10 @@
-/** @type {import("prettier").Config & import("prettier-plugin-tailwindcss").PluginOptions} */
+/**
+ * Codependent Coding formatting contract (CC-FMT-001).
+ * Prettier owns all formatting; ESLint never argues about whitespace.
+ * Tailwind classes are sorted mechanically (CC-FMT-002).
+ *
+ * @type {import("prettier").Config & import("prettier-plugin-tailwindcss").PluginOptions}
+ */
 const config = {
   printWidth: 80,
   tabWidth: 2,

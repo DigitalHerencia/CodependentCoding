@@ -5,11 +5,16 @@ on:
   push:
     branches: [main]
 
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
 
 jobs:
-  build:
+  root:
+    name: Factory (root)
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -19,4 +24,56 @@ jobs:
           node-version-file: .node-version
       - run: corepack enable
       - run: pnpm install --frozen-lockfile
-      - run: pnpm build
+      - run: pnpm format:check
+      - run: pnpm lint
+      - run: pnpm typecheck
+      - run: pnpm test
+
+  template:
+    name: Maximal Template
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: template
+    env:
+      # Placeholder values so Prisma/Next can load config; no network access to these.
+      DATABASE_URL: postgresql://ci:ci@localhost:5432/ci
+      DIRECT_URL: postgresql://ci:ci@localhost:5432/ci
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .node-version
+      - run: corepack enable
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm format:check
+        continue-on-error: true # remove in CC-013
+      - run: pnpm doctrine:test
+      - run: pnpm lint
+        continue-on-error: true # remove in CC-012
+      - run: pnpm typecheck
+        continue-on-error: true # remove in CC-012
+      - run: pnpm test
+        continue-on-error: true # remove in CC-017 (adds vitest + test script)
+
+
+  # Enabled in CC-035 once the CLI exists.
+  # compose:
+  #   name: Compose ${{ matrix.preset }}
+  #   needs: [root, template]
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       preset: [blank, crm, projects, support, marketing, invoicing, social, ai, portal, admin, all]
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v6
+  #     - uses: actions/setup-node@v6
+  #       with: { node-version-file: .node-version }
+  #     - run: corepack enable
+  #     - run: pnpm install --frozen-lockfile
+  #     - run: pnpm cli compose .sandbox/${{ matrix.preset }} --preset ${{ matrix.preset }}
+  #     - run: pnpm --dir .sandbox/${{ matrix.preset }} install
+  #     - run: pnpm --dir .sandbox/${{ matrix.preset }} validate
+  #     - run: pnpm --dir .sandbox/${{ matrix.preset }} build

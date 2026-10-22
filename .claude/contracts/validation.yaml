@@ -1,0 +1,407 @@
+# Codependent Coding — validation contract
+# Compiled from: context/docs/Architecture.md §4, AUTH.md, tech-requirements.md §8
+# Executable form: template/eslint/doctrine-map.mjs (+ codependent-plugin.mjs). Keep IDs in sync.
+schema: codependent-coding/validation/v1
+version: 1.0.0
+updated: 2026-10-22
+
+evidence:
+  states: [EXECUTED, INSPECTED, NOT_RUN, BLOCKED]
+  rule: Never record "passed" without an EXECUTED command and its result.
+  record_in: .claude/execution/progress.json
+  completion_requires:
+    [
+      acceptance criteria met,
+      required checks EXECUTED and passing,
+      execution files updated,
+    ]
+
+profiles:
+  edit: { when: "after every file edit (hook)", run: ["eslint <file>"] }
+  quick:
+    {
+      when: before commit,
+      run: ["pnpm format:check", "pnpm lint", "pnpm typecheck"],
+    }
+  template: { when: template changes, cwd: template, run: ["pnpm validate"] }
+  root: { when: root changes, run: ["pnpm validate"] }
+  compose:
+    {
+      when: CLI or module changes,
+      run:
+        [
+          "pnpm test",
+          "hipster-stack compose .sandbox/<preset> --preset <preset>",
+          "pnpm --dir .sandbox/<preset> validate",
+        ],
+    }
+  release:
+    {
+      when: milestone close,
+      run:
+        [
+          template,
+          root,
+          compose for blank + every preset + --all,
+          "pnpm --dir template build",
+        ],
+    }
+
+rules:
+  # enforcement: eslint:<rule> | script:<command> | tsconfig | prettier | review
+  - {
+      id: CC-ROUTE-001,
+      layer: route,
+      text: "Routes never import DB, fetchers, actions, workflows, integrations, provider SDKs, Clerk server, or UI primitives",
+      enforcement: "eslint:codependent/layer-boundaries",
+    }
+  - {
+      id: CC-ROUTE-002,
+      layer: proxy,
+      text: "proxy.ts only gates routes",
+      enforcement: "eslint:codependent/layer-boundaries",
+    }
+  - {
+      id: CC-HOOK-001,
+      layer: route-handler,
+      text: "Route handlers: no Prisma runtime, provider SDKs, Clerk server, or presentation",
+      enforcement: "eslint:codependent/layer-boundaries",
+    }
+  - {
+      id: CC-FEAT-001,
+      layer: feature,
+      text: "Normal features: no DB, transactions, integrations, SDKs, UI primitives, React Hook Form",
+      enforcement: "eslint:codependent/layer-boundaries",
+    }
+  - {
+      id: CC-FEAT-002,
+      layer: feature-form,
+      text: "Forms: no DB, fetchers, workflows, integrations; initial values arrive as props",
+      enforcement: "eslint:codependent/layer-boundaries",
+    }
+  - {
+      id: CC-FEAT-003,
+      layer: feature-skeleton,
+      text: "Skeletons import only components/ui/skeleton and blocks",
+      enforcement: "eslint:codependent/layer-boundaries",
+    }
+  - {
+      id: CC-FEAT-004,
+      layer: feature-client,
+      text: "Client companions: interactive UI controls + actions; no server reads or authz",
+      enforcement: "eslint:codependent/layer-boundaries",
+    }
+  - {
+      id: CC-BLOCK-001,
+      layer: block,
+      text: "Blocks and templates are pure presentation",
+      enforcement: "eslint:codependent/layer-boundaries",
+    }
+  - {
+      id: CC-BLOCK-002,
+      layer: nav,
+      text: "Nav and shells are pure presentation; Clerk UI widgets allowed",
+      enforcement: "eslint:codependent/layer-boundaries",
+    }
+  - {
+      id: CC-UI-001,
+      layer: ui,
+      text: "UI primitives import only primitives, utils, hooks, types",
+      enforcement: "eslint:codependent/layer-boundaries",
+    }
+  - {
+      id: CC-UI-002,
+      layer: hook,
+      text: "Hooks are browser-side",
+      enforcement: "eslint:codependent/layer-boundaries",
+    }
+  - {
+      id: CC-READ-001,
+      layer: fetcher,
+      text: "Fetchers: no actions, workflows, integrations, transactions",
+      enforcement: "eslint:codependent/layer-boundaries",
+    }
+  - {
+      id: CC-READ-002,
+      layer: fetcher,
+      text: "Fetchers never call Prisma write methods",
+      enforcement: "eslint:codependent/no-fetcher-writes",
+    }
+  - {
+      id: CC-WRITE-001,
+      layer: action,
+      text: "Actions: no integrations or provider SDKs",
+      enforcement: "eslint:codependent/layer-boundaries",
+    }
+  - {
+      id: CC-WRITE-002,
+      layer: action,
+      text: "Action modules start with 'use server'",
+      enforcement: "eslint:codependent/use-server-actions",
+    }
+  - {
+      id: CC-WRITE-003,
+      layer: action,
+      text: "Actions authenticate, authorize, and Zod-validate before writing; return ActionResult",
+      enforcement: review,
+    }
+  - {
+      id: CC-FLOW-001,
+      layer: workflow,
+      text: "Workflows: no Prisma client, provider SDKs, or presentation",
+      enforcement: "eslint:codependent/layer-boundaries",
+    }
+  - {
+      id: CC-TX-001,
+      layer: transaction,
+      text: "Transactions perform database work only",
+      enforcement: "eslint:codependent/layer-boundaries",
+    }
+  - {
+      id: CC-TX-002,
+      layer: transaction,
+      text: "No fetch() inside transactions",
+      enforcement: "eslint:codependent/no-transaction-network",
+    }
+  - {
+      id: CC-DB-001,
+      layer: db,
+      text: "lib/db never imports app layers",
+      enforcement: "eslint:codependent/layer-boundaries",
+    }
+  - {
+      id: CC-DB-002,
+      layer: any,
+      text: "No $queryRawUnsafe/$executeRawUnsafe; tagged raw SQL only in lib/db",
+      enforcement: "eslint:codependent/no-raw-sql",
+    }
+  - {
+      id: CC-AUTH-001,
+      layer: auth,
+      text: "Authentication never decides access",
+      enforcement: "eslint:codependent/layer-boundaries",
+    }
+  - {
+      id: CC-AUTHZ-001,
+      layer: authz,
+      text: "Authorization never reads Clerk server state",
+      enforcement: "eslint:codependent/layer-boundaries",
+    }
+  - {
+      id: CC-INT-001,
+      layer: integration,
+      text: "Integrations never persist",
+      enforcement: "eslint:codependent/layer-boundaries",
+    }
+  - {
+      id: CC-CACHE-001,
+      layer: cache,
+      text: "Cache helpers hold semantics only",
+      enforcement: "eslint:codependent/layer-boundaries",
+    }
+  - {
+      id: CC-PURE-001,
+      layer: pure,
+      text: "Constants, utils, types are dependency-free",
+      enforcement: "eslint:codependent/layer-boundaries",
+    }
+  - {
+      id: CC-SCHEMA-001,
+      layer: schema,
+      text: "Zod schemas are pure (Prisma enums allowed)",
+      enforcement: "eslint:codependent/layer-boundaries",
+    }
+  - {
+      id: CC-SRV-001,
+      layer: server,
+      text: "Server modules import 'server-only'",
+      enforcement: "eslint:codependent/require-server-only",
+      autofix: true,
+    }
+  - {
+      id: CC-CLIENT-001,
+      layer: any,
+      text: "'use client' only in .client.tsx, Form features, components, hooks, error boundaries",
+      enforcement: "eslint:codependent/use-client-placement",
+    }
+  - {
+      id: CC-NAME-001,
+      layer: any,
+      text: "Directory naming conventions",
+      enforcement: "eslint:codependent/filename-convention",
+    }
+  - {
+      id: CC-NAME-002,
+      layer: any,
+      text: "No services/managers/processors/helpers/misc/common/handlers layers",
+      enforcement: "eslint:codependent/no-generic-names",
+    }
+  - {
+      id: CC-STYLE-001,
+      layer: any,
+      text: "Named exports only (framework special files and config excepted)",
+      enforcement: "eslint:codependent/no-default-export",
+    }
+  - {
+      id: CC-STYLE-002,
+      layer: any,
+      text: "Import through @/; no parent-relative imports",
+      enforcement: "eslint:codependent/no-parent-imports",
+      autofix: true,
+    }
+  - {
+      id: CC-MOD-001,
+      layer: module,
+      text: "Cross-module imports only via declared dependsOn",
+      enforcement: "eslint:codependent/module-boundaries",
+      status: planned,
+    }
+  - {
+      id: CC-MOD-002,
+      layer: base,
+      text: "Base never imports module-owned files (registry excepted)",
+      enforcement: "eslint:codependent/module-boundaries",
+      status: planned,
+    }
+  - {
+      id: CC-MOD-003,
+      layer: any,
+      text: "Every file has exactly one owner",
+      enforcement: "script:pnpm check:ownership",
+      status: planned,
+    }
+  - {
+      id: CC-FMT-001,
+      layer: any,
+      text: "Prettier owns formatting",
+      enforcement: prettier,
+    }
+  - {
+      id: CC-FMT-002,
+      layer: any,
+      text: "Tailwind classes sorted",
+      enforcement: "prettier:prettier-plugin-tailwindcss",
+    }
+  - {
+      id: CC-TS-001,
+      layer: any,
+      text: "strict, noUncheckedIndexedAccess, exactOptionalPropertyTypes",
+      enforcement: tsconfig,
+    }
+  - {
+      id: CC-TS-002,
+      layer: any,
+      text: "No explicit any; no non-null assertions outside vendored UI and tests",
+      enforcement: "eslint:@typescript-eslint",
+    }
+  - {
+      id: CC-SEC-001,
+      layer: any,
+      text: "Tenant scope in every tenant query predicate",
+      enforcement: review,
+    }
+  - {
+      id: CC-SEC-002,
+      layer: any,
+      text: "Every tenant table has forced RLS and is covered by test:rls",
+      enforcement: "script:pnpm test:rls",
+    }
+  - {
+      id: CC-SEC-003,
+      layer: route-handler,
+      text: "Webhooks verify raw body and are idempotent",
+      enforcement: review,
+    }
+  - {
+      id: CC-SEC-004,
+      layer: any,
+      text: "No consequential decision from cache",
+      enforcement: review,
+    }
+  - {
+      id: CC-SEC-005,
+      layer: any,
+      text: "Cross-tenant access returns NOT_FOUND",
+      enforcement: "script:pnpm test:rls",
+    }
+  - {
+      id: CC-SEC-006,
+      layer: any,
+      text: "No secrets in NEXT_PUBLIC_*; env validated in lib/env",
+      enforcement: review,
+    }
+  - {
+      id: CC-UX-001,
+      layer: route,
+      text: "Dynamic tenant pages wrap features in Suspense with a feature skeleton",
+      enforcement: review,
+    }
+
+boundaries_source: template/eslint/doctrine-map.mjs
+sync_check: "pnpm doctrine:check — every CC-* id in doctrine-map.mjs exists here and vice versa"
+
+structure:
+  template_top_level_allowed:
+    [
+      app,
+      components,
+      features,
+      hooks,
+      lib,
+      prisma,
+      public,
+      schemas,
+      types,
+      tests,
+      eslint,
+      scripts,
+      generated,
+    ]
+  lib_allowed:
+    [
+      actions,
+      auth,
+      authz,
+      cache,
+      constants,
+      db,
+      env,
+      fetchers,
+      integrations,
+      modules,
+      utils,
+      workflows,
+    ]
+  forbidden_paths:
+    [
+      services,
+      managers,
+      processors,
+      helpers,
+      "template/.agents",
+      "template/context",
+    ]
+
+generation:
+  checks:
+    - same inputs produce identical output (excluding hipster.json timestamps)
+    - dependsOn closure resolved; cycles rejected
+    - no file of an unselected module survives
+    - no "// @module <removed>" line survives
+    - prisma validate passes
+    - check:ownership passes
+    - generated app lint, typecheck, build pass
+    - no factory governance (root context/, .claude/execution of factory) copied into the app
+
+agent:
+  never:
+    - claim a check passed without running it
+    - create directories outside the classifier
+    - add abstractions (services, repositories, managers) where a layer already exists
+    - edit generated files (lib/modules/registry.ts in apps, generated/prisma) by hand
+    - commit secrets or .env files
+    - disable a CC rule without an inline reason and a decision record
+  always:
+    - read the issue and its acceptance criteria first
+    - run the edit profile via hook and the quick profile before commit
+    - update decisions.json, progress.json, handoff.json before ending a session

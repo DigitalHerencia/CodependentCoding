@@ -1,194 +1,110 @@
-# Visual and Interaction Design Specification
+---
+title: Codependent Coding — Design
+doc: design
+status: active
+updated: 2026-10-22
+compiles_to: .claude/contracts/design.yaml
+---
 
-# 1. Design Intent
+# Design
 
-The site is dark-mode only, neo-brutalist, technical, theatrical, and deliberately over-specified. It should feel like an architecture manual escaped into a retro-futurist command console, then acquired a legal department just long enough to trademark every noun.
+Two surfaces, two jobs:
 
-# 2. Visual Tokens
+| Surface                                     | Character                                               | Branding                                   |
+| ------------------------------------------- | ------------------------------------------------------- | ------------------------------------------ |
+| **Factory landing page** (repo root `app/`) | Dark industrial, desert/circuit, restrained teal signal | Codependent Coding / Digital Herencia      |
+| **Generated apps** (`template/`)            | Same structural system, **white-label** tokens          | App name + one brand color chosen at `new` |
 
-| **Token**          | **Value / Rule**                                                                      |
-| ------------------ | ------------------------------------------------------------------------------------- |
-| Primary background | black and \#05030b                                                                    |
-| Primary foreground | white                                                                                 |
-| Brand cyan         | approximately \#2f7a8d                                                                |
-| Glow / underline   | \#2f7a8d                                                                              |
-| Heading type       | Copperplate Gothic Bold or supplied raster/vector wordmark assets                     |
-| Body type          | JetBrains Mono                                                                        |
-| Code type          | Fira Code                                                                             |
-| Borders            | Thin, high-contrast cyan/gray lines; square or restrained radius.                     |
-| Effects            | Controlled cyan glow on major wordmarks/headings, never at the expense of legibility. |
+## 1. Visual principles
 
-# 3. Brand Asset Rule
+- Dense, technical, legible. Information beats decoration.
+- Strong borders, square or minimally rounded geometry (`--radius` ≤ 6px).
+- Mechanical motion: short, linear/ease-out, ≤ 200ms; respect `prefers-reduced-motion`.
+- Controlled glow only on the signal color, never on body content.
+- Avoid: pastel rainbows, candy colors, bubbly rounded cards, toy iconography, startup gradients, cartoon neo-brutalism.
 
-The supplied public/ assets are authoritative for logos, wordmarks, banner artwork, crown artwork, and named identity graphics. Where a supplied wordmark exists, prefer the asset over approximating the identity with a substitute font. Text remains semantic where it is content rather than a logo.
+## 2. Landing page (factory)
 
-# 4. Global Header
+- Keep the current homepage composition and assets: crown hero, "When epistemologies fail the stack still governs", Digital Herencia section, desert background.
+- Remove nav links to deleted routes. Header: logo + GitHub link. CTAs: "Read the doctrine" (anchors to an on-page section) and "GitHub".
+- Tokens: canvas `#05030b`, text off-white `#f4f1ea`, signal `#2f7a8d`.
+- Type roles: display = Cinzel (Copperplate-like), body/UI = JetBrains Mono, code = Fira Code; Big Shoulders for the Digital Herencia wordmark.
+- Dark only.
 
-- Black background.
-- Codependent Coding wordmark at left.
-- Primary product navigation across the header.
-- Copperplate-style all-caps navigation.
-- White default text.
-- Active route underlined in brand cyan.
-- Hover approximately scale(1.05), restrained enough to avoid layout movement.
-- Mobile navigation collapses without losing access to any primary surface.
+## 3. Template design system (white-label)
 
-# 5. Global Footer
+### 3.1 Token architecture
 
-- Black footer layered above the decorative landscape artwork.
-- Digital Herencia identity at left.
-- FAQ, Terms, and Privacy links aligned as in the mockups.
-- Footer remains readable independently of the background image.
-- Decorative circuit lines/landscape may visually merge into the footer boundary but must not obstruct links.
+All color, radius, border, shadow, spacing, motion, and font values are CSS variables in `template/app/globals.css`, bridged to Tailwind v4 via `@theme inline`. Components use semantic utilities only (`bg-background`, `text-muted-foreground`, `border-border`, `ring-ring`); raw hex or Tailwind palette colors in components are forbidden.
 
-# 6. Page Background Artwork
+| Group    | Tokens                                                                                                              |
+| -------- | ------------------------------------------------------------------------------------------------------------------- |
+| Surfaces | `background`, `foreground`, `card`, `card-foreground`, `popover`, `popover-foreground`, `muted`, `muted-foreground` |
+| Brand    | `primary`, `primary-foreground`, `secondary`, `secondary-foreground`, `accent`, `accent-foreground`, `signal`       |
+| State    | `destructive`, `success`, `warning`, `info` (+ `-foreground`)                                                       |
+| Lines    | `border`, `input`, `ring`                                                                                           |
+| Data     | `chart-1` … `chart-5`                                                                                               |
+| Shape    | `radius` (default 4px), `border-width` (1px), `shadow-hard` (offset 2px)                                            |
+| Motion   | `duration-fast` 120ms, `duration-base` 180ms, `ease-mechanical`                                                     |
+| Type     | `font-sans`, `font-mono`, `font-display`                                                                            |
 
-| **Surface**                     | **Asset / Behavior**                                                                                           |
-| ------------------------------- | -------------------------------------------------------------------------------------------------------------- |
-| Landing                         | Digital Herencia Banner.png; full viewport width; bottom anchored; automatic height; \#05030b page background. |
-| Anthimeria                      | Digital Herencia Desert BG.png; full width; bottom anchored; footer overlays correctly.                        |
-| Simples                         | Digital Herencia Desert BG.png; same behavior.                                                                 |
-| Related catalog/detail surfaces | May use the same landscape language when consistent with supplied mockups.                                     |
+### 3.2 Brand color
 
-# 7. Landing Composition
+`hipster-stack new --color <hex>` writes `--primary` and `--signal` (and computes accessible `--primary-foreground`) in `globals.css`. Default `#2f7a8d`. Everything else stays neutral.
 
-- Large centered Codependent Coding identity artwork in the upper hero.
-- Mandatory headline: WHEN EPISTEMOLOGIES FAIL, THE STACK STILL GOVERNS.
-- Supporting Hipster Stack copy beneath.
-- Two primary CTA buttons styled as cyan rectangular controls.
-- Secondary line: NOTHING TO BORROW. WE CHECKED.
-- Large Digital Herencia mark in the lower content field.
-- Bottom landscape/circuit artwork forms the visual horizon above the footer.
-- Maintain generous negative space. The page should not be filled merely because CSS permits it.
+### 3.3 Themes
 
-# 8. Ontology Page
+- Generated apps ship **light and dark**, following the system preference, toggled via `hooks/use-theme.ts`.
+- Neutral scale: zinc-like grays; dark canvas near-black (`oklch(0.13 0 0)`), not pure black.
+- Fonts are offline-safe (packaged or local), so builds never fetch Google Fonts.
 
-- Centered THE ONTOLOGY™ / NORMALIZED DEFAULTS wordmark.
-- Horizontal wrapped Ontology selector beneath.
-- Selected Ontology receives cyan underline/state.
-- Main bordered workbench panel contains a file/tree view and source/definition viewer.
-- Description/capability material sits below the viewer inside the same visual system.
-- COPY PAGE and DOWNLOAD actions occupy the upper-right action area.
-- Desktop prioritizes a wide code-viewing composition; mobile stacks tree/viewer safely.
+### 3.4 Component layers
 
-# 9. Simples Overview
+| Layer            | Folder                 | Notes                                                                                                                                                      |
+| ---------------- | ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Primitives       | `components/ui`        | Full shadcn/BoldKit-derived catalog stays in base                                                                                                          |
+| Charts           | `components/chart`     | Recharts wrappers using `chart-*` tokens                                                                                                                   |
+| Blocks           | `components/blocks`    | Generic: hero, feature grid, pricing, FAQ, CTA, stats, footer, data table, record detail, kanban, calendar, timeline, settings, empty/error/loading states |
+| Domain templates | `components/templates` | Module-owned (`crmContactsTemplate.tsx`)                                                                                                                   |
+| Nav              | `components/nav`       | public header/footer, user menu, mobile bottom nav                                                                                                         |
+| Shells           | `components/shells`    | `public-shell`, `auth-shell`, `tenant-shell`, `portal-shell`                                                                                               |
 
-- Large THE SIMPLES™ / NORMALIZED BLOCKS identity.
-- Separate visual statements for BUSINESSLOGIC BLOCKS™ / DOMAIN WORKFLOWS and PURE UI BLOCKS™ / PRESENTATION LAYER.
-- Use bounded architecture diagrams/cards rather than generic marketing grids.
-- The page must communicate that Simples has exactly two top-level families.
+### 3.5 Page compositions
 
-# 10. BusinessLogic Block Detail
+| Route group | Shell        | Composition                                                             |
+| ----------- | ------------ | ----------------------------------------------------------------------- |
+| `(public)`  | public-shell | hero → feature grid → stats → CTA → footer; FAQ/terms/privacy as blocks |
+| `(auth)`    | auth-shell   | centered Clerk card                                                     |
+| `(setup)`   | auth-shell   | onboarding stepper (create organization)                                |
+| `(tenant)`  | tenant-shell | sidebar (from registry) + top bar (org switcher, user menu) + content   |
+| `(dev)`     | none         | `/design-system` proof page, development only                           |
 
-- BusinessLogic Blocks wordmark above a large block title such as AUTH CLIENT.
-- Top capability/action row includes status controls such as Blocks, Docs, Builder Preset, and Start Config where actually supported.
-- Tabs/controls switch among definition, documentation, and related supported views.
-- Definition view uses a large dark code panel with line numbers or equivalent code readability.
-- Supporting cards summarize Includes, Works With, and Output.
-- Primary actions may include Download Definition, Copy CLI Command, and Copy Share URL only when backed by real behavior.
+Every dynamic tenant page: `Suspense` with a feature-specific skeleton that mirrors the final layout.
 
-# 11. PureUI Block Catalog and Detail
+### 3.6 Design-system proof page
 
-- PureUI identity and block category title remain visually dominant.
-- Catalog pages may present multiple real block previews on the page.
-- Block demonstrations use actual application components where possible.
-- Examples such as Errors and Onboarding are displayed as coherent families, not disconnected screenshots.
-- Preview scale must preserve enough detail to evaluate the component while keeping the catalog scannable.
+`app/(dev)/design-system/page.tsx` renders every token, type role, spacing step, primitive, block, chart, and state. It calls `notFound()` outside development. It is the visual regression reference for the template.
 
-# 12. Anthimeria
+## 4. Accessibility
 
-- Centered THE ANTHIMERIA™ WORKBENCH identity.
-- Desktop uses a left configuration rail and right workbench content.
-- Configuration categories are visually discrete: Foundation, Data, Identity, Capabilities, Integrations, Identity & Access, Routes & Navigation, Presentation, Output, or their current renamed equivalents.
-- Numbered configuration stages create clear progression.
-- Controls use outlined dark panels with cyan active/selected state.
-- Application definition preview remains visible as the durable output of configuration.
-- Lower summary cards communicate Includes, Works With, and Output.
-- The visual language must make it obvious that the user is configuring a bounded definition, not dragging arbitrary server internals around.
+- WCAG 2.2 AA: text contrast ≥ 4.5:1 (3:1 for large text and UI boundaries) — checked for the brand color at `new`.
+- Visible focus ring on every interactive element (`ring` token, 2px).
+- Keyboard: all actions reachable; dialogs trap focus; Escape closes.
+- Forms: labels bound to inputs, errors announced via `aria-describedby`, required fields marked.
+- Motion reduced under `prefers-reduced-motion`.
+- Touch targets ≥ 40×40px on mobile.
 
-# 13. Documentation
+## 5. Responsive
 
-- Left documentation navigation on desktop.
-- Readable long-form content column with generous line height.
-- Current section visibly selected.
-- Code, inline code, links, and headings use the shared cyan/white system.
-- Documentation must remain substantially quieter than the marketing surfaces so long-form reading is tolerable.
+- Breakpoints: Tailwind defaults (`sm` 640, `md` 768, `lg` 1024, `xl` 1280).
+- Tenant shell: sidebar ≥ `lg`; mobile bottom nav below `md`.
+- Tables collapse to card lists below `md`.
+- No horizontal page scroll at 360px.
 
-# 14. Responsive Behavior
+## 6. Interaction states
 
-- No fixed desktop composition may force horizontal page scrolling.
-- Header collapses cleanly.
-- Two-column code/workbench layouts stack on narrow screens.
-- Large wordmarks scale with clamp() or asset constraints rather than overflowing.
-- Decorative landscape artwork remains bottom anchored without consuming the entire mobile viewport.
-- CTA groups and segmented controls wrap while preserving state clarity.
+Every interactive component defines: default, hover, focus-visible, active, disabled, loading (spinner or skeleton), error, empty. Toasts (Sonner) for async action results; inline errors for validation.
 
-# 15. Interaction States
+## 7. Content voice (generated apps)
 
-| **State**       | **Treatment**                                                                          |
-| --------------- | -------------------------------------------------------------------------------------- |
-| Default         | White/cyan text on near-black surface.                                                 |
-| Hover           | Small scale/brightness increase; border/glow intensification where appropriate.        |
-| Active/Selected | Cyan underline, border, fill, checkmark, or explicit selected state.                   |
-| Focus           | Visible keyboard focus ring distinct from hover.                                       |
-| Disabled        | Reduced contrast but still legible; no misleading hover behavior.                      |
-| Error           | Explicit red/error accent may appear locally; do not recolor the entire design system. |
-| Success         | Explicit confirmation/check state and text feedback.                                   |
-
-# 16. Voice and Copy
-
-- Technical, precise, irreverent, and self-aware.
-- Architecture terminology must remain semantically correct even when the surrounding copy is playful.
-- Mereological nihilism jokes are permitted and encouraged in non-critical copy.
-- Easter eggs from the supplied content specification may appear in low-stakes locations.
-- Critical instructions, security messages, errors, and configuration consequences remain plain and unambiguous.
-
-# 17. Mockup Plates
-
-The following supplied mockups are the visual reference set. They are included here as design plates rather than treated as pixel-perfect screenshots.
-
-**Landing Mockup**
-
-![Landing Mockup](assets/mockups/landing-mockup.jpg)
-
-**Ontology Mockup**
-
-![Ontology Mockup](assets/mockups/ontology-mockup.jpg)
-
-**Simples 1 Mockup**
-
-![Simples 1 Mockup](assets/mockups/simples-1-mockup.jpg)
-
-**Simples 2 Mockup**
-
-![Simples 2 Mockup](assets/mockups/simples-2-mockup.jpg)
-
-**Anthimeria Mockup**
-
-![Anthimeria Mockup](assets/mockups/anthimeria-mockup.jpg)
-
-**Business Blocks Mockup**
-
-![Business Blocks Mockup](assets/mockups/business-blocks-mockup.jpg)
-
-**Docs Mockup**
-
-![Docs Mockup](assets/mockups/docs-mockup.jpg)
-
-**UI Blocks 1 Mockup**
-
-![UI Blocks 1 Mockup](assets/mockups/ui-blocks-1-mockup.jpg)
-
-**UI Blocks 2 Mockup**
-
-![UI Blocks 2 Mockup](assets/mockups/ui-blocks-2-mockup.jpg)
-
-**Template Mockup**
-
-![Template Mockup](assets/mockups/template-mockup.jpg)
-
-# Current public-site visual authority (2026-08-31)
-
-The public canvas is black / `#05030b`; visible foreground is white with restrained `#2f7a8d` cyan emphasis and glow. Main textual titles use Archivo Black, subheadings use Copperplate Gothic Bold or a safe system fallback, body copy uses JetBrains Mono, and code/Monaco use Fira Code.
-
-The shared bottom framing is the literal `public/Digital Herencia Desert BG.jpg` asset with preserved aspect ratio. Brand and product identities use the current literal `.jpg` assets under `public/`; layout-diagram cyan regions are never rendered as giant cyan panels.
+Plain, direct, sentence case. Buttons are verbs ("Create project"). Empty states say what the thing is and offer the first action. Errors say what happened and what to do.

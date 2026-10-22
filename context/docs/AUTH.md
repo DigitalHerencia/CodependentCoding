@@ -1,84 +1,195 @@
-# Authentication, Authorization, and Trust Boundaries
+---
+title: Codependent Coding — Authentication, Authorization and Tenancy
+doc: auth
+status: active
+updated: 2026-10-22
+compiles_to: .claude/contracts/application.yaml (security), .claude/contracts/validation.yaml (security rules)
+---
 
-# 1. Scope
+# Authentication, Authorization and Tenancy
 
-The public Codependent Coding website is documentation-first and demonstration-first. Authentication is not a prerequisite for reading public product, architecture, Ontology, Simples, Maximal Template, or TypeScripture content.
+Applies to the template and every generated app. The factory itself (landing page, CLI, plugin) has no auth: the landing page is static, the CLI and plugin run locally.
 
-# 2. Public-by-Default Surfaces
+## 1. Principles
 
-- Landing page.
-- Ontologies catalog and public definitions.
-- Simples catalogs and demonstrations.
-- Anthimeria when operating as a stateless/local configuration tool.
-- Maximal Template documentation/demonstration.
-- TypeScripture documentation.
-- Loaded Vibes public documentation.
-- Public definition download/copy actions that contain no private state.
+1. **Authentication establishes identity. Authorization decides access.** They are separate modules and separate function calls.
+2. **Clerk owns identity and sessions. The application database owns tenancy**: users, organizations, memberships, roles, and permissions. Clerk Organizations and metadata are never the source of truth.
+3. **Scope in the query.** Tenant and resource scope go into the persisted read/write predicate, not a post-fetch check.
+4. **RLS is containment, not policy.** Postgres row-level security backs up application authorization; it never replaces it.
+5. **Fresh decisions.** Authorization, membership, payment, and readiness are never decided from cache.
+6. **Server-only secrets.** No secret reaches client bundles; `server-only` guards every server module (CC-SRV-001).
 
-# 3. Authentication Boundary
-
-Authentication becomes necessary only when a feature introduces user-owned or organization-owned persistent state, private artifacts, billing, saved configurations, collaboration, account management, or other identity-bound behavior.
-
-- Do not introduce login gates around public architecture content.
-- Do not infer authorization from UI visibility.
-- Any future authenticated capability must be enforced server-side.
-- Authentication provider integration must remain replaceable at the application boundary and must not become the domain model itself.
-
-# 4. Authorization Model
-
-When authenticated product capabilities exist, authorization MUST be explicit and server-determined.
+## 2. Trust progression
 
 ```text
-Request
-↓
-Authenticated identity
-↓
-Membership / ownership context
-↓
-Permission or policy evaluation
-↓
-Authorized workflow
-↓
-Server operation / transaction
+untrusted input → runtime-validated (Zod) → authenticated (Clerk) → member of active org
+→ permission granted (RBAC) → policy satisfied (ABAC/ownership) → tenant-scoped query
+→ RLS-contained write → committed → DTO (transport-safe)
 ```
-- Deny by default when required authorization context is absent.
-- Client-side checks may improve UX but never constitute enforcement.
-- Organization-scoped data requires organization membership/permission checks before reads or writes.
-- Workflows must call authorization at the appropriate boundary before protected effects.
-- Privileged operations must not be exposed through public route handlers merely because the UI hides them.
 
-# 5. Anthimeria Security Model
+## 3. Authentication — `lib/auth/`
 
-- Stateless configuration does not require identity.
-- Configuration input is untrusted input and must be schema-validated.
-- Generated/downloaded definitions must not contain secrets.
-- The browser must not receive provider secret keys, database credentials, deployment credentials, or privileged tokens.
-- If share URLs exist, encode only safe bounded configuration state or store state behind an opaque identifier with appropriate access control.
-- Do not execute arbitrary user-provided code as part of configuration preview.
+| File                | Responsibility                                                                                         |
+| ------------------- | ------------------------------------------------------------------------------------------------------ |
+| `clerk.ts`          | Clerk backend client instance                                                                          |
+| `auth.ts`           | `requireIdentity()` → `{ clerkUserId, user }` (local User, created on demand); `getOptionalIdentity()` |
+| `redirects.ts`      | Sign-in/up/after-auth redirect targets                                                                 |
+| `clerk-webhooks.ts` | `verifyClerkWebhook(request)` using Clerk's webhook verification on the raw body                       |
 
-# 6. Server Actions and Route Handlers
+- `proxy.ts` uses `clerkMiddleware` to protect `(tenant)`, `(setup)` and `/api` (except webhooks). It only gates; it never reads the database.
+- Development: Clerk keyless mode until keys are set; `doctor` warns when keys are missing.
+- Clerk webhook (`app/api/clerk/webhooks/route.ts`): verify → idempotency check → `user.created|updated|deleted` sync through `lib/db/transactions/clerk-user.tx.ts` → `200`.
 
-- Validate input at the boundary.
-- Authenticate where identity is required.
-- Authorize before protected reads/writes.
-- Return bounded errors rather than provider internals or secrets.
-- Do not trust hidden form fields, route params, organization IDs, or client-supplied role claims.
-- Use idempotency/transaction protections where a mutation can create duplicate or financially consequential effects.
+## 4. Tenancy model (application-owned)
 
-# 7. Secrets
+```prisma
+model User {
+  id          String   @id @default(cuid())
+  clerkUserId String   @unique
+  email       String
+  name        String?
+  memberships Membership[]
+}
 
-- Secrets remain server-side environment variables or provider-managed secrets.
-- Only explicitly public environment variables may reach the browser.
-- No secrets in public/, Markdown, downloadable definitions, screenshots, examples, or generated client bundles.
-- Repository examples use placeholders, never working credentials.
+model Organization {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  memberships Membership[]
+  // module relations carry  // @module <id>  tags
+}
 
-# 8. Error and Logging Requirements
+model Membership {
+  id             String           @id @default(cuid())
+  userId         String
+  organizationId String
+  role           MembershipRole   @default(member)
+  status         MembershipStatus @default(active)
+  @@unique([userId, organizationId])
+}
 
-- Public errors are user-readable and non-sensitive.
-- Authentication failures distinguish unauthenticated from unauthorized states where appropriate without leaking protected resource details.
-- Logs may include request/event identifiers but should avoid tokens, secrets, full payment payloads, and unnecessary personal data.
-- Security-sensitive failures must be observable server-side without exposing implementation details to the browser.
+enum MembershipRole   { owner admin member viewer }
+enum MembershipStatus { active invited suspended }
+```
 
-# 9. Future Account Features
+### 4.1 Active organization
 
-If saved projects, billing, organizations, collaboration, or private Arrangements are added, this document must be extended with the concrete identity provider, session model, membership model, permission matrix, persistence boundaries, webhook verification, and account lifecycle. Those details are not invented here because the current supplied site requirements do not establish them as existing product behavior.
+- Stored in an httpOnly, `Secure`, `SameSite=Lax` cookie `active-org` holding the organization ID.
+- **Every request re-validates** it against an active Membership. Invalid or missing → fall back to the user's first active membership → none → redirect `/onboarding`.
+- Switching orgs is a server action that validates membership before setting the cookie.
+
+### 4.2 Onboarding
+
+`(setup)/onboarding` → form → `createOrganization` action → `onboarding.tx.ts` creates Organization + owner Membership atomically → sets `active-org` → redirect `/dashboard`.
+
+## 5. Authorization — `lib/authz/`
+
+| File             | Responsibility                                                      |
+| ---------------- | ------------------------------------------------------------------- |
+| `roles.ts`       | Role hierarchy `owner > admin > member > viewer`                    |
+| `resources.ts`   | Base resources + module resources from `installedModules`           |
+| `permissions.ts` | `assertPermission(ctx, "crm.contact:update")`, `hasPermission(...)` |
+| `policies.ts`    | Resource policies (ownership, status-dependent rules)               |
+| `attributes.ts`  | Only when a module needs ABAC attributes                            |
+
+Role and enum **values** shown in the UI live in `lib/constants` or `types/`, never imported from `lib/authz` by client code (CC-FEAT-004, CC-SCHEMA-001).
+
+### 5.1 Tenant context
+
+```ts
+type TenantContext = {
+  user: { id: string; clerkUserId: string };
+  organization: { id: string; slug: string };
+  membership: { id: string; role: MembershipRole };
+};
+```
+
+`requireTenant()` (in `lib/db/tenant.ts`): `requireIdentity()` → active-org cookie → Membership lookup → `TenantContext`. Fresh every request; never cached.
+
+### 5.2 Permission strings
+
+`<module>.<resource>:<action>` with actions `read | create | update | delete | manage`. Base resources: `organization`, `membership`, `settings`, `billing` (when installed). Grants per role come from base + each module's `permissions.grants`.
+
+### 5.3 Standard read and write paths
+
+```text
+Fetcher:  requireTenant → assertPermission(read) → withAuthenticatedRead(ctx, tx =>
+          tx.model.findMany({ where: { organizationId: ctx.organization.id, ... }, select })) → toDTO
+
+Action:   requireTenant → assertPermission(write) → schema.safeParse(input)
+          → policy check → withTenantTransaction(ctx, tx => write / *.tx helper)
+          → invalidate cache tags → ActionResult
+```
+
+## 6. Row-level security
+
+- Every tenant-owned table has `organizationId` and RLS **enabled and forced**.
+- Runtime connects as `app_user` (no `BYPASSRLS`); migrations run as `owner` via `DIRECT_URL`.
+- `withTenantTransaction(ctx, fn)` / `withAuthenticatedRead(ctx, fn)` open an interactive transaction and run
+  `select set_config('app.current_organization_id', $1, true)` before `fn`.
+- Policy template (per table, in `prisma/rls/<owner>.sql`):
+
+```sql
+alter table "Contact" enable row level security;
+alter table "Contact" force row level security;
+create policy contact_tenant_isolation on "Contact"
+  using ("organizationId" = current_setting('app.current_organization_id', true))
+  with check ("organizationId" = current_setting('app.current_organization_id', true));
+```
+
+- Missing context → `current_setting(..., true)` is null → zero rows (fail closed).
+- **Required test** (`pnpm test:rls`): two orgs, seeded rows, assert org A cannot read/update/delete org B rows through `app_user`, with and without application predicates.
+- Omitting RLS from a tenant table requires a decision record.
+
+## 7. Webhooks
+
+Route handler lifecycle: raw body → provider signature verification → parse supported envelope → idempotency (`WebhookEvent` unique on `provider + eventId`) → for consequential events retrieve current provider state → persist via transaction helper/workflow → mark processed → `2xx`. Duplicates and out-of-order delivery are expected. Integrations verify and fetch; they never persist (CC-INT-001).
+
+## 8. Errors and results
+
+```ts
+type ActionResult<T> =
+  | { ok: true; data: T }
+  | {
+      ok: false;
+      error: {
+        code: ErrorCode;
+        message: string;
+        fieldErrors?: Record<string, string[]>;
+      };
+    };
+
+type ErrorCode =
+  | "UNAUTHENTICATED"
+  | "FORBIDDEN"
+  | "NOT_FOUND"
+  | "VALIDATION"
+  | "CONFLICT"
+  | "RATE_LIMITED"
+  | "INTERNAL";
+```
+
+- Fetchers return `null` for not-found and throw only on unexpected failure.
+- Cross-tenant access returns `NOT_FOUND`, never `FORBIDDEN` (no existence leaks).
+- `RATE_LIMITED` is backed by the `ratelimit` add-on; without it, the code is unused.
+
+## 9. Secrets and configuration
+
+- `lib/env/<owner>.ts` validates env with Zod at import; `server-only`.
+- `.env.example` lists names and descriptions only; rebuilt by the CLI from base + module manifest entries.
+- Public env vars must start with `NEXT_PUBLIC_` and be declared `scope: public` in the manifest.
+- Never log tokens, secrets, raw webhook payloads, or full PII.
+
+## 10. Audit
+
+`AuditLog` (base) records privileged operations: membership role/status changes, organization deletion, bulk admin operations, billing state changes. Written inside the same transaction as the change.
+
+## 11. Threat checklist (reviewer agent)
+
+- [ ] Every action authenticates, authorizes, validates.
+- [ ] Every tenant query includes `organizationId` in its predicate.
+- [ ] No client file imports server modules; no secret in `NEXT_PUBLIC_*`.
+- [ ] Webhooks verify the raw body and are idempotent.
+- [ ] No provider calls inside transactions.
+- [ ] Cross-tenant IDs yield `NOT_FOUND`.
+- [ ] RLS policies exist for every new tenant table; `test:rls` covers it.

@@ -1,122 +1,171 @@
+---
+title: Codependent Coding — Technical Requirements
+doc: tech-requirements
+status: active
+updated: 2026-10-22
+compiles_to: .claude/contracts/application.yaml, .claude/contracts/validation.yaml
+---
+
 # Technical Requirements
 
-# 1. Runtime and Framework
+## 1. Environment
 
-| **Area**        | **Requirement**                                                                                                     |
-|-----------------|---------------------------------------------------------------------------------------------------------------------|
-| Framework       | Next.js App Router.                                                                                                 |
-| Language        | TypeScript with strict typing appropriate to the existing project.                                                  |
-| Rendering       | React Server Components by default; Client Components only where browser state/interactivity requires them.         |
-| Package manager | pnpm, using the repository-owned lockfile and workspace configuration where still applicable.                       |
-| Deployment      | Vercel-compatible Next.js deployment.                                                                               |
-| Content         | Repository-owned Markdown and structured TypeScript/JSON data.                                                      |
-| Styling         | Existing CSS/token system and shadcn/ui-compatible primitives.                                                      |
-| Testing         | Vitest plus focused architecture/contract checks; browser/E2E coverage for critical interactive flows when present. |
+| Item            | Requirement                                                               |
+| --------------- | ------------------------------------------------------------------------- |
+| OS              | Windows 11 (primary), also Linux/macOS for CI                             |
+| Shell           | PowerShell 7 for owner commands; Git Bash available for Claude Code hooks |
+| Node            | `24.x` (`.node-version` = `24`)                                           |
+| Package manager | `pnpm@12.3.4` via Corepack, everywhere (root and template)                |
+| Editor          | VS Code + ESLint + Prettier extensions, format on save                    |
+| Agent           | Claude Code (VS Code extension), Pro plan                                 |
+| External CLIs   | `gh`, `vercel`, `neonctl` (optional provisioning)                         |
 
-# 2. Repository Shape
+## 2. Pinned toolchain
 
-The current working topology places the Next.js application at repository root. The implementation MUST treat root app/, components/, features/, lib/, content/, public/, and tests/configuration as the primary web application structure. Existing packages or agent/plugin material may remain during migration, but the web app MUST NOT depend on accidental duplicate copies as competing authorities.
+Exact versions only (no `^`/`~`). Upgrades are explicit issues.
 
-```text
-/
-├─ app/ # routes and route shells
-├─ components/
-│ ├─ ui/ # UI primitives
-│ ├─ blocks/ # PureUI Blocks
-│ └─ templates/ # presentation templates where retained
-├─ features/ # route/domain orchestration
-├─ lib/ # shared server/client-safe utilities and domain access
-├─ content/ # canonical rendered documentation/content
-├─ public/ # logos, wordmarks, banners, backgrounds, static assets
-├─ context/ # implementation context/specification inputs
-├─ tests/ # verification
-└─ configuration files
-```
+| Package                                        | Version        | Notes                                                  |
+| ---------------------------------------------- | -------------- | ------------------------------------------------------ |
+| typescript                                     | 6.0.3          | TS 7 is unsupported by typescript-eslint 8.x (DEC-006) |
+| eslint                                         | 9.39.5         | Proven with eslint-config-next 16.3.4                  |
+| eslint-config-next                             | 16.3.4         |                                                        |
+| eslint-config-prettier                         | 10.1.8         | Always last in flat config                             |
+| prettier                                       | 3.9.6          |                                                        |
+| prettier-plugin-tailwindcss                    | 0.8.1          | Class sorting (CC-FMT-002)                             |
+| next                                           | 16.3.4         | App Router, Turbopack, typed routes, React Compiler    |
+| react / react-dom                              | 19.2.8         |                                                        |
+| tailwindcss / @tailwindcss/postcss             | 4.3.3          |                                                        |
+| prisma / @prisma/client / @prisma/adapter-neon | 7.10.0         | Multi-file schema                                      |
+| @neondatabase/serverless                       | 1.1.0          |                                                        |
+| @clerk/nextjs                                  | 7.9.1          |                                                        |
+| zod                                            | 4.5.4          |                                                        |
+| react-hook-form / @hookform/resolvers          | 7.87.0 / 5.9.1 | All forms                                              |
+| vitest                                         | 4.1.11         |                                                        |
+| @playwright/test                               | 1.62.1         |                                                        |
+| stripe                                         | 22.6.1         | `billing` module                                       |
+| commander / @clack/prompts                     | CLI only       | Pin on CLI creation                                    |
 
-# 3. Route Requirements
-
-| **Route family**               | **Purpose**                                             |
-|--------------------------------|---------------------------------------------------------|
-| /                              | Umbrella landing page.                                  |
-| /ontologies                    | Normalized Ontology catalog.                            |
-| /ontologies/\[slug\]           | Ontology detail.                                        |
-| /simples                       | Simples catalog.                                        |
-| /simples/\[slug\]              | Simple detail.                                          |
-| /anthimeria                    | Visual configuration workbench.                         |
-| /maximal-template              | Maximal Template/domain library surface.                |
-| /typescripture/\[\[...slug\]\] | Canonical doctrine/documentation.                       |
-| presentation/demo routes       | Real PureUI and template demonstrations where retained. |
-
-# 4. Layering Contract
+## 3. Repository layout
 
 ```text
-Route
-↓
-Feature
-├─ PureUI Blocks / UI Primitives
-└─ BusinessLogic Workflow
-├─ Fetchers / reads
-├─ Actions / writes
-├─ Authorization
-├─ Schemas / types
-├─ Integrations
-└─ Transaction / invariant helpers
+codependent-coding/
+├── app/                      landing page only
+├── components/               landing-page presentation
+├── public/                   brand assets
+├── packages/cli/             Hipster Stack CLI (local, unpublished)
+├── template/                 Maximal Template — runnable Next.js app
+├── plugin/loaded-vibes/      Claude Code plugin
+├── .claude-plugin/           local plugin marketplace manifest
+├── scripts/github/           issue/label/milestone sync
+├── context/
+│   ├── docs/                 human intent (this folder)
+│   ├── specs/issues/         work items (sync to GitHub)
+│   └── doctrine/             TypeScripture books (reference, non-authoritative)
+├── .claude/
+│   ├── contracts/            application.yaml, validation.yaml, design.yaml
+│   ├── execution/            decisions.json, progress.json, handoff.json
+│   ├── hooks/                hook scripts
+│   └── settings.json
+├── .github/                  issue/PR templates, labels, CI
+├── CLAUDE.md                 agent router
+└── AGENTS.md                 pointer to CLAUDE.md
 ```
-- Routes adapt URL/request state and remain thin.
-- Features orchestrate user-facing use cases and bind presentation to business behavior.
-- PureUI Blocks remain presentation-focused.
-- BusinessLogic Workflows own application/business orchestration.
-- Server-only behavior must remain server-only.
-- Database access, authorization, secrets, and provider credentials must not leak into Client Components.
 
-# 5. Data and Definition Requirements
+Removed: `.agents/`, `packages/core`, `packages/schema`, `packages/loaded-vibes` (Codex), `content.zip`, `template-disposition.json`, every non-landing route, root `lib/` catalog code, `context/specs/{anthimeria,generation,ontologies,simples,loaded-vibes}`, `template/.agents`, `template/context`, `template/AGENTS.md`.
 
-- Ontology definitions, Simples metadata, and configuration contracts must have a single repository-owned authority per concept.
-- Application definitions must be schema-validatable before generation or download.
-- Configuration normalization must be deterministic.
-- Unsupported combinations must fail explicitly rather than silently falling back.
-- Generated definitions must be dependency-closed for the selected supported capability graph.
-- Public examples must be safe to expose and contain no credentials or private operational data.
+## 4. Scripts contract
 
-# 6. Content Requirements
+### Root
 
-- TypeScripture and architecture documentation are rendered from repository-owned content.
-- Documentation navigation must derive from stable content metadata or an explicit manifest.
-- Code examples preserve formatting and horizontal scrolling.
-- External links open safely and are visibly distinguishable from internal navigation.
-- Deprecated names may remain temporarily in source material but rendered canonical terminology should prefer current authority.
+| Script                    | Command                                                          |
+| ------------------------- | ---------------------------------------------------------------- |
+| `dev` / `build` / `start` | Next.js for the landing page                                     |
+| `lint`                    | `eslint . --max-warnings=0`                                      |
+| `format` / `format:check` | Prettier                                                         |
+| `typecheck`               | `tsc --noEmit`                                                   |
+| `test`                    | `vitest run` (CLI unit + composition tests)                      |
+| `cli`                     | `tsx packages/cli/src/cli.ts`                                    |
+| `cli:build`               | bundle CLI to `packages/cli/dist`                                |
+| `cli:link`                | build + `pnpm link --global` in `packages/cli`                   |
+| `validate`                | `format:check && lint && typecheck && test`                      |
+| `issues:sync`             | `node scripts/github/sync-issues.mjs` (dry run unless `--apply`) |
 
-# 7. Asset Requirements
+### Template (`template/`)
 
-- All supplied logos, wordmarks, banners, and background artwork are served from public/.
-- Do not duplicate public assets into component source directories.
-- Use Next.js image handling where it preserves the intended composition; CSS backgrounds are acceptable for bottom-anchored decorative landscapes.
-- Decorative images use empty alt text; meaningful logos/identity graphics receive useful accessible labels.
-- No implementation should depend on a developer-local absolute path.
+| Script                    | Command                                                                           |
+| ------------------------- | --------------------------------------------------------------------------------- |
+| `dev`                     | `next dev` (no tunnels or personal URLs)                                          |
+| `build`                   | `next build --turbopack`                                                          |
+| `lint` / `lint:fix`       | `eslint . --max-warnings=0` (doctrine included)                                   |
+| `doctrine:test`           | `node --test eslint/*.test.mjs`                                                   |
+| `typecheck`               | `next typegen && tsc --noEmit`                                                    |
+| `format` / `format:check` | Prettier                                                                          |
+| `test`                    | `vitest run`                                                                      |
+| `test:rls`                | RLS cross-tenant suite against `DATABASE_URL_TEST`                                |
+| `test:e2e`                | Playwright smoke                                                                  |
+| `check:ownership`         | orphan/ambiguous-owner check over all files                                       |
+| `db:init`                 | `prisma migrate dev --name init` + apply `prisma/rls/*.sql` as a second migration |
+| `validate`                | `format:check && lint && doctrine:test && typecheck && check:ownership && test`   |
+| `postinstall`             | `prisma generate`                                                                 |
 
-# 8. Performance Requirements
+## 5. Next.js configuration
 
-- RSC by default to minimize shipped JavaScript.
-- Lazy-load heavy interactive/code-viewer surfaces when practical.
-- Avoid layout shift from known brand imagery by reserving dimensions/aspect ratio.
-- Do not load the entire documentation corpus or all code examples into every route.
-- Static or cacheable catalog/detail content should be prerendered when compatible with the source model.
+- `typedRoutes: true`, `reactStrictMode: true`, `poweredByHeader: false`, `reactCompiler: true`.
+- Security headers via `headers()`: `X-Content-Type-Options`, `Referrer-Policy`, `X-Frame-Options: DENY`, `Permissions-Policy`.
+- `proxy.ts` runs `clerkMiddleware` for route protection only.
+- Fonts: generated apps use offline-safe fonts (npm-packaged or `next/font/local`) so builds never depend on Google Fonts. The factory landing page keeps its brand fonts.
 
-# 9. Accessibility Requirements
+## 6. Data
 
-- WCAG-oriented semantic structure and keyboard operability.
-- Visible focus states.
-- Sufficient contrast against \#05030b/black backgrounds.
-- Controls expose accessible names and state.
-- Tabs, dialogs, sidebars, code viewers, copy buttons, and form fields remain keyboard usable.
-- Motion/glow effects must not obscure text or become the only state indicator.
+- Neon Postgres. Two roles: `owner` (migrations) and `app_user` (runtime, **no BYPASSRLS**).
+- `DATABASE_URL` (app_user, pooled), `DIRECT_URL` (owner, migrations), `DATABASE_URL_TEST` (test branch).
+- Prisma 7 with `@prisma/adapter-neon`; client generated to `generated/prisma` (git-ignored).
+- Multi-file schema at `prisma/schema/`; RLS SQL at `prisma/rls/`.
+- Generated apps start without migrations; `pnpm db:init` creates `init` then `rls`.
 
-# 10. Validation
+## 7. Caching
 
-- TypeScript typecheck.
-- Lint.
-- Focused unit tests for normalization/configuration/domain utilities.
-- Architecture validation for layer boundaries where repository validators exist.
-- Production build.
-- Focused browser tests for navigation, workbench state, copy/download behavior, responsive layout, and critical error states.
-- No check may be reported as passing unless actually executed.
+- Public routes: static or ISR via route-segment `revalidate`.
+- Tenant routes: dynamic and fresh by default. Cached reads only through `lib/cache` (tags, lifetimes, invalidation).
+- Never cache authorization, membership, payment, or readiness decisions.
+- Next.js Cache Components stays off in v1 (DEC-012).
+
+## 8. Testing
+
+| Level           | Tool                          | Scope                                                                                |
+| --------------- | ----------------------------- | ------------------------------------------------------------------------------------ |
+| Doctrine        | node:test + ESLint RuleTester | Every CC rule has valid/invalid cases                                                |
+| Unit            | Vitest                        | workflows, schemas, DTO mappers, CLI composition                                     |
+| Integration     | Vitest + real Postgres        | RLS cross-tenant isolation, transactions, webhook idempotency                        |
+| E2E smoke       | Playwright                    | public page, sign-in redirect, one tenant route                                      |
+| Composition     | Vitest (root)                 | `compose` output for blank / each preset / maximal: prisma validate, ownership, lint |
+| CI build matrix | GitHub Actions                | compose → install → lint → typecheck → build                                         |
+
+## 9. CLI technical requirements
+
+- TypeScript, run with `tsx` in dev, bundled with `tsdown` for linking.
+- Locates the template via `HIPSTER_TEMPLATE` env or the CLI's own repo path.
+- Composition pipeline: copy template (excluding `node_modules`, `.next`, `generated`, `prisma/migrations`, tests of removed modules) → compute ownership → delete files owned by unselected modules → strip `// @module <id>` tagged lines → rewrite `lib/modules/registry.ts` → prune `package.json` deps declared only by removed modules → rebuild `.env.example` → write `hipster.json` → copy generated-app governance → apply brand color token → `pnpm install` → `git init`.
+- `slice` templates live in `packages/cli/templates/slice/` and are derived from the `projects` module; field DSL: `name:string, amount:decimal?, status:enum(open|won|lost), dueAt:datetime?, ownerId:ref(User)`.
+- No network access during composition. Provisioning is a separate, opt-in step.
+
+## 10. Plugin technical requirements
+
+- Location `plugin/loaded-vibes/` with `.claude-plugin/plugin.json`, `skills/`, `agents/`, `hooks/hooks.json`, `scripts/`, `references/`.
+- Local marketplace: `.claude-plugin/marketplace.json` at repo root; install with `/plugin marketplace add <repo path>` then `/plugin install loaded-vibes@codependent-coding`.
+- Hook scripts are Node (`.mjs`), cross-platform, read hook JSON from stdin, exit `2` with a message to feed back to Claude.
+- Skills reference CLI commands instead of re-deriving deterministic output.
+
+## 11. CI/CD
+
+- `.github/workflows/ci.yml` on PR and push to `main`: install (frozen lockfile), format check, lint, doctrine tests, typecheck, unit tests — for root and template.
+- Composition matrix job (after M4): blank, each preset, maximal.
+- Vercel deploys the landing page from `main`.
+- Branching: GitHub Flow — `main` plus short-lived issue branches `<type>/<issue>-<slug>`; squash-merge PRs with `Closes #N` (DEC-010).
+- Conventional Commits: `feat|fix|refactor|docs|test|chore|ci(scope): subject`.
+
+## 12. Performance and quality budgets
+
+- Generated app first build ≤ 3 min on CI; `new` without provisioning ≤ 2 min excluding install.
+- Landing page Lighthouse ≥ 95 performance/accessibility.
+- `pnpm lint` on template ≤ 60 s locally.

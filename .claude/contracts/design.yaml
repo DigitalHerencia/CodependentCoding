@@ -1,0 +1,173 @@
+# Codependent Coding — design contract
+# Compiled from: context/docs/Design.md
+schema: codependent-coding/design/v1
+version: 1.0.0
+updated: 2026-10-22
+
+principles:
+  - dense, technical, legible
+  - strong borders, radius <= 6px
+  - mechanical motion <= 200ms, honors prefers-reduced-motion
+  - glow only on signal color
+avoid:
+  [
+    pastel rainbow,
+    candy colors,
+    bubbly rounded cards,
+    toy iconography,
+    startup gradients,
+    cartoon neo-brutalism,
+  ]
+
+surfaces:
+  landing:
+    path: app/page.tsx
+    mode: dark-only
+    keep:
+      [
+        crown hero,
+        "When epistemologies fail the stack still governs",
+        Digital Herencia section,
+        desert background,
+      ]
+    header: [logo, GitHub link]
+    ctas: [Read the doctrine (on-page anchor), GitHub]
+    tokens: { canvas: "#05030b", text: "#f4f1ea", signal: "#2f7a8d" }
+    fonts:
+      {
+        display: Cinzel,
+        body: JetBrains Mono,
+        code: Fira Code,
+        wordmark: Big Shoulders,
+      }
+  generated_app:
+    mode: [light, dark, system]
+    branding: white-label
+    brand_color:
+      {
+        source: "hipster-stack new --color",
+        default: "#2f7a8d",
+        writes: [--primary, --signal, --primary-foreground],
+      }
+    fonts: offline-safe
+
+tokens:
+  location: template/app/globals.css
+  bridge: "tailwind v4 @theme inline"
+  raw_colors_in_components: forbidden
+  groups:
+    surfaces:
+      [
+        background,
+        foreground,
+        card,
+        card-foreground,
+        popover,
+        popover-foreground,
+        muted,
+        muted-foreground,
+      ]
+    brand:
+      [
+        primary,
+        primary-foreground,
+        secondary,
+        secondary-foreground,
+        accent,
+        accent-foreground,
+        signal,
+      ]
+    state: [destructive, success, warning, info]
+    lines: [border, input, ring]
+    data: [chart-1, chart-2, chart-3, chart-4, chart-5]
+    shape: { radius: 4px, border-width: 1px, shadow-hard: "2px 2px 0 0" }
+    motion:
+      {
+        duration-fast: 120ms,
+        duration-base: 180ms,
+        ease-mechanical: "cubic-bezier(0.2, 0, 0, 1)",
+      }
+    type: [font-sans, font-mono, font-display]
+  dark_canvas: "oklch(0.13 0 0)"
+
+components:
+  ui: { path: components/ui, scope: base, catalog: full }
+  chart: { path: components/chart, uses: chart-* tokens }
+  blocks:
+    path: components/blocks
+    scope: base
+    catalog:
+      [
+        hero,
+        feature-grid,
+        pricing,
+        faq,
+        cta,
+        stats,
+        footer,
+        data-table,
+        record-detail,
+        kanban,
+        calendar,
+        timeline,
+        settings,
+        empty-state,
+        error-state,
+        loading-state,
+      ]
+  templates:
+    {
+      path: components/templates,
+      scope: module-owned,
+      naming: "<module><Thing>Template.tsx",
+    }
+  nav:
+    {
+      path: components/nav,
+      items: [public-header, public-footer, user-menu, mobile-bottom-nav],
+    }
+  shells:
+    {
+      path: components/shells,
+      items: [public-shell, auth-shell, tenant-shell, portal-shell],
+    }
+
+compositions:
+  "(public)":
+    { shell: public-shell, order: [hero, feature-grid, stats, cta, footer] }
+  "(auth)": { shell: auth-shell, content: centered Clerk card }
+  "(setup)": { shell: auth-shell, content: onboarding stepper }
+  "(tenant)":
+    {
+      shell: tenant-shell,
+      sidebar: registry nav,
+      topbar: [org switcher, user menu],
+    }
+  "(dev)": { route: /design-system, availability: development-only }
+  dynamic_tenant_page: Suspense + feature skeleton mirroring final layout
+
+accessibility:
+  standard: WCAG 2.2 AA
+  contrast: { text: 4.5, large_text: 3.0, ui_boundaries: 3.0 }
+  focus_ring: { token: ring, width: 2px, visible: always }
+  keyboard: [all actions reachable, dialogs trap focus, escape closes]
+  forms: [bound labels, errors via aria-describedby, required marked]
+  touch_target_min: 40px
+  brand_color_check: at hipster-stack new
+
+responsive:
+  breakpoints: { sm: 640, md: 768, lg: 1024, xl: 1280 }
+  tenant_sidebar_from: lg
+  mobile_bottom_nav_below: md
+  tables_to_cards_below: md
+  min_width_no_hscroll: 360
+
+interaction_states:
+  [default, hover, focus-visible, active, disabled, loading, error, empty]
+feedback: { async_results: sonner toast, validation: inline }
+
+voice:
+  case: sentence
+  buttons: verbs
+  empty_states: explain + first action
+  errors: what happened + what to do

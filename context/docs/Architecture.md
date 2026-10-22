@@ -1,275 +1,350 @@
-# System Architecture Specification
+---
+title: Codependent Coding — Architecture
+doc: architecture
+status: active
+updated: 2026-10-22
+compiles_to: .claude/contracts/application.yaml, .claude/contracts/validation.yaml
+supersedes: Codependent Coding WebApp Architecture master source (2026.08) — product topology only; layer doctrine carried forward
+---
 
-# 1. Architectural Definition
+# Architecture
 
-The Codependent Coding WebApp Architecture is a single product surface over a family of mutually related architectural artifacts. The website must preserve the distinction between knowledge, domain definition, presentation constitution, business orchestration, application definition, generation, generated artifact, and agent governance.
+## 1. System map
 
-# 2. System Context
+```mermaid
+flowchart LR
+  T["Maximal Template<br/>template/ (base + all modules)"]
+  M["hipster.modules.json<br/>+ naming conventions"]
+  C["Hipster Stack CLI<br/>packages/cli"]
+  A["Generated app<br/>(standalone)"]
+  P["Loaded Vibes plugin<br/>plugin/loaded-vibes"]
+  L["Doctrine lint<br/>template/eslint"]
 
-```text
-Digital Herencia
-│
-└── Codependent Coding™ WebApp Architecture
-├── TypeScripture™
-├── Hipster Stack™
-├── Maximal Template™
-├── Ontologies™
-├── Simples™
-│ ├── PureUI Blocks™
-│ └── BusinessLogic Blocks™
-├── Anthimeria™
-├── Virgule™
-├── Arrangement™
-├── Loaded Vibes™
-└── Visual Vibes™
+  T --> C
+  M --> C
+  C -->|new / add / slice| A
+  L --> T
+  L -->|copied with template| A
+  P -->|idea, plan, slice, check, ship| A
 ```
 
-# 3. Runtime Architecture
+**One sentence:** the CLI copies the Maximal Template, removes every file owned by an unselected module (ownership computed from names), and hands the result to Claude Code with the Loaded Vibes plugin, which drives it to MVP inside lint-enforced rails.
+
+### 1.1 Why subtractive with computed ownership
+
+The template is developed as **one real app**: one `pnpm dev`, one typecheck, one lint run. Modules are not stored separately; they are _defined_ by naming conventions plus a small manifest. The first build failed because ownership lived in a hand-maintained catalog that drifted. Here ownership is a pure function of the file path, so it cannot drift, and the orphan check proves every file has exactly one owner.
+
+## 2. Governing sentence (unchanged doctrine)
+
+> Routes own URL and HTTP boundaries. Features orchestrate application capabilities. Components render. Fetchers read persisted data. Actions own ordinary CRUD mutation boundaries. Schemas validate runtime input. Workflows constitute reusable application logic from server operations and helpers. Transactions preserve atomic database invariants. Authentication establishes identity. Authorization decides access. Integrations own provider mechanics. Webhooks own provider HTTP request lifecycles.
+
+## 3. Template layer model
 
 ```text
-Browser
-│
-▼
-Next.js App Router
-│
-├── Public routes / docs / catalogs
-│ └── Server Components
-│
-├── Interactive workbench/demo surfaces
-│ └── bounded Client Components
-│
-└── Server boundaries
-├── definition loading
-├── validation / normalization
-├── protected workflows (when present)
-└── download / route handlers
-
-Repository-owned authorities
-├── content/
-├── Ontology / Simples metadata
-├── Maximal Template implementation
-├── configuration schemas
-└── public brand assets
+URL ─► app/ (route) ─► features/ ─► components/blocks ─► components/ui
+                          │
+                          ├─► lib/fetchers   (reads)
+                          ├─► lib/actions    (CRUD writes, "use server")
+                          ├─► lib/workflows  (named application logic)
+                          │      ├─► lib/db/transactions (atomic writes)
+                          │      └─► lib/integrations/<provider>
+                          ├─► lib/auth / lib/authz
+                          └─► schemas/ · types/ · lib/cache · lib/constants · lib/utils
 ```
 
-# 4. Presentation Architecture
+### 3.1 Responsibility map
+
+| Concern                  | Home                                                                           | Rule                                                                        |
+| ------------------------ | ------------------------------------------------------------------------------ | --------------------------------------------------------------------------- |
+| URL / page               | `app/**/page.tsx`                                                              | Thin: Suspense + feature, or blocks for static public pages                 |
+| Provider webhook         | `app/api/<provider>/webhooks/route.ts`                                         | Raw-body verify → idempotent persistence → ack                              |
+| Capability orchestration | `features/<domain>/<domain><Thing>Feature.tsx`                                 | Server component; renders blocks                                            |
+| Browser behavior         | `features/<domain>/<name>.client.tsx`                                          | `"use client"`; UI controls + actions only                                  |
+| Form                     | `features/<domain>/<domain><Verb><Thing>Form.tsx`                              | React Hook Form + Zod + action; may use UI primitives                       |
+| Loading                  | `features/<domain>/<domain><Thing>Skeleton.tsx`                                | Mirrors real layout; `ui/skeleton` only                                     |
+| Domain presentation      | `components/templates/<domain><Thing>Template.tsx`                             | Pure; composed from blocks                                                  |
+| Reusable composition     | `components/blocks/<kebab>.tsx`                                                | Pure presentation                                                           |
+| Structure                | `components/nav`, `components/shells`                                          | Frames; Clerk UI widgets allowed                                            |
+| Primitive                | `components/ui/<kebab>.tsx`                                                    | shadcn/BoldKit-derived                                                      |
+| Read                     | `lib/fetchers/<domain>Fetchers.ts`                                             | `server-only`; auth → authz → scoped select → DTO                           |
+| CRUD write               | `lib/actions/<domain>Actions.ts`                                               | `"use server"`; auth → authz → Zod → write/tx → invalidate → `ActionResult` |
+| Application logic        | `lib/workflows/<domain>Workflows.ts` or `lib/workflows/<domain>/<verbNoun>.ts` | `server-only`; arranges operations; no Prisma client, no SDKs               |
+| Atomic write             | `lib/db/transactions/<domain>-<verb>-<noun>.tx.ts`                             | DB-only; no network                                                         |
+| DB runtime               | `lib/db/client.ts`, `provider.ts`, `tenant.ts`                                 | Prisma client, adapter, RLS context                                         |
+| Projection               | `lib/db/selects/<domain>.selects.ts`                                           | Precise selects                                                             |
+| Mapping                  | `lib/db/dto/<domain>.dto.ts`                                                   | Record → transport-safe DTO                                                 |
+| Identity                 | `lib/auth/{clerk,auth,redirects,clerk-webhooks}.ts`                            | Clerk only here                                                             |
+| Access                   | `lib/authz/{roles,permissions,resources,policies,attributes?}.ts`              | App-owned RBAC/ABAC                                                         |
+| Provider                 | `lib/integrations/<provider>/<kebab>.ts`                                       | SDK only here                                                               |
+| Cache                    | `lib/cache/{tags,life,invalidate}.ts`                                          | Semantics only                                                              |
+| Module contribution      | `lib/modules/<id>.module.ts`, `registry.ts`                                    | Nav, dashboard widgets, permissions                                         |
+| Env                      | `lib/env/<owner>.ts`                                                           | Zod-validated, `server-only`                                                |
+| Validation               | `schemas/<domain>Schemas.ts`                                                   | Zod; client- and server-safe                                                |
+| Shared types             | `types/<domain>Types.ts`                                                       | Compile-time contracts                                                      |
+| Schema                   | `prisma/schema/<owner>.prisma`, `prisma/rls/<owner>.sql`, `prisma/seed.ts`     | Prisma lifecycle                                                            |
+
+### 3.2 Exceptions (DEC-007)
+
+1. Static public pages compose blocks directly (no feature).
+2. Form features compose UI primitives directly and may declare `"use client"`.
+3. Skeletons may import `components/ui/skeleton`.
+4. `.client.tsx` companions may import interactive UI controls (button, input, label, select, checkbox, switch, textarea, toggle, date/time pickers, etc.).
+
+### 3.3 Classifier (use before creating a file)
 
 ```text
-app/ route
-↓
-feature
-├── PureUI Block
-│ └── UI primitives + variants + semantic tokens
-│
-└── BusinessLogic Workflow
-└── server operations + helpers + contracts + integrations
+Static public presentation?      app/(public) page + components/blocks
+React Hook Form?                 features/<d>/<d><Verb><Thing>Form.tsx
+Browser-only behavior?           features/<d>/<name>.client.tsx
+Capability orchestration?        features/<d>/<d><Thing>Feature.tsx
+Persisted read?                  lib/fetchers/<d>Fetchers.ts
+Ordinary CRUD write?             lib/actions/<d>Actions.ts
+Named application logic?         lib/workflows/<d>Workflows.ts
+Multi-write atomicity?           lib/db/transactions/<d>-<verb>-<noun>.tx.ts
+Prisma select / DTO?             lib/db/selects | lib/db/dto
+Identity?                        lib/auth
+Access decision?                 lib/authz
+Provider SDK?                    lib/integrations/<provider>
+Webhook HTTP lifecycle?          app/api/<provider>/webhooks/route.ts
+Runtime validation?              schemas/<d>Schemas.ts
+Shared type?                     types/<d>Types.ts
+Cache tag / lifetime?            lib/cache
+Constant / pure util?            lib/constants | lib/utils
+None of the above?               Stop. Do not invent a layer (CC-NAME-002).
 ```
 
-A feature is the user-facing orchestration boundary. PureUI Blocks do not acquire business authority merely because a feature renders them. Workflows do not become presentation components merely because their state is displayed.
+## 4. Doctrine enforcement
 
-# 5. Workflow Constitution
+Doctrine is code. `template/eslint/doctrine-map.mjs` is the machine table (layers, import categories, boundaries, naming); `template/eslint/codependent-plugin.mjs` is the mechanics; `.claude/contracts/validation.yaml` is the contract. Every finding prints its rule ID.
 
-A workflow is an orchestration unit constituted from lower-level server operations and helpers. It is not merely a folder containing unrelated functions.
+| ID               | Rule                                                                                       | Enforcement                          |
+| ---------------- | ------------------------------------------------------------------------------------------ | ------------------------------------ |
+| CC-ROUTE-001     | Routes never import DB, fetchers, actions, workflows, integrations, SDKs, or UI primitives | `codependent/layer-boundaries`       |
+| CC-ROUTE-002     | `proxy.ts` only gates routes                                                               | layer-boundaries                     |
+| CC-HOOK-001      | Route handlers: no Prisma, SDKs, Clerk server, presentation                                | layer-boundaries                     |
+| CC-FEAT-001      | Normal features: no DB, transactions, integrations, SDKs, UI primitives, RHF               | layer-boundaries                     |
+| CC-FEAT-002      | Forms: no DB, fetchers, workflows, integrations                                            | layer-boundaries                     |
+| CC-FEAT-003      | Skeletons: `ui/skeleton` + blocks only                                                     | layer-boundaries                     |
+| CC-FEAT-004      | Client companions: controls + actions; no server reads                                     | layer-boundaries                     |
+| CC-BLOCK-001     | Blocks/templates are pure presentation                                                     | layer-boundaries                     |
+| CC-BLOCK-002     | Nav/shells pure presentation (+ Clerk UI)                                                  | layer-boundaries                     |
+| CC-UI-001 / 002  | Primitives and hooks stay presentation/browser-side                                        | layer-boundaries                     |
+| CC-READ-001      | Fetchers: no actions, workflows, integrations, transactions                                | layer-boundaries                     |
+| CC-READ-002      | Fetchers never call Prisma write methods                                                   | `codependent/no-fetcher-writes`      |
+| CC-WRITE-001     | Actions: no integrations or SDKs                                                           | layer-boundaries                     |
+| CC-WRITE-002     | Actions start with `"use server"`                                                          | `codependent/use-server-actions`     |
+| CC-FLOW-001      | Workflows: no Prisma client, no SDKs                                                       | layer-boundaries                     |
+| CC-TX-001        | Transactions: DB only                                                                      | layer-boundaries                     |
+| CC-TX-002        | No `fetch()` in transactions                                                               | `codependent/no-transaction-network` |
+| CC-DB-001        | `lib/db` does not reach up into app layers                                                 | layer-boundaries                     |
+| CC-DB-002        | No unsafe raw SQL; tagged raw SQL only in `lib/db`                                         | `codependent/no-raw-sql`             |
+| CC-AUTH-001      | Authentication never decides access                                                        | layer-boundaries                     |
+| CC-AUTHZ-001     | Authorization never reads Clerk server state                                               | layer-boundaries                     |
+| CC-INT-001       | Integrations never persist                                                                 | layer-boundaries                     |
+| CC-CACHE-001     | Cache helpers hold semantics only                                                          | layer-boundaries                     |
+| CC-PURE-001      | Constants/utils/types are dependency-free                                                  | layer-boundaries                     |
+| CC-SCHEMA-001    | Schemas are pure                                                                           | layer-boundaries                     |
+| CC-SRV-001       | Server modules import `server-only` (auto-fix)                                             | `codependent/require-server-only`    |
+| CC-CLIENT-001    | `"use client"` placement                                                                   | `codependent/use-client-placement`   |
+| CC-NAME-001      | Directory naming conventions                                                               | `codependent/filename-convention`    |
+| CC-NAME-002      | No `services/`, `managers/`, `helpers/`...                                                 | `codependent/no-generic-names`       |
+| CC-STYLE-001     | Named exports only (framework files excepted)                                              | `codependent/no-default-export`      |
+| CC-STYLE-002     | `@/` alias, no parent-relative imports (auto-fix)                                          | `codependent/no-parent-imports`      |
+| CC-MOD-001       | A module imports another module only if declared in `dependsOn`                            | `codependent/module-boundaries` (M3) |
+| CC-MOD-002       | Base never imports module-owned files (registry excepted)                                  | `codependent/module-boundaries` (M3) |
+| CC-MOD-003       | Every file has exactly one owner                                                           | `pnpm check:ownership` (M3)          |
+| CC-FMT-001 / 002 | Prettier formatting; Tailwind class order                                                  | Prettier + plugin                    |
+| CC-TS-001        | `strict`, `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`                         | tsconfig                             |
+
+Review-only rules (not mechanizable, checked by the `reviewer` agent): actions validate with Zod before writing; tenant scope lives in the query predicate; consequential decisions never read stale cache; webhooks reconcile current provider truth.
+
+## 5. Module system
+
+### 5.1 Manifest — `template/hipster.modules.json`
+
+```jsonc
+{
+  "$schema": "./hipster.modules.schema.json",
+  "base": { "owns": ["**"] }, // fallback owner
+  "modules": [
+    {
+      "id": "crm",
+      "kind": "domain", // domain | addon
+      "label": "CRM / Pipeline",
+      "description": "Contacts, accounts, leads, pipeline, analytics",
+      "dependsOn": ["email"],
+      "owns": [], // extra globs beyond conventions
+      "packages": [], // npm deps only this module needs
+      "env": [], // { name, required, scope: server|public, description }
+    },
+    {
+      "id": "billing",
+      "kind": "addon",
+      "label": "Billing (Stripe)",
+      "dependsOn": [],
+      "owns": ["lib/integrations/stripe/**", "app/api/stripe/**"],
+      "packages": ["stripe"],
+      "env": [
+        { "name": "STRIPE_SECRET_KEY", "required": true, "scope": "server" },
+      ],
+    },
+  ],
+  "presets": {
+    "blank": [],
+    "crm": ["crm"],
+    "projects": ["projects", "uploads"],
+    "support": ["support", "email"],
+    "marketing": ["marketing", "email"],
+    "invoicing": ["invoicing", "billing", "uploads"],
+    "social": ["social", "media"],
+    "ai": ["ai", "inference", "billing", "ratelimit"],
+    "portal": ["portal", "uploads", "billing"],
+    "admin": ["admin"],
+  },
+}
+```
+
+The manifest holds **build-time** facts only. Runtime contributions live in `lib/modules/<id>.module.ts`. No field appears in both.
+
+### 5.2 Ownership conventions (computed)
+
+A file belongs to module `<id>` when, in order:
+
+1. It matches a module's explicit `owns` glob; else
+2. Any path segment equals `<id>` (`features/crm/`, `app/(tenant)/crm/`, `lib/workflows/crm/`, `tests/crm/`); else
+3. The basename starts with `<id>` followed by an uppercase letter, `.` or `-` (`crmFetchers.ts`, `crm.selects.ts`, `crm.dto.ts`, `crm-update-deal-stage.tx.ts`, `crmContactsTemplate.tsx`, `crm.prisma`, `crm.sql`, `crm.module.ts`); else
+4. It belongs to **base**.
+
+Two modules matching the same file is an error (CC-MOD-003). Module IDs must not collide with base vocabulary (`organization`, `membership`, `onboarding`, `settings`, `dashboard`, `identity`, `auth`, `webhook`, `audit`).
+
+### 5.3 Cross-module references
+
+- **TypeScript:** base reaches module code only via `lib/modules/registry.ts`:
+
+  ```ts
+  // generated by hipster-stack — do not edit by hand
+  import { crmModule } from "@/lib/modules/crm.module";
+  import { projectsModule } from "@/lib/modules/projects.module";
+  export const installedModules = [crmModule, projectsModule] as const;
+  ```
+
+  Shells, sidebar, dashboard, and the authz permission catalog read `installedModules`.
+
+- **Prisma:** relation fields on base models carry a tag; the CLI deletes tagged lines for removed modules:
+
+  ```prisma
+  model Organization {
+    id        String   @id @default(cuid())
+    contacts  Contact[] // @module crm
+    projects  Project[] // @module projects
+  }
+  ```
+
+- **Module → module:** only when declared in `dependsOn` (CC-MOD-001).
+
+### 5.4 Module runtime definition
+
+```ts
+// lib/modules/crm.module.ts
+import type { ModuleDefinition } from "@/types/moduleTypes";
+
+export const crmModule = {
+  id: "crm",
+  nav: [{ label: "Pipeline", href: "/crm/pipeline", icon: "kanban" }],
+  dashboard: [{ id: "crm-pipeline-value", title: "Pipeline value" }],
+  permissions: {
+    resources: ["crm.contact", "crm.account", "crm.lead", "crm.deal"],
+    grants: {
+      owner: ["*"],
+      admin: ["*"],
+      member: ["read", "create", "update"],
+      viewer: ["read"],
+    },
+  },
+} satisfies ModuleDefinition;
+```
+
+## 6. Hipster Stack CLI
+
+```mermaid
+flowchart TD
+  A["new <dir>"] --> B["prompt: name, preset/modules, brand color"]
+  B --> C["resolve dependsOn (closure, cycle check)"]
+  C --> D["copy template (exclude node_modules, .next, generated, migrations)"]
+  D --> E["compute ownership → delete files of unselected modules"]
+  E --> F["strip // @module tags · rewrite registry · prune package.json · rebuild .env.example"]
+  F --> G["write hipster.json · install app governance · apply brand token"]
+  G --> H["prisma validate · pnpm install · git init"]
+  H --> I{"--provision?"}
+  I -- yes --> J["gh repo · neonctl project · vercel link + env"]
+  I -- no --> K["next steps: pnpm db:init, pnpm dev"]
+  J --> K
+```
+
+| Command                                                                       | Purpose                                                                        |
+| ----------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| `new <dir> [--preset p] [--modules a,b] [--color #hex] [--provision] [--yes]` | Generate an app                                                                |
+| `add <module>`                                                                | Copy a module's owned files from the template into an app, re-tag, re-register |
+| `slice <entity> --module <id> --fields "<dsl>"`                               | Full vertical slice from golden templates                                      |
+| `doctor`                                                                      | Env, DB, migrations, lint, ownership                                           |
+| `compose <dir> --all\|--preset\|--modules`                                    | Non-interactive (CI)                                                           |
+
+`hipster.json` (generated app):
+
+```json
+{
+  "template": {
+    "commit": "<sha>",
+    "path": "D:/TheCodependentCodingWebAppArchitecture/template"
+  },
+  "cli": "1.0.0",
+  "createdAt": "2026-10-22T00:00:00Z",
+  "modules": ["projects", "uploads"],
+  "color": "#2f7a8d"
+}
+```
+
+## 7. Loaded Vibes plugin
 
 ```text
-Fetcher/read ─┐
-Action/write ───┤
-Authorization ──┤
-Schema/types ───┤
-Integration ────┤──► BUSINESSLOGIC WORKFLOW
-Transaction ────┤
-Helpers ────────┘
+plugin/loaded-vibes/
+├── .claude-plugin/plugin.json
+├── skills/{idea,plan,slice,classify,check,ship,handoff}/SKILL.md
+├── agents/{reviewer,verifier}.md
+├── hooks/hooks.json            PostToolUse lint · Stop execution-state guard
+├── scripts/*.mjs               hook implementations
+└── references/doctrine.md      condensed classifier + CC rule table
 ```
 
-The workflow is the folded business-logic form of those constituents. Unfolding the workflow exposes its constituents; it does not imply the business meaning ceased to exist.
-
-# 6. PureUI Constitution
+The MVP loop inside a generated app:
 
 ```text
-UI Primitive
-+ variant
-+ semantic token
-+ bounded composition
-↓
-PureUI Block
+hipster-stack new → /idea (grill → PRD, tech, architecture, design, auth → 3 YAML)
+→ /plan (issues) → /slice ×N (CLI scaffold + domain logic) → /check → /ship → /handoff
 ```
 
-PureUI Blocks are reusable presentation constitutions. They may expose compatible variants to Anthimeria, but they do not own authorization, persistence, provider credentials, or domain invariants.
+## 8. Governance layers
 
-# 7. Ontology Architecture
+| Layer       | Location                                | Audience | Authority                                    |
+| ----------- | --------------------------------------- | -------- | -------------------------------------------- |
+| Intent      | `context/docs/*.md`                     | Human    | Highest for meaning                          |
+| Contracts   | `.claude/contracts/*.yaml`              | Machine  | Compiled from intent; must not contradict it |
+| Enforcement | `template/eslint/*`, Prettier, tsconfig | Machine  | Executable form of validation.yaml           |
+| Work        | `context/specs/issues/*.md` → GitHub    | Both     | What to do next                              |
+| Execution   | `.claude/execution/*.json`              | Agent    | What happened; never architecture            |
+| Reference   | `context/doctrine/`                     | Human    | Explanatory only                             |
 
-An Ontology is a normalized application starting definition. It selects a coherent supported capability graph from the Maximal Template and establishes the behavioral frame that Anthimeria is allowed to present/configure.
+Conflict rule: intent wins; fix the contract, then the enforcement, in the same PR.
 
-```text
-Maximal Template superset
-↓ normalize/select
-Ontology
-├── routes
-├── features
-├── workflows
-├── integrations
-├── dependencies
-├── presentation candidates
-└── foundation requirements
-```
+## 9. Source-of-truth allocation
 
-# 8. Anthimeria and Virgule
-
-```text
-Ontology
-↓
-Anthimeria presentation constitution
-↓
-validated + normalized configuration
-↓
-Virgule™ Application Definition
-↓
-Hipster Stack generator / CLI
-```
-
-Anthimeria is not the generator. Its durable output is the portable definition. The generator consumes that definition through the same normalization and validation contract used by other supported entry points.
-
-# 9. Generation Architecture
-
-```text
-Virgule
-↓
-Validate
-↓
-Normalize
-↓
-Resolve dependency closure
-↓
-Materialization plan
-↓
-Maximal Template source selection/transforms
-↓
-Arrangement™
-↓
-Install / validate / handoff
-```
-
-- Generation must be deterministic for the same supported inputs and repository version.
-- Unsupported state fails explicitly.
-- Generated output is an ordinary standalone application, not a runtime dependency on the configurator.
-- The generated Arrangement owns its resulting source after materialization, subject to whatever provenance metadata the generator intentionally preserves.
-
-# 10. Documentation Architecture
-
-```text
-content/
-├── docs/
-├── patterns/
-├── provenance/
-├── governance/
-└── typescripture/
-↓
-repository loader / metadata
-↓
-/typescripture/[[...slug]]
-↓
-documentation UI
-```
-
-- Canonical content remains repository-owned.
-- The website is a renderer/navigator, not a second conflicting knowledge authority.
-- Provenance and traceability material may link architecture claims to implementation evidence.
-
-# 11. Loaded Vibes Boundary
-
-Loaded Vibes is agent/development tooling adjacent to generated applications and the architecture repository. Its canonical plugin package must have one source authority. Repository-scoped .agents material may configure agents, but a duplicate full plugin tree must not silently become a second authoritative implementation.
-
-```text
-Architecture / Arrangement
-↓
-Loaded Vibes
-├── agents
-├── skills
-├── prompts
-├── references
-├── validators
-└── project assets
-```
-
-# 12. Dependency Direction
-
-```text
-UI primitives
-↑
-PureUI Blocks
-↑
-Features
-↔
-Workflows
-↓
-Server operations / integrations / persistence
-
-Canonical definitions
-↓
-Resolvers / loaders
-↓
-Features / workbench / generator
-
-Public assets
-↓
-Presentation only
-```
-
-- Lower-level presentation primitives do not import product features.
-- Server-only modules do not import Client Components.
-- Canonical domain definitions do not depend on page rendering.
-- The generator may depend on schemas/core domain resolution, but the schema/domain authority must not depend on the CLI shell.
-- Documentation rendering must not become a hidden runtime dependency of generation.
-
-# 13. Error Architecture
-
-| **Failure**                    | **Required Behavior**                                                       |
-| ------------------------------ | --------------------------------------------------------------------------- |
-| Unknown route/slug             | Not-found response with navigation back to a valid catalog.                 |
-| Invalid application definition | Schema/contract error with actionable field-level information where safe.   |
-| Unsupported combination        | Explicit unsupported-state error; no silent fallback.                       |
-| Copy/download failure          | Visible local error and retry path.                                         |
-| Server failure                 | Bounded error UI; sensitive internals logged server-side only.              |
-| Offline state                  | Relevant interactive surfaces expose an understandable offline/retry state. |
-
-# 14. Architectural Invariants
-
-1.  There is one canonical authority for each domain definition.
-2.  Simples has exactly two top-level families: PureUI Blocks and BusinessLogic Blocks.
-3.  Features orchestrate presentation and behavior.
-4.  Workflows constitute business logic from server operations and helpers.
-5.  Anthimeria configures bounded presentation over an Ontology-defined behavioral graph.
-6.  Virgule is the portable application-definition boundary.
-7.  The Hipster Stack generator materializes an Arrangement from validated supported state.
-8.  Generated applications do not require the website to run.
-9.  Public documentation does not require authentication.
-10. Authorization is server-enforced whenever protected state exists.
-11. Brand assets come from the repository's public asset authority.
-12. Transitional old names are migration concerns, not reasons to invent parallel concepts.
-
-# 15. Current Repository Mapping
-
-| **Current Path**   | **Architectural Role**                                                                              |
-| ------------------ | --------------------------------------------------------------------------------------------------- |
-| app/               | Next.js route shells and route handlers.                                                            |
-| components/ui/     | UI primitives.                                                                                      |
-| components/blocks/ | PureUI Block implementations.                                                                       |
-| features/          | Feature orchestration.                                                                              |
-| lib/               | Shared loaders, domain/configuration utilities, and bounded supporting code.                        |
-| content/           | Rendered canonical documentation, patterns, governance, and provenance.                             |
-| context/           | Specifications, mockups, and implementation context.                                                |
-| public/            | Brand identity and static visual assets.                                                            |
-| .agents/           | Repository agent state/configuration; not automatically canonical plugin source.                    |
-| packages/          | Existing package boundaries retained only where they represent real separately consumable concerns. |
-
-# 16. Migration Rule
-
-The repository is mid-normalization. Existing names and paths may temporarily lag canonical terminology. Implementation should rename or redirect ordinary references as part of scoped work rather than treating a stale name as a new architecture. Where two artifacts conflict, the newer explicit authoritative specification governs unless repository-local implementation evidence proves a required compatibility constraint.
-
-# Public website reconstruction boundary (2026-08-31)
-
-The root application is a public, unprotected, repository-content and presentation product. It performs no application database reads or writes and requires no Clerk, tenant state, provider mutation, or application RBAC. Its presentation flow is `UI Primitive → PureUI Block → optional Page Template → Page`; presentation-only Feature wrappers are not required. This exception does not alter the Maximal Template application architecture under `template/`.
-
-`SiteShell` owns the universal header, footer, near-black canvas, responsive outer gutters, shared content maximum width, and `Digital Herencia Desert BG.jpg` horizon. TypeScripture, Maximal Template, and Anthimeria add only their own inner documentation, source-browser, and workbench topologies.
-
-Surface topology mapping is: BlogTemplate information topology for Ontology discovery, ProductTemplate information topology for PureUI details, DocsTemplate information topology for TypeScripture, and DashboardTemplate information topology for Anthimeria. These mappings reuse structure, not BoldKit visual identity.
+| Fact                              | Authority                                             |
+| --------------------------------- | ----------------------------------------------------- |
+| Module ownership                  | File path + `hipster.modules.json` (computed)         |
+| Installed modules (generated app) | `hipster.json` + `lib/modules/registry.ts`            |
+| Doctrine rules                    | `validation.yaml` ⇄ `doctrine-map.mjs` (sync-checked) |
+| Identity                          | Clerk                                                 |
+| Users, orgs, memberships, roles   | Application Postgres                                  |
+| Payments                          | Stripe (interpreted by app)                           |
+| Work status                       | GitHub issues/Project                                 |
+| Completion evidence               | Executed commands recorded in `progress.json`         |

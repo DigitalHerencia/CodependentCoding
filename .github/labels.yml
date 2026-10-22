@@ -1,0 +1,81 @@
+# Label catalog — synced by scripts/github/sync-issues.mjs
+# name | color | description
+- { name: "type:feature", color: "1f6feb", description: "New capability" }
+- { name: "type:bug", color: "d73a4a", description: "Something is broken" }
+- {
+    name: "type:chore",
+    color: "6e7781",
+    description: "Maintenance, tooling, cleanup",
+  }
+- {
+    name: "type:refactor",
+    color: "8250df",
+    description: "Restructure without behavior change",
+  }
+- {
+    name: "type:test",
+    color: "0e8a16",
+    description: "Tests and test infrastructure",
+  }
+- {
+    name: "type:docs",
+    color: "0075ca",
+    description: "Documentation and governance text",
+  }
+- { name: "type:ci", color: "fbca04", description: "CI/CD workflows" }
+- {
+    name: "type:spike",
+    color: "c5def5",
+    description: "Time-boxed investigation",
+  }
+- {
+    name: "area:governance",
+    color: "2f7a8d",
+    description: "context/, .claude/, CLAUDE.md, GitHub setup",
+  }
+- { name: "area:site", color: "2f7a8d", description: "Factory landing page" }
+- {
+    name: "area:template",
+    color: "2f7a8d",
+    description: "Maximal Template (template/)",
+  }
+- {
+    name: "area:modules",
+    color: "2f7a8d",
+    description: "Module system, manifest, ownership",
+  }
+- {
+    name: "area:cli",
+    color: "2f7a8d",
+    description: "Hipster Stack CLI (packages/cli)",
+  }
+- {
+    name: "area:plugin",
+    color: "2f7a8d",
+    description: "Loaded Vibes plugin (plugin/)",
+  }
+- { name: "area:ci", color: "2f7a8d", description: ".github/workflows" }
+- { name: "priority:p0", color: "b60205", description: "Critical path" }
+- { name: "priority:p1", color: "d93f0b", description: "High" }
+- { name: "priority:p2", color: "fbca04", description: "Normal" }
+- { name: "priority:p3", color: "c2e0c6", description: "Low" }
+- { name: "size:xs", color: "ededed", description: "< 1 hour" }
+- { name: "size:s", color: "d4d4d4", description: "~2 hours" }
+- { name: "size:m", color: "bdbdbd", description: "~half day" }
+- { name: "size:l", color: "9e9e9e", description: "~1 day" }
+- { name: "size:xl", color: "757575", description: "Too big - split it" }
+- {
+    name: "dogfood",
+    color: "5319e7",
+    description: "Friction found while using the factory",
+  }
+- {
+    name: "blocked",
+    color: "000000",
+    description: "Waiting on a dependency or decision",
+  }
+- {
+    name: "doctrine",
+    color: "05030b",
+    description: "Changes a CC-* rule (docs + contract + lint in one PR)",
+  }

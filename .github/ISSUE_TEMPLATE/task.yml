@@ -1,0 +1,45 @@
+name: Task
+description: Chore, refactor, test, docs, CI, or spike
+title: "CC-NNN · "
+body:
+  - type: dropdown
+    id: type
+    attributes:
+      label: Type
+      options: [chore, refactor, test, docs, ci, spike]
+    validations: { required: true }
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options: [governance, site, template, modules, cli, plugin, ci]
+    validations: { required: true }
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+    validations: { required: true }
+  - type: textarea
+    id: scope
+    attributes:
+      label: Scope
+      value: |
+        - [ ]
+    validations: { required: true }
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      value: |
+        - [ ]
+    validations: { required: true }
+  - type: textarea
+    id: validation
+    attributes:
+      label: Validation
+      render: powershell
+  - type: input
+    id: timebox
+    attributes:
+      label: Timebox (spikes only)
+      placeholder: "2h"

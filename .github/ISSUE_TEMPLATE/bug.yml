@@ -1,0 +1,41 @@
+name: Bug
+description: Something in the factory or a generated app is broken
+title: "CC-NNN · fix: "
+labels: ["type:bug"]
+body:
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options: [governance, site, template, modules, cli, plugin, ci]
+    validations: { required: true }
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: Include the exact command and output. Doctrine findings include their CC-* ID.
+      render: text
+    validations: { required: true }
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected
+    validations: { required: true }
+  - type: textarea
+    id: repro
+    attributes:
+      label: Reproduction
+      description: Minimal steps (preset, modules, CLI flags, OS).
+      value: |
+        1.
+    validations: { required: true }
+  - type: input
+    id: versions
+    attributes:
+      label: Versions
+      placeholder: "node 24.x · pnpm 12.3.4 · template commit abc1234 · hipster-stack 1.0.0"
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      options: [p0, p1, p2, p3]

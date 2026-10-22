@@ -1,34 +1,30 @@
-# Dependencies
+# Dependencies and package-manager state
 node_modules/
-
-# Next.js
-.next/
-out/
-next-env.d.ts
-
-# Build output
-build/
-dist/
-.artifacts/
-coverage/
-.cache/
-
-# Generated package-manager state
+.pnpm-store/
 pnpm-lock.yaml
 
-# Vercel
-.vercel/
+# Build output
+.next/
+out/
+build/
+dist/
+coverage/
+.cache/
+.sandbox/
+next-env.d.ts
+*.tsbuildinfo
 
-# Canonical/imported source kept byte-stable
-content/
-context/10-authority/
-context/20-reference/
-context/90-superseded-source/
+# Generated
+template/generated/
 
-# Bundled/generated agent assets
-packages/loaded-vibes/
-.agents/Loaded-Vibes-Codex-Plugin-v0.1.0/
-
+# Test output
 playwright-report/
 test-results/
 blob-report/
+
+# Platform state
+.vercel/
+.env*
+
+# Reference doctrine kept byte-stable
+context/doctrine/

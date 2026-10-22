@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Backlog source of truth
+    url: https://github.com/DigitalHerencia/CodependentCoding/tree/main/context/specs/issues
+    about: Planned work lives in context/specs/issues and is synced here with pnpm issues:sync.

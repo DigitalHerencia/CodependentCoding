@@ -13,6 +13,7 @@
     "prisma:generate": "prisma generate",
     "prisma:validate": "prisma validate",
     "start": "next start",
+    "doctrine:test": "node --test eslint/*.test.mjs",
     "typecheck": "next typegen && tsc --noEmit",
     "validate": "pnpm format:check && pnpm lint && pnpm typecheck",
     "postinstall": "prisma generate",

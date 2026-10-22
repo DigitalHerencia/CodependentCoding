@@ -1,0 +1,398 @@
+[
+  {
+    "id": "CC-001",
+    "file": "CC-001-pin-the-toolchain-across-root-and-template.md",
+    "milestone": "M0",
+    "depends_on": [],
+    "priority": "p0",
+    "size": "s",
+    "title": "Pin the toolchain across root and template"
+  },
+  {
+    "id": "CC-002",
+    "file": "CC-002-remove-legacy-governance-and-relocate-reference-doctrine.md",
+    "milestone": "M0",
+    "depends_on": ["CC-001"],
+    "priority": "p0",
+    "size": "s",
+    "title": "Remove legacy governance and relocate reference doctrine"
+  },
+  {
+    "id": "CC-003",
+    "file": "CC-003-create-labels-milestones-and-the-github-project-sync-issues.md",
+    "milestone": "M0",
+    "depends_on": [],
+    "priority": "p0",
+    "size": "s",
+    "title": "Create labels, milestones and the GitHub Project; sync issues"
+  },
+  {
+    "id": "CC-004",
+    "file": "CC-004-ci-baseline-workflow.md",
+    "milestone": "M0",
+    "depends_on": ["CC-001"],
+    "priority": "p0",
+    "size": "s",
+    "title": "CI baseline workflow"
+  },
+  {
+    "id": "CC-005",
+    "file": "CC-005-verify-the-claude-code-harness-on-windows.md",
+    "milestone": "M0",
+    "depends_on": ["CC-001"],
+    "priority": "p0",
+    "size": "xs",
+    "title": "Verify the Claude Code harness on Windows"
+  },
+  {
+    "id": "CC-006",
+    "file": "CC-006-reduce-the-site-to-the-landing-page.md",
+    "milestone": "M1",
+    "depends_on": ["CC-002"],
+    "priority": "p1",
+    "size": "m",
+    "title": "Reduce the site to the landing page"
+  },
+  {
+    "id": "CC-007",
+    "file": "CC-007-remove-legacy-generator-packages.md",
+    "milestone": "M1",
+    "depends_on": ["CC-006"],
+    "priority": "p1",
+    "size": "s",
+    "title": "Remove legacy generator packages"
+  },
+  {
+    "id": "CC-008",
+    "file": "CC-008-update-landing-page-content-and-navigation.md",
+    "milestone": "M1",
+    "depends_on": ["CC-006"],
+    "priority": "p2",
+    "size": "s",
+    "title": "Update landing page content and navigation"
+  },
+  {
+    "id": "CC-009",
+    "file": "CC-009-adopt-doctrine-lint-in-the-template-and-apply-auto-fixes.md",
+    "milestone": "M2",
+    "depends_on": ["CC-001"],
+    "priority": "p0",
+    "size": "s",
+    "title": "Adopt doctrine lint in the template and apply auto-fixes"
+  },
+  {
+    "id": "CC-010",
+    "file": "CC-010-fix-route-and-feature-boundary-findings.md",
+    "milestone": "M2",
+    "depends_on": ["CC-009"],
+    "priority": "p0",
+    "size": "m",
+    "title": "Fix route and feature boundary findings"
+  },
+  {
+    "id": "CC-011",
+    "file": "CC-011-fix-server-layer-boundary-and-naming-findings.md",
+    "milestone": "M2",
+    "depends_on": ["CC-009"],
+    "priority": "p0",
+    "size": "m",
+    "title": "Fix server-layer boundary and naming findings"
+  },
+  {
+    "id": "CC-012",
+    "file": "CC-012-template-typecheck-green.md",
+    "milestone": "M2",
+    "depends_on": ["CC-010", "CC-011"],
+    "priority": "p0",
+    "size": "m",
+    "title": "Template typecheck green"
+  },
+  {
+    "id": "CC-013",
+    "file": "CC-013-prettier-baseline-across-the-repo.md",
+    "milestone": "M2",
+    "depends_on": ["CC-012"],
+    "priority": "p1",
+    "size": "xs",
+    "title": "Prettier baseline across the repo"
+  },
+  {
+    "id": "CC-014",
+    "file": "CC-014-remove-generator-debris-from-the-template.md",
+    "milestone": "M2",
+    "depends_on": ["CC-011"],
+    "priority": "p1",
+    "size": "s",
+    "title": "Remove generator debris from the template"
+  },
+  {
+    "id": "CC-015",
+    "file": "CC-015-error-loading-and-isr-conventions.md",
+    "milestone": "M2",
+    "depends_on": ["CC-012"],
+    "priority": "p1",
+    "size": "s",
+    "title": "Error, loading and ISR conventions"
+  },
+  {
+    "id": "CC-016",
+    "file": "CC-016-rls-cross-tenant-test-harness-against-real-postgres.md",
+    "milestone": "M2",
+    "depends_on": ["CC-012"],
+    "priority": "p0",
+    "size": "m",
+    "title": "RLS cross-tenant test harness against real Postgres"
+  },
+  {
+    "id": "CC-017",
+    "file": "CC-017-test-baseline-vitest-and-playwright-green.md",
+    "milestone": "M2",
+    "depends_on": ["CC-012"],
+    "priority": "p1",
+    "size": "s",
+    "title": "Test baseline: Vitest and Playwright green"
+  },
+  {
+    "id": "CC-018",
+    "file": "CC-018-module-manifest-and-schema.md",
+    "milestone": "M3",
+    "depends_on": ["CC-012"],
+    "priority": "p0",
+    "size": "m",
+    "title": "Module manifest and schema"
+  },
+  {
+    "id": "CC-019",
+    "file": "CC-019-ownership-resolver-and-orphan-check.md",
+    "milestone": "M3",
+    "depends_on": ["CC-018"],
+    "priority": "p0",
+    "size": "m",
+    "title": "Ownership resolver and orphan check"
+  },
+  {
+    "id": "CC-020",
+    "file": "CC-020-rename-files-to-satisfy-ownership-conventions.md",
+    "milestone": "M3",
+    "depends_on": ["CC-019"],
+    "priority": "p0",
+    "size": "m",
+    "title": "Rename files to satisfy ownership conventions"
+  },
+  {
+    "id": "CC-021",
+    "file": "CC-021-module-runtime-definitions-and-generated-registry.md",
+    "milestone": "M3",
+    "depends_on": ["CC-020"],
+    "priority": "p0",
+    "size": "l",
+    "title": "Module runtime definitions and generated registry"
+  },
+  {
+    "id": "CC-022",
+    "file": "CC-022-prisma-multi-file-schema-with-module-tags.md",
+    "milestone": "M3",
+    "depends_on": ["CC-020"],
+    "priority": "p0",
+    "size": "m",
+    "title": "Prisma multi-file schema with module tags"
+  },
+  {
+    "id": "CC-023",
+    "file": "CC-023-rls-sql-per-owner-and-dbinit.md",
+    "milestone": "M3",
+    "depends_on": ["CC-022", "CC-016"],
+    "priority": "p0",
+    "size": "m",
+    "title": "RLS SQL per owner and db:init"
+  },
+  {
+    "id": "CC-024",
+    "file": "CC-024-module-boundary-lint-rules-cc-mod-001002.md",
+    "milestone": "M3",
+    "depends_on": ["CC-021"],
+    "priority": "p1",
+    "size": "m",
+    "title": "Module boundary lint rules (CC-MOD-001/002)"
+  },
+  {
+    "id": "CC-025",
+    "file": "CC-025-validated-env-per-owner.md",
+    "milestone": "M3",
+    "depends_on": ["CC-018"],
+    "priority": "p1",
+    "size": "s",
+    "title": "Validated env per owner"
+  },
+  {
+    "id": "CC-026",
+    "file": "CC-026-add-on-modules-billing-uploads-media-email-inference-ratelim.md",
+    "milestone": "M3",
+    "depends_on": ["CC-021", "CC-025"],
+    "priority": "p1",
+    "size": "l",
+    "title": "Add-on modules: billing, uploads, media, email, inference, ratelimit"
+  },
+  {
+    "id": "CC-027",
+    "file": "CC-027-golden-module-projects.md",
+    "milestone": "M3",
+    "depends_on": ["CC-021", "CC-022", "CC-023"],
+    "priority": "p0",
+    "size": "m",
+    "title": "Golden module: projects"
+  },
+  {
+    "id": "CC-028",
+    "file": "CC-028-cli-skeleton-and-local-install.md",
+    "milestone": "M4",
+    "depends_on": ["CC-018"],
+    "priority": "p0",
+    "size": "s",
+    "title": "CLI skeleton and local install"
+  },
+  {
+    "id": "CC-029",
+    "file": "CC-029-composition-engine-and-new-command.md",
+    "milestone": "M4",
+    "depends_on": ["CC-028", "CC-019", "CC-021", "CC-022"],
+    "priority": "p0",
+    "size": "l",
+    "title": "Composition engine and `new` command"
+  },
+  {
+    "id": "CC-030",
+    "file": "CC-030-generated-app-governance-assets.md",
+    "milestone": "M4",
+    "depends_on": ["CC-029"],
+    "priority": "p0",
+    "size": "m",
+    "title": "Generated-app governance assets"
+  },
+  {
+    "id": "CC-031",
+    "file": "CC-031-post-compose-setup-and-optional-provisioning.md",
+    "milestone": "M4",
+    "depends_on": ["CC-029"],
+    "priority": "p1",
+    "size": "m",
+    "title": "Post-compose setup and optional provisioning"
+  },
+  {
+    "id": "CC-032",
+    "file": "CC-032-slice-scaffolder.md",
+    "milestone": "M4",
+    "depends_on": ["CC-027", "CC-029"],
+    "priority": "p0",
+    "size": "l",
+    "title": "`slice` scaffolder"
+  },
+  {
+    "id": "CC-033",
+    "file": "CC-033-add-command.md",
+    "milestone": "M4",
+    "depends_on": ["CC-029"],
+    "priority": "p2",
+    "size": "m",
+    "title": "`add` command"
+  },
+  {
+    "id": "CC-034",
+    "file": "CC-034-doctor-command.md",
+    "milestone": "M4",
+    "depends_on": ["CC-029"],
+    "priority": "p2",
+    "size": "s",
+    "title": "`doctor` command"
+  },
+  {
+    "id": "CC-035",
+    "file": "CC-035-ci-composition-matrix.md",
+    "milestone": "M4",
+    "depends_on": ["CC-029"],
+    "priority": "p0",
+    "size": "m",
+    "title": "CI composition matrix"
+  },
+  {
+    "id": "CC-036",
+    "file": "CC-036-plugin-skeleton-and-local-marketplace.md",
+    "milestone": "M5",
+    "depends_on": ["CC-030"],
+    "priority": "p0",
+    "size": "s",
+    "title": "Plugin skeleton and local marketplace"
+  },
+  {
+    "id": "CC-037",
+    "file": "CC-037-skill-idea-grill-session.md",
+    "milestone": "M5",
+    "depends_on": ["CC-036"],
+    "priority": "p0",
+    "size": "m",
+    "title": "Skill: idea (grill session)"
+  },
+  {
+    "id": "CC-038",
+    "file": "CC-038-skill-plan-docs-issues.md",
+    "milestone": "M5",
+    "depends_on": ["CC-037"],
+    "priority": "p1",
+    "size": "s",
+    "title": "Skill: plan (docs \u2192 issues)"
+  },
+  {
+    "id": "CC-039",
+    "file": "CC-039-skills-slice-and-classify.md",
+    "milestone": "M5",
+    "depends_on": ["CC-032", "CC-036"],
+    "priority": "p0",
+    "size": "m",
+    "title": "Skills: slice and classify"
+  },
+  {
+    "id": "CC-040",
+    "file": "CC-040-skills-check-ship-handoff-plugin-hooks.md",
+    "milestone": "M5",
+    "depends_on": ["CC-036"],
+    "priority": "p0",
+    "size": "m",
+    "title": "Skills: check, ship, handoff; plugin hooks"
+  },
+  {
+    "id": "CC-041",
+    "file": "CC-041-agents-reviewer-and-verifier.md",
+    "milestone": "M5",
+    "depends_on": ["CC-036"],
+    "priority": "p1",
+    "size": "s",
+    "title": "Agents: reviewer and verifier"
+  },
+  {
+    "id": "CC-042",
+    "file": "CC-042-dogfood-run-idea-to-deployed-mvp.md",
+    "milestone": "M6",
+    "depends_on": ["CC-035", "CC-040"],
+    "priority": "p0",
+    "size": "l",
+    "title": "Dogfood run: idea to deployed MVP"
+  },
+  {
+    "id": "CC-043",
+    "file": "CC-043-docs-readme-and-doctrine-sync-check.md",
+    "milestone": "M6",
+    "depends_on": ["CC-042"],
+    "priority": "p1",
+    "size": "s",
+    "title": "Docs, README and doctrine sync check"
+  },
+  {
+    "id": "CC-044",
+    "file": "CC-044-release-v1-0-0.md",
+    "milestone": "M6",
+    "depends_on": ["CC-043"],
+    "priority": "p0",
+    "size": "xs",
+    "title": "Release v1.0.0"
+  }
+]

@@ -1,0 +1,437 @@
+# Codependent Coding — application contract
+# Compiled from: context/docs/PRD.md, tech-requirements.md, Architecture.md, AUTH.md
+# Intent docs win on conflict: fix this file in the same PR as the doc change.
+schema: codependent-coding/application/v1
+version: 1.0.0
+updated: 2026-10-22
+
+identity:
+  name: Codependent Coding
+  kind: internal-software-factory
+  owner: Ivan P. Roman
+  published: false
+  purpose: Scaffold architecture-conformant SaaS apps locally and drive them to a deployed MVP in hours to validate ideas.
+  retired_terms: [Anthimeria, Virgule, Arrangement, Simples, Ontologies]
+
+components:
+  doctrine:
+    name: Codependent Coding
+    enforcement:
+      [
+        template/eslint/doctrine-map.mjs,
+        template/eslint/codependent-plugin.mjs,
+        template/prettier.config.mjs,
+        template/tsconfig.json,
+      ]
+  template:
+    name: Maximal Template
+    path: template/
+    runnable: true
+    golden_module: projects
+  cli:
+    name: Hipster Stack
+    path: packages/cli/
+    binary: hipster-stack
+    install: pnpm link --global
+    published: false
+    commands: [new, add, slice, doctor, compose]
+  plugin:
+    name: Loaded Vibes
+    path: plugin/loaded-vibes/
+    host: claude-code
+    marketplace: .claude-plugin/marketplace.json
+    activates_when: hipster.json exists at repo root
+    skills: [idea, plan, slice, classify, check, ship, handoff]
+    agents: [reviewer, verifier]
+    hooks: [PostToolUse:lint-edited-file, Stop:execution-state-guard]
+  site:
+    path: app/
+    routes: ["/"]
+    static: true
+
+goals:
+  - {
+      id: G1,
+      text: "new → running app with auth + tenancy",
+      target: "<= 10 min",
+    }
+  - { id: G2, text: "template → deployed MVP", target: "<= 1 working day" }
+  - {
+      id: G3,
+      text: "doctrine executable",
+      target: "every mechanizable rule has a CC-* ESLint rule; template lints clean",
+    }
+  - {
+      id: G4,
+      text: "one source of truth per fact",
+      target: "ownership computed; no hand-kept catalogs",
+    }
+  - {
+      id: G5,
+      text: "agents stay in rails",
+      target: "plugin + hooks enforce patterns and nomenclature",
+    }
+  - {
+      id: G6,
+      text: "hand-coding stays easy",
+      target: "scaffolds + rule-ID lint messages",
+    }
+
+non_goals:
+  - publishing the CLI or template
+  - web configuration workbench, catalog site, docs site
+  - alternative stacks
+  - multi-user factory features
+
+environment:
+  os: [windows-11, linux, macos]
+  owner_shell: pwsh-7
+  node: "24.x"
+  package_manager: pnpm@12.3.4
+  external_clis: [gh, vercel, neonctl]
+
+toolchain:
+  typescript: 6.0.3
+  eslint: 9.39.5
+  eslint-config-next: 16.3.4
+  eslint-config-prettier: 10.1.8
+  prettier: 3.9.6
+  prettier-plugin-tailwindcss: 0.8.1
+  next: 16.3.4
+  react: 19.2.8
+  tailwindcss: 4.3.3
+  prisma: 7.10.0
+  "@neondatabase/serverless": 1.1.0
+  "@clerk/nextjs": 7.9.1
+  zod: 4.5.4
+  react-hook-form: 7.87.0
+  vitest: 4.1.11
+  "@playwright/test": 1.62.1
+  stripe: 22.6.1
+  pinning: exact
+
+repository:
+  layout:
+    app/: landing page only
+    components/: landing presentation
+    public/: brand assets
+    packages/cli/: Hipster Stack CLI
+    template/: Maximal Template
+    plugin/loaded-vibes/: Claude Code plugin
+    .claude-plugin/: local marketplace
+    scripts/github/: issue sync
+    context/docs/: human intent
+    context/specs/issues/: work items
+    context/doctrine/: reference books (non-authoritative)
+    .claude/contracts/: machine contracts
+    .claude/execution/: execution state
+    .claude/hooks/: hook scripts
+    .github/: templates and CI
+  remove:
+    - .agents/
+    - packages/core/
+    - packages/schema/
+    - packages/loaded-vibes/
+    - content.zip
+    - template-disposition.json
+    - lib/ (root catalog code)
+    - "app/{anthimeria,maximal-template,ontologies,simples,typescripture}/"
+    - "context/specs/{anthimeria,generation,ontologies,simples,loaded-vibes}/"
+    - template/.agents/
+    - template/context/
+    - template/AGENTS.md
+  workflow:
+    model: github-flow
+    branch_pattern: "<type>/<issue>-<slug>"
+    merge: squash
+    commits: conventional
+    pr_links_issue: "Closes #<n>"
+
+architecture:
+  governing_sentence: >-
+    Routes own URL and HTTP boundaries. Features orchestrate application capabilities. Components render.
+    Fetchers read persisted data. Actions own ordinary CRUD mutation boundaries. Schemas validate runtime input.
+    Workflows constitute reusable application logic from server operations and helpers. Transactions preserve
+    atomic database invariants. Authentication establishes identity. Authorization decides access.
+    Integrations own provider mechanics. Webhooks own provider HTTP request lifecycles.
+  layers:
+    route:
+      {
+        path: "app/**/page.tsx|layout.tsx",
+        role: URL boundary; Suspense + feature,
+        or blocks for static public pages,
+      }
+    route-handler:
+      { path: "app/api/<provider>/webhooks/route.ts", role: HTTP lifecycle }
+    proxy: { path: proxy.ts, role: route gating }
+    feature:
+      {
+        path: "features/<d>/<d><Thing>Feature.tsx",
+        role: capability orchestration (server),
+      }
+    feature-client:
+      { path: "features/<d>/<name>.client.tsx", role: browser behavior }
+    feature-form:
+      {
+        path: "features/<d>/<d><Verb><Thing>Form.tsx",
+        role: React Hook Form + Zod + action,
+      }
+    feature-skeleton:
+      {
+        path: "features/<d>/<d><Thing>Skeleton.tsx",
+        role: loading presentation,
+      }
+    template:
+      {
+        path: "components/templates/<d><Thing>Template.tsx",
+        role: domain presentation,
+      }
+    block:
+      { path: "components/blocks/<kebab>.tsx", role: reusable presentation }
+    nav: { path: "components/{nav,shells}/<kebab>.tsx", role: structure }
+    ui: { path: "components/{ui,chart}/<kebab>.tsx", role: primitives }
+    fetcher:
+      { path: "lib/fetchers/<d>Fetchers.ts", role: read-only persisted reads }
+    action: { path: "lib/actions/<d>Actions.ts", role: CRUD mutation boundary }
+    workflow:
+      {
+        path: "lib/workflows/<d>Workflows.ts | lib/workflows/<d>/<verbNoun>.ts",
+        role: named application logic,
+      }
+    transaction:
+      {
+        path: "lib/db/transactions/<d>-<verb>-<noun>.tx.ts",
+        role: atomic DB writes,
+      }
+    db:
+      {
+        path: "lib/db/{client,provider,tenant}.ts, selects/<d>.selects.ts, dto/<d>.dto.ts",
+        role: DB runtime,
+        projections,
+        DTOs,
+        tenant context,
+      }
+    auth:
+      {
+        path: "lib/auth/{clerk,auth,redirects,clerk-webhooks}.ts",
+        role: identity,
+      }
+    authz:
+      {
+        path: "lib/authz/{roles,permissions,resources,policies,attributes}.ts",
+        role: access decisions,
+      }
+    integration:
+      {
+        path: "lib/integrations/<provider>/<kebab>.ts",
+        role: provider mechanics,
+      }
+    cache:
+      { path: "lib/cache/{tags,life,invalidate}.ts", role: cache semantics }
+    modules:
+      {
+        path: "lib/modules/{registry,<id>.module}.ts",
+        role: module runtime contributions,
+      }
+    env: { path: "lib/env/<owner>.ts", role: validated configuration }
+    schema: { path: "schemas/<d>Schemas.ts", role: runtime validation }
+    types: { path: "types/<d>Types.ts", role: compile-time contracts }
+    prisma:
+      {
+        path: "prisma/schema/<owner>.prisma, prisma/rls/<owner>.sql, prisma/seed.ts",
+        role: schema lifecycle,
+      }
+  exceptions:
+    - { id: EX-1, text: static public pages compose blocks directly }
+    - {
+        id: EX-2,
+        text: "form features compose UI primitives and may declare 'use client'",
+      }
+    - { id: EX-3, text: "skeletons may import components/ui/skeleton" }
+    - {
+        id: EX-4,
+        text: ".client.tsx companions may import interactive UI controls",
+      }
+
+modules:
+  manifest: template/hipster.modules.json
+  runtime_definition: "lib/modules/<id>.module.ts"
+  registry: lib/modules/registry.ts
+  ownership:
+    computed: true
+    order:
+      - explicit owns glob in manifest
+      - path segment equals module id
+      - "basename starts with <id> followed by [A-Z.-]"
+      - base (fallback)
+    conflict: error
+    reserved_ids:
+      [
+        organization,
+        membership,
+        onboarding,
+        settings,
+        dashboard,
+        identity,
+        auth,
+        webhook,
+        audit,
+      ]
+  prisma:
+    schema: multi-file
+    relation_tag: "// @module <id>"
+  rls: "prisma/rls/<owner>.sql"
+  domain:
+    [crm, projects, support, marketing, invoicing, social, ai, portal, admin]
+  addon: [billing, uploads, media, email, inference, ratelimit]
+  presets:
+    blank: []
+    crm: [crm]
+    projects: [projects, uploads]
+    support: [support, email]
+    marketing: [marketing, email]
+    invoicing: [invoicing, billing, uploads]
+    social: [social, media]
+    ai: [ai, inference, billing, ratelimit]
+    portal: [portal, uploads, billing]
+    admin: [admin]
+
+base:
+  includes:
+    - Clerk authentication (keyless dev mode)
+    - application-owned User, Organization, Membership, AuditLog, WebhookEvent
+    - RBAC authz with module-contributed resources
+    - RLS tenant transactions
+    - shells, nav, full UI primitive catalog, generic blocks
+    - onboarding, settings (profile, members, organization), dashboard
+    - public pages (landing, faq, terms, privacy)
+    - error/loading conventions, dev-only design-system page
+    - Clerk webhook sync
+    - doctrine lint, Prettier, Vitest, Playwright, RLS test harness
+
+cli:
+  template_location: [HIPSTER_TEMPLATE env, CLI repo path]
+  new:
+    prompts: [app name, preset or modules, brand color]
+    pipeline:
+      - resolve dependsOn closure
+      - copy template excluding node_modules, .next, generated, prisma/migrations
+      - delete files owned by unselected modules
+      - strip tagged prisma lines
+      - rewrite registry
+      - prune package.json deps
+      - rebuild .env.example
+      - write hipster.json
+      - install generated-app governance
+      - apply brand color token
+      - prisma validate
+      - pnpm install
+      - git init
+    provision_optional:
+      [gh repo create, neonctl project create, vercel link + env add]
+  slice:
+    templates: packages/cli/templates/slice/
+    derived_from: projects
+    field_dsl: "name:string, amount:decimal?, status:enum(a|b), dueAt:datetime?, ownerId:ref(User)"
+    outputs:
+      [
+        prisma model,
+        rls sql,
+        schemas,
+        types,
+        select,
+        dto,
+        fetchers,
+        actions,
+        features,
+        form,
+        skeletons,
+        pages,
+        permissions,
+        nav entry,
+        test stub,
+      ]
+  deterministic: true
+  network_during_compose: false
+
+security:
+  identity_provider: clerk
+  tenancy_authority: application-postgres
+  active_org:
+    { storage: "httpOnly cookie active-org", revalidate: every-request }
+  roles: [owner, admin, member, viewer]
+  permission_format: "<module>.<resource>:<action>"
+  actions: [read, create, update, delete, manage]
+  rls:
+    runtime_role: app_user
+    bypassrls: false
+    context_setting: app.current_organization_id
+    fail_closed: true
+    required_test: pnpm test:rls
+  webhooks:
+    [
+      raw-body verification,
+      idempotency via WebhookEvent(provider,
+      eventId),
+      reconcile provider truth,
+      persist via transaction/workflow,
+      ack 2xx,
+    ]
+  result_type: ActionResult
+  error_codes:
+    [
+      UNAUTHENTICATED,
+      FORBIDDEN,
+      NOT_FOUND,
+      VALIDATION,
+      CONFLICT,
+      RATE_LIMITED,
+      INTERNAL,
+    ]
+  cross_tenant_response: NOT_FOUND
+  never_cached: [authorization, membership, payment, readiness]
+  audit:
+    [
+      membership changes,
+      organization deletion,
+      bulk admin ops,
+      billing state changes,
+    ]
+
+caching:
+  public_routes: static-or-isr
+  tenant_routes: dynamic-fresh
+  cached_reads_via: lib/cache
+  cache_components: disabled-v1
+
+governance:
+  intent: context/docs/
+  contracts: .claude/contracts/
+  execution: .claude/execution/
+  issues: context/specs/issues/
+  router: CLAUDE.md
+  precedence:
+    [
+      owner instruction,
+      context/docs,
+      .claude/contracts,
+      enforcement configs,
+      repository code,
+      context/doctrine,
+    ]
+  generated_apps_receive:
+    [
+      CLAUDE.md,
+      context/docs templates,
+      .claude/contracts skeletons,
+      .claude/execution skeletons,
+    ]
+
+milestones:
+  - { id: M0, name: Governance bootstrap }
+  - { id: M1, name: Site reduction }
+  - { id: M2, name: Template conformance }
+  - { id: M3, name: Module system }
+  - { id: M4, name: Hipster Stack CLI }
+  - { id: M5, name: Loaded Vibes plugin }
+  - { id: M6, name: Dogfood and v1.0.0 }
