@@ -6,9 +6,7 @@
   "milestone": "M0",
   "current_issue": null,
   "next_issue": "CC-005",
-  "queue": [
-    "CC-005"
-  ],
+  "queue": ["CC-005"],
   "branch": null,
   "in_flight": [],
   "notes": [

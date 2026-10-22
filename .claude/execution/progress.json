@@ -5,21 +5,11 @@
   "milestones": {
     "M0": {
       "status": "in-progress",
-      "issues": [
-        "CC-001",
-        "CC-002",
-        "CC-003",
-        "CC-004",
-        "CC-005"
-      ]
+      "issues": ["CC-001", "CC-002", "CC-003", "CC-004", "CC-005"]
     },
     "M1": {
       "status": "todo",
-      "issues": [
-        "CC-006",
-        "CC-007",
-        "CC-008"
-      ]
+      "issues": ["CC-006", "CC-007", "CC-008"]
     },
     "M2": {
       "status": "todo",
@@ -65,22 +55,11 @@
     },
     "M5": {
       "status": "todo",
-      "issues": [
-        "CC-036",
-        "CC-037",
-        "CC-038",
-        "CC-039",
-        "CC-040",
-        "CC-041"
-      ]
+      "issues": ["CC-036", "CC-037", "CC-038", "CC-039", "CC-040", "CC-041"]
     },
     "M6": {
       "status": "todo",
-      "issues": [
-        "CC-042",
-        "CC-043",
-        "CC-044"
-      ]
+      "issues": ["CC-042", "CC-043", "CC-044"]
     }
   },
   "issues": {
