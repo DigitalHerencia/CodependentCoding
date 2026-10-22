@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/progress/v1",
-  "updated": "2026-10-22T23:50:00Z",
+  "updated": "2026-10-22T23:55:00Z",
   "format": "Evidence states: EXECUTED | INSPECTED | NOT_RUN | BLOCKED. Never mark an issue done without EXECUTED evidence for its Validation commands.",
   "milestones": {
     "M0": {
@@ -82,6 +82,12 @@
       "branch": "claude/project-thread-ula1vk",
       "note": "Legacy governance removed, books moved to context/doctrine/. Remaining retired-vocabulary hits live in code owned by CC-006/007/008/014/043. Squash-merged with owner approval while root CI was red on pre-existing format/lint findings. Scope interpretation: DEC-017.",
       "pr": 210
+    },
+    "CC-004": {
+      "status": "done",
+      "github": 164,
+      "pr": 212,
+      "note": "Squash-merged on owner's go-ahead ('just merge') with root job red on pre-existing format/lint/typecheck findings"
     }
   },
   "completed": [
@@ -260,6 +266,55 @@
       "issue": "CC-002",
       "command": "ls context/doctrine/TypeScripture_The-Book-of-*",
       "result": "24 chapters each in Knowledge and Implementation; content/ directory gone"
+    },
+    {
+      "date": "2026-10-22",
+      "state": "EXECUTED",
+      "command": "CI run 39873857820 on PR #212 (pull_request event)",
+      "result": "Reported both jobs: 'Maximal Template' success, 'Factory (root)' failure. https://github.com/DigitalHerencia/CodependentCoding/actions/runs/39873857820",
+      "issue": "CC-004"
+    },
+    {
+      "date": "2026-10-22",
+      "state": "EXECUTED",
+      "command": "template: pnpm doctrine:test (CI)",
+      "result": "tests 44, pass 44, fail 0",
+      "issue": "CC-004"
+    },
+    {
+      "date": "2026-10-22",
+      "state": "EXECUTED",
+      "command": "template: pnpm prisma:generate (CI)",
+      "result": "Generated Prisma Client (7.10.0) to ./generated/prisma",
+      "issue": "CC-004"
+    },
+    {
+      "date": "2026-10-22",
+      "state": "EXECUTED",
+      "command": "template: pnpm format:check / lint / typecheck (CI, continue-on-error)",
+      "result": "format: 25 files unformatted; lint: 241 problems (231 errors, 10 warnings); typecheck: 13 TS errors. Non-blocking until CC-012/CC-013",
+      "issue": "CC-004"
+    },
+    {
+      "date": "2026-10-22",
+      "state": "EXECUTED",
+      "command": "root: pnpm format:check / lint / typecheck / test (CI)",
+      "result": "format, lint, typecheck fail on pre-existing code (CC-006/007/013); test passes (no test files)",
+      "issue": "CC-004"
+    },
+    {
+      "date": "2026-10-22",
+      "state": "EXECUTED",
+      "command": "root locally: pnpm typecheck",
+      "result": "250 TS errors, 101 in components/ui/ascii-shapes.tsx; all in components/ slated for CC-006",
+      "issue": "CC-004"
+    },
+    {
+      "date": "2026-10-22",
+      "state": "EXECUTED",
+      "command": "root locally: eslint . (json)",
+      "result": "167 findings, mostly components/blocks, components/templates, components/ui, packages/core",
+      "issue": "CC-004"
     }
   ],
   "known_findings": [

@@ -8,7 +8,7 @@ priority: p0
 size: s
 labels: [type:ci, area:ci, priority:p0, size:s]
 depends_on: [CC-001]
-status: todo
+status: done
 ---
 
 # CC-004 · CI baseline workflow

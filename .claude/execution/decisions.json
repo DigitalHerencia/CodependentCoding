@@ -164,6 +164,15 @@
       "context": "The Codex plugin that the spec places in .agents/ had already moved to .claude/LoadedVibesCodexPlugin/, which application.yaml does not list as an allowed .claude/ directory. content/README.md is not named in the scope. lib/docs.tsx read the books from content/. The rg acceptance check also matches Anthimeria product code that later issues delete.",
       "decision": "Delete .claude/LoadedVibesCodexPlugin/ as the Codex plugin named in scope. Move content/README.md with the books (it describes them). Point lib/docs.tsx at context/doctrine/ so the existing TypeScripture routes keep working until CC-006 removes them. Leave remaining Anthimeria/.agents mentions in app/, components/, packages/, template/AGENTS.md, README, SECURITY, CHANGELOG and package.json to CC-006/007/008/014/043 rather than widen CC-002. content.zip, tsconfig.tsbuildinfo, .agents/, the retired context/specs subfolders and context/mockups were already absent on main.",
       "refs": ["CC-002", "CC-006", "CC-007", "CC-014", "CC-043"]
+    },
+    {
+      "id": "DEC-018",
+      "date": "2026-10-22",
+      "status": "accepted",
+      "title": "CC-004 CI step policy details",
+      "context": "CC-004 allows continue-on-error only on template format/lint/typecheck, but the template has no test script until CC-017 and the root job stopped at its first failing step.",
+      "decision": "Template test step is `pnpm run --if-present test` (skipped until CC-017, never masked). Root lint/typecheck/test use `if: !cancelled()` so every root check reports even after format:check fails. pnpm comes from pnpm/action-setup@v4 reading packageManager; setup-node caches by each lockfile.",
+      "refs": ["CC-004", "PR #212"]
     }
   ]
 }

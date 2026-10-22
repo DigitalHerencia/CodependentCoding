@@ -19,15 +19,22 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v4 # version from package.json packageManager
       - uses: actions/setup-node@v6
         with:
           node-version-file: .node-version
-      - run: corepack enable
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
       - run: pnpm install --frozen-lockfile
+      # Root has no continue-on-error (CC-004). `!cancelled()` keeps every check reporting
+      # even when an earlier one fails, so one red step does not hide the others.
       - run: pnpm format:check
       - run: pnpm lint
+        if: ${{ !cancelled() }}
       - run: pnpm typecheck
+        if: ${{ !cancelled() }}
       - run: pnpm test
+        if: ${{ !cancelled() }}
 
   template:
     name: Maximal Template
@@ -42,21 +49,26 @@ jobs:
       DIRECT_URL: postgresql://ci:ci@localhost:5432/ci
     steps:
       - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v4
+        with:
+          package_json_file: template/package.json
       - uses: actions/setup-node@v6
         with:
           node-version-file: .node-version
-      - run: corepack enable
+          cache: pnpm
+          cache-dependency-path: template/pnpm-lock.yaml
       - run: pnpm install --frozen-lockfile
+      # continue-on-error is allowed only on these three steps, until CC-012/CC-013 land.
       - run: pnpm format:check
         continue-on-error: true # remove in CC-013
       - run: pnpm doctrine:test
+      - run: pnpm prisma:generate
       - run: pnpm lint
         continue-on-error: true # remove in CC-012
       - run: pnpm typecheck
         continue-on-error: true # remove in CC-012
-      - run: pnpm test
-        continue-on-error: true # remove in CC-017 (adds vitest + test script)
-
+      # Template has no test script until CC-017; --if-present skips it without masking failures.
+      - run: pnpm run --if-present test
 
   # Enabled in CC-035 once the CLI exists.
   # compose:

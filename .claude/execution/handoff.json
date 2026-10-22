@@ -1,12 +1,12 @@
 {
   "$schema": "codependent-coding/execution/handoff/v1",
-  "updated": "2026-10-22T23:50:00Z",
+  "updated": "2026-10-22T23:55:00Z",
   "format": "Overwrite each session. Minimum state the next session needs to resume safely.",
   "status": "ready-for-claude-code",
   "milestone": "M0",
   "current_issue": null,
-  "next_issue": "CC-004",
-  "queue": ["CC-004", "CC-005"],
+  "next_issue": "CC-005",
+  "queue": ["CC-005"],
   "branch": null,
   "in_flight": [],
   "notes": [
@@ -15,12 +15,13 @@
     "Toolchain now pinned: node 24.x, pnpm 12.3.4, TS 6.0.3, ESLint 9.39.5 at root and template. Root lint/typecheck run but have findings (CC-006/CC-009 onward).",
     "CC-003 done: 44 issues (#161-#204) on GitHub with labels+milestones, all on Project #19 (DEC-016). Project #21 holds the older LV/HS backlog and is not used.",
     "Owner's local checkout at D:\\ was still at 9826e2a with an untracked .github-map.json identical to main; owner must remove it and git pull --ff-only.",
-    "CC-002 done (PR #210, DEC-017): books now in context/doctrine/; lib/docs.tsx reads from there until CC-006 removes the TypeScripture routes. Remaining Anthimeria/.agents mentions belong to CC-006/007/008/014/043."
+    "CC-002 done (PR #210, DEC-017): books now in context/doctrine/; lib/docs.tsx reads from there until CC-006 removes the TypeScripture routes. Remaining Anthimeria/.agents mentions belong to CC-006/007/008/014/043.",
+    "CC-004 done (PR #212, DEC-018): CI uses pnpm/action-setup + pnpm cache; template continue-on-error only on format/lint/typecheck; doctrine tests 44/44 in CI."
   ],
   "risks": [
     "Hooks untested on Windows inside the VS Code extension (CC-005).",
-    "CI root job will stay red on lint/typecheck/format until later issues (CC-004 decides continue-on-error policy).",
-    "Root CI format:check errors on template/** without template deps installed (tw-animate-css); address in CC-004."
+    "Root CI job stays red until CC-006/CC-007 (old components/packages: ~250 TS errors, ~167 lint findings) and CC-013 (format). Root format:check also scans template/** without template deps; CC-013 should add template/ to root .prettierignore or install template deps.",
+    "pnpm/action-setup@v4 runs on deprecated Node 20 (forced to 24); bump when a newer major is available."
   ],
   "do_not": [
     "Delete or rewrite context/doctrine/ books",
