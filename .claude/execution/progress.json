@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/progress/v1",
-  "updated": "2026-10-22T23:40:00Z",
+  "updated": "2026-10-22T23:30:00Z",
   "format": "Evidence states: EXECUTED | INSPECTED | NOT_RUN | BLOCKED. Never mark an issue done without EXECUTED evidence for its Validation commands.",
   "milestones": {
     "M0": {
@@ -64,10 +64,10 @@
   },
   "issues": {
     "CC-001": {
-      "status": "in-review",
+      "status": "done",
       "github": 161,
-      "branch": "claude/project-thread-7jv2n7",
-      "note": "Awaiting CI and owner go-ahead to mark ready/merge"
+      "pr": 208,
+      "note": "Squash-merged with owner approval while root CI was red on pre-existing findings"
     }
   },
   "completed": [
@@ -162,6 +162,13 @@
       "command": "pnpm typecheck (root)",
       "result": "250 TS errors, all in components/** + playwright.config.ts (pre-existing site code slated for CC-006); not a CC-001 criterion",
       "issue": "CC-001"
+    },
+    {
+      "date": "2026-10-22",
+      "state": "EXECUTED",
+      "command": "CI Factory (root) on PR #208",
+      "result": "failure at format:check: prettier-plugin-tailwindcss cannot resolve 'tw-animate-css' for template/** files because the root job does not install template deps; plus pre-existing lint/typecheck findings",
+      "issue": "CC-001"
     }
   ],
   "known_findings": [
@@ -169,7 +176,8 @@
     "No real-Postgres RLS cross-tenant test (CC-016)",
     "No ISR revalidate config in app/ despite ISR being the stated public caching strategy (CC-015)",
     "RATE_LIMITED error code has no backing mechanism (CC-026)",
-    "Root typecheck: 250 errors in legacy components/** (expected to clear with CC-006); root lint: 167 findings (CC-009 onward)"
+    "Root typecheck: 250 errors in legacy components/** (expected to clear with CC-006); root lint: 167 findings (CC-009 onward)",
+    "Root format:check scans template/** but template deps are not installed in the root CI job, so prettier-plugin-tailwindcss errors on 'tw-animate-css' (CC-004 / prettierignore)"
   ],
   "blocked": []
 }
