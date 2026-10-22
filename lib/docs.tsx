@@ -21,7 +21,7 @@ export const typescriptureBooks = {
       'Canonical placement, interfaces, workflows, and executable realization.',
   },
 } as const;
-const contentRoot = path.join(process.cwd(), 'content');
+const contentRoot = path.join(process.cwd(), 'context', 'doctrine');
 const filenames = readdirSync(path.join(contentRoot, roots.knowledge))
   .filter((name) => /^Chapter-\d{2}.*\.md$/.test(name))
   .sort();

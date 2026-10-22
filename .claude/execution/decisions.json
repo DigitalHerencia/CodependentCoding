@@ -33,17 +33,17 @@
       "status": "accepted",
       "title": "Subtractive composition from one runnable Maximal Template with computed ownership",
       "context": "The old generator's hand-maintained ownership catalog drifted: 226 of 300 paths no longer existed and a 'bare' app shipped 63 pages. An additive base+modules layout would force development in composed sandboxes and copy-back.",
-      "decision": "Develop in one real app (`template/`). A file's owning module is computed from its path (explicit owns glob \u2192 path segment \u2192 basename prefix \u2192 base). The CLI deletes files owned by unselected modules.",
+      "decision": "Develop in one real app (`template/`). A file's owning module is computed from its path (explicit owns glob → path segment → basename prefix → base). The CLI deletes files owned by unselected modules.",
       "alternatives": [
-        "Additive base + module folders (TanStack-style) \u2014 rejected: worse solo DX, same metadata need",
-        "Keep hand catalog \u2014 rejected: proven to drift"
+        "Additive base + module folders (TanStack-style) — rejected: worse solo DX, same metadata need",
+        "Keep hand catalog — rejected: proven to drift"
       ],
       "consequences": [
         "Naming conventions are load-bearing and lint-enforced",
         "Orphan/ambiguity check required (CC-MOD-003)",
         "CI composes every preset alone"
       ],
-      "refs": ["context/docs/Architecture.md \u00a71.1, \u00a75"]
+      "refs": ["context/docs/Architecture.md §1.1, §5"]
     },
     {
       "id": "DEC-004",
@@ -67,7 +67,7 @@
       "status": "accepted",
       "title": "Pin TypeScript 6.0.3 and ESLint 9.39.5 everywhere",
       "context": "Root used TypeScript 7.0.2, which typescript-eslint 8.x rejects, so lint could not run. The template's TS 6.0.3 + ESLint 9.39.5 + eslint-config-next 16.3.4 lints successfully (verified 2026-10-22).",
-      "decision": "Exact pins per tech-requirements.md \u00a72; majors are explicit issues.",
+      "decision": "Exact pins per tech-requirements.md §2; majors are explicit issues.",
       "refs": ["CC-001"]
     },
     {
@@ -77,7 +77,7 @@
       "title": "Presentation exceptions: forms, skeletons, client companions",
       "context": "The old validator reported 154 violations; 97 were skeletons importing ui/skeleton and client companions importing input controls, 53 were false positives.",
       "decision": "Form features may use UI primitives and 'use client'; skeletons may import ui/skeleton; .client.tsx companions may import interactive UI controls. Normal server features still render blocks only.",
-      "refs": ["context/docs/Architecture.md \u00a73.2", "CC-FEAT-002..004"]
+      "refs": ["context/docs/Architecture.md §3.2", "CC-FEAT-002..004"]
     },
     {
       "id": "DEC-008",
@@ -85,7 +85,7 @@
       "status": "accepted",
       "title": "Doctrine enforced by a local ESLint plugin with CC-* rule IDs",
       "decision": "template/eslint/doctrine-map.mjs (tables) + codependent-plugin.mjs (mechanics) replace the separate architecture.mjs validator. One data-driven layer-boundaries rule avoids flat-config no-restricted-imports override collisions. Rule tests via ESLint RuleTester.",
-      "evidence": "44/44 rule tests pass; on the current template: 241 findings, auto-fix \u2192 73, typecheck errors unchanged (123, all pre-existing).",
+      "evidence": "44/44 rule tests pass; on the current template: 241 findings, auto-fix → 73, typecheck errors unchanged (123, all pre-existing).",
       "refs": ["validation.yaml", "CC-009"]
     },
     {
@@ -111,7 +111,7 @@
       "status": "accepted",
       "title": "Active organization in an httpOnly cookie, re-validated every request",
       "decision": "Tenancy authority stays in Postgres; the cookie only names the org. Clerk Organizations are not used for tenancy.",
-      "refs": ["context/docs/AUTH.md \u00a74.1"]
+      "refs": ["context/docs/AUTH.md §4.1"]
     },
     {
       "id": "DEC-012",
@@ -119,7 +119,7 @@
       "status": "accepted",
       "title": "Caching: ISR for public routes, fresh tenant routes, Cache Components off in v1",
       "decision": "Keep one simple mental model for v1; revisit Cache Components after v1.0.0.",
-      "refs": ["context/docs/tech-requirements.md \u00a77"]
+      "refs": ["context/docs/tech-requirements.md §7"]
     },
     {
       "id": "DEC-013",
@@ -127,7 +127,7 @@
       "status": "accepted",
       "title": "Branded names kept for three components only",
       "decision": "Codependent Coding (doctrine/umbrella), Hipster Stack (CLI), Loaded Vibes (plugin), Maximal Template (template). Code and docs otherwise use plain engineering terms.",
-      "refs": ["context/docs/PRD.md \u00a76"]
+      "refs": ["context/docs/PRD.md §6"]
     },
     {
       "id": "DEC-014",
@@ -142,7 +142,7 @@
       "id": "DEC-015",
       "date": "2026-10-22",
       "status": "accepted",
-      "title": "CC-001 pin details not fixed by tech-requirements \u00a72",
+      "title": "CC-001 pin details not fixed by tech-requirements §2",
       "context": "CC-001 asked for `yaml` (exact) without a version and for a root test script that works before M4 tests exist.",
       "decision": "Pin yaml 2.9.1 (latest stable on 2026-10-22). Root `test` is `vitest run --passWithNoTests` until M4 adds real tests. typescript-eslint dropped as a direct dependency: no config imports it (eslint-config-next brings it transitively).",
       "refs": ["CC-001"]
@@ -152,9 +152,18 @@
       "date": "2026-10-22",
       "status": "accepted",
       "title": "Project board is user Project #19",
-      "context": "context/specs/README.md named Project #3, which is an unrelated closed board. Two candidates existed: #19 'Codependent Coding\u2122 \u2014 Canonical Remediation' (open, all 8 built-in workflows on) and #21 'Loaded Vibes Generator' (holds 34 older LV-/HS- issues, none of CC-001..044). Owner said either is fine.",
+      "context": "context/specs/README.md named Project #3, which is an unrelated closed board. Two candidates existed: #19 'Codependent Coding™ — Canonical Remediation' (open, all 8 built-in workflows on) and #21 'Loaded Vibes Generator' (holds 34 older LV-/HS- issues, none of CC-001..044). Owner said either is fine.",
       "decision": "Use Project #19. issues:sync docs and script usage point at --project 19. #21 is left untouched.",
       "refs": ["CC-003", "PR #207", "context/specs/README.md"]
+    },
+    {
+      "id": "DEC-017",
+      "date": "2026-10-22",
+      "status": "accepted",
+      "title": "CC-002 interpretation of legacy-governance scope",
+      "context": "The Codex plugin that the spec places in .agents/ had already moved to .claude/LoadedVibesCodexPlugin/, which application.yaml does not list as an allowed .claude/ directory. content/README.md is not named in the scope. lib/docs.tsx read the books from content/. The rg acceptance check also matches Anthimeria product code that later issues delete.",
+      "decision": "Delete .claude/LoadedVibesCodexPlugin/ as the Codex plugin named in scope. Move content/README.md with the books (it describes them). Point lib/docs.tsx at context/doctrine/ so the existing TypeScripture routes keep working until CC-006 removes them. Leave remaining Anthimeria/.agents mentions in app/, components/, packages/, template/AGENTS.md, README, SECURITY, CHANGELOG and package.json to CC-006/007/008/014/043 rather than widen CC-002. content.zip, tsconfig.tsbuildinfo, .agents/, the retired context/specs subfolders and context/mockups were already absent on main.",
+      "refs": ["CC-002", "CC-006", "CC-007", "CC-014", "CC-043"]
     }
   ]
 }

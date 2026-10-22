@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/progress/v1",
-  "updated": "2026-10-22T23:45:00Z",
+  "updated": "2026-10-22T23:50:00Z",
   "format": "Evidence states: EXECUTED | INSPECTED | NOT_RUN | BLOCKED. Never mark an issue done without EXECUTED evidence for its Validation commands.",
   "milestones": {
     "M0": {
@@ -75,6 +75,13 @@
       "pr": 207,
       "project": 19,
       "note": "Labels, milestones and issues created by owner via pnpm issues:sync -- --apply; map committed in PR #207; all 44 issues added to Project #19"
+    },
+    "CC-002": {
+      "status": "done",
+      "github": 162,
+      "branch": "claude/project-thread-ula1vk",
+      "note": "Legacy governance removed, books moved to context/doctrine/. Remaining retired-vocabulary hits live in code owned by CC-006/007/008/014/043. Squash-merged with owner approval while root CI was red on pre-existing format/lint findings. Scope interpretation: DEC-017.",
+      "pr": 210
     }
   },
   "completed": [
@@ -101,7 +108,7 @@
       "date": "2026-10-22",
       "state": "EXECUTED",
       "command": "eslint . --fix (copy of template)",
-      "result": "241 \u2192 73 findings; tsc error count unchanged at 123 (pre-existing, Prisma client not generated in sandbox)"
+      "result": "241 → 73 findings; tsc error count unchanged at 123 (pre-existing, Prisma client not generated in sandbox)"
     },
     {
       "date": "2026-10-22",
@@ -216,7 +223,7 @@
       "date": "2026-10-22",
       "state": "EXECUTED",
       "command": "pnpm issues:sync (dry run, owner's PC)",
-      "result": "DRY RUN \u00b7 44 issues \u00b7 27 labels; labels: 27 would upsert; no issues or milestones would be created (idempotent)",
+      "result": "DRY RUN · 44 issues · 27 labels; labels: 27 would upsert; no issues or milestones would be created (idempotent)",
       "issue": "CC-003"
     },
     {
@@ -225,6 +232,34 @@
       "command": "git push + squash-merge PR #207",
       "result": "context/specs/issues/.github-map.json on main at 008ab71 (byte-identical to owner's generated file)",
       "issue": "CC-003"
+    },
+    {
+      "date": "2026-10-22",
+      "state": "EXECUTED",
+      "issue": "CC-002",
+      "command": "pnpm format:check",
+      "result": "exit 2: 219 [warn] files + prettier-plugin-tailwindcss resolve error (main: exit 2, 247 warn). Pre-existing, CC-013. Changed files lib/docs.tsx and vitest.config.ts were already unformatted on main; not reformatted to keep scope."
+    },
+    {
+      "date": "2026-10-22",
+      "state": "EXECUTED",
+      "issue": "CC-002",
+      "command": "pnpm lint",
+      "result": "exit 1: 159 problems (131 errors, 28 warnings); main: 167 (137 errors, 30 warnings). Drop is the deleted .claude/LoadedVibesCodexPlugin scripts; no new findings."
+    },
+    {
+      "date": "2026-10-22",
+      "state": "EXECUTED",
+      "issue": "CC-002",
+      "command": "rg -n \"\\.agents/|template-disposition|Anthimeria\" --glob '!context/doctrine/**' --glob '!.claude/execution/**'",
+      "result": "No .agents/ or template-disposition hits outside historical 'Removed' lists (tech-requirements.md, application.yaml) and the CC-002/CC-014 specs, except template/AGENTS.md and packages/core (CC-014, CC-007). Anthimeria hits remain in app/, components/, packages/, README, SECURITY, CHANGELOG, package.json: owned by CC-006/007/008/043."
+    },
+    {
+      "date": "2026-10-22",
+      "state": "EXECUTED",
+      "issue": "CC-002",
+      "command": "ls context/doctrine/TypeScripture_The-Book-of-*",
+      "result": "24 chapters each in Knowledge and Implementation; content/ directory gone"
     }
   ],
   "known_findings": [

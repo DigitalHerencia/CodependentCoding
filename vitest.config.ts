@@ -14,7 +14,6 @@ export default defineConfig({
       'coverage/**',
       'template/**',
       'packages/loaded-vibes/**',
-      '.agents/**',
     ],
 
     testTimeout: 15_000,

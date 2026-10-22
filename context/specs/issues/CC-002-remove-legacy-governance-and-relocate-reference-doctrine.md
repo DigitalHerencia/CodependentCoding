@@ -8,7 +8,7 @@ priority: p0
 size: s
 labels: [type:chore, area:governance, priority:p0, size:s]
 depends_on: [CC-001]
-status: todo
+status: done
 ---
 
 # CC-002 · Remove legacy governance and relocate reference doctrine
