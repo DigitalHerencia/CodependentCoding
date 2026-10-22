@@ -21,7 +21,7 @@ Internal software factory: Maximal Template (`template/`) + Hipster Stack CLI (`
 | Doctrine rule IDs (CC-*)         | `.claude/contracts/validation.yaml` → enforced in `template/eslint/` |
 | Past decisions                   | `.claude/execution/decisions.json`                                   |
 
-`context/doctrine/` is background reading, not authority. Ignore `.agents/` (legacy, removed in CC-002).
+`context/doctrine/` is background reading, not authority.
 
 ## Rules
 
