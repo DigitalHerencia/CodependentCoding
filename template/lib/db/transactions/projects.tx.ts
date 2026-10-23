@@ -135,8 +135,11 @@ export async function rescheduleDependentTasksTx(
   }
   const affected = new Set<string>([source.id]);
   const pending = [source.id];
-  while (pending.length) {
-    const current = pending.shift()!;
+  for (
+    let current = pending.shift();
+    current !== undefined;
+    current = pending.shift()
+  ) {
     for (const dependentId of requiredBy.get(current) ?? []) {
       if (!affected.has(dependentId)) {
         affected.add(dependentId);

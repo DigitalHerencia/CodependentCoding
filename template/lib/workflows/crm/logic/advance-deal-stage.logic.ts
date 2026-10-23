@@ -1,6 +1,6 @@
 import "server-only";
 
-import type { CrmDealStage } from "@/lib/generated/prisma/client";
+import type { CrmDealStage } from "@/generated/prisma/enums";
 
 const transitions: Record<CrmDealStage, readonly CrmDealStage[]> = {
   LEAD: ["QUALIFIED", "LOST"],

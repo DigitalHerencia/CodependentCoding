@@ -13,9 +13,7 @@ export function ProjectTimelineTemplate({
 }) {
   const dates = [
     ...new Set(
-      tasks
-        .filter((task) => task.dueAt)
-        .map((task) => task.dueAt!.slice(0, 10)),
+      tasks.flatMap((task) => (task.dueAt ? [task.dueAt.slice(0, 10)] : [])),
     ),
   ].sort();
   return (

@@ -26,8 +26,8 @@ export function MarketingAudiencesTemplate({
               <p>{audience.status}</p>
               <p>
                 Contact relationship:{" "}
-                {parsed.success
-                  ? parsed.data.definition.rules[0]!.value
+                {parsed.success && parsed.data.definition.rules[0]
+                  ? parsed.data.definition.rules[0].value
                   : "Custom rules"}
               </p>
               <Link

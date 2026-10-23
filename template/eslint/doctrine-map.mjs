@@ -99,8 +99,6 @@ export const categories = {
   "server-only": { packages: [/^server-only$/, /^next\/headers$/] },
 };
 
-const SERVER_LAYERS_MSG = "server-side responsibility";
-
 /**
  * Boundaries: for each layer, categories it must not import.
  * `except` lists categories that override a denial (more specific wins).

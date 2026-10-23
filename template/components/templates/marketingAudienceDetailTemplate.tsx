@@ -26,8 +26,8 @@ export function MarketingAudienceDetailTemplate({
     >
       <DashboardPanel title="Membership rule">
         <p>
-          {parsed.success
-            ? `Include contacts whose relationship is ${parsed.data.definition.rules[0]!.value}.`
+          {parsed.success && parsed.data.definition.rules[0]
+            ? `Include contacts whose relationship is ${parsed.data.definition.rules[0].value}.`
             : "This audience has custom rules that the current editor cannot modify."}
         </p>
         <p className="mt-4">Audience status: {audience.status}</p>

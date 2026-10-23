@@ -1,4 +1,4 @@
-/* eslint-disable react-refresh/only-export-components */
+import Image from "next/image";
 import * as React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -9,10 +9,9 @@ import { XIcon, Mail } from "lucide-react";
 function getInitials(name: string) {
   const parts = name.trim().split(/\s+/).filter(Boolean);
   if (parts.length === 0) return "?";
-  if (parts.length === 1) return (parts[0][0] ?? "?").toUpperCase();
-  return (
-    (parts[0][0] ?? "") + (parts[parts.length - 1][0] ?? "")
-  ).toUpperCase();
+  const first = parts[0]?.[0] ?? "";
+  if (parts.length === 1) return (first || "?").toUpperCase();
+  return (first + (parts.at(-1)?.[0] ?? "")).toUpperCase();
 }
 
 export interface TeamMember {
@@ -270,9 +269,11 @@ export function TeamLargePhotos({
             <div key={`team-${member.name}`} className="group">
               <div className="relative border-3 border-foreground shadow-[6px_6px_0px_hsl(var(--shadow-color))] overflow-hidden mb-4 group-hover:shadow-[8px_8px_0px_hsl(var(--shadow-color))] group-hover:translate-x-[-2px] group-hover:translate-y-[-2px] transition">
                 {member.avatar ? (
-                  <img
+                  <Image
                     src={member.avatar}
                     alt={member.name}
+                    width={600}
+                    height={800}
                     className="w-full h-80 object-cover"
                   />
                 ) : (
