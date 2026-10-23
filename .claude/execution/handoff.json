@@ -4,13 +4,11 @@
   "format": "Overwrite each session. Minimum state the next session needs to resume safely.",
   "status": "ready-for-claude-code",
   "milestone": "M2",
-  "current_issue": "CC-012",
+  "current_issue": "CC-013",
   "next_issue": "CC-013",
   "queue": ["CC-013"],
-  "branch": "fix/172-template-typecheck-green",
-  "in_flight": [
-    "CC-012 PR open; owner pre-approved merge on green (2026-10-23 04:49Z)"
-  ],
+  "branch": "main",
+  "in_flight": [],
   "notes": [
     "Governance package is uncommitted in the owner's working tree; owner reviews with `git status` / `git diff`, then commits on a branch `chore/governance-package`.",
     "Template already contains the doctrine ESLint plugin (template/eslint/) and the new eslint.config.mjs; CC-009 turns findings into fixes.",
