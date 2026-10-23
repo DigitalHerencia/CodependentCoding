@@ -182,6 +182,15 @@
       "context": "In the VS Code extension on Windows, the lint hook gave no feedback after a write. The same run had a failed `pnpm install` (ERR_PNPM_PACKAGE_MANAGER_REMOVE_MODULES_DIR, Access is denied), so eslint was missing and the hook took its deliberate 'deps not installed' exit 0.",
       "decision": "Accept the owner's Windows run of the hook after a clean install (exit 2 with the ESLint finding) as the lint-feedback evidence. Keep .claude/settings.json unchanged, because the Node path and quoting work on Windows. Install with VS Code closed so node_modules is not locked.",
       "refs": ["CC-005", "PR #213"]
+    },
+    {
+      "id": "DEC-020",
+      "date": "2026-10-23",
+      "status": "accepted",
+      "title": "Merge Dependabot bumps while root CI is red",
+      "context": "Owner authorized merging Dependabot PRs and deleting stale branches. Root CI fails at format:check on main, so it cannot judge a bump; later root steps never run.",
+      "decision": "Accept a bump when it keeps exact pins (no ranges, pnpm 12.3.4, node 24.x), the Maximal Template job is green, and a local root run (install, typecheck, test, cli:build) adds no new errors versus main. Merged #159, #205, #209; setup-node v7 (#160) applied directly after a merge conflict.",
+      "refs": ["PR #159", "PR #160", "PR #205", "PR #209"]
     }
   ]
 }
