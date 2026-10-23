@@ -14,7 +14,7 @@ type Fields = { identifier: string; password: string; code: string };
 type Step = "password" | "recover" | "reset-code" | "new-password" | "mfa";
 type Factor = "email_code" | "phone_code" | "totp" | "backup_code";
 
-export function SignInFeature() {
+export function SignInForm() {
   const { signIn, fetchStatus } = useSignIn();
   const [step, setStep] = useState<Step>("password");
   const [factor, setFactor] = useState<Factor>("email_code");

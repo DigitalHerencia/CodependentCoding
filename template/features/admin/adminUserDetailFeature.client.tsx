@@ -8,7 +8,7 @@ import {
   suspendAdminMembership,
   restoreAdminMembership,
 } from "@/lib/actions/adminActions";
-import { appRoles } from "@/lib/authz/roles";
+import { appRoles } from "@/lib/constants/roles";
 import type { AdminMembershipDTO } from "@/types/adminTypes";
 export function AdminUserDetailFeatureClient({
   membership,

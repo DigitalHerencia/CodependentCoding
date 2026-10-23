@@ -2,7 +2,7 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { addAdminMembership } from "@/lib/actions/adminActions";
-import { appRoles } from "@/lib/authz/roles";
+import { appRoles } from "@/lib/constants/roles";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";

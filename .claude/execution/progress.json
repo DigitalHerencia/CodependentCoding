@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/progress/v1",
-  "updated": "2026-10-23T02:00:00Z",
+  "updated": "2026-10-23T02:30:00Z",
   "format": "Evidence states: EXECUTED | INSPECTED | NOT_RUN | BLOCKED. Never mark an issue done without EXECUTED evidence for its Validation commands.",
   "milestones": {
     "M0": {
@@ -208,6 +208,26 @@
         "CC-SCHEMA-001": 1
       },
       "pr": 220
+    },
+    "CC-010": {
+      "status": "done",
+      "github": 170,
+      "branch": "fix/170-route-feature-boundaries",
+      "decision": "DEC-025",
+      "note": "Template lint 73 -> 50, no new findings. 0 CC-ROUTE/CC-CLIENT/CC-FEAT-002/004 left; 2 CC-FEAT-001 remain in features/explorer/maximalTemplateExplorer.tsx, owned by CC-011 Scope. Typecheck 13 errors unchanged, none in touched files. Page render smoke NOT_RUN: next dev returns 500 on /sign-in without Clerk keys (same on main); needs owner check with .env. Owner chose merge now, pages check later (2026-10-23).",
+      "remaining_findings": {
+        "@typescript-eslint/no-non-null-assertion": 13,
+        "react-refresh/only-export-components": 10,
+        "@next/next/no-img-element": 10,
+        "CC-INT-001": 6,
+        "CC-NAME-001": 3,
+        "CC-READ-001": 3,
+        "CC-FEAT-001": 2,
+        "CC-FLOW-001": 1,
+        "CC-SCHEMA-001": 1,
+        "@typescript-eslint/no-unused-vars": 1
+      },
+      "pr": 221
     }
   },
   "completed": [
@@ -866,6 +886,54 @@
       "env": "linux node 22.22.0, pnpm 12.3.4",
       "command": "pnpm --dir template doctrine:test",
       "result": "exit 0: tests 44, pass 44, fail 0"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-010",
+      "env": "linux node 22.22.0, pnpm 12.3.4",
+      "command": "pnpm --dir template lint",
+      "result": "exit 1: 50 problems (40 errors, 10 warnings), was 73; no CC-ROUTE-*, CC-CLIENT-*, CC-FEAT-002, CC-FEAT-004; CC-FEAT-001 x2 only in features/explorer (CC-011)"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-010",
+      "env": "linux node 22.22.0, pnpm 12.3.4",
+      "command": "eslint . -f json diff vs main",
+      "result": "0 new findings"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-010",
+      "env": "linux node 22.22.0, pnpm 12.3.4",
+      "command": "pnpm --dir template typecheck",
+      "result": "exit 2: 13 errors, all pre-existing (components/blocks/*, lib/workflows/crm/*), none in CC-010 files"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-010",
+      "env": "linux node 22.22.0, pnpm 12.3.4",
+      "command": "pnpm --dir template doctrine:test",
+      "result": "exit 0: tests 44, pass 44, fail 0"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-010",
+      "env": "linux node 22.22.0, pnpm 12.3.4",
+      "command": "pnpm --dir template exec prettier --check <changed files>",
+      "result": "exit 0: all matched files use Prettier code style"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-010",
+      "env": "linux node 22.22.0, pnpm 12.3.4",
+      "command": "next dev; curl /sign-in /sign-up",
+      "result": "500 both: Clerk publishable key missing in cloud container; render smoke needs owner .env"
     }
   ],
   "known_findings": [

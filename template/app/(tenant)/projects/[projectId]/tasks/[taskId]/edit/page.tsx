@@ -1,4 +1,4 @@
-import { TaskEditForm } from "@/features/projects/taskEditForm";
+import { TaskEditFeature } from "@/features/projects/taskEditFeature";
 
 export default async function Page({
   params,
@@ -6,5 +6,5 @@ export default async function Page({
   params: Promise<{ projectId: string; taskId: string }>;
 }) {
   const { projectId, taskId } = await params;
-  return <TaskEditForm projectId={projectId} taskId={taskId} />;
+  return <TaskEditFeature projectId={projectId} taskId={taskId} />;
 }

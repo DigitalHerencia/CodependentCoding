@@ -1,4 +1,4 @@
-import { ProjectEditForm } from "@/features/projects/projectEditForm";
+import { ProjectEditFeature } from "@/features/projects/projectEditFeature";
 
 export default async function Page({
   params,
@@ -6,5 +6,5 @@ export default async function Page({
   params: Promise<{ projectId: string }>;
 }) {
   const { projectId } = await params;
-  return <ProjectEditForm projectId={projectId} />;
+  return <ProjectEditFeature projectId={projectId} />;
 }

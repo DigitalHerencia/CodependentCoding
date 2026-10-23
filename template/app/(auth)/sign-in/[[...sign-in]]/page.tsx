@@ -1,6 +1,6 @@
-import { SignInFeature } from "@/features/auth/signInFeature";
+import { SignInForm } from "@/features/auth/signInForm";
 
 // URL ownership stops here; orchestration is delegated to the feature.
 export default function Page() {
-  return <SignInFeature />;
+  return <SignInForm />;
 }

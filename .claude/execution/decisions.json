@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/decisions/v1",
-  "updated": "2026-10-23T00:45:00Z",
+  "updated": "2026-10-23T02:30:00Z",
   "format": "Append new decisions; never rewrite history. Supersede by adding a new entry and setting status=superseded + superseded_by on the old one.",
   "decisions": [
     {
@@ -227,6 +227,15 @@
       "context": "CC-009 Scope asks to wire doctrine into template/eslint.config.mjs and add doctrine:test and lint:fix scripts. Both were already on main (governance package / CC-001). lint:fix does not run Prettier, so template format:check stays red.",
       "decision": "Confirm rather than re-add the config and scripts. Commit only the lint:fix output as its own commit. Leave the 73 remaining findings (layer-boundaries, non-null assertions, react-refresh, img, filename, use-client) to CC-010..012 and formatting to CC-013.",
       "refs": ["CC-009", "CC-010", "CC-011", "CC-012", "CC-013"]
+    },
+    {
+      "id": "DEC-025",
+      "date": "2026-10-23",
+      "status": "accepted",
+      "title": "CC-010: rename server edit wrappers to *Feature; onboarding gate as a feature; roles in lib/constants",
+      "context": "The *EditForm.tsx (and campaignNewForm.tsx) files were server components that fetch a record and render the real form, so they were classified as feature-form and tripped CC-FEAT-002. signIn/signUpFeature own RHF state. app/(tenant)/layout.tsx called an onboarding fetcher. The client companion imported appRoles from server-only lib/authz/roles.",
+      "decision": "Rename the fetching wrappers to *EditFeature.tsx / campaignNewFeature.tsx (feature layer) and keep the forms receiving records as props; rename sign-in/up to signInForm/signUpForm (block import aliased to SignUpFormPanel); add features/onboarding/onboardingGateFeature.tsx that checks onboarding and renders TenantShell, the route keeps only the identity redirect; move appRoles to lib/constants/roles.ts (the path CC-011 names), lib/authz/roles re-exports it, and both admin client files import from constants. schemas/adminSchemas.ts and types/access.ts stay for CC-011. features/explorer (2 CC-FEAT-001) stays for CC-011, whose Scope says move or delete it.",
+      "refs": ["CC-010", "CC-011"]
     }
   ]
 }

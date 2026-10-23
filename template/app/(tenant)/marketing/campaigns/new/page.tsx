@@ -1,5 +1,5 @@
-import { CampaignNewForm } from "@/features/marketing/campaignNewForm";
+import { CampaignNewFeature } from "@/features/marketing/campaignNewFeature";
 
 export default async function Page() {
-  return <CampaignNewForm />;
+  return <CampaignNewFeature />;
 }

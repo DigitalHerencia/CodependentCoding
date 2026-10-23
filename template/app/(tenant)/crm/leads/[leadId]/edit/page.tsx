@@ -1,4 +1,4 @@
-import { CrmEditLeadForm } from "@/features/crm/crmEditLeadForm";
+import { CrmEditLeadFeature } from "@/features/crm/crmEditLeadFeature";
 
 export default async function Page({
   params,
@@ -6,5 +6,5 @@ export default async function Page({
   params: Promise<{ leadId: string }>;
 }) {
   const { leadId } = await params;
-  return <CrmEditLeadForm leadId={leadId} />;
+  return <CrmEditLeadFeature leadId={leadId} />;
 }

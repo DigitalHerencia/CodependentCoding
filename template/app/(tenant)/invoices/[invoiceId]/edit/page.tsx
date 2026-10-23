@@ -1,4 +1,4 @@
-import { InvoiceEditForm } from "@/features/invoicing/invoiceEditForm";
+import { InvoiceEditFeature } from "@/features/invoicing/invoiceEditFeature";
 
 export default async function Page({
   params,
@@ -6,5 +6,5 @@ export default async function Page({
   params: Promise<{ invoiceId: string }>;
 }) {
   const { invoiceId } = await params;
-  return <InvoiceEditForm invoiceId={invoiceId} />;
+  return <InvoiceEditFeature invoiceId={invoiceId} />;
 }

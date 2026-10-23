@@ -1,4 +1,4 @@
-import { CrmEditAccountForm } from "@/features/crm/crmEditAccountForm";
+import { CrmEditAccountFeature } from "@/features/crm/crmEditAccountFeature";
 
 export default async function Page({
   params,
@@ -6,5 +6,5 @@ export default async function Page({
   params: Promise<{ accountId: string }>;
 }) {
   const { accountId } = await params;
-  return <CrmEditAccountForm accountId={accountId} />;
+  return <CrmEditAccountFeature accountId={accountId} />;
 }
