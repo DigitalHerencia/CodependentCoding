@@ -8,7 +8,7 @@ priority: p0
 size: m
 labels: [type:feature, area:modules, priority:p0, size:m]
 depends_on: [CC-012]
-status: todo
+status: done
 ---
 
 # CC-018 · Module manifest and schema

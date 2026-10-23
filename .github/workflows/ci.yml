@@ -60,6 +60,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm format:check
       - run: pnpm doctrine:test
+      - run: pnpm check:modules
       - run: pnpm prisma:generate
       - run: pnpm lint
       - run: pnpm typecheck
