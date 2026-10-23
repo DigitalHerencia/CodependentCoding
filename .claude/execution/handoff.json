@@ -1,13 +1,13 @@
 {
   "$schema": "codependent-coding/execution/handoff/v1",
-  "updated": "2026-10-23T01:00:00Z",
+  "updated": "2026-10-23T00:45:00Z",
   "format": "Overwrite each session. Minimum state the next session needs to resume safely.",
   "status": "ready-for-claude-code",
   "milestone": "M1",
-  "current_issue": "CC-006",
-  "next_issue": "CC-007",
-  "queue": ["CC-007"],
-  "branch": "refactor/166-reduce-site-to-landing-page",
+  "current_issue": "CC-007",
+  "next_issue": "CC-008",
+  "queue": ["CC-008"],
+  "branch": "refactor/167-remove-legacy-generator-packages",
   "in_flight": [],
   "notes": [
     "Governance package is uncommitted in the owner's working tree; owner reviews with `git status` / `git diff`, then commits on a branch `chore/governance-package`.",
@@ -20,13 +20,13 @@
     "CC-005 done (PR #213, DEC-019): hooks verified on Windows; settings.json unchanged.",
     "Dependabot (DEC-020): merged checkout v7 (#159), template minor/patch x54 (#205), root minor/patch x46 incl. next 16.4.2, react 19.3.1, zod 4.6.7, @clack/prompts 1.8.1 (#209); setup-node v7 in the execution-records PR. All dependabot branches deleted.",
     "M0 closed 2026-10-23: release profile recorded in progress.json (milestones.M0 + evidence). Template/root validate still red on pre-existing code; compose NOT_RUN until M4.",
-    "CC-006 (DEC-021): site reduced to /. Header has no nav, hero has no CTAs, footer has no FAQ link until CC-008. app/globals.css still holds dead selectors for deleted routes (CC-008/CC-013)."
+    "CC-006 (DEC-021): site reduced to /. Header has no nav, hero has no CTAs, footer has no FAQ link until CC-008. app/globals.css still holds dead selectors for deleted routes (CC-008/CC-013).",
+    "CC-007 (DEC-022): packages/ is empty until CC-028 rebuilds packages/cli; salvage in context/doctrine/salvage/ (*.txt). Root has a validate script now; it fails only at format:check (CC-013)."
   ],
   "risks": [
     "Lint hook exits 0 silently when node_modules/eslint is missing; a failed install hides lint feedback. On Windows, run pnpm install with VS Code closed (DEC-019).",
-    "Root CI job stays red until CC-006/CC-007 (old components/packages: ~250 TS errors, ~167 lint findings) and CC-013 (format). Root format:check also scans template/** without template deps; CC-013 should add template/ to root .prettierignore or install template deps.",
     "pnpm/action-setup@v4 runs on deprecated Node 20 (forced to 24); bump when a newer major is available.",
-    "Root lint stays red until CC-007 deletes packages/core and packages/loaded-vibes (38 findings)."
+    "Root CI job stays red only on format:check until CC-013 (root format:check also scans template/** without template deps; CC-013 should add template/ to root .prettierignore or install template deps)."
   ],
   "do_not": [
     "Delete or rewrite context/doctrine/ books",

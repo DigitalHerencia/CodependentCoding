@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/decisions/v1",
-  "updated": "2026-10-22T23:45:00Z",
+  "updated": "2026-10-23T00:45:00Z",
   "format": "Append new decisions; never rewrite history. Supersede by adding a new entry and setting status=superseded + superseded_by on the old one.",
   "decisions": [
     {
@@ -200,6 +200,15 @@
       "context": "After removing the catalog routes, 117 components under components/{ui,chart,templates,blocks} plus library-icon and copy-definition-button were imported by nothing. They were the Simples catalog content and held all 250 root TS errors. The header, footer and hero linked to deleted routes, which typedRoutes rejects. Root lint still fails on packages/core and packages/loaded-vibes, which CC-007 deletes. playwright.config.ts had one exactOptionalPropertyTypes error.",
       "decision": "Delete every component that the kept app files do not reach (they existed only for the catalog). Remove links to deleted routes and leave the new CTAs and GitHub link to CC-008. Fix playwright.config.ts workers with a conditional spread and postcss.config.mjs default export so root typecheck and site lint are clean. Leave the 38 lint findings in packages/** to CC-007 instead of editing code that issue deletes. Keep lib/utils.ts, clsx and tailwind-merge. Leave dead selectors in app/globals.css and formatting to CC-008/CC-013.",
       "refs": ["CC-006", "CC-007", "CC-008", "CC-013"]
+    },
+    {
+      "id": "DEC-022",
+      "date": "2026-10-23",
+      "status": "accepted",
+      "title": "CC-007 interpretation: salvage format, root validate script, kept deps",
+      "context": "CC-007 salvages presets.ts, ontologies.ts and Loaded Vibes validators/prompts, but presets/ontologies import @hipster-stack/schema and the criterion says no @hipster-stack/* imports remain. Root package.json had no validate script although tech-requirements.md defines one and the issue validates with pnpm validate. tsdown, tsx, execa and @types/validate-npm-package-name were only used by the deleted CLI.",
+      "decision": "Store salvaged code as *.ts.txt / *.mjs.txt under context/doctrine/salvage/ with a README, so nothing builds, lints or imports it and no eslint/tsconfig ignore is needed. Add root validate exactly as tech-requirements.md defines it (format:check, lint, typecheck, test). Keep tsdown, tsx, execa and @types/validate-npm-package-name in devDependencies for the M4 CLI rebuild and keep pnpm-workspace packages/* for packages/cli. Remove packages/loaded-vibes entries from tsconfig and vitest excludes. Leave format:check red to CC-013.",
+      "refs": ["CC-007", "CC-013", "CC-028"]
     }
   ]
 }

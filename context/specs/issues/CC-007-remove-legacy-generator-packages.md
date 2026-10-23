@@ -8,7 +8,7 @@ priority: p1
 size: s
 labels: [type:refactor, area:cli, priority:p1, size:s]
 depends_on: [CC-006]
-status: todo
+status: done
 ---
 
 # CC-007 · Remove legacy generator packages

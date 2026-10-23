@@ -18,14 +18,12 @@
     "format:check": "prettier --check .",
     "typecheck": "tsc --noEmit",
     "test": "vitest run --passWithNoTests",
-    "test:generated": "pnpm cli:build && vitest run tests/generated",
+    "validate": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:headed": "playwright test --headed",
     "test:e2e:debug": "playwright test --debug",
-    "issues:sync": "node scripts/github/sync-issues.mjs",
-    "cli:dev": "tsx packages/cli/src/cli.ts",
-    "cli:build": "tsdown"
+    "issues:sync": "node scripts/github/sync-issues.mjs"
   },
   "dependencies": {
     "clsx": "2.1.1",
