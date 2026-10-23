@@ -230,17 +230,18 @@
       "pr": 221
     },
     "CC-011": {
-      "status": "in_review",
+      "status": "done",
       "github": 171,
       "branch": "refactor/171-server-boundaries-naming",
       "decision": "DEC-026",
-      "note": "Template lint 50 -> 34, 0 CC-* findings. Typecheck 13 -> 12 (calculate-pipeline-value @prisma/client error gone). `pnpm --dir template test` does not exist yet (CC-017); webhook integration test is Clerk-only and needs DATABASE_URL_TEST, NOT_RUN.",
+      "note": "Template lint 50 -> 34, 0 CC-* findings. Typecheck 13 -> 12 (calculate-pipeline-value @prisma/client error gone). `pnpm --dir template test` does not exist yet (CC-017); webhook integration test is Clerk-only and needs DATABASE_URL_TEST, NOT_RUN. Owner chose merge now (2026-10-23).",
       "remaining_findings": {
         "@typescript-eslint/no-non-null-assertion": 13,
         "react-refresh/only-export-components": 10,
         "@next/next/no-img-element": 10,
         "@typescript-eslint/no-unused-vars": 1
-      }
+      },
+      "pr": 222
     }
   },
   "completed": [
