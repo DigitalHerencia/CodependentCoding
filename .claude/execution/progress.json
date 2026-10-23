@@ -186,7 +186,7 @@
       "note": "Header: logo + GitHub link. CTAs: Read the doctrine (#doctrine) + GitHub. Four-component factory section. Footer TERMS/PRIVACY placeholders removed. Metadata description uses current vocabulary."
     },
     "CC-009": {
-      "status": "in-review",
+      "status": "done",
       "github": 169,
       "branch": "feature/169-doctrine-lint-autofix",
       "decision": "DEC-024",
@@ -206,7 +206,8 @@
         "CC-FEAT-004": 1,
         "CC-FLOW-001": 1,
         "CC-SCHEMA-001": 1
-      }
+      },
+      "pr": 220
     }
   },
   "completed": [
@@ -218,7 +219,8 @@
     "CC-005",
     "CC-006",
     "CC-007",
-    "CC-008"
+    "CC-008",
+    "CC-009"
   ],
   "evidence": [
     {
