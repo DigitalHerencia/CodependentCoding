@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/progress/v1",
-  "updated": "2026-10-23T05:10:00Z",
+  "updated": "2026-10-23T05:15:00Z",
   "format": "Evidence states: EXECUTED | INSPECTED | NOT_RUN | BLOCKED. Never mark an issue done without EXECUTED evidence for its Validation commands.",
   "milestones": {
     "M0": {
@@ -250,6 +250,14 @@
       "decision": "DEC-027",
       "note": "Template typecheck 12 -> 0 errors, lint 34 -> 0 problems. CI template lint/typecheck no longer continue-on-error; format:check keeps it until CC-013.",
       "pr": 223
+    },
+    "CC-013": {
+      "status": "in_review",
+      "github": 173,
+      "branch": "chore/173-prettier-baseline",
+      "decision": "DEC-028",
+      "format_commit": "2bb0c683cbe23f4330723e4301b8a421888884d1",
+      "note": "47 files formatted (root 26 incl. some template files via root pass, template 31). Root and template format:check pass; root format:check also passes with template/node_modules removed (CI condition). CI has no continue-on-error left."
     }
   },
   "completed": [
@@ -1052,6 +1060,46 @@
       "env": "GitHub Actions ubuntu-latest",
       "command": "CI 'Maximal Template' job on PR #223 head 87133ca (lint + typecheck without continue-on-error)",
       "result": "success"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-013",
+      "env": "linux node 22.22.0, pnpm 12.3.4",
+      "command": "pnpm format && pnpm --dir template format",
+      "result": "47 files changed, 2304 insertions(+), 1437 deletions(-) in commit 2bb0c68 (formatting only)"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-013",
+      "env": "linux node 22.22.0, pnpm 12.3.4",
+      "command": "pnpm format:check",
+      "result": "exit 0: All matched files use Prettier code style!"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-013",
+      "env": "linux node 22.22.0, pnpm 12.3.4",
+      "command": "pnpm format:check (template/node_modules moved away, as in root CI)",
+      "result": "exit 0: All matched files use Prettier code style!"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-013",
+      "env": "linux node 22.22.0, pnpm 12.3.4",
+      "command": "pnpm --dir template format:check",
+      "result": "exit 0: All matched files use Prettier code style!"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-013",
+      "env": "linux node 22.22.0, pnpm 12.3.4",
+      "command": "pnpm lint && pnpm typecheck && pnpm test; pnpm --dir template lint && typecheck (after baseline)",
+      "result": "all exit 0"
     }
   ],
   "known_findings": [

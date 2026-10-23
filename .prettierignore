@@ -28,3 +28,6 @@ blob-report/
 
 # Reference doctrine kept byte-stable
 context/doctrine/
+
+# Template is a separate pnpm project with its own format:check (it needs template deps for the tailwind plugin)
+template/

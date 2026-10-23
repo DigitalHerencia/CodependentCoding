@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/decisions/v1",
-  "updated": "2026-10-23T05:10:00Z",
+  "updated": "2026-10-23T05:15:00Z",
   "format": "Append new decisions; never rewrite history. Supersede by adding a new entry and setting status=superseded + superseded_by on the old one.",
   "decisions": [
     {
@@ -254,6 +254,15 @@
       "context": "12 type errors (noUncheckedIndexedAccess, exactOptionalPropertyTypes, a stale generated-prisma path) and 34 lint problems remained. Ten files carried eslint-disable comments for react-refresh, a rule the config does not load. Ten raw <img> tags lived in unused library blocks whose src is a prop.",
       "decision": "No tsconfig change. Guard indexed reads, use conditional spread for optional href, import CrmDealStage from generated/prisma/enums. Replace each non-null assertion with a guard or fallback; invoice line totals throw if missing (cannot happen, keeps the type honest). Remove the stale react-refresh disables. Convert <img> to next/image with explicit width/height and the existing w-full/h-auto classes; remote image URLs passed to these blocks will need images.remotePatterns in the generated app. Remove unused SERVER_LAYERS_MSG from doctrine-map (no rule change). Keep Prettier off the touched files so CC-013 stays a formatting-only commit.",
       "refs": ["CC-012", "CC-013"]
+    },
+    {
+      "id": "DEC-028",
+      "date": "2026-10-23",
+      "status": "accepted",
+      "title": "CC-013: root Prettier ignores template/; merge-commit to keep the baseline SHA",
+      "context": "Root format:check re-exports the template Prettier config, whose tailwind plugin resolves template/app/globals.css imports (tw-animate-css) that are only installed in template/node_modules. The root CI job does not install template deps, so root format:check errored on every template file. Squash-merging would rewrite the formatting commit, so its SHA in .git-blame-ignore-revs would not exist on main.",
+      "decision": "Add template/ to root .prettierignore; the template job's own format:check covers it (now blocking, continue-on-error removed). Keep the formatting commit alone, then a second commit with .prettierignore, .git-blame-ignore-revs, CI and records. Merge this PR with a merge commit (not squash) so 2bb0c68 lands on main unchanged.",
+      "refs": ["CC-013", "CC-004", "CC-012"]
     }
   ]
 }
