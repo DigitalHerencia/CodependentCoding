@@ -2335,6 +2335,44 @@ pre {
   gap: 1rem;
   flex-wrap: wrap;
 }
+.landing-factory {
+  width: min(64rem, 100%);
+  scroll-margin-top: calc(var(--site-header-height) + 2rem);
+}
+.landing-factory h2 {
+  margin: 0 0 1.5rem;
+  font-size: clamp(1.4rem, 3vw, 2.2rem);
+}
+.landing-factory ul {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  text-align: left;
+}
+.landing-factory li {
+  padding: 1.25rem;
+  border: 1px solid var(--signal-border);
+  background: var(--background-strong);
+}
+.landing-factory li span {
+  color: var(--foreground);
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.landing-factory h3 {
+  margin: 0.5rem 0;
+  font-size: 1.05rem;
+}
+.landing-factory p {
+  margin: 0;
+  color: var(--site-muted);
+  line-height: 1.5;
+}
 .landing-heritage {
   width: min(44rem, 90%);
   height: auto;

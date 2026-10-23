@@ -17,6 +17,14 @@ export function SiteHeader() {
           priority
         />
       </Link>
+      <nav aria-label="Primary navigation">
+        <a
+          className="nav-link"
+          href="https://github.com/DigitalHerencia/CodependentCoding"
+        >
+          GITHUB
+        </a>
+      </nav>
     </header>
   );
 }

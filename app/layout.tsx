@@ -32,7 +32,7 @@ const firaCode = Fira_Code({
 export const metadata: Metadata = {
   title: 'The Codependent Coding™ Web App Architecture',
   description:
-    'TypeScripture doctrine, deterministic Hipster Stack generation, normalized Ontologies and Simples, and the stateless Anthimeria workbench.',
+    'A software factory: the Codependent Coding doctrine, the Maximal Template, the Hipster Stack CLI, and the Loaded Vibes plugin.',
 };
 
 export default function RootLayout({

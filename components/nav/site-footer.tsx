@@ -17,10 +17,6 @@ export function SiteFooter() {
             height={465}
           />
         </Link>
-        <nav aria-label="Footer navigation">
-          <span aria-disabled="true">TERMS</span>
-          <span aria-disabled="true">PRIVACY</span>
-        </nav>
       </div>
     </footer>
   );
