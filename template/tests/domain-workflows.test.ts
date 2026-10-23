@@ -6,10 +6,7 @@ import type { Prisma } from "@/generated/prisma/client";
 import { calculateInvoiceTotals } from "@/lib/db/transactions/create-invoice.tx";
 import { updateDealStageTx } from "@/lib/db/transactions/update-deal-stage.tx";
 import { updateTaskStatusTx } from "@/lib/db/transactions/update-task-status.tx";
-import {
-  createContactSchema,
-  createCrmDealSchema,
-} from "@/schemas/crmSchemas";
+import { createContactSchema, createCrmDealSchema } from "@/schemas/crmSchemas";
 import { createTaskSchema } from "@/schemas/projectsSchemas";
 import { audienceFormSchema } from "@/schemas/marketingSchemas";
 import { expenseFormSchema } from "@/schemas/invoicingSchemas";

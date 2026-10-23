@@ -1,5 +1,5 @@
-'use client';
-import { SystemState } from '@/components/blocks/custom/system-state';
+"use client";
+import { SystemState } from "@/components/blocks/custom/system-state";
 export default function GlobalError({ reset }: { reset: () => void }) {
   return (
     <html lang="en">

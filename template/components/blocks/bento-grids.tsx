@@ -37,23 +37,23 @@ export function BentoGrid({
   className,
 }: BentoGridProps) {
   return (
-    <section className={cn("py-16 px-4 md:px-8 lg:px-16", className)}>
-      <div className="max-w-6xl mx-auto">
+    <section className={cn("px-4 py-16 md:px-8 lg:px-16", className)}>
+      <div className="mx-auto max-w-6xl">
         {(title || subtitle) && (
-          <div className="text-center mb-12 space-y-3">
+          <div className="mb-12 space-y-3 text-center">
             {title && (
-              <h2 className="text-4xl md:text-5xl font-black uppercase tracking-tight">
+              <h2 className="text-4xl font-black tracking-tight uppercase md:text-5xl">
                 {title}
               </h2>
             )}
             {subtitle && (
-              <p className="text-muted-foreground max-w-xl mx-auto">
+              <p className="mx-auto max-w-xl text-muted-foreground">
                 {subtitle}
               </p>
             )}
           </div>
         )}
-        <div className="grid grid-cols-1 md:grid-cols-3 auto-rows-[minmax(140px,auto)] gap-4">
+        <div className="grid auto-rows-[minmax(140px,auto)] grid-cols-1 gap-4 md:grid-cols-3">
           {items.map((item) => (
             <div
               key={item.title}
@@ -69,7 +69,7 @@ export function BentoGrid({
                 </div>
               )}
               <div>
-                <h3 className="text-lg font-black uppercase tracking-wide">
+                <h3 className="text-lg font-black tracking-wide uppercase">
                   {item.title}
                 </h3>
                 {item.description && (

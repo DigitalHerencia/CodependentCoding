@@ -1,7 +1,4 @@
-import type {
-  AiGenerationDTO,
-  AiUsageSummaryDTO,
-} from "@/types/aiTypes";
+import type { AiGenerationDTO, AiUsageSummaryDTO } from "@/types/aiTypes";
 import type { AiGenerationRecord } from "@/lib/db/selects/ai.selects";
 
 export function toAiGenerationDTO(record: AiGenerationRecord): AiGenerationDTO {

@@ -16,4 +16,3 @@ export function advanceDealStage(current: CrmDealStage, next: CrmDealStage) {
     throw new Error(`A deal cannot move from ${current} to ${next}.`);
   return { stage: next, terminal: next === "WON" || next === "LOST" };
 }
-

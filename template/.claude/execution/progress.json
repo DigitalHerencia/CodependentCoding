@@ -2,14 +2,28 @@
   "auth_alignment_redirect_2026_09_09": {
     "status": "implemented",
     "scope": "Auth layout redirects existing authenticated identities through redirectAfterAuth; shared desktop grid rows align copy and form panel starts. Footer actions wrap in one flex row.",
-    "executed": ["Focused ESLint passed", "tsc --noEmit passed", "Tailwind/PostCSS compilation passed", "git diff --check passed"],
-    "skipped": ["Live Clerk/browser redirect verification", "Browser layout verification", "Build"],
+    "executed": [
+      "Focused ESLint passed",
+      "tsc --noEmit passed",
+      "Tailwind/PostCSS compilation passed",
+      "git diff --check passed"
+    ],
+    "skipped": [
+      "Live Clerk/browser redirect verification",
+      "Browser layout verification",
+      "Build"
+    ],
     "blocked": []
   },
   "logo_placements_2026_09_09": {
     "status": "implemented",
     "scope": "Reviewed public, auth, tenant desktop/mobile, portal, and setup logo placements. Centered and responsively enlarged auth branding without badge; compact tenant lockups and 40px collapsed icon.",
-    "executed": ["Focused Prettier completed", "ESLint passed for four changed brand/shell modules", "Tailwind/PostCSS compilation passed", "git diff --check passed"],
+    "executed": [
+      "Focused Prettier completed",
+      "ESLint passed for four changed brand/shell modules",
+      "Tailwind/PostCSS compilation passed",
+      "git diff --check passed"
+    ],
     "skipped": ["Browser verification", "Build", "Typecheck"],
     "blocked": []
   },
@@ -22,9 +36,16 @@
       "PostCSS/Tailwind compilation of globals.css passed.",
       "git diff --check passed."
     ],
-    "skipped": ["Browser visual verification", "Build", "Broad tests", "Typecheck"],
+    "skipped": [
+      "Browser visual verification",
+      "Build",
+      "Broad tests",
+      "Typecheck"
+    ],
     "blocked": [],
-    "inferred": ["Responsive layout and equal image/text line-box heights are defined by CSS; not browser-verified."]
+    "inferred": [
+      "Responsive layout and equal image/text line-box heights are defined by CSS; not browser-verified."
+    ]
   },
   "schema_version": "1.0.0",
   "file": ".agents/execution/progress.json",

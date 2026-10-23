@@ -35,20 +35,20 @@ export function ChangelogSection({
   className,
 }: ChangelogSectionProps) {
   return (
-    <section className={cn("py-16 px-4 md:px-8 lg:px-16", className)}>
-      <div className="max-w-3xl mx-auto">
+    <section className={cn("px-4 py-16 md:px-8 lg:px-16", className)}>
+      <div className="mx-auto max-w-3xl">
         <div className="mb-12 space-y-3">
-          <h2 className="text-4xl md:text-5xl font-black uppercase tracking-tight">
+          <h2 className="text-4xl font-black tracking-tight uppercase md:text-5xl">
             {title}
           </h2>
           {subtitle && <p className="text-muted-foreground">{subtitle}</p>}
         </div>
-        <ol className="relative border-l-3 border-foreground pl-8 space-y-10">
+        <ol className="relative space-y-10 border-l-3 border-foreground pl-8">
           {entries.map((entry) => (
             <li key={entry.version} className="relative">
               <span className="absolute -left-[41px] flex h-5 w-5 items-center justify-center border-3 border-foreground bg-primary shadow-[2px_2px_0px_hsl(var(--shadow-color))]" />
               <div className="flex flex-wrap items-center gap-3">
-                <span className="text-xl font-black uppercase tracking-wide">
+                <span className="text-xl font-black tracking-wide uppercase">
                   {entry.version}
                 </span>
                 {entry.tag && (

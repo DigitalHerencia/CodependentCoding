@@ -35,14 +35,14 @@ export function PricingSection({
   className,
 }: PricingSectionProps) {
   return (
-    <section className={cn("py-16 px-4 md:px-8 lg:px-16", className)}>
-      <div className="max-w-6xl mx-auto">
-        <div className="text-center mb-12 space-y-3">
-          <h2 className="text-4xl md:text-5xl font-black uppercase tracking-tight">
+    <section className={cn("px-4 py-16 md:px-8 lg:px-16", className)}>
+      <div className="mx-auto max-w-6xl">
+        <div className="mb-12 space-y-3 text-center">
+          <h2 className="text-4xl font-black tracking-tight uppercase md:text-5xl">
             {title}
           </h2>
           {subtitle && (
-            <p className="text-muted-foreground max-w-xl mx-auto">{subtitle}</p>
+            <p className="mx-auto max-w-xl text-muted-foreground">{subtitle}</p>
           )}
         </div>
         <div className="grid gap-6 md:grid-cols-3">
@@ -57,7 +57,7 @@ export function PricingSection({
               )}
             >
               <div className="flex items-center justify-between">
-                <h3 className="text-xl font-black uppercase tracking-wide">
+                <h3 className="text-xl font-black tracking-wide uppercase">
                   {tier.name}
                 </h3>
                 {tier.featured && <Badge variant="accent">Popular</Badge>}
@@ -75,7 +75,7 @@ export function PricingSection({
                   </span>
                 )}
               </div>
-              <ul className="mt-6 space-y-3 flex-1">
+              <ul className="mt-6 flex-1 space-y-3">
                 {tier.features.map((feature) => (
                   <li
                     key={feature}
@@ -144,7 +144,7 @@ export function CheckoutSummary({
         className,
       )}
     >
-      <h3 className="text-lg font-black uppercase tracking-wide">
+      <h3 className="text-lg font-black tracking-wide uppercase">
         Order summary
       </h3>
       <p className="mt-1 text-sm font-bold text-muted-foreground">{planName}</p>

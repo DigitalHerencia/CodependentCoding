@@ -1,10 +1,10 @@
-import { defineConfig, devices } from '@playwright/test';
+import { defineConfig, devices } from "@playwright/test";
 
 const PORT = 3000;
 const BASE_URL = `http://127.0.0.1:${PORT}`;
 
 export default defineConfig({
-  testDir: './tests/e2e',
+  testDir: "./tests/e2e",
 
   fullyParallel: true,
 
@@ -15,15 +15,15 @@ export default defineConfig({
   ...(process.env.CI ? { workers: 1 } : {}),
 
   reporter: process.env.CI
-    ? [['html', { open: 'never' }], ['github']]
-    : [['list'], ['html', { open: 'never' }]],
+    ? [["html", { open: "never" }], ["github"]]
+    : [["list"], ["html", { open: "never" }]],
 
   use: {
     baseURL: BASE_URL,
 
-    trace: 'on-first-retry',
-    screenshot: 'only-on-failure',
-    video: 'retain-on-failure',
+    trace: "on-first-retry",
+    screenshot: "only-on-failure",
+    video: "retain-on-failure",
 
     actionTimeout: 10_000,
     navigationTimeout: 30_000,
@@ -37,16 +37,16 @@ export default defineConfig({
 
   projects: [
     {
-      name: 'chromium',
+      name: "chromium",
       use: {
-        ...devices['Desktop Chrome'],
+        ...devices["Desktop Chrome"],
       },
     },
 
     {
-      name: 'mobile-chromium',
+      name: "mobile-chromium",
       use: {
-        ...devices['Pixel 7'],
+        ...devices["Pixel 7"],
       },
     },
   ],
@@ -58,5 +58,5 @@ export default defineConfig({
     timeout: 120_000,
   },
 
-  outputDir: 'test-results',
+  outputDir: "test-results",
 });

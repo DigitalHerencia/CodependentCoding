@@ -1,29 +1,29 @@
-import Image from 'next/image';
+import Image from "next/image";
 
 const factoryComponents = [
   {
-    name: 'Codependent Coding',
-    role: 'Doctrine',
+    name: "Codependent Coding",
+    role: "Doctrine",
     summary:
-      'Architecture rules, naming, and layer contracts, enforced by ESLint and Prettier.',
+      "Architecture rules, naming, and layer contracts, enforced by ESLint and Prettier.",
   },
   {
-    name: 'Maximal Template',
-    role: 'Template',
+    name: "Maximal Template",
+    role: "Template",
     summary:
-      'One runnable Next.js app with the base and every module, where modules are built.',
+      "One runnable Next.js app with the base and every module, where modules are built.",
   },
   {
-    name: 'Hipster Stack',
-    role: 'CLI',
+    name: "Hipster Stack",
+    role: "CLI",
     summary:
-      'A local CLI that composes, slices, and checks apps: new, add, slice, doctor, compose.',
+      "A local CLI that composes, slices, and checks apps: new, add, slice, doctor, compose.",
   },
   {
-    name: 'Loaded Vibes',
-    role: 'Plugin',
+    name: "Loaded Vibes",
+    role: "Plugin",
     summary:
-      'A Claude Code plugin that keeps agents planning, slicing, and shipping inside the rails.',
+      "A Claude Code plugin that keeps agents planning, slicing, and shipping inside the rails.",
   },
 ] as const;
 

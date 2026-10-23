@@ -61,11 +61,11 @@ export function PageHeaderBlock({
     <header className="flex flex-col gap-5 border-b-3 border-foreground py-8 sm:flex-row sm:items-end sm:justify-between">
       <div className="max-w-3xl space-y-2">
         {eyebrow ? (
-          <p className="text-xs font-black uppercase tracking-[0.2em] text-primary">
+          <p className="text-xs font-black tracking-[0.2em] text-primary uppercase">
             {eyebrow}
           </p>
         ) : null}
-        <h1 className="text-3xl font-black uppercase tracking-tight sm:text-4xl">
+        <h1 className="text-3xl font-black tracking-tight uppercase sm:text-4xl">
           {title}
         </h1>
         {description ? (
@@ -93,7 +93,7 @@ export function MetricGridBlock({ metrics }: { metrics: MetricItem[] }) {
       {metrics.map((metric) => (
         <Card key={metric.label}>
           <CardHeader className="pb-2">
-            <CardTitle className="text-xs uppercase tracking-widest text-muted-foreground">
+            <CardTitle className="text-xs tracking-widest text-muted-foreground uppercase">
               {metric.label}
             </CardTitle>
           </CardHeader>
@@ -150,7 +150,7 @@ export function DataTableToolbarBlock({
       />
       <select
         aria-label="Filter by status"
-        className="h-11 border-3 border-input bg-background px-3 text-sm font-bold uppercase focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        className="h-11 border-3 border-input bg-background px-3 text-sm font-bold uppercase focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
         value={status}
         onChange={(event) => onStatusChange(event.target.value)}
       >
@@ -161,7 +161,7 @@ export function DataTableToolbarBlock({
       </select>
       <select
         aria-label="Sort contacts"
-        className="h-11 border-3 border-input bg-background px-3 text-sm font-bold uppercase focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        className="h-11 border-3 border-input bg-background px-3 text-sm font-bold uppercase focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
         value={sort}
         onChange={(event) => onSortChange(event.target.value)}
       >
@@ -169,7 +169,7 @@ export function DataTableToolbarBlock({
         <option value="name-desc">Name Z–A</option>
         <option value="updated-desc">Recently updated</option>
       </select>
-      <p className="text-xs font-black uppercase tracking-wider text-muted-foreground">
+      <p className="text-xs font-black tracking-wider text-muted-foreground uppercase">
         {resultCount} records
       </p>
     </div>
@@ -197,7 +197,7 @@ export function DataTableBlock({
             {columns.map((column) => (
               <th
                 key={column.key}
-                className="border-b-3 border-foreground px-4 py-3 text-left text-xs font-black uppercase tracking-wider"
+                className="border-b-3 border-foreground px-4 py-3 text-left text-xs font-black tracking-wider uppercase"
               >
                 {column.label}
               </th>
@@ -258,7 +258,7 @@ export function RecordDetailBlock({
         <dl className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {items.map((item) => (
             <div key={item.label} className="border-l-3 border-primary pl-3">
-              <dt className="text-xs font-black uppercase tracking-wider text-muted-foreground">
+              <dt className="text-xs font-black tracking-wider text-muted-foreground uppercase">
                 {item.label}
               </dt>
               <dd className="mt-1 font-medium">{item.value}</dd>
@@ -285,7 +285,7 @@ export function KanbanBoardBlock({ columns }: { columns: BoardColumn[] }) {
           key={column.id}
           className="min-w-64 border-3 border-foreground bg-muted/40 p-3"
         >
-          <h2 className="mb-3 flex items-center justify-between text-sm font-black uppercase tracking-wider">
+          <h2 className="mb-3 flex items-center justify-between text-sm font-black tracking-wider uppercase">
             {column.title}
             <Badge variant="outline">{column.items.length}</Badge>
           </h2>
@@ -333,8 +333,8 @@ export function TimelineBlock({
     <ol className="space-y-0 border-l-3 border-foreground pl-6">
       {items.map((item) => (
         <li key={item.id} className="relative pb-7 last:pb-0">
-          <span className="absolute -left-[1.95rem] top-1 size-3 border-2 border-foreground bg-primary" />
-          <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+          <span className="absolute top-1 -left-[1.95rem] size-3 border-2 border-foreground bg-primary" />
+          <p className="text-xs font-bold tracking-wider text-muted-foreground uppercase">
             {item.timestamp}
           </p>
           <h3 className="font-black">{item.title}</h3>
@@ -427,7 +427,7 @@ export function ChatWorkspaceBlock({
             message.internal ? "bg-warning/20" : "bg-card",
           )}
         >
-          <p className="text-xs font-black uppercase tracking-wider">
+          <p className="text-xs font-black tracking-wider uppercase">
             {message.author}
             {message.internal ? " · Internal" : ""}
           </p>
