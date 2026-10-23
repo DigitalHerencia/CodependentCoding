@@ -6,13 +6,9 @@
   "milestone": "M2",
   "current_issue": "CC-010",
   "next_issue": "CC-011",
-  "queue": [
-    "CC-011"
-  ],
+  "queue": ["CC-011"],
   "branch": "fix/170-route-feature-boundaries",
-  "in_flight": [
-    "CC-010 PR open, awaiting owner go-ahead to merge"
-  ],
+  "in_flight": ["CC-010 PR open, awaiting owner go-ahead to merge"],
   "notes": [
     "Governance package is uncommitted in the owner's working tree; owner reviews with `git status` / `git diff`, then commits on a branch `chore/governance-package`.",
     "Template already contains the doctrine ESLint plugin (template/eslint/) and the new eslint.config.mjs; CC-009 turns findings into fixes.",

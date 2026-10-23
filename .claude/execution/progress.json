@@ -6,36 +6,15 @@
     "M0": {
       "status": "done",
       "closed": "2026-10-23",
-      "issues": [
-        "CC-001",
-        "CC-002",
-        "CC-003",
-        "CC-004",
-        "CC-005"
-      ],
-      "prs": [
-        207,
-        208,
-        210,
-        211,
-        212,
-        213
-      ],
+      "issues": ["CC-001", "CC-002", "CC-003", "CC-004", "CC-005"],
+      "prs": [207, 208, 210, 211, 212, 213],
       "note": "All M0 issues merged. Release profile run on main 851a63f: only doctrine tests and root test pass; template and root validate fail on pre-existing code owned by CC-006/007/009-013. Compose not runnable until the CLI compose command exists (M4)."
     },
     "M1": {
       "status": "done",
-      "issues": [
-        "CC-006",
-        "CC-007",
-        "CC-008"
-      ],
+      "issues": ["CC-006", "CC-007", "CC-008"],
       "closed": "2026-10-23",
-      "prs": [
-        216,
-        217,
-        218
-      ],
+      "prs": [216, 217, 218],
       "note": "All M1 issues merged. Release profile on main 86477ca: root lint, typecheck, test and build pass; root validate fails only at format:check (CC-013). Template validate/lint/typecheck/build unchanged from M0 (CC-009..013). Compose NOT_RUN until M4."
     },
     "M2": {
@@ -82,22 +61,11 @@
     },
     "M5": {
       "status": "todo",
-      "issues": [
-        "CC-036",
-        "CC-037",
-        "CC-038",
-        "CC-039",
-        "CC-040",
-        "CC-041"
-      ]
+      "issues": ["CC-036", "CC-037", "CC-038", "CC-039", "CC-040", "CC-041"]
     },
     "M6": {
       "status": "todo",
-      "issues": [
-        "CC-042",
-        "CC-043",
-        "CC-044"
-      ]
+      "issues": ["CC-042", "CC-043", "CC-044"]
     }
   },
   "issues": {
