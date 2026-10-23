@@ -1,7 +1,7 @@
 import "server-only";
 
 import type { Prisma } from "@/generated/prisma/client";
-import type { AccessContext } from "@/types/access";
+import type { AccessContext } from "@/types/accessTypes";
 import { assertPermission } from "@/lib/authz/permissions";
 
 export async function completeOnboardingTx(

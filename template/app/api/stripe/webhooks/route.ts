@@ -1,8 +1,7 @@
-import {
-  processStripeWebhook,
-  verifyStripeWebhook,
-  WebhookIdentityConflictError,
-} from "@/lib/integrations/stripe/webhooks";
+import { recordStripeWebhookTx } from "@/lib/db/transactions/stripe-webhook.tx";
+import { WebhookIdentityConflictError } from "@/lib/db/transactions/webhook-event.tx";
+import { getBillingSubscriptionInputFromEvent } from "@/lib/integrations/stripe/subscriptions";
+import { verifyStripeWebhook } from "@/lib/integrations/stripe/webhooks";
 
 export async function POST(request: Request) {
   const payload = await request.text();
@@ -21,7 +20,11 @@ export async function POST(request: Request) {
   }
 
   try {
-    const processed = await processStripeWebhook(event, payload);
+    const processed = await recordStripeWebhookTx(
+      event,
+      payload,
+      getBillingSubscriptionInputFromEvent(event),
+    );
 
     return Response.json({ received: true, duplicate: !processed });
   } catch (error) {

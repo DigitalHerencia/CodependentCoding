@@ -774,7 +774,7 @@ schemas/integrationSchemas.ts
 Cross-cutting type files:
 
 ```text
-types/access.ts
+types/accessTypes.ts
 types/commonTypes.ts
 types/integrationTypes.ts
 types/uiTypes.ts

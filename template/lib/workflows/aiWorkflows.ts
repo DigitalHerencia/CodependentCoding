@@ -5,11 +5,15 @@ import {
   createRateLimitedAiGenerationRecord,
   failAiGenerationRecord,
 } from "@/lib/actions/aiActions";
+import { assertPermission } from "@/lib/authz/permissions";
+import { withAuthenticatedRead } from "@/lib/db/tenant";
+import { getMyAiUsage, getMyAiGenerations } from "@/lib/fetchers/aiFetchers";
+import { isHuggingFaceConfigured } from "@/lib/integrations/hugging-face/client";
 import {
-  getAiPlaygroundConfiguration,
-  getMyAiUsage,
-  getMyAiGenerations,
-} from "@/lib/fetchers/aiFetchers";
+  generateHuggingFaceText,
+  getConfiguredHuggingFaceModel,
+} from "@/lib/integrations/hugging-face/inference";
+import type { AiUsageItem, ExecuteAiGenerationCommand } from "@/types/aiTypes";
 
 export async function getAiWorkspaceWorkflow() {
   const [configuration, generations, usage] = await Promise.all([
@@ -19,8 +23,17 @@ export async function getAiWorkspaceWorkflow() {
   ]);
   return { configuration, generations, usage };
 }
-import { generateHuggingFaceText } from "@/lib/integrations/hugging-face/inference";
-import type { AiUsageItem, ExecuteAiGenerationCommand } from "@/types/aiTypes";
+
+// Provider configuration is not a persisted read, so it lives here rather than in a fetcher.
+export async function getAiPlaygroundConfiguration() {
+  return withAuthenticatedRead(async (_tx, access) => {
+    assertPermission(access, "ai:read");
+    return {
+      configured: isHuggingFaceConfigured(),
+      model: getConfiguredHuggingFaceModel(),
+    };
+  });
+}
 
 const TICKS_PER_US_DOLLAR = 10_000_000_000n;
 

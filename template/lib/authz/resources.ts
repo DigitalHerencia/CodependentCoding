@@ -3,4 +3,4 @@ import "server-only";
 export type {
   ResourceAccessDescriptor,
   ResourceKind,
-} from "@/types/access";
+} from "@/types/accessTypes";
