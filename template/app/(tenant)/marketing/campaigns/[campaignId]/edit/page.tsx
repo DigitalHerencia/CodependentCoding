@@ -1,4 +1,4 @@
-import { CampaignEditForm } from "@/features/marketing/campaignEditForm";
+import { CampaignEditFeature } from "@/features/marketing/campaignEditFeature";
 
 export default async function Page({
   params,
@@ -6,5 +6,5 @@ export default async function Page({
   params: Promise<{ campaignId: string }>;
 }) {
   const { campaignId } = await params;
-  return <CampaignEditForm campaignId={campaignId} />;
+  return <CampaignEditFeature campaignId={campaignId} />;
 }

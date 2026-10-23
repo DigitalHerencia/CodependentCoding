@@ -1,4 +1,4 @@
-import { AudienceEditForm } from "@/features/marketing/audienceEditForm";
+import { AudienceEditFeature } from "@/features/marketing/audienceEditFeature";
 
 export default async function Page({
   params,
@@ -6,5 +6,5 @@ export default async function Page({
   params: Promise<{ audienceId: string }>;
 }) {
   const { audienceId } = await params;
-  return <AudienceEditForm audienceId={audienceId} />;
+  return <AudienceEditFeature audienceId={audienceId} />;
 }

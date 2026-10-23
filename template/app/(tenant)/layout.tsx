@@ -1,8 +1,6 @@
-import { redirect } from "next/navigation";
-import { getOnboardingState } from "@/lib/fetchers/onboardingFetchers";
 import type { ReactNode } from "react";
 
-import { TenantShell } from "@/components/shells/tenant-shell";
+import { OnboardingGateFeature } from "@/features/onboarding/onboardingGateFeature";
 import { getIdentity } from "@/lib/auth/auth";
 import { redirectToSignIn } from "@/lib/auth/redirects";
 
@@ -12,7 +10,5 @@ export default async function TenantLayout({
   const identity = await getIdentity();
   if (!identity) redirectToSignIn();
 
-  if (!(await getOnboardingState()).completed) redirect("/onboarding");
-
-  return <TenantShell>{children}</TenantShell>;
+  return <OnboardingGateFeature>{children}</OnboardingGateFeature>;
 }

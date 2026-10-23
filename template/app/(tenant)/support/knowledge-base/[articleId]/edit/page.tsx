@@ -1,4 +1,4 @@
-import { KnowledgeArticleEditForm } from "@/features/support/knowledgeArticleEditForm";
+import { KnowledgeArticleEditFeature } from "@/features/support/knowledgeArticleEditFeature";
 
 export default async function Page({
   params,
@@ -6,5 +6,5 @@ export default async function Page({
   params: Promise<{ articleId: string }>;
 }) {
   const { articleId } = await params;
-  return <KnowledgeArticleEditForm articleId={articleId} />;
+  return <KnowledgeArticleEditFeature articleId={articleId} />;
 }

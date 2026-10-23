@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { getTaskWorkflow } from "@/lib/workflows/projectsWorkflows";
 import { TaskNewForm } from "./taskNewForm";
-export async function TaskEditForm({
+export async function TaskEditFeature({
   projectId,
   taskId,
 }: {

@@ -134,15 +134,15 @@ The repository does not currently contain the older catalog's domain-specific `c
 | `/crm/leads`                     | `features/crm/crmLeadsFeature.tsx`         | `components/templates/crmLeadsTemplate.tsx`         |
 | `/crm/leads/new`                 | `features/crm/crmNewLeadForm.tsx`          | —                                                   |
 | `/crm/leads/[leadId]`            | `features/crm/crmLeadDetailFeature.tsx`    | `components/templates/crmLeadDetailTemplate.tsx`    |
-| `/crm/leads/[leadId]/edit`       | `features/crm/crmEditLeadForm.tsx`         | —                                                   |
+| `/crm/leads/[leadId]/edit`       | `features/crm/crmEditLeadFeature.tsx`      | —                                                   |
 | `/crm/contacts`                  | `features/crm/crmContactsFeature.tsx`      | `components/templates/crmContactsTemplate.tsx`      |
 | `/crm/contacts/new`              | `features/crm/crmNewContactForm.tsx`       | —                                                   |
 | `/crm/contacts/[contactId]`      | `features/crm/crmContactDetailFeature.tsx` | `components/templates/crmContactDetailTemplate.tsx` |
-| `/crm/contacts/[contactId]/edit` | `features/crm/crmEditContactForm.tsx`      | —                                                   |
+| `/crm/contacts/[contactId]/edit` | `features/crm/crmEditContactFeature.tsx`   | —                                                   |
 | `/crm/accounts`                  | `features/crm/crmAccountsFeature.tsx`      | `components/templates/crmAccountsTemplate.tsx`      |
 | `/crm/accounts/new`              | `features/crm/crmNewAccountForm.tsx`       | —                                                   |
 | `/crm/accounts/[accountId]`      | `features/crm/crmAccountDetailFeature.tsx` | `components/templates/crmAccountDetailTemplate.tsx` |
-| `/crm/accounts/[accountId]/edit` | `features/crm/crmEditAccountForm.tsx`      | —                                                   |
+| `/crm/accounts/[accountId]/edit` | `features/crm/crmEditAccountFeature.tsx`   | —                                                   |
 | `/crm/analytics`                 | `features/crm/crmAnalyticsFeature.tsx`     | `components/templates/crmAnalyticsTemplate.tsx`     |
 
 ### `crm` feature inventory
@@ -160,9 +160,9 @@ features/crm/crmContactDetailSkeleton.tsx
 features/crm/crmContactsFeature.client.tsx
 features/crm/crmContactsFeature.tsx
 features/crm/crmContactsSkeleton.tsx
-features/crm/crmEditAccountForm.tsx
-features/crm/crmEditContactForm.tsx
-features/crm/crmEditLeadForm.tsx
+features/crm/crmEditAccountFeature.tsx
+features/crm/crmEditContactFeature.tsx
+features/crm/crmEditLeadFeature.tsx
 features/crm/crmLeadDetailFeature.tsx
 features/crm/crmLeadDetailSkeleton.tsx
 features/crm/crmLeadsFeature.tsx
@@ -214,32 +214,32 @@ Authorization for this ontology uses the shared `lib/authz/` files listed above 
 
 ### Routes → implemented entrypoints → templates
 
-| Route                                       | Implemented entrypoint                  | Template                                             |
-| ------------------------------------------- | --------------------------------------- | ---------------------------------------------------- |
-| `/projects`                                 | `features/projects/projectsFeature.tsx` | `components/templates/projectsTemplate.tsx`          |
-| `/projects/new`                             | `features/projects/projectNewForm.tsx`  | —                                                    |
-| `/projects/[projectId]`                     | `features/projects/projectFeature.tsx`  | `components/templates/projectDetailTemplate.tsx`     |
-| `/projects/[projectId]/edit`                | `features/projects/projectEditForm.tsx` | —                                                    |
-| `/projects/[projectId]/tasks`               | `features/projects/tasksFeature.tsx`    | `components/templates/projectTasksTemplate.tsx`      |
-| `/projects/[projectId]/tasks/new`           | `features/projects/taskNewForm.tsx`     | —                                                    |
-| `/projects/[projectId]/tasks/[taskId]`      | `features/projects/taskFeature.tsx`     | `components/templates/projectTaskDetailTemplate.tsx` |
-| `/projects/[projectId]/tasks/[taskId]/edit` | `features/projects/taskEditForm.tsx`    | —                                                    |
-| `/projects/[projectId]/timeline`            | `features/projects/timelineFeature.tsx` | `components/templates/projectTimelineTemplate.tsx`   |
-| `/my-tasks`                                 | `features/projects/myTasksFeature.tsx`  | `components/templates/myTasksTemplate.tsx`           |
+| Route                                       | Implemented entrypoint                     | Template                                             |
+| ------------------------------------------- | ------------------------------------------ | ---------------------------------------------------- |
+| `/projects`                                 | `features/projects/projectsFeature.tsx`    | `components/templates/projectsTemplate.tsx`          |
+| `/projects/new`                             | `features/projects/projectNewForm.tsx`     | —                                                    |
+| `/projects/[projectId]`                     | `features/projects/projectFeature.tsx`     | `components/templates/projectDetailTemplate.tsx`     |
+| `/projects/[projectId]/edit`                | `features/projects/projectEditFeature.tsx` | —                                                    |
+| `/projects/[projectId]/tasks`               | `features/projects/tasksFeature.tsx`       | `components/templates/projectTasksTemplate.tsx`      |
+| `/projects/[projectId]/tasks/new`           | `features/projects/taskNewForm.tsx`        | —                                                    |
+| `/projects/[projectId]/tasks/[taskId]`      | `features/projects/taskFeature.tsx`        | `components/templates/projectTaskDetailTemplate.tsx` |
+| `/projects/[projectId]/tasks/[taskId]/edit` | `features/projects/taskEditFeature.tsx`    | —                                                    |
+| `/projects/[projectId]/timeline`            | `features/projects/timelineFeature.tsx`    | `components/templates/projectTimelineTemplate.tsx`   |
+| `/my-tasks`                                 | `features/projects/myTasksFeature.tsx`     | `components/templates/myTasksTemplate.tsx`           |
 
 ### `projects` feature inventory
 
 ```text
 features/projects/myTasksFeature.tsx
 features/projects/myTasksSkeleton.tsx
-features/projects/projectEditForm.tsx
+features/projects/projectEditFeature.tsx
 features/projects/projectFeature.tsx
 features/projects/projectNewForm.tsx
 features/projects/projectSkeleton.tsx
 features/projects/projectsFeature.client.tsx
 features/projects/projectsFeature.tsx
 features/projects/projectsSkeleton.tsx
-features/projects/taskEditForm.tsx
+features/projects/taskEditFeature.tsx
 features/projects/taskFeature.client.tsx
 features/projects/taskFeature.tsx
 features/projects/taskNewForm.tsx
@@ -286,16 +286,16 @@ Authorization for this ontology uses the shared `lib/authz/` files listed above 
 
 ### Routes → implemented entrypoints → templates
 
-| Route                                      | Implemented entrypoint                          | Template                                                   |
-| ------------------------------------------ | ----------------------------------------------- | ---------------------------------------------------------- |
-| `/support/inbox`                           | `features/support/inboxFeature.tsx`             | `components/templates/supportInboxTemplate.tsx`            |
-| `/support/tickets/new`                     | `features/support/ticketNewForm.tsx`            | —                                                          |
-| `/support/tickets/[ticketId]`              | `features/support/ticketFeature.tsx`            | `components/templates/supportTicketTemplate.tsx`           |
-| `/support/knowledge-base`                  | `features/support/knowledgeBaseFeature.tsx`     | `components/templates/supportKnowledgeBaseTemplate.tsx`    |
-| `/support/knowledge-base/new`              | `features/support/knowledgeArticleNewForm.tsx`  | —                                                          |
-| `/support/knowledge-base/[articleId]`      | `features/support/knowledgeArticleFeature.tsx`  | `components/templates/supportKnowledgeArticleTemplate.tsx` |
-| `/support/knowledge-base/[articleId]/edit` | `features/support/knowledgeArticleEditForm.tsx` | —                                                          |
-| `/support/analytics`                       | `features/support/supportAnalyticsFeature.tsx`  | `components/templates/supportAnalyticsTemplate.tsx`        |
+| Route                                      | Implemented entrypoint                             | Template                                                   |
+| ------------------------------------------ | -------------------------------------------------- | ---------------------------------------------------------- |
+| `/support/inbox`                           | `features/support/inboxFeature.tsx`                | `components/templates/supportInboxTemplate.tsx`            |
+| `/support/tickets/new`                     | `features/support/ticketNewForm.tsx`               | —                                                          |
+| `/support/tickets/[ticketId]`              | `features/support/ticketFeature.tsx`               | `components/templates/supportTicketTemplate.tsx`           |
+| `/support/knowledge-base`                  | `features/support/knowledgeBaseFeature.tsx`        | `components/templates/supportKnowledgeBaseTemplate.tsx`    |
+| `/support/knowledge-base/new`              | `features/support/knowledgeArticleNewForm.tsx`     | —                                                          |
+| `/support/knowledge-base/[articleId]`      | `features/support/knowledgeArticleFeature.tsx`     | `components/templates/supportKnowledgeArticleTemplate.tsx` |
+| `/support/knowledge-base/[articleId]/edit` | `features/support/knowledgeArticleEditFeature.tsx` | —                                                          |
+| `/support/analytics`                       | `features/support/supportAnalyticsFeature.tsx`     | `components/templates/supportAnalyticsTemplate.tsx`        |
 
 ### `support` feature inventory
 
@@ -303,7 +303,7 @@ Authorization for this ontology uses the shared `lib/authz/` files listed above 
 features/support/inboxFeature.client.tsx
 features/support/inboxFeature.tsx
 features/support/inboxSkeleton.tsx
-features/support/knowledgeArticleEditForm.tsx
+features/support/knowledgeArticleEditFeature.tsx
 features/support/knowledgeArticleFeature.tsx
 features/support/knowledgeArticleNewForm.tsx
 features/support/knowledgeArticleSkeleton.tsx
@@ -355,29 +355,29 @@ Authorization for this ontology uses the shared `lib/authz/` files listed above 
 | Route                                    | Implemented entrypoint                             | Template                                                   |
 | ---------------------------------------- | -------------------------------------------------- | ---------------------------------------------------------- |
 | `/marketing/campaigns`                   | `features/marketing/campaignsFeature.tsx`          | `components/templates/marketingCampaignsTemplate.tsx`      |
-| `/marketing/campaigns/new`               | `features/marketing/campaignNewForm.tsx`           | —                                                          |
+| `/marketing/campaigns/new`               | `features/marketing/campaignNewFeature.tsx`        | —                                                          |
 | `/marketing/campaigns/[campaignId]`      | `features/marketing/campaignFeature.tsx`           | `components/templates/marketingCampaignDetailTemplate.tsx` |
-| `/marketing/campaigns/[campaignId]/edit` | `features/marketing/campaignEditForm.tsx`          | —                                                          |
+| `/marketing/campaigns/[campaignId]/edit` | `features/marketing/campaignEditFeature.tsx`       | —                                                          |
 | `/marketing/audiences`                   | `features/marketing/audiencesFeature.tsx`          | `components/templates/marketingAudiencesTemplate.tsx`      |
 | `/marketing/audiences/new`               | `features/marketing/audienceNewForm.tsx`           | —                                                          |
 | `/marketing/audiences/[audienceId]`      | `features/marketing/audienceFeature.tsx`           | `components/templates/marketingAudienceDetailTemplate.tsx` |
-| `/marketing/audiences/[audienceId]/edit` | `features/marketing/audienceEditForm.tsx`          | —                                                          |
+| `/marketing/audiences/[audienceId]/edit` | `features/marketing/audienceEditFeature.tsx`       | —                                                          |
 | `/marketing/analytics`                   | `features/marketing/marketingAnalyticsFeature.tsx` | `components/templates/marketingAnalyticsTemplate.tsx`      |
 
 ### `marketing` feature inventory
 
 ```text
-features/marketing/audienceEditForm.tsx
+features/marketing/audienceEditFeature.tsx
 features/marketing/audienceFeature.tsx
 features/marketing/audienceNewForm.tsx
 features/marketing/audienceSkeleton.tsx
 features/marketing/audiencesFeature.client.tsx
 features/marketing/audiencesFeature.tsx
 features/marketing/audiencesSkeleton.tsx
-features/marketing/campaignEditForm.tsx
+features/marketing/campaignEditFeature.tsx
 features/marketing/campaignFeature.client.tsx
 features/marketing/campaignFeature.tsx
-features/marketing/campaignNewForm.tsx
+features/marketing/campaignNewFeature.tsx
 features/marketing/campaignForm.client.tsx
 features/marketing/campaignSkeleton.tsx
 features/marketing/campaignsFeature.client.tsx
@@ -420,28 +420,28 @@ Authorization for this ontology uses the shared `lib/authz/` files listed above 
 
 ### Routes → implemented entrypoints → templates
 
-| Route                        | Implemented entrypoint                   | Template                                                  |
-| ---------------------------- | ---------------------------------------- | --------------------------------------------------------- |
-| `/invoices`                  | `features/invoicing/invoicesFeature.tsx` | `components/templates/invoicingInvoicesTemplate.tsx`      |
-| `/invoices/new`              | `features/invoicing/invoiceNewForm.tsx`  | —                                                         |
-| `/invoices/[invoiceId]`      | `features/invoicing/invoiceFeature.tsx`  | `components/templates/invoicingInvoiceDetailTemplate.tsx` |
-| `/invoices/[invoiceId]/edit` | `features/invoicing/invoiceEditForm.tsx` | —                                                         |
-| `/expenses`                  | `features/invoicing/expensesFeature.tsx` | `components/templates/invoicingExpensesTemplate.tsx`      |
-| `/expenses/new`              | `features/invoicing/expenseNewForm.tsx`  | —                                                         |
-| `/expenses/[expenseId]`      | `features/invoicing/expenseFeature.tsx`  | `components/templates/invoicingExpenseDetailTemplate.tsx` |
-| `/expenses/[expenseId]/edit` | `features/invoicing/expenseEditForm.tsx` | —                                                         |
+| Route                        | Implemented entrypoint                      | Template                                                  |
+| ---------------------------- | ------------------------------------------- | --------------------------------------------------------- |
+| `/invoices`                  | `features/invoicing/invoicesFeature.tsx`    | `components/templates/invoicingInvoicesTemplate.tsx`      |
+| `/invoices/new`              | `features/invoicing/invoiceNewForm.tsx`     | —                                                         |
+| `/invoices/[invoiceId]`      | `features/invoicing/invoiceFeature.tsx`     | `components/templates/invoicingInvoiceDetailTemplate.tsx` |
+| `/invoices/[invoiceId]/edit` | `features/invoicing/invoiceEditFeature.tsx` | —                                                         |
+| `/expenses`                  | `features/invoicing/expensesFeature.tsx`    | `components/templates/invoicingExpensesTemplate.tsx`      |
+| `/expenses/new`              | `features/invoicing/expenseNewForm.tsx`     | —                                                         |
+| `/expenses/[expenseId]`      | `features/invoicing/expenseFeature.tsx`     | `components/templates/invoicingExpenseDetailTemplate.tsx` |
+| `/expenses/[expenseId]/edit` | `features/invoicing/expenseEditFeature.tsx` | —                                                         |
 
 ### `invoicing` feature inventory
 
 ```text
-features/invoicing/expenseEditForm.tsx
+features/invoicing/expenseEditFeature.tsx
 features/invoicing/expenseFeature.tsx
 features/invoicing/expenseNewForm.tsx
 features/invoicing/expenseSkeleton.tsx
 features/invoicing/expensesFeature.client.tsx
 features/invoicing/expensesFeature.tsx
 features/invoicing/expensesSkeleton.tsx
-features/invoicing/invoiceEditForm.tsx
+features/invoicing/invoiceEditFeature.tsx
 features/invoicing/invoiceFeature.client.tsx
 features/invoicing/invoiceFeature.tsx
 features/invoicing/invoiceNewForm.tsx
