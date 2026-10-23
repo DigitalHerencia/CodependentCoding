@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/progress/v1",
-  "updated": "2026-10-23T01:00:00Z",
+  "updated": "2026-10-23T00:45:00Z",
   "format": "Evidence states: EXECUTED | INSPECTED | NOT_RUN | BLOCKED. Never mark an issue done without EXECUTED evidence for its Validation commands.",
   "milestones": {
     "M0": {
@@ -167,6 +167,13 @@
       "branch": "refactor/166-reduce-site-to-landing-page",
       "decision": "DEC-021",
       "note": "Only / remains. Root lint criterion: app/, components/, lib/ and root configs lint clean; remaining 38 findings are all in packages/core and packages/loaded-vibes, deleted by CC-007."
+    },
+    "CC-007": {
+      "status": "done",
+      "github": 167,
+      "branch": "refactor/167-remove-legacy-generator-packages",
+      "decision": "DEC-022",
+      "note": "packages/{core,schema,loaded-vibes,cli} and tsdown.config.ts deleted; salvage in context/doctrine/salvage/. Root lint, typecheck, test, build green. pnpm validate red only on format:check (pre-existing, CC-013)."
     }
   },
   "completed": [
@@ -175,7 +182,8 @@
       "date": "2026-10-22",
       "by": "Claude (claude.ai session)"
     },
-    "CC-005"
+    "CC-005",
+    "CC-007"
   ],
   "evidence": [
     {
@@ -573,6 +581,70 @@
       "env": "linux node 22.22.0, pnpm 12.3.4",
       "command": "pnpm format:check",
       "result": "not green: pre-existing, CC-013; changed files were already unformatted on main and were not reformatted"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-007",
+      "env": "linux node 22.22.0, pnpm 12.3.4",
+      "command": "pnpm install",
+      "result": "exit 0; lockfile drops the 4 workspace packages"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-007",
+      "env": "linux node 22.22.0, pnpm 12.3.4",
+      "command": "pnpm install --frozen-lockfile",
+      "result": "exit 0"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-007",
+      "env": "linux node 22.22.0, pnpm 12.3.4",
+      "command": "pnpm lint",
+      "result": "exit 0 (main: 38 problems, all in deleted packages)"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-007",
+      "env": "linux node 22.22.0, pnpm 12.3.4",
+      "command": "pnpm typecheck",
+      "result": "exit 0"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-007",
+      "env": "linux node 22.22.0, pnpm 12.3.4",
+      "command": "pnpm test",
+      "result": "exit 0, no test files"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-007",
+      "env": "linux node 22.22.0, pnpm 12.3.4",
+      "command": "pnpm build",
+      "result": "exit 0, only / and /_not-found"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-007",
+      "env": "linux node 22.22.0, pnpm 12.3.4",
+      "command": "pnpm validate",
+      "result": "exit 2 at format:check: 20 unformatted files (main: 73), all pre-existing in app/, components/, lib/, root configs, template/; owned by CC-013. lint/typecheck/test after it pass when run directly"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-007",
+      "env": "linux node 22.22.0, pnpm 12.3.4",
+      "command": "git grep '@hipster-stack/' outside .claude/execution, context/specs, context/doctrine/salvage, pnpm-lock.yaml",
+      "result": "no matches; pnpm-lock.yaml has 0 hipster-stack entries; salvage *.ts.txt keep the original imports as reference text"
     }
   ],
   "known_findings": [
@@ -580,8 +652,8 @@
     "No real-Postgres RLS cross-tenant test (CC-016)",
     "No ISR revalidate config in app/ despite ISR being the stated public caching strategy (CC-015)",
     "RATE_LIMITED error code has no backing mechanism (CC-026)",
-    "Root typecheck: 250 errors in legacy components/** (expected to clear with CC-006); root lint: 167 findings (CC-009 onward)",
-    "Root format:check scans template/** but template deps are not installed in the root CI job, so prettier-plugin-tailwindcss errors on 'tw-animate-css' (CC-004 / prettierignore)"
+    "Root format:check scans template/** but template deps are not installed in the root CI job, so prettier-plugin-tailwindcss errors on 'tw-animate-css' (CC-004 / prettierignore)",
+    "Root lint and typecheck clean since CC-007; root validate red only on format:check (CC-013)"
   ],
   "blocked": []
 }

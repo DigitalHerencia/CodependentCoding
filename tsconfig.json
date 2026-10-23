@@ -70,7 +70,6 @@
     "build",
     "coverage",
     "template",
-    "packages/loaded-vibes",
     ".agents"
   ]
 }

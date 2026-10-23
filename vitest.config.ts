@@ -13,7 +13,6 @@ export default defineConfig({
       'build/**',
       'coverage/**',
       'template/**',
-      'packages/loaded-vibes/**',
     ],
 
     testTimeout: 15_000,
