@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/decisions/v1",
-  "updated": "2026-10-23T05:15:00Z",
+  "updated": "2026-10-23T05:40:00Z",
   "format": "Append new decisions; never rewrite history. Supersede by adding a new entry and setting status=superseded + superseded_by on the old one.",
   "decisions": [
     {
@@ -263,6 +263,15 @@
       "context": "Root format:check re-exports the template Prettier config, whose tailwind plugin resolves template/app/globals.css imports (tw-animate-css) that are only installed in template/node_modules. The root CI job does not install template deps, so root format:check errored on every template file. Squash-merging would rewrite the formatting commit, so its SHA in .git-blame-ignore-revs would not exist on main.",
       "decision": "Add template/ to root .prettierignore; the template job's own format:check covers it (now blocking, continue-on-error removed). Keep the formatting commit alone, then a second commit with .prettierignore, .git-blame-ignore-revs, CI and records. Merge this PR with a merge commit (not squash) so 2bb0c68 lands on main unchanged.",
       "refs": ["CC-013", "CC-004", "CC-012"]
+    },
+    {
+      "id": "DEC-029",
+      "date": "2026-10-23",
+      "status": "accepted",
+      "title": "CC-014: legal pages and LICENSE use a placeholder operator",
+      "context": "CC-014 Scope removes Digital Herencia branding from template code and its rg check must return nothing, but content/privacy.tsx, content/terms.tsx and template/LICENSE named Digital Herencia and the owner's email as the operator. template/content is imported by the app, so it is not generator-only and stays.",
+      "decision": "Add applicationOperator {name: 'Your Company', email: 'legal@example.com'} to content/application.ts; privacy and terms render it (uppercase where the clause is uppercase). Template LICENSE copyright holder becomes 'Your Company'. Wording is otherwise unchanged. The factory root keeps its own branding and LICENSE.",
+      "refs": ["CC-014"]
     }
   ]
 }

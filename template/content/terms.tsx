@@ -1,4 +1,6 @@
 // Public page copy; preserve the owner-approved wording.
+import { applicationOperator } from "@/content/application";
+
 export const termsCopy = {
   title: "Terms of",
   titleHighlight: "Service",
@@ -9,8 +11,8 @@ export const termsCopy = {
   introduction: (
     <p>
       These Terms of Service govern your use of The Maximal Template™ website
-      and hosted application operated by Digital Herencia. By using the site or
-      application, you agree to these Terms.
+      and hosted application operated by {applicationOperator.name}. By using
+      the site or application, you agree to these Terms.
     </p>
   ),
 
@@ -66,8 +68,8 @@ export const termsCopy = {
           your rights to copy, modify, distribute, and use the source code.
           These Terms govern use of the hosted website and application and do
           not replace or modify the applicable open-source license. The Maximal
-          Template™, Digital Herencia, and related names, logos, and marks may
-          be protected separately from the source-code license.
+          Template™, {applicationOperator.name}, and related names, logos, and
+          marks may be protected separately from the source-code license.
         </p>
       ),
     },
@@ -79,9 +81,9 @@ export const termsCopy = {
           The application may rely on third-party services for authentication,
           hosting, databases, storage, deployment, communications, artificial
           intelligence, and other integrations. Your use of those services may
-          also be subject to their own terms and privacy policies. Digital
-          Herencia is not responsible for third-party services it does not
-          control.
+          also be subject to their own terms and privacy policies.{" "}
+          {applicationOperator.name} is not responsible for third-party services
+          it does not control.
         </p>
       ),
     },
@@ -120,11 +122,11 @@ export const termsCopy = {
         <p>
           THE WEBSITE, APPLICATION, SOURCE CODE, AND RELATED MATERIALS ARE
           PROVIDED &quot;AS IS&quot; AND &quot;AS AVAILABLE.&quot; TO THE
-          MAXIMUM EXTENT PERMITTED BY LAW, DIGITAL HERENCIA DISCLAIMS ALL
-          WARRANTIES, EXPRESS OR IMPLIED, INCLUDING WARRANTIES OF
-          MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, NON-INFRINGEMENT,
-          ACCURACY, RELIABILITY, SECURITY, AND AVAILABILITY. USE THE PROJECT AT
-          YOUR OWN RISK.
+          MAXIMUM EXTENT PERMITTED BY LAW,{" "}
+          {applicationOperator.name.toUpperCase()} DISCLAIMS ALL WARRANTIES,
+          EXPRESS OR IMPLIED, INCLUDING WARRANTIES OF MERCHANTABILITY, FITNESS
+          FOR A PARTICULAR PURPOSE, NON-INFRINGEMENT, ACCURACY, RELIABILITY,
+          SECURITY, AND AVAILABILITY. USE THE PROJECT AT YOUR OWN RISK.
         </p>
       ),
     },
@@ -133,9 +135,10 @@ export const termsCopy = {
       title: "9. Limitation of Liability",
       content: (
         <p>
-          TO THE MAXIMUM EXTENT PERMITTED BY LAW, DIGITAL HERENCIA WILL NOT BE
-          LIABLE FOR INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, EXEMPLARY, OR
-          PUNITIVE DAMAGES, OR FOR LOSS OF DATA, REVENUE, PROFITS, BUSINESS
+          TO THE MAXIMUM EXTENT PERMITTED BY LAW,{" "}
+          {applicationOperator.name.toUpperCase()} WILL NOT BE LIABLE FOR
+          INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, EXEMPLARY, OR PUNITIVE
+          DAMAGES, OR FOR LOSS OF DATA, REVENUE, PROFITS, BUSINESS
           OPPORTUNITIES, OR GOODWILL ARISING FROM OR RELATED TO USE OF THE
           WEBSITE, APPLICATION, OR SOFTWARE. Nothing in these Terms limits
           liability that cannot legally be limited or excluded.
@@ -147,11 +150,12 @@ export const termsCopy = {
       title: "10. Suspension or Termination",
       content: (
         <p>
-          Digital Herencia may restrict or terminate access to the hosted
-          application when reasonably necessary to protect the application, its
-          users, third parties, or infrastructure, respond to abuse or security
-          threats, comply with legal obligations, or address material violations
-          of these Terms. You may stop using the application at any time.
+          {applicationOperator.name} may restrict or terminate access to the
+          hosted application when reasonably necessary to protect the
+          application, its users, third parties, or infrastructure, respond to
+          abuse or security threats, comply with legal obligations, or address
+          material violations of these Terms. You may stop using the application
+          at any time.
         </p>
       ),
     },
@@ -172,8 +176,9 @@ export const termsCopy = {
       title: "12. Contact",
       content: (
         <p>
-          Questions about these Terms may be sent to Digital Herencia at
-          DigitalHerencia@Outlook.com.
+          Questions about these Terms may be sent to {applicationOperator.name}{" "}
+          at
+          {applicationOperator.email}.
         </p>
       ),
     },
