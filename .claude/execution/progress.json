@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/progress/v1",
-  "updated": "2026-10-23T16:25:00Z",
+  "updated": "2026-10-23T16:40:00Z",
   "format": "Evidence states: EXECUTED | INSPECTED | NOT_RUN | BLOCKED. Never mark an issue done without EXECUTED evidence for its Validation commands.",
   "milestones": {
     "M0": {
@@ -408,6 +408,17 @@
       "branch": "feat/190-app-governance",
       "decision": "DEC-045",
       "note": "packages/cli/assets/app-governance (13 files) rendered with {{placeholders}} and the template's Prettier by `new`; template .claude/ no longer copied."
+    },
+    "CC-031": {
+      "status": "in_review",
+      "github": 191,
+      "branch": "feat/191-post-compose-provision",
+      "decision": "DEC-046",
+      "note": "Initial commit + `--provision` (gh/neonctl/vercel) in packages/cli/src/setup. Real-account run of the Validation command is the owner's (creates cloud resources).",
+      "acceptance": {
+        "Manual run with --provision creates repo, Neon project, Vercel project": "PENDING owner run; verified against stub gh/neonctl/vercel + local Postgres 16",
+        "Without --provision, no network calls are made": "EXECUTED"
+      }
     }
   },
   "completed": [
@@ -2140,6 +2151,78 @@
       "env": "cloud container",
       "command": "pnpm validate (root)",
       "result": "exit 0"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-031",
+      "env": "cloud container",
+      "command": "pnpm validate (root)",
+      "result": "exit 0; 4 files, 36 tests (14 new in tests/cli/provision.test.ts)"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-031",
+      "env": "cloud container",
+      "command": "unshare -rn: pnpm cli new .sandbox/offline --preset blank -y --no-install (network namespace with no interfaces)",
+      "result": "exit 0; prisma validate ok; git log: 'chore: scaffold from hipster-stack'; no .env.local"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-031",
+      "env": "cloud container",
+      "command": "unshare -rn: pnpm cli new .sandbox/prov --preset blank -y --no-install --provision",
+      "result": "exit 0; github: 'Sign in with gh auth login', neon/vercel: install guidance; nothing created"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-031",
+      "env": "cloud container",
+      "command": "PATH=<stub gh/neonctl/vercel> pnpm cli new .sandbox/prov2 --preset blank -y --no-install --provision (stub neonctl returns a local Postgres 16 URL)",
+      "result": "github/neon/vercel done; calls: gh repo create --private --source . --remote origin --push; neonctl projects create --name prov2 --role owner; vercel project create, link --yes, env add x2 with values on stdin; .env.local mode 600, git-ignored"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-031",
+      "env": "cloud container",
+      "command": "same command again on the generated app",
+      "result": "github/neon/vercel 'exists'; no create/link call (only --version, login checks, env add --force)"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-031",
+      "env": "cloud container",
+      "command": "pnpm db:init in the provisioned app, then query as DATABASE_URL (app_user)",
+      "result": "db:init done; current_user app_user, rolbypassrls false, SELECT on \"Organization\" ok (default privileges)"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-031",
+      "env": "cloud container",
+      "command": "appRoleSql against local Postgres 16: twice, then insert violating a FORCE RLS policy as app_user",
+      "result": "idempotent; 'new row violates row-level security policy'; app_user with BYPASSRLS refused"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-031",
+      "env": "cloud container",
+      "command": "pnpm cli:build && node packages/cli/dist/cli.mjs new --help",
+      "result": "exit 0; --provision, --no-github, --no-neon, --no-vercel listed"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "NOT_RUN",
+      "issue": "CC-031",
+      "env": "owner PC",
+      "command": "hipster-stack new .sandbox/prov --preset blank --provision",
+      "result": "needs Ivan's gh/neonctl/vercel logins; creates a private repo, Neon project and Vercel project"
     }
   ],
   "known_findings": [

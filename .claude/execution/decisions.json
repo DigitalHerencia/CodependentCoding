@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/decisions/v1",
-  "updated": "2026-10-23T15:10:00Z",
+  "updated": "2026-10-23T16:40:00Z",
   "format": "Append new decisions; never rewrite history. Supersede by adding a new entry and setting status=superseded + superseded_by on the old one.",
   "decisions": [
     {
@@ -448,6 +448,21 @@
       "context": "Generated apps need the factory's governance shape (router, docs, contracts, execution state) without the factory's content. The template's own .claude/ is stale Maximal Template history that still points at .agents/.",
       "decision": "packages/cli/assets/app-governance holds 13 files with {{appName}}, {{createdAt}}, {{modules}}, {{modulesList}}, {{templateCommit}}, {{color}}, {{colorYaml}} placeholders; `new` renders them (unknown placeholder = error), refuses to overwrite, and formats them with the template's Prettier; `add` will never write them. Architecture.md §2-4 and AUTH.md §1-11 are copied from the factory doctrine with factory paths removed; app sections are TODO prompts for /idea. A root test fails if any CC-* id in template/eslint is missing from the asset Architecture.md. The CLI no longer copies the template's .claude/. Assets are in root .prettierignore because placeholders are not valid YAML until rendered.",
       "refs": ["CC-030", "Architecture.md §2-§4", "AUTH.md", "DEC-044"]
+    },
+    {
+      "id": "DEC-046",
+      "date": "2026-10-23",
+      "status": "accepted",
+      "title": "CC-031: post-compose setup and opt-in provisioning in packages/cli/src/setup",
+      "context": "`new` must commit the scaffold and optionally create the GitHub repo, Neon project and Vercel project, each skippable and idempotent, with no network use unless asked. Neon's API-created roles do not guarantee NOBYPASSRLS, and the CLI ships no database driver.",
+      "decision": "packages/cli/src/setup holds exec (one injectable runner; Windows args quoted for the cmd shim), postCompose (prisma validate, pnpm install, git init, `chore: scaffold from hipster-stack`; a failed commit warns), provision (github, neon, vercel steps: check CLI + login, check before create, a failing step does not stop the next) and database. `neonctl projects create --role owner`; app_user is created in SQL as the owner with LOGIN NOBYPASSRLS, table rights and default privileges for tables db:init creates later (an existing app_user with BYPASSRLS is refused); SQL runs with the template's `pg`, like the template Prettier (DEC-044). .env.local gets DATABASE_URL (app_user, pooled) and DIRECT_DATABASE_URL (owner, direct), the template's key names. Vercel env vars go to production and preview as sensitive, value on stdin, --force. `new <dir with hipster.json> --provision` provisions only, so guidance can say re-run. Without --provision no gh/neonctl/vercel command runs; pnpm install is the only network use and --no-install removes it.",
+      "refs": [
+        "CC-031",
+        "AUTH.md §6",
+        "tech-requirements.md §9",
+        "DEC-032",
+        "DEC-044"
+      ]
     }
   ]
 }

@@ -274,7 +274,7 @@ flowchart TD
   D --> E["compute ownership → delete files of unselected modules"]
   E --> F["strip // @module tags · rewrite registry · prune package.json · rebuild .env.example"]
   F --> G["write hipster.json · install app governance · apply brand token"]
-  G --> H["prisma validate · pnpm install · git init"]
+  G --> H["prisma validate · pnpm install · git init + initial commit"]
   H --> I{"--provision?"}
   I -- yes --> J["gh repo · neonctl project · vercel link + env"]
   I -- no --> K["next steps: pnpm db:init, pnpm dev"]

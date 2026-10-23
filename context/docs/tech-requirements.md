@@ -146,9 +146,10 @@ Removed: `.agents/`, `packages/core`, `packages/schema`, `packages/loaded-vibes`
 
 - TypeScript, run with `tsx` in dev, bundled with `tsdown` for linking.
 - Locates the template via `HIPSTER_TEMPLATE` env or the CLI's own repo path.
-- Composition pipeline: copy template (excluding `node_modules`, `.next`, `generated`, `prisma/migrations`, `tests/template/` (pins the full template), tests of removed modules) → compute ownership → delete files owned by unselected modules → strip `// @module <id>` tagged lines → rewrite `lib/modules/registry.ts` → prune `package.json` deps declared only by removed modules → rebuild `.env.example` → write `hipster.json` → copy generated-app governance → apply brand color token → `pnpm install` → `git init`.
+- Composition pipeline: copy template (excluding `node_modules`, `.next`, `generated`, `prisma/migrations`, `tests/template/` (pins the full template), tests of removed modules) → compute ownership → delete files owned by unselected modules → strip `// @module <id>` tagged lines → rewrite `lib/modules/registry.ts` → prune `package.json` deps declared only by removed modules → rebuild `.env.example` → write `hipster.json` → copy generated-app governance → apply brand color token → `prisma validate` → `pnpm install` → `git init` + initial commit `chore: scaffold from hipster-stack`.
 - `slice` templates live in `packages/cli/templates/slice/` and are derived from the `projects` module; field DSL: `name:string, amount:decimal?, status:enum(open|won|lost), dueAt:datetime?, ownerId:ref(User)`.
 - No network access during composition. Provisioning is a separate, opt-in step.
+- `new --provision` runs three independent steps, each skippable (`--no-github`, `--no-neon`, `--no-vercel`, or declined at the prompt) and check-before-create: `gh repo create --private --push`; `neonctl projects create --role owner`, then `app_user` (LOGIN, NOBYPASSRLS, table rights + default privileges) created in SQL, with `DATABASE_URL` (app_user, pooled) and `DIRECT_DATABASE_URL` (owner, direct) written to `.env.local`; `vercel project create` + `vercel link` + `vercel env add` (production, preview; values on stdin). A missing CLI or login prints install/sign-in guidance and the next step still runs. `new <existing app> --provision` provisions only, so a step can be finished later.
 
 ## 10. Plugin technical requirements
 
