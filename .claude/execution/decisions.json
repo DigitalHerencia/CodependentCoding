@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/decisions/v1",
-  "updated": "2026-10-23T05:55:00Z",
+  "updated": "2026-10-23T05:50:00Z",
   "format": "Append new decisions; never rewrite history. Supersede by adding a new entry and setting status=superseded + superseded_by on the old one.",
   "decisions": [
     {
@@ -281,6 +281,15 @@
       "context": "CC-015 needs error/loading per route group, ISR on public pages and Suspense + feature skeleton on every dynamic tenant page (CC-UX-001). Eleven edit pages read a record before rendering a form and had no Suspense. All edit forms share one card layout.",
       "decision": "Each route group gets error.tsx (GenericErrorPage block with reset) and loading.tsx (PageLoadingState block). Public pages and / export revalidate = 86400 (matches cacheLife.static; segment config must be a literal). New FormLoadingState block mirrors the shared form card; per-entity feature skeletons (crmFormSkeleton, expenseFormSkeleton, ...) render it with field count and width. Admin user edit reuses AdminUserDetailSkeleton because it renders the detail feature. */new pages stay unwrapped: no data read.",
       "refs": ["CC-015", "CC-UX-001", "DEC-012"]
+    },
+    {
+      "id": "DEC-031",
+      "date": "2026-10-23",
+      "status": "accepted",
+      "title": "CC-017: Vitest replaces node:test in the template; E2E smoke over HTTP",
+      "context": "Template tests used node:test and imported server-only modules. With Clerk development keys, browser navigations are redirected to Clerk's handshake host before the app renders, so a browser smoke depends on network access to Clerk. CC-016 needs a Vitest runner, so CC-017 lands first (both depend only on CC-012).",
+      "decision": "Tests import test from vitest; vitest.config.ts aliases @/ to the template root and server-only to its empty export. test:rls and e2e paths are excluded from `pnpm test`. Playwright smoke uses the request fixture: GET / is 200 with an h1, GET /dashboard without a session is a 3xx to /sign-in. No browser install is required. Pins follow tech-requirements (vitest 4.1.11, @playwright/test 1.62.1); Dependabot may bump them later.",
+      "refs": ["CC-017", "CC-016"]
     }
   ]
 }

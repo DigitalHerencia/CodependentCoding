@@ -8,7 +8,7 @@ priority: p1
 size: s
 labels: [type:test, area:template, priority:p1, size:s]
 depends_on: [CC-012]
-status: todo
+status: done
 ---
 
 # CC-017 · Test baseline: Vitest and Playwright green

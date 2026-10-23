@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { createHmac, randomBytes, randomUUID } from "node:crypto";
-import test from "node:test";
+import { test } from "vitest";
 import { verifyWebhook } from "@clerk/nextjs/webhooks";
 import { NextRequest } from "next/server";
 import { PrismaNeon } from "@prisma/adapter-neon";
@@ -51,9 +51,8 @@ test("Clerk verifies signed payloads and rejects tampered deliveries", async () 
   );
 });
 
-test(
+test.skipIf(process.env.AUTH_WEBHOOK_DB_TEST !== "1")(
   "Neon user synchronization and webhook deduplication are transactional",
-  { skip: process.env.AUTH_WEBHOOK_DB_TEST !== "1" },
   async () => {
     assert.ok(
       process.env.DATABASE_URL,
