@@ -1,4 +1,6 @@
 // Public page copy; preserve the owner-approved wording.
+import { applicationOperator } from "@/content/application";
+
 export const privacyCopy = {
   title: "Privacy",
   titleHighlight: "Policy",
@@ -8,8 +10,9 @@ export const privacyCopy = {
   updatedAtLabel: "Last updated:",
   introduction: (
     <p>
-      This Privacy Policy explains how Digital Herencia handles information in
-      connection with The Maximal Template™ website and application.
+      This Privacy Policy explains how {applicationOperator.name} handles
+      information in connection with The Maximal Template™ website and
+      application.
     </p>
   ),
 
@@ -24,19 +27,19 @@ export const privacyCopy = {
           process information such as your username, email address, display
           name, profile image, authentication identifiers, account information,
           and session information. Authentication is provided through Clerk, and
-          Digital Herencia does not receive or store your account password when
-          authentication is handled directly by Clerk. Authenticated features
-          may also store information you intentionally create, submit, edit,
-          upload, or otherwise provide, with the exact application data
-          depending on the features and domain capabilities being used. Hosting,
-          authentication, database, security, and infrastructure providers may
-          also process technical information such as IP addresses, browser and
-          device information, request timestamps, requested URLs, authentication
-          and session metadata, diagnostic information, security events, and
-          error logs as necessary to operate, secure, troubleshoot, and maintain
-          the application. Because The Maximal Template™ is an experimental and
-          evolving project, application data should not be treated as permanent
-          archival storage.
+          {applicationOperator.name} does not receive or store your account
+          password when authentication is handled directly by Clerk.
+          Authenticated features may also store information you intentionally
+          create, submit, edit, upload, or otherwise provide, with the exact
+          application data depending on the features and domain capabilities
+          being used. Hosting, authentication, database, security, and
+          infrastructure providers may also process technical information such
+          as IP addresses, browser and device information, request timestamps,
+          requested URLs, authentication and session metadata, diagnostic
+          information, security events, and error logs as necessary to operate,
+          secure, troubleshoot, and maintain the application. Because The
+          Maximal Template™ is an experimental and evolving project, application
+          data should not be treated as permanent archival storage.
         </p>
       ),
     },
@@ -94,14 +97,14 @@ export const privacyCopy = {
       title: "5. Sharing of Information",
       content: (
         <p>
-          Digital Herencia does not sell personal information. Information may
-          be disclosed to service providers necessary to operate the
-          application, when required by applicable law or valid legal process,
-          when reasonably necessary to investigate fraud, abuse, security
-          incidents, or threats, when necessary to protect the rights, property,
-          or safety of Digital Herencia, users, or third parties, or in
-          connection with a transfer of the project or its assets if such a
-          transfer occurs.
+          {applicationOperator.name} does not sell personal information.
+          Information may be disclosed to service providers necessary to operate
+          the application, when required by applicable law or valid legal
+          process, when reasonably necessary to investigate fraud, abuse,
+          security incidents, or threats, when necessary to protect the rights,
+          property, or safety of {applicationOperator.name}, users, or third
+          parties, or in connection with a transfer of the project or its assets
+          if such a transfer occurs.
         </p>
       ),
     },
@@ -152,8 +155,8 @@ export const privacyCopy = {
       content: (
         <p>
           The Maximal Template™ is not specifically directed to children.
-          Digital Herencia does not knowingly operate the project for the
-          purpose of collecting personal information from children. If you
+          {applicationOperator.name} does not knowingly operate the project for
+          the purpose of collecting personal information from children. If you
           believe personal information belonging to a child has been submitted
           improperly, contact us so the issue can be reviewed.
         </p>
@@ -165,9 +168,9 @@ export const privacyCopy = {
       content: (
         <p>
           The website may contain links to source-code repositories, third-party
-          websites, provider documentation, and external services. Digital
-          Herencia is not responsible for the privacy practices of websites or
-          services it does not control.
+          websites, provider documentation, and external services.{" "}
+          {applicationOperator.name} is not responsible for the privacy
+          practices of websites or services it does not control.
         </p>
       ),
     },
@@ -188,7 +191,7 @@ export const privacyCopy = {
       content: (
         <p>
           Questions or requests concerning this Privacy Policy may be sent to
-          Digital Herencia at DigitalHerencia@Outlook.com.
+          {applicationOperator.name} at {applicationOperator.email}.
         </p>
       ),
     },

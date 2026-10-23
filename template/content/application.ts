@@ -9,6 +9,12 @@ export const applicationProduct = {
   description: "Productivity is dead. Long live product.",
 } as const;
 
+// Legal entity named on the privacy and terms pages; replace before launch.
+export const applicationOperator = {
+  name: "Your Company",
+  email: "legal@example.com",
+} as const;
+
 export const applicationCapabilities = {
   marketing: true,
   crm: true,

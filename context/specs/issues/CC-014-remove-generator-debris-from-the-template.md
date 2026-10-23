@@ -8,7 +8,7 @@ priority: p1
 size: s
 labels: [type:chore, area:template, priority:p1, size:s]
 depends_on: [CC-011]
-status: todo
+status: done
 ---
 
 # CC-014 · Remove generator debris from the template

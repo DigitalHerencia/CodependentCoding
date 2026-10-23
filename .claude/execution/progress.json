@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/progress/v1",
-  "updated": "2026-10-23T05:15:00Z",
+  "updated": "2026-10-23T05:40:00Z",
   "format": "Evidence states: EXECUTED | INSPECTED | NOT_RUN | BLOCKED. Never mark an issue done without EXECUTED evidence for its Validation commands.",
   "milestones": {
     "M0": {
@@ -259,6 +259,13 @@
       "format_commit": "2bb0c683cbe23f4330723e4301b8a421888884d1",
       "note": "47 files formatted (root 26 incl. some template files via root pass, template 31). Root and template format:check pass; root format:check also passes with template/node_modules removed (CI condition). CI has no continue-on-error left.",
       "pr": 224
+    },
+    "CC-014": {
+      "status": "in_review",
+      "github": 174,
+      "branch": "chore/174-remove-generator-debris",
+      "decision": "DEC-029",
+      "note": "Deleted template/context, template/AGENTS.md, components/blocks/ontology-showcase.tsx; dev = next dev (ngrok script, dev:next, concurrently removed); allowedDevOrigins ngrok host removed; README brand lines removed; legal pages read applicationOperator (placeholder 'Your Company', legal@example.com) from content/application.ts; template LICENSE holder 'Your Company'. template/content kept: app imports it (not generator-only). template/.agents did not exist."
     }
   },
   "completed": [
@@ -271,7 +278,11 @@
     "CC-006",
     "CC-007",
     "CC-008",
-    "CC-009"
+    "CC-009",
+    "CC-010",
+    "CC-011",
+    "CC-012",
+    "CC-013"
   ],
   "evidence": [
     {
@@ -1109,6 +1120,22 @@
       "env": "GitHub Actions ubuntu-latest",
       "command": "CI on PR #224 head fe524f2: 'Factory (root)' and 'Maximal Template' with no continue-on-error",
       "result": "both success"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-014",
+      "env": "cloud container linux",
+      "command": "rg -n \"ngrok|liberal-gull|Digital Herencia|Anthimeria\" template --glob '!node_modules'",
+      "result": "no matches (exit 1)"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-014",
+      "env": "cloud container linux",
+      "command": "pnpm --dir template validate",
+      "result": "pass (format:check, lint --max-warnings=0, typecheck)"
     }
   ],
   "known_findings": [

@@ -96,7 +96,7 @@ The _don’t-ask-what’s-in-it, just ship it_ product.
 
 ---
 
-At `Digital Herencia`, we don’t optimize output.
+We don’t optimize output.
 We optimize **attitude**.
 
 Anyone can scale infrastructure.
@@ -343,7 +343,3 @@ It is not a tenth **Ontology**.
 
     We aren't merging typescript
     We are shipping salvation in TypeScripture™
-
----
-
-Made in Nuevo Mexico | 2026 Ivan P. Roman | Digital Herencia
