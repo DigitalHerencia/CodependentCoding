@@ -1,4 +1,7 @@
+import { Suspense } from "react";
+
 import { CrmEditLeadFeature } from "@/features/crm/crmEditLeadFeature";
+import { CrmFormSkeleton } from "@/features/crm/crmFormSkeleton";
 
 export default async function Page({
   params,
@@ -6,5 +9,9 @@ export default async function Page({
   params: Promise<{ leadId: string }>;
 }) {
   const { leadId } = await params;
-  return <CrmEditLeadFeature leadId={leadId} />;
+  return (
+    <Suspense fallback={<CrmFormSkeleton />}>
+      <CrmEditLeadFeature leadId={leadId} />
+    </Suspense>
+  );
 }

@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/progress/v1",
-  "updated": "2026-10-23T05:40:00Z",
+  "updated": "2026-10-23T05:55:00Z",
   "format": "Evidence states: EXECUTED | INSPECTED | NOT_RUN | BLOCKED. Never mark an issue done without EXECUTED evidence for its Validation commands.",
   "milestones": {
     "M0": {
@@ -261,11 +261,27 @@
       "pr": 224
     },
     "CC-014": {
-      "status": "in_review",
+      "status": "done",
       "github": 174,
       "branch": "chore/174-remove-generator-debris",
       "decision": "DEC-029",
-      "note": "Deleted template/context, template/AGENTS.md, components/blocks/ontology-showcase.tsx; dev = next dev (ngrok script, dev:next, concurrently removed); allowedDevOrigins ngrok host removed; README brand lines removed; legal pages read applicationOperator (placeholder 'Your Company', legal@example.com) from content/application.ts; template LICENSE holder 'Your Company'. template/content kept: app imports it (not generator-only). template/.agents did not exist."
+      "note": "Deleted template/context, template/AGENTS.md, components/blocks/ontology-showcase.tsx; dev = next dev (ngrok script, dev:next, concurrently removed); allowedDevOrigins ngrok host removed; README brand lines removed; legal pages read applicationOperator (placeholder 'Your Company', legal@example.com) from content/application.ts; template LICENSE holder 'Your Company'. template/content kept: app imports it (not generator-only). template/.agents did not exist.",
+      "pr": 225
+    },
+    "CC-015": {
+      "status": "in_review",
+      "github": 175,
+      "branch": "feat/175-error-loading-isr",
+      "decision": "DEC-030",
+      "audit": {
+        "(auth)": "error.tsx + loading.tsx added",
+        "(public)": "error.tsx + loading.tsx added; faq, privacy, terms export revalidate = 86400",
+        "(setup)": "error.tsx + loading.tsx added",
+        "(tenant)": "error.tsx + loading.tsx added; 11 edit pages now Suspense + form skeleton",
+        "/": "revalidate = 86400 (landing, public)",
+        "root": "global-error.tsx and not-found.tsx already present"
+      },
+      "note": "New-record pages (*/new) render client forms with no data read, so they are not wrapped. All other tenant pages already had Suspense + skeleton."
     }
   },
   "completed": [
@@ -282,7 +298,8 @@
     "CC-010",
     "CC-011",
     "CC-012",
-    "CC-013"
+    "CC-013",
+    "CC-014"
   ],
   "evidence": [
     {
@@ -1133,6 +1150,22 @@
       "date": "2026-10-23",
       "state": "EXECUTED",
       "issue": "CC-014",
+      "env": "cloud container linux",
+      "command": "pnpm --dir template validate",
+      "result": "pass (format:check, lint --max-warnings=0, typecheck)"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-015",
+      "env": "cloud container linux, dummy env vars (no real services)",
+      "command": "pnpm --dir template build",
+      "result": "exit 0; / , /faq, /privacy, /terms are ○ static with Revalidate 1d; tenant routes ƒ dynamic"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-015",
       "env": "cloud container linux",
       "command": "pnpm --dir template validate",
       "result": "pass (format:check, lint --max-warnings=0, typecheck)"
