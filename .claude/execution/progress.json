@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/progress/v1",
-  "updated": "2026-10-23T04:55:00Z",
+  "updated": "2026-10-23T05:10:00Z",
   "format": "Evidence states: EXECUTED | INSPECTED | NOT_RUN | BLOCKED. Never mark an issue done without EXECUTED evidence for its Validation commands.",
   "milestones": {
     "M0": {
@@ -242,6 +242,13 @@
         "@typescript-eslint/no-unused-vars": 1
       },
       "pr": 222
+    },
+    "CC-012": {
+      "status": "in_review",
+      "github": 172,
+      "branch": "fix/172-template-typecheck-green",
+      "decision": "DEC-027",
+      "note": "Template typecheck 12 -> 0 errors, lint 34 -> 0 problems. CI template lint/typecheck no longer continue-on-error; format:check keeps it until CC-013."
     }
   },
   "completed": [
@@ -1004,6 +1011,38 @@
       "env": "windows pwsh, node 24.14.0 (owner)",
       "command": "owner: pnpm --dir template dev; open /admin/users/<id>, /projects/<id>/edit (submit), /projects/new (submit), /marketing/campaigns/new",
       "result": "all GET 200; createProject and updateProject (expectedVersion 1) succeeded and redirected; screenshots show rendered pages. CC-010 manual render check fully passed."
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-012",
+      "env": "linux node 22.22.0, pnpm 12.3.4",
+      "command": "pnpm --dir template prisma:generate",
+      "result": "exit 0: Generated Prisma Client (7.10.1)"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-012",
+      "env": "linux node 22.22.0, pnpm 12.3.4",
+      "command": "pnpm --dir template typecheck",
+      "result": "exit 0: 0 errors (was 12)"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-012",
+      "env": "linux node 22.22.0, pnpm 12.3.4",
+      "command": "pnpm --dir template lint",
+      "result": "exit 0: eslint . --max-warnings=0 clean (was 34 problems)"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-012",
+      "env": "linux node 22.22.0, pnpm 12.3.4",
+      "command": "pnpm --dir template doctrine:test",
+      "result": "exit 0: tests 44, pass 44, fail 0"
     }
   ],
   "known_findings": [

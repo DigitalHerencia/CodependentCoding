@@ -1,14 +1,16 @@
 {
   "$schema": "codependent-coding/execution/handoff/v1",
-  "updated": "2026-10-23T04:55:00Z",
+  "updated": "2026-10-23T05:10:00Z",
   "format": "Overwrite each session. Minimum state the next session needs to resume safely.",
   "status": "ready-for-claude-code",
   "milestone": "M2",
   "current_issue": "CC-012",
-  "next_issue": "CC-012",
-  "queue": ["CC-012"],
-  "branch": "main",
-  "in_flight": [],
+  "next_issue": "CC-013",
+  "queue": ["CC-013"],
+  "branch": "fix/172-template-typecheck-green",
+  "in_flight": [
+    "CC-012 PR open; owner pre-approved merge on green (2026-10-23 04:49Z)"
+  ],
   "notes": [
     "Governance package is uncommitted in the owner's working tree; owner reviews with `git status` / `git diff`, then commits on a branch `chore/governance-package`.",
     "Template already contains the doctrine ESLint plugin (template/eslint/) and the new eslint.config.mjs; CC-009 turns findings into fixes.",
@@ -26,7 +28,8 @@
     "M1 closed 2026-10-23: release profile on main 86477ca recorded in progress.json (milestones.M1 + evidence); summary comment on PR #218. Root lint/typecheck/test/build green; root and template format:check red (CC-013); template lint/typecheck/build red (CC-009..012).",
     "CC-009 (DEC-024): template lint:fix 241 -> 73; 0 CC-SRV-001/CC-STYLE-002 left; typecheck 13 errors unchanged; doctrine:test 44/44. Remaining findings by rule ID in progress.json issues.CC-009.remaining_findings.",
     "CC-010 (DEC-025): template lint 73 -> 50. Edit wrappers are now *EditFeature.tsx; auth forms are signInForm/signUpForm; onboarding gate in features/onboarding/onboardingGateFeature.tsx; appRoles in lib/constants/roles.ts. CC-011 still owns features/explorer (2 CC-FEAT-001), adminSchemas roles import, types/access.ts rename.",
-    "CC-011 (DEC-026): template lint 0 CC-* findings (34 left: non-null-assertion 13, react-refresh 10, no-img-element 10, unused-vars 1 for CC-012). Webhook persistence in lib/db/transactions/{stripe,sendgrid}-webhook.tx.ts; features/explorer and integrationFetchers.ts deleted; types/access.ts -> accessTypes.ts."
+    "CC-011 (DEC-026): template lint 0 CC-* findings (34 left: non-null-assertion 13, react-refresh 10, no-img-element 10, unused-vars 1 for CC-012). Webhook persistence in lib/db/transactions/{stripe,sendgrid}-webhook.tx.ts; features/explorer and integrationFetchers.ts deleted; types/access.ts -> accessTypes.ts.",
+    "CC-012 (DEC-027): template typecheck 0, lint 0; CI template lint/typecheck now blocking. Remaining red: root and template format:check (CC-013)."
   ],
   "risks": [
     "Lint hook exits 0 silently when node_modules/eslint is missing; a failed install hides lint feedback. On Windows, run pnpm install with VS Code closed (DEC-019).",
