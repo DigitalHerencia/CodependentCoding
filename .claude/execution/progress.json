@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/progress/v1",
-  "updated": "2026-10-23T00:10:00Z",
+  "updated": "2026-10-23T00:15:00Z",
   "format": "Evidence states: EXECUTED | INSPECTED | NOT_RUN | BLOCKED. Never mark an issue done without EXECUTED evidence for its Validation commands.",
   "milestones": {
     "M0": {
@@ -90,10 +90,10 @@
       "note": "Squash-merged on owner's go-ahead ('just merge') with root job red on pre-existing format/lint/typecheck findings"
     },
     "CC-005": {
-      "status": "in-progress",
+      "status": "done",
       "github": 165,
       "pr": 213,
-      "note": "Linux sample-payload checks pass. Windows (pwsh 7, node 24.14.0): CLAUDE.md loads and the Stop hook blocks once. Lint hook printed nothing (exit 0) by hand and in VS Code, right after `pnpm install` failed with ERR_PNPM_PACKAGE_MANAGER_REMOVE_MODULES_DIR (Access is denied). Likely cause: node_modules/eslint/bin/eslint.js is missing, so the hook takes its 'deps not installed' exit 0. Re-test after a clean install.",
+      "note": "Verified on Windows (pwsh 7.6.8, node 24.14.0). CLAUDE.md loads in the VS Code extension. The Stop hook blocks once and does not loop. The lint hook reports ESLint findings with exit 2 once deps are installed. The earlier silent lint hook was a failed pnpm install (Access is denied while VS Code held node_modules), not a hook bug. No settings.json change needed.",
       "evidence": [
         {
           "state": "EXECUTED",
@@ -147,9 +147,16 @@
           "state": "EXECUTED",
           "env": "windows pwsh 7 + VS Code (owner)",
           "command": "Get-Content sample-post.json | node .claude/hooks/lint-edited-file.mjs; and Write in VS Code",
-          "result": "exit 0, no output. Preceded by failed `pnpm install` (Access is denied removing node_modules). Retest pending."
+          "result": "exit 0, no output, because the preceding `pnpm install` failed (Access is denied) and eslint was missing"
+        },
+        {
+          "state": "EXECUTED",
+          "env": "windows pwsh 7.6.8, node 24.14.0 (owner), VS Code closed",
+          "command": "pnpm install; Test-Path node_modules\\eslint\\bin\\eslint.js; Get-Content sample-post.json | node .claude/hooks/lint-edited-file.mjs",
+          "result": "install done (567 pkgs); True; 'ESLint findings in lib/__hook-probe.ts ... 1:21 error Unexpected any @typescript-eslint/no-explicit-any'; exit=2"
         }
-      ]
+      ],
+      "decision": "DEC-019"
     }
   },
   "completed": [
@@ -157,7 +164,8 @@
       "what": "Governance package authored: 5 intent docs, 3 YAML contracts, 3 execution files, 44 issues, GitHub templates, labels, CI, issue sync script, CLAUDE.md, hooks, doctrine ESLint plugin",
       "date": "2026-10-22",
       "by": "Claude (claude.ai session)"
-    }
+    },
+    "CC-005"
   ],
   "evidence": [
     {
