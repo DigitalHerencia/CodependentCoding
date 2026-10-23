@@ -35,7 +35,7 @@
       "note": "All M2 issues merged. Release profile on main bcdeba1: root validate + build pass; template validate, test (18 passed, 1 opt-in skipped), doctrine:test 44/44, build (/, /faq, /privacy, /terms static ISR 1d), test:e2e 2/2 and test:rls 10/10 (local Postgres 16) pass; CI rls job 10/10 on a Neon branch. Compose NOT_RUN until M4."
     },
     "M3": {
-      "status": "in_progress",
+      "status": "done",
       "issues": [
         "CC-018",
         "CC-019",
@@ -47,7 +47,10 @@
         "CC-025",
         "CC-026",
         "CC-027"
-      ]
+      ],
+      "closed": "2026-10-23",
+      "prs": [230, 231, 232, 233, 235, 236, 237, 238, 239, 240],
+      "note": "All M3 issues merged. Release profile on the CC-027 branch tip (= main after squash): template validate (format, lint 0, typecheck, check:modules, check:ownership, check:env), test 66 passed/1 skipped, doctrine:test 50/50, check:schema-modules, check:compose (6 add-ons alone + blank, CI job compose), projects composes alone and next-builds, build, test:rls 10/10 (local Postgres 16; CI rls job on Neon), root validate. CLI compose (M4) replaces scripts/compose.mjs."
     },
     "M4": {
       "status": "todo",
