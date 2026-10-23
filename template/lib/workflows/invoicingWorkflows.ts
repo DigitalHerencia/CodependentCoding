@@ -1,3 +1,5 @@
+import "server-only";
+
 import { updateInvoiceStatus } from "@/lib/actions/invoicingActions";
 import {
   getExpenses,

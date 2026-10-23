@@ -1,6 +1,8 @@
+import "server-only";
+
 import { createHash } from "node:crypto";
 
-import type { Prisma } from "../../../generated/prisma/client";
+import type { Prisma } from "@/generated/prisma/client";
 
 export class WebhookIdentityConflictError extends Error {
   constructor() {

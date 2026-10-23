@@ -1,9 +1,11 @@
+import "server-only";
+
 import type { Prisma } from "@/generated/prisma/client";
 
 import {
   knowledgeArticleSelect,
   supportTicketSelect,
-} from "../selects/support.selects";
+} from "@/lib/db/selects/support.selects";
 import { ConcurrencyConflictError, ResourceNotFoundError } from "./errors";
 
 export async function lockSupportTicketNumberTx(

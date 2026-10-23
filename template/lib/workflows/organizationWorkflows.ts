@@ -1,3 +1,5 @@
+import "server-only";
+
 import { getCurrentOrganization } from "@/lib/fetchers/organizationFetchers";
 import { getIntegrationStatuses } from "@/lib/fetchers/integrationFetchers";
 

@@ -1,3 +1,5 @@
+import "server-only";
+
 import { updateSupportTicketStatus } from "@/lib/actions/supportActions";
 import {
   getKnowledgeArticle,

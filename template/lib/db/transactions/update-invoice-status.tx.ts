@@ -1,6 +1,8 @@
-import type { InvoiceStatus, Prisma } from "../../../generated/prisma/client";
+import "server-only";
 
-import { invoiceSelect } from "../selects/invoicing.selects";
+import type { InvoiceStatus, Prisma } from "@/generated/prisma/client";
+
+import { invoiceSelect } from "@/lib/db/selects/invoicing.selects";
 import { ConcurrencyConflictError } from "./errors";
 
 export async function updateInvoiceStatusTx(

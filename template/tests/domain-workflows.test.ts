@@ -2,21 +2,21 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import type { Prisma } from "../generated/prisma/client";
-import { calculateInvoiceTotals } from "../lib/db/transactions/create-invoice.tx";
-import { updateDealStageTx } from "../lib/db/transactions/update-deal-stage.tx";
-import { updateTaskStatusTx } from "../lib/db/transactions/update-task-status.tx";
+import type { Prisma } from "@/generated/prisma/client";
+import { calculateInvoiceTotals } from "@/lib/db/transactions/create-invoice.tx";
+import { updateDealStageTx } from "@/lib/db/transactions/update-deal-stage.tx";
+import { updateTaskStatusTx } from "@/lib/db/transactions/update-task-status.tx";
 import {
   createContactSchema,
   createCrmDealSchema,
-} from "../schemas/crmSchemas";
-import { createTaskSchema } from "../schemas/projectsSchemas";
-import { audienceFormSchema } from "../schemas/marketingSchemas";
-import { expenseFormSchema } from "../schemas/invoicingSchemas";
-import { CrmPipelineTemplate } from "../components/templates/crmPipelineTemplate";
-import { ProjectsTemplate } from "../components/templates/projectsTemplate";
-import { InvoicingInvoiceDetailTemplate } from "../components/templates/invoicingInvoiceDetailTemplate";
-import type { InvoiceDTO } from "../types/invoicingTypes";
+} from "@/schemas/crmSchemas";
+import { createTaskSchema } from "@/schemas/projectsSchemas";
+import { audienceFormSchema } from "@/schemas/marketingSchemas";
+import { expenseFormSchema } from "@/schemas/invoicingSchemas";
+import { CrmPipelineTemplate } from "@/components/templates/crmPipelineTemplate";
+import { ProjectsTemplate } from "@/components/templates/projectsTemplate";
+import { InvoicingInvoiceDetailTemplate } from "@/components/templates/invoicingInvoiceDetailTemplate";
+import type { InvoiceDTO } from "@/types/invoicingTypes";
 
 const id = "00000000-0000-4000-8000-000000000001";
 

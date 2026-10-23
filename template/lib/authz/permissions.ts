@@ -1,4 +1,6 @@
-import type { AccessContext, AppRole, Permission } from "../../types/access";
+import "server-only";
+
+import type { AccessContext, AppRole, Permission } from "@/types/access";
 
 export const permissions = [
   "organization:read",

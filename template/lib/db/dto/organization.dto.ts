@@ -1,5 +1,5 @@
-import type { OrganizationDTO } from "../../../types/commonTypes";
-import type { OrganizationOverviewRecord } from "../selects/organization.selects";
+import type { OrganizationDTO } from "@/types/commonTypes";
+import type { OrganizationOverviewRecord } from "@/lib/db/selects/organization.selects";
 
 export function toOrganizationDTO(
   record: OrganizationOverviewRecord,

@@ -1,17 +1,17 @@
 import "server-only";
 
-import { assertPermission, hasPermission } from "../authz/permissions";
+import { assertPermission, hasPermission } from "@/lib/authz/permissions";
 import {
   toPortalBillingSubscriptionDTO,
   toPortalDocumentDTO,
   toPortalInvoiceDTO,
-} from "../db/dto/portal.dto";
+} from "@/lib/db/dto/portal.dto";
 import {
   portalBillingSelect,
   portalDocumentSelect,
   portalInvoiceSelect,
-} from "../db/selects/portal.selects";
-import { withAuthenticatedRead } from "../db/tenant";
+} from "@/lib/db/selects/portal.selects";
+import { withAuthenticatedRead } from "@/lib/db/tenant";
 
 export async function getPortalDocuments(limit = 100) {
   return withAuthenticatedRead(async (tx, access) => {

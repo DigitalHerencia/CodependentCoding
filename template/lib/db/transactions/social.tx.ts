@@ -1,6 +1,8 @@
+import "server-only";
+
 import type { Prisma } from "@/generated/prisma/client";
 
-import { socialPostSelect } from "../selects/social.selects";
+import { socialPostSelect } from "@/lib/db/selects/social.selects";
 import { ResourceNotFoundError } from "./errors";
 
 export async function associateSocialMediaTx(

@@ -1,9 +1,9 @@
 import "server-only";
 
-import { assertPermission } from "../authz/permissions";
-import { withAuthenticatedRead } from "../db/tenant";
-import { toOrganizationDTO } from "../db/dto/organization.dto";
-import { organizationOverviewSelect } from "../db/selects/organization.selects";
+import { assertPermission } from "@/lib/authz/permissions";
+import { withAuthenticatedRead } from "@/lib/db/tenant";
+import { toOrganizationDTO } from "@/lib/db/dto/organization.dto";
+import { organizationOverviewSelect } from "@/lib/db/selects/organization.selects";
 
 export async function getCurrentOrganization() {
   return withAuthenticatedRead(async (tx, access) => {

@@ -1,6 +1,8 @@
-import { Prisma } from "../../../generated/prisma/client";
+import "server-only";
 
-import { aiGenerationSelect } from "../selects/ai.selects";
+import { Prisma } from "@/generated/prisma/client";
+
+import { aiGenerationSelect } from "@/lib/db/selects/ai.selects";
 import { ConcurrencyConflictError, ResourceNotFoundError } from "./errors";
 
 export async function completeAiGenerationTx(

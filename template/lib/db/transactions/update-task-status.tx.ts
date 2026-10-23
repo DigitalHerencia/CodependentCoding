@@ -1,6 +1,8 @@
-import type { Prisma, TaskStatus } from "../../../generated/prisma/client";
+import "server-only";
 
-import { taskSelect } from "../selects/projects.selects";
+import type { Prisma, TaskStatus } from "@/generated/prisma/client";
+
+import { taskSelect } from "@/lib/db/selects/projects.selects";
 import { ConcurrencyConflictError } from "./errors";
 
 export async function updateTaskStatusTx(

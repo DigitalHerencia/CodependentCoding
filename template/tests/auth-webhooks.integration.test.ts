@@ -5,16 +5,16 @@ import { verifyWebhook } from "@clerk/nextjs/webhooks";
 import { NextRequest } from "next/server";
 import { PrismaNeon } from "@prisma/adapter-neon";
 import { config } from "dotenv";
-import { PrismaClient } from "../generated/prisma/client";
+import { PrismaClient } from "@/generated/prisma/client";
 import {
   syncClerkUserTx,
   anonymizeClerkUserTx,
-} from "../lib/db/transactions/clerk-user.tx";
+} from "@/lib/db/transactions/clerk-user.tx";
 import {
   claimWebhookEventTx,
   completeWebhookEventTx,
   WebhookIdentityConflictError,
-} from "../lib/db/transactions/webhook-event.tx";
+} from "@/lib/db/transactions/webhook-event.tx";
 
 config({ path: ".env.local", quiet: true });
 

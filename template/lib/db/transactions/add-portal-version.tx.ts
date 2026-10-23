@@ -1,6 +1,8 @@
-import type { Prisma } from "../../../generated/prisma/client";
+import "server-only";
 
-import { portalDocumentSelect } from "../selects/portal.selects";
+import type { Prisma } from "@/generated/prisma/client";
+
+import { portalDocumentSelect } from "@/lib/db/selects/portal.selects";
 import { ConcurrencyConflictError, ResourceNotFoundError } from "./errors";
 
 export async function addPortalVersionTx(

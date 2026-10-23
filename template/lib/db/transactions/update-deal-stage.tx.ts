@@ -1,6 +1,8 @@
-import type { CrmDealStage, Prisma } from "../../../generated/prisma/client";
+import "server-only";
 
-import { crmDealDetailSelect } from "../selects/crm.selects";
+import type { CrmDealStage, Prisma } from "@/generated/prisma/client";
+
+import { crmDealDetailSelect } from "@/lib/db/selects/crm.selects";
 import { ConcurrencyConflictError } from "./errors";
 
 const dealStageTransitions: Record<CrmDealStage, readonly CrmDealStage[]> = {

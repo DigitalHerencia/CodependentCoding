@@ -1,8 +1,8 @@
 import "server-only";
 
-import { assertPermission } from "../authz/permissions";
-import { getProviderStatuses } from "../integrations/status";
-import { withAuthenticatedRead } from "../db/tenant";
+import { assertPermission } from "@/lib/authz/permissions";
+import { getProviderStatuses } from "@/lib/integrations/status";
+import { withAuthenticatedRead } from "@/lib/db/tenant";
 
 export async function getIntegrationStatuses() {
   return withAuthenticatedRead(async (_tx, access) => {

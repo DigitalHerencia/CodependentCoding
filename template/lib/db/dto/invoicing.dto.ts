@@ -1,8 +1,8 @@
-import type { ExpenseDTO, InvoiceDTO } from "../../../types/invoicingTypes";
+import type { ExpenseDTO, InvoiceDTO } from "@/types/invoicingTypes";
 import type {
   ExpenseRecord,
   InvoiceRecord,
-} from "../selects/invoicing.selects";
+} from "@/lib/db/selects/invoicing.selects";
 
 export function toExpenseDTO(record: ExpenseRecord): ExpenseDTO {
   return {

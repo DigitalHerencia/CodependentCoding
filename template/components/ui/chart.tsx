@@ -44,7 +44,7 @@ export {
   calloutElement,
   arrowElements,
   renderChartAnnotations,
-} from "../chart/index";
+} from "@/components/chart/index";
 
 export type {
   ChartAnnotation,
@@ -82,4 +82,4 @@ export type {
   SankeyChartProps,
   SankeyNode,
   SankeyLink,
-} from "../chart/index";
+} from "@/components/chart/index";

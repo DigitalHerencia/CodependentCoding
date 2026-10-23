@@ -2,7 +2,7 @@ import { config } from "dotenv";
 
 import { PrismaNeon } from "@prisma/adapter-neon";
 
-import { Prisma, PrismaClient } from "../generated/prisma/client";
+import { Prisma, PrismaClient } from "@/generated/prisma/client";
 
 config({ path: ".env.local", quiet: true });
 config({ quiet: true });
