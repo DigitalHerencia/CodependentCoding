@@ -1,20 +1,41 @@
 {
   "$schema": "codependent-coding/execution/progress/v1",
-  "updated": "2026-10-23T02:00:00Z",
+  "updated": "2026-10-23T02:30:00Z",
   "format": "Evidence states: EXECUTED | INSPECTED | NOT_RUN | BLOCKED. Never mark an issue done without EXECUTED evidence for its Validation commands.",
   "milestones": {
     "M0": {
       "status": "done",
       "closed": "2026-10-23",
-      "issues": ["CC-001", "CC-002", "CC-003", "CC-004", "CC-005"],
-      "prs": [207, 208, 210, 211, 212, 213],
+      "issues": [
+        "CC-001",
+        "CC-002",
+        "CC-003",
+        "CC-004",
+        "CC-005"
+      ],
+      "prs": [
+        207,
+        208,
+        210,
+        211,
+        212,
+        213
+      ],
       "note": "All M0 issues merged. Release profile run on main 851a63f: only doctrine tests and root test pass; template and root validate fail on pre-existing code owned by CC-006/007/009-013. Compose not runnable until the CLI compose command exists (M4)."
     },
     "M1": {
       "status": "done",
-      "issues": ["CC-006", "CC-007", "CC-008"],
+      "issues": [
+        "CC-006",
+        "CC-007",
+        "CC-008"
+      ],
       "closed": "2026-10-23",
-      "prs": [216, 217, 218],
+      "prs": [
+        216,
+        217,
+        218
+      ],
       "note": "All M1 issues merged. Release profile on main 86477ca: root lint, typecheck, test and build pass; root validate fails only at format:check (CC-013). Template validate/lint/typecheck/build unchanged from M0 (CC-009..013). Compose NOT_RUN until M4."
     },
     "M2": {
@@ -61,11 +82,22 @@
     },
     "M5": {
       "status": "todo",
-      "issues": ["CC-036", "CC-037", "CC-038", "CC-039", "CC-040", "CC-041"]
+      "issues": [
+        "CC-036",
+        "CC-037",
+        "CC-038",
+        "CC-039",
+        "CC-040",
+        "CC-041"
+      ]
     },
     "M6": {
       "status": "todo",
-      "issues": ["CC-042", "CC-043", "CC-044"]
+      "issues": [
+        "CC-042",
+        "CC-043",
+        "CC-044"
+      ]
     }
   },
   "issues": {
@@ -208,6 +240,25 @@
         "CC-SCHEMA-001": 1
       },
       "pr": 220
+    },
+    "CC-010": {
+      "status": "in_review",
+      "github": 170,
+      "branch": "fix/170-route-feature-boundaries",
+      "decision": "DEC-025",
+      "note": "Template lint 73 -> 50, no new findings. 0 CC-ROUTE/CC-CLIENT/CC-FEAT-002/004 left; 2 CC-FEAT-001 remain in features/explorer/maximalTemplateExplorer.tsx, owned by CC-011 Scope. Typecheck 13 errors unchanged, none in touched files. Page render smoke NOT_RUN: next dev returns 500 on /sign-in without Clerk keys (same on main); needs owner check with .env.",
+      "remaining_findings": {
+        "@typescript-eslint/no-non-null-assertion": 13,
+        "react-refresh/only-export-components": 10,
+        "@next/next/no-img-element": 10,
+        "CC-INT-001": 6,
+        "CC-NAME-001": 3,
+        "CC-READ-001": 3,
+        "CC-FEAT-001": 2,
+        "CC-FLOW-001": 1,
+        "CC-SCHEMA-001": 1,
+        "@typescript-eslint/no-unused-vars": 1
+      }
     }
   },
   "completed": [
@@ -866,6 +917,54 @@
       "env": "linux node 22.22.0, pnpm 12.3.4",
       "command": "pnpm --dir template doctrine:test",
       "result": "exit 0: tests 44, pass 44, fail 0"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-010",
+      "env": "linux node 22.22.0, pnpm 12.3.4",
+      "command": "pnpm --dir template lint",
+      "result": "exit 1: 50 problems (40 errors, 10 warnings), was 73; no CC-ROUTE-*, CC-CLIENT-*, CC-FEAT-002, CC-FEAT-004; CC-FEAT-001 x2 only in features/explorer (CC-011)"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-010",
+      "env": "linux node 22.22.0, pnpm 12.3.4",
+      "command": "eslint . -f json diff vs main",
+      "result": "0 new findings"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-010",
+      "env": "linux node 22.22.0, pnpm 12.3.4",
+      "command": "pnpm --dir template typecheck",
+      "result": "exit 2: 13 errors, all pre-existing (components/blocks/*, lib/workflows/crm/*), none in CC-010 files"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-010",
+      "env": "linux node 22.22.0, pnpm 12.3.4",
+      "command": "pnpm --dir template doctrine:test",
+      "result": "exit 0: tests 44, pass 44, fail 0"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-010",
+      "env": "linux node 22.22.0, pnpm 12.3.4",
+      "command": "pnpm --dir template exec prettier --check <changed files>",
+      "result": "exit 0: all matched files use Prettier code style"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-010",
+      "env": "linux node 22.22.0, pnpm 12.3.4",
+      "command": "next dev; curl /sign-in /sign-up",
+      "result": "500 both: Clerk publishable key missing in cloud container; render smoke needs owner .env"
     }
   ],
   "known_findings": [

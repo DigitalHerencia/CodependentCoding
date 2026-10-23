@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/decisions/v1",
-  "updated": "2026-10-23T00:45:00Z",
+  "updated": "2026-10-23T02:30:00Z",
   "format": "Append new decisions; never rewrite history. Supersede by adding a new entry and setting status=superseded + superseded_by on the old one.",
   "decisions": [
     {
@@ -14,7 +14,9 @@
         "Anthimeria, Virgule, Arrangement, Simples, Ontologies retired as product terms",
         "Starter bundles are called presets"
       ],
-      "refs": ["context/docs/PRD.md"]
+      "refs": [
+        "context/docs/PRD.md"
+      ]
     },
     {
       "id": "DEC-002",
@@ -25,7 +27,9 @@
       "consequences": [
         "Monaco, catalog lib code, and @hipster-stack/core leave the root app"
       ],
-      "refs": ["CC-006"]
+      "refs": [
+        "CC-006"
+      ]
     },
     {
       "id": "DEC-003",
@@ -43,7 +47,9 @@
         "Orphan/ambiguity check required (CC-MOD-003)",
         "CI composes every preset alone"
       ],
-      "refs": ["context/docs/Architecture.md §1.1, §5"]
+      "refs": [
+        "context/docs/Architecture.md §1.1, §5"
+      ]
     },
     {
       "id": "DEC-004",
@@ -51,7 +57,10 @@
       "status": "accepted",
       "title": "Loaded Vibes becomes a Claude Code plugin",
       "decision": "Port from the Codex draft to a Claude Code plugin installed from a local marketplace in this repo; skills idea, plan, slice, classify, check, ship, handoff; agents reviewer, verifier; hooks for lint and execution-state.",
-      "refs": ["CC-036", "CC-041"]
+      "refs": [
+        "CC-036",
+        "CC-041"
+      ]
     },
     {
       "id": "DEC-005",
@@ -59,7 +68,9 @@
       "status": "accepted",
       "title": "One governance system under context/ and .claude/",
       "decision": "Intent in context/docs (5 md), contracts in .claude/contracts (3 yaml), execution in .claude/execution (3 json), work in context/specs/issues. `.agents/` is removed; AGENTS.md points to CLAUDE.md; TypeScripture books move to context/doctrine as reference only.",
-      "refs": ["CC-002"]
+      "refs": [
+        "CC-002"
+      ]
     },
     {
       "id": "DEC-006",
@@ -68,7 +79,9 @@
       "title": "Pin TypeScript 6.0.3 and ESLint 9.39.5 everywhere",
       "context": "Root used TypeScript 7.0.2, which typescript-eslint 8.x rejects, so lint could not run. The template's TS 6.0.3 + ESLint 9.39.5 + eslint-config-next 16.3.4 lints successfully (verified 2026-10-22).",
       "decision": "Exact pins per tech-requirements.md §2; majors are explicit issues.",
-      "refs": ["CC-001"]
+      "refs": [
+        "CC-001"
+      ]
     },
     {
       "id": "DEC-007",
@@ -77,7 +90,10 @@
       "title": "Presentation exceptions: forms, skeletons, client companions",
       "context": "The old validator reported 154 violations; 97 were skeletons importing ui/skeleton and client companions importing input controls, 53 were false positives.",
       "decision": "Form features may use UI primitives and 'use client'; skeletons may import ui/skeleton; .client.tsx companions may import interactive UI controls. Normal server features still render blocks only.",
-      "refs": ["context/docs/Architecture.md §3.2", "CC-FEAT-002..004"]
+      "refs": [
+        "context/docs/Architecture.md §3.2",
+        "CC-FEAT-002..004"
+      ]
     },
     {
       "id": "DEC-008",
@@ -86,7 +102,10 @@
       "title": "Doctrine enforced by a local ESLint plugin with CC-* rule IDs",
       "decision": "template/eslint/doctrine-map.mjs (tables) + codependent-plugin.mjs (mechanics) replace the separate architecture.mjs validator. One data-driven layer-boundaries rule avoids flat-config no-restricted-imports override collisions. Rule tests via ESLint RuleTester.",
       "evidence": "44/44 rule tests pass; on the current template: 241 findings, auto-fix → 73, typecheck errors unchanged (123, all pre-existing).",
-      "refs": ["validation.yaml", "CC-009"]
+      "refs": [
+        "validation.yaml",
+        "CC-009"
+      ]
     },
     {
       "id": "DEC-009",
@@ -94,7 +113,10 @@
       "status": "accepted",
       "title": "Prisma multi-file schema with // @module tags; RLS SQL per owner",
       "decision": "Base models list module relations tagged `// @module <id>`; the CLI deletes tagged lines for removed modules. Policies live in prisma/rls/<owner>.sql and are applied by db:init.",
-      "refs": ["CC-022", "CC-023"]
+      "refs": [
+        "CC-022",
+        "CC-023"
+      ]
     },
     {
       "id": "DEC-010",
@@ -103,7 +125,9 @@
       "title": "GitHub Flow with issue branches and draft PRs",
       "context": "Previous instruction was 'work directly on main', producing many 'no comment' commits with no review points. Agent-driven work needs rollback points and Project automation.",
       "decision": "main + short-lived `<type>/<issue>-<slug>` branches, draft PR early with `Closes #N`, squash merge, Conventional Commits. No long-lived develop branch.",
-      "refs": ["context/specs/README.md"]
+      "refs": [
+        "context/specs/README.md"
+      ]
     },
     {
       "id": "DEC-011",
@@ -111,7 +135,9 @@
       "status": "accepted",
       "title": "Active organization in an httpOnly cookie, re-validated every request",
       "decision": "Tenancy authority stays in Postgres; the cookie only names the org. Clerk Organizations are not used for tenancy.",
-      "refs": ["context/docs/AUTH.md §4.1"]
+      "refs": [
+        "context/docs/AUTH.md §4.1"
+      ]
     },
     {
       "id": "DEC-012",
@@ -119,7 +145,9 @@
       "status": "accepted",
       "title": "Caching: ISR for public routes, fresh tenant routes, Cache Components off in v1",
       "decision": "Keep one simple mental model for v1; revisit Cache Components after v1.0.0.",
-      "refs": ["context/docs/tech-requirements.md §7"]
+      "refs": [
+        "context/docs/tech-requirements.md §7"
+      ]
     },
     {
       "id": "DEC-013",
@@ -127,7 +155,9 @@
       "status": "accepted",
       "title": "Branded names kept for three components only",
       "decision": "Codependent Coding (doctrine/umbrella), Hipster Stack (CLI), Loaded Vibes (plugin), Maximal Template (template). Code and docs otherwise use plain engineering terms.",
-      "refs": ["context/docs/PRD.md §6"]
+      "refs": [
+        "context/docs/PRD.md §6"
+      ]
     },
     {
       "id": "DEC-014",
@@ -136,7 +166,10 @@
       "title": "Deterministic work belongs to the CLI, not to agent tokens",
       "context": "Claude Pro usage limits are the binding constraint.",
       "decision": "Scaffolding (new, slice, add) is deterministic CLI output; plugin skills call the CLI and only write domain logic.",
-      "refs": ["CC-032", "CC-039"]
+      "refs": [
+        "CC-032",
+        "CC-039"
+      ]
     },
     {
       "id": "DEC-015",
@@ -145,7 +178,9 @@
       "title": "CC-001 pin details not fixed by tech-requirements §2",
       "context": "CC-001 asked for `yaml` (exact) without a version and for a root test script that works before M4 tests exist.",
       "decision": "Pin yaml 2.9.1 (latest stable on 2026-10-22). Root `test` is `vitest run --passWithNoTests` until M4 adds real tests. typescript-eslint dropped as a direct dependency: no config imports it (eslint-config-next brings it transitively).",
-      "refs": ["CC-001"]
+      "refs": [
+        "CC-001"
+      ]
     },
     {
       "id": "DEC-016",
@@ -154,7 +189,11 @@
       "title": "Project board is user Project #19",
       "context": "context/specs/README.md named Project #3, which is an unrelated closed board. Two candidates existed: #19 'Codependent Coding™ — Canonical Remediation' (open, all 8 built-in workflows on) and #21 'Loaded Vibes Generator' (holds 34 older LV-/HS- issues, none of CC-001..044). Owner said either is fine.",
       "decision": "Use Project #19. issues:sync docs and script usage point at --project 19. #21 is left untouched.",
-      "refs": ["CC-003", "PR #207", "context/specs/README.md"]
+      "refs": [
+        "CC-003",
+        "PR #207",
+        "context/specs/README.md"
+      ]
     },
     {
       "id": "DEC-017",
@@ -163,7 +202,13 @@
       "title": "CC-002 interpretation of legacy-governance scope",
       "context": "The Codex plugin that the spec places in .agents/ had already moved to .claude/LoadedVibesCodexPlugin/, which application.yaml does not list as an allowed .claude/ directory. content/README.md is not named in the scope. lib/docs.tsx read the books from content/. The rg acceptance check also matches Anthimeria product code that later issues delete.",
       "decision": "Delete .claude/LoadedVibesCodexPlugin/ as the Codex plugin named in scope. Move content/README.md with the books (it describes them). Point lib/docs.tsx at context/doctrine/ so the existing TypeScripture routes keep working until CC-006 removes them. Leave remaining Anthimeria/.agents mentions in app/, components/, packages/, template/AGENTS.md, README, SECURITY, CHANGELOG and package.json to CC-006/007/008/014/043 rather than widen CC-002. content.zip, tsconfig.tsbuildinfo, .agents/, the retired context/specs subfolders and context/mockups were already absent on main.",
-      "refs": ["CC-002", "CC-006", "CC-007", "CC-014", "CC-043"]
+      "refs": [
+        "CC-002",
+        "CC-006",
+        "CC-007",
+        "CC-014",
+        "CC-043"
+      ]
     },
     {
       "id": "DEC-018",
@@ -172,7 +217,10 @@
       "title": "CC-004 CI step policy details",
       "context": "CC-004 allows continue-on-error only on template format/lint/typecheck, but the template has no test script until CC-017 and the root job stopped at its first failing step.",
       "decision": "Template test step is `pnpm run --if-present test` (skipped until CC-017, never masked). Root lint/typecheck/test use `if: !cancelled()` so every root check reports even after format:check fails. pnpm comes from pnpm/action-setup@v4 reading packageManager; setup-node caches by each lockfile.",
-      "refs": ["CC-004", "PR #212"]
+      "refs": [
+        "CC-004",
+        "PR #212"
+      ]
     },
     {
       "id": "DEC-019",
@@ -181,7 +229,10 @@
       "title": "CC-005 Windows lint-hook evidence and hook settings unchanged",
       "context": "In the VS Code extension on Windows, the lint hook gave no feedback after a write. The same run had a failed `pnpm install` (ERR_PNPM_PACKAGE_MANAGER_REMOVE_MODULES_DIR, Access is denied), so eslint was missing and the hook took its deliberate 'deps not installed' exit 0.",
       "decision": "Accept the owner's Windows run of the hook after a clean install (exit 2 with the ESLint finding) as the lint-feedback evidence. Keep .claude/settings.json unchanged, because the Node path and quoting work on Windows. Install with VS Code closed so node_modules is not locked.",
-      "refs": ["CC-005", "PR #213"]
+      "refs": [
+        "CC-005",
+        "PR #213"
+      ]
     },
     {
       "id": "DEC-020",
@@ -190,7 +241,12 @@
       "title": "Merge Dependabot bumps while root CI is red",
       "context": "Owner authorized merging Dependabot PRs and deleting stale branches. Root CI fails at format:check on main, so it cannot judge a bump; later root steps never run.",
       "decision": "Accept a bump when it keeps exact pins (no ranges, pnpm 12.3.4, node 24.x), the Maximal Template job is green, and a local root run (install, typecheck, test, cli:build) adds no new errors versus main. Merged #159, #205, #209; setup-node v7 (#160) applied directly after a merge conflict.",
-      "refs": ["PR #159", "PR #160", "PR #205", "PR #209"]
+      "refs": [
+        "PR #159",
+        "PR #160",
+        "PR #205",
+        "PR #209"
+      ]
     },
     {
       "id": "DEC-021",
@@ -199,7 +255,12 @@
       "title": "CC-006 interpretation: orphan components, dead links, and root lint",
       "context": "After removing the catalog routes, 117 components under components/{ui,chart,templates,blocks} plus library-icon and copy-definition-button were imported by nothing. They were the Simples catalog content and held all 250 root TS errors. The header, footer and hero linked to deleted routes, which typedRoutes rejects. Root lint still fails on packages/core and packages/loaded-vibes, which CC-007 deletes. playwright.config.ts had one exactOptionalPropertyTypes error.",
       "decision": "Delete every component that the kept app files do not reach (they existed only for the catalog). Remove links to deleted routes and leave the new CTAs and GitHub link to CC-008. Fix playwright.config.ts workers with a conditional spread and postcss.config.mjs default export so root typecheck and site lint are clean. Leave the 38 lint findings in packages/** to CC-007 instead of editing code that issue deletes. Keep lib/utils.ts, clsx and tailwind-merge. Leave dead selectors in app/globals.css and formatting to CC-008/CC-013.",
-      "refs": ["CC-006", "CC-007", "CC-008", "CC-013"]
+      "refs": [
+        "CC-006",
+        "CC-007",
+        "CC-008",
+        "CC-013"
+      ]
     },
     {
       "id": "DEC-022",
@@ -208,7 +269,11 @@
       "title": "CC-007 interpretation: salvage format, root validate script, kept deps",
       "context": "CC-007 salvages presets.ts, ontologies.ts and Loaded Vibes validators/prompts, but presets/ontologies import @hipster-stack/schema and the criterion says no @hipster-stack/* imports remain. Root package.json had no validate script although tech-requirements.md defines one and the issue validates with pnpm validate. tsdown, tsx, execa and @types/validate-npm-package-name were only used by the deleted CLI.",
       "decision": "Store salvaged code as *.ts.txt / *.mjs.txt under context/doctrine/salvage/ with a README, so nothing builds, lints or imports it and no eslint/tsconfig ignore is needed. Add root validate exactly as tech-requirements.md defines it (format:check, lint, typecheck, test). Keep tsdown, tsx, execa and @types/validate-npm-package-name in devDependencies for the M4 CLI rebuild and keep pnpm-workspace packages/* for packages/cli. Remove packages/loaded-vibes entries from tsconfig and vitest excludes. Leave format:check red to CC-013.",
-      "refs": ["CC-007", "CC-013", "CC-028"]
+      "refs": [
+        "CC-007",
+        "CC-013",
+        "CC-028"
+      ]
     },
     {
       "id": "DEC-023",
@@ -217,7 +282,11 @@
       "title": "CC-008 interpretation: doctrine anchor target and metadata copy",
       "context": "CC-008 asks for a 'Read the doctrine' on-page anchor and a compact section listing the four components, but names no anchor target. The root layout's metadata description still used retired vocabulary (TypeScripture, Ontologies, Simples, Anthimeria) and no other issue owns it.",
       "decision": "The four-component section is the anchor target (id=doctrine), with one line per component taken from PRD §6. The GitHub link is a plain <a> to the public repo in the header and the CTA row. Footer keeps only the Digital Herencia wordmark. Rewrite the metadata description to name the four components. Dead CSS for deleted routes stays for CC-013.",
-      "refs": ["CC-008", "CC-013", "DEC-021"]
+      "refs": [
+        "CC-008",
+        "CC-013",
+        "DEC-021"
+      ]
     },
     {
       "id": "DEC-024",
@@ -226,7 +295,25 @@
       "title": "CC-009: config and scripts already present; auto-fix only",
       "context": "CC-009 Scope asks to wire doctrine into template/eslint.config.mjs and add doctrine:test and lint:fix scripts. Both were already on main (governance package / CC-001). lint:fix does not run Prettier, so template format:check stays red.",
       "decision": "Confirm rather than re-add the config and scripts. Commit only the lint:fix output as its own commit. Leave the 73 remaining findings (layer-boundaries, non-null assertions, react-refresh, img, filename, use-client) to CC-010..012 and formatting to CC-013.",
-      "refs": ["CC-009", "CC-010", "CC-011", "CC-012", "CC-013"]
+      "refs": [
+        "CC-009",
+        "CC-010",
+        "CC-011",
+        "CC-012",
+        "CC-013"
+      ]
+    },
+    {
+      "id": "DEC-025",
+      "date": "2026-10-23",
+      "status": "accepted",
+      "title": "CC-010: rename server edit wrappers to *Feature; onboarding gate as a feature; roles in lib/constants",
+      "context": "The *EditForm.tsx (and campaignNewForm.tsx) files were server components that fetch a record and render the real form, so they were classified as feature-form and tripped CC-FEAT-002. signIn/signUpFeature own RHF state. app/(tenant)/layout.tsx called an onboarding fetcher. The client companion imported appRoles from server-only lib/authz/roles.",
+      "decision": "Rename the fetching wrappers to *EditFeature.tsx / campaignNewFeature.tsx (feature layer) and keep the forms receiving records as props; rename sign-in/up to signInForm/signUpForm (block import aliased to SignUpFormPanel); add features/onboarding/onboardingGateFeature.tsx that checks onboarding and renders TenantShell, the route keeps only the identity redirect; move appRoles to lib/constants/roles.ts (the path CC-011 names), lib/authz/roles re-exports it, and both admin client files import from constants. schemas/adminSchemas.ts and types/access.ts stay for CC-011. features/explorer (2 CC-FEAT-001) stays for CC-011, whose Scope says move or delete it.",
+      "refs": [
+        "CC-010",
+        "CC-011"
+      ]
     }
   ]
 }

@@ -1,14 +1,18 @@
 {
   "$schema": "codependent-coding/execution/handoff/v1",
-  "updated": "2026-10-23T02:00:00Z",
+  "updated": "2026-10-23T02:30:00Z",
   "format": "Overwrite each session. Minimum state the next session needs to resume safely.",
   "status": "ready-for-claude-code",
   "milestone": "M2",
   "current_issue": "CC-010",
-  "next_issue": "CC-010",
-  "queue": ["CC-010"],
-  "branch": "main",
-  "in_flight": [],
+  "next_issue": "CC-011",
+  "queue": [
+    "CC-011"
+  ],
+  "branch": "fix/170-route-feature-boundaries",
+  "in_flight": [
+    "CC-010 PR open, awaiting owner go-ahead to merge"
+  ],
   "notes": [
     "Governance package is uncommitted in the owner's working tree; owner reviews with `git status` / `git diff`, then commits on a branch `chore/governance-package`.",
     "Template already contains the doctrine ESLint plugin (template/eslint/) and the new eslint.config.mjs; CC-009 turns findings into fixes.",
@@ -24,12 +28,14 @@
     "CC-006 (DEC-021): site reduced to /. app/globals.css still holds dead selectors for deleted routes (CC-013).",
     "CC-008 (DEC-023): header logo + GitHub, CTAs Read the doctrine (#doctrine) + GitHub, four-component section, footer placeholders removed. Lighthouse a11y 100 (headless). M1 issues all done.",
     "M1 closed 2026-10-23: release profile on main 86477ca recorded in progress.json (milestones.M1 + evidence); summary comment on PR #218. Root lint/typecheck/test/build green; root and template format:check red (CC-013); template lint/typecheck/build red (CC-009..012).",
-    "CC-009 (DEC-024): template lint:fix 241 -> 73; 0 CC-SRV-001/CC-STYLE-002 left; typecheck 13 errors unchanged; doctrine:test 44/44. Remaining findings by rule ID in progress.json issues.CC-009.remaining_findings."
+    "CC-009 (DEC-024): template lint:fix 241 -> 73; 0 CC-SRV-001/CC-STYLE-002 left; typecheck 13 errors unchanged; doctrine:test 44/44. Remaining findings by rule ID in progress.json issues.CC-009.remaining_findings.",
+    "CC-010 (DEC-025): template lint 73 -> 50. Edit wrappers are now *EditFeature.tsx; auth forms are signInForm/signUpForm; onboarding gate in features/onboarding/onboardingGateFeature.tsx; appRoles in lib/constants/roles.ts. CC-011 still owns features/explorer (2 CC-FEAT-001), adminSchemas roles import, types/access.ts rename."
   ],
   "risks": [
     "Lint hook exits 0 silently when node_modules/eslint is missing; a failed install hides lint feedback. On Windows, run pnpm install with VS Code closed (DEC-019).",
     "pnpm/action-setup@v4 runs on deprecated Node 20 (forced to 24); bump when a newer major is available.",
-    "Root CI job stays red only on format:check until CC-013 (root format:check also scans template/** without template deps; CC-013 should add template/ to root .prettierignore or install template deps)."
+    "Root CI job stays red only on format:check until CC-013 (root format:check also scans template/** without template deps; CC-013 should add template/ to root .prettierignore or install template deps).",
+    "Template pages cannot render in the cloud container without Clerk keys (next dev 500). CC-010 render smoke needs the owner to run `pnpm --dir template dev` with .env and open /sign-in, /sign-up, an edit page and /admin/users/<id>."
   ],
   "do_not": [
     "Delete or rewrite context/doctrine/ books",
