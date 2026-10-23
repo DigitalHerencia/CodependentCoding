@@ -1,0 +1,161 @@
+{
+  "$schema": "./hipster.modules.schema.json",
+  "base": { "owns": ["**"] },
+  "modules": [
+    {
+      "id": "crm",
+      "kind": "domain",
+      "label": "CRM / Pipeline",
+      "description": "Contacts, accounts, leads, pipeline, analytics"
+    },
+    {
+      "id": "projects",
+      "kind": "domain",
+      "label": "Projects",
+      "description": "Projects, tasks, timeline, my tasks",
+      "dependsOn": ["uploads"],
+      "owns": ["app/(tenant)/my-tasks/**"]
+    },
+    {
+      "id": "support",
+      "kind": "domain",
+      "label": "Support",
+      "description": "Inbox, tickets, knowledge base, support analytics",
+      "dependsOn": ["email"]
+    },
+    {
+      "id": "marketing",
+      "kind": "domain",
+      "label": "Marketing",
+      "description": "Audiences, campaigns, campaign analytics",
+      "dependsOn": ["email"]
+    },
+    {
+      "id": "invoicing",
+      "kind": "domain",
+      "label": "Invoicing",
+      "description": "Invoices, expenses, payments",
+      "dependsOn": ["billing", "uploads"],
+      "owns": ["app/(tenant)/invoices/**", "app/(tenant)/expenses/**"]
+    },
+    {
+      "id": "social",
+      "kind": "domain",
+      "label": "Social",
+      "description": "Composer, content calendar, media library",
+      "dependsOn": ["media"]
+    },
+    {
+      "id": "ai",
+      "kind": "domain",
+      "label": "AI Workspace",
+      "description": "Playground, generations, usage",
+      "dependsOn": ["inference", "billing", "ratelimit"]
+    },
+    {
+      "id": "portal",
+      "kind": "domain",
+      "label": "Client Portal",
+      "description": "Client workspace, documents, billing",
+      "dependsOn": ["uploads", "billing"]
+    },
+    {
+      "id": "admin",
+      "kind": "domain",
+      "label": "Admin",
+      "description": "Users, records, audit log"
+    },
+    {
+      "id": "billing",
+      "kind": "addon",
+      "label": "Billing (Stripe)",
+      "owns": ["lib/integrations/stripe/**", "app/api/stripe/**"],
+      "packages": ["stripe"],
+      "env": [
+        { "name": "STRIPE_SECRET_KEY", "required": true, "scope": "server" },
+        { "name": "STRIPE_WEBHOOK_SECRET", "required": true, "scope": "server" }
+      ]
+    },
+    {
+      "id": "uploads",
+      "kind": "addon",
+      "label": "Uploads (Vercel Blob)",
+      "owns": ["lib/integrations/vercel-blob/**"],
+      "packages": ["@vercel/blob"],
+      "env": [
+        { "name": "BLOB_READ_WRITE_TOKEN", "required": true, "scope": "server" }
+      ]
+    },
+    {
+      "id": "media",
+      "kind": "addon",
+      "label": "Media (Cloudinary)",
+      "owns": ["lib/integrations/cloudinary/**"],
+      "packages": ["cloudinary"],
+      "env": [
+        {
+          "name": "CLOUDINARY_CLOUD_NAME",
+          "required": true,
+          "scope": "server"
+        },
+        { "name": "CLOUDINARY_API_KEY", "required": true, "scope": "server" },
+        { "name": "CLOUDINARY_API_SECRET", "required": true, "scope": "server" }
+      ]
+    },
+    {
+      "id": "email",
+      "kind": "addon",
+      "label": "Email (SendGrid)",
+      "owns": ["lib/integrations/sendgrid/**", "app/api/sendgrid/**"],
+      "packages": ["@sendgrid/mail", "@sendgrid/eventwebhook"],
+      "env": [
+        { "name": "SENDGRID_API_KEY", "required": true, "scope": "server" },
+        { "name": "SENDGRID_FROM_EMAIL", "required": true, "scope": "server" },
+        {
+          "name": "SENDGRID_WEBHOOK_VERIFICATION_KEY",
+          "required": false,
+          "scope": "server",
+          "description": "Verifies SendGrid event webhooks"
+        }
+      ]
+    },
+    {
+      "id": "inference",
+      "kind": "addon",
+      "label": "Inference (Hugging Face)",
+      "owns": ["lib/integrations/hugging-face/**"],
+      "packages": ["@huggingface/inference"],
+      "env": [
+        {
+          "name": "HUGGINGFACE_ACCESS_TOKEN",
+          "required": true,
+          "scope": "server"
+        },
+        {
+          "name": "HUGGINGFACE_TEXT_MODEL",
+          "required": false,
+          "scope": "server",
+          "description": "Text model id; defaults to HuggingFaceH4/zephyr-7b-beta"
+        }
+      ]
+    },
+    {
+      "id": "ratelimit",
+      "kind": "addon",
+      "label": "Rate limiting",
+      "description": "Per-organization request limits for metered features"
+    }
+  ],
+  "presets": {
+    "blank": [],
+    "crm": ["crm"],
+    "projects": ["projects", "uploads"],
+    "support": ["support", "email"],
+    "marketing": ["marketing", "email"],
+    "invoicing": ["invoicing", "billing", "uploads"],
+    "social": ["social", "media"],
+    "ai": ["ai", "inference", "billing", "ratelimit"],
+    "portal": ["portal", "uploads", "billing"],
+    "admin": ["admin"]
+  }
+}

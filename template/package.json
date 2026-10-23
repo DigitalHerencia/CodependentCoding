@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build --turbopack",
+    "check:modules": "node scripts/check-modules.mjs",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint": "eslint . --max-warnings=0",
