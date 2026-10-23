@@ -1,0 +1,112 @@
+enum SocialProvider {
+  LINKEDIN
+  X
+  FACEBOOK
+  INSTAGRAM
+  OTHER
+}
+
+enum SocialPostStatus {
+  DRAFT
+  SCHEDULED
+  PUBLISHING
+  PUBLISHED
+  PARTIALLY_FAILED
+  FAILED
+  CANCELED
+}
+
+enum SocialVariantStatus {
+  DRAFT
+  SCHEDULED
+  PUBLISHED
+  FAILED
+}
+
+model SocialAccount {
+  id             String @id @default(uuid()) @db.Uuid
+  organizationId String @db.Uuid
+
+  provider          SocialProvider
+  providerAccountId String
+  displayName       String
+  credentialRef     String?
+  active            Boolean        @default(true)
+
+  organization Organization    @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  variants     SocialVariant[]
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
+
+  @@unique([organizationId, provider, providerAccountId])
+  @@index([organizationId, active])
+}
+
+model SocialPost {
+  id                     String  @id @default(uuid()) @db.Uuid
+  organizationId         String  @db.Uuid
+  createdByMembershipId  String? @db.Uuid
+  approvedByMembershipId String? @db.Uuid
+
+  title       String?
+  content     String
+  status      SocialPostStatus @default(DRAFT)
+  scheduledAt DateTime?        @db.Timestamptz(6)
+  publishedAt DateTime?        @db.Timestamptz(6)
+  approvedAt  DateTime?        @db.Timestamptz(6)
+  version     Int              @default(1)
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  createdBy    Membership?  @relation("SocialPostCreator", fields: [createdByMembershipId], references: [id], onDelete: SetNull)
+  approvedBy   Membership?  @relation("SocialPostApprover", fields: [approvedByMembershipId], references: [id], onDelete: SetNull)
+
+  variants SocialVariant[]
+  media    SocialPostMedia[]
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
+
+  @@index([organizationId, status])
+  @@index([organizationId, scheduledAt])
+  @@index([organizationId, approvedAt])
+}
+
+model SocialVariant {
+  id              String @id @default(uuid()) @db.Uuid
+  organizationId  String @db.Uuid
+  postId          String @db.Uuid
+  socialAccountId String @db.Uuid
+
+  content        String
+  status         SocialVariantStatus @default(DRAFT)
+  providerPostId String?
+  publishedAt    DateTime?           @db.Timestamptz(6)
+  errorCode      String?
+
+  organization  Organization  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  post          SocialPost    @relation(fields: [postId], references: [id], onDelete: Cascade)
+  socialAccount SocialAccount @relation(fields: [socialAccountId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
+
+  @@unique([postId, socialAccountId])
+  @@index([organizationId, status])
+}
+
+model SocialPostMedia {
+  id             String @id @default(uuid()) @db.Uuid
+  organizationId String @db.Uuid
+  postId         String @db.Uuid
+  assetId        String @db.Uuid
+  position       Int
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  post         SocialPost   @relation(fields: [postId], references: [id], onDelete: Cascade)
+  asset        Asset        @relation(fields: [assetId], references: [id], onDelete: Cascade) // @module uploads
+
+  @@unique([postId, assetId])
+  @@unique([postId, position])
+  @@index([organizationId, postId])
+}

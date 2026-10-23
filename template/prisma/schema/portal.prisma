@@ -1,0 +1,81 @@
+enum PortalDocumentStatus {
+  DRAFT
+  IN_REVIEW
+  APPROVED
+  REJECTED
+  PUBLISHED
+  ARCHIVED
+}
+
+enum ApprovalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model PortalDocument {
+  id             String @id @default(uuid()) @db.Uuid
+  organizationId String @db.Uuid
+
+  title                String
+  description          String?
+  status               PortalDocumentStatus @default(DRAFT)
+  clientVisible        Boolean              @default(false)
+  currentVersionNumber Int                  @default(0)
+  version              Int                  @default(1)
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  versions PortalDocumentVersion[]
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
+
+  @@index([organizationId, status])
+  @@index([organizationId, clientVisible])
+}
+
+model PortalDocumentVersion {
+  id                     String  @id @default(uuid()) @db.Uuid
+  organizationId         String  @db.Uuid
+  documentId             String  @db.Uuid
+  assetId                String  @db.Uuid
+  uploadedByMembershipId String? @db.Uuid
+
+  versionNumber Int
+  notes         String?
+
+  organization Organization   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  document     PortalDocument @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  asset        Asset          @relation(fields: [assetId], references: [id], onDelete: Restrict) // @module uploads
+  uploadedBy   Membership?    @relation("PortalVersionUploader", fields: [uploadedByMembershipId], references: [id], onDelete: SetNull)
+
+  approvals PortalApproval[]
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+
+  @@unique([documentId, versionNumber])
+  @@index([organizationId, documentId])
+}
+
+model PortalApproval {
+  id                   String  @id @default(uuid()) @db.Uuid
+  organizationId       String  @db.Uuid
+  documentVersionId    String  @db.Uuid
+  reviewerMembershipId String? @db.Uuid
+
+  reviewerLabel String
+  status        ApprovalStatus @default(PENDING)
+  note          String?
+  decidedAt     DateTime?      @db.Timestamptz(6)
+
+  organization    Organization          @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  documentVersion PortalDocumentVersion @relation(fields: [documentVersionId], references: [id], onDelete: Cascade)
+  reviewer        Membership?           @relation("PortalApprovalReviewer", fields: [reviewerMembershipId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
+
+  @@unique([documentVersionId, reviewerMembershipId])
+  @@index([organizationId, status])
+}

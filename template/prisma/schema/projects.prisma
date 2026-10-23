@@ -1,0 +1,153 @@
+enum ProjectStatus {
+  PLANNED
+  ACTIVE
+  ON_HOLD
+  COMPLETED
+  CANCELED
+  ARCHIVED
+}
+
+enum ProjectMemberRole {
+  OWNER
+  MANAGER
+  CONTRIBUTOR
+  VIEWER
+}
+
+enum TaskStatus {
+  BACKLOG
+  TODO
+  IN_PROGRESS
+  BLOCKED
+  DONE
+  CANCELED
+}
+
+enum TaskPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+model Project {
+  id                String  @id @default(uuid()) @db.Uuid
+  organizationId    String  @db.Uuid
+  ownerMembershipId String? @db.Uuid
+
+  name        String
+  description String?
+  status      ProjectStatus @default(PLANNED)
+  startsAt    DateTime?     @db.Date
+  dueAt       DateTime?     @db.Date
+  archivedAt  DateTime?     @db.Timestamptz(6)
+  version     Int           @default(1)
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  owner        Membership?  @relation("ProjectOwner", fields: [ownerMembershipId], references: [id], onDelete: SetNull)
+
+  members    ProjectMember[]
+  milestones Milestone[]
+  tasks      Task[]
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
+
+  @@index([organizationId, status])
+  @@index([organizationId, ownerMembershipId])
+  @@index([organizationId, dueAt])
+}
+
+model ProjectMember {
+  id             String            @id @default(uuid()) @db.Uuid
+  organizationId String            @db.Uuid
+  projectId      String            @db.Uuid
+  membershipId   String            @db.Uuid
+  role           ProjectMemberRole @default(CONTRIBUTOR)
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  project      Project      @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  membership   Membership   @relation(fields: [membershipId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+
+  @@unique([projectId, membershipId])
+  @@index([organizationId, membershipId])
+}
+
+model Milestone {
+  id             String @id @default(uuid()) @db.Uuid
+  organizationId String @db.Uuid
+  projectId      String @db.Uuid
+
+  name        String
+  description String?
+  dueAt       DateTime? @db.Date
+  completedAt DateTime? @db.Timestamptz(6)
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  project      Project      @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  tasks Task[]
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
+
+  @@index([organizationId, projectId])
+  @@index([organizationId, dueAt])
+}
+
+model Task {
+  id                   String  @id @default(uuid()) @db.Uuid
+  organizationId       String  @db.Uuid
+  projectId            String  @db.Uuid
+  milestoneId          String? @db.Uuid
+  parentTaskId         String? @db.Uuid
+  assigneeMembershipId String? @db.Uuid
+
+  title       String
+  description String?
+  status      TaskStatus   @default(TODO)
+  priority    TaskPriority @default(MEDIUM)
+  startsAt    DateTime?    @db.Timestamptz(6)
+  dueAt       DateTime?    @db.Timestamptz(6)
+  completedAt DateTime?    @db.Timestamptz(6)
+  position    Int          @default(0)
+  version     Int          @default(1)
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  project      Project      @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  milestone    Milestone?   @relation(fields: [milestoneId], references: [id], onDelete: SetNull)
+
+  parent   Task?  @relation("TaskHierarchy", fields: [parentTaskId], references: [id], onDelete: SetNull)
+  children Task[] @relation("TaskHierarchy")
+
+  assignee Membership? @relation("TaskAssignee", fields: [assigneeMembershipId], references: [id], onDelete: SetNull)
+
+  dependencies TaskDependency[] @relation("TaskDependencySource")
+  requiredBy   TaskDependency[] @relation("TaskDependencyTarget")
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
+
+  @@index([organizationId, projectId, status])
+  @@index([organizationId, assigneeMembershipId, status])
+  @@index([organizationId, dueAt])
+  @@index([parentTaskId])
+}
+
+model TaskDependency {
+  id              String @id @default(uuid()) @db.Uuid
+  organizationId  String @db.Uuid
+  taskId          String @db.Uuid
+  dependsOnTaskId String @db.Uuid
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  task         Task         @relation("TaskDependencySource", fields: [taskId], references: [id], onDelete: Cascade)
+  dependsOn    Task         @relation("TaskDependencyTarget", fields: [dependsOnTaskId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+
+  @@unique([taskId, dependsOnTaskId])
+  @@index([organizationId, dependsOnTaskId])
+}

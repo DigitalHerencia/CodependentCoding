@@ -1,0 +1,93 @@
+enum TicketStatus {
+  OPEN
+  IN_PROGRESS
+  WAITING_ON_CUSTOMER
+  WAITING_ON_INTERNAL
+  RESOLVED
+  CLOSED
+}
+
+enum TicketPriority {
+  LOW
+  NORMAL
+  HIGH
+  URGENT
+}
+
+enum KnowledgeArticleStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+model SupportTicket {
+  id                   String  @id @default(uuid()) @db.Uuid
+  organizationId       String  @db.Uuid
+  requesterUserId      String? @db.Uuid
+  assignedMembershipId String? @db.Uuid
+
+  number      Int
+  subject     String
+  description String?
+  status      TicketStatus   @default(OPEN)
+  priority    TicketPriority @default(NORMAL)
+
+  firstResponseDueAt DateTime? @db.Timestamptz(6)
+  resolutionDueAt    DateTime? @db.Timestamptz(6)
+  resolvedAt         DateTime? @db.Timestamptz(6)
+  closedAt           DateTime? @db.Timestamptz(6)
+  version            Int       @default(1)
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  requester    User?        @relation("SupportRequester", fields: [requesterUserId], references: [id], onDelete: SetNull)
+  assignee     Membership?  @relation("SupportAssignee", fields: [assignedMembershipId], references: [id], onDelete: SetNull)
+
+  messages SupportMessage[]
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
+
+  @@unique([organizationId, number])
+  @@index([organizationId, status, priority])
+  @@index([organizationId, assignedMembershipId, status])
+}
+
+model SupportMessage {
+  id                 String  @id @default(uuid()) @db.Uuid
+  organizationId     String  @db.Uuid
+  ticketId           String  @db.Uuid
+  authorMembershipId String? @db.Uuid
+
+  authorLabel String
+  body        String
+  isInternal  Boolean @default(false)
+
+  organization Organization  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  ticket       SupportTicket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  author       Membership?   @relation("SupportMessageAuthor", fields: [authorMembershipId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+
+  @@index([organizationId, ticketId, createdAt])
+}
+
+model KnowledgeArticle {
+  id                 String  @id @default(uuid()) @db.Uuid
+  organizationId     String  @db.Uuid
+  authorMembershipId String? @db.Uuid
+
+  slug   String
+  title  String
+  body   String
+  status KnowledgeArticleStatus @default(DRAFT)
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  author       Membership?  @relation("KnowledgeArticleAuthor", fields: [authorMembershipId], references: [id], onDelete: SetNull)
+
+  publishedAt DateTime? @db.Timestamptz(6)
+  createdAt   DateTime  @default(now()) @db.Timestamptz(6)
+  updatedAt   DateTime  @updatedAt @db.Timestamptz(6)
+
+  @@unique([organizationId, slug])
+  @@index([organizationId, status])
+}

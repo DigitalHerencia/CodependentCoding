@@ -8,7 +8,7 @@ priority: p0
 size: m
 labels: [type:refactor, area:modules, priority:p0, size:m]
 depends_on: [CC-020]
-status: todo
+status: done
 ---
 
 # CC-022 · Prisma multi-file schema with module tags

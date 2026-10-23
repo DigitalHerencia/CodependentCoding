@@ -1,0 +1,62 @@
+enum AiGenerationStatus {
+  PENDING
+  RUNNING
+  SUCCEEDED
+  FAILED
+  CANCELED
+}
+
+model AiGeneration {
+  id             String @id @default(uuid()) @db.Uuid
+  organizationId String @db.Uuid
+  userId         String @db.Uuid
+
+  provider String
+  model    String
+  status   AiGenerationStatus @default(PENDING)
+
+  input       Json
+  output      Json?
+  requestHash String?
+  errorCode   String?
+
+  inputTokens  Int     @default(0)
+  outputTokens Int     @default(0)
+  cost         Decimal @default(0) @db.Decimal(19, 8)
+
+  startedAt   DateTime? @db.Timestamptz(6)
+  completedAt DateTime? @db.Timestamptz(6)
+
+  organization Organization   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  user         User           @relation("AiGenerationUser", fields: [userId], references: [id], onDelete: Restrict)
+  usage        AiUsageLedger?
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
+
+  @@index([organizationId, userId, createdAt])
+  @@index([organizationId, status])
+  @@index([organizationId, requestHash])
+}
+
+model AiUsageLedger {
+  id             String @id @default(uuid()) @db.Uuid
+  organizationId String @db.Uuid
+  userId         String @db.Uuid
+  generationId   String @unique @db.Uuid
+
+  provider     String
+  model        String
+  inputTokens  Int
+  outputTokens Int
+  cost         Decimal @db.Decimal(19, 8)
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  user         User         @relation("AiUsageUser", fields: [userId], references: [id], onDelete: Restrict)
+  generation   AiGeneration @relation(fields: [generationId], references: [id], onDelete: Cascade)
+
+  occurredAt DateTime @default(now()) @db.Timestamptz(6)
+
+  @@index([organizationId, occurredAt])
+  @@index([organizationId, userId, occurredAt])
+}

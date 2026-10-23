@@ -1,0 +1,84 @@
+enum AudienceStatus {
+  DRAFT
+  ACTIVE
+  ARCHIVED
+}
+
+enum CampaignStatus {
+  DRAFT
+  SCHEDULED
+  ACTIVE
+  PAUSED
+  COMPLETED
+  CANCELED
+}
+
+enum CampaignStepType {
+  EMAIL
+  WAIT
+  WEBHOOK
+  CONDITION
+}
+
+model Audience {
+  id             String @id @default(uuid()) @db.Uuid
+  organizationId String @db.Uuid
+
+  name       String
+  definition Json
+  status     AudienceStatus @default(DRAFT)
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  campaigns    Campaign[]
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
+
+  @@index([organizationId, status])
+}
+
+model Campaign {
+  id                String  @id @default(uuid()) @db.Uuid
+  organizationId    String  @db.Uuid
+  audienceId        String? @db.Uuid
+  ownerMembershipId String? @db.Uuid
+
+  name        String
+  description String?
+  status      CampaignStatus @default(DRAFT)
+  scheduledAt DateTime?      @db.Timestamptz(6)
+  startedAt   DateTime?      @db.Timestamptz(6)
+  completedAt DateTime?      @db.Timestamptz(6)
+  version     Int            @default(1)
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  audience     Audience?    @relation(fields: [audienceId], references: [id], onDelete: SetNull)
+  owner        Membership?  @relation("CampaignOwner", fields: [ownerMembershipId], references: [id], onDelete: SetNull)
+
+  steps CampaignStep[]
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
+
+  @@index([organizationId, status])
+  @@index([organizationId, scheduledAt])
+}
+
+model CampaignStep {
+  id             String @id @default(uuid()) @db.Uuid
+  organizationId String @db.Uuid
+  campaignId     String @db.Uuid
+
+  position Int
+  type     CampaignStepType
+  config   Json
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  campaign     Campaign     @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
+
+  @@unique([campaignId, position])
+  @@index([organizationId, campaignId])
+}

@@ -1,0 +1,99 @@
+enum InvoiceStatus {
+  DRAFT
+  OPEN
+  PAID
+  VOID
+  OVERDUE
+}
+
+enum ExpenseStatus {
+  DRAFT
+  SUBMITTED
+  APPROVED
+  REJECTED
+  REIMBURSED
+}
+
+model Invoice {
+  id                     String  @id @default(uuid()) @db.Uuid
+  organizationId         String  @db.Uuid
+  createdByMembershipId  String? @db.Uuid
+  approvedByMembershipId String? @db.Uuid
+
+  number        Int
+  customerName  String
+  customerEmail String?
+  currency      String  @default("USD") @db.Char(3)
+
+  subtotal Decimal @default(0) @db.Decimal(19, 4)
+  taxTotal Decimal @default(0) @db.Decimal(19, 4)
+  total    Decimal @default(0) @db.Decimal(19, 4)
+
+  status     InvoiceStatus @default(DRAFT)
+  issuedAt   DateTime?     @db.Date
+  dueAt      DateTime?     @db.Date
+  paidAt     DateTime?     @db.Timestamptz(6)
+  approvedAt DateTime?     @db.Timestamptz(6)
+  version    Int           @default(1)
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  createdBy    Membership?  @relation("InvoiceCreator", fields: [createdByMembershipId], references: [id], onDelete: SetNull)
+  approvedBy   Membership?  @relation("InvoiceApprover", fields: [approvedByMembershipId], references: [id], onDelete: SetNull)
+
+  lines InvoiceLine[]
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
+
+  @@unique([organizationId, number])
+  @@index([organizationId, status])
+  @@index([organizationId, approvedAt])
+  @@index([organizationId, dueAt])
+}
+
+model InvoiceLine {
+  id             String @id @default(uuid()) @db.Uuid
+  organizationId String @db.Uuid
+  invoiceId      String @db.Uuid
+
+  position     Int
+  description  String
+  quantity     Decimal @default(1) @db.Decimal(12, 3)
+  unitPrice    Decimal @db.Decimal(19, 4)
+  taxRate      Decimal @default(0) @db.Decimal(7, 6)
+  lineSubtotal Decimal @db.Decimal(19, 4)
+  lineTax      Decimal @db.Decimal(19, 4)
+  lineTotal    Decimal @db.Decimal(19, 4)
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  invoice      Invoice      @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+
+  @@unique([invoiceId, position])
+  @@index([organizationId, invoiceId])
+}
+
+model Expense {
+  id                      String  @id @default(uuid()) @db.Uuid
+  organizationId          String  @db.Uuid
+  submittedByMembershipId String? @db.Uuid
+  receiptAssetId          String? @db.Uuid
+
+  vendor      String
+  description String?
+  amount      Decimal       @db.Decimal(19, 4)
+  currency    String        @default("USD") @db.Char(3)
+  incurredAt  DateTime      @db.Date
+  status      ExpenseStatus @default(DRAFT)
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  submittedBy  Membership?  @relation("ExpenseSubmitter", fields: [submittedByMembershipId], references: [id], onDelete: SetNull)
+  receipt      Asset?       @relation("ExpenseReceipt", fields: [receiptAssetId], references: [id], onDelete: SetNull) // @module uploads
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
+
+  @@index([organizationId, status])
+  @@index([organizationId, incurredAt])
+}

@@ -1,0 +1,24 @@
+model Asset {
+  id                    String  @id @default(uuid()) @db.Uuid
+  organizationId        String  @db.Uuid
+  createdByMembershipId String? @db.Uuid
+
+  storageProvider String
+  storageKey      String
+  filename        String
+  contentType     String
+  byteSize        BigInt
+  checksum        String?
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  createdBy    Membership?  @relation("AssetCreator", fields: [createdByMembershipId], references: [id], onDelete: SetNull)
+
+  expenseReceipts        Expense[]               @relation("ExpenseReceipt") // @module invoicing
+  socialPostMedia        SocialPostMedia[] // @module social
+  portalDocumentVersions PortalDocumentVersion[] // @module portal
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+
+  @@unique([organizationId, storageProvider, storageKey])
+  @@index([organizationId, createdAt])
+}

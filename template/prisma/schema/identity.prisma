@@ -1,0 +1,225 @@
+enum MembershipRole {
+  OWNER
+  ADMIN
+  MANAGER
+  MEMBER
+  BILLING
+  SUPPORT
+  CLIENT
+  VIEWER
+}
+
+enum MembershipStatus {
+  INVITED
+  ACTIVE
+  SUSPENDED
+  REVOKED
+}
+
+enum WebhookStatus {
+  RECEIVED
+  PROCESSING
+  PROCESSED
+  FAILED
+}
+
+enum IdempotencyState {
+  STARTED
+  COMPLETED
+  FAILED
+}
+
+model User {
+  id          String  @id @default(uuid()) @db.Uuid
+  clerkUserId String  @unique
+  email       String?
+  displayName String?
+  imageUrl    String?
+
+  memberships             Membership[]
+  supportTicketsRequested SupportTicket[] @relation("SupportRequester") // @module support
+  aiGenerations           AiGeneration[]  @relation("AiGenerationUser") // @module ai
+  aiUsage                 AiUsageLedger[] @relation("AiUsageUser") // @module ai
+  auditEvents             AuditEvent[]    @relation("AuditActor")
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
+
+  @@index([email])
+}
+
+model Organization {
+  id       String  @id @default(uuid()) @db.Uuid
+  slug     String  @unique
+  name     String
+  imageUrl String?
+
+  memberships  Membership[]
+  settings     OrganizationSettings?
+  subscription BillingSubscription? // @module billing
+
+  assets Asset[] // @module uploads
+
+  crmAccounts   CrmAccount[] // @module crm
+  crmContacts   CrmContact[] // @module crm
+  crmDeals      CrmDeal[] // @module crm
+  crmActivities CrmActivity[] // @module crm
+
+  projects         Project[] // @module projects
+  projectMembers   ProjectMember[] // @module projects
+  milestones       Milestone[] // @module projects
+  tasks            Task[] // @module projects
+  taskDependencies TaskDependency[] // @module projects
+
+  supportTickets    SupportTicket[] // @module support
+  supportMessages   SupportMessage[] // @module support
+  knowledgeArticles KnowledgeArticle[] // @module support
+
+  audiences     Audience[] // @module marketing
+  campaigns     Campaign[] // @module marketing
+  campaignSteps CampaignStep[] // @module marketing
+
+  invoices     Invoice[] // @module invoicing
+  invoiceLines InvoiceLine[] // @module invoicing
+  expenses     Expense[] // @module invoicing
+
+  socialAccounts  SocialAccount[] // @module social
+  socialPosts     SocialPost[] // @module social
+  socialVariants  SocialVariant[] // @module social
+  socialPostMedia SocialPostMedia[] // @module social
+
+  aiGenerations AiGeneration[] // @module ai
+  aiUsage       AiUsageLedger[] // @module ai
+
+  portalDocuments        PortalDocument[] // @module portal
+  portalDocumentVersions PortalDocumentVersion[] // @module portal
+  portalApprovals        PortalApproval[] // @module portal
+
+  auditEvents AuditEvent[]
+
+  webhookEvents      WebhookEvent[]
+  idempotencyRecords IdempotencyRecord[]
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
+}
+
+model Membership {
+  id             String           @id @default(uuid()) @db.Uuid
+  organizationId String           @db.Uuid
+  userId         String           @db.Uuid
+  role           MembershipRole   @default(MEMBER)
+  status         MembershipStatus @default(ACTIVE)
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  crmAccountsOwned CrmAccount[] @relation("CrmAccountOwner") // @module crm
+  crmContactsOwned CrmContact[] @relation("CrmContactOwner") // @module crm
+  crmDealsOwned    CrmDeal[]    @relation("CrmDealOwner") // @module crm
+
+  projectsOwned      Project[]       @relation("ProjectOwner") // @module projects
+  projectMemberships ProjectMember[] // @module projects
+  tasksAssigned      Task[]          @relation("TaskAssignee") // @module projects
+
+  supportTicketsAssigned    SupportTicket[]    @relation("SupportAssignee") // @module support
+  supportMessagesAuthored   SupportMessage[]   @relation("SupportMessageAuthor") // @module support
+  knowledgeArticlesAuthored KnowledgeArticle[] @relation("KnowledgeArticleAuthor") // @module support
+
+  campaignsOwned Campaign[] @relation("CampaignOwner") // @module marketing
+
+  invoicesCreated   Invoice[] @relation("InvoiceCreator") // @module invoicing
+  invoicesApproved  Invoice[] @relation("InvoiceApprover") // @module invoicing
+  expensesSubmitted Expense[] @relation("ExpenseSubmitter") // @module invoicing
+
+  assetsCreated         Asset[]       @relation("AssetCreator") // @module uploads
+  socialPostsCreated    SocialPost[]  @relation("SocialPostCreator") // @module social
+  socialPostsApproved   SocialPost[]  @relation("SocialPostApprover") // @module social
+  crmActivitiesAuthored CrmActivity[] @relation("CrmActivityAuthor") // @module crm
+
+  portalVersionsUploaded  PortalDocumentVersion[] @relation("PortalVersionUploader") // @module portal
+  portalApprovalsReviewed PortalApproval[]        @relation("PortalApprovalReviewer") // @module portal
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
+
+  @@unique([organizationId, userId])
+  @@index([organizationId, status])
+  @@index([userId])
+}
+
+model OrganizationSettings {
+  id             String @id @default(uuid()) @db.Uuid
+  organizationId String @unique @db.Uuid
+
+  timezone        String @default("UTC")
+  locale          String @default("en-US")
+  defaultCurrency String @default("USD") @db.Char(3)
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
+}
+
+model AuditEvent {
+  id             String  @id @default(uuid()) @db.Uuid
+  organizationId String  @db.Uuid
+  actorUserId    String? @db.Uuid
+
+  action       String
+  resourceType String
+  resourceId   String?
+  metadata     Json?
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  actor        User?        @relation("AuditActor", fields: [actorUserId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+
+  @@index([organizationId, createdAt])
+  @@index([organizationId, resourceType, resourceId])
+  @@index([organizationId, action])
+}
+
+model WebhookEvent {
+  id             String  @id @default(uuid()) @db.Uuid
+  organizationId String? @db.Uuid
+
+  provider String
+  eventId  String
+  type     String
+  status   WebhookStatus @default(RECEIVED)
+
+  payloadHash String?
+  errorCode   String?
+  receivedAt  DateTime  @default(now()) @db.Timestamptz(6)
+  processedAt DateTime? @db.Timestamptz(6)
+
+  organization Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+
+  @@unique([provider, eventId])
+  @@index([organizationId, receivedAt])
+  @@index([provider, status])
+}
+
+model IdempotencyRecord {
+  id             String  @id @default(uuid()) @db.Uuid
+  organizationId String? @db.Uuid
+
+  scope String
+  key   String
+  state IdempotencyState @default(STARTED)
+
+  result      Json?
+  errorCode   String?
+  completedAt DateTime? @db.Timestamptz(6)
+
+  organization Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
+
+  @@unique([scope, key])
+  @@index([organizationId, createdAt])
+}

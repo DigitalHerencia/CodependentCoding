@@ -1,0 +1,129 @@
+enum CrmAccountStatus {
+  PROSPECT
+  ACTIVE
+  INACTIVE
+  ARCHIVED
+}
+
+enum CrmContactStatus {
+  LEAD
+  ACTIVE
+  INACTIVE
+  ARCHIVED
+}
+
+enum CrmDealStage {
+  LEAD
+  QUALIFIED
+  PROPOSAL
+  NEGOTIATION
+  WON
+  LOST
+}
+
+model CrmAccount {
+  id                String  @id @default(uuid()) @db.Uuid
+  organizationId    String  @db.Uuid
+  ownerMembershipId String? @db.Uuid
+
+  name       String
+  website    String?
+  industry   String?
+  status     CrmAccountStatus @default(PROSPECT)
+  notes      String?
+  archivedAt DateTime?        @db.Timestamptz(6)
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  owner        Membership?  @relation("CrmAccountOwner", fields: [ownerMembershipId], references: [id], onDelete: SetNull)
+
+  contacts CrmContact[]
+  deals    CrmDeal[]
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
+
+  @@index([organizationId, status])
+  @@index([organizationId, ownerMembershipId])
+  @@index([organizationId, name])
+}
+
+model CrmContact {
+  id                String  @id @default(uuid()) @db.Uuid
+  organizationId    String  @db.Uuid
+  accountId         String? @db.Uuid
+  ownerMembershipId String? @db.Uuid
+
+  firstName  String
+  lastName   String
+  email      String?
+  phone      String?
+  title      String?
+  status     CrmContactStatus @default(LEAD)
+  archivedAt DateTime?        @db.Timestamptz(6)
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  account      CrmAccount?  @relation(fields: [accountId], references: [id], onDelete: SetNull)
+  owner        Membership?  @relation("CrmContactOwner", fields: [ownerMembershipId], references: [id], onDelete: SetNull)
+
+  primaryDeals CrmDeal[] @relation("CrmDealPrimaryContact")
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
+
+  @@index([organizationId, status])
+  @@index([organizationId, accountId])
+  @@index([organizationId, email])
+}
+
+model CrmDeal {
+  id                String  @id @default(uuid()) @db.Uuid
+  organizationId    String  @db.Uuid
+  accountId         String  @db.Uuid
+  primaryContactId  String? @db.Uuid
+  ownerMembershipId String? @db.Uuid
+
+  name              String
+  stage             CrmDealStage @default(LEAD)
+  value             Decimal      @default(0) @db.Decimal(19, 4)
+  currency          String       @default("USD") @db.Char(3)
+  probability       Int          @default(0)
+  expectedCloseDate DateTime?    @db.Date
+  closedAt          DateTime?    @db.Timestamptz(6)
+  archivedAt        DateTime?    @db.Timestamptz(6)
+  version           Int          @default(1)
+
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  account        CrmAccount   @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  primaryContact CrmContact?  @relation("CrmDealPrimaryContact", fields: [primaryContactId], references: [id], onDelete: SetNull)
+  owner          Membership?  @relation("CrmDealOwner", fields: [ownerMembershipId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
+
+  @@index([organizationId, stage])
+  @@index([organizationId, ownerMembershipId])
+  @@index([organizationId, accountId])
+  @@index([organizationId, expectedCloseDate])
+}
+
+model CrmActivity {
+  id                     String  @id @default(uuid()) @db.Uuid
+  organizationId         String  @db.Uuid
+  authoredByMembershipId String? @db.Uuid
+
+  recordType String
+  recordId   String   @db.Uuid
+  kind       String
+  subject    String
+  body       String?
+  occurredAt DateTime @db.Timestamptz(6)
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  authoredBy   Membership?  @relation("CrmActivityAuthor", fields: [authoredByMembershipId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
+
+  @@index([organizationId, recordType, recordId, occurredAt])
+  @@index([organizationId, authoredByMembershipId])
+}
