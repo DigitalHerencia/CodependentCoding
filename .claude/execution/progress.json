@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/progress/v1",
-  "updated": "2026-10-23T06:20:00Z",
+  "updated": "2026-10-23T06:30:00Z",
   "format": "Evidence states: EXECUTED | INSPECTED | NOT_RUN | BLOCKED. Never mark an issue done without EXECUTED evidence for its Validation commands.",
   "milestones": {
     "M0": {
@@ -18,7 +18,7 @@
       "note": "All M1 issues merged. Release profile on main 86477ca: root lint, typecheck, test and build pass; root validate fails only at format:check (CC-013). Template validate/lint/typecheck/build unchanged from M0 (CC-009..013). Compose NOT_RUN until M4."
     },
     "M2": {
-      "status": "in-progress",
+      "status": "done",
       "issues": [
         "CC-009",
         "CC-010",
@@ -29,7 +29,10 @@
         "CC-015",
         "CC-016",
         "CC-017"
-      ]
+      ],
+      "closed": "2026-10-23",
+      "prs": [220, 221, 222, 223, 224, 225, 226, 227, 228],
+      "note": "All M2 issues merged. Release profile on main bcdeba1: root validate + build pass; template validate, test (18 passed, 1 opt-in skipped), doctrine:test 44/44, build (/, /faq, /privacy, /terms static ISR 1d), test:e2e 2/2 and test:rls 10/10 (local Postgres 16) pass; CI rls job 10/10 on a Neon branch. Compose NOT_RUN until M4."
     },
     "M3": {
       "status": "todo",
@@ -1253,6 +1256,46 @@
       "env": "GitHub Actions run 39910146346, Neon branch ci/rls-<run_id> (deleted after)",
       "command": "pnpm test:rls connected as app_user (LOGIN NOBYPASSRLS)",
       "result": "10 passed in 51s; both isolation directions ~10.5s; connection strings masked in log"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "M2",
+      "env": "cloud container linux, main bcdeba1",
+      "command": "pnpm validate; pnpm build",
+      "result": "pass; pass"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "M2",
+      "env": "cloud container linux, main bcdeba1",
+      "command": "pnpm --dir template validate; test; doctrine:test",
+      "result": "pass; 18 passed 1 skipped; 44/44"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "M2",
+      "env": "cloud container linux, dummy env vars",
+      "command": "pnpm --dir template build; pnpm --dir template test:e2e",
+      "result": "exit 0, public routes static ISR 1d; 2 passed"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "M2",
+      "env": "cloud container, local Postgres 16",
+      "command": "pnpm --dir template test:rls",
+      "result": "10 passed"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "NOT_RUN",
+      "issue": "M2",
+      "env": "-",
+      "command": "compose for blank + every preset + --all",
+      "result": "CLI compose does not exist until M4 (CC-028..035)"
     }
   ],
   "known_findings": [
