@@ -1,8 +1,8 @@
-import type { AudienceDTO, CampaignDTO } from "../../../types/marketingTypes";
+import type { AudienceDTO, CampaignDTO } from "@/types/marketingTypes";
 import type {
   AudienceRecord,
   CampaignRecord,
-} from "../selects/marketing.selects";
+} from "@/lib/db/selects/marketing.selects";
 
 export function toAudienceDTO(record: AudienceRecord): AudienceDTO {
   return {

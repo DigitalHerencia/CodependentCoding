@@ -1,3 +1,5 @@
+import "server-only";
+
 import type {
   MembershipRole,
   MembershipStatus,
@@ -8,7 +10,7 @@ import type {
 import {
   adminMembershipSelect,
   adminProviderSubscriptionSelect,
-} from "../selects/admin.selects";
+} from "@/lib/db/selects/admin.selects";
 import { ResourceNotFoundError } from "./errors";
 
 export async function updateMembershipAdministrationTx(

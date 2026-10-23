@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/progress/v1",
-  "updated": "2026-10-23T01:45:00Z",
+  "updated": "2026-10-23T02:00:00Z",
   "format": "Evidence states: EXECUTED | INSPECTED | NOT_RUN | BLOCKED. Never mark an issue done without EXECUTED evidence for its Validation commands.",
   "milestones": {
     "M0": {
@@ -184,6 +184,30 @@
       "branch": "feature/168-landing-page-navigation",
       "decision": "DEC-023",
       "note": "Header: logo + GitHub link. CTAs: Read the doctrine (#doctrine) + GitHub. Four-component factory section. Footer TERMS/PRIVACY placeholders removed. Metadata description uses current vocabulary."
+    },
+    "CC-009": {
+      "status": "done",
+      "github": 169,
+      "branch": "feature/169-doctrine-lint-autofix",
+      "decision": "DEC-024",
+      "note": "eslint.config.mjs already loads doctrine; doctrine:test and lint:fix scripts already present. lint:fix 241 -> 73. Remaining findings by rule ID in remaining_findings.",
+      "remaining_findings": {
+        "@typescript-eslint/no-non-null-assertion": 13,
+        "CC-FEAT-002": 11,
+        "react-refresh/only-export-components": 10,
+        "@next/next/no-img-element": 10,
+        "CC-FEAT-001": 10,
+        "CC-INT-001": 6,
+        "CC-NAME-001": 3,
+        "CC-READ-001": 3,
+        "CC-CLIENT-001": 2,
+        "CC-ROUTE-001": 1,
+        "@typescript-eslint/no-unused-vars": 1,
+        "CC-FEAT-004": 1,
+        "CC-FLOW-001": 1,
+        "CC-SCHEMA-001": 1
+      },
+      "pr": 220
     }
   },
   "completed": [
@@ -195,7 +219,8 @@
     "CC-005",
     "CC-006",
     "CC-007",
-    "CC-008"
+    "CC-008",
+    "CC-009"
   ],
   "evidence": [
     {
@@ -793,6 +818,54 @@
       "env": "linux node 22.22.0, pnpm 12.3.4, main 86477ca",
       "command": "hipster-stack compose for blank + every preset + --all",
       "result": "packages/ is empty until CC-028; compose command arrives in M4"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-009",
+      "env": "linux node 22.22.0, pnpm 12.3.4",
+      "command": "pnpm --dir template lint (before lint:fix, main 4533746)",
+      "result": "exit 1: 241 problems; 126 no-parent-imports (CC-STYLE-002), 42 require-server-only (CC-SRV-001), 34 layer-boundaries, 13 no-non-null-assertion, 10 only-export-components, 10 no-img-element, 3 filename-convention, 2 use-client-placement, 1 no-unused-vars"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-009",
+      "env": "linux node 22.22.0, pnpm 12.3.4",
+      "command": "pnpm --dir template typecheck (before)",
+      "result": "exit 2: 13 TS errors"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-009",
+      "env": "linux node 22.22.0, pnpm 12.3.4",
+      "command": "pnpm --dir template lint:fix",
+      "result": "exit 1: 73 problems (63 errors, 10 warnings)"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-009",
+      "env": "linux node 22.22.0, pnpm 12.3.4",
+      "command": "pnpm --dir template lint (after)",
+      "result": "exit 1: 73 problems, 0 CC-SRV-001, 0 CC-STYLE-002"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-009",
+      "env": "linux node 22.22.0, pnpm 12.3.4",
+      "command": "pnpm --dir template typecheck (after)",
+      "result": "exit 2: 13 TS errors (no increase)"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-009",
+      "env": "linux node 22.22.0, pnpm 12.3.4",
+      "command": "pnpm --dir template doctrine:test",
+      "result": "exit 0: tests 44, pass 44, fail 0"
     }
   ],
   "known_findings": [

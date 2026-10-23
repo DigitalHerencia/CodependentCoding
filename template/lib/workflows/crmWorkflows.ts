@@ -1,3 +1,5 @@
+import "server-only";
+
 import { updateContact, updateCrmDealStage } from "@/lib/actions/crmActions";
 import {
   getClosedWonCrmValue,

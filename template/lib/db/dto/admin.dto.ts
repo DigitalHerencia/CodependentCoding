@@ -2,12 +2,12 @@ import type {
   AdminMembershipDTO,
   AdminProviderStateDTO,
   AuditEventDTO,
-} from "../../../types/adminTypes";
+} from "@/types/adminTypes";
 import type {
   AdminMembershipRecord,
   AdminProviderSubscriptionRecord,
   AuditEventRecord,
-} from "../selects/admin.selects";
+} from "@/lib/db/selects/admin.selects";
 
 export function toAuditEventDTO(record: AuditEventRecord): AuditEventDTO {
   return {

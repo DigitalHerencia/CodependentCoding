@@ -1,5 +1,7 @@
+import "server-only";
+
 import type { MembershipRole } from "@/generated/prisma/enums";
-import type { AppRole } from "../../types/access";
+import type { AppRole } from "@/types/access";
 
 /** Canonical application role vocabulary. Runtime schemas and type aliases derive from this list. */
 export const appRoles = [

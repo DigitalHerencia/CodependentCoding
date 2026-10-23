@@ -3,21 +3,21 @@ import "server-only";
 import {
   contactIdSchema,
   contactListCriteriaSchema,
-} from "../../schemas/crmSchemas";
-import { assertPermission } from "../authz/permissions";
+} from "@/schemas/crmSchemas";
+import { assertPermission } from "@/lib/authz/permissions";
 import {
   toCrmAccountDTO,
   toCrmContactDTO,
   toCrmDealDTO,
   toCrmDealSummaryDTO,
-} from "../db/dto/crm.dto";
+} from "@/lib/db/dto/crm.dto";
 import {
   crmAccountSelect,
   crmContactSelect,
   crmDealDetailSelect,
   crmDealSummarySelect,
-} from "../db/selects/crm.selects";
-import { withAuthenticatedRead } from "../db/tenant";
+} from "@/lib/db/selects/crm.selects";
+import { withAuthenticatedRead } from "@/lib/db/tenant";
 
 export async function getCrmDeals(limit = 50) {
   return withAuthenticatedRead(async (tx, access) => {

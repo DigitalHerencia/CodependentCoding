@@ -1,8 +1,8 @@
-import type { ProjectSummaryDTO, TaskDTO } from "../../../types/projectsTypes";
+import type { ProjectSummaryDTO, TaskDTO } from "@/types/projectsTypes";
 import type {
   ProjectSummaryRecord,
   TaskRecord,
-} from "../selects/projects.selects";
+} from "@/lib/db/selects/projects.selects";
 
 export function toProjectSummaryDTO(
   record: ProjectSummaryRecord,

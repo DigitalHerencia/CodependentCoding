@@ -1,3 +1,5 @@
+import "server-only";
+
 import { revalidatePath, revalidateTag } from "next/cache";
 
 export function invalidateTags(tags: readonly string[]) {

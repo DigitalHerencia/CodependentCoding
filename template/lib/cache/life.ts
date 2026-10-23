@@ -1,3 +1,5 @@
+import "server-only";
+
 export const cacheLife = {
   realtime: 0,
   short: 30,

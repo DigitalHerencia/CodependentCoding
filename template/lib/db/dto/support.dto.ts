@@ -1,11 +1,11 @@
 import type {
   KnowledgeArticleDTO,
   SupportTicketDTO,
-} from "../../../types/supportTypes";
+} from "@/types/supportTypes";
 import type {
   KnowledgeArticleRecord,
   SupportTicketRecord,
-} from "../selects/support.selects";
+} from "@/lib/db/selects/support.selects";
 
 export function toKnowledgeArticleDTO(
   record: KnowledgeArticleRecord,

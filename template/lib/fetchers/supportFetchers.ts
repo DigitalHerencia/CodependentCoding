@@ -1,15 +1,15 @@
 import "server-only";
 
-import { assertPermission } from "../authz/permissions";
+import { assertPermission } from "@/lib/authz/permissions";
 import {
   toKnowledgeArticleDTO,
   toSupportTicketDTO,
-} from "../db/dto/support.dto";
+} from "@/lib/db/dto/support.dto";
 import {
   knowledgeArticleSelect,
   supportTicketSelect,
-} from "../db/selects/support.selects";
-import { withAuthenticatedRead } from "../db/tenant";
+} from "@/lib/db/selects/support.selects";
+import { withAuthenticatedRead } from "@/lib/db/tenant";
 
 export async function getSupportInbox(limit = 100) {
   return withAuthenticatedRead(async (tx, access) => {

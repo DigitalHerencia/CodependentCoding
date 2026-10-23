@@ -1,7 +1,9 @@
+import "server-only";
+
 import { Prisma } from "@/generated/prisma/client";
 import type { Prisma as PrismaTypes } from "@/generated/prisma/client";
 
-import { expenseSelect, invoiceSelect } from "../selects/invoicing.selects";
+import { expenseSelect, invoiceSelect } from "@/lib/db/selects/invoicing.selects";
 import { InvariantViolationError, ResourceNotFoundError } from "./errors";
 
 export async function submitExpenseTx(

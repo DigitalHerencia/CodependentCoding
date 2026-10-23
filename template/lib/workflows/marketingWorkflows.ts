@@ -1,3 +1,5 @@
+import "server-only";
+
 import { getAudiences, getCampaigns } from "@/lib/fetchers/marketingFetchers";
 
 export async function getMarketingWorkspaceWorkflow(limit = 50) {

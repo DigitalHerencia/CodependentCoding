@@ -8,7 +8,7 @@ priority: p0
 size: s
 labels: [type:refactor, area:template, priority:p0, size:s]
 depends_on: [CC-001]
-status: todo
+status: done
 ---
 
 # CC-009 · Adopt doctrine lint in the template and apply auto-fixes

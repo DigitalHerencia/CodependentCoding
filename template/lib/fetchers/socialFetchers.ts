@@ -1,17 +1,17 @@
 import "server-only";
 
-import { assertPermission } from "../authz/permissions";
+import { assertPermission } from "@/lib/authz/permissions";
 import {
   toMediaAssetDTO,
   toSocialAccountDTO,
   toSocialPostDTO,
-} from "../db/dto/social.dto";
+} from "@/lib/db/dto/social.dto";
 import {
   mediaAssetSelect,
   socialAccountSelect,
   socialPostSelect,
-} from "../db/selects/social.selects";
-import { withAuthenticatedRead } from "../db/tenant";
+} from "@/lib/db/selects/social.selects";
+import { withAuthenticatedRead } from "@/lib/db/tenant";
 
 export async function getScheduledSocialPosts(limit = 100) {
   return withAuthenticatedRead(async (tx, access) => {

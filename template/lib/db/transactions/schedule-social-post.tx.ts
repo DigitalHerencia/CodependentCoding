@@ -1,6 +1,8 @@
-import type { Prisma } from "../../../generated/prisma/client";
+import "server-only";
 
-import { socialPostSelect } from "../selects/social.selects";
+import type { Prisma } from "@/generated/prisma/client";
+
+import { socialPostSelect } from "@/lib/db/selects/social.selects";
 import { ConcurrencyConflictError, InvariantViolationError } from "./errors";
 
 export async function scheduleSocialPostTx(

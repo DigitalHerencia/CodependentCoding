@@ -1,6 +1,8 @@
-import { Prisma } from "../../../generated/prisma/client";
+import "server-only";
 
-import { invoiceSelect } from "../selects/invoicing.selects";
+import { Prisma } from "@/generated/prisma/client";
+
+import { invoiceSelect } from "@/lib/db/selects/invoicing.selects";
 import { InvariantViolationError } from "./errors";
 
 function calculateTaxes(

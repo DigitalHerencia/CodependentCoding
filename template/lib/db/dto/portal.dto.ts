@@ -1,12 +1,12 @@
 import type {
   PortalBillingDTO,
   PortalDocumentDTO,
-} from "../../../types/portalTypes";
+} from "@/types/portalTypes";
 import type {
   PortalBillingSubscriptionRecord,
   PortalDocumentRecord,
   PortalInvoiceRecord,
-} from "../selects/portal.selects";
+} from "@/lib/db/selects/portal.selects";
 
 export function toPortalDocumentDTO(
   record: PortalDocumentRecord,

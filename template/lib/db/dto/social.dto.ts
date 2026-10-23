@@ -2,12 +2,12 @@ import type {
   MediaAssetDTO,
   SocialAccountDTO,
   SocialPostDTO,
-} from "../../../types/socialTypes";
+} from "@/types/socialTypes";
 import type {
   MediaAssetRecord,
   SocialAccountRecord,
   SocialPostRecord,
-} from "../selects/social.selects";
+} from "@/lib/db/selects/social.selects";
 
 export function toSocialAccountDTO(
   record: SocialAccountRecord,

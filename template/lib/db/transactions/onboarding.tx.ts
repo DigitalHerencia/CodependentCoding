@@ -1,3 +1,5 @@
+import "server-only";
+
 import type { Prisma } from "@/generated/prisma/client";
 import type { AccessContext } from "@/types/access";
 import { assertPermission } from "@/lib/authz/permissions";

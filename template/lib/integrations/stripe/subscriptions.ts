@@ -1,3 +1,5 @@
+import "server-only";
+
 import type Stripe from "stripe";
 
 function mapStatus(status: Stripe.Subscription.Status) {

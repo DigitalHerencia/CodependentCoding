@@ -1,6 +1,8 @@
-import type { Prisma, TicketStatus } from "../../../generated/prisma/client";
+import "server-only";
 
-import { supportTicketSelect } from "../selects/support.selects";
+import type { Prisma, TicketStatus } from "@/generated/prisma/client";
+
+import { supportTicketSelect } from "@/lib/db/selects/support.selects";
 import { ConcurrencyConflictError } from "./errors";
 
 export async function updateTicketStatusTx(

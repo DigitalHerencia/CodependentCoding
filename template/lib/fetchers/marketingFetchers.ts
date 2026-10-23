@@ -1,12 +1,12 @@
 import "server-only";
 
-import { assertPermission } from "../authz/permissions";
-import { toAudienceDTO, toCampaignDTO } from "../db/dto/marketing.dto";
+import { assertPermission } from "@/lib/authz/permissions";
+import { toAudienceDTO, toCampaignDTO } from "@/lib/db/dto/marketing.dto";
 import {
   audienceSelect,
   campaignSelect,
-} from "../db/selects/marketing.selects";
-import { withAuthenticatedRead } from "../db/tenant";
+} from "@/lib/db/selects/marketing.selects";
+import { withAuthenticatedRead } from "@/lib/db/tenant";
 
 export async function getCampaigns(limit = 50) {
   return withAuthenticatedRead(async (tx, access) => {

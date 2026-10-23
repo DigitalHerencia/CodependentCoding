@@ -1,3 +1,5 @@
+import "server-only";
+
 const separator = ":";
 
 function joinTag(...parts: Array<string | number>) {

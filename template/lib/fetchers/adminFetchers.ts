@@ -1,12 +1,12 @@
 import "server-only";
 
-import { assertPermission } from "../authz/permissions";
-import { toAdminMembershipDTO, toAuditEventDTO } from "../db/dto/admin.dto";
+import { assertPermission } from "@/lib/authz/permissions";
+import { toAdminMembershipDTO, toAuditEventDTO } from "@/lib/db/dto/admin.dto";
 import {
   adminMembershipSelect,
   auditEventSelect,
-} from "../db/selects/admin.selects";
-import { withAuthenticatedRead } from "../db/tenant";
+} from "@/lib/db/selects/admin.selects";
+import { withAuthenticatedRead } from "@/lib/db/tenant";
 
 export async function getAuditEvents(limit = 100) {
   return withAuthenticatedRead(async (tx, access) => {

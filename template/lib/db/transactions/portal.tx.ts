@@ -1,6 +1,8 @@
+import "server-only";
+
 import type { ApprovalStatus, Prisma } from "@/generated/prisma/client";
 
-import { portalDocumentSelect } from "../selects/portal.selects";
+import { portalDocumentSelect } from "@/lib/db/selects/portal.selects";
 import {
   ConcurrencyConflictError,
   InvariantViolationError,

@@ -1,8 +1,10 @@
+import "server-only";
+
 import type {
   AccessContext,
   Permission,
   ResourceAccessDescriptor,
-} from "../../types/access";
+} from "@/types/access";
 
 import { isPrivilegedRole } from "./roles";
 import { assertPermission } from "./permissions";

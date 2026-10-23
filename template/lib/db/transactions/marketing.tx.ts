@@ -1,3 +1,5 @@
+import "server-only";
+
 import type { Prisma } from "@/generated/prisma/client";
 import { claimIdempotencyTx, completeIdempotencyTx } from "./idempotency.tx";
 import { InvariantViolationError, ResourceNotFoundError } from "./errors";
