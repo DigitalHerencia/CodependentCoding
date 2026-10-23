@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/progress/v1",
-  "updated": "2026-10-22T23:55:00Z",
+  "updated": "2026-10-23T00:15:00Z",
   "format": "Evidence states: EXECUTED | INSPECTED | NOT_RUN | BLOCKED. Never mark an issue done without EXECUTED evidence for its Validation commands.",
   "milestones": {
     "M0": {
@@ -88,6 +88,75 @@
       "github": 164,
       "pr": 212,
       "note": "Squash-merged on owner's go-ahead ('just merge') with root job red on pre-existing format/lint/typecheck findings"
+    },
+    "CC-005": {
+      "status": "done",
+      "github": 165,
+      "pr": 213,
+      "note": "Verified on Windows (pwsh 7.6.8, node 24.14.0). CLAUDE.md loads in the VS Code extension. The Stop hook blocks once and does not loop. The lint hook reports ESLint findings with exit 2 once deps are installed. The earlier silent lint hook was a failed pnpm install (Access is denied while VS Code held node_modules), not a hook bug. No settings.json change needed.",
+      "evidence": [
+        {
+          "state": "EXECUTED",
+          "env": "linux node 22.22.0",
+          "command": "node .claude/hooks/lint-edited-file.mjs < sample-post.json (Write of lib/__hook-probe.ts with `any`)",
+          "result": "exit 2; stderr 'ESLint findings in lib/__hook-probe.ts ... 1:21 error Unexpected any @typescript-eslint/no-explicit-any'"
+        },
+        {
+          "state": "EXECUTED",
+          "env": "linux node 22.22.0",
+          "command": "node .claude/hooks/lint-edited-file.mjs < sample-clean.json (clean .mjs)",
+          "result": "exit 0"
+        },
+        {
+          "state": "EXECUTED",
+          "env": "linux node 22.22.0",
+          "command": "node .claude/hooks/execution-state-guard.mjs < sample-stop.json (dirty tree, stop_hook_active=false)",
+          "result": "exit 2; lists lib/__hook-probe.ts + reminder"
+        },
+        {
+          "state": "EXECUTED",
+          "env": "linux node 22.22.0",
+          "command": "node .claude/hooks/execution-state-guard.mjs < sample-stop-active.json (stop_hook_active=true)",
+          "result": "exit 0 (does not loop)"
+        },
+        {
+          "state": "EXECUTED",
+          "env": "linux node 22.22.0",
+          "command": "node .claude/hooks/execution-state-guard.mjs < sample-stop.json (clean tree)",
+          "result": "exit 0"
+        },
+        {
+          "state": "EXECUTED",
+          "env": "windows pwsh 7, node 24.14.0 (owner)",
+          "command": "Get-Content sample-stop.json | node .claude/hooks/execution-state-guard.mjs",
+          "result": "exit 2; lists lib/__hook-probe.ts, sample-post.json, sample-stop.json + reminder"
+        },
+        {
+          "state": "EXECUTED",
+          "env": "windows VS Code extension (owner)",
+          "command": "Ask 'What does CLAUDE.md say to read first?'",
+          "result": "answered .claude/execution/handoff.json first: CLAUDE.md loaded"
+        },
+        {
+          "state": "EXECUTED",
+          "env": "windows VS Code extension (owner)",
+          "command": "Write lib/__hook-probe.ts with `any`, end turn",
+          "result": "Stop hook blocked once with the reminder; no loop"
+        },
+        {
+          "state": "EXECUTED",
+          "env": "windows pwsh 7 + VS Code (owner)",
+          "command": "Get-Content sample-post.json | node .claude/hooks/lint-edited-file.mjs; and Write in VS Code",
+          "result": "exit 0, no output, because the preceding `pnpm install` failed (Access is denied) and eslint was missing"
+        },
+        {
+          "state": "EXECUTED",
+          "env": "windows pwsh 7.6.8, node 24.14.0 (owner), VS Code closed",
+          "command": "pnpm install; Test-Path node_modules\\eslint\\bin\\eslint.js; Get-Content sample-post.json | node .claude/hooks/lint-edited-file.mjs",
+          "result": "install done (567 pkgs); True; 'ESLint findings in lib/__hook-probe.ts ... 1:21 error Unexpected any @typescript-eslint/no-explicit-any'; exit=2"
+        }
+      ],
+      "decision": "DEC-019"
     }
   },
   "completed": [
@@ -95,7 +164,8 @@
       "what": "Governance package authored: 5 intent docs, 3 YAML contracts, 3 execution files, 44 issues, GitHub templates, labels, CI, issue sync script, CLAUDE.md, hooks, doctrine ESLint plugin",
       "date": "2026-10-22",
       "by": "Claude (claude.ai session)"
-    }
+    },
+    "CC-005"
   ],
   "evidence": [
     {

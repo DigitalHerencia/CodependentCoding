@@ -173,6 +173,15 @@
       "context": "CC-004 allows continue-on-error only on template format/lint/typecheck, but the template has no test script until CC-017 and the root job stopped at its first failing step.",
       "decision": "Template test step is `pnpm run --if-present test` (skipped until CC-017, never masked). Root lint/typecheck/test use `if: !cancelled()` so every root check reports even after format:check fails. pnpm comes from pnpm/action-setup@v4 reading packageManager; setup-node caches by each lockfile.",
       "refs": ["CC-004", "PR #212"]
+    },
+    {
+      "id": "DEC-019",
+      "date": "2026-10-23",
+      "status": "accepted",
+      "title": "CC-005 Windows lint-hook evidence and hook settings unchanged",
+      "context": "In the VS Code extension on Windows, the lint hook gave no feedback after a write. The same run had a failed `pnpm install` (ERR_PNPM_PACKAGE_MANAGER_REMOVE_MODULES_DIR, Access is denied), so eslint was missing and the hook took its deliberate 'deps not installed' exit 0.",
+      "decision": "Accept the owner's Windows run of the hook after a clean install (exit 2 with the ESLint finding) as the lint-feedback evidence. Keep .claude/settings.json unchanged, because the Node path and quoting work on Windows. Install with VS Code closed so node_modules is not locked.",
+      "refs": ["CC-005", "PR #213"]
     }
   ]
 }

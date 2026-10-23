@@ -8,7 +8,7 @@ priority: p0
 size: xs
 labels: [type:chore, area:governance, priority:p0, size:xs]
 depends_on: [CC-001]
-status: todo
+status: done
 ---
 
 # CC-005 · Verify the Claude Code harness on Windows
@@ -19,16 +19,16 @@ Hooks are the enforcement point for agents; prove they fire in the VS Code exten
 
 ## Scope
 
-- [ ] Open the repo in Claude Code; confirm CLAUDE.md loads
-- [ ] Edit a `.ts` file with a deliberate violation; confirm the PostToolUse hook feeds the ESLint error back
-- [ ] End a session after a code edit without touching `.claude/execution/`; confirm the Stop hook blocks once with the reminder
-- [ ] If hooks fail on Windows, adjust `.claude/settings.json` commands (Node path, quoting) and record the fix in decisions.json
+- [x] Open the repo in Claude Code; confirm CLAUDE.md loads
+- [x] Edit a `.ts` file with a deliberate violation; confirm the PostToolUse hook feeds the ESLint error back
+- [x] End a session after a code edit without touching `.claude/execution/`; confirm the Stop hook blocks once with the reminder
+- [x] If hooks fail on Windows, adjust `.claude/settings.json` commands (Node path, quoting) and record the fix in decisions.json
 
 ## Acceptance criteria
 
-- [ ] Lint feedback appears after an edit
-- [ ] Stop guard fires once and does not loop
-- [ ] Result recorded in progress.json
+- [x] Lint feedback appears after an edit
+- [x] Stop guard fires once and does not loop
+- [x] Result recorded in progress.json
 
 ## Validation
 
