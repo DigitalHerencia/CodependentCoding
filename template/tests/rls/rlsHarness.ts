@@ -1,10 +1,10 @@
 import { execFileSync } from "node:child_process";
 import { randomUUID } from "node:crypto";
-import { existsSync, readdirSync, readFileSync } from "node:fs";
-import path from "node:path";
 
 import { config } from "dotenv";
 import pg from "pg";
+
+import { rlsSql } from "@/scripts/rls-sql.mjs";
 
 config({ path: ".env.local", quiet: true });
 
@@ -73,7 +73,7 @@ export async function connect(url: string): Promise<pg.Client> {
   return client;
 }
 
-/** Migrate as the owner, then apply prisma/rls/*.sql when present. */
+/** Migrate as the owner, then apply prisma/rls/*.sql (identity, then modules). */
 export async function migrate(owner: pg.Client): Promise<void> {
   try {
     execFileSync("pnpm", ["exec", "prisma", "migrate", "deploy"], {
@@ -91,11 +91,8 @@ export async function migrate(owner: pg.Client): Promise<void> {
       `prisma migrate deploy failed:\n${output.replaceAll(ownerUrl, "<DATABASE_URL_TEST>")}`,
     );
   }
-  const rlsDir = path.join(process.cwd(), "prisma", "rls");
-  if (!existsSync(rlsDir)) return;
-  for (const file of readdirSync(rlsDir).filter((f) => f.endsWith(".sql"))) {
-    await owner.query(readFileSync(path.join(rlsDir, file), "utf8"));
-  }
+  // The same SQL db:init applies: identity first, then modules in manifest order.
+  await owner.query(rlsSql(process.cwd()));
 }
 
 /** Ensure the runtime role exists without BYPASSRLS and can use every table. */

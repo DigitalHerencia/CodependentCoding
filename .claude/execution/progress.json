@@ -338,7 +338,15 @@
       "github": 182,
       "branch": "refactor/182-prisma-multi-file",
       "decision": "DEC-037",
-      "note": "prisma/schema/{base,identity,<module>}.prisma, 57 // @module tags, prisma.config.ts schema: prisma/schema. pnpm check:schema-modules in CI."
+      "note": "prisma/schema/{base,identity,<module>}.prisma, 57 // @module tags, prisma.config.ts schema: prisma/schema. pnpm check:schema-modules in CI.",
+      "pr": 235
+    },
+    "CC-023": {
+      "status": "done",
+      "github": 183,
+      "branch": "feat/183-rls-per-owner",
+      "decision": "DEC-038",
+      "note": "prisma/rls/{identity,<module>}.sql (34 forced tables, 34 policies), scripts/rls-sql.mjs, scripts/db-init.mjs, pnpm db:init; harness applies the same SQL."
     }
   },
   "completed": [
@@ -364,7 +372,8 @@
     "CC-019",
     "CC-020",
     "CC-021",
-    "CC-022"
+    "CC-022",
+    "CC-023"
   ],
   "evidence": [
     {
@@ -1586,6 +1595,70 @@
       "env": "cloud container",
       "command": "pnpm --dir template test:rls (local Postgres 16)",
       "result": "10 passed"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-023",
+      "env": "cloud container, local Postgres 16",
+      "command": "fresh local PG 16 database + pnpm --dir template db:init (template migrations path)",
+      "result": "migrate deploy + db execute; 34/34 non-system tables RLS enabled+forced, 34 policies"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-023",
+      "env": "cloud container, local Postgres 16",
+      "command": "pnpm --dir template db:init run a second time on the same database",
+      "result": "exit 0 (idempotent)"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-023",
+      "env": "cloud container, local Postgres 16",
+      "command": "pnpm --dir template test:rls against the db:init database",
+      "result": "10 passed"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-023",
+      "env": "cloud container, local Postgres 16",
+      "command": "fresh database + db:init with prisma/migrations moved aside (generated-app path)",
+      "result": "created *_init and *_rls migrations; 34/34 tables forced, 34 policies; migrations restored afterwards"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-023",
+      "env": "cloud container, local Postgres 16",
+      "command": "pnpm --dir template exec vitest run tests/rlsFiles.test.ts",
+      "result": "2 passed; with CrmDeal FORCE line removed -> fails naming CrmDeal (negative check)"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-023",
+      "env": "cloud container, local Postgres 16",
+      "command": "pnpm --dir template validate",
+      "result": "pass"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-023",
+      "env": "cloud container, local Postgres 16",
+      "command": "pnpm --dir template test",
+      "result": "53 passed, 1 skipped"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-023",
+      "env": "cloud container, local Postgres 16",
+      "command": "pnpm --dir template doctrine:test",
+      "result": "44 pass, 0 fail"
     }
   ],
   "known_findings": [

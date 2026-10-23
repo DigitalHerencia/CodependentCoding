@@ -8,7 +8,7 @@ priority: p0
 size: m
 labels: [type:feature, area:modules, priority:p0, size:m]
 depends_on: [CC-022, CC-016]
-status: todo
+status: done
 ---
 
 # CC-023 · RLS SQL per owner and db:init
