@@ -165,7 +165,7 @@ Review-only rules (not mechanizable, checked by the `reviewer` agent): actions v
 ```jsonc
 {
   "$schema": "./hipster.modules.schema.json",
-  "base": { "owns": ["**"] }, // fallback owner
+  "base": { "owns": ["**"], "env": [] }, // fallback owner; env as below (DATABASE_URL, Clerk)
   "modules": [
     {
       "id": "crm",

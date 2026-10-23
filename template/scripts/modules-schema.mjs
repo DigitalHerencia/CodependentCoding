@@ -45,7 +45,10 @@ const moduleEntry = z.strictObject({
 
 export const manifestSchema = z.strictObject({
   $schema: z.string().optional(),
-  base: z.strictObject({ owns: z.array(z.string().min(1)) }),
+  base: z.strictObject({
+    owns: z.array(z.string().min(1)),
+    env: z.array(envVar).default([]),
+  }),
   modules: z.array(moduleEntry),
   presets: z.record(z.string().regex(/^[a-z][a-z0-9-]*$/), z.array(moduleId)),
 });
@@ -95,6 +98,26 @@ export function validateManifest(input) {
 
   for (const cycle of findCycles(manifest.modules)) {
     errors.push(`dependency cycle: ${cycle.join(" -> ")}`);
+  }
+
+  const envOwners = new Map();
+  for (const [owner, env] of [
+    ["base", manifest.base.env],
+    ...manifest.modules.map((entry) => [entry.id, entry.env]),
+  ]) {
+    for (const { name, scope } of env) {
+      if (envOwners.has(name)) {
+        errors.push(
+          `env "${name}" declared by both ${envOwners.get(name)} and ${owner}`,
+        );
+      }
+      envOwners.set(name, owner);
+      if ((scope === "public") !== name.startsWith("NEXT_PUBLIC_")) {
+        errors.push(
+          `env "${name}": scope public iff the name starts with NEXT_PUBLIC_`,
+        );
+      }
+    }
   }
 
   for (const [name, members] of Object.entries(manifest.presets)) {

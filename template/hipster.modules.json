@@ -1,6 +1,58 @@
 {
   "$schema": "./hipster.modules.schema.json",
-  "base": { "owns": ["**"] },
+  "base": {
+    "owns": ["**"],
+    "env": [
+      {
+        "name": "DATABASE_URL",
+        "required": true,
+        "scope": "server",
+        "description": "Neon pooled connection string (runtime)"
+      },
+      {
+        "name": "DIRECT_DATABASE_URL",
+        "required": false,
+        "scope": "server",
+        "description": "Neon direct connection string (migrations, seed); falls back to DATABASE_URL"
+      },
+      {
+        "name": "NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY",
+        "required": false,
+        "scope": "public",
+        "description": "Clerk publishable key; unset in development runs Clerk keyless"
+      },
+      {
+        "name": "CLERK_SECRET_KEY",
+        "required": false,
+        "scope": "server",
+        "description": "Clerk secret key; unset in development runs Clerk keyless"
+      },
+      {
+        "name": "CLERK_WEBHOOK_SIGNING_SECRET",
+        "required": false,
+        "scope": "server",
+        "description": "Verifies Clerk webhooks"
+      },
+      {
+        "name": "DATABASE_URL_TEST",
+        "required": false,
+        "scope": "server",
+        "description": "pnpm test:rls: owner connection to a disposable test database (Neon test branch)"
+      },
+      {
+        "name": "DATABASE_URL_TEST_APP",
+        "required": false,
+        "scope": "server",
+        "description": "pnpm test:rls: login role without BYPASSRLS; unset, the suite uses SET ROLE app_user"
+      },
+      {
+        "name": "AUTH_WEBHOOK_DB_TEST",
+        "required": false,
+        "scope": "server",
+        "description": "Set to 1 to run the opt-in auth webhook database test against DATABASE_URL"
+      }
+    ]
+  },
   "modules": [
     {
       "id": "crm",

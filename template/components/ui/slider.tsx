@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { isDevelopment } from "@/lib/env/mode";
 import { cn } from "@/lib/utils/cn";
 
 export interface SliderProps extends Omit<
@@ -68,7 +69,7 @@ const Slider = React.forwardRef<HTMLDivElement, SliderProps>(
     const wasControlled = React.useRef(isControlled);
     React.useEffect(() => {
       if (wasControlled.current !== isControlled) {
-        if (process.env.NODE_ENV === "development") {
+        if (isDevelopment) {
           console.warn(
             "[Slider] Component is changing from " +
               (wasControlled.current ? "controlled" : "uncontrolled") +

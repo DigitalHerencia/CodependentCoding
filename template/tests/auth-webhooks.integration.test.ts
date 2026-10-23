@@ -6,6 +6,7 @@ import { NextRequest } from "next/server";
 import { PrismaNeon } from "@prisma/adapter-neon";
 import { config } from "dotenv";
 import { PrismaClient } from "@/generated/prisma/client";
+import { baseEnv } from "@/lib/env/base";
 import {
   syncClerkUserTx,
   anonymizeClerkUserTx,
@@ -51,15 +52,13 @@ test("Clerk verifies signed payloads and rejects tampered deliveries", async () 
   );
 });
 
-test.skipIf(process.env.AUTH_WEBHOOK_DB_TEST !== "1")(
+test.skipIf(baseEnv.value("AUTH_WEBHOOK_DB_TEST") !== "1")(
   "Neon user synchronization and webhook deduplication are transactional",
   async () => {
-    assert.ok(
-      process.env.DATABASE_URL,
-      "DATABASE_URL is required for the opt-in database test",
-    );
     const prisma = new PrismaClient({
-      adapter: new PrismaNeon({ connectionString: process.env.DATABASE_URL }),
+      adapter: new PrismaNeon({
+        connectionString: baseEnv.read().DATABASE_URL,
+      }),
     });
     const rollback = new Error("intentional test rollback");
     try {

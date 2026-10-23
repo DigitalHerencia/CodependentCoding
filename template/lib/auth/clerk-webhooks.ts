@@ -6,6 +6,7 @@ import { config } from "dotenv";
 
 import type { ClerkUserProjection } from "@/types/integrationTypes";
 import { withProviderTransaction } from "@/lib/db/provider";
+import { baseEnv } from "@/lib/env/base";
 import {
   anonymizeClerkUserTx,
   syncClerkUserTx,
@@ -22,7 +23,7 @@ config({ path: ".env.local", quiet: true });
 config({ quiet: true });
 
 export async function verifyClerkWebhook(request: NextRequest) {
-  const signingSecret = process.env.CLERK_WEBHOOK_SIGNING_SECRET;
+  const signingSecret = baseEnv.read().CLERK_WEBHOOK_SIGNING_SECRET;
   if (!signingSecret) {
     throw new Error("CLERK_WEBHOOK_SIGNING_SECRET is required.");
   }

@@ -10,6 +10,7 @@
     "dev": "next dev",
     "build": "next build --turbopack",
     "check:modules": "node scripts/check-modules.mjs",
+    "check:env": "tsx --conditions=react-server scripts/check-env.mjs",
     "check:ownership": "node scripts/check-ownership.mjs",
     "check:schema-modules": "node scripts/check-schema-modules.mjs",
     "db:init": "node scripts/db-init.mjs",
@@ -25,7 +26,7 @@
     "test:rls": "vitest run --project rls",
     "test:e2e": "playwright test",
     "typecheck": "next typegen && tsc --noEmit",
-    "validate": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm check:modules && pnpm check:ownership",
+    "validate": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm check:modules && pnpm check:ownership && pnpm check:env",
     "postinstall": "prisma generate"
   },
   "packageManager": "pnpm@12.3.4",

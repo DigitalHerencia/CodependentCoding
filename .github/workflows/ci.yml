@@ -62,6 +62,7 @@ jobs:
       - run: pnpm doctrine:test
       - run: pnpm check:modules
       - run: pnpm check:ownership
+      - run: pnpm check:env
       - run: pnpm prisma:generate
       - run: pnpm check:schema-modules
       - run: pnpm lint

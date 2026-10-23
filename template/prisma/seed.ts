@@ -3,16 +3,13 @@ import { config } from "dotenv";
 import { PrismaNeon } from "@prisma/adapter-neon";
 
 import { Prisma, PrismaClient } from "@/generated/prisma/client";
+import { baseEnv } from "@/lib/env/base";
 
 config({ path: ".env.local", quiet: true });
 config({ quiet: true });
 
 const connectionString =
-  process.env.DIRECT_DATABASE_URL ?? process.env.DATABASE_URL;
-
-if (!connectionString) {
-  throw new Error("DIRECT_DATABASE_URL or DATABASE_URL is required to seed.");
-}
+  baseEnv.value("DIRECT_DATABASE_URL") ?? baseEnv.read().DATABASE_URL;
 
 const prisma = new PrismaClient({
   adapter: new PrismaNeon({

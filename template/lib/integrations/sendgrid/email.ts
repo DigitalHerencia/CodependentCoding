@@ -1,5 +1,7 @@
 import "server-only";
 
+import { emailEnv } from "@/lib/env/email";
+
 import { getSendGridClient } from "./client";
 
 export async function sendTransactionalEmail(input: {
@@ -9,11 +11,7 @@ export async function sendTransactionalEmail(input: {
   html?: string;
   organizationId: string;
 }) {
-  const from = process.env.SENDGRID_FROM_EMAIL?.trim();
-  if (!from)
-    throw new Error(
-      "SendGrid is not configured. Add SENDGRID_FROM_EMAIL to .env.local.",
-    );
+  const from = emailEnv.read().SENDGRID_FROM_EMAIL;
   const { organizationId, ...message } = input;
   const [response] = await getSendGridClient().send({
     ...message,

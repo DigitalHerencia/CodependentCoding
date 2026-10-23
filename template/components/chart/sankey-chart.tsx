@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { isDevelopment } from "@/lib/env/mode";
 import { cn } from "@/lib/utils/cn";
 import { ChartEmpty } from "./empty";
 
@@ -100,10 +101,7 @@ function computeLayout(
   }
 
   // Warn about nodes dropped due to cycles (nodes not reachable from any source)
-  if (
-    typeof process !== "undefined" &&
-    process.env?.NODE_ENV === "development"
-  ) {
+  if (typeof process !== "undefined" && isDevelopment) {
     const droppedNodes = nodes.filter((n) => !depth.has(n.id));
     if (droppedNodes.length > 0) {
       console.warn(
