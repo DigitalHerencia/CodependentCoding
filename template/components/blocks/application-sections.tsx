@@ -375,7 +375,7 @@ export function FileVaultBlock({
       ]}
       rows={files.map((file) => ({
         id: file.id,
-        href: file.href,
+        ...(file.href ? { href: file.href } : {}),
         cells: { name: file.name, meta: file.meta },
       }))}
       emptyMessage="No files are visible in this workspace."

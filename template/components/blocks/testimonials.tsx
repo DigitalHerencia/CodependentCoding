@@ -79,7 +79,7 @@ export function TestimonialsGrid({
                         key={i}
                         className={cn(
                           "h-4 w-4",
-                          i < testimonial.rating!
+                          i < (testimonial.rating ?? 0)
                             ? "fill-warning text-warning"
                             : "text-muted-foreground",
                         )}
@@ -200,7 +200,7 @@ export function TestimonialsMasonry({
                             key={i}
                             className={cn(
                               "h-4 w-4",
-                              i < testimonial.rating!
+                              i < (testimonial.rating ?? 0)
                                 ? "fill-warning text-warning"
                                 : "text-muted-foreground",
                             )}

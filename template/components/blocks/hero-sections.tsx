@@ -1,4 +1,4 @@
-/* eslint-disable react-refresh/only-export-components */
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils/cn";
@@ -175,9 +175,11 @@ export function HeroSplit({
 
         <div className={cn("relative", imageOrder)}>
           <div className="border-3 border-foreground shadow-[8px_8px_0px_hsl(var(--shadow-color))] overflow-hidden">
-            <img
+            <Image
               src={imageSrc}
               alt={imageAlt}
+              width={1200}
+              height={800}
               className="w-full h-auto object-cover"
             />
           </div>
@@ -383,9 +385,11 @@ export function HeroWithVideo({
 
         <div className="relative group cursor-pointer" onClick={onPlayClick}>
           <div className="border-3 border-foreground shadow-[8px_8px_0px_hsl(var(--shadow-color))] overflow-hidden">
-            <img
+            <Image
               src={videoThumbnail}
               alt="Video thumbnail"
+              width={1280}
+              height={720}
               className="w-full h-auto object-cover aspect-video"
             />
           </div>

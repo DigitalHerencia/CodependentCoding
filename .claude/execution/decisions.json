@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/decisions/v1",
-  "updated": "2026-10-23T04:55:00Z",
+  "updated": "2026-10-23T05:10:00Z",
   "format": "Append new decisions; never rewrite history. Supersede by adding a new entry and setting status=superseded + superseded_by on the old one.",
   "decisions": [
     {
@@ -245,6 +245,15 @@
       "context": "Route handlers and workflows may not import lib/db/provider (prisma-runtime), and transactions may not import integrations, so Stripe/SendGrid webhook claim/apply/fail logic had no legal home except lib/db/transactions. getAiPlaygroundConfiguration and getIntegrationStatuses read provider configuration, not persisted rows. lib/env does not exist. calculate-pipeline-value.logic.ts was unused and imported Prisma.Decimal from @prisma/client, which Prisma 7 no longer exports (a type error on main).",
       "decision": "Add stripe-webhook.tx.ts and sendgrid-webhook.tx.ts holding the logic unchanged (type-only imports for the input shapes); routes verify through the integration, map the Stripe subscription through the integration, then call the transaction. WebhookIdentityConflictError is imported from webhook-event.tx. Move getAiPlaygroundConfiguration to aiWorkflows.ts and getIntegrationStatuses to organizationWorkflows.ts (its only workflow caller) and delete the emptied integrationFetchers.ts. Rewrite calculatePipelineValue with BigInt at 6 decimal places (Decimal(19,4) value x whole percent), typed by CrmDealSummaryDTO; it is exact, where Prisma.Decimal rounds at 20 significant digits. Delete features/explorer (unused generator debris, Scope allows delete).",
       "refs": ["CC-011", "CC-010"]
+    },
+    {
+      "id": "DEC-027",
+      "date": "2026-10-23",
+      "status": "accepted",
+      "title": "CC-012: fix at the cause, keep prettier out of the diff, next/image with fixed intrinsic sizes",
+      "context": "12 type errors (noUncheckedIndexedAccess, exactOptionalPropertyTypes, a stale generated-prisma path) and 34 lint problems remained. Ten files carried eslint-disable comments for react-refresh, a rule the config does not load. Ten raw <img> tags lived in unused library blocks whose src is a prop.",
+      "decision": "No tsconfig change. Guard indexed reads, use conditional spread for optional href, import CrmDealStage from generated/prisma/enums. Replace each non-null assertion with a guard or fallback; invoice line totals throw if missing (cannot happen, keeps the type honest). Remove the stale react-refresh disables. Convert <img> to next/image with explicit width/height and the existing w-full/h-auto classes; remote image URLs passed to these blocks will need images.remotePatterns in the generated app. Remove unused SERVER_LAYERS_MSG from doctrine-map (no rule change). Keep Prettier off the touched files so CC-013 stays a formatting-only commit.",
+      "refs": ["CC-012", "CC-013"]
     }
   ]
 }

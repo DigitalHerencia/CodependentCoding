@@ -1,6 +1,5 @@
 "use client";
 
-/* eslint-disable react-refresh/only-export-components */
 import * as React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -75,7 +74,7 @@ export function TestimonialsGrid({
                         key={i}
                         className={cn(
                           "h-4 w-4",
-                          i < testimonial.rating!
+                          i < (testimonial.rating ?? 0)
                             ? "fill-warning text-warning"
                             : "text-muted-foreground",
                         )}
@@ -199,7 +198,7 @@ export function TestimonialsMasonry({
                             key={i}
                             className={cn(
                               "h-4 w-4",
-                              i < testimonial.rating!
+                              i < (testimonial.rating ?? 0)
                                 ? "fill-warning text-warning"
                                 : "text-muted-foreground",
                             )}
@@ -265,6 +264,7 @@ export function TestimonialsWithAvatars({
     testimonials.length - 1,
   );
   const activeTestimonial = testimonials[selectedIndex];
+  if (!activeTestimonial) return null;
 
   return (
     <section

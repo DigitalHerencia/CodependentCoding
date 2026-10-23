@@ -22,7 +22,7 @@ export function AudienceNewForm({ audience }: { audience?: AudienceDTO }) {
       name: audience?.name ?? "",
       status: audience?.status ?? "DRAFT",
       contactStatus: existing?.success
-        ? existing.data.definition.rules[0]!.value
+        ? (existing.data.definition.rules[0]?.value ?? "active")
         : "active",
     },
   });

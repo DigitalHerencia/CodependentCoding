@@ -1,4 +1,4 @@
-/* eslint-disable react-refresh/only-export-components */
+import Image from "next/image";
 import * as React from "react";
 import {
   Card,
@@ -159,9 +159,11 @@ export function FeatureGridWithImages({
           {features.map((feature) => (
             <div key={feature.title} className="group">
               <div className="border-3 border-foreground overflow-hidden shadow-[6px_6px_0px_hsl(var(--shadow-color))] group-hover:shadow-[8px_8px_0px_hsl(var(--shadow-color))] group-hover:translate-x-[-2px] group-hover:translate-y-[-2px] transition mb-4">
-                <img
+                <Image
                   src={feature.image}
                   alt={feature.title}
+                  width={800}
+                  height={480}
                   className="w-full h-48 object-cover"
                 />
               </div>
@@ -231,9 +233,11 @@ export function FeatureGridAlternating({
 
               <div className="relative">
                 <div className="border-3 border-foreground shadow-[8px_8px_0px_hsl(var(--shadow-color))] overflow-hidden">
-                  <img
+                  <Image
                     src={feature.image}
                     alt={feature.title}
+                    width={1200}
+                    height={800}
                     className="w-full h-auto object-cover"
                   />
                 </div>

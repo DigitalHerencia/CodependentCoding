@@ -108,13 +108,17 @@ export async function updateInvoice(rawInput: unknown) {
       },
     });
     await tx.invoiceLine.createMany({
-      data: input.lines.map((line, index) => ({
-        organizationId: access.organizationId,
-        invoiceId: input.invoiceId,
-        position: index + 1,
-        description: line.description,
-        ...calculated.lines[index]!,
-      })),
+      data: input.lines.map((line, index) => {
+        const totals = calculated.lines[index];
+        if (!totals) throw new Error("Invoice line totals are missing.");
+        return {
+          organizationId: access.organizationId,
+          invoiceId: input.invoiceId,
+          position: index + 1,
+          description: line.description,
+          ...totals,
+        };
+      }),
     });
     return toInvoiceDTO(
       await tx.invoice.findFirstOrThrow({

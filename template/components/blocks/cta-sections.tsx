@@ -1,6 +1,6 @@
 "use client";
 
-/* eslint-disable react-refresh/only-export-components */
+import Image from "next/image";
 import * as React from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -301,9 +301,11 @@ export function CTASplit({
           </div>
 
           <div className="bg-muted">
-            <img
+            <Image
               src={imageSrc}
               alt={imageAlt}
+              width={1200}
+              height={800}
               className="w-full h-full object-cover"
             />
           </div>

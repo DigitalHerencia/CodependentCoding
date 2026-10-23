@@ -88,7 +88,8 @@ export async function createInvoiceTx(
 
   const calculated = calculateInvoiceTotals(input.lines);
   const lines = input.lines.map((line, index) => {
-    const totals = calculated.lines[index]!;
+    const totals = calculated.lines[index];
+    if (!totals) throw new Error("Invoice line totals are missing.");
     return {
       organizationId: input.organizationId,
       position: index + 1,

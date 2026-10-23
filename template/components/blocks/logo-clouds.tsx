@@ -1,4 +1,4 @@
-/* eslint-disable react-refresh/only-export-components */
+import Image from "next/image";
 import * as React from "react";
 import { cn } from "@/lib/utils/cn";
 import { safeHref } from "@/lib/utils/strings";
@@ -99,9 +99,11 @@ export function LogoCloudMarquee({
               className="mx-8 flex items-center justify-center h-12 opacity-70 hover:opacity-100 transition-opacity grayscale hover:grayscale-0"
             >
               {typeof logo.logo === "string" ? (
-                <img
+                <Image
                   src={logo.logo}
                   alt={logo.name}
+                  width={160}
+                  height={48}
                   className="h-full w-auto object-contain"
                 />
               ) : (
@@ -156,9 +158,11 @@ export function LogoCloudCards({
             const inner = (
               <div className="border-3 border-foreground bg-card p-6 flex items-center justify-center h-24 hover:shadow-[4px_4px_0px_hsl(var(--shadow-color))] hover:translate-x-[-2px] hover:translate-y-[-2px] transition cursor-pointer">
                 {typeof logo.logo === "string" ? (
-                  <img
+                  <Image
                     src={logo.logo}
                     alt={logo.name}
+                    width={160}
+                    height={48}
                     className="h-10 w-auto object-contain"
                   />
                 ) : (
@@ -241,9 +245,11 @@ export function LogoCloudWithStats({
               const inner = (
                 <div className="flex items-center justify-center h-16 opacity-70 hover:opacity-100 transition-opacity">
                   {typeof logo.logo === "string" ? (
-                    <img
+                    <Image
                       src={logo.logo}
                       alt={logo.name}
+                      width={160}
+                      height={48}
                       className="h-8 w-auto object-contain grayscale hover:grayscale-0 transition"
                     />
                   ) : (
@@ -281,9 +287,11 @@ function LogoCloudItem({ logo }: { logo: LogoItem }) {
   const content = (
     <div className="flex items-center justify-center h-12 opacity-60 hover:opacity-100 transition-opacity grayscale hover:grayscale-0">
       {typeof logo.logo === "string" ? (
-        <img
+        <Image
           src={logo.logo}
           alt={logo.name}
+          width={160}
+          height={48}
           className="h-full w-auto object-contain"
         />
       ) : (

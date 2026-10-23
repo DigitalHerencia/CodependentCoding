@@ -58,15 +58,13 @@ jobs:
           cache: pnpm
           cache-dependency-path: template/pnpm-lock.yaml
       - run: pnpm install --frozen-lockfile
-      # continue-on-error is allowed only on these three steps, until CC-012/CC-013 land.
+      # continue-on-error is allowed only on this step, until CC-013 lands.
       - run: pnpm format:check
         continue-on-error: true # remove in CC-013
       - run: pnpm doctrine:test
       - run: pnpm prisma:generate
       - run: pnpm lint
-        continue-on-error: true # remove in CC-012
       - run: pnpm typecheck
-        continue-on-error: true # remove in CC-012
       # Template has no test script until CC-017; --if-present skips it without masking failures.
       - run: pnpm run --if-present test
 

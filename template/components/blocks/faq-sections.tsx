@@ -1,6 +1,5 @@
 "use client";
 
-/* eslint-disable react-refresh/only-export-components */
 import * as React from "react";
 import {
   Accordion,
@@ -182,7 +181,7 @@ export function FAQWithCategories({
           className="space-y-4"
           key={selectedCategory}
         >
-          {categories[selectedCategory].items.map((item, index) => (
+          {categories[selectedCategory]?.items.map((item, index) => (
             <AccordionItem
               key={item.question}
               value={`item-${index}`}

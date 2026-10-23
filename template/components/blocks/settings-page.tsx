@@ -660,9 +660,9 @@ function readAppearance(): { theme: AppearanceTheme; accentColor: string } {
       )
         ? (parsed.theme as AppearanceTheme)
         : fallback.theme,
-      accentColor: accentColors.some((c) => c.value === parsed.accentColor)
-        ? parsed.accentColor!
-        : fallback.accentColor,
+      accentColor:
+        accentColors.find((c) => c.value === parsed.accentColor)?.value ??
+        fallback.accentColor,
     };
   } catch {
     return fallback;
