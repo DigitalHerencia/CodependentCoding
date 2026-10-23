@@ -65,6 +65,80 @@ jobs:
       - run: pnpm typecheck
       - run: pnpm test
 
+  rls:
+    name: RLS (Neon branch)
+    # Needs the Neon integration's NEON_API_KEY secret and NEON_PROJECT_ID variable;
+    # fork PRs get no secrets, so they skip this job.
+    if: vars.NEON_PROJECT_ID != '' && (github.event_name != 'pull_request' || !github.event.pull_request.head.repo.fork)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: template
+    env:
+      NEON_PROJECT_ID: ${{ vars.NEON_PROJECT_ID }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v4
+        with:
+          package_json_file: template/package.json
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+          cache-dependency-path: template/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+        env:
+          DATABASE_URL: postgresql://ci:ci@localhost:5432/ci
+      - id: expiry
+        run: echo "at=$(date -u -d '+1 hour' +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_OUTPUT"
+      - id: branch
+        uses: neondatabase/create-branch-action@NEON_CREATE_BRANCH_SHA # NEON_CREATE_BRANCH_TAG
+        with:
+          project_id: ${{ vars.NEON_PROJECT_ID }}
+          branch_name: ci/rls-${{ github.run_id }}
+          api_key: ${{ secrets.NEON_API_KEY }}
+          expires_at: ${{ steps.expiry.outputs.at }}
+      # The owner URL comes from the Neon API inside this step and is masked before
+      # anything else runs, so no connection string reaches the log.
+      - name: Create app_user and export connection strings
+        env:
+          NEON_API_KEY: ${{ secrets.NEON_API_KEY }}
+          BRANCH_ID: ${{ steps.branch.outputs.branch_id }}
+        run: |
+          set -euo pipefail
+          api="https://console.neon.tech/api/v2/projects/$NEON_PROJECT_ID"
+          auth=(-fsS -H "Authorization: Bearer $NEON_API_KEY" -H "Accept: application/json")
+          database="$(curl "${auth[@]}" "$api/branches/$BRANCH_ID/databases" | jq -r '.databases[0].name')"
+          owner_role="$(curl "${auth[@]}" "$api/branches/$BRANCH_ID/databases" | jq -r '.databases[0].owner_name')"
+          owner_url="$(curl "${auth[@]}" --get "$api/connection_uri" \
+            --data-urlencode "branch_id=$BRANCH_ID" \
+            --data-urlencode "database_name=$database" \
+            --data-urlencode "role_name=$owner_role" | jq -r '.uri')"
+          echo "::add-mask::$owner_url"
+          password="$(openssl rand -hex 24)"
+          echo "::add-mask::$password"
+          psql "$owner_url" -v ON_ERROR_STOP=1 -q \
+            -c "CREATE ROLE app_user LOGIN NOBYPASSRLS PASSWORD '$password'"
+          app_url="$(node -e 'const u = new URL(process.argv[1]); u.username = "app_user"; u.password = process.argv[2]; process.stdout.write(u.href)' "$owner_url" "$password")"
+          echo "::add-mask::$app_url"
+          {
+            echo "DATABASE_URL_TEST=$owner_url"
+            echo "DATABASE_URL_TEST_APP=$app_url"
+          } >> "$GITHUB_ENV"
+      # The suite migrates as the owner (prisma migrate deploy + prisma/rls/*.sql),
+      # seeds two organizations, then probes every tenant table connected as app_user.
+      - run: pnpm test:rls
+      - name: Delete Neon branch
+        if: always() && steps.branch.outputs.branch_id != ''
+        env:
+          NEON_API_KEY: ${{ secrets.NEON_API_KEY }}
+          BRANCH_ID: ${{ steps.branch.outputs.branch_id }}
+        run: |
+          curl -fsS -o /dev/null -X DELETE \
+            -H "Authorization: Bearer $NEON_API_KEY" \
+            "https://console.neon.tech/api/v2/projects/$NEON_PROJECT_ID/branches/$BRANCH_ID"
+
   # Enabled in CC-035 once the CLI exists.
   # compose:
   #   name: Compose ${{ matrix.preset }}

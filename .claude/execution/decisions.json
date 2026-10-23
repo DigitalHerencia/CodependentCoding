@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/decisions/v1",
-  "updated": "2026-10-23T05:50:00Z",
+  "updated": "2026-10-23T06:05:00Z",
   "format": "Append new decisions; never rewrite history. Supersede by adding a new entry and setting status=superseded + superseded_by on the old one.",
   "decisions": [
     {
@@ -290,6 +290,15 @@
       "context": "Template tests used node:test and imported server-only modules. With Clerk development keys, browser navigations are redirected to Clerk's handshake host before the app renders, so a browser smoke depends on network access to Clerk. CC-016 needs a Vitest runner, so CC-017 lands first (both depend only on CC-012).",
       "decision": "Tests import test from vitest; vitest.config.ts aliases @/ to the template root and server-only to its empty export. test:rls and e2e paths are excluded from `pnpm test`. Playwright smoke uses the request fixture: GET / is 200 with an h1, GET /dashboard without a session is a 3xx to /sign-in. No browser install is required. Pins follow tech-requirements (vitest 4.1.11, @playwright/test 1.62.1); Dependabot may bump them later.",
       "refs": ["CC-017", "CC-016"]
+    },
+    {
+      "id": "DEC-032",
+      "date": "2026-10-23",
+      "status": "accepted",
+      "title": "CC-016: catalog-driven RLS harness; CI uses a short-lived Neon branch",
+      "context": "CC-016 needs real-Postgres proof of tenant isolation as the runtime role. prisma/rls/ and db:init do not exist until CC-022/CC-023; RLS lives in migrations. The owner asked (issue #176 comment) for an rls CI job on a short-lived Neon branch via a SHA-pinned create-branch-action, app_user without BYPASSRLS, tests connected as app_user, branch deleted if: always(), no connection strings printed. WebhookEvent and IdempotencyRecord have a nullable organizationId and no RLS.",
+      "decision": "The suite (tests/rls) migrates as owner with prisma migrate deploy and applies prisma/rls/*.sql when present, so CC-023 can switch to db:init without changing the job. Tenant tables = tables with NOT NULL organizationId, discovered from the catalog; rows are generated from column types and FKs so new tables are covered automatically. Assertions run as app_user: DATABASE_URL_TEST_APP login when set (CI), else SET ROLE to a NOLOGIN app_user (local). Negative checks: catalog test fails when a tenant table lacks enabled+forced RLS or a policy; a rollback-only probe disables RLS on CrmContact and expects leaks. WebhookEvent and IdempotencyRecord are system tables (written before a tenant is known) and pinned in SYSTEM_TABLES; any new nullable-org table fails the suite until reviewed. CI fetches the owner URL from the Neon API inside one step and masks it before use; the branch is deleted through the Neon API.",
+      "refs": ["CC-016", "CC-SEC-002", "CC-SEC-005", "CC-023"]
     }
   ]
 }

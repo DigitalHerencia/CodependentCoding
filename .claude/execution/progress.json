@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/progress/v1",
-  "updated": "2026-10-23T05:50:00Z",
+  "updated": "2026-10-23T06:05:00Z",
   "format": "Evidence states: EXECUTED | INSPECTED | NOT_RUN | BLOCKED. Never mark an issue done without EXECUTED evidence for its Validation commands.",
   "milestones": {
     "M0": {
@@ -285,11 +285,19 @@
       "pr": 226
     },
     "CC-017": {
-      "status": "in_review",
+      "status": "done",
       "github": 177,
       "branch": "test/177-vitest-playwright-baseline",
       "decision": "DEC-031",
-      "note": "vitest 4.1.11 + @playwright/test 1.62.1 (tech-requirements pins). Tests moved from node:test to vitest (skipIf for the opt-in AUTH_WEBHOOK_DB_TEST case). vitest.config.ts aliases @/ and server-only. E2E smoke uses the request fixture (no browser). CI template job runs `pnpm test` (no --if-present, no continue-on-error)."
+      "note": "vitest 4.1.11 + @playwright/test 1.62.1 (tech-requirements pins). Tests moved from node:test to vitest (skipIf for the opt-in AUTH_WEBHOOK_DB_TEST case). vitest.config.ts aliases @/ and server-only. E2E smoke uses the request fixture (no browser). CI template job runs `pnpm test` (no --if-present, no continue-on-error).",
+      "pr": 227
+    },
+    "CC-016": {
+      "status": "in_progress",
+      "github": 176,
+      "branch": "test/176-rls-harness",
+      "decision": "DEC-032",
+      "note": "tests/rls/{rlsHarness.ts,tenantIsolation.test.ts}; test:rls = vitest --project rls. Seeds every NOT NULL organizationId table from the catalog (2 orgs, up to 2 rows each). Probes select/update/delete by id and by org predicate plus cross-org insert, as app_user. CI job `rls` creates ci/rls-<run_id> (expires +1h), app_user LOGIN NOBYPASSRLS, deletes the branch if: always(). Waiting on the create-branch-action commit SHA from the owner."
     }
   },
   "completed": [
@@ -308,7 +316,8 @@
     "CC-012",
     "CC-013",
     "CC-014",
-    "CC-015"
+    "CC-015",
+    "CC-017"
   ],
   "evidence": [
     {
@@ -1202,6 +1211,30 @@
       "env": "cloud container linux",
       "command": "pnpm --dir template validate",
       "result": "pass"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-016",
+      "env": "cloud container, local Postgres 16, non-superuser owner with CREATEROLE",
+      "command": "DATABASE_URL_TEST=<local owner> pnpm --dir template test:rls",
+      "result": "10 passed (SET ROLE app_user mode)"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-016",
+      "env": "same, plus DATABASE_URL_TEST_APP=<login role ci_app NOBYPASSRLS>",
+      "command": "pnpm --dir template test:rls",
+      "result": "10 passed (direct app login mode)"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-016",
+      "env": "same, after ALTER TABLE \"Task\" DISABLE ROW LEVEL SECURITY (restored afterwards)",
+      "command": "pnpm --dir template test:rls",
+      "result": "4 failed as intended: catalog check names Task; both cross-tenant probes list 8 Task leaks; missing-context check"
     }
   ],
   "known_findings": [

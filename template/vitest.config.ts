@@ -17,11 +17,29 @@ export default defineConfig({
   },
   test: {
     environment: "node",
-    include: ["tests/**/*.test.ts"],
-    exclude: ["node_modules/**", ".next/**", "tests/e2e/**", "tests/rls/**"],
-    testTimeout: 15_000,
-    hookTimeout: 15_000,
     clearMocks: true,
     restoreMocks: true,
+    projects: [
+      {
+        extends: true,
+        test: {
+          name: "unit",
+          include: ["tests/**/*.test.ts"],
+          exclude: ["tests/e2e/**", "tests/rls/**"],
+          testTimeout: 15_000,
+          hookTimeout: 15_000,
+        },
+      },
+      {
+        // Real Postgres (DATABASE_URL_TEST); run with `pnpm test:rls`.
+        extends: true,
+        test: {
+          name: "rls",
+          include: ["tests/rls/**/*.test.ts"],
+          testTimeout: 60_000,
+          hookTimeout: 300_000,
+        },
+      },
+    ],
   },
 });
