@@ -196,8 +196,22 @@
     {
       "id": "ratelimit",
       "kind": "addon",
-      "label": "Rate limiting",
-      "description": "Per-organization request limits for metered features"
+      "label": "Rate limiting (Upstash)",
+      "description": "Sliding-window request limits for metered features; backs RATE_LIMITED",
+      "owns": ["lib/integrations/upstash/**"],
+      "packages": ["@upstash/ratelimit", "@upstash/redis"],
+      "env": [
+        {
+          "name": "UPSTASH_REDIS_REST_URL",
+          "required": true,
+          "scope": "server"
+        },
+        {
+          "name": "UPSTASH_REDIS_REST_TOKEN",
+          "required": true,
+          "scope": "server"
+        }
+      ]
     }
   ],
   "presets": {
@@ -207,7 +221,7 @@
     "support": ["support", "email"],
     "marketing": ["marketing", "email"],
     "invoicing": ["invoicing", "billing", "uploads"],
-    "social": ["social", "media"],
+    "social": ["social", "media", "uploads"],
     "ai": ["ai", "inference", "billing", "ratelimit"],
     "portal": ["portal", "uploads", "billing"],
     "admin": ["admin"]

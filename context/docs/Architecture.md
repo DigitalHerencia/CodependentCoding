@@ -196,7 +196,7 @@ Review-only rules (not mechanizable, checked by the `reviewer` agent): actions v
     "support": ["support", "email"],
     "marketing": ["marketing", "email"],
     "invoicing": ["invoicing", "billing", "uploads"],
-    "social": ["social", "media"],
+    "social": ["social", "media", "uploads"],
     "ai": ["ai", "inference", "billing", "ratelimit"],
     "portal": ["portal", "uploads", "billing"],
     "admin": ["admin"],

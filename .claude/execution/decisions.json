@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/decisions/v1",
-  "updated": "2026-10-23T14:40:00Z",
+  "updated": "2026-10-23T15:10:00Z",
   "format": "Append new decisions; never rewrite history. Supersede by adding a new entry and setting status=superseded + superseded_by on the old one.",
   "decisions": [
     {
@@ -378,6 +378,21 @@
       "context": "CC-025 replaces ad-hoc process.env reads. Add-ons must keep working in demo mode when their keys are unset (Settings > Integrations shows MISSING SECRET), base had no place in the manifest for its variables, and lib/env/*.ts is TypeScript + server-only while repo checks are Node scripts.",
       "decision": "lib/env/base.ts exports defineEnv(owner, shape) with required()/optional() helpers (blank counts as unset, values trimmed). Each owner object validates lazily: read() throws once naming the owner and every missing variable, configured() and value(name) never throw, so demo mode stays. The manifest base gains env (schema change, Architecture.md 5.1); validateManifest rejects an env name declared twice and public scope without NEXT_PUBLIC_. scripts/env-example.mjs renders .env.example from the manifest (base, then modules in order). scripts/check-env.mjs runs under tsx --conditions=react-server, imports each lib/env/<owner>.ts and compares names and required with the manifest, checks .env.example freshness and fails on process.env outside lib/env/** and *.config.*; it is pnpm check:env in validate and CI. NODE_ENV goes through lib/env/mode.ts (not server-only, Next inlines it) so client and vendored components need no process.env. Test and child-process env go through baseEnv.value and childEnv. prisma seed runs with --conditions=react-server. lib/integrations/status.ts (base) still lists add-on variable names via hasValues until CC-026 moves integration status into the modules.",
       "refs": ["CC-025", "CC-018", "CC-026", "Architecture.md §2, §5.1"]
+    },
+    {
+      "id": "DEC-041",
+      "date": "2026-10-23",
+      "status": "accepted",
+      "title": "CC-026: compose script, per-owner seeds, Upstash ratelimit with database fallback",
+      "context": "Add-ons must compose alone with base before the CLI exists. Composing showed one blocker: prisma/seed.ts (base) seeded every module. ratelimit existed only as an empty module; AI generation was limited by a database count under an advisory lock. Settings > Integrations listed every provider from base.",
+      "decision": "scripts/compose.mjs performs the file steps of the CLI pipeline (copy tracked files, drop files owned by unselected modules, strip // @module lines, rewrite registry and manifest, regenerate .env.example); scripts/check-compose.mjs composes base + each add-on and base alone and runs prisma generate, tsc and eslint there (pnpm check:compose, own CI job, ~5 min). Seeds move to prisma/seeds/<owner>.ts exporting seed(context); prisma/seed.ts loads whichever exist in dependency order inside one transaction (call sequence verified identical; the seed audit event now lists the owners actually seeded). ratelimit owns lib/integrations/upstash/** with enforceRateLimit (sliding window, throws RateLimitedError code RATE_LIMITED); the AI workflow uses it before the transaction when UPSTASH_* is set and keeps the database count as the fallback otherwise (its error now also carries code RATE_LIMITED; the route maps the code to 429). ModuleDefinition.integration {name, purpose, env} replaces the base provider list. Presets must be closed under dependsOn (validateManifest); social preset gains uploads (dependency since CC-024).",
+      "refs": [
+        "CC-026",
+        "CC-024",
+        "CC-025",
+        "AUTH.md §8",
+        "application.yaml cli.new.pipeline"
+      ]
     }
   ]
 }

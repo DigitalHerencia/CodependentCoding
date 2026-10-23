@@ -2,9 +2,11 @@ import "server-only";
 
 import {
   completeAiGenerationRecord,
+  createAiGenerationRecord,
   createRateLimitedAiGenerationRecord,
   failAiGenerationRecord,
 } from "@/lib/actions/aiActions";
+import { requireIdentity } from "@/lib/auth/auth";
 import { assertPermission } from "@/lib/authz/permissions";
 import { withAuthenticatedRead } from "@/lib/db/tenant";
 import { getMyAiUsage, getMyAiGenerations } from "@/lib/fetchers/aiFetchers";
@@ -13,6 +15,10 @@ import {
   generateHuggingFaceText,
   getConfiguredHuggingFaceModel,
 } from "@/lib/integrations/hugging-face/inference";
+import {
+  enforceRateLimit,
+  isRateLimitConfigured,
+} from "@/lib/integrations/upstash/ratelimit";
 import type { AiUsageItem, ExecuteAiGenerationCommand } from "@/types/aiTypes";
 
 export async function getAiWorkspaceWorkflow() {
@@ -73,11 +79,24 @@ export async function executeGenerationWorkflow(
   command: ExecuteAiGenerationCommand,
 ) {
   const model = await selectModelWorkflow();
-  const generation = await createRateLimitedAiGenerationRecord({
+  const input = {
     provider: "hugging-face",
     model,
     input: { prompt: command.prompt },
-  });
+  };
+  // 5 generations per user per minute: Upstash when the ratelimit add-on is
+  // configured (before the transaction), otherwise the database fallback.
+  let generation;
+  if (isRateLimitConfigured()) {
+    const { clerkUserId } = await requireIdentity();
+    await enforceRateLimit("ai-generate", clerkUserId, {
+      requests: 5,
+      window: "60 s",
+    });
+    generation = await createAiGenerationRecord(input);
+  } else {
+    generation = await createRateLimitedAiGenerationRecord(input, 5);
+  }
   try {
     const result = await generateHuggingFaceText({
       prompt: command.prompt,

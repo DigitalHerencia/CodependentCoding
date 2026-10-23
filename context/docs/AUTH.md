@@ -171,7 +171,7 @@ type ErrorCode =
 
 - Fetchers return `null` for not-found and throw only on unexpected failure.
 - Cross-tenant access returns `NOT_FOUND`, never `FORBIDDEN` (no existence leaks).
-- `RATE_LIMITED` is backed by the `ratelimit` add-on; without it, the code is unused.
+- `RATE_LIMITED` is backed by the `ratelimit` add-on (Upstash, `lib/integrations/upstash/ratelimit.ts`); without it, the code is unused. With the add-on installed but `UPSTASH_*` unset, AI generation falls back to a per-user database count (DEC-041).
 
 ## 9. Secrets and configuration
 

@@ -1,12 +1,12 @@
 {
   "$schema": "codependent-coding/execution/handoff/v1",
-  "updated": "2026-10-23T14:40:00Z",
+  "updated": "2026-10-23T15:10:00Z",
   "format": "Overwrite each session. Minimum state the next session needs to resume safely.",
   "status": "ready-for-claude-code",
   "milestone": "M3",
-  "current_issue": "CC-026",
-  "next_issue": "CC-026",
-  "queue": ["CC-026", "CC-027"],
+  "current_issue": "CC-027",
+  "next_issue": "CC-027",
+  "queue": ["CC-027"],
   "branch": "main",
   "in_flight": [],
   "notes": [
@@ -41,14 +41,14 @@
     "CC-022 (DEC-037): schema is prisma/schema/<owner>.prisma; cross-module relation fields carry `// @module <id>`. pnpm check:schema-modules proves each module (plus dependents) can be removed. #234 tracks the AUTH.md RBAC migration (owner chose to defer it).",
     "CC-023 (DEC-038): RLS lives in prisma/rls/<owner>.sql (idempotent); `pnpm db:init` = migrate (dev for fresh apps, deploy otherwise) + RLS SQL. test:rls applies the same SQL via scripts/rls-sql.mjs. New tenant tables must be added to their owner's rls file (tests/rlsFiles.test.ts enforces).",
     "CC-024 (DEC-039): codependent/module-boundaries is live (CC-MOD-001/002). Module code may import only base, itself and its dependsOn; base reaches modules only via lib/modules/registry.ts. Billing settings now has its own billing:read fetcher; upload widget lives in features/uploads.",
-    "CC-025 (DEC-040): env lives in lib/env/<owner>.ts (defineEnv). Add a variable = manifest env entry + Zod field + `node scripts/env-example.mjs`; pnpm check:env enforces all three and bans process.env elsewhere. NODE_ENV via lib/env/mode.ts."
+    "CC-025 (DEC-040): env lives in lib/env/<owner>.ts (defineEnv). Add a variable = manifest env entry + Zod field + `node scripts/env-example.mjs`; pnpm check:env enforces all three and bans process.env elsewhere. NODE_ENV via lib/env/mode.ts.",
+    "CC-026 (DEC-041): `node scripts/compose.mjs <dir> <module...>` composes an app; `pnpm check:compose` proves each add-on alone (CI job compose). Seeds: prisma/seeds/<owner>.ts. RATE_LIMITED backed by lib/integrations/upstash/ratelimit.ts (ai falls back to the DB count without UPSTASH_*). Provider status comes from ModuleDefinition.integration."
   ],
   "risks": [
     "Lint hook exits 0 silently when node_modules/eslint is missing; a failed install hides lint feedback. On Windows, run pnpm install with VS Code closed (DEC-019).",
     "pnpm/action-setup@v4 runs on deprecated Node 20 (forced to 24); bump when a newer major is available.",
     "Template pages cannot render in the cloud container without Clerk keys. Owner checked all CC-010 pages locally (passed). Template has no `test` script until CC-017.",
-    "portal fetcher getPortalBilling reads invoices (invoicing tables) though portal does not depend on invoicing; the lint can't see it (Prisma client is base). Resolve in CC-026/027 compose tests.",
-    "lib/integrations/status.ts (base) still names add-on env vars via hasValues(); CC-026 should move integration status into each add-on module."
+    "portal fetcher getPortalBilling reads invoices (invoicing tables) though portal does not depend on invoicing; the lint can't see it (Prisma client is base). Resolve in CC-026/027 compose tests."
   ],
   "do_not": [
     "Delete or rewrite context/doctrine/ books",

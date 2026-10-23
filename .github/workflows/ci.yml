@@ -69,6 +69,29 @@ jobs:
       - run: pnpm typecheck
       - run: pnpm test
 
+  compose:
+    name: Compose (each add-on alone)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: template
+    env:
+      DATABASE_URL: postgresql://ci:ci@localhost:5432/ci
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v4
+        with:
+          package_json_file: template/package.json
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+          cache-dependency-path: template/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+      # base + each add-on, and base alone: prisma generate, typecheck, lint
+      - run: pnpm check:compose
+
   rls:
     name: RLS (Neon branch)
     # Needs the Neon integration's NEON_API_KEY secret and NEON_PROJECT_ID variable;

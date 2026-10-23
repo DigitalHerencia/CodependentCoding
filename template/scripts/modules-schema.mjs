@@ -120,10 +120,21 @@ export function validateManifest(input) {
     }
   }
 
+  const deps = new Map(
+    manifest.modules.map((entry) => [entry.id, entry.dependsOn]),
+  );
   for (const [name, members] of Object.entries(manifest.presets)) {
     for (const id of members) {
       if (!ids.has(id)) {
         errors.push(`preset "${name}" names unknown module "${id}"`);
+        continue;
+      }
+      for (const dep of deps.get(id)) {
+        if (!members.includes(dep)) {
+          errors.push(
+            `preset "${name}": "${id}" depends on "${dep}", which the preset leaves out`,
+          );
+        }
       }
     }
   }

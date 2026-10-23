@@ -43,6 +43,13 @@ export interface ModulePermissions {
   grants: Partial<Record<AppRole, readonly ModulePermission[]>>;
 }
 
+/** A provider an add-on wraps; Settings > Integrations reports it configured when every `env` name is set. */
+export interface ModuleIntegration {
+  name: string;
+  purpose: string;
+  env: readonly string[];
+}
+
 /** Runtime contributions of one module (Architecture.md §5.4). Build-time facts live in hipster.modules.json. */
 export interface ModuleDefinition {
   id: string;
@@ -51,4 +58,5 @@ export interface ModuleDefinition {
   settings?: readonly ModuleNavLink[];
   dashboard?: readonly ModuleDashboardEntry[];
   permissions?: ModulePermissions;
+  integration?: ModuleIntegration;
 }

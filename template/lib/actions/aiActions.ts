@@ -17,6 +17,8 @@ import {
 } from "@/lib/db/transactions/ai.tx";
 
 class AiRateLimitError extends Error {
+  readonly code = "RATE_LIMITED";
+
   constructor(message = "AI generation rate limit exceeded.") {
     super(message);
     this.name = "AiRateLimitError";
@@ -70,6 +72,7 @@ export async function createAiGenerationRecord(rawInput: unknown) {
   return createGeneration(rawInput);
 }
 
+/** Fallback limit when the ratelimit add-on is not configured: counts recent rows under an advisory lock. */
 export async function createRateLimitedAiGenerationRecord(
   rawInput: unknown,
   limit = 5,

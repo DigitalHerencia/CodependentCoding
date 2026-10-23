@@ -30,7 +30,8 @@ export async function POST(request: Request) {
     ) {
       return NextResponse.json({ error: "Access denied." }, { status: 403 });
     }
-    if (cause instanceof Error && cause.name === "AiRateLimitError") {
+    // RATE_LIMITED (AUTH.md §8): Upstash limiter or the database fallback.
+    if ((cause as { code?: unknown }).code === "RATE_LIMITED") {
       return NextResponse.json(
         { error: "AI generation rate limit exceeded." },
         { status: 429 },

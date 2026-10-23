@@ -10,7 +10,7 @@ import { listFiles } from "@/scripts/ownership.mjs";
 const root = fileURLToPath(new URL("..", import.meta.url));
 const manifest = JSON.parse(
   readFileSync(`${root}/hipster.modules.json`, "utf8"),
-) as { modules: { id: string }[] };
+) as { modules: { id: string; kind: string; env?: { name: string }[] }[] };
 
 test("the registry lists every manifest module once, in manifest order", () => {
   expect(installedModules.map(({ id }) => id)).toEqual(
@@ -232,4 +232,18 @@ test("the sidebar groups come from the registry", async () => {
   expect(settingsNavigation([]).map(({ href }) => href)).not.toContain(
     "/settings/billing",
   );
+});
+
+test("each provider add-on reports its own manifest env in Settings > Integrations", () => {
+  const addons = manifest.modules.filter(({ kind }) => kind === "addon");
+  for (const { id, env } of addons) {
+    const integration = installedModules.find(
+      (entry) => entry.id === id,
+    )?.integration;
+    expect(integration, id).toBeDefined();
+    const declared = (env ?? []).map(({ name }) => name);
+    for (const name of integration?.env ?? []) {
+      expect(declared, `${id}: ${name}`).toContain(name);
+    }
+  }
 });
