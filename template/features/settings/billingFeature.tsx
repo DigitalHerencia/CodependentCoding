@@ -1,5 +1,7 @@
-import { getPortalBilling } from "@/lib/fetchers/portalFetchers";
-import { SharedBillingSettingsTemplate } from "@/components/templates/billingSettingsTemplate";
+import { getBillingSubscription } from "@/lib/fetchers/billingFetchers";
+import { BillingSettingsTemplate } from "@/components/templates/billingSettingsTemplate";
 export async function BillingFeature() {
-  return <SharedBillingSettingsTemplate billing={await getPortalBilling()} />;
+  return (
+    <BillingSettingsTemplate subscription={await getBillingSubscription()} />
+  );
 }

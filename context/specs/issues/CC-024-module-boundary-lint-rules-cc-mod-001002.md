@@ -8,7 +8,7 @@ priority: p1
 size: m
 labels: [type:feature, area:modules, priority:p1, size:m]
 depends_on: [CC-021]
-status: todo
+status: done
 ---
 
 # CC-024 · Module boundary lint rules (CC-MOD-001/002)

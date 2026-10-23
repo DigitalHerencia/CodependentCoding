@@ -254,21 +254,18 @@ rules:
       layer: module,
       text: "Cross-module imports only via declared dependsOn",
       enforcement: "eslint:codependent/module-boundaries",
-      status: planned,
     }
   - {
       id: CC-MOD-002,
       layer: base,
       text: "Base never imports module-owned files (registry excepted)",
       enforcement: "eslint:codependent/module-boundaries",
-      status: planned,
     }
   - {
       id: CC-MOD-003,
       layer: any,
       text: "Every file has exactly one owner",
       enforcement: "script:pnpm check:ownership",
-      status: planned,
     }
   - {
       id: CC-FMT-001,

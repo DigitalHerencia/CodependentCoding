@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/progress/v1",
-  "updated": "2026-10-23",
+  "updated": "2026-10-23T07:45:00Z",
   "format": "Evidence states: EXECUTED | INSPECTED | NOT_RUN | BLOCKED. Never mark an issue done without EXECUTED evidence for its Validation commands.",
   "milestones": {
     "M0": {
@@ -347,6 +347,13 @@
       "branch": "feat/183-rls-per-owner",
       "decision": "DEC-038",
       "note": "prisma/rls/{identity,<module>}.sql (34 forced tables, 34 policies), scripts/rls-sql.mjs, scripts/db-init.mjs, pnpm db:init; harness applies the same SQL."
+    },
+    "CC-024": {
+      "status": "done",
+      "github": 184,
+      "branch": "feat/184-module-boundary-lint",
+      "decision": "DEC-039",
+      "note": "codependent/module-boundaries enforces CC-MOD-001/002 from hipster.modules.json via scripts/ownership.mjs; 7 RuleTester cases; findings fixed (billing settings own fetcher, upload widget moved to features/uploads, domain workflow tests split per module)."
     }
   },
   "completed": [
@@ -373,7 +380,8 @@
     "CC-020",
     "CC-021",
     "CC-022",
-    "CC-023"
+    "CC-023",
+    "CC-024"
   ],
   "evidence": [
     {
@@ -1659,6 +1667,46 @@
       "env": "cloud container, local Postgres 16",
       "command": "pnpm --dir template doctrine:test",
       "result": "44 pass, 0 fail"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-024",
+      "env": "cloud container",
+      "command": "pnpm --dir template doctrine:test",
+      "result": "50 pass, 0 fail (module-boundaries: 3 valid, 3 invalid incl. CC-MOD-001 and CC-MOD-002)"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-024",
+      "env": "cloud container",
+      "command": "pnpm --dir template validate",
+      "result": "exit 0 (format, lint with module-boundaries active, typecheck, check:modules, check:ownership)"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-024",
+      "env": "cloud container",
+      "command": "pnpm --dir template test",
+      "result": "53 passed, 1 skipped"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-024",
+      "env": "cloud container",
+      "command": "pnpm --dir template build",
+      "result": "exit 0 (dummy env vars)"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-024",
+      "env": "cloud container",
+      "command": "pnpm validate (root)",
+      "result": "exit 0; rule is a no-op where no hipster.modules.json exists"
     }
   ],
   "known_findings": [

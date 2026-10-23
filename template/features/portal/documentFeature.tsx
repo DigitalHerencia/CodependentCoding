@@ -6,7 +6,7 @@ import {
 } from "@/lib/fetchers/portalFetchers";
 import { PortalDocumentDetailTemplate } from "@/components/templates/portalDocumentDetailTemplate";
 import { PortalDocumentControls } from "./portalDocumentControls.client";
-import { WorkspaceFileUpload } from "./workspaceFileUpload.client";
+import { WorkspaceFileUpload } from "@/features/uploads/workspaceFileUpload.client";
 import { DocumentFeatureClient } from "./documentFeature.client";
 export async function DocumentFeature({ documentId }: { documentId: string }) {
   const document = await getPortalDocumentWorkflow(documentId);

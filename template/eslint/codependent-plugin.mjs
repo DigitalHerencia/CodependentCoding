@@ -5,7 +5,11 @@
  * the doctrine rule ID (CC-*) defined in .claude/contracts/validation.yaml.
  * The tables live in ./doctrine-map.mjs; this file only contains mechanics.
  */
+import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
+
+// Node subpath import (package.json "imports"); ESLint loads this file natively.
+import { BASE, ownerOf } from "#scripts/ownership.mjs";
 
 import {
   boundaries,
@@ -459,6 +463,70 @@ const noParentImports = {
   },
 };
 
+/**
+ * hipster.modules.json for the lint root, read once per process. Null when the
+ * root has none (the factory repo lints with this plugin but has no modules).
+ */
+const manifests = new Map();
+function manifestAt(cwd) {
+  if (!manifests.has(cwd)) {
+    const file = path.join(cwd, "hipster.modules.json");
+    manifests.set(
+      cwd,
+      existsSync(file) ? JSON.parse(readFileSync(file, "utf8")) : null,
+    );
+  }
+  return manifests.get(cwd);
+}
+
+const REGISTRY = "lib/modules/registry.ts";
+
+const moduleBoundaries = {
+  meta: {
+    type: "problem",
+    docs: docs(
+      "Modules import other modules only via dependsOn; base reaches modules only through the registry.",
+      "CC-MOD-001",
+    ),
+    schema: [],
+    messages: {
+      undeclared:
+        "[CC-MOD-001] Module '{{from}}' imports '{{spec}}' owned by '{{to}}', which is not in its dependsOn (hipster.modules.json).",
+      base: "[CC-MOD-002] Base file imports '{{spec}}' owned by module '{{to}}'. Base reaches modules only through lib/modules/registry.ts.",
+    },
+  },
+  create(context) {
+    const rel = relativeFile(context);
+    const manifest = manifestAt(context.cwd ?? context.getCwd());
+    if (manifest === null) return {};
+    const from = ownerOf(rel, manifest).owner;
+    if (from === null) return {}; // ambiguous owner: CC-MOD-003 reports it
+    const deps = new Set(
+      manifest.modules.find((entry) => entry.id === from)?.dependsOn ?? [],
+    );
+    return onEachSource((spec, sourceNode) => {
+      const resolved = resolveSpecifier(spec, rel);
+      if (resolved.kind !== "internal") return;
+      const to = ownerOf(resolved.value, manifest).owner;
+      if (to === null || to === BASE || to === from) return;
+      if (from === BASE) {
+        if (rel === REGISTRY) return;
+        context.report({
+          node: sourceNode,
+          messageId: "base",
+          data: { spec, to },
+        });
+      } else if (!deps.has(to)) {
+        context.report({
+          node: sourceNode,
+          messageId: "undeclared",
+          data: { from, spec, to },
+        });
+      }
+    });
+  },
+};
+
 export const rules = {
   "layer-boundaries": layerBoundaries,
   "require-server-only": requireServerOnly,
@@ -471,6 +539,7 @@ export const rules = {
   "no-generic-names": noGenericNames,
   "no-default-export": noDefaultExport,
   "no-parent-imports": noParentImports,
+  "module-boundaries": moduleBoundaries,
 };
 
 const plugin = {
