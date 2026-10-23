@@ -409,6 +409,20 @@
         "DEC-036",
         "#234"
       ]
+    },
+    {
+      "id": "DEC-043",
+      "date": "2026-10-23",
+      "status": "accepted",
+      "title": "CC-028: hipster-stack package, global link via pnpm add --global link:<abs path>",
+      "context": "tech-requirements.md said cli:link runs `pnpm link --global` in packages/cli. pnpm 12 has no `link --global`; a relative `link:` in `pnpm add --global` resolves against pnpm's global dir, not the cwd.",
+      "decision": "packages/cli is the workspace package `hipster-stack` (private, bin hipster-stack -> dist/cli.mjs, built by tsdown; dependencies stay external because the global link points at packages/cli and resolves its own node_modules). Root `cli:link` = `pnpm cli:build && node scripts/cli-link.mjs`, which runs `pnpm add --global link:<absolute packages/cli>`; it needs pnpm's global bin dir on PATH (`pnpm setup` once). Template resolution: HIPSTER_TEMPLATE, else <repo>/template found by walking up to packages/; the directory must hold hipster.modules.json; --help prints the resolved template. Subcommands register in src/commands/index.ts from CC-029. Root CI builds and runs the bundle.",
+      "refs": [
+        "CC-028",
+        "tech-requirements.md §4",
+        "tech-requirements.md §9",
+        "Architecture.md §6"
+      ]
     }
   ]
 }

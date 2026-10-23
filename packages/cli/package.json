@@ -1,0 +1,27 @@
+{
+  "name": "hipster-stack",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Hipster Stack CLI: composes apps from the Maximal Template (local, unpublished).",
+  "type": "module",
+  "bin": {
+    "hipster-stack": "./dist/cli.mjs"
+  },
+  "files": [
+    "dist",
+    "templates"
+  ],
+  "engines": {
+    "node": "24.x"
+  },
+  "scripts": {
+    "build": "tsdown"
+  },
+  "dependencies": {
+    "@clack/prompts": "1.8.1",
+    "commander": "15.0.0"
+  },
+  "devDependencies": {
+    "tsdown": "0.23.1"
+  }
+}

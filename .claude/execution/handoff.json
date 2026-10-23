@@ -1,13 +1,13 @@
 {
   "$schema": "codependent-coding/execution/handoff/v1",
-  "updated": "2026-10-23T15:20:00Z",
+  "updated": "2026-10-23T15:58:00Z",
   "format": "Overwrite each session. Minimum state the next session needs to resume safely.",
   "status": "ready-for-claude-code",
   "milestone": "M4",
-  "current_issue": "CC-027",
-  "next_issue": "CC-028",
-  "queue": ["CC-028", "CC-029", "CC-030"],
-  "branch": "feat/187-golden-projects",
+  "current_issue": "CC-028",
+  "next_issue": "CC-029",
+  "queue": ["CC-029", "CC-030"],
+  "branch": "feat/188-cli-skeleton",
   "in_flight": [],
   "notes": [
     "Governance package is uncommitted in the owner's working tree; owner reviews with `git status` / `git diff`, then commits on a branch `chore/governance-package`.",
@@ -44,7 +44,8 @@
     "CC-025 (DEC-040): env lives in lib/env/<owner>.ts (defineEnv). Add a variable = manifest env entry + Zod field + `node scripts/env-example.mjs`; pnpm check:env enforces all three and bans process.env elsewhere. NODE_ENV via lib/env/mode.ts.",
     "CC-026 (DEC-041): `node scripts/compose.mjs <dir> <module...>` composes an app; `pnpm check:compose` proves each add-on alone (CI job compose). Seeds: prisma/seeds/<owner>.ts. RATE_LIMITED backed by lib/integrations/upstash/ratelimit.ts (ai falls back to the DB count without UPSTASH_*). Provider status comes from ModuleDefinition.integration.",
     "CC-027 (DEC-042): projects is the golden slice. Actions return ActionResult via lib/utils/actionResult.ts (toActionResult); versioned updates use staleOrMissing (CONFLICT vs NOT_FOUND). Rerun `node scripts/slice-files.mjs projects --write` in template/ when projects files move. To build a composed app, compose into a dir inside template/ (turbopack rejects node_modules symlinks outside its root and anything under node_modules).",
-    "M3 closed 2026-10-23 (CC-018..CC-027). Next: M4 starting CC-028 (packages/cli)."
+    "M3 closed 2026-10-23 (CC-018..CC-027). Next: M4 starting CC-028 (packages/cli).",
+    "CC-028 (DEC-043): packages/cli = hipster-stack. `pnpm cli` runs from source (tsx), `pnpm cli:build` bundles, `pnpm cli:link` links globally (needs `pnpm setup` once so pnpm's global bin dir is on PATH). Template = HIPSTER_TEMPLATE or <repo>/template. CC-029 ports template/scripts/compose.mjs into packages/cli/src/compose."
   ],
   "risks": [
     "Lint hook exits 0 silently when node_modules/eslint is missing; a failed install hides lint feedback. On Windows, run pnpm install with VS Code closed (DEC-019).",
