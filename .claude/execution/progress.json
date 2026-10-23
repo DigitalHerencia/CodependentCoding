@@ -392,6 +392,41 @@
     {
       "date": "2026-10-23",
       "state": "EXECUTED",
+      "command": "Dependabot PRs: get_check_runs on #159, #160, #205, #209",
+      "result": "All four: 'Maximal Template' success; 'Factory (root)' failure at pnpm format:check (same prettier-plugin-tailwindcss error as main, CC-013)",
+      "issue": "deps"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "command": "git diff origin/main...<each dependabot branch> -- package.json files",
+      "result": "Exact versions only, no ranges; packageManager pnpm@12.3.4 and engines node 24.x unchanged; template @types/node stays on 24.x",
+      "issue": "deps"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "command": "root on main vs #209 locally: pnpm install --frozen-lockfile; pnpm typecheck; pnpm test; pnpm cli:build",
+      "result": "main: install ok, 250 TS errors, test pass (no files), cli:build ok. #209: install ok, 247 TS errors (no new files, 3 fewer in components/ui), test pass, cli:build ok, dist/cli.mjs --help runs",
+      "issue": "deps"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "command": "merge_pull_request squash #159, #205, #209",
+      "result": "Merged: acd5bae (checkout v7), 95bf9b1 (template 54 bumps), e09a838 (root 46 bumps)",
+      "issue": "deps"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "command": "merge_pull_request squash #160",
+      "result": "405 merge conflict after #159; setup-node v7 applied on branch claude/project-thread-0iivk6 instead and #160 closed as superseded",
+      "issue": "deps"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
       "milestone": "M0",
       "env": "linux node 22.22.0, pnpm 12.3.4, main 851a63f",
       "command": "pnpm --dir template validate",
