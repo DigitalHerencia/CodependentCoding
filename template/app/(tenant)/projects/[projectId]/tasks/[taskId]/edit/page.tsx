@@ -1,4 +1,7 @@
+import { Suspense } from "react";
+
 import { TaskEditFeature } from "@/features/projects/taskEditFeature";
+import { TaskFormSkeleton } from "@/features/projects/taskFormSkeleton";
 
 export default async function Page({
   params,
@@ -6,5 +9,9 @@ export default async function Page({
   params: Promise<{ projectId: string; taskId: string }>;
 }) {
   const { projectId, taskId } = await params;
-  return <TaskEditFeature projectId={projectId} taskId={taskId} />;
+  return (
+    <Suspense fallback={<TaskFormSkeleton />}>
+      <TaskEditFeature projectId={projectId} taskId={taskId} />
+    </Suspense>
+  );
 }

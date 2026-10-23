@@ -1,14 +1,14 @@
 {
   "$schema": "codependent-coding/execution/handoff/v1",
-  "updated": "2026-10-23T05:40:00Z",
+  "updated": "2026-10-23T05:55:00Z",
   "format": "Overwrite each session. Minimum state the next session needs to resume safely.",
   "status": "ready-for-claude-code",
   "milestone": "M2",
-  "current_issue": "CC-014",
-  "next_issue": "CC-015",
-  "queue": ["CC-015", "CC-016", "CC-017"],
+  "current_issue": "CC-015",
+  "next_issue": "CC-016",
+  "queue": ["CC-016", "CC-017"],
   "branch": "main",
-  "in_flight": ["CC-014 PR on chore/174-remove-generator-debris"],
+  "in_flight": ["CC-015 PR on feat/175-error-loading-isr"],
   "notes": [
     "Governance package is uncommitted in the owner's working tree; owner reviews with `git status` / `git diff`, then commits on a branch `chore/governance-package`.",
     "Template already contains the doctrine ESLint plugin (template/eslint/) and the new eslint.config.mjs; CC-009 turns findings into fixes.",
@@ -29,7 +29,8 @@
     "CC-011 (DEC-026): template lint 0 CC-* findings (34 left: non-null-assertion 13, react-refresh 10, no-img-element 10, unused-vars 1 for CC-012). Webhook persistence in lib/db/transactions/{stripe,sendgrid}-webhook.tx.ts; features/explorer and integrationFetchers.ts deleted; types/access.ts -> accessTypes.ts.",
     "CC-012 (DEC-027): template typecheck 0, lint 0; CI template lint/typecheck now blocking. Remaining red: root and template format:check (CC-013).",
     "CC-013 (DEC-028): prettier baseline commit 2bb0c68 listed in .git-blame-ignore-revs (run `git config blame.ignoreRevsFile .git-blame-ignore-revs` once). Root .prettierignore excludes template/. CI: no continue-on-error anywhere.",
-    "CC-014 (DEC-029): generator debris removed; legal operator is content/application.ts applicationOperator (placeholder). template/.claude/contracts still reference context/docs paths (outside CC-014 scope)."
+    "CC-014 (DEC-029): generator debris removed; legal operator is content/application.ts applicationOperator (placeholder). template/.claude/contracts still reference context/docs paths (outside CC-014 scope).",
+    "CC-015 (DEC-030): route groups have error.tsx/loading.tsx; public ISR 1d; edit pages Suspense + *FormSkeleton. Template build needs env vars: in the cloud, dummy values suffice (no services are contacted at build)."
   ],
   "risks": [
     "Lint hook exits 0 silently when node_modules/eslint is missing; a failed install hides lint feedback. On Windows, run pnpm install with VS Code closed (DEC-019).",

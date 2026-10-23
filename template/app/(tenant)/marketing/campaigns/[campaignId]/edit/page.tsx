@@ -1,4 +1,7 @@
+import { Suspense } from "react";
+
 import { CampaignEditFeature } from "@/features/marketing/campaignEditFeature";
+import { CampaignFormSkeleton } from "@/features/marketing/campaignFormSkeleton";
 
 export default async function Page({
   params,
@@ -6,5 +9,9 @@ export default async function Page({
   params: Promise<{ campaignId: string }>;
 }) {
   const { campaignId } = await params;
-  return <CampaignEditFeature campaignId={campaignId} />;
+  return (
+    <Suspense fallback={<CampaignFormSkeleton />}>
+      <CampaignEditFeature campaignId={campaignId} />
+    </Suspense>
+  );
 }

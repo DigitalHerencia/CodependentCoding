@@ -1,4 +1,7 @@
+import { Suspense } from "react";
+
 import { ExpenseEditFeature } from "@/features/invoicing/expenseEditFeature";
+import { ExpenseFormSkeleton } from "@/features/invoicing/expenseFormSkeleton";
 
 export default async function Page({
   params,
@@ -6,5 +9,9 @@ export default async function Page({
   params: Promise<{ expenseId: string }>;
 }) {
   const { expenseId } = await params;
-  return <ExpenseEditFeature expenseId={expenseId} />;
+  return (
+    <Suspense fallback={<ExpenseFormSkeleton />}>
+      <ExpenseEditFeature expenseId={expenseId} />
+    </Suspense>
+  );
 }

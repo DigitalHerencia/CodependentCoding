@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/decisions/v1",
-  "updated": "2026-10-23T05:40:00Z",
+  "updated": "2026-10-23T05:55:00Z",
   "format": "Append new decisions; never rewrite history. Supersede by adding a new entry and setting status=superseded + superseded_by on the old one.",
   "decisions": [
     {
@@ -272,6 +272,15 @@
       "context": "CC-014 Scope removes Digital Herencia branding from template code and its rg check must return nothing, but content/privacy.tsx, content/terms.tsx and template/LICENSE named Digital Herencia and the owner's email as the operator. template/content is imported by the app, so it is not generator-only and stays.",
       "decision": "Add applicationOperator {name: 'Your Company', email: 'legal@example.com'} to content/application.ts; privacy and terms render it (uppercase where the clause is uppercase). Template LICENSE copyright holder becomes 'Your Company'. Wording is otherwise unchanged. The factory root keeps its own branding and LICENSE.",
       "refs": ["CC-014"]
+    },
+    {
+      "id": "DEC-030",
+      "date": "2026-10-23",
+      "status": "accepted",
+      "title": "CC-015: route-group boundaries, daily ISR, form skeletons for edit pages",
+      "context": "CC-015 needs error/loading per route group, ISR on public pages and Suspense + feature skeleton on every dynamic tenant page (CC-UX-001). Eleven edit pages read a record before rendering a form and had no Suspense. All edit forms share one card layout.",
+      "decision": "Each route group gets error.tsx (GenericErrorPage block with reset) and loading.tsx (PageLoadingState block). Public pages and / export revalidate = 86400 (matches cacheLife.static; segment config must be a literal). New FormLoadingState block mirrors the shared form card; per-entity feature skeletons (crmFormSkeleton, expenseFormSkeleton, ...) render it with field count and width. Admin user edit reuses AdminUserDetailSkeleton because it renders the detail feature. */new pages stay unwrapped: no data read.",
+      "refs": ["CC-015", "CC-UX-001", "DEC-012"]
     }
   ]
 }

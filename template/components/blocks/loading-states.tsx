@@ -1,3 +1,5 @@
+import { cn } from "@/lib/utils/cn";
+
 export function DataTableLoadingState({ rows = 6 }: { rows?: number }) {
   return (
     <div
@@ -39,6 +41,57 @@ export function RecordDetailLoadingState() {
         ))}
       </div>
       <span className="sr-only">Loading record</span>
+    </div>
+  );
+}
+
+const formWidths = {
+  "3xl": "max-w-3xl",
+  "4xl": "max-w-4xl",
+  "5xl": "max-w-5xl",
+} as const;
+
+export function FormLoadingState({
+  fields = 4,
+  width = "3xl",
+}: {
+  fields?: number;
+  width?: keyof typeof formWidths;
+}) {
+  return (
+    <div
+      aria-label="Loading form"
+      role="status"
+      className={cn("mx-auto space-y-5 surface-card p-5", formWidths[width])}
+    >
+      <div className="h-8 w-48 animate-pulse bg-muted" />
+      {Array.from({ length: fields }, (_, index) => (
+        <div key={index} className="space-y-2">
+          <span className="block h-4 w-28 animate-pulse bg-muted" />
+          <span className="block h-10 animate-pulse bg-muted" />
+        </div>
+      ))}
+      <div className="h-10 w-32 animate-pulse bg-muted" />
+      <span className="sr-only">Loading form</span>
+    </div>
+  );
+}
+
+export function PageLoadingState() {
+  return (
+    <div
+      aria-label="Loading page"
+      role="status"
+      className="space-y-6 p-4 md:p-6"
+    >
+      <div className="h-10 w-64 animate-pulse bg-muted" />
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {Array.from({ length: 4 }, (_, index) => (
+          <div key={index} className="h-24 animate-pulse bg-muted" />
+        ))}
+      </div>
+      <div className="h-80 animate-pulse bg-muted" />
+      <span className="sr-only">Loading page</span>
     </div>
   );
 }

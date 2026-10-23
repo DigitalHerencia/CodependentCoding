@@ -8,7 +8,7 @@ priority: p1
 size: s
 labels: [type:feature, area:template, priority:p1, size:s]
 depends_on: [CC-012]
-status: todo
+status: done
 ---
 
 # CC-015 · Error, loading and ISR conventions
