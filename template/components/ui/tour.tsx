@@ -3,6 +3,7 @@
 import * as React from "react";
 import { createPortal } from "react-dom";
 import { X } from "lucide-react";
+import { isDevelopment } from "@/lib/env/mode";
 import { cn } from "@/lib/utils/cn";
 import { Button } from "@/components/ui/button";
 
@@ -344,7 +345,7 @@ const Tour = React.forwardRef<HTMLDivElement, TourProps>(
           });
         } else {
           // Target not found — fall back to center placement
-          if (process.env.NODE_ENV === "development") {
+          if (isDevelopment) {
             console.warn(
               `[Tour] Step target "${currentStepData.target}" not found in DOM`,
             );

@@ -8,7 +8,7 @@ priority: p1
 size: s
 labels: [type:feature, area:modules, priority:p1, size:s]
 depends_on: [CC-018]
-status: todo
+status: done
 ---
 
 # CC-025 · Validated env per owner

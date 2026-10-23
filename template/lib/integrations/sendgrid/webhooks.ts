@@ -1,6 +1,7 @@
 import "server-only";
 
 import { EventWebhook } from "@sendgrid/eventwebhook";
+import { emailEnv } from "@/lib/env/email";
 import { sendGridWebhookEventsSchema } from "@/schemas/integrationSchemas";
 
 export function verifySendGridWebhook(
@@ -8,7 +9,7 @@ export function verifySendGridWebhook(
   signature: string | null,
   timestamp: string | null,
 ) {
-  const verificationKey = process.env.SENDGRID_WEBHOOK_VERIFICATION_KEY?.trim();
+  const verificationKey = emailEnv.read().SENDGRID_WEBHOOK_VERIFICATION_KEY;
   if (!verificationKey)
     throw new Error(
       "SendGrid webhooks are not configured. Add SENDGRID_WEBHOOK_VERIFICATION_KEY to .env.local.",

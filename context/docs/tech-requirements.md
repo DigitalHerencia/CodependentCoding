@@ -104,6 +104,7 @@ Removed: `.agents/`, `packages/core`, `packages/schema`, `packages/loaded-vibes`
 | `test:rls`                | RLS cross-tenant suite against `DATABASE_URL_TEST`                                |
 | `test:e2e`                | Playwright smoke                                                                  |
 | `check:ownership`         | orphan/ambiguous-owner check over all files                                       |
+| `check:env`               | manifest env ↔ `lib/env/*.ts`; fresh `.env.example`; no `process.env` elsewhere   |
 | `db:init`                 | `prisma migrate dev --name init` + apply `prisma/rls/*.sql` as a second migration |
 | `validate`                | `format:check && lint && doctrine:test && typecheck && check:ownership && test`   |
 | `postinstall`             | `prisma generate`                                                                 |

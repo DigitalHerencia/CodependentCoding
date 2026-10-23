@@ -5,6 +5,8 @@ import { PrismaNeon } from "@prisma/adapter-neon";
 import { config } from "dotenv";
 
 import { PrismaClient } from "@/generated/prisma/client";
+import { baseEnv } from "@/lib/env/base";
+import { isDevelopment, isProduction } from "@/lib/env/mode";
 
 const localEnvironment: Record<string, string> = {};
 config({ path: ".env.local", quiet: true, processEnv: localEnvironment });
@@ -13,13 +15,8 @@ config({ quiet: true });
 
 // Local development targets the checked-out app, not an unrelated inherited URL.
 const connectionString =
-  process.env.NODE_ENV === "development"
-    ? (localEnvironment.DATABASE_URL ?? process.env.DATABASE_URL)
-    : process.env.DATABASE_URL;
-
-if (!connectionString) {
-  throw new Error("DATABASE_URL is required.");
-}
+  (isDevelopment ? localEnvironment.DATABASE_URL : undefined) ??
+  baseEnv.read().DATABASE_URL;
 
 const adapter = new PrismaNeon({
   connectionString,
@@ -47,7 +44,7 @@ export const prisma =
     adapter,
   });
 
-if (process.env.NODE_ENV !== "production") {
+if (!isProduction) {
   globalForPrisma.prisma = prisma;
   globalForPrisma.prismaConnectionFingerprint = connectionFingerprint;
 }

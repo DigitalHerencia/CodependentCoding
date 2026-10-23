@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { isDevelopment } from "@/lib/env/mode";
 import { cn } from "@/lib/utils/cn";
 import {
   Download,
@@ -82,7 +83,7 @@ export function Invoice({
   const computedTotal =
     computedSubtotal + (data.tax?.amount ?? 0) - (data.discount?.amount ?? 0);
 
-  if (process.env.NODE_ENV === "development") {
+  if (isDevelopment) {
     if (Math.abs(computedSubtotal - data.subtotal) > 0.01) {
       console.warn(
         `[Invoice] subtotal mismatch: passed ${data.subtotal.toFixed(2)}, computed ${computedSubtotal.toFixed(2)}`,

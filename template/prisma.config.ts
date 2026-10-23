@@ -12,7 +12,8 @@ export default defineConfig({
   schema: "prisma/schema",
   migrations: {
     path: "prisma/migrations",
-    seed: "tsx prisma/seed.ts",
+    // react-server: lib/env/* is server-only.
+    seed: "tsx --conditions=react-server prisma/seed.ts",
   },
   ...(directDatabaseUrl ? { datasource: { url: directDatabaseUrl } } : {}),
 });

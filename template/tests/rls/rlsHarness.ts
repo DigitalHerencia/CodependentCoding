@@ -4,6 +4,7 @@ import { randomUUID } from "node:crypto";
 import { config } from "dotenv";
 import pg from "pg";
 
+import { baseEnv, childEnv } from "@/lib/env/base";
 import { rlsSql } from "@/scripts/rls-sql.mjs";
 
 config({ path: ".env.local", quiet: true });
@@ -50,7 +51,7 @@ export interface Catalog {
 }
 
 function requiredUrl(): string {
-  const url = process.env.DATABASE_URL_TEST?.trim();
+  const url = baseEnv.value("DATABASE_URL_TEST");
   if (!url) {
     throw new Error(
       "DATABASE_URL_TEST is required for test:rls (owner connection to a Neon test branch or local Postgres).",
@@ -60,7 +61,7 @@ function requiredUrl(): string {
 }
 
 export const ownerUrl = requiredUrl();
-const appUrl = process.env.DATABASE_URL_TEST_APP?.trim() || undefined;
+const appUrl = baseEnv.value("DATABASE_URL_TEST_APP");
 export const appRole = appUrl
   ? decodeURIComponent(new URL(appUrl).username)
   : DEFAULT_APP_ROLE;
@@ -77,11 +78,7 @@ export async function connect(url: string): Promise<pg.Client> {
 export async function migrate(owner: pg.Client): Promise<void> {
   try {
     execFileSync("pnpm", ["exec", "prisma", "migrate", "deploy"], {
-      env: {
-        ...process.env,
-        DATABASE_URL: ownerUrl,
-        DIRECT_DATABASE_URL: ownerUrl,
-      },
+      env: childEnv({ DATABASE_URL: ownerUrl, DIRECT_DATABASE_URL: ownerUrl }),
       stdio: "pipe",
       shell: process.platform === "win32",
     });

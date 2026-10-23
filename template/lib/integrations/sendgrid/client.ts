@@ -2,15 +2,12 @@ import "server-only";
 
 import sgMail from "@sendgrid/mail";
 
+import { emailEnv } from "@/lib/env/email";
+
 let configured = false;
 export function getSendGridClient() {
-  const apiKey = process.env.SENDGRID_API_KEY?.trim();
-  if (!apiKey)
-    throw new Error(
-      "SendGrid is not configured. Add SENDGRID_API_KEY to .env.local.",
-    );
   if (!configured) {
-    sgMail.setApiKey(apiKey);
+    sgMail.setApiKey(emailEnv.read().SENDGRID_API_KEY);
     configured = true;
   }
   return sgMail;

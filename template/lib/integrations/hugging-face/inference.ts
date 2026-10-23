@@ -1,5 +1,7 @@
 import "server-only";
 
+import { inferenceEnv } from "@/lib/env/inference";
+
 import { getHuggingFaceClient } from "./client";
 
 export function generateHuggingFaceText(input: {
@@ -19,6 +21,7 @@ export function generateHuggingFaceText(input: {
 
 export function getConfiguredHuggingFaceModel() {
   return (
-    process.env.HUGGINGFACE_TEXT_MODEL?.trim() || "HuggingFaceH4/zephyr-7b-beta"
+    inferenceEnv.value("HUGGINGFACE_TEXT_MODEL") ??
+    "HuggingFaceH4/zephyr-7b-beta"
   );
 }

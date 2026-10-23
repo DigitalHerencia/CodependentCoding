@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/decisions/v1",
-  "updated": "2026-10-23T07:45:00Z",
+  "updated": "2026-10-23T14:40:00Z",
   "format": "Append new decisions; never rewrite history. Supersede by adding a new entry and setting status=superseded + superseded_by on the old one.",
   "decisions": [
     {
@@ -369,6 +369,15 @@
         "DEC-036",
         "Architecture.md §5"
       ]
+    },
+    {
+      "id": "DEC-040",
+      "date": "2026-10-23",
+      "status": "accepted",
+      "title": "CC-025: env declared per owner with defineEnv, checked against the manifest",
+      "context": "CC-025 replaces ad-hoc process.env reads. Add-ons must keep working in demo mode when their keys are unset (Settings > Integrations shows MISSING SECRET), base had no place in the manifest for its variables, and lib/env/*.ts is TypeScript + server-only while repo checks are Node scripts.",
+      "decision": "lib/env/base.ts exports defineEnv(owner, shape) with required()/optional() helpers (blank counts as unset, values trimmed). Each owner object validates lazily: read() throws once naming the owner and every missing variable, configured() and value(name) never throw, so demo mode stays. The manifest base gains env (schema change, Architecture.md 5.1); validateManifest rejects an env name declared twice and public scope without NEXT_PUBLIC_. scripts/env-example.mjs renders .env.example from the manifest (base, then modules in order). scripts/check-env.mjs runs under tsx --conditions=react-server, imports each lib/env/<owner>.ts and compares names and required with the manifest, checks .env.example freshness and fails on process.env outside lib/env/** and *.config.*; it is pnpm check:env in validate and CI. NODE_ENV goes through lib/env/mode.ts (not server-only, Next inlines it) so client and vendored components need no process.env. Test and child-process env go through baseEnv.value and childEnv. prisma seed runs with --conditions=react-server. lib/integrations/status.ts (base) still lists add-on variable names via hasValues until CC-026 moves integration status into the modules.",
+      "refs": ["CC-025", "CC-018", "CC-026", "Architecture.md §2, §5.1"]
     }
   ]
 }

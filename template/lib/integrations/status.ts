@@ -1,17 +1,14 @@
 import "server-only";
 
+import { hasValues } from "@/lib/env/base";
 import type { IntegrationStatus } from "@/types/integrationTypes";
-
-function hasEnvironmentValues(names: string[]): boolean {
-  return names.every((name) => Boolean(process.env[name]?.trim()));
-}
 
 function status(
   name: string,
   purpose: string,
   environmentVariables: string[],
 ): IntegrationStatus {
-  const configured = hasEnvironmentValues(environmentVariables);
+  const configured = hasValues(environmentVariables);
   return {
     name,
     purpose,
