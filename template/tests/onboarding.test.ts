@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import test from "node:test";
+import { test } from "vitest";
 import type { Prisma } from "@/generated/prisma/client";
 import type { AccessContext } from "@/types/accessTypes";
 import { completeOnboardingTx } from "@/lib/db/transactions/onboarding.tx";

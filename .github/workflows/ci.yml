@@ -63,8 +63,7 @@ jobs:
       - run: pnpm prisma:generate
       - run: pnpm lint
       - run: pnpm typecheck
-      # Template has no test script until CC-017; --if-present skips it without masking failures.
-      - run: pnpm run --if-present test
+      - run: pnpm test
 
   # Enabled in CC-035 once the CLI exists.
   # compose:

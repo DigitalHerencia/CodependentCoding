@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/progress/v1",
-  "updated": "2026-10-23T05:55:00Z",
+  "updated": "2026-10-23T05:50:00Z",
   "format": "Evidence states: EXECUTED | INSPECTED | NOT_RUN | BLOCKED. Never mark an issue done without EXECUTED evidence for its Validation commands.",
   "milestones": {
     "M0": {
@@ -269,7 +269,7 @@
       "pr": 225
     },
     "CC-015": {
-      "status": "in_review",
+      "status": "done",
       "github": 175,
       "branch": "feat/175-error-loading-isr",
       "decision": "DEC-030",
@@ -281,7 +281,15 @@
         "/": "revalidate = 86400 (landing, public)",
         "root": "global-error.tsx and not-found.tsx already present"
       },
-      "note": "New-record pages (*/new) render client forms with no data read, so they are not wrapped. All other tenant pages already had Suspense + skeleton."
+      "note": "New-record pages (*/new) render client forms with no data read, so they are not wrapped. All other tenant pages already had Suspense + skeleton.",
+      "pr": 226
+    },
+    "CC-017": {
+      "status": "in_review",
+      "github": 177,
+      "branch": "test/177-vitest-playwright-baseline",
+      "decision": "DEC-031",
+      "note": "vitest 4.1.11 + @playwright/test 1.62.1 (tech-requirements pins). Tests moved from node:test to vitest (skipIf for the opt-in AUTH_WEBHOOK_DB_TEST case). vitest.config.ts aliases @/ and server-only. E2E smoke uses the request fixture (no browser). CI template job runs `pnpm test` (no --if-present, no continue-on-error)."
     }
   },
   "completed": [
@@ -299,7 +307,8 @@
     "CC-011",
     "CC-012",
     "CC-013",
-    "CC-014"
+    "CC-014",
+    "CC-015"
   ],
   "evidence": [
     {
@@ -1169,6 +1178,30 @@
       "env": "cloud container linux",
       "command": "pnpm --dir template validate",
       "result": "pass (format:check, lint --max-warnings=0, typecheck)"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-017",
+      "env": "cloud container linux",
+      "command": "pnpm --dir template test",
+      "result": "3 files passed; 18 passed, 1 skipped (opt-in DB test)"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-017",
+      "env": "cloud container linux, next dev with dummy env vars",
+      "command": "pnpm --dir template test:e2e",
+      "result": "2 passed: / returns 200 with <h1>; /dashboard 3xx to /sign-in"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-017",
+      "env": "cloud container linux",
+      "command": "pnpm --dir template validate",
+      "result": "pass"
     }
   ],
   "known_findings": [
