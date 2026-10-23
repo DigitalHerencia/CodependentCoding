@@ -210,11 +210,11 @@
       "pr": 220
     },
     "CC-010": {
-      "status": "in_review",
+      "status": "done",
       "github": 170,
       "branch": "fix/170-route-feature-boundaries",
       "decision": "DEC-025",
-      "note": "Template lint 73 -> 50, no new findings. 0 CC-ROUTE/CC-CLIENT/CC-FEAT-002/004 left; 2 CC-FEAT-001 remain in features/explorer/maximalTemplateExplorer.tsx, owned by CC-011 Scope. Typecheck 13 errors unchanged, none in touched files. Page render smoke NOT_RUN: next dev returns 500 on /sign-in without Clerk keys (same on main); needs owner check with .env.",
+      "note": "Template lint 73 -> 50, no new findings. 0 CC-ROUTE/CC-CLIENT/CC-FEAT-002/004 left; 2 CC-FEAT-001 remain in features/explorer/maximalTemplateExplorer.tsx, owned by CC-011 Scope. Typecheck 13 errors unchanged, none in touched files. Page render smoke NOT_RUN: next dev returns 500 on /sign-in without Clerk keys (same on main); needs owner check with .env. Owner chose merge now, pages check later (2026-10-23).",
       "remaining_findings": {
         "@typescript-eslint/no-non-null-assertion": 13,
         "react-refresh/only-export-components": 10,
@@ -226,7 +226,8 @@
         "CC-FLOW-001": 1,
         "CC-SCHEMA-001": 1,
         "@typescript-eslint/no-unused-vars": 1
-      }
+      },
+      "pr": 221
     }
   },
   "completed": [

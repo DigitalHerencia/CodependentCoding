@@ -4,11 +4,11 @@
   "format": "Overwrite each session. Minimum state the next session needs to resume safely.",
   "status": "ready-for-claude-code",
   "milestone": "M2",
-  "current_issue": "CC-010",
+  "current_issue": "CC-011",
   "next_issue": "CC-011",
   "queue": ["CC-011"],
-  "branch": "fix/170-route-feature-boundaries",
-  "in_flight": ["CC-010 PR open, awaiting owner go-ahead to merge"],
+  "branch": "main",
+  "in_flight": [],
   "notes": [
     "Governance package is uncommitted in the owner's working tree; owner reviews with `git status` / `git diff`, then commits on a branch `chore/governance-package`.",
     "Template already contains the doctrine ESLint plugin (template/eslint/) and the new eslint.config.mjs; CC-009 turns findings into fixes.",
@@ -31,7 +31,7 @@
     "Lint hook exits 0 silently when node_modules/eslint is missing; a failed install hides lint feedback. On Windows, run pnpm install with VS Code closed (DEC-019).",
     "pnpm/action-setup@v4 runs on deprecated Node 20 (forced to 24); bump when a newer major is available.",
     "Root CI job stays red only on format:check until CC-013 (root format:check also scans template/** without template deps; CC-013 should add template/ to root .prettierignore or install template deps).",
-    "Template pages cannot render in the cloud container without Clerk keys (next dev 500). CC-010 render smoke needs the owner to run `pnpm --dir template dev` with .env and open /sign-in, /sign-up, an edit page and /admin/users/<id>."
+    "Template pages cannot render in the cloud container without Clerk keys (next dev 500). CC-010 merged on owner OK; render smoke still owed: the owner to run `pnpm --dir template dev` with .env and open /sign-in, /sign-up, an edit page and /admin/users/<id>."
   ],
   "do_not": [
     "Delete or rewrite context/doctrine/ books",

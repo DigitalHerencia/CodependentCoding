@@ -8,7 +8,7 @@ priority: p0
 size: m
 labels: [type:refactor, area:template, priority:p0, size:m]
 depends_on: [CC-009]
-status: in_review
+status: done
 ---
 
 # CC-010 · Fix route and feature boundary findings
