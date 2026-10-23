@@ -8,7 +8,7 @@ priority: p2
 size: s
 labels: [type:feature, area:site, priority:p2, size:s]
 depends_on: [CC-006]
-status: todo
+status: done
 ---
 
 # CC-008 · Update landing page content and navigation
@@ -19,16 +19,16 @@ Remove dead links and describe the factory: doctrine, template, CLI, plugin.
 
 ## Scope
 
-- [ ] Header: logo + GitHub link only
-- [ ] Replace CTAs with 'Read the doctrine' (on-page anchor) and 'GitHub'
-- [ ] Add a compact section listing the four components with one line each
-- [ ] Footer: remove FAQ/Terms/Privacy links that pointed nowhere
+- [x] Header: logo + GitHub link only
+- [x] Replace CTAs with 'Read the doctrine' (on-page anchor) and 'GitHub'
+- [x] Add a compact section listing the four components with one line each
+- [x] Footer: remove FAQ/Terms/Privacy links that pointed nowhere
 
 ## Acceptance criteria
 
-- [ ] No link on `/` returns 404
-- [ ] Lighthouse accessibility ≥ 95
-- [ ] Matches design.yaml `surfaces.landing`
+- [x] No link on `/` returns 404
+- [x] Lighthouse accessibility ≥ 95
+- [x] Matches design.yaml `surfaces.landing`
 
 ## Validation
 
