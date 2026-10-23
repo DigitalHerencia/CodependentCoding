@@ -1,0 +1,27 @@
+# {{appName}} — design contract
+# Compiled from: context/docs/Design.md.
+schema: codependent-coding/design/v1
+version: 0.1.0
+updated: {{createdAt}}
+
+brand:
+  color: {{colorYaml}} # null = the template's reviewed default tokens
+  tokens_file: app/globals.css
+  raw_colors_in_components: forbidden
+
+themes: [light, dark]
+accessibility:
+  standard: WCAG 2.2 AA
+  text_contrast_min: 4.5
+  focus_ring: required
+  reduced_motion: respected
+responsive:
+  min_width_px: 360
+  tables_below_md: card lists
+interaction_states:
+  [default, hover, focus-visible, active, disabled, loading, error, empty]
+feedback: { async_results: sonner toast, validation: inline }
+voice: plain, direct, sentence case; buttons are verbs
+
+# App-specific: audience, tone, brand extras. From Design.md §1.
+app: {} # TODO

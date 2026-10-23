@@ -8,7 +8,7 @@ priority: p0
 size: m
 labels: [type:feature, area:cli, priority:p0, size:m]
 depends_on: [CC-029]
-status: todo
+status: in-review
 ---
 
 # CC-030 · Generated-app governance assets

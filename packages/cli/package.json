@@ -11,6 +11,7 @@
     "hipster-stack": "./dist/cli.mjs"
   },
   "files": [
+    "assets",
     "dist",
     "templates"
   ],

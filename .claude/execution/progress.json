@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/progress/v1",
-  "updated": "2026-10-23T16:12:00Z",
+  "updated": "2026-10-23T16:25:00Z",
   "format": "Evidence states: EXECUTED | INSPECTED | NOT_RUN | BLOCKED. Never mark an issue done without EXECUTED evidence for its Validation commands.",
   "milestones": {
     "M0": {
@@ -401,6 +401,13 @@
       "branch": "feat/189-compose-new",
       "decision": "DEC-044",
       "note": "packages/cli/src/compose (composeApp, kit, brand, packageJson) + commands/new.ts. Engine reuses template scripts (compose.mjs closure+compose, modules-schema, ownership, prettier) loaded from the resolved template. Template-pinned tests moved to template/tests/template/ (not copied)."
+    },
+    "CC-030": {
+      "status": "in_review",
+      "github": 190,
+      "branch": "feat/190-app-governance",
+      "decision": "DEC-045",
+      "note": "packages/cli/assets/app-governance (13 files) rendered with {{placeholders}} and the template's Prettier by `new`; template .claude/ no longer copied."
     }
   },
   "completed": [
@@ -2090,6 +2097,46 @@
       "date": "2026-10-23",
       "state": "EXECUTED",
       "issue": "CC-029",
+      "env": "cloud container",
+      "command": "pnpm validate (root)",
+      "result": "exit 0"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-030",
+      "env": "cloud container",
+      "command": "hipster-stack new .sandbox/gov --preset blank --yes --no-install",
+      "result": "exit 0; 329 files + 13 governance files (.claude/contracts x3, .claude/execution x3, CLAUDE.md, context/docs x5, context/specs/issues/README.md); JSON and YAML parse; no {{placeholders}} left"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-030",
+      "env": "cloud container",
+      "command": "wc -l .sandbox/gov/CLAUDE.md",
+      "result": "51"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-030",
+      "env": "cloud container",
+      "command": "hipster-stack new .sandbox/demo --preset crm --color #1d4f5c --yes; pnpm validate; pnpm test; pnpm build",
+      "result": "exit 0 / exit 0 / 46 passed 1 skipped / exit 0 (crm routes built; --primary 192 52% 24%)"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-030",
+      "env": "cloud container",
+      "command": "pnpm test (root)",
+      "result": "3 files, 22 passed (governance shape, placeholders, CLAUDE.md <= 60 lines, every CC-* id from template/eslint in Architecture.md, no factory paths)"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-030",
       "env": "cloud container",
       "command": "pnpm validate (root)",
       "result": "exit 0"

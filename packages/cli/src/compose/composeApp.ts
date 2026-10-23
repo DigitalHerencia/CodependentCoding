@@ -3,14 +3,16 @@ import { existsSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 
 import { applyBrandColor, type BrandResult } from "#cli/compose/brand";
+import { writeGovernance } from "#cli/compose/governance";
 import { loadTemplateKit } from "#cli/compose/kit";
 import { prunePackageJson } from "#cli/compose/packageJson";
 
 /**
- * Not copied: a new app starts its own migration history (`pnpm db:init`), and
- * tests/template/ pins the Maximal Template's full module set.
+ * Not copied: a new app starts its own migration history (`pnpm db:init`),
+ * tests/template/ pins the Maximal Template's full module set, and .claude/ is
+ * the template's own governance (the app gets assets/app-governance instead).
  */
-export const EXCLUDED = ["prisma/migrations/", "tests/template/"];
+export const EXCLUDED = [".claude/", "prisma/migrations/", "tests/template/"];
 
 /** Files the pipeline writes or rewrites; formatted before it returns. */
 const FORMATTED = [
@@ -52,6 +54,7 @@ export interface ComposeAppResult {
   files: number;
   removed: number;
   removedPackages: string[];
+  governance: string[];
   brand: BrandResult | null;
 }
 
@@ -126,6 +129,19 @@ export async function composeApp(
   );
   writeFileSync(pkgPath, JSON.stringify(pruned.pkg));
 
+  const commit = templateCommit(templateDir);
+  const governance = await writeGovernance(
+    outDir,
+    {
+      appName: name,
+      modules: ids,
+      color,
+      templateCommit: commit,
+      now: options.now,
+    },
+    kit.format,
+  );
+
   let brand: BrandResult | null = null;
   if (color) {
     const cssPath = path.join(outDir, "app", "globals.css");
@@ -134,7 +150,7 @@ export async function composeApp(
   }
 
   const hipster = {
-    template: { commit: templateCommit(templateDir), path: templateDir },
+    template: { commit, path: templateDir },
     cli: options.cliVersion,
     createdAt: options.now.toISOString(),
     modules: ids,
@@ -153,6 +169,7 @@ export async function composeApp(
     files,
     removed,
     removedPackages: pruned.removed,
+    governance,
     brand,
   };
 }

@@ -439,6 +439,15 @@
         "Design.md §3.2",
         "DEC-041"
       ]
+    },
+    {
+      "id": "DEC-045",
+      "date": "2026-10-23",
+      "status": "accepted",
+      "title": "CC-030: generated-app governance from static assets, doctrine pre-filled, drift-checked",
+      "context": "Generated apps need the factory's governance shape (router, docs, contracts, execution state) without the factory's content. The template's own .claude/ is stale Maximal Template history that still points at .agents/.",
+      "decision": "packages/cli/assets/app-governance holds 13 files with {{appName}}, {{createdAt}}, {{modules}}, {{modulesList}}, {{templateCommit}}, {{color}}, {{colorYaml}} placeholders; `new` renders them (unknown placeholder = error), refuses to overwrite, and formats them with the template's Prettier; `add` will never write them. Architecture.md §2-4 and AUTH.md §1-11 are copied from the factory doctrine with factory paths removed; app sections are TODO prompts for /idea. A root test fails if any CC-* id in template/eslint is missing from the asset Architecture.md. The CLI no longer copies the template's .claude/. Assets are in root .prettierignore because placeholders are not valid YAML until rendered.",
+      "refs": ["CC-030", "Architecture.md §2-§4", "AUTH.md", "DEC-044"]
     }
   ]
 }
