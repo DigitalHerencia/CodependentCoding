@@ -7,13 +7,4 @@ export const routes = {
   onboarding: "/onboarding",
   dashboard: "/dashboard",
   settings: "/settings/profile",
-  crm: "/crm/pipeline",
-  projects: "/projects",
-  support: "/support/inbox",
-  marketing: "/marketing/campaigns",
-  invoices: "/invoices",
-  social: "/social/calendar",
-  ai: "/ai",
-  portal: "/portal",
-  admin: "/admin/records",
 } as const;
