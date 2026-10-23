@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/progress/v1",
-  "updated": "2026-10-23T06:05:00Z",
+  "updated": "2026-10-23T06:20:00Z",
   "format": "Evidence states: EXECUTED | INSPECTED | NOT_RUN | BLOCKED. Never mark an issue done without EXECUTED evidence for its Validation commands.",
   "milestones": {
     "M0": {
@@ -293,11 +293,12 @@
       "pr": 227
     },
     "CC-016": {
-      "status": "in_progress",
+      "status": "done",
       "github": 176,
       "branch": "test/176-rls-harness",
       "decision": "DEC-032",
-      "note": "tests/rls/{rlsHarness.ts,tenantIsolation.test.ts}; test:rls = vitest --project rls. Seeds every NOT NULL organizationId table from the catalog (2 orgs, up to 2 rows each). Probes select/update/delete by id and by org predicate plus cross-org insert, as app_user. CI job `rls` creates ci/rls-<run_id> (expires +1h), app_user LOGIN NOBYPASSRLS, deletes the branch if: always(). Waiting on the create-branch-action commit SHA from the owner."
+      "note": "tests/rls/{rlsHarness.ts,tenantIsolation.test.ts}; test:rls = vitest --project rls. Seeds every NOT NULL organizationId table from the catalog (2 orgs, up to 2 rows each). Probes select/update/delete by id and by org predicate plus cross-org insert, as app_user. CI job `rls` creates ci/rls-<run_id> (expires +1h), app_user LOGIN NOBYPASSRLS, deletes the branch if: always(). create-branch-action pinned to v6.4.0 (72ed4f6).",
+      "pr": 228
     }
   },
   "completed": [
@@ -317,7 +318,8 @@
     "CC-013",
     "CC-014",
     "CC-015",
-    "CC-017"
+    "CC-017",
+    "CC-016"
   ],
   "evidence": [
     {
@@ -1243,6 +1245,14 @@
       "env": "GitHub Actions run 39909688518 (Neon branch ci/rls-<run_id>)",
       "command": "pnpm test:rls as app_user",
       "result": "8/10 passed; isolation probe timed out at 60s (~1,100 sequential round trips to Neon). Branch created, app_user created, branch deleted. Fixed by grouping probes into 3 statements per table and raising testTimeout to 180s."
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-016",
+      "env": "GitHub Actions run 39910146346, Neon branch ci/rls-<run_id> (deleted after)",
+      "command": "pnpm test:rls connected as app_user (LOGIN NOBYPASSRLS)",
+      "result": "10 passed in 51s; both isolation directions ~10.5s; connection strings masked in log"
     }
   ],
   "known_findings": [

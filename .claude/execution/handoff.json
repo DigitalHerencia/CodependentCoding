@@ -1,14 +1,14 @@
 {
   "$schema": "codependent-coding/execution/handoff/v1",
-  "updated": "2026-10-23T06:05:00Z",
+  "updated": "2026-10-23T06:20:00Z",
   "format": "Overwrite each session. Minimum state the next session needs to resume safely.",
   "status": "ready-for-claude-code",
   "milestone": "M2",
   "current_issue": "CC-016",
-  "next_issue": "CC-016",
-  "queue": ["CC-016", "M2 wrap-up"],
+  "next_issue": "CC-018",
+  "queue": ["M2 wrap-up", "CC-018"],
   "branch": "main",
-  "in_flight": ["CC-016 PR on test/176-rls-harness "],
+  "in_flight": ["CC-016 PR #228 (green, merging)"],
   "notes": [
     "Governance package is uncommitted in the owner's working tree; owner reviews with `git status` / `git diff`, then commits on a branch `chore/governance-package`.",
     "Template already contains the doctrine ESLint plugin (template/eslint/) and the new eslint.config.mjs; CC-009 turns findings into fixes.",
