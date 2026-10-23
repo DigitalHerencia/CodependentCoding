@@ -8,7 +8,7 @@ priority: p1
 size: xs
 labels: [type:chore, area:governance, priority:p1, size:xs]
 depends_on: [CC-012]
-status: in_review
+status: done
 ---
 
 # CC-013 · Prettier baseline across the repo
