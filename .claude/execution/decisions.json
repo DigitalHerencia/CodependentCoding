@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/decisions/v1",
-  "updated": "2026-10-23",
+  "updated": "2026-10-23T07:45:00Z",
   "format": "Append new decisions; never rewrite history. Supersede by adding a new entry and setting status=superseded + superseded_by on the old one.",
   "decisions": [
     {
@@ -353,6 +353,22 @@
       "context": "CC-023 moves RLS into prisma/rls/<owner>.sql and adds db:init. The template already ships migrations that create the same policies (applied on Ivan's Neon test branch), and generated apps start without migrations (the CLI does not copy prisma/migrations).",
       "decision": "prisma/rls/identity.sql (User, Organization, Membership, OrganizationSettings, AuditEvent) and one file per module with tenant tables, written from the policies a migrated database actually has (same names and predicates, readable SQL; CrmActivity's ::uuid variant normalized to the ::text form used by every other table). Each file is idempotent (ENABLE, FORCE, DROP POLICY IF EXISTS, CREATE POLICY) so it can run on top of the existing migrations. scripts/rls-sql.mjs orders files identity first, then manifest module order; db-init.mjs and the CC-016 harness both apply that text. db:init: with no migrations, migrate dev --name init, then migrate dev --create-only --name rls filled with the SQL and applied; with migrations, migrate deploy then prisma db execute of the same SQL. Existing migrations are not rewritten. tests/rlsFiles.test.ts requires every model with a required organizationId (plus User and Organization) to be forced exactly once, in its owner's file.",
       "refs": ["CC-023", "CC-016", "DEC-032", "DEC-037", "AUTH.md §6"]
+    },
+    {
+      "id": "DEC-039",
+      "date": "2026-10-23",
+      "status": "accepted",
+      "title": "CC-024: module boundaries computed from the ownership resolver",
+      "context": "CC-MOD-001/002 need each import's owner. Ownership is already computed by scripts/ownership.mjs (CC-019); the template lint found cross-module imports: billing settings rendering portal's billing template, projects/social importing portal's upload widget, base tests importing several modules, base settings reading module data.",
+      "decision": "The plugin imports ownerOf from scripts/ownership.mjs through the Node subpath import #scripts/* (package.json imports) and reads hipster.modules.json from the lint cwd; with no manifest (factory root) the rule does nothing. Every static, re-export and dynamic import (type-only included) of an internal file is checked; same-owner and base targets pass, ambiguous owners are left to CC-MOD-003, lib/modules/registry.ts is the only base file allowed to import modules. Findings were fixed, not excepted: billing gets its own subscription fetcher/DTO/select and a billing:read permission (granted to OWNER, ADMIN, BILLING, the roles that held portal:billing); the upload widget moves to features/uploads (owned by uploads, a declared dependency of projects, social and portal); tests/domain-workflows.test.ts splits into per-module test folders. validation.yaml CC-MOD-001..003 lose status: planned.",
+      "refs": [
+        "CC-024",
+        "CC-019",
+        "CC-021",
+        "DEC-034",
+        "DEC-036",
+        "Architecture.md §5"
+      ]
     }
   ]
 }

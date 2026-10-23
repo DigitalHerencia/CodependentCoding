@@ -1,5 +1,5 @@
 "use client";
-import { WorkspaceFileUpload } from "@/features/portal/workspaceFileUpload.client";
+import { WorkspaceFileUpload } from "@/features/uploads/workspaceFileUpload.client";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { SocialMediaTemplate } from "@/components/templates/socialMediaTemplate";

@@ -150,9 +150,9 @@ Doctrine is code. `template/eslint/doctrine-map.mjs` is the machine table (layer
 | CC-NAME-002      | No `services/`, `managers/`, `helpers/`...                                                 | `codependent/no-generic-names`       |
 | CC-STYLE-001     | Named exports only (framework files excepted)                                              | `codependent/no-default-export`      |
 | CC-STYLE-002     | `@/` alias, no parent-relative imports (auto-fix)                                          | `codependent/no-parent-imports`      |
-| CC-MOD-001       | A module imports another module only if declared in `dependsOn`                            | `codependent/module-boundaries` (M3) |
-| CC-MOD-002       | Base never imports module-owned files (registry excepted)                                  | `codependent/module-boundaries` (M3) |
-| CC-MOD-003       | Every file has exactly one owner                                                           | `pnpm check:ownership` (M3)          |
+| CC-MOD-001       | A module imports another module only if declared in `dependsOn`                            | `codependent/module-boundaries`      |
+| CC-MOD-002       | Base never imports module-owned files (registry excepted)                                  | `codependent/module-boundaries`      |
+| CC-MOD-003       | Every file has exactly one owner                                                           | `pnpm check:ownership`               |
 | CC-FMT-001 / 002 | Prettier formatting; Tailwind class order                                                  | Prettier + plugin                    |
 | CC-TS-001        | `strict`, `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`                         | tsconfig                             |
 

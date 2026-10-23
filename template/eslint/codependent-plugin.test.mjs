@@ -304,3 +304,44 @@ tester.run("no-parent-imports", rules["no-parent-imports"], {
     },
   ],
 });
+
+// Uses the real hipster.modules.json: projects dependsOn uploads; crm has no deps.
+tester.run("module-boundaries", rules["module-boundaries"], {
+  valid: [
+    {
+      name: "CC-MOD-001 module imports a declared dependency",
+      filename: at("features/projects/projectsFeature.tsx"),
+      code: 'import { Upload } from "@/features/uploads/workspaceFileUpload.client";',
+    },
+    {
+      name: "CC-MOD-001 module imports base",
+      filename: at("features/crm/crmFeature.tsx"),
+      code: 'import { Button } from "@/components/ui/button";',
+    },
+    {
+      name: "CC-MOD-002 the registry imports modules",
+      filename: at("lib/modules/registry.ts"),
+      code: 'import { crmModule } from "@/lib/modules/crm.module";',
+    },
+  ],
+  invalid: [
+    {
+      name: "CC-MOD-001 module imports an undeclared module",
+      filename: at("features/crm/crmFeature.tsx"),
+      code: 'import { x } from "@/lib/fetchers/projectsFetchers";',
+      errors: [{ messageId: "undeclared" }],
+    },
+    {
+      name: "CC-MOD-001 re-exports and dynamic imports count",
+      filename: at("features/crm/crmFeature.tsx"),
+      code: 'export { X } from "@/types/invoicingTypes";\nawait import("@/lib/fetchers/socialFetchers");',
+      errors: [{ messageId: "undeclared" }, { messageId: "undeclared" }],
+    },
+    {
+      name: "CC-MOD-002 base imports a module",
+      filename: at("features/dashboard/dashboardFeature.tsx"),
+      code: 'import { x } from "@/lib/fetchers/crmFetchers";',
+      errors: [{ messageId: "base" }],
+    },
+  ],
+});

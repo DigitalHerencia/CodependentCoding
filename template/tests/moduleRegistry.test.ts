@@ -145,6 +145,14 @@ const legacyGrants: Record<string, string[]> = {
   ],
 };
 
+// Grants added since: billing:read guards Settings > Billing (CC-024), held by
+// the same roles that held portal:billing, which guarded it before.
+const addedGrants: Record<string, string[]> = {
+  OWNER: ["billing:read"],
+  ADMIN: ["billing:read"],
+  BILLING: ["billing:read"],
+};
+
 test("assembled grants match the pre-registry grants", () => {
   const assembled = Object.fromEntries(
     Object.entries(grants).map(([role, set]) => [role, [...set].sort()]),
@@ -152,7 +160,7 @@ test("assembled grants match the pre-registry grants", () => {
   const expected = Object.fromEntries(
     Object.entries(legacyGrants).map(([role, list]) => [
       role,
-      [...list].sort(),
+      [...list, ...(addedGrants[role] ?? [])].sort(),
     ]),
   );
   expect(assembled).toEqual(expected);
