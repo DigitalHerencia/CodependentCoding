@@ -1,3 +1,4 @@
+// Why: Fetchers: tenant-scoped reads (RLS context set, organizationId in every predicate); null when absent.
 import "server-only";
 
 import { assertPermission } from "@/lib/authz/permissions";

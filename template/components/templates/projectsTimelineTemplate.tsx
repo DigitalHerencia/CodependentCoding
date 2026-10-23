@@ -1,3 +1,4 @@
+// Why: Template: lays out tasks on the project's date range from DTOs.
 import Link from "next/link";
 import type { ProjectSummaryDTO, TaskDTO } from "@/types/projectsTypes";
 import {

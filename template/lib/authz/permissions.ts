@@ -49,6 +49,8 @@ export const grants: Record<AppRole, ReadonlySet<Permission>> = {
 };
 
 export class AuthorizationError extends Error {
+  readonly code = "FORBIDDEN";
+
   constructor(permission: Permission) {
     super(`Missing required permission: ${permission}`);
     this.name = "AuthorizationError";

@@ -1,3 +1,4 @@
+// Why: Route only: resolves params and streams the project overview.
 import { Suspense } from "react";
 
 import { ProjectFeature } from "@/features/projects/projectFeature";

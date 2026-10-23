@@ -1,3 +1,4 @@
+// Why: Module definition: navigation, resources and permission grants the registry reads.
 import type { ModuleDefinition } from "@/types/moduleTypes";
 
 export const projectsModule = {

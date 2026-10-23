@@ -1,3 +1,4 @@
+// Why: Template: lays out one task from its DTO; the client island arrives as children.
 import Link from "next/link";
 import type { ReactNode } from "react";
 import type { TaskDTO } from "@/types/projectsTypes";

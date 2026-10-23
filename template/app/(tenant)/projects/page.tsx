@@ -1,3 +1,4 @@
+// Why: Route only: streams the project portfolio behind a skeleton.
 import { Suspense } from "react";
 
 import { ProjectsFeature } from "@/features/projects/projectsFeature";

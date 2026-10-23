@@ -1,4 +1,5 @@
 "use client";
+// Why: Client island: assignment control; calls the action and shows its ActionResult.
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { assignProjectTask } from "@/lib/actions/projectsActions";
@@ -20,19 +21,17 @@ export function TaskFeatureClient({
       className="mt-5 space-y-3"
       action={(data) =>
         startTransition(async () => {
-          try {
-            await assignProjectTask({
-              taskId: task.id,
-              expectedVersion: task.version,
-              assigneeMembershipId: data.get("assignee") || null,
-            });
-            setMessage("Assignee saved.");
-            router.refresh();
-          } catch {
-            setMessage(
-              "Assignment failed. Check access, membership, or reload the latest task.",
-            );
+          const result = await assignProjectTask({
+            taskId: task.id,
+            expectedVersion: task.version,
+            assigneeMembershipId: data.get("assignee") || null,
+          });
+          if (!result.ok) {
+            setMessage(result.error.message);
+            return;
           }
+          setMessage("Assignee saved.");
+          router.refresh();
         })
       }
     >

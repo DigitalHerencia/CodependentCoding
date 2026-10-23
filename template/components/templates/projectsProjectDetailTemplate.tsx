@@ -1,3 +1,4 @@
+// Why: Template: lays out one project's overview from DTOs; features pass panels as children.
 import Link from "next/link";
 import type { ReactNode } from "react";
 import type { ProjectSummaryDTO, TaskDTO } from "@/types/projectsTypes";

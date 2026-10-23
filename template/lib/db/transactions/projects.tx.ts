@@ -1,3 +1,4 @@
+// Why: Transaction helpers: multi-row project invariants that must commit or fail together.
 import "server-only";
 
 import type { Prisma } from "@/generated/prisma/client";
@@ -6,7 +7,12 @@ import {
   projectSummarySelect,
   taskSelect,
 } from "@/lib/db/selects/projects.selects";
-import { InvariantViolationError, ResourceNotFoundError } from "./errors";
+import {
+  ConcurrencyConflictError,
+  InvariantViolationError,
+  ResourceNotFoundError,
+  staleOrMissing,
+} from "./errors";
 
 export async function assignTaskTx(
   tx: Prisma.TransactionClient,
@@ -39,8 +45,12 @@ export async function assignTaskTx(
       version: { increment: 1 },
     },
   });
-  if (result.count !== 1)
-    throw new InvariantViolationError("Task assignment conflicted.");
+  if (result.count !== 1) {
+    const exists = await tx.task.count({
+      where: { id: input.taskId, organizationId: input.organizationId },
+    });
+    throw staleOrMissing("Task", exists > 0);
+  }
   return tx.task.findFirstOrThrow({
     where: { id: input.taskId, organizationId: input.organizationId },
     select: taskSelect,
@@ -102,8 +112,7 @@ export async function completeProjectTx(
     },
     data: { status: "COMPLETED", version: { increment: 1 } },
   });
-  if (result.count !== 1)
-    throw new InvariantViolationError("Project completion conflicted.");
+  if (result.count !== 1) throw new ConcurrencyConflictError("Project");
   return tx.project.findFirstOrThrow({
     where: { id: project.id, organizationId: input.organizationId },
     select: projectSummarySelect,

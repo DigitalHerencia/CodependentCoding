@@ -1,3 +1,4 @@
+// Why: Skeleton: matches the task detail layout.
 import { Skeleton } from "@/components/ui/skeleton";
 
 export function TaskSkeleton() {

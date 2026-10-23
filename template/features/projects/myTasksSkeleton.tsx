@@ -1,3 +1,4 @@
+// Why: Skeleton: matches the my-tasks layout so streaming does not shift the page.
 import { Skeleton } from "@/components/ui/skeleton";
 
 export function MyTasksSkeleton() {

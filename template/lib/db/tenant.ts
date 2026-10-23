@@ -11,6 +11,8 @@ import { requireIdentity } from "@/lib/auth/auth";
 import { prisma } from "@/lib/db/client";
 
 export class TenantContextError extends Error {
+  readonly code = "FORBIDDEN";
+
   constructor(message: string) {
     super(message);
     this.name = "TenantContextError";

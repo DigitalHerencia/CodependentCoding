@@ -1,4 +1,5 @@
 "use client";
+// Why: Client form: validates with the shared schema, calls the action, and shows its ActionResult.
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -41,22 +42,23 @@ export function TaskNewForm({
       className="mx-auto max-w-3xl space-y-5 surface-card p-5"
       onSubmit={handleSubmit(async (values) => {
         setError("");
-        try {
-          const input = { ...values, projectId, dueAt: values.dueAt || null };
-          const saved = task
-            ? await updateTask({
-                ...input,
-                taskId: task.id,
-                expectedVersion: task.version,
-              })
-            : await createTask(input);
-          router.push(`/projects/${projectId}/tasks/${saved.id}`);
-          router.refresh();
-        } catch {
+        const input = { ...values, projectId, dueAt: values.dueAt || null };
+        const result = task
+          ? await updateTask({
+              ...input,
+              taskId: task.id,
+              expectedVersion: task.version,
+            })
+          : await createTask(input);
+        if (!result.ok) {
           setError(
-            "Task could not be saved. Check your input and permissions. If this record changed, reload before editing again.",
+            result.error.code === "CONFLICT"
+              ? "This task changed since you opened it. Reload, then edit again."
+              : result.error.message,
           );
+          return;
         }
+        router.push(`/projects/${projectId}/tasks/${result.data.id}`);
       })}
     >
       <h1 className="type-title">{task ? "Edit task" : "Plan a task"}</h1>

@@ -1,4 +1,5 @@
 "use client";
+// Why: Client island: filters tasks and changes status with optimistic version checks.
 import Link from "next/link";
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
@@ -19,19 +20,17 @@ export function TaskStatusControl({ task }: { task: TaskDTO }) {
       action={(data) =>
         startTransition(async () => {
           setMessage("");
-          try {
-            await updateTaskStatus({
-              taskId: task.id,
-              expectedVersion: task.version,
-              status: data.get("status"),
-            });
-            setMessage("Task updated.");
-            router.refresh();
-          } catch {
-            setMessage(
-              "Unable to update task. Check access or refresh to load the latest version.",
-            );
+          const result = await updateTaskStatus({
+            taskId: task.id,
+            expectedVersion: task.version,
+            status: data.get("status"),
+          });
+          if (!result.ok) {
+            setMessage(result.error.message);
+            return;
           }
+          setMessage("Task updated.");
+          router.refresh();
         })
       }
     >

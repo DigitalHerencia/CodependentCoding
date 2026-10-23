@@ -1,3 +1,4 @@
+// Why: Skeleton: matches the project overview layout.
 import { Skeleton } from "@/components/ui/skeleton";
 
 export function ProjectSkeleton() {

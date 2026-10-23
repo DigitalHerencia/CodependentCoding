@@ -1,3 +1,4 @@
+// Why: Projects models: every table carries organizationId and is covered by prisma/rls/projects.sql.
 enum ProjectStatus {
   PLANNED
   ACTIVE

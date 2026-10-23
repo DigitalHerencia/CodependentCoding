@@ -1,4 +1,4 @@
--- Row-level security for the projects module (AUTH.md §6).
+-- Why: row-level security for the projects module (AUTH.md §6): containment if an app predicate is ever missed.
 -- Idempotent: db:init and test:rls apply it after migrations, and re-running is safe.
 -- Policies read app.organization_id / app.clerk_user_id set per transaction by lib/db/tenant.ts.
 

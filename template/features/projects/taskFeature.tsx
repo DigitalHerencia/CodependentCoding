@@ -1,3 +1,4 @@
+// Why: Server feature: loads one task (null means 404) and composes the detail template.
 import { notFound } from "next/navigation";
 import { ProjectTaskDetailTemplate } from "@/components/templates/projectsTaskDetailTemplate";
 import { getTaskWorkflow } from "@/lib/workflows/projectsWorkflows";

@@ -1,3 +1,4 @@
+// Why: Tests: schema rules, version-conflict handling and template rendering for projects.
 import assert from "node:assert/strict";
 import { test } from "vitest";
 import { createElement } from "react";
@@ -40,6 +41,7 @@ test("task updates reject stale versions instead of reporting success", async ()
         assert.equal(where.version, 4);
         return { count: 0 };
       },
+      count: async () => 1,
     },
   } as unknown as Prisma.TransactionClient;
   await assert.rejects(
@@ -49,7 +51,28 @@ test("task updates reject stale versions instead of reporting success", async ()
       status: "DONE",
       expectedVersion: 4,
     }),
-    /changed after/,
+    { code: "CONFLICT" },
+  );
+});
+
+test("task updates outside the organization are NOT_FOUND, not CONFLICT", async () => {
+  const tx = {
+    task: {
+      updateMany: async () => ({ count: 0 }),
+      count: async ({ where }: { where: { organizationId: string } }) => {
+        assert.equal(where.organizationId, "tenant-a");
+        return 0;
+      },
+    },
+  } as unknown as Prisma.TransactionClient;
+  await assert.rejects(
+    updateTaskStatusTx(tx, {
+      organizationId: "tenant-a",
+      taskId: id,
+      status: "DONE",
+      expectedVersion: 4,
+    }),
+    { code: "NOT_FOUND" },
   );
 });
 
