@@ -1,3 +1,4 @@
+// Why: Route only: resolves params and streams the project timeline.
 import { Suspense } from "react";
 
 import { TimelineFeature } from "@/features/projects/timelineFeature";

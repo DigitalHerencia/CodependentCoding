@@ -1,3 +1,4 @@
+// Why: Types: DTO shapes shared by server and client; no runtime code.
 export interface ProjectSummaryDTO {
   id: string;
   name: string;

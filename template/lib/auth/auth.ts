@@ -10,6 +10,8 @@ import type {
 } from "@/types/accessTypes";
 
 export class AuthenticationRequiredError extends Error {
+  readonly code = "UNAUTHENTICATED";
+
   constructor() {
     super("Authentication is required.");
     this.name = "AuthenticationRequiredError";

@@ -348,3 +348,101 @@ Conflict rule: intent wins; fix the contract, then the enforcement, in the same 
 | Payments                          | Stripe (interpreted by app)                           |
 | Work status                       | GitHub issues/Project                                 |
 | Completion evidence               | Executed commands recorded in `progress.json`         |
+
+## Appendix A. Golden slice: `projects`
+
+`projects` is the reference module that scaffolds copy (CC-027). Every file opens with a one-line `Why:` comment naming its layer's job. Reads follow AUTH.md §5.3: fetchers run in `withAuthenticatedRead`, check `projects:read`, put `organizationId` in every predicate and return `null` when a row is absent, so features call `notFound()`. Writes go through `lib/actions/projectsActions.ts`: authenticate, open the tenant transaction (RLS context set), check `projects:write`, parse with the shared Zod schema, write, then invalidate the affected routes and return an `ActionResult` (AUTH.md §8). A versioned update that matches no row is `CONFLICT` when the row exists in the organization and `NOT_FOUND` otherwise.
+
+The list below is generated; rerun `node scripts/slice-files.mjs projects --write` from `template/` after adding or moving a file.
+
+<!-- slice:projects:start -->
+
+**Routes**
+
+- `app/(tenant)/my-tasks/page.tsx`
+- `app/(tenant)/projects/[projectId]/edit/page.tsx`
+- `app/(tenant)/projects/[projectId]/page.tsx`
+- `app/(tenant)/projects/[projectId]/tasks/[taskId]/edit/page.tsx`
+- `app/(tenant)/projects/[projectId]/tasks/[taskId]/page.tsx`
+- `app/(tenant)/projects/[projectId]/tasks/new/page.tsx`
+- `app/(tenant)/projects/[projectId]/tasks/page.tsx`
+- `app/(tenant)/projects/[projectId]/timeline/page.tsx`
+- `app/(tenant)/projects/new/page.tsx`
+- `app/(tenant)/projects/page.tsx`
+
+**Templates**
+
+- `components/templates/projectsMyTasksTemplate.tsx`
+- `components/templates/projectsProjectDetailTemplate.tsx`
+- `components/templates/projectsTaskDetailTemplate.tsx`
+- `components/templates/projectsTasksTemplate.tsx`
+- `components/templates/projectsTemplate.tsx`
+- `components/templates/projectsTimelineTemplate.tsx`
+
+**Features**
+
+- `features/projects/myTasksFeature.tsx`
+- `features/projects/myTasksSkeleton.tsx`
+- `features/projects/projectEditFeature.tsx`
+- `features/projects/projectFeature.tsx`
+- `features/projects/projectFormSkeleton.tsx`
+- `features/projects/projectNewForm.tsx`
+- `features/projects/projectSkeleton.tsx`
+- `features/projects/projectsFeature.client.tsx`
+- `features/projects/projectsFeature.tsx`
+- `features/projects/projectsSkeleton.tsx`
+- `features/projects/taskEditFeature.tsx`
+- `features/projects/taskFeature.client.tsx`
+- `features/projects/taskFeature.tsx`
+- `features/projects/taskFormSkeleton.tsx`
+- `features/projects/taskNewForm.tsx`
+- `features/projects/taskSkeleton.tsx`
+- `features/projects/tasksFeature.client.tsx`
+- `features/projects/tasksFeature.tsx`
+- `features/projects/tasksSkeleton.tsx`
+- `features/projects/timelineFeature.tsx`
+- `features/projects/timelineSkeleton.tsx`
+
+**Actions**
+
+- `lib/actions/projectsActions.ts`
+
+**Fetchers**
+
+- `lib/fetchers/projectsFetchers.ts`
+
+**Workflows**
+
+- `lib/workflows/projectsWorkflows.ts`
+
+**Database (DTOs, selects, transactions)**
+
+- `lib/db/dto/projects.dto.ts`
+- `lib/db/selects/projects.selects.ts`
+- `lib/db/transactions/projects-update-task-status.tx.ts`
+- `lib/db/transactions/projects.tx.ts`
+
+**Module definition**
+
+- `lib/modules/projects.module.ts`
+
+**Schemas**
+
+- `schemas/projectsSchemas.ts`
+
+**Types**
+
+- `types/projectsTypes.ts`
+
+**Prisma (models, RLS, seed)**
+
+- `prisma/rls/projects.sql`
+- `prisma/schema/projects.prisma`
+- `prisma/seeds/projects.ts`
+
+**Tests**
+
+- `tests/projects/projectsActions.test.ts`
+- `tests/projects/projectsWorkflows.test.ts`
+
+<!-- slice:projects:end -->

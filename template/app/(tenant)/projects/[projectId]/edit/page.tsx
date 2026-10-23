@@ -1,3 +1,4 @@
+// Why: Route only: resolves params and streams the project edit form.
 import { Suspense } from "react";
 
 import { ProjectEditFeature } from "@/features/projects/projectEditFeature";

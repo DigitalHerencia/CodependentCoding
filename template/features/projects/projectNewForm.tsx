@@ -1,4 +1,5 @@
 "use client";
+// Why: Client form: validates with the shared schema, calls the action, and shows its ActionResult.
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -34,26 +35,27 @@ export function ProjectNewForm({ project }: { project?: ProjectSummaryDTO }) {
       className="mx-auto max-w-3xl space-y-5 surface-card p-5"
       onSubmit={handleSubmit(async (values) => {
         setError("");
-        try {
-          const input = {
-            ...values,
-            startsAt: values.startsAt || null,
-            dueAt: values.dueAt || null,
-          };
-          const saved = project
-            ? await updateProject({
-                ...input,
-                projectId: project.id,
-                expectedVersion: project.version,
-              })
-            : await createProject(input);
-          router.push(`/projects/${saved.id}`);
-          router.refresh();
-        } catch {
+        const input = {
+          ...values,
+          startsAt: values.startsAt || null,
+          dueAt: values.dueAt || null,
+        };
+        const result = project
+          ? await updateProject({
+              ...input,
+              projectId: project.id,
+              expectedVersion: project.version,
+            })
+          : await createProject(input);
+        if (!result.ok) {
           setError(
-            "Project could not be saved. Check your dates and permissions, then try again.",
+            result.error.code === "CONFLICT"
+              ? "This project changed since you opened it. Reload, then edit again."
+              : result.error.message,
           );
+          return;
         }
+        router.push(`/projects/${result.data.id}`);
       })}
     >
       <h1 className="type-title">

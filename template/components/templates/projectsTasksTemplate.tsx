@@ -1,3 +1,4 @@
+// Why: Template: lays out the task board grouped by status from DTOs.
 import Link from "next/link";
 import type { ReactNode } from "react";
 import type { TaskDTO } from "@/types/projectsTypes";

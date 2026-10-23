@@ -8,7 +8,7 @@ priority: p0
 size: m
 labels: [type:feature, area:modules, priority:p0, size:m]
 depends_on: [CC-021, CC-022, CC-023]
-status: todo
+status: done
 ---
 
 # CC-027 · Golden module: projects

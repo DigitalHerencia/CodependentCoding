@@ -1,9 +1,13 @@
+// Why: Server feature: loads the project workspace and picks the upcoming open work.
+import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ProjectDetailTemplate } from "@/components/templates/projectsProjectDetailTemplate";
 import { DashboardPanel } from "@/components/blocks/dashboard-layout";
 import { getProjectWorkspaceWorkflow } from "@/lib/workflows/projectsWorkflows";
 export async function ProjectFeature({ projectId }: { projectId: string }) {
-  const { project, tasks } = await getProjectWorkspaceWorkflow(projectId);
+  const workspace = await getProjectWorkspaceWorkflow(projectId);
+  if (!workspace) notFound();
+  const { project, tasks } = workspace;
   const open = tasks
     .filter((task) => !["DONE", "CANCELED"].includes(task.status))
     .sort((left, right) =>

@@ -10,6 +10,8 @@ import { isPrivilegedRole } from "./roles";
 import { assertPermission } from "./permissions";
 
 export class ResourceAuthorizationError extends Error {
+  readonly code = "FORBIDDEN";
+
   constructor(resource: ResourceAccessDescriptor) {
     super(`Access denied for ${resource.kind} in the active organization.`);
     this.name = "ResourceAuthorizationError";

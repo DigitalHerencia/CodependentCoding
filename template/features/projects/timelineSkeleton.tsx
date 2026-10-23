@@ -1,3 +1,4 @@
+// Why: Skeleton: matches the timeline layout.
 import { Skeleton } from "@/components/ui/skeleton";
 
 export function TimelineSkeleton() {

@@ -1,3 +1,4 @@
+// Why: Template: lays out the portfolio with progress per project; the toolbar is a slot.
 import Link from "next/link";
 import type { ReactNode } from "react";
 import type { ProjectSummaryDTO } from "@/types/projectsTypes";

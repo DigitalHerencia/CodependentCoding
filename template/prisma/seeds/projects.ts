@@ -1,3 +1,4 @@
+// Why: Seed: a demo project with tasks for the base organization; fixed IDs keep reseeding idempotent.
 import type { SeedContext } from "@/prisma/seeds/base";
 
 export const seedIds = {

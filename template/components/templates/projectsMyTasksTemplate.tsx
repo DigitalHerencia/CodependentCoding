@@ -1,3 +1,4 @@
+// Why: Template: lays out the my-tasks page from DTOs; no data access, no state.
 import Link from "next/link";
 import type { ReactNode } from "react";
 import type { TaskDTO } from "@/types/projectsTypes";

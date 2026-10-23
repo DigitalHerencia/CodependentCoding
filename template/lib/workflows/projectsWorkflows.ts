@@ -1,3 +1,4 @@
+// Why: Workflows: compose fetchers and derive read models (health, progress, blockers) for features.
 import "server-only";
 
 import {
@@ -26,8 +27,7 @@ export async function getProjectWorkspaceWorkflow(projectId: string) {
     getProject(projectId),
     getProjectTasks(projectId),
   ]);
-  if (!project) throw new Error("Project was not found.");
-  return { project, tasks };
+  return project ? { project, tasks } : null;
 }
 
 export async function calculateMilestoneProgressWorkflow(projectId: string) {
@@ -40,7 +40,9 @@ export async function calculateMilestoneProgressWorkflow(projectId: string) {
 }
 
 export async function calculateProjectHealthWorkflow(projectId: string) {
-  const { project, tasks } = await getProjectWorkspaceWorkflow(projectId);
+  const workspace = await getProjectWorkspaceWorkflow(projectId);
+  if (!workspace) return null;
+  const { project, tasks } = workspace;
   const overdue = tasks.filter(
     (task) =>
       task.dueAt &&

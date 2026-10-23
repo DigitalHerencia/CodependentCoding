@@ -1,3 +1,4 @@
+// Why: Route only: resolves params and streams the project task board.
 import { Suspense } from "react";
 
 import { TasksFeature } from "@/features/projects/tasksFeature";
