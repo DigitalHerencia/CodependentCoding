@@ -1235,6 +1235,14 @@
       "env": "same, after ALTER TABLE \"Task\" DISABLE ROW LEVEL SECURITY (restored afterwards)",
       "command": "pnpm --dir template test:rls",
       "result": "4 failed as intended: catalog check names Task; both cross-tenant probes list 8 Task leaks; missing-context check"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-016",
+      "env": "GitHub Actions run 39909688518 (Neon branch ci/rls-<run_id>)",
+      "command": "pnpm test:rls as app_user",
+      "result": "8/10 passed; isolation probe timed out at 60s (~1,100 sequential round trips to Neon). Branch created, app_user created, branch deleted. Fixed by grouping probes into 3 statements per table and raising testTimeout to 180s."
     }
   ],
   "known_findings": [

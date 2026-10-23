@@ -446,55 +446,46 @@ export async function probeTable(
   const t = quote(table.name);
   const victimIds = victim.rows.get(table.name) ?? [];
   const leaks: string[] = [];
-  const probe = async (label: string, sql: string, params: unknown[]) => {
-    await db.query("SAVEPOINT probe");
-    try {
-      const result = await db.query(sql, params);
-      const count = Number(
-        (result.rows[0] as { count?: string } | undefined)?.count ??
-          result.rowCount ??
-          0,
-      );
-      if (count > 0)
+  const report = (counts: Record<string, string | number>) => {
+    for (const [label, count] of Object.entries(counts)) {
+      if (Number(count) > 0) {
         leaks.push(`${table.name}: ${label} reached ${count} row(s)`);
-    } finally {
-      await db.query("ROLLBACK TO SAVEPOINT probe");
+      }
     }
   };
-
-  await probe(
-    "select without app predicate",
-    `SELECT count(*) FROM ${t} WHERE "organizationId" <> $1`,
-    [actor.organizationId],
+  // One round trip per probe group keeps the suite fast on a remote database.
+  // Writes run inside the caller's transaction, which always rolls back.
+  const params = [actor.organizationId, victim.organizationId, victimIds];
+  const reads = await db.query<Record<string, string>>(
+    `SELECT
+       (SELECT count(*) FROM ${t} WHERE "organizationId" <> $1) AS "select without app predicate",
+       (SELECT count(*) FROM ${t} WHERE id = ANY($3::uuid[])) AS "select by id",
+       (SELECT count(*) FROM ${t} WHERE "organizationId" = $2) AS "select with app predicate"`,
+    params,
   );
-  await probe(
-    "select by id",
-    `SELECT count(*) FROM ${t} WHERE id = ANY($1::uuid[])`,
-    [victimIds],
+  report(reads.rows[0] ?? {});
+  const updates = await db.query<Record<string, string>>(
+    `WITH by_id AS (
+       UPDATE ${t} SET id = id WHERE id = ANY($2::uuid[]) RETURNING 1
+     ), by_org AS (
+       UPDATE ${t} SET id = id WHERE "organizationId" = $1 RETURNING 1
+     )
+     SELECT (SELECT count(*) FROM by_id) AS "update by id",
+            (SELECT count(*) FROM by_org) AS "update with app predicate"`,
+    [victim.organizationId, victimIds],
   );
-  await probe(
-    "select with app predicate",
-    `SELECT count(*) FROM ${t} WHERE "organizationId" = $1`,
-    [victim.organizationId],
+  report(updates.rows[0] ?? {});
+  const deletes = await db.query<Record<string, string>>(
+    `WITH by_id AS (
+       DELETE FROM ${t} WHERE id = ANY($2::uuid[]) RETURNING 1
+     ), by_org AS (
+       DELETE FROM ${t} WHERE "organizationId" = $1 RETURNING 1
+     )
+     SELECT (SELECT count(*) FROM by_id) AS "delete by id",
+            (SELECT count(*) FROM by_org) AS "delete with app predicate"`,
+    [victim.organizationId, victimIds],
   );
-  await probe(
-    "update by id",
-    `UPDATE ${t} SET id = id WHERE id = ANY($1::uuid[])`,
-    [victimIds],
-  );
-  await probe(
-    "update with app predicate",
-    `UPDATE ${t} SET id = id WHERE "organizationId" = $1`,
-    [victim.organizationId],
-  );
-  await probe("delete by id", `DELETE FROM ${t} WHERE id = ANY($1::uuid[])`, [
-    victimIds,
-  ]);
-  await probe(
-    "delete with app predicate",
-    `DELETE FROM ${t} WHERE "organizationId" = $1`,
-    [victim.organizationId],
-  );
+  report(deletes.rows[0] ?? {});
 
   await db.query("SAVEPOINT probe");
   try {

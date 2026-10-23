@@ -36,7 +36,7 @@ export default defineConfig({
         test: {
           name: "rls",
           include: ["tests/rls/**/*.test.ts"],
-          testTimeout: 60_000,
+          testTimeout: 180_000,
           hookTimeout: 300_000,
         },
       },
