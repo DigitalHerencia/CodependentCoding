@@ -310,6 +310,13 @@
       "decision": "DEC-033",
       "pr": 230,
       "note": "template/hipster.modules.json (9 domain, 6 add-on, 10 presets) + scripts/modules-schema.mjs (Zod + semantic checks) + generated hipster.modules.schema.json. `pnpm check:modules` in CI template job."
+    },
+    "CC-019": {
+      "status": "done",
+      "github": 179,
+      "branch": "feat/179-ownership-resolver",
+      "decision": "DEC-034",
+      "note": "template/scripts/ownership.mjs (ownerOf, listFiles, ownershipReport) + check-ownership.mjs; `pnpm check:ownership` reports counts and exits 1 on ambiguity. Ambiguities for CC-020: app/(tenant)/portal/billing/page.tsx (portal, billing), app/(tenant)/social/media/page.tsx (social, media)."
     }
   },
   "completed": [
@@ -331,7 +338,8 @@
     "CC-015",
     "CC-017",
     "CC-016",
-    "CC-018"
+    "CC-018",
+    "CC-019"
   ],
   "evidence": [
     {
@@ -1350,6 +1358,46 @@
       "date": "2026-10-23",
       "state": "EXECUTED",
       "issue": "CC-018",
+      "env": "cloud container",
+      "command": "pnpm --dir template doctrine:test",
+      "result": "44 pass, 0 fail"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-019",
+      "env": "cloud container",
+      "command": "pnpm --dir template check:ownership",
+      "result": "reports counts (base 340, crm 58, projects 40, support 38, marketing 42, invoicing 37, social 23, ai 25, portal 28, admin 36, billing 9, uploads 4, media 3, email 4, inference 3, ratelimit 0); exit 1 listing 2 ambiguities: app/(tenant)/portal/billing/page.tsx (portal, billing), app/(tenant)/social/media/page.tsx (social, media)"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-019",
+      "env": "cloud container",
+      "command": "pnpm --dir template exec vitest run --project unit tests/ownership.test.ts",
+      "result": "13 passed (11 rule cases, ambiguity, template snapshot)"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-019",
+      "env": "cloud container",
+      "command": "pnpm --dir template validate",
+      "result": "pass"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-019",
+      "env": "cloud container",
+      "command": "pnpm --dir template test",
+      "result": "45 passed, 1 skipped"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-019",
       "env": "cloud container",
       "command": "pnpm --dir template doctrine:test",
       "result": "44 pass, 0 fail"
