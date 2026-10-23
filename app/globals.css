@@ -13,16 +13,16 @@
   --radius-control: 0.2rem;
   --space-page: clamp(1rem, 3vw, 2rem);
   --type-heading:
-    'Copperplate Gothic Bold', Copperplate, var(--font-copperplate-fallback),
+    "Copperplate Gothic Bold", Copperplate, var(--font-copperplate-fallback),
     serif;
   --type-body:
-    var(--font-jetbrains-mono), 'JetBrains Mono', ui-monospace, SFMono-Regular,
+    var(--font-jetbrains-mono), "JetBrains Mono", ui-monospace, SFMono-Regular,
     Menlo, Monaco, Consolas, monospace;
   --type-code:
-    var(--font-fira-code), 'Fira Code', ui-monospace, SFMono-Regular, Menlo,
+    var(--font-fira-code), "Fira Code", ui-monospace, SFMono-Regular, Menlo,
     Monaco, Consolas, monospace;
   --type-heritage:
-    var(--font-big-shoulders-display), 'Big Shoulders Display', 'Arial Narrow',
+    var(--font-big-shoulders-display), "Big Shoulders Display", "Arial Narrow",
     sans-serif;
   --brand-glow:
     0 0 0.45rem color-mix(in srgb, var(--signal) 70%, transparent),
@@ -579,7 +579,7 @@ body:has(.builder-page) .site-header nav a:nth-child(4)::after {
 .preview-option,
 .recipe-code,
 .builder-fields input,
-.design-selects button[role='combobox'],
+.design-selects button[role="combobox"],
 .preset-options button,
 .capability-options .capability-option,
 .selected-stack article,
@@ -805,7 +805,7 @@ body:has(.builder-page) .site-header nav a:nth-child(4)::after {
 }
 
 .docs-navigation a:hover,
-.docs-navigation a[data-active='true'] {
+.docs-navigation a[data-active="true"] {
   color: var(--foreground);
   background: var(--signal-soft);
 }
@@ -876,7 +876,7 @@ body:has(.builder-page) .site-header nav a:nth-child(4)::after {
   border-left: 1px solid var(--signal-border);
 }
 
-.docs-book-switch a[data-active='true'] {
+.docs-book-switch a[data-active="true"] {
   color: var(--foreground);
   background: var(--signal-soft);
 }
@@ -1285,15 +1285,15 @@ body:has(.builder-page) .site-header nav a:nth-child(4)::after {
   grid-template-columns: 1fr;
 }
 
-.preset-options button[data-active='true'],
-.capability-options .capability-option[data-active='true'] {
+.preset-options button[data-active="true"],
+.capability-options .capability-option[data-active="true"] {
   border-color: var(--signal);
   color: var(--foreground);
   box-shadow: inset 0 0 1rem var(--signal-soft);
 }
 
-.preset-options button[data-active='true'] > i,
-.capability-options .capability-option[data-active='true'] [role='switch'] {
+.preset-options button[data-active="true"] > i,
+.capability-options .capability-option[data-active="true"] [role="switch"] {
   border-color: var(--signal);
   background: var(--signal);
 }
@@ -1407,7 +1407,7 @@ body:has(.builder-page) .site-header nav a:nth-child(4)::after {
   cursor: pointer;
   text-transform: uppercase;
 }
-.anthimeria-workbench > nav button[data-active='true'] {
+.anthimeria-workbench > nav button[data-active="true"] {
   color: var(--site-cyan);
   box-shadow: inset 3px 0 var(--site-cyan);
   background: #0d171b;
@@ -2227,7 +2227,7 @@ textarea {
   text-decoration: none;
   text-transform: uppercase;
   font-family:
-    var(--font-copperplate-fallback), 'Copperplate Gothic Bold', serif;
+    var(--font-copperplate-fallback), "Copperplate Gothic Bold", serif;
   font-weight: 800;
   letter-spacing: 0.08em;
   padding: 0.5rem 0;
@@ -2273,14 +2273,14 @@ textarea {
 }
 h1,
 .display-title {
-  font-family: var(--font-big-shoulders-display), 'Archivo Black', sans-serif;
+  font-family: var(--font-big-shoulders-display), "Archivo Black", sans-serif;
   text-transform: uppercase;
   line-height: 0.96;
 }
 h2,
 h3 {
   font-family:
-    var(--font-copperplate-fallback), 'Copperplate Gothic Bold', serif;
+    var(--font-copperplate-fallback), "Copperplate Gothic Bold", serif;
 }
 code,
 pre {

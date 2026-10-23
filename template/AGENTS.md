@@ -17,13 +17,13 @@ context/docs/
 └── tech-requirements.md
 ```
 
-| File | Responsibility |
-| --- | --- |
-| `architecture.md` | Implemented application architecture and responsibility boundaries |
-| `auth.md` | Authentication, authorization, tenancy, onboarding, and access intent |
-| `design.md` | Visual system and presentation intent |
-| `prd.md` | Product purpose, capabilities, access model, and product requirements |
-| `tech-requirements.md` | Technical implementation and validation requirements |
+| File                   | Responsibility                                                        |
+| ---------------------- | --------------------------------------------------------------------- |
+| `architecture.md`      | Implemented application architecture and responsibility boundaries    |
+| `auth.md`              | Authentication, authorization, tenancy, onboarding, and access intent |
+| `design.md`            | Visual system and presentation intent                                 |
+| `prd.md`               | Product purpose, capabilities, access model, and product requirements |
+| `tech-requirements.md` | Technical implementation and validation requirements                  |
 
 ## Build instructions
 
@@ -56,11 +56,11 @@ They do not override current explicit owner instruction.
 └── validation.yaml
 ```
 
-| File | Responsibility |
-| --- | --- |
-| `product.yaml` | Product, architecture, route, access, and application-boundary contract |
-| `design.yaml` | Design-system and presentation contract |
-| `validation.yaml` | Validation commands, evidence rules, and deterministic checks |
+| File              | Responsibility                                                          |
+| ----------------- | ----------------------------------------------------------------------- |
+| `product.yaml`    | Product, architecture, route, access, and application-boundary contract |
+| `design.yaml`     | Design-system and presentation contract                                 |
+| `validation.yaml` | Validation commands, evidence rules, and deterministic checks           |
 
 Contracts translate the human governance.
 
@@ -77,11 +77,11 @@ They do not create independent product intent.
 └── handoff.json
 ```
 
-| File | Responsibility |
-| --- | --- |
-| `decisions.json` | Decisions recorded during implementation work |
-| `progress.json` | Work performed, status, and validation evidence |
-| `handoff.json` | Current state and continuation information for the next Codex session |
+| File             | Responsibility                                                        |
+| ---------------- | --------------------------------------------------------------------- |
+| `decisions.json` | Decisions recorded during implementation work                         |
+| `progress.json`  | Work performed, status, and validation evidence                       |
+| `handoff.json`   | Current state and continuation information for the next Codex session |
 
 Execution files record actions and evidence.
 

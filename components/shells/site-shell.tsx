@@ -1,7 +1,7 @@
-import Image from 'next/image';
-import type { ReactNode } from 'react';
-import { SiteFooter } from '@/components/nav/site-footer';
-import { SiteHeader } from '@/components/nav/site-header';
+import Image from "next/image";
+import type { ReactNode } from "react";
+import { SiteFooter } from "@/components/nav/site-footer";
+import { SiteHeader } from "@/components/nav/site-header";
 
 export function SiteShell({ children }: { children: ReactNode }) {
   return (

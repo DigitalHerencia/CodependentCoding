@@ -2,7 +2,10 @@ import "server-only";
 
 import type { Prisma } from "@/generated/prisma/client";
 
-import { projectSummarySelect, taskSelect } from "@/lib/db/selects/projects.selects";
+import {
+  projectSummarySelect,
+  taskSelect,
+} from "@/lib/db/selects/projects.selects";
 import { InvariantViolationError, ResourceNotFoundError } from "./errors";
 
 export async function assignTaskTx(

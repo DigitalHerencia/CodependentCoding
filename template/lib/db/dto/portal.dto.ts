@@ -1,7 +1,4 @@
-import type {
-  PortalBillingDTO,
-  PortalDocumentDTO,
-} from "@/types/portalTypes";
+import type { PortalBillingDTO, PortalDocumentDTO } from "@/types/portalTypes";
 import type {
   PortalBillingSubscriptionRecord,
   PortalDocumentRecord,

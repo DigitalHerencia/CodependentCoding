@@ -1,4 +1,4 @@
-import type { NextConfig } from 'next';
+import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
@@ -6,10 +6,10 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   turbopack: {},
   typescript: {
-    tsconfigPath: 'tsconfig.build.json',
+    tsconfigPath: "tsconfig.build.json",
   },
   images: {
-    formats: ['image/avif', 'image/webp'],
+    formats: ["image/avif", "image/webp"],
   },
 };
 

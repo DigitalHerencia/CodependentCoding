@@ -31,7 +31,7 @@ export function ContactWithCards({
     <section className={cn("px-4 py-16 md:px-8 lg:px-16", className)}>
       <div className="mx-auto max-w-5xl">
         <div className="mb-12 space-y-4 text-center">
-          <h2 className="text-3xl font-black uppercase tracking-tight md:text-4xl">
+          <h2 className="text-3xl font-black tracking-tight uppercase md:text-4xl">
             {title}
           </h2>
           <p className="text-lg font-medium text-muted-foreground">

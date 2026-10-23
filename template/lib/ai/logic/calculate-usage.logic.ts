@@ -15,4 +15,3 @@ export function calculateUsage(items: AiUsageItem[]) {
     { inputTokens: 0, outputTokens: 0, cost: 0, generationCount: 0 },
   );
 }
-

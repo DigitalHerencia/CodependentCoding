@@ -44,14 +44,14 @@ export function ComparisonTable({
   className,
 }: ComparisonTableProps) {
   return (
-    <section className={cn("py-16 px-4 md:px-8 lg:px-16", className)}>
-      <div className="max-w-5xl mx-auto">
-        <div className="text-center mb-12 space-y-3">
-          <h2 className="text-4xl md:text-5xl font-black uppercase tracking-tight">
+    <section className={cn("px-4 py-16 md:px-8 lg:px-16", className)}>
+      <div className="mx-auto max-w-5xl">
+        <div className="mb-12 space-y-3 text-center">
+          <h2 className="text-4xl font-black tracking-tight uppercase md:text-5xl">
             {title}
           </h2>
           {subtitle && (
-            <p className="text-muted-foreground max-w-xl mx-auto">{subtitle}</p>
+            <p className="mx-auto max-w-xl text-muted-foreground">{subtitle}</p>
           )}
         </div>
         <div className="overflow-x-auto border-3 border-foreground shadow-[4px_4px_0px_hsl(var(--shadow-color))]">
@@ -60,7 +60,7 @@ export function ComparisonTable({
               <tr className="border-b-3 border-foreground bg-muted">
                 <th
                   scope="col"
-                  className="p-4 text-left text-sm font-black uppercase tracking-wide"
+                  className="p-4 text-left text-sm font-black tracking-wide uppercase"
                 >
                   Feature
                 </th>
@@ -69,7 +69,7 @@ export function ComparisonTable({
                     key={col}
                     scope="col"
                     className={cn(
-                      "p-4 text-center text-sm font-black uppercase tracking-wide",
+                      "p-4 text-center text-sm font-black tracking-wide uppercase",
                       i === highlightColumn &&
                         "bg-primary text-primary-foreground",
                     )}
