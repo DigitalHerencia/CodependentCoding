@@ -32,7 +32,7 @@
     "Lint hook exits 0 silently when node_modules/eslint is missing; a failed install hides lint feedback. On Windows, run pnpm install with VS Code closed (DEC-019).",
     "pnpm/action-setup@v4 runs on deprecated Node 20 (forced to 24); bump when a newer major is available.",
     "Root CI job stays red only on format:check until CC-013 (root format:check also scans template/** without template deps; CC-013 should add template/ to root .prettierignore or install template deps).",
-    "Template pages cannot render in the cloud container without Clerk keys. Owner checked CC-010 pages locally; an edit page and /admin/users/<id> are still unchecked. Template has no `test` script until CC-017."
+    "Template pages cannot render in the cloud container without Clerk keys. Owner checked all CC-010 pages locally (passed). Template has no `test` script until CC-017."
   ],
   "do_not": [
     "Delete or rewrite context/doctrine/ books",

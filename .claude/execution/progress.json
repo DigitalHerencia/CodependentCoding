@@ -214,7 +214,7 @@
       "github": 170,
       "branch": "fix/170-route-feature-boundaries",
       "decision": "DEC-025",
-      "note": "Template lint 73 -> 50, no new findings. 0 CC-ROUTE/CC-CLIENT/CC-FEAT-002/004 left; 2 CC-FEAT-001 remain in features/explorer/maximalTemplateExplorer.tsx, owned by CC-011 Scope. Typecheck 13 errors unchanged, none in touched files. Page render smoke NOT_RUN: next dev returns 500 on /sign-in without Clerk keys (same on main); needs owner check with .env. Owner chose merge now, pages check later (2026-10-23). Owner page check 2026-10-23 04:29 local (Windows, .env.local, Clerk dev): /, /sign-in, /sign-up, sign-in POST, Clerk webhook, /dashboard, /admin/users, /projects/new all 200 and rendered (log + 6 screenshots). Still unchecked: an edit page (e.g. /projects/<id>/edit) and /admin/users/<id>.",
+      "note": "Template lint 73 -> 50, no new findings. 0 CC-ROUTE/CC-CLIENT/CC-FEAT-002/004 left; 2 CC-FEAT-001 remain in features/explorer/maximalTemplateExplorer.tsx, owned by CC-011 Scope. Typecheck 13 errors unchanged, none in touched files. Page render smoke NOT_RUN: next dev returns 500 on /sign-in without Clerk keys (same on main); needs owner check with .env. Owner chose merge now, pages check later (2026-10-23). Owner page check 2026-10-23 04:29 local (Windows, .env.local, Clerk dev): /, /sign-in, /sign-up, sign-in POST, Clerk webhook, /dashboard, /admin/users, /projects/new all 200 and rendered (log + 6 screenshots). Second owner check 2026-10-23 04:41 local: /admin/users/<id> 200 with identity and role controls; /projects/new createProject saved; /projects/<id>/edit 200 and updateProject saved then redirected; /marketing/campaigns/new, /portal/documents, /my-tasks 200. Render smoke PASSED.",
       "remaining_findings": {
         "@typescript-eslint/no-non-null-assertion": 13,
         "react-refresh/only-export-components": 10,
@@ -995,6 +995,14 @@
       "env": "linux node 22.22.0, pnpm 12.3.4",
       "command": "pnpm --dir template test",
       "result": "NOT_RUN: no test script in template until CC-017; webhook integration test needs DATABASE_URL_TEST"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-010",
+      "env": "windows pwsh, node 24.14.0 (owner)",
+      "command": "owner: pnpm --dir template dev; open /admin/users/<id>, /projects/<id>/edit (submit), /projects/new (submit), /marketing/campaigns/new",
+      "result": "all GET 200; createProject and updateProject (expectedVersion 1) succeeded and redirected; screenshots show rendered pages. CC-010 manual render check fully passed."
     }
   ],
   "known_findings": [
