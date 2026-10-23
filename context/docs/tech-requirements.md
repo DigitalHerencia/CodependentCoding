@@ -146,7 +146,7 @@ Removed: `.agents/`, `packages/core`, `packages/schema`, `packages/loaded-vibes`
 
 - TypeScript, run with `tsx` in dev, bundled with `tsdown` for linking.
 - Locates the template via `HIPSTER_TEMPLATE` env or the CLI's own repo path.
-- Composition pipeline: copy template (excluding `node_modules`, `.next`, `generated`, `prisma/migrations`, tests of removed modules) → compute ownership → delete files owned by unselected modules → strip `// @module <id>` tagged lines → rewrite `lib/modules/registry.ts` → prune `package.json` deps declared only by removed modules → rebuild `.env.example` → write `hipster.json` → copy generated-app governance → apply brand color token → `pnpm install` → `git init`.
+- Composition pipeline: copy template (excluding `node_modules`, `.next`, `generated`, `prisma/migrations`, `tests/template/` (pins the full template), tests of removed modules) → compute ownership → delete files owned by unselected modules → strip `// @module <id>` tagged lines → rewrite `lib/modules/registry.ts` → prune `package.json` deps declared only by removed modules → rebuild `.env.example` → write `hipster.json` → copy generated-app governance → apply brand color token → `pnpm install` → `git init`.
 - `slice` templates live in `packages/cli/templates/slice/` and are derived from the `projects` module; field DSL: `name:string, amount:decimal?, status:enum(open|won|lost), dueAt:datetime?, ownerId:ref(User)`.
 - No network access during composition. Provisioning is a separate, opt-in step.
 

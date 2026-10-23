@@ -22,15 +22,26 @@ import { BASE, listFiles, ownerOf } from "./ownership.mjs";
 
 const REGISTRY = "lib/modules/registry.ts";
 
-/** The selection plus everything it depends on, in manifest order. */
+/**
+ * The selection plus everything it depends on, in manifest order. Throws on an
+ * unknown id or a dependency cycle (the trail names the cycle).
+ */
 export function closure(manifest, selected) {
   const keep = new Set();
+  const trail = [];
   const visit = (id) => {
+    if (trail.includes(id)) {
+      throw new Error(
+        `dependency cycle: ${[...trail.slice(trail.indexOf(id)), id].join(" -> ")}`,
+      );
+    }
     if (keep.has(id)) return;
     const entry = manifest.modules.find((candidate) => candidate.id === id);
     if (!entry) throw new Error(`unknown module "${id}"`);
+    trail.push(id);
+    (entry.dependsOn ?? []).forEach(visit);
+    trail.pop();
     keep.add(id);
-    entry.dependsOn.forEach(visit);
   };
   selected.forEach(visit);
   return manifest.modules.map(({ id }) => id).filter((id) => keep.has(id));
@@ -55,9 +66,11 @@ export function renderRegistry(ids) {
 }
 
 /**
+ * @param {{ exclude?: string[] }} [options] path prefixes not copied (the CLI
+ *   leaves out prisma/migrations; a new app starts with its own history)
  * @returns {{ modules: string[], files: number, removed: number }}
  */
-export function compose(root, outDir, selected) {
+export function compose(root, outDir, selected, { exclude = [] } = {}) {
   const raw = JSON.parse(
     readFileSync(path.join(root, "hipster.modules.json"), "utf8"),
   );
@@ -74,6 +87,7 @@ export function compose(root, outDir, selected) {
   for (const file of listFiles(root)) {
     const source = path.join(root, file);
     if (!existsSync(source)) continue;
+    if (exclude.some((prefix) => file.startsWith(prefix))) continue;
     const { owner } = ownerOf(file, manifest);
     if (owner !== BASE && owner !== null && removedIds.has(owner)) {
       removed += 1;

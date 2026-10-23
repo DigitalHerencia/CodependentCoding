@@ -315,7 +315,7 @@ cli:
     prompts: [app name, preset or modules, brand color]
     pipeline:
       - resolve dependsOn closure
-      - copy template excluding node_modules, .next, generated, prisma/migrations
+      - copy template excluding node_modules, .next, generated, prisma/migrations, tests/template
       - delete files owned by unselected modules
       - strip tagged prisma lines
       - rewrite registry

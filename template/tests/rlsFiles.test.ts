@@ -45,7 +45,7 @@ function forcedTables() {
 
 test("every tenant table has forced RLS in its owner's file", () => {
   const models = tenantModels();
-  expect(models.size).toBeGreaterThan(30);
+  expect(models.size).toBeGreaterThan(0);
   expect(Object.fromEntries(forcedTables())).toEqual(
     Object.fromEntries(models),
   );

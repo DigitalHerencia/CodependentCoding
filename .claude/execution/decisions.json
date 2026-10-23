@@ -423,6 +423,22 @@
         "tech-requirements.md §9",
         "Architecture.md §6"
       ]
+    },
+    {
+      "id": "DEC-044",
+      "date": "2026-10-23",
+      "status": "accepted",
+      "title": "CC-029: CLI composes through the template's own scripts; template-pinned tests stay in the template",
+      "context": "The template already owns the manifest schema, ownership rules, compose file steps and .env.example renderer (CC-018..CC-026). A generated blank app failed its own pnpm test because several template tests pin the full module set (grants, dashboard, sidebar, ownership snapshot, RLS model count).",
+      "decision": "packages/cli/src/compose/composeApp.ts loads template/scripts/{compose,modules-schema}.mjs and the template's Prettier from the resolved template (needs the template's install), then: closure (now detects cycles) -> compose() with exclude [prisma/migrations/, tests/template/] -> prune package.json deps only removed modules declare + rename -> optional brand color -> hipster.json -> Prettier on written files. new.ts adds prompts/flags (--preset, --modules, --all, --color, --name, --yes, --no-install, --no-git), prisma validate with the template's Prisma (cwd outside the app), pnpm install --no-frozen-lockfile, git init. Brand: --primary = chosen hex as HSL triplet, --primary-foreground = whichever palette source contrasts more (warn under 4.5:1), --signal follows --primary only if that token exists (globals.css has none today). Without --color the template's reviewed tokens stay and hipster.json color is null (the documented #2f7a8d default measures 4.35:1 on the template foreground). Template tests that pin the full module set move to template/tests/template/; the generic invariants stay and their sanity thresholds became > 0.",
+      "refs": [
+        "CC-029",
+        "Architecture.md §6",
+        "tech-requirements.md §9",
+        "application.yaml cli.new.pipeline",
+        "Design.md §3.2",
+        "DEC-041"
+      ]
     }
   ]
 }

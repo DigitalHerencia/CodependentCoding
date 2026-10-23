@@ -3,8 +3,8 @@ import { readFileSync } from "node:fs";
 
 import { Command } from "commander";
 
-import { registerCommands } from "./commands/index";
-import { resolveTemplate } from "./manifest/template";
+import { registerCommands } from "#cli/commands/index";
+import { resolveTemplate } from "#cli/manifest/template";
 
 // src/ (tsx) and dist/ (bundle) both sit one level below package.json.
 const pkg = JSON.parse(
@@ -26,7 +26,7 @@ export function buildProgram(): Command {
         return `\nTemplate: not found. ${(error as Error).message}`;
       }
     });
-  return registerCommands(program);
+  return registerCommands(program, pkg.version);
 }
 
 await buildProgram().parseAsync(process.argv);
