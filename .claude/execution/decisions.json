@@ -218,6 +218,15 @@
       "context": "CC-008 asks for a 'Read the doctrine' on-page anchor and a compact section listing the four components, but names no anchor target. The root layout's metadata description still used retired vocabulary (TypeScripture, Ontologies, Simples, Anthimeria) and no other issue owns it.",
       "decision": "The four-component section is the anchor target (id=doctrine), with one line per component taken from PRD §6. The GitHub link is a plain <a> to the public repo in the header and the CTA row. Footer keeps only the Digital Herencia wordmark. Rewrite the metadata description to name the four components. Dead CSS for deleted routes stays for CC-013.",
       "refs": ["CC-008", "CC-013", "DEC-021"]
+    },
+    {
+      "id": "DEC-024",
+      "date": "2026-10-23",
+      "status": "accepted",
+      "title": "CC-009: config and scripts already present; auto-fix only",
+      "context": "CC-009 Scope asks to wire doctrine into template/eslint.config.mjs and add doctrine:test and lint:fix scripts. Both were already on main (governance package / CC-001). lint:fix does not run Prettier, so template format:check stays red.",
+      "decision": "Confirm rather than re-add the config and scripts. Commit only the lint:fix output as its own commit. Leave the 73 remaining findings (layer-boundaries, non-null assertions, react-refresh, img, filename, use-client) to CC-010..012 and formatting to CC-013.",
+      "refs": ["CC-009", "CC-010", "CC-011", "CC-012", "CC-013"]
     }
   ]
 }
