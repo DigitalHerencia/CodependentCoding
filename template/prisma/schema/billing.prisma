@@ -1,0 +1,26 @@
+enum SubscriptionStatus {
+  TRIALING
+  ACTIVE
+  PAST_DUE
+  PAUSED
+  CANCELED
+}
+
+model BillingSubscription {
+  id                     String             @id @default(uuid()) @db.Uuid
+  organizationId         String             @unique @db.Uuid
+  provider               String
+  providerCustomerId     String?
+  providerSubscriptionId String?            @unique
+  planKey                String
+  status                 SubscriptionStatus
+  currentPeriodEnd       DateTime?          @db.Timestamptz(6)
+  cancelAtPeriodEnd      Boolean            @default(false)
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
+
+  @@index([provider, providerCustomerId])
+}

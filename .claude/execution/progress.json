@@ -330,7 +330,15 @@
       "github": 181,
       "branch": "feat/181-module-registry",
       "decision": "DEC-036",
-      "note": "types/moduleTypes.ts, lib/modules/<id>.module.ts x15, registry.ts, navigation.ts; shell, dashboard, permissions and resources read installedModules. Owner decision card on the AUTH.md permission model open (recommended: keep current model)."
+      "note": "types/moduleTypes.ts, lib/modules/<id>.module.ts x15, registry.ts, navigation.ts; shell, dashboard, permissions and resources read installedModules. Owner decision card on the AUTH.md permission model open (recommended: keep current model). Owner chose 'Registry now, migrate later' (2026-10-23); migration is #234.",
+      "pr": 233
+    },
+    "CC-022": {
+      "status": "done",
+      "github": 182,
+      "branch": "refactor/182-prisma-multi-file",
+      "decision": "DEC-037",
+      "note": "prisma/schema/{base,identity,<module>}.prisma, 57 // @module tags, prisma.config.ts schema: prisma/schema. pnpm check:schema-modules in CI."
     }
   },
   "completed": [
@@ -355,7 +363,8 @@
     "CC-018",
     "CC-019",
     "CC-020",
-    "CC-021"
+    "CC-021",
+    "CC-022"
   ],
   "evidence": [
     {
@@ -1513,6 +1522,70 @@
       "env": "-",
       "command": "render the tenant sidebar in a browser",
       "result": "needs Clerk keys; covered by the navigation unit test and build only"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-022",
+      "env": "cloud container",
+      "command": "pnpm --dir template exec prisma validate",
+      "result": "The schemas at prisma/schema are valid"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-022",
+      "env": "cloud container",
+      "command": "old schema.prisma vs prisma/schema/*.prisma, normalized block comparison",
+      "result": "64 blocks, 0 differences"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-022",
+      "env": "cloud container",
+      "command": "node template/scripts/check-schema-modules.mjs",
+      "result": "ok for each of 10 modules with schema files (plus dependents) and for all modules removed"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-022",
+      "env": "cloud container",
+      "command": "check-schema-modules with the @module tag removed from Organization.crmAccounts",
+      "result": "exit 1: FAIL without crm (negative check), file restored"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-022",
+      "env": "cloud container",
+      "command": "pnpm --dir template validate",
+      "result": "pass"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-022",
+      "env": "cloud container",
+      "command": "pnpm --dir template test",
+      "result": "51 passed, 1 skipped (ownership snapshot updated)"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-022",
+      "env": "cloud container",
+      "command": "pnpm --dir template build (dummy env)",
+      "result": "exit 0"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-022",
+      "env": "cloud container",
+      "command": "pnpm --dir template test:rls (local Postgres 16)",
+      "result": "10 passed"
     }
   ],
   "known_findings": [

@@ -8,6 +8,7 @@
     "build": "next build --turbopack",
     "check:modules": "node scripts/check-modules.mjs",
     "check:ownership": "node scripts/check-ownership.mjs",
+    "check:schema-modules": "node scripts/check-schema-modules.mjs",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint": "eslint . --max-warnings=0",
