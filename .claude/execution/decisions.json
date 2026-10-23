@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/decisions/v1",
-  "updated": "2026-10-23T02:30:00Z",
+  "updated": "2026-10-23T04:55:00Z",
   "format": "Append new decisions; never rewrite history. Supersede by adding a new entry and setting status=superseded + superseded_by on the old one.",
   "decisions": [
     {
@@ -236,6 +236,15 @@
       "context": "The *EditForm.tsx (and campaignNewForm.tsx) files were server components that fetch a record and render the real form, so they were classified as feature-form and tripped CC-FEAT-002. signIn/signUpFeature own RHF state. app/(tenant)/layout.tsx called an onboarding fetcher. The client companion imported appRoles from server-only lib/authz/roles.",
       "decision": "Rename the fetching wrappers to *EditFeature.tsx / campaignNewFeature.tsx (feature layer) and keep the forms receiving records as props; rename sign-in/up to signInForm/signUpForm (block import aliased to SignUpFormPanel); add features/onboarding/onboardingGateFeature.tsx that checks onboarding and renders TenantShell, the route keeps only the identity redirect; move appRoles to lib/constants/roles.ts (the path CC-011 names), lib/authz/roles re-exports it, and both admin client files import from constants. schemas/adminSchemas.ts and types/access.ts stay for CC-011. features/explorer (2 CC-FEAT-001) stays for CC-011, whose Scope says move or delete it.",
       "refs": ["CC-010", "CC-011"]
+    },
+    {
+      "id": "DEC-026",
+      "date": "2026-10-23",
+      "status": "accepted",
+      "title": "CC-011: webhook persistence in *.tx.ts; provider-config reads in workflows; exact BigInt pipeline value",
+      "context": "Route handlers and workflows may not import lib/db/provider (prisma-runtime), and transactions may not import integrations, so Stripe/SendGrid webhook claim/apply/fail logic had no legal home except lib/db/transactions. getAiPlaygroundConfiguration and getIntegrationStatuses read provider configuration, not persisted rows. lib/env does not exist. calculate-pipeline-value.logic.ts was unused and imported Prisma.Decimal from @prisma/client, which Prisma 7 no longer exports (a type error on main).",
+      "decision": "Add stripe-webhook.tx.ts and sendgrid-webhook.tx.ts holding the logic unchanged (type-only imports for the input shapes); routes verify through the integration, map the Stripe subscription through the integration, then call the transaction. WebhookIdentityConflictError is imported from webhook-event.tx. Move getAiPlaygroundConfiguration to aiWorkflows.ts and getIntegrationStatuses to organizationWorkflows.ts (its only workflow caller) and delete the emptied integrationFetchers.ts. Rewrite calculatePipelineValue with BigInt at 6 decimal places (Decimal(19,4) value x whole percent), typed by CrmDealSummaryDTO; it is exact, where Prisma.Decimal rounds at 20 significant digits. Delete features/explorer (unused generator debris, Scope allows delete).",
+      "refs": ["CC-011", "CC-010"]
     }
   ]
 }

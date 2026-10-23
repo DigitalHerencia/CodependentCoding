@@ -5,7 +5,7 @@ import type {
   AccessContext,
   AppRole,
   AuthenticatedIdentity,
-} from "@/types/access";
+} from "@/types/accessTypes";
 
 import { requireIdentity } from "@/lib/auth/auth";
 import { prisma } from "@/lib/db/client";

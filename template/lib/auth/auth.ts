@@ -7,7 +7,7 @@ import type {
   AuthenticatedSession,
   CurrentSessionContext,
   CurrentUserProfile,
-} from "@/types/access";
+} from "@/types/accessTypes";
 
 export class AuthenticationRequiredError extends Error {
   constructor() {

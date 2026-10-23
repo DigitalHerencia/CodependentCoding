@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { SubscriptionStatus } from "@/generated/prisma/enums";
-import { appRoles } from "@/lib/authz/roles";
+import { appRoles } from "@/lib/constants/roles";
 
 export const adminRoleSchema = z.enum(appRoles);
 

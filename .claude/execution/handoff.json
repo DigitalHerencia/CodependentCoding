@@ -1,12 +1,12 @@
 {
   "$schema": "codependent-coding/execution/handoff/v1",
-  "updated": "2026-10-23T02:30:00Z",
+  "updated": "2026-10-23T04:55:00Z",
   "format": "Overwrite each session. Minimum state the next session needs to resume safely.",
   "status": "ready-for-claude-code",
   "milestone": "M2",
-  "current_issue": "CC-011",
-  "next_issue": "CC-011",
-  "queue": ["CC-011"],
+  "current_issue": "CC-012",
+  "next_issue": "CC-012",
+  "queue": ["CC-012"],
   "branch": "main",
   "in_flight": [],
   "notes": [
@@ -25,13 +25,14 @@
     "CC-008 (DEC-023): header logo + GitHub, CTAs Read the doctrine (#doctrine) + GitHub, four-component section, footer placeholders removed. Lighthouse a11y 100 (headless). M1 issues all done.",
     "M1 closed 2026-10-23: release profile on main 86477ca recorded in progress.json (milestones.M1 + evidence); summary comment on PR #218. Root lint/typecheck/test/build green; root and template format:check red (CC-013); template lint/typecheck/build red (CC-009..012).",
     "CC-009 (DEC-024): template lint:fix 241 -> 73; 0 CC-SRV-001/CC-STYLE-002 left; typecheck 13 errors unchanged; doctrine:test 44/44. Remaining findings by rule ID in progress.json issues.CC-009.remaining_findings.",
-    "CC-010 (DEC-025): template lint 73 -> 50. Edit wrappers are now *EditFeature.tsx; auth forms are signInForm/signUpForm; onboarding gate in features/onboarding/onboardingGateFeature.tsx; appRoles in lib/constants/roles.ts. CC-011 still owns features/explorer (2 CC-FEAT-001), adminSchemas roles import, types/access.ts rename."
+    "CC-010 (DEC-025): template lint 73 -> 50. Edit wrappers are now *EditFeature.tsx; auth forms are signInForm/signUpForm; onboarding gate in features/onboarding/onboardingGateFeature.tsx; appRoles in lib/constants/roles.ts. CC-011 still owns features/explorer (2 CC-FEAT-001), adminSchemas roles import, types/access.ts rename.",
+    "CC-011 (DEC-026): template lint 0 CC-* findings (34 left: non-null-assertion 13, react-refresh 10, no-img-element 10, unused-vars 1 for CC-012). Webhook persistence in lib/db/transactions/{stripe,sendgrid}-webhook.tx.ts; features/explorer and integrationFetchers.ts deleted; types/access.ts -> accessTypes.ts."
   ],
   "risks": [
     "Lint hook exits 0 silently when node_modules/eslint is missing; a failed install hides lint feedback. On Windows, run pnpm install with VS Code closed (DEC-019).",
     "pnpm/action-setup@v4 runs on deprecated Node 20 (forced to 24); bump when a newer major is available.",
     "Root CI job stays red only on format:check until CC-013 (root format:check also scans template/** without template deps; CC-013 should add template/ to root .prettierignore or install template deps).",
-    "Template pages cannot render in the cloud container without Clerk keys (next dev 500). CC-010 merged on owner OK; render smoke still owed: the owner to run `pnpm --dir template dev` with .env and open /sign-in, /sign-up, an edit page and /admin/users/<id>."
+    "Template pages cannot render in the cloud container without Clerk keys. Owner checked all CC-010 pages locally (passed). Template has no `test` script until CC-017."
   ],
   "do_not": [
     "Delete or rewrite context/doctrine/ books",

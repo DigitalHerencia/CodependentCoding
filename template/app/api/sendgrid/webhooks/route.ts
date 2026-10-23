@@ -1,8 +1,6 @@
-import {
-  parseSendGridWebhookEvents,
-  processSendGridWebhookEvents,
-  WebhookIdentityConflictError,
-} from "@/lib/integrations/sendgrid/webhooks";
+import { recordSendGridWebhookEventsTx } from "@/lib/db/transactions/sendgrid-webhook.tx";
+import { WebhookIdentityConflictError } from "@/lib/db/transactions/webhook-event.tx";
+import { parseSendGridWebhookEvents } from "@/lib/integrations/sendgrid/webhooks";
 
 export async function POST(request: Request) {
   const payload = await request.text();
@@ -22,7 +20,7 @@ export async function POST(request: Request) {
   }
 
   try {
-    await processSendGridWebhookEvents(events);
+    await recordSendGridWebhookEventsTx(events);
     return Response.json({ received: true });
   } catch (error) {
     if (error instanceof WebhookIdentityConflictError) {

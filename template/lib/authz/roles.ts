@@ -2,7 +2,7 @@ import "server-only";
 
 import type { MembershipRole } from "@/generated/prisma/enums";
 import { appRoles } from "@/lib/constants/roles";
-import type { AppRole } from "@/types/access";
+import type { AppRole } from "@/types/accessTypes";
 
 export { appRoles };
 

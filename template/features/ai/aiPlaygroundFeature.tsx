@@ -1,4 +1,4 @@
-import { getAiPlaygroundConfiguration } from "@/lib/fetchers/aiFetchers";
+import { getAiPlaygroundConfiguration } from "@/lib/workflows/aiWorkflows";
 import { AiPlaygroundFeatureClient } from "./aiPlaygroundFeature.client";
 export async function AiPlaygroundFeature() {
   return (

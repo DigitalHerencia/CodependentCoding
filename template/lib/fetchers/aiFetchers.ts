@@ -6,18 +6,6 @@ import { assertPermission } from "@/lib/authz/permissions";
 import { toAiGenerationDTO, toAiUsageSummaryDTO } from "@/lib/db/dto/ai.dto";
 import { aiGenerationSelect } from "@/lib/db/selects/ai.selects";
 import { withAuthenticatedRead } from "@/lib/db/tenant";
-import { isHuggingFaceConfigured } from "@/lib/integrations/hugging-face/client";
-import { getConfiguredHuggingFaceModel } from "@/lib/integrations/hugging-face/inference";
-
-export async function getAiPlaygroundConfiguration() {
-  return withAuthenticatedRead(async (_tx, access) => {
-    assertPermission(access, "ai:read");
-    return {
-      configured: isHuggingFaceConfigured(),
-      model: getConfiguredHuggingFaceModel(),
-    };
-  });
-}
 
 export async function getMyAiGenerations(limit = 50) {
   return withAuthenticatedRead(async (tx, access) => {

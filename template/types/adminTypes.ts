@@ -1,5 +1,5 @@
 import type { SubscriptionStatus } from "@/generated/prisma/enums";
-import type { AppRole } from "./access";
+import type { AppRole } from "./accessTypes";
 
 export interface AdminMembershipDTO {
   id: string;
