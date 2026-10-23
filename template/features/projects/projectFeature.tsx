@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ProjectDetailTemplate } from "@/components/templates/projectDetailTemplate";
+import { ProjectDetailTemplate } from "@/components/templates/projectsProjectDetailTemplate";
 import { DashboardPanel } from "@/components/blocks/dashboard-layout";
 import { getProjectWorkspaceWorkflow } from "@/lib/workflows/projectsWorkflows";
 export async function ProjectFeature({ projectId }: { projectId: string }) {

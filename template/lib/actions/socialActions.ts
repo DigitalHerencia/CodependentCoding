@@ -1,6 +1,6 @@
 "use server";
 import { z } from "zod";
-import { downloadWorkspaceFileWorkflow } from "@/lib/workflows/assetWorkflows";
+import { downloadWorkspaceFileWorkflow } from "@/lib/workflows/uploadsWorkflows";
 
 import {
   approveSocialPostSchema,
@@ -13,7 +13,7 @@ import { toSocialPostDTO } from "@/lib/db/dto/social.dto";
 import { socialPostSelect } from "@/lib/db/selects/social.selects";
 import { withTenantTransaction } from "@/lib/db/tenant";
 import { ResourceNotFoundError } from "@/lib/db/transactions/errors";
-import { scheduleSocialPostTx } from "@/lib/db/transactions/schedule-social-post.tx";
+import { scheduleSocialPostTx } from "@/lib/db/transactions/social-schedule-post.tx";
 import { approveSocialPostTx } from "@/lib/db/transactions/social.tx";
 
 const characterLimits = {

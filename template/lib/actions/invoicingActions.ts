@@ -14,7 +14,7 @@ import { withTenantTransaction } from "@/lib/db/tenant";
 import {
   calculateInvoiceTotals,
   createInvoiceTx,
-} from "@/lib/db/transactions/create-invoice.tx";
+} from "@/lib/db/transactions/invoicing-create-invoice.tx";
 import {
   expenseSelect,
   invoiceSelect,
@@ -23,7 +23,7 @@ import {
   approveInvoiceTx,
   submitExpenseTx,
 } from "@/lib/db/transactions/invoicing.tx";
-import { updateInvoiceStatusTx } from "@/lib/db/transactions/update-invoice-status.tx";
+import { updateInvoiceStatusTx } from "@/lib/db/transactions/invoicing-update-invoice-status.tx";
 
 export async function createInvoice(rawInput: unknown) {
   const input = createInvoiceSchema.parse(rawInput);

@@ -10,7 +10,7 @@ import { assertPermission } from "@/lib/authz/permissions";
 import { toAiGenerationDTO } from "@/lib/db/dto/ai.dto";
 import { aiGenerationSelect } from "@/lib/db/selects/ai.selects";
 import { withTenantTransaction } from "@/lib/db/tenant";
-import { completeAiGenerationTx } from "@/lib/db/transactions/complete-ai-generation.tx";
+import { completeAiGenerationTx } from "@/lib/db/transactions/ai-complete-generation.tx";
 import {
   failAiGenerationTx,
   lockAiRateLimitTx,

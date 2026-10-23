@@ -18,7 +18,7 @@ import {
 import { withTenantTransaction } from "@/lib/db/tenant";
 import { ResourceNotFoundError } from "@/lib/db/transactions/errors";
 import { assignTaskTx } from "@/lib/db/transactions/projects.tx";
-import { updateTaskStatusTx } from "@/lib/db/transactions/update-task-status.tx";
+import { updateTaskStatusTx } from "@/lib/db/transactions/projects-update-task-status.tx";
 import { ConcurrencyConflictError } from "@/lib/db/transactions/errors";
 
 export async function createProject(rawInput: unknown) {

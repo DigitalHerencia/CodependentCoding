@@ -1,4 +1,4 @@
-import { recordStripeWebhookTx } from "@/lib/db/transactions/stripe-webhook.tx";
+import { recordStripeWebhookTx } from "@/lib/db/transactions/billing-record-stripe-webhook.tx";
 import { WebhookIdentityConflictError } from "@/lib/db/transactions/webhook-event.tx";
 import { getBillingSubscriptionInputFromEvent } from "@/lib/integrations/stripe/subscriptions";
 import { verifyStripeWebhook } from "@/lib/integrations/stripe/webhooks";

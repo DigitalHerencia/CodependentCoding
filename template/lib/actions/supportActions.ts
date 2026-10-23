@@ -19,7 +19,7 @@ import {
   supportTicketSelect,
 } from "@/lib/db/selects/support.selects";
 import { withTenantTransaction } from "@/lib/db/tenant";
-import { updateTicketStatusTx } from "@/lib/db/transactions/update-ticket-status.tx";
+import { updateTicketStatusTx } from "@/lib/db/transactions/support-update-ticket-status.tx";
 import { lockSupportTicketNumberTx } from "@/lib/db/transactions/support.tx";
 
 export async function createSupportTicket(rawInput: unknown) {

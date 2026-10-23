@@ -28,7 +28,7 @@ import {
   ConcurrencyConflictError,
   ResourceNotFoundError,
 } from "@/lib/db/transactions/errors";
-import { updateDealStageTx } from "@/lib/db/transactions/update-deal-stage.tx";
+import { updateDealStageTx } from "@/lib/db/transactions/crm-update-deal-stage.tx";
 
 export async function createCrmDeal(rawInput: unknown) {
   const input = createCrmDealSchema.parse(rawInput);

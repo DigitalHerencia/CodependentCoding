@@ -549,7 +549,7 @@ export const filenameConventions = [
   {
     dir: /^lib\/db\/transactions\/$/,
     file: /^([a-z0-9]+(-[a-z0-9]+)*\.tx|errors)\.ts$/,
-    example: "update-deal-stage.tx.ts",
+    example: "crm-update-deal-stage.tx.ts",
   },
   {
     dir: /^schemas\/$/,

@@ -1,6 +1,5 @@
 "use server";
 
-import { uploadWorkspaceAssetWorkflow } from "@/lib/workflows/assetWorkflows";
 import { organizationSettingsSchema } from "@/schemas/commonSchemas";
 import { requireIdentity } from "@/lib/auth/auth";
 import { assertPermission } from "@/lib/authz/permissions";
@@ -42,8 +41,4 @@ export async function updateOrganizationSettings(rawInput: unknown) {
     });
     return toOrganizationDTO(record);
   });
-}
-
-export async function uploadWorkspaceAsset(formData: FormData) {
-  return uploadWorkspaceAssetWorkflow(formData);
 }

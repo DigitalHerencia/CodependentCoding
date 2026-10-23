@@ -2,40 +2,23 @@
 
 exports[`ownership report for the current template 1`] = `
 {
-  "ambiguous": [
-    {
-      "candidates": [
-        "portal",
-        "billing",
-      ],
-      "path": "app/(tenant)/portal/billing/page.tsx",
-      "rule": "segment",
-    },
-    {
-      "candidates": [
-        "social",
-        "media",
-      ],
-      "path": "app/(tenant)/social/media/page.tsx",
-      "rule": "segment",
-    },
-  ],
+  "ambiguous": [],
   "modules": {
     "admin": 36,
-    "ai": 25,
-    "billing": 9,
-    "crm": 58,
-    "email": 4,
+    "ai": 26,
+    "billing": 11,
+    "crm": 61,
+    "email": 5,
     "inference": 3,
-    "invoicing": 37,
+    "invoicing": 39,
     "marketing": 42,
     "media": 3,
-    "portal": 28,
-    "projects": 40,
+    "portal": 30,
+    "projects": 46,
     "ratelimit": 0,
-    "social": 23,
-    "support": 38,
-    "uploads": 4,
+    "social": 25,
+    "support": 39,
+    "uploads": 6,
   },
 }
 `;

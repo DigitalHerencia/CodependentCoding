@@ -104,7 +104,7 @@ tester.run("layer-boundaries", rules["layer-boundaries"], {
     },
     {
       name: "CC-TX-001 transaction calls integration",
-      filename: at("lib/db/transactions/create-invoice.tx.ts"),
+      filename: at("lib/db/transactions/invoicing-create-invoice.tx.ts"),
       code: 'import { charge } from "@/lib/integrations/stripe/checkout";',
       errors: [{ messageId: "denied" }],
     },
@@ -204,13 +204,13 @@ tester.run("no-fetcher-writes", rules["no-fetcher-writes"], {
 tester.run("no-transaction-network", rules["no-transaction-network"], {
   valid: [
     {
-      filename: at("lib/db/transactions/create-invoice.tx.ts"),
+      filename: at("lib/db/transactions/invoicing-create-invoice.tx.ts"),
       code: "tx.invoice.create({});",
     },
   ],
   invalid: [
     {
-      filename: at("lib/db/transactions/create-invoice.tx.ts"),
+      filename: at("lib/db/transactions/invoicing-create-invoice.tx.ts"),
       code: 'fetch("https://api.example.com");',
       errors: [{ messageId: "network" }],
     },
@@ -241,7 +241,10 @@ tester.run("no-raw-sql", rules["no-raw-sql"], {
 tester.run("filename-convention", rules["filename-convention"], {
   valid: [
     { filename: at("lib/fetchers/crmFetchers.ts"), code: "" },
-    { filename: at("lib/db/transactions/update-deal-stage.tx.ts"), code: "" },
+    {
+      filename: at("lib/db/transactions/crm-update-deal-stage.tx.ts"),
+      code: "",
+    },
     { filename: at("components/blocks/hero-sections.tsx"), code: "" },
   ],
   invalid: [

@@ -20,7 +20,7 @@
     "test:rls": "vitest run --project rls",
     "test:e2e": "playwright test",
     "typecheck": "next typegen && tsc --noEmit",
-    "validate": "pnpm format:check && pnpm lint && pnpm typecheck",
+    "validate": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm check:modules && pnpm check:ownership",
     "postinstall": "prisma generate"
   },
   "packageManager": "pnpm@12.3.4",

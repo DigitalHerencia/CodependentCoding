@@ -317,6 +317,13 @@
       "branch": "feat/179-ownership-resolver",
       "decision": "DEC-034",
       "note": "template/scripts/ownership.mjs (ownerOf, listFiles, ownershipReport) + check-ownership.mjs; `pnpm check:ownership` reports counts and exits 1 on ambiguity. Ambiguities for CC-020: app/(tenant)/portal/billing/page.tsx (portal, billing), app/(tenant)/social/media/page.tsx (social, media)."
+    },
+    "CC-020": {
+      "status": "done",
+      "github": 180,
+      "branch": "refactor/180-ownership-renames",
+      "decision": "DEC-035",
+      "note": "12 transactions, 6 templates, assetWorkflows -> uploadsWorkflows, uploadsActions split from commonActions; owns globs for portal/social route trees. check:ownership 0 ambiguities, now in validate + CI."
     }
   },
   "completed": [
@@ -339,7 +346,8 @@
     "CC-017",
     "CC-016",
     "CC-018",
-    "CC-019"
+    "CC-019",
+    "CC-020"
   ],
   "evidence": [
     {
@@ -1401,6 +1409,46 @@
       "env": "cloud container",
       "command": "pnpm --dir template doctrine:test",
       "result": "44 pass, 0 fail"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-020",
+      "env": "cloud container",
+      "command": "pnpm --dir template check:ownership",
+      "result": "exit 0, 0 ambiguities (base 322, crm 61, projects 46, support 39, marketing 42, invoicing 39, social 25, ai 26, portal 30, admin 36, billing 11, uploads 6, media 3, email 5, inference 3, ratelimit 0)"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-020",
+      "env": "cloud container",
+      "command": "pnpm --dir template validate",
+      "result": "pass (format:check, lint, typecheck, check:modules, check:ownership)"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-020",
+      "env": "cloud container",
+      "command": "pnpm --dir template test",
+      "result": "45 passed, 1 skipped (ownership snapshot updated)"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-020",
+      "env": "cloud container",
+      "command": "pnpm --dir template doctrine:test",
+      "result": "44 pass, 0 fail"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-020",
+      "env": "cloud container",
+      "command": "pnpm --dir template build (dummy env)",
+      "result": "Compiled successfully"
     }
   ],
   "known_findings": [

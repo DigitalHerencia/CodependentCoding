@@ -10,9 +10,9 @@ import { assertPermission } from "@/lib/authz/permissions";
 import { toPortalDocumentDTO } from "@/lib/db/dto/portal.dto";
 import { portalDocumentSelect } from "@/lib/db/selects/portal.selects";
 import { withTenantTransaction } from "@/lib/db/tenant";
-import { downloadWorkspaceFileWorkflow } from "@/lib/workflows/assetWorkflows";
+import { downloadWorkspaceFileWorkflow } from "@/lib/workflows/uploadsWorkflows";
 import { sharePortalDocumentTx } from "@/lib/db/transactions/portal.tx";
-import { addPortalVersionTx } from "@/lib/db/transactions/add-portal-version.tx";
+import { addPortalVersionTx } from "@/lib/db/transactions/portal-add-version.tx";
 
 export async function createPortalDocument(rawInput: unknown) {
   const input = createPortalDocumentSchema.parse(rawInput);
