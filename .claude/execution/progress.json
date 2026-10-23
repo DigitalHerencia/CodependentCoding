@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/progress/v1",
-  "updated": "2026-10-23T02:30:00Z",
+  "updated": "2026-10-23T04:55:00Z",
   "format": "Evidence states: EXECUTED | INSPECTED | NOT_RUN | BLOCKED. Never mark an issue done without EXECUTED evidence for its Validation commands.",
   "milestones": {
     "M0": {
@@ -214,7 +214,7 @@
       "github": 170,
       "branch": "fix/170-route-feature-boundaries",
       "decision": "DEC-025",
-      "note": "Template lint 73 -> 50, no new findings. 0 CC-ROUTE/CC-CLIENT/CC-FEAT-002/004 left; 2 CC-FEAT-001 remain in features/explorer/maximalTemplateExplorer.tsx, owned by CC-011 Scope. Typecheck 13 errors unchanged, none in touched files. Page render smoke NOT_RUN: next dev returns 500 on /sign-in without Clerk keys (same on main); needs owner check with .env. Owner chose merge now, pages check later (2026-10-23).",
+      "note": "Template lint 73 -> 50, no new findings. 0 CC-ROUTE/CC-CLIENT/CC-FEAT-002/004 left; 2 CC-FEAT-001 remain in features/explorer/maximalTemplateExplorer.tsx, owned by CC-011 Scope. Typecheck 13 errors unchanged, none in touched files. Page render smoke NOT_RUN: next dev returns 500 on /sign-in without Clerk keys (same on main); needs owner check with .env. Owner chose merge now, pages check later (2026-10-23). Owner page check 2026-10-23 04:29 local (Windows, .env.local, Clerk dev): /, /sign-in, /sign-up, sign-in POST, Clerk webhook, /dashboard, /admin/users, /projects/new all 200 and rendered (log + 6 screenshots). Still unchecked: an edit page (e.g. /projects/<id>/edit) and /admin/users/<id>.",
       "remaining_findings": {
         "@typescript-eslint/no-non-null-assertion": 13,
         "react-refresh/only-export-components": 10,
@@ -228,6 +228,19 @@
         "@typescript-eslint/no-unused-vars": 1
       },
       "pr": 221
+    },
+    "CC-011": {
+      "status": "in_review",
+      "github": 171,
+      "branch": "refactor/171-server-boundaries-naming",
+      "decision": "DEC-026",
+      "note": "Template lint 50 -> 34, 0 CC-* findings. Typecheck 13 -> 12 (calculate-pipeline-value @prisma/client error gone). `pnpm --dir template test` does not exist yet (CC-017); webhook integration test is Clerk-only and needs DATABASE_URL_TEST, NOT_RUN.",
+      "remaining_findings": {
+        "@typescript-eslint/no-non-null-assertion": 13,
+        "react-refresh/only-export-components": 10,
+        "@next/next/no-img-element": 10,
+        "@typescript-eslint/no-unused-vars": 1
+      }
     }
   },
   "completed": [
@@ -934,6 +947,54 @@
       "env": "linux node 22.22.0, pnpm 12.3.4",
       "command": "next dev; curl /sign-in /sign-up",
       "result": "500 both: Clerk publishable key missing in cloud container; render smoke needs owner .env"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-010",
+      "env": "windows pwsh, node 24.14.0 (owner)",
+      "command": "owner: pnpm --dir template dev (Windows, .env.local)",
+      "result": "GET / /sign-in /sign-up /dashboard /admin/users /projects/new 200; POST /sign-in 200; POST /api/clerk/webhooks 200; screenshots show pages rendered. Edit page and /admin/users/<id> not opened."
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-011",
+      "env": "linux node 22.22.0, pnpm 12.3.4",
+      "command": "pnpm --dir template lint",
+      "result": "exit 1: 34 problems (24 errors, 10 warnings), was 50; 0 CC-* findings"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-011",
+      "env": "linux node 22.22.0, pnpm 12.3.4",
+      "command": "pnpm --dir template typecheck",
+      "result": "exit 2: 12 errors (was 13), all in components/blocks/* and lib/workflows/crm/logic/*, none in CC-011 files"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-011",
+      "env": "linux node 22.22.0, pnpm 12.3.4",
+      "command": "pnpm --dir template doctrine:test",
+      "result": "exit 0: tests 44, pass 44, fail 0"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-011",
+      "env": "linux node 22.22.0, pnpm 12.3.4",
+      "command": "tsx --conditions=react-server: calculatePipelineValue vs decimal.js reference, 5 cases",
+      "result": "4 identical; 1 large value differs only because the reference rounds at 20 significant digits (new result is exact)"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "NOT_RUN",
+      "issue": "CC-011",
+      "env": "linux node 22.22.0, pnpm 12.3.4",
+      "command": "pnpm --dir template test",
+      "result": "NOT_RUN: no test script in template until CC-017; webhook integration test needs DATABASE_URL_TEST"
     }
   ],
   "known_findings": [
