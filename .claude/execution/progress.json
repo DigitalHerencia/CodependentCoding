@@ -1,11 +1,14 @@
 {
   "$schema": "codependent-coding/execution/progress/v1",
-  "updated": "2026-10-23T00:30:00Z",
+  "updated": "2026-10-23T00:40:00Z",
   "format": "Evidence states: EXECUTED | INSPECTED | NOT_RUN | BLOCKED. Never mark an issue done without EXECUTED evidence for its Validation commands.",
   "milestones": {
     "M0": {
-      "status": "in-progress",
-      "issues": ["CC-001", "CC-002", "CC-003", "CC-004", "CC-005"]
+      "status": "done",
+      "closed": "2026-10-23",
+      "issues": ["CC-001", "CC-002", "CC-003", "CC-004", "CC-005"],
+      "prs": [207, 208, 210, 211, 212, 213],
+      "note": "All M0 issues merged. Release profile run on main 851a63f: only doctrine tests and root test pass; template and root validate fail on pre-existing code owned by CC-006/007/009-013. Compose not runnable until the CLI compose command exists (M4)."
     },
     "M1": {
       "status": "todo",
@@ -420,6 +423,85 @@
       "command": "merge_pull_request squash #160",
       "result": "405 merge conflict after #159; setup-node v7 applied on branch claude/project-thread-0iivk6 instead and #160 closed as superseded",
       "issue": "deps"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "milestone": "M0",
+      "env": "linux node 22.22.0, pnpm 12.3.4, main 851a63f",
+      "command": "pnpm --dir template validate",
+      "result": "exit 1 at format:check: 25 files unformatted (CC-013)"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "milestone": "M0",
+      "env": "linux node 22.22.0, pnpm 12.3.4, main 851a63f",
+      "command": "pnpm --dir template lint",
+      "result": "exit 1: 241 problems (231 errors, 10 warnings) (CC-009..011)"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "milestone": "M0",
+      "env": "linux node 22.22.0, pnpm 12.3.4, main 851a63f",
+      "command": "pnpm --dir template typecheck",
+      "result": "exit 2: 13 TS errors in components/blocks + lib/workflows/crm (Prisma client not generated locally) (CC-012)"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "milestone": "M0",
+      "env": "linux node 22.22.0, pnpm 12.3.4, main 851a63f",
+      "command": "pnpm --dir template build",
+      "result": "exit 1: Failed to type check, same errors as typecheck (CC-012)"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "milestone": "M0",
+      "env": "linux node 22.22.0, pnpm 12.3.4, main 851a63f",
+      "command": "pnpm format:check (root)",
+      "result": "exit 1: 240 files unformatted (CC-013)"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "milestone": "M0",
+      "env": "linux node 22.22.0, pnpm 12.3.4, main 851a63f",
+      "command": "pnpm lint (root)",
+      "result": "exit 1: 159 problems (131 errors, 28 warnings) (CC-006/007)"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "milestone": "M0",
+      "env": "linux node 22.22.0, pnpm 12.3.4, main 851a63f",
+      "command": "pnpm typecheck (root)",
+      "result": "exit 2: 250 TS errors in components/** (CC-006)"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "milestone": "M0",
+      "env": "linux node 22.22.0, pnpm 12.3.4, main 851a63f",
+      "command": "pnpm test (root)",
+      "result": "exit 0, no test files"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "NOT_RUN",
+      "milestone": "M0",
+      "command": "compose for blank + every preset + --all",
+      "result": "hipster-stack compose does not exist yet (CC-028 onward, M4)"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "milestone": "M0",
+      "env": "linux node 22.22.0, pnpm 12.3.4, main 851a63f",
+      "command": "pnpm --dir template doctrine:test",
+      "result": "tests 44, pass 44, fail 0"
     }
   ],
   "known_findings": [
