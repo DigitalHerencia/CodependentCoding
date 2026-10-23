@@ -8,7 +8,7 @@ priority: p0
 size: m
 labels: [type:test, area:template, priority:p0, size:m]
 depends_on: [CC-012]
-status: todo
+status: done
 ---
 
 # CC-016 · RLS cross-tenant test harness against real Postgres
