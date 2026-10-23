@@ -18,7 +18,6 @@ export function SiteFooter() {
           />
         </Link>
         <nav aria-label="Footer navigation">
-          <Link href="/simples/pure-ui/faq-section">FAQ</Link>
           <span aria-disabled="true">TERMS</span>
           <span aria-disabled="true">PRIVACY</span>
         </nav>

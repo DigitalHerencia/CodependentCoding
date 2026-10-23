@@ -1,6 +1,4 @@
 import Image from 'next/image';
-import Link from 'next/link';
-import type { Route } from 'next';
 
 export function LandingHero() {
   return (
@@ -25,17 +23,6 @@ export function LandingHero() {
           <br />
           with provenance that won&apos;t rust.
         </p>
-        <div className="landing-actions">
-          <Link className="brand-button" href="/ontologies">
-            Get started
-          </Link>
-          <Link
-            className="brand-button brand-button-outline"
-            href={'/typescripture' as Route}
-          >
-            More info
-          </Link>
-        </div>
         <strong>Nothing to borrow. We checked.</strong>
       </section>
       <Image

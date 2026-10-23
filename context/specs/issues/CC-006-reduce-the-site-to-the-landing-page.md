@@ -8,7 +8,7 @@ priority: p1
 size: m
 labels: [type:refactor, area:site, priority:p1, size:m]
 depends_on: [CC-002]
-status: todo
+status: done
 ---
 
 # CC-006 · Reduce the site to the landing page

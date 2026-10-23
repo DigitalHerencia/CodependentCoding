@@ -1,6 +1,5 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { SimplesNavigation } from './simples-navigation';
 
 export function SiteHeader() {
   return (
@@ -18,18 +17,6 @@ export function SiteHeader() {
           priority
         />
       </Link>
-      <nav aria-label="Primary navigation">
-        <Link className="nav-link" href="/ontologies">
-          ONTOLOGIES
-        </Link>
-        <SimplesNavigation />
-        <Link className="nav-link" href="/anthimeria">
-          ANTHIMERIA
-        </Link>
-        <Link className="nav-link" href="/maximal-template">
-          MAXIMAL
-        </Link>
-      </nav>
     </header>
   );
 }

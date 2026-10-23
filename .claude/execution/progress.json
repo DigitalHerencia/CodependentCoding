@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/progress/v1",
-  "updated": "2026-10-23T00:40:00Z",
+  "updated": "2026-10-23T01:00:00Z",
   "format": "Evidence states: EXECUTED | INSPECTED | NOT_RUN | BLOCKED. Never mark an issue done without EXECUTED evidence for its Validation commands.",
   "milestones": {
     "M0": {
@@ -11,7 +11,7 @@
       "note": "All M0 issues merged. Release profile run on main 851a63f: only doctrine tests and root test pass; template and root validate fail on pre-existing code owned by CC-006/007/009-013. Compose not runnable until the CLI compose command exists (M4)."
     },
     "M1": {
-      "status": "todo",
+      "status": "in-progress",
       "issues": ["CC-006", "CC-007", "CC-008"]
     },
     "M2": {
@@ -160,6 +160,13 @@
         }
       ],
       "decision": "DEC-019"
+    },
+    "CC-006": {
+      "status": "done",
+      "github": 166,
+      "branch": "refactor/166-reduce-site-to-landing-page",
+      "decision": "DEC-021",
+      "note": "Only / remains. Root lint criterion: app/, components/, lib/ and root configs lint clean; remaining 38 findings are all in packages/core and packages/loaded-vibes, deleted by CC-007."
     }
   },
   "completed": [
@@ -502,6 +509,70 @@
       "env": "linux node 22.22.0, pnpm 12.3.4, main 851a63f",
       "command": "pnpm --dir template doctrine:test",
       "result": "tests 44, pass 44, fail 0"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-006",
+      "env": "linux node 22.22.0, pnpm 12.3.4",
+      "command": "pnpm build",
+      "result": "exit 0; Route (app): ○ / and ○ /_not-found only"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-006",
+      "env": "linux node 22.22.0, pnpm 12.3.4",
+      "command": "pnpm typecheck",
+      "result": "exit 0 (main: 250 errors)"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-006",
+      "env": "linux node 22.22.0, pnpm 12.3.4",
+      "command": "pnpm lint",
+      "result": "exit 1: 38 problems (36 errors, 2 warnings), all in packages/core (11 files) and packages/loaded-vibes (6 files), owned by CC-007; main: 159"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-006",
+      "env": "linux node 22.22.0, pnpm 12.3.4",
+      "command": "eslint --max-warnings=0 app components lib postcss.config.mjs next.config.ts playwright.config.ts",
+      "result": "exit 0"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-006",
+      "env": "linux node 22.22.0, pnpm 12.3.4",
+      "command": "pnpm test",
+      "result": "exit 0, no test files"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-006",
+      "env": "linux node 22.22.0, pnpm 12.3.4",
+      "command": "pnpm cli:build",
+      "result": "exit 0 (packages/cli still resolves @hipster-stack/core through its own workspace dep)"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-006",
+      "env": "linux node 22.22.0, pnpm 12.3.4",
+      "command": "git grep for imports of deleted lib/components files and monaco in app components lib configs package.json",
+      "result": "none; only template/** and packages/core string paths into the template"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-006",
+      "env": "linux node 22.22.0, pnpm 12.3.4",
+      "command": "pnpm format:check",
+      "result": "not green: pre-existing, CC-013; changed files were already unformatted on main and were not reformatted"
     }
   ],
   "known_findings": [
