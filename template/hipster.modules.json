@@ -43,7 +43,8 @@
       "kind": "domain",
       "label": "Social",
       "description": "Composer, content calendar, media library",
-      "dependsOn": ["media"]
+      "dependsOn": ["media", "uploads"],
+      "owns": ["app/(tenant)/social/**"]
     },
     {
       "id": "ai",
@@ -57,7 +58,8 @@
       "kind": "domain",
       "label": "Client Portal",
       "description": "Client workspace, documents, billing",
-      "dependsOn": ["uploads", "billing"]
+      "dependsOn": ["uploads", "billing"],
+      "owns": ["app/(tenant)/portal/**"]
     },
     {
       "id": "admin",

@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { ProjectTaskDetailTemplate } from "@/components/templates/projectTaskDetailTemplate";
+import { ProjectTaskDetailTemplate } from "@/components/templates/projectsTaskDetailTemplate";
 import { getTaskWorkflow } from "@/lib/workflows/projectsWorkflows";
 import { TaskFeatureClient } from "./taskFeature.client";
 import { getOrganizationMembers } from "@/lib/fetchers/organizationFetchers";

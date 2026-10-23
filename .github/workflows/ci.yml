@@ -61,6 +61,7 @@ jobs:
       - run: pnpm format:check
       - run: pnpm doctrine:test
       - run: pnpm check:modules
+      - run: pnpm check:ownership
       - run: pnpm prisma:generate
       - run: pnpm lint
       - run: pnpm typecheck

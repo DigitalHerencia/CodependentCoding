@@ -317,6 +317,15 @@
       "context": "Architecture §5.2 orders the ownership rules (owns glob, path segment, basename prefix, base) and calls two modules matching the same file an error, without saying whether a later rule can conflict with an earlier one.",
       "decision": "Rules are tried in order and the first rule that matches any module decides; two or more modules matching at that rule is the ambiguity (owner null). So features/social/mediaLibraryFeature.tsx is social (segment beats basename) while app/(tenant)/social/media/page.tsx is ambiguous (two segments). The segment rule looks at directory segments only; file names go through the basename rule. Files come from git ls-files --cached --others --exclude-standard so ignored output never counts. Globs use node:path matchesGlob (no new dependency). The snapshot test records module counts and ambiguities but not the base count, which changes with every tooling or test file. check:ownership is not in CI yet: it exits 1 on the 2 current ambiguities, which CC-020 fixes and then wires into CI/validate.",
       "refs": ["CC-019", "CC-020", "CC-MOD-003", "Architecture.md §5.2"]
+    },
+    {
+      "id": "DEC-035",
+      "date": "2026-10-23",
+      "status": "accepted",
+      "title": "CC-020: renames for unambiguous ownership",
+      "context": "After CC-019, check:ownership reported 2 ambiguous route pages (portal/billing, social/media), and domain transactions, project templates and upload code sat in base because their names lacked a module prefix.",
+      "decision": "Domain transactions are renamed <module>-<verb>-<noun>.tx.ts, dropping a repeated module word (add-portal-version -> portal-add-version, assign-crm-record -> crm-assign-record); the provider webhook transactions become billing-record-stripe-webhook and email-record-sendgrid-webhook; webhook-event, idempotency, clerk-user, onboarding and errors stay base. Project templates take the projects prefix; sharedBillingSettingsTemplate becomes billingSettingsTemplate. assetWorkflows (Vercel Blob) becomes uploadsWorkflows, and uploadWorkspaceAsset moves from commonActions to uploadsActions; commonActions and organizationWorkflows keep only base code (integration status is cross-module and moves to the registry in CC-021). The two ambiguous pages are resolved by explicit owns globs for app/(tenant)/portal/** and app/(tenant)/social/** instead of renaming routes, so URLs do not change. social now dependsOn uploads because socialActions uses the uploads workflow (amends DEC-033: dependsOn follows real imports; presets unchanged). The transaction filename pattern is unchanged; only its example now shows the module prefix. check:modules and check:ownership run in template validate and CI.",
+      "refs": ["CC-020", "CC-021", "CC-024", "DEC-033", "DEC-034"]
     }
   ]
 }

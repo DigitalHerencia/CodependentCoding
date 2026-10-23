@@ -1,13 +1,12 @@
 {
   "$schema": "codependent-coding/execution/handoff/v1",
-  "updated": "2026-10-23T06:45:00Z",
+  "updated": "2026-10-23T06:55:00Z",
   "format": "Overwrite each session. Minimum state the next session needs to resume safely.",
   "status": "ready-for-claude-code",
   "milestone": "M3",
-  "current_issue": "CC-020",
-  "next_issue": "CC-020",
+  "current_issue": "CC-021",
+  "next_issue": "CC-021",
   "queue": [
-    "CC-020",
     "CC-021",
     "CC-022",
     "CC-023",
@@ -44,12 +43,14 @@
     "CC-016 (DEC-032): pnpm --dir template test:rls needs DATABASE_URL_TEST (owner). Locally Ivan's .env.local points at Neon branch `test`. CI job `rls` uses NEON_API_KEY secret + NEON_PROJECT_ID var.",
     "M2 closed 2026-10-23: release profile on main bcdeba1 recorded in progress.json (milestones.M2 + evidence). All root/template checks green incl. CI rls job on Neon. Next: M3 starting CC-018.",
     "CC-018 (DEC-033): template/hipster.modules.json + scripts/modules-schema.mjs (Zod) + generated hipster.modules.schema.json; `pnpm check:modules` (--write regenerates, then pnpm format). Explicit owns only for my-tasks/invoices/expenses routes and add-on integrations; CC-019 computes the rest.",
-    "CC-019 (DEC-034): pnpm check:ownership (scripts/ownership.mjs). First matching rule decides; two modules there = ambiguity. 2 ambiguities left for CC-020 (portal/billing, social/media route pages); CC-020 then adds check:ownership to CI/validate. Snapshot tests/__snapshots__/ownership.test.ts.snap: update with `pnpm test -u` when module files change on purpose."
+    "CC-019 (DEC-034): pnpm check:ownership (scripts/ownership.mjs). First matching rule decides; two modules there = ambiguity. 2 ambiguities left for CC-020 (portal/billing, social/media route pages); CC-020 then adds check:ownership to CI/validate. Snapshot tests/__snapshots__/ownership.test.ts.snap: update with `pnpm test -u` when module files change on purpose.",
+    "CC-020 (DEC-035): transactions are <module>-<verb>-<noun>.tx.ts; uploads code in uploadsWorkflows/uploadsActions; portal and social route trees owned by explicit globs. check:ownership is in template validate + CI with 0 ambiguities."
   ],
   "risks": [
     "Lint hook exits 0 silently when node_modules/eslint is missing; a failed install hides lint feedback. On Windows, run pnpm install with VS Code closed (DEC-019).",
     "pnpm/action-setup@v4 runs on deprecated Node 20 (forced to 24); bump when a newer major is available.",
-    "Template pages cannot render in the cloud container without Clerk keys. Owner checked all CC-010 pages locally (passed). Template has no `test` script until CC-017."
+    "Template pages cannot render in the cloud container without Clerk keys. Owner checked all CC-010 pages locally (passed). Template has no `test` script until CC-017.",
+    "billingSettingsTemplate (billing) imports portalBillingTemplate (portal), and settings/integrations reads every integration's status from base: cross-module references for CC-021 registry / CC-024 CC-MOD-001 to resolve."
   ],
   "do_not": [
     "Delete or rewrite context/doctrine/ books",
