@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/progress/v1",
-  "updated": "2026-10-23T01:40:00Z",
+  "updated": "2026-10-23T01:45:00Z",
   "format": "Evidence states: EXECUTED | INSPECTED | NOT_RUN | BLOCKED. Never mark an issue done without EXECUTED evidence for its Validation commands.",
   "milestones": {
     "M0": {
@@ -11,11 +11,14 @@
       "note": "All M0 issues merged. Release profile run on main 851a63f: only doctrine tests and root test pass; template and root validate fail on pre-existing code owned by CC-006/007/009-013. Compose not runnable until the CLI compose command exists (M4)."
     },
     "M1": {
-      "status": "in-progress",
-      "issues": ["CC-006", "CC-007", "CC-008"]
+      "status": "done",
+      "issues": ["CC-006", "CC-007", "CC-008"],
+      "closed": "2026-10-23",
+      "prs": [216, 217, 218],
+      "note": "All M1 issues merged. Release profile on main 86477ca: root lint, typecheck, test and build pass; root validate fails only at format:check (CC-013). Template validate/lint/typecheck/build unchanged from M0 (CC-009..013). Compose NOT_RUN until M4."
     },
     "M2": {
-      "status": "todo",
+      "status": "in-progress",
       "issues": [
         "CC-009",
         "CC-010",
@@ -190,6 +193,7 @@
       "by": "Claude (claude.ai session)"
     },
     "CC-005",
+    "CC-006",
     "CC-007",
     "CC-008"
   ],
@@ -701,6 +705,94 @@
       "env": "linux node 22.22.0, pnpm 12.3.4",
       "command": "Lighthouse on owner's Windows machine",
       "result": "run headless in the cloud instead; design.yaml surfaces.landing checked by reading the contract against the rendered page"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "milestone": "M1",
+      "env": "linux node 22.22.0, pnpm 12.3.4, main 86477ca",
+      "command": "pnpm validate (root)",
+      "result": "exit 1 at format:check: 41 files unformatted, mostly template/** scanned from root (CC-013)"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "milestone": "M1",
+      "env": "linux node 22.22.0, pnpm 12.3.4, main 86477ca",
+      "command": "pnpm lint (root)",
+      "result": "exit 0"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "milestone": "M1",
+      "env": "linux node 22.22.0, pnpm 12.3.4, main 86477ca",
+      "command": "pnpm typecheck (root)",
+      "result": "exit 0"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "milestone": "M1",
+      "env": "linux node 22.22.0, pnpm 12.3.4, main 86477ca",
+      "command": "pnpm test (root)",
+      "result": "exit 0: no test files (vitest --passWithNoTests)"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "milestone": "M1",
+      "env": "linux node 22.22.0, pnpm 12.3.4, main 86477ca",
+      "command": "pnpm build (root)",
+      "result": "exit 0: / and /_not-found prerendered static"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "milestone": "M1",
+      "env": "linux node 22.22.0, pnpm 12.3.4, main 86477ca",
+      "command": "pnpm --dir template validate",
+      "result": "exit 1 at format:check: 25 files unformatted (CC-013)"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "milestone": "M1",
+      "env": "linux node 22.22.0, pnpm 12.3.4, main 86477ca",
+      "command": "pnpm --dir template lint",
+      "result": "exit 1: 241 problems (231 errors, 10 warnings), unchanged from M0 (CC-009..011)"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "milestone": "M1",
+      "env": "linux node 22.22.0, pnpm 12.3.4, main 86477ca",
+      "command": "pnpm --dir template typecheck",
+      "result": "exit 2: 13 TS errors in components/blocks + lib/workflows/crm, unchanged from M0 (CC-012)"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "milestone": "M1",
+      "env": "linux node 22.22.0, pnpm 12.3.4, main 86477ca",
+      "command": "pnpm --dir template doctrine:test",
+      "result": "exit 0: 44/44 pass"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "milestone": "M1",
+      "env": "linux node 22.22.0, pnpm 12.3.4, main 86477ca",
+      "command": "pnpm --dir template build",
+      "result": "exit 1: Failed to type check, same errors as typecheck (CC-012)"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "NOT_RUN",
+      "milestone": "M1",
+      "env": "linux node 22.22.0, pnpm 12.3.4, main 86477ca",
+      "command": "hipster-stack compose for blank + every preset + --all",
+      "result": "packages/ is empty until CC-028; compose command arrives in M4"
     }
   ],
   "known_findings": [
