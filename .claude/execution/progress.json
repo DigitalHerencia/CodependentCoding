@@ -324,6 +324,13 @@
       "branch": "refactor/180-ownership-renames",
       "decision": "DEC-035",
       "note": "12 transactions, 6 templates, assetWorkflows -> uploadsWorkflows, uploadsActions split from commonActions; owns globs for portal/social route trees. check:ownership 0 ambiguities, now in validate + CI."
+    },
+    "CC-021": {
+      "status": "done",
+      "github": 181,
+      "branch": "feat/181-module-registry",
+      "decision": "DEC-036",
+      "note": "types/moduleTypes.ts, lib/modules/<id>.module.ts x15, registry.ts, navigation.ts; shell, dashboard, permissions and resources read installedModules. Owner decision card on the AUTH.md permission model open (recommended: keep current model)."
     }
   },
   "completed": [
@@ -347,7 +354,8 @@
     "CC-016",
     "CC-018",
     "CC-019",
-    "CC-020"
+    "CC-020",
+    "CC-021"
   ],
   "evidence": [
     {
@@ -1449,6 +1457,62 @@
       "env": "cloud container",
       "command": "pnpm --dir template build (dummy env)",
       "result": "Compiled successfully"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-021",
+      "env": "cloud container",
+      "command": "pnpm --dir template validate",
+      "result": "pass (format, lint 0, typecheck, check:modules, check:ownership)"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-021",
+      "env": "cloud container",
+      "command": "pnpm --dir template build (dummy env)",
+      "result": "Compiled successfully"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-021",
+      "env": "cloud container",
+      "command": "registry emptied to [] then pnpm --dir template typecheck",
+      "result": "exit 0"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-021",
+      "env": "cloud container",
+      "command": "registry emptied to [] then pnpm --dir template build (dummy env)",
+      "result": "exit 0, Compiled successfully; registry restored"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-021",
+      "env": "cloud container",
+      "command": "pnpm --dir template test",
+      "result": "51 passed, 1 skipped (registry order, permission prefixes, grants equal pre-registry table, checked permissions in catalog, dashboard renders registry entries, sidebar groups from registry)"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-021",
+      "env": "cloud container",
+      "command": "pnpm --dir template doctrine:test",
+      "result": "44 pass, 0 fail"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "NOT_RUN",
+      "issue": "CC-021",
+      "env": "-",
+      "command": "render the tenant sidebar in a browser",
+      "result": "needs Clerk keys; covered by the navigation unit test and build only"
     }
   ],
   "known_findings": [

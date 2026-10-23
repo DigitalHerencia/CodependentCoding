@@ -8,7 +8,7 @@ priority: p0
 size: l
 labels: [type:feature, area:modules, priority:p0, size:l]
 depends_on: [CC-020]
-status: todo
+status: done
 ---
 
 # CC-021 · Module runtime definitions and generated registry

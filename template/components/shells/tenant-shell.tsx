@@ -20,161 +20,43 @@ import {
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useRef, useState, type ReactNode } from "react";
-import type { Route } from "next";
 import { Wordmark } from "@/components/brand/wordmark";
 import { Button } from "@/components/ui/button";
 import { TreeView, type TreeNode } from "@/components/ui/tree-view";
-import {
-  applicationCapabilities,
-  applicationDesign,
-} from "@/content/application";
+import { applicationDesign } from "@/content/application";
+import { moduleNavigation, settingsNavigation } from "@/lib/modules/navigation";
 import { cn } from "@/lib/utils/cn";
+import type { ModuleIcon, ModuleNavLink } from "@/types/moduleTypes";
 
-const route = (label: string, href: Route): TreeNode => ({
+const icons: Record<ModuleIcon, ReactNode> = {
+  brain: <Brain className="size-4" />,
+  briefcase: <BriefcaseBusiness className="size-4" />,
+  building: <Building2 className="size-4" />,
+  "credit-card": <CreditCard className="size-4" />,
+  "folder-kanban": <FolderKanban className="size-4" />,
+  headphones: <Headphones className="size-4" />,
+  megaphone: <Megaphone className="size-4" />,
+  users: <Users className="size-4" />,
+};
+
+const route = ({ label, href }: ModuleNavLink): TreeNode => ({
   id: href,
   label,
   href,
 });
+
 const domains: TreeNode[] = [
-  ...(applicationCapabilities.crm
-    ? [
-        {
-          id: "crm",
-          label: "CRM",
-          icon: <Users className="size-4" />,
-          children: [
-            route("Contacts", "/crm/contacts"),
-            route("Accounts", "/crm/accounts"),
-            route("Leads", "/crm/leads"),
-            route("Pipeline", "/crm/pipeline"),
-            route("Analytics", "/crm/analytics"),
-          ],
-        },
-      ]
-    : []),
-  ...(applicationCapabilities.projects
-    ? [
-        {
-          id: "projects",
-          label: "Projects",
-          icon: <FolderKanban className="size-4" />,
-          children: [
-            route("All projects", "/projects"),
-            route("New project", "/projects/new"),
-            route("My tasks", "/my-tasks"),
-          ],
-        },
-      ]
-    : []),
-  ...(applicationCapabilities.support
-    ? [
-        {
-          id: "support",
-          label: "Support",
-          icon: <Headphones className="size-4" />,
-          children: [
-            route("Inbox", "/support/inbox"),
-            route("New ticket", "/support/tickets/new"),
-            route("Knowledge base", "/support/knowledge-base"),
-            route("Analytics", "/support/analytics"),
-          ],
-        },
-      ]
-    : []),
-  ...(applicationCapabilities.marketingAutomation
-    ? [
-        {
-          id: "marketing",
-          label: "Marketing",
-          icon: <Megaphone className="size-4" />,
-          children: [
-            route("Campaigns", "/marketing/campaigns"),
-            route("Audiences", "/marketing/audiences"),
-            route("Analytics", "/marketing/analytics"),
-          ],
-        },
-      ]
-    : []),
-  ...(applicationCapabilities.invoicing
-    ? [
-        {
-          id: "invoicing",
-          label: "Invoicing",
-          icon: <CreditCard className="size-4" />,
-          children: [
-            route("Invoices", "/invoices"),
-            route("Expenses", "/expenses"),
-          ],
-        },
-      ]
-    : []),
-  ...(applicationCapabilities.social
-    ? [
-        {
-          id: "social",
-          label: "Social",
-          icon: <Megaphone className="size-4" />,
-          children: [
-            route("Calendar", "/social/calendar"),
-            route("Compose", "/social/compose"),
-            route("Media", "/social/media"),
-          ],
-        },
-      ]
-    : []),
-  ...(applicationCapabilities.ai
-    ? [
-        {
-          id: "ai",
-          label: "AI",
-          icon: <Brain className="size-4" />,
-          children: [
-            route("Overview", "/ai"),
-            route("Playground", "/ai/playground"),
-            route("Usage", "/ai/usage"),
-          ],
-        },
-      ]
-    : []),
-  ...(applicationCapabilities.portal
-    ? [
-        {
-          id: "portal",
-          label: "Portal",
-          icon: <BriefcaseBusiness className="size-4" />,
-          children: [
-            route("Overview", "/portal"),
-            route("Documents", "/portal/documents"),
-            route("Billing", "/portal/billing"),
-          ],
-        },
-      ]
-    : []),
-  ...(applicationCapabilities.admin
-    ? [
-        {
-          id: "admin",
-          label: "Admin",
-          icon: <Building2 className="size-4" />,
-          children: [
-            route("Users", "/admin/users"),
-            route("Records", "/admin/records"),
-            route("Audit", "/admin/audit"),
-          ],
-        },
-      ]
-    : []),
+  ...moduleNavigation().map(({ id, label, icon, links }) => ({
+    id,
+    label,
+    icon: icons[icon],
+    children: links.map(route),
+  })),
   {
     id: "settings",
     label: "Settings",
     icon: <Settings className="size-4" />,
-    children: [
-      route("Profile", "/settings/profile"),
-      route("Members", "/settings/members"),
-      route("Integrations", "/settings/integrations"),
-      route("Billing", "/settings/billing"),
-      route("Workspace setup", "/onboarding"),
-    ],
+    children: settingsNavigation().map(route),
   },
 ];
 
