@@ -291,7 +291,7 @@ modules:
     support: [support, email]
     marketing: [marketing, email]
     invoicing: [invoicing, billing, uploads]
-    social: [social, media]
+    social: [social, media, uploads]
     ai: [ai, inference, billing, ratelimit]
     portal: [portal, uploads, billing]
     admin: [admin]

@@ -58,9 +58,8 @@ export function defineEnv<Shape extends z.ZodRawShape>(
 }
 
 /**
- * Whether each named variable is set, without validating an owner. For base
- * screens that report on add-ons (Settings > Integrations) until CC-026 moves
- * that report into the modules.
+ * Whether each named variable is set, without validating an owner. Settings >
+ * Integrations uses it with the names each add-on lists in its module definition.
  */
 export function hasValues(names: readonly string[]): boolean {
   return names.every((name) => unset(process.env[name]) !== undefined);

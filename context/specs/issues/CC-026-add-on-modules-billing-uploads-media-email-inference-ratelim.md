@@ -8,7 +8,7 @@ priority: p1
 size: l
 labels: [type:feature, area:modules, priority:p1, size:l]
 depends_on: [CC-021, CC-025]
-status: todo
+status: done
 ---
 
 # CC-026 · Add-on modules: billing, uploads, media, email, inference, ratelimit
