@@ -1,13 +1,12 @@
 {
   "$schema": "codependent-coding/execution/handoff/v1",
-  "updated": "2026-10-23T06:40:00Z",
+  "updated": "2026-10-23T06:45:00Z",
   "format": "Overwrite each session. Minimum state the next session needs to resume safely.",
   "status": "ready-for-claude-code",
   "milestone": "M3",
-  "current_issue": "CC-019",
-  "next_issue": "CC-019",
+  "current_issue": "CC-020",
+  "next_issue": "CC-020",
   "queue": [
-    "CC-019",
     "CC-020",
     "CC-021",
     "CC-022",
@@ -44,7 +43,8 @@
     "CC-017 (DEC-031): template `pnpm test` (vitest) and `pnpm test:e2e` (Playwright request smoke on port 3100 via next dev). next dev re-creates template/AGENTS.md when it detects an AI agent; delete it, never commit it.",
     "CC-016 (DEC-032): pnpm --dir template test:rls needs DATABASE_URL_TEST (owner). Locally Ivan's .env.local points at Neon branch `test`. CI job `rls` uses NEON_API_KEY secret + NEON_PROJECT_ID var.",
     "M2 closed 2026-10-23: release profile on main bcdeba1 recorded in progress.json (milestones.M2 + evidence). All root/template checks green incl. CI rls job on Neon. Next: M3 starting CC-018.",
-    "CC-018 (DEC-033): template/hipster.modules.json + scripts/modules-schema.mjs (Zod) + generated hipster.modules.schema.json; `pnpm check:modules` (--write regenerates, then pnpm format). Explicit owns only for my-tasks/invoices/expenses routes and add-on integrations; CC-019 computes the rest."
+    "CC-018 (DEC-033): template/hipster.modules.json + scripts/modules-schema.mjs (Zod) + generated hipster.modules.schema.json; `pnpm check:modules` (--write regenerates, then pnpm format). Explicit owns only for my-tasks/invoices/expenses routes and add-on integrations; CC-019 computes the rest.",
+    "CC-019 (DEC-034): pnpm check:ownership (scripts/ownership.mjs). First matching rule decides; two modules there = ambiguity. 2 ambiguities left for CC-020 (portal/billing, social/media route pages); CC-020 then adds check:ownership to CI/validate. Snapshot tests/__snapshots__/ownership.test.ts.snap: update with `pnpm test -u` when module files change on purpose."
   ],
   "risks": [
     "Lint hook exits 0 silently when node_modules/eslint is missing; a failed install hides lint feedback. On Windows, run pnpm install with VS Code closed (DEC-019).",

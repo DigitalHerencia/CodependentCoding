@@ -308,6 +308,15 @@
       "context": "CC-018 asks for template/hipster.modules.json with a Zod schema (template/scripts until packages/cli exists) and a generated JSON Schema. Architecture §5.1 shows crm dependsOn email as an example, while application.yaml's crm preset is [crm] alone.",
       "decision": "Domain dependsOn equals the add-ons its application.yaml preset pulls in (crm has none), so presets and dependencies agree. Add-on owns/packages/env come from the existing lib/integrations/*, app/api/* and .env.example; ratelimit has none yet (CC-026). Explicit owns only where a route folder name differs from the module id (my-tasks -> projects, invoices/expenses -> invoicing); everything else is left to the computed conventions in CC-019. Objects are strict so unknown fields fail. hipster.modules.schema.json is generated with z.toJSONSchema; check-modules.mjs compares it structurally and fails when stale (--write regenerates). A .d.mts gives the TypeScript test types because allowJs is off. CI's template job runs pnpm check:modules.",
       "refs": ["CC-018", "CC-019", "CC-026", "Architecture.md §5.1"]
+    },
+    {
+      "id": "DEC-034",
+      "date": "2026-10-23",
+      "status": "accepted",
+      "title": "CC-019: ownership resolver semantics and report",
+      "context": "Architecture §5.2 orders the ownership rules (owns glob, path segment, basename prefix, base) and calls two modules matching the same file an error, without saying whether a later rule can conflict with an earlier one.",
+      "decision": "Rules are tried in order and the first rule that matches any module decides; two or more modules matching at that rule is the ambiguity (owner null). So features/social/mediaLibraryFeature.tsx is social (segment beats basename) while app/(tenant)/social/media/page.tsx is ambiguous (two segments). The segment rule looks at directory segments only; file names go through the basename rule. Files come from git ls-files --cached --others --exclude-standard so ignored output never counts. Globs use node:path matchesGlob (no new dependency). The snapshot test records module counts and ambiguities but not the base count, which changes with every tooling or test file. check:ownership is not in CI yet: it exits 1 on the 2 current ambiguities, which CC-020 fixes and then wires into CI/validate.",
+      "refs": ["CC-019", "CC-020", "CC-MOD-003", "Architecture.md §5.2"]
     }
   ]
 }
