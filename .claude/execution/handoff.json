@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/handoff/v1",
-  "updated": "2026-10-24T22:30:00Z",
+  "updated": "2026-10-24T22:50:00Z",
   "format": "Overwrite each session. Minimum state the next session needs to resume safely.",
   "status": "ready-for-claude-code",
   "milestone": "M6",
@@ -63,7 +63,9 @@
     "CC-040 (DEC-056): plugin hooks run only where hipster.json exists (hooks/when-app.mjs); plugin/loaded-vibes/hooks/*.mjs must stay identical to .claude/hooks/ (test). /ship helper scripts: ship-env.mjs (dry run default, --apply), smoke.mjs <url>; /handoff checks with execution-check.mjs. The Vercel CLI is not installed in the cloud container (scratchpad npm install works for --help).",
     "CC-041 (DEC-057): plugin agents loaded-vibes:reviewer and loaded-vibes:verifier, read-only. M5 closes after CC-041 merges (CC-040's live ship check stays deferred to the owner).",
     "M5 closed 2026-10-24 (CC-036..CC-041): main run 40136570161 green incl. preset matrix.",
-    "CC-042 (DEC-058): dogfood app at template/.sandbox/fixlist (git-ignored, has its own git + node_modules + prisma/migrations). Local Postgres 16 cluster at /var/lib/postgresql/dogfood on port 5499 (trust auth, socket /tmp). Friction issues #255-#261 (dogfood label)."
+    "CC-042 (DEC-058): dogfood app at template/.sandbox/fixlist (git-ignored, has its own git + node_modules + prisma/migrations). Local Postgres 16 cluster at /var/lib/postgresql/dogfood on port 5499 (trust auth, socket /tmp). Friction issues #255-#261 (dogfood label).",
+    "#255 fixed on fix/255-rls-negative-check (DEC-059): RLS negative check uses the first tenant table.",
+    "#255 merged (PR #263, 9353843)."
   ],
   "risks": [
     "Lint hook exits 0 silently when node_modules/eslint is missing; a failed install hides lint feedback. On Windows, run pnpm install with VS Code closed (DEC-019).",
@@ -73,8 +75,7 @@
     "Docs say DIRECT_URL (AUTH.md, tech-requirements §6) but the template and provisioning use DIRECT_DATABASE_URL; Vercel's Neon integration adds DATABASE_URL_UNPOOLED. Reconcile names at the template deploy issue.",
     "Deferred owner checks: CC-028 Windows global link (`pnpm cli:link`, `hipster-stack -v`) and CC-031 real-account `--provision`. Neither has run on the owner's machine.",
     "CC-036 acceptance on Windows (install + skills namespace) not run; the namespace only shows once CC-037 adds the first skill.",
-    "CC-040 acceptance 'ship produces a working URL on a test app' is NOT_RUN: needs a Vercel deploy (owner decision card). Everything up to `vercel deploy --prod` ran locally.",
-    "#255: test:rls fails in every generated app without the crm module; fix before v1 release (G-criteria on RLS)."
+    "CC-040 acceptance 'ship produces a working URL on a test app' is NOT_RUN: needs a Vercel deploy (owner decision card). Everything up to `vercel deploy --prod` ran locally."
   ],
   "do_not": [
     "Delete or rewrite context/doctrine/ books",

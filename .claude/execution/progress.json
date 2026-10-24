@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/progress/v1",
-  "updated": "2026-10-24T22:30:00Z",
+  "updated": "2026-10-24T22:50:00Z",
   "format": "Evidence states: EXECUTED | INSPECTED | NOT_RUN | BLOCKED. Never mark an issue done without EXECUTED evidence for its Validation commands.",
   "milestones": {
     "M0": {
@@ -2738,6 +2738,18 @@
       "state": "EXECUTED",
       "command": "fixlist: pnpm db:init then DATABASE_URL_TEST=<local postgres 16> pnpm test:rls",
       "result": "9 passed, 1 failed: negative check hardcodes CrmContact (#255)"
+    },
+    {
+      "date": "2026-10-24",
+      "state": "EXECUTED",
+      "command": "#255 fix: base-only dogfood app pnpm test:rls (local Postgres 16, fresh db after db:init)",
+      "result": "before 9 passed/1 failed; after 10 passed"
+    },
+    {
+      "date": "2026-10-24",
+      "state": "EXECUTED",
+      "command": "#255 fix: template pnpm test:rls (local Postgres 16, fresh db); eslint + prettier on the changed file; template lint (sandboxes ignored); typecheck",
+      "result": "10 passed; all exit 0"
     }
   ],
   "known_findings": [
