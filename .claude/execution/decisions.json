@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/decisions/v1",
-  "updated": "2026-10-24T22:05:00Z",
+  "updated": "2026-10-24T22:30:00Z",
   "format": "Append new decisions; never rewrite history. Supersede by adding a new entry and setting status=superseded + superseded_by on the old one.",
   "decisions": [
     {
@@ -592,6 +592,15 @@
       "context": "Review and evidence checks must be independent of the session that did the work.",
       "decision": "agents/reviewer.md and agents/verifier.md have tools Read, Grep, Glob, Bash only (a test forbids Edit/Write) and say they change nothing. The reviewer maps each AUTH.md §11 item to a CC ID (CC-WRITE-003, CC-SEC-001..006, CC-TX-002, CC-CLIENT-001), runs lint-findings.mjs first, and reports '[severity] CC-ID file:line what. Fix: ...' plus a verdict. The verifier reruns every EXECUTED claim for the scoped issues exactly as written, compares exit codes and counts, and reports CONFIRMED / CONTRADICTED / UNVERIFIABLE / MISSING (required profile checks with no claim); it never runs deploys, GitHub writes or production database commands. Measured with headless runs on planted violations rather than plugin evals: the cases need an installed app as fixture.",
       "refs": ["plugin/loaded-vibes/agents/", "tests/plugin/plugin.test.ts"]
+    },
+    {
+      "id": "DEC-058",
+      "date": "2026-10-24",
+      "status": "accepted",
+      "title": "CC-042: dogfood run headless, owner answers up front, friction as GitHub issues",
+      "context": "The dogfood run must exercise the skills as shipped, but the owner is not in the loop for each grill question, and the deploy needs his go-ahead.",
+      "decision": "Each phase ran as a headless `claude -p` with --plugin-dir and explicit Edit/Write(.claude/**) allow rules; the /idea answers were written up front and I played the owner for DEC-004 (vendor userId link) only. Friction points went to GitHub as issues #255-#261 with the `dogfood` label in milestone M6, without spec files: they are follow-ups for the owner to schedule, not v1 scope. The deploy waits on the owner's decision card; CC-042 stays in-progress until a URL exists or he picks the gap-analysis option.",
+      "refs": ["#255", "#256", "#257", "#258", "#259", "#260", "#261"]
     }
   ]
 }

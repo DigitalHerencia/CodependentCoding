@@ -8,7 +8,7 @@ priority: p0
 size: l
 labels: [type:spike, area:plugin, priority:p0, size:l]
 depends_on: [CC-035, CC-040]
-status: todo
+status: in-progress
 ---
 
 # CC-042 · Dogfood run: idea to deployed MVP
