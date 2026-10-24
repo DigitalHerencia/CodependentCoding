@@ -1,14 +1,14 @@
 {
   "$schema": "codependent-coding/execution/handoff/v1",
-  "updated": "2026-10-24T20:40:00Z",
+  "updated": "2026-10-24T21:50:00Z",
   "format": "Overwrite each session. Minimum state the next session needs to resume safely.",
   "status": "ready-for-claude-code",
   "milestone": "M5",
-  "current_issue": "CC-039",
-  "next_issue": "CC-040",
-  "queue": ["CC-040", "CC-041"],
-  "branch": "feat/199-skills-slice-classify",
-  "in_flight": ["CC-039 slice/classify skills PR (Closes #199)"],
+  "current_issue": "CC-040",
+  "next_issue": "CC-041",
+  "queue": ["CC-041"],
+  "branch": "feat/200-skills-check-ship-handoff-hooks",
+  "in_flight": ["CC-040 check/ship/handoff + hooks PR (Closes #200)"],
   "notes": [
     "Governance package is uncommitted in the owner's working tree; owner reviews with `git status` / `git diff`, then commits on a branch `chore/governance-package`.",
     "Template already contains the doctrine ESLint plugin (template/eslint/) and the new eslint.config.mjs; CC-009 turns findings into fixes.",
@@ -59,7 +59,8 @@
     "CC-036 (DEC-052): plugin at plugin/loaded-vibes (plugin.json 0.1.0), marketplace at .claude-plugin/marketplace.json (codependent-coding). references/doctrine.md is generated: `pnpm plugin:doctrine` after editing Architecture.md §3.3 or validation.yaml (test fails when stale). Test installs with an isolated CLAUDE_CONFIG_DIR so the session's own config is untouched.",
     "CC-037 (DEC-053): /loaded-vibes:idea in plugin/loaded-vibes/skills/idea; `node <plugin>/scripts/governance-check.mjs <app>` checks the 3 contracts parse and no TODO is left (uses the app's Prettier, so run it on an installed app or one inside template/). A composed app outside git makes the template's registry test see 0 files: git init it first.",
     "CC-038 (DEC-054): apps ship scripts/sync-issues.mjs (`pnpm issues:sync`, dry run validates; --apply writes to GitHub, owner go-ahead only). A composed app inside the factory checkout without its own git repo inherits the factory's origin: git init it before running the sync dry run.",
-    "CC-039 (DEC-055): plugin evals in plugin/loaded-vibes/evals (claude plugin eval ... --tag classify --ablation none; ~$1 for 2 runs x 10). Headless skill runs: `claude -p '<prompt>' --plugin-dir plugin/loaded-vibes --permission-mode acceptEdits --allowedTools ...` (prompt before the variadic flags); writes under .claude/ are refused in that mode. A hipster-stack shim on PATH: node packages/cli/dist/cli.mjs after pnpm cli:build."
+    "CC-039 (DEC-055): plugin evals in plugin/loaded-vibes/evals (claude plugin eval ... --tag classify --ablation none; ~$1 for 2 runs x 10). Headless skill runs: `claude -p '<prompt>' --plugin-dir plugin/loaded-vibes --permission-mode acceptEdits --allowedTools ...` (prompt before the variadic flags); writes under .claude/ are refused in that mode. A hipster-stack shim on PATH: node packages/cli/dist/cli.mjs after pnpm cli:build.",
+    "CC-040 (DEC-056): plugin hooks run only where hipster.json exists (hooks/when-app.mjs); plugin/loaded-vibes/hooks/*.mjs must stay identical to .claude/hooks/ (test). /ship helper scripts: ship-env.mjs (dry run default, --apply), smoke.mjs <url>; /handoff checks with execution-check.mjs. The Vercel CLI is not installed in the cloud container (scratchpad npm install works for --help)."
   ],
   "risks": [
     "Lint hook exits 0 silently when node_modules/eslint is missing; a failed install hides lint feedback. On Windows, run pnpm install with VS Code closed (DEC-019).",
@@ -69,7 +70,7 @@
     "Docs say DIRECT_URL (AUTH.md, tech-requirements §6) but the template and provisioning use DIRECT_DATABASE_URL; Vercel's Neon integration adds DATABASE_URL_UNPOOLED. Reconcile names at the template deploy issue.",
     "Deferred owner checks: CC-028 Windows global link (`pnpm cli:link`, `hipster-stack -v`) and CC-031 real-account `--provision`. Neither has run on the owner's machine.",
     "CC-036 acceptance on Windows (install + skills namespace) not run; the namespace only shows once CC-037 adds the first skill.",
-    "CC-040 acceptance 'ship produces a working URL on a test app' needs a Vercel deploy, i.e. a new cloud resource: ask the owner before running it."
+    "CC-040 acceptance 'ship produces a working URL on a test app' is NOT_RUN: needs a Vercel deploy (owner decision card). Everything up to `vercel deploy --prod` ran locally."
   ],
   "do_not": [
     "Delete or rewrite context/doctrine/ books",

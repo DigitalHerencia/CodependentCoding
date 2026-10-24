@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/decisions/v1",
-  "updated": "2026-10-24T20:40:00Z",
+  "updated": "2026-10-24T21:50:00Z",
   "format": "Append new decisions; never rewrite history. Supersede by adding a new entry and setting status=superseded + superseded_by on the old one.",
   "decisions": [
     {
@@ -568,6 +568,21 @@
       "context": "'Classify answers 10 sample prompts correctly' needs a repeatable measure; 'slice yields lint-clean code with domain logic filled' needs a real run.",
       "decision": "skills/slice/SKILL.md: gather from the issue/PRD, `hipster-stack slice --dry-run` then for real, fill only rules (schemas refine, action-derived values, authz policies, permissions, workflows, transactions, fetcher order), a test per rule, then format/lint/typecheck/test(/test:rls). skills/classify/SKILL.md: answer path/layer/why/rules from references/doctrine.md only; slice naming wins in features/<d>/; DTO types live in types/<d>Types.ts. Ten classify cases in plugin/loaded-vibes/evals/classify-* with regex graders on the path line, run with `claude plugin eval` (first run 8/10 exposed the form-name and DTO-type ambiguity; the skill now states both; rerun 20/20). Skill examples use a different domain (shop) so evals do not leak answers.",
       "refs": ["CC-039", "DEC-047", "DEC-053"]
+    },
+    {
+      "id": "DEC-056",
+      "date": "2026-10-24",
+      "status": "accepted",
+      "title": "CC-040: /check, /ship, /handoff skills and app-only plugin hooks",
+      "context": "The plugin hooks must reuse the factory hooks yet stay silent outside generated apps; ship touches production; check and handoff need repeatable checks.",
+      "decision": "hooks/hooks.json calls hooks/when-app.mjs <hook>, which exits 0 unless hipster.json is at CLAUDE_PROJECT_DIR and otherwise imports a byte-identical copy of the factory hook (a test keeps the copies equal; the marketplace installs only plugin/loaded-vibes, so the plugin cannot reach .claude/hooks at runtime). Helper scripts: lint-findings.mjs (groups ESLint JSON by [CC-*] prefix), ship-env.mjs (names from .env.example, values from .env.local on stdin to `vercel env add --environment production --sensitive --force --yes`, *_TEST* names stay local, dry run by default), smoke.mjs (same two checks as tests/e2e/smoke.spec.ts), execution-check.mjs (schema, append-only DEC ids, issue ids have files, acceptance lines start with an evidence state). /ship deploys only after the owner says to ship in that conversation.",
+      "refs": [
+        "plugin/loaded-vibes/hooks/",
+        "plugin/loaded-vibes/skills/{check,ship,handoff}/SKILL.md",
+        "plugin/loaded-vibes/scripts/",
+        "tests/plugin/hooks.test.ts",
+        "tests/plugin/shipHandoff.test.ts"
+      ]
     }
   ]
 }

@@ -8,7 +8,7 @@ priority: p0
 size: m
 labels: [type:feature, area:plugin, priority:p0, size:m]
 depends_on: [CC-032, CC-036]
-status: in-review
+status: done
 ---
 
 # CC-039 · Skills: slice and classify
