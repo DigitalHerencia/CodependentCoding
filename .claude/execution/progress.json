@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/progress/v1",
-  "updated": "2026-10-24T21:50:00Z",
+  "updated": "2026-10-24T22:05:00Z",
   "format": "Evidence states: EXECUTED | INSPECTED | NOT_RUN | BLOCKED. Never mark an issue done without EXECUTED evidence for its Validation commands.",
   "milestones": {
     "M0": {
@@ -519,7 +519,7 @@
       "merged": "745887e"
     },
     "CC-040": {
-      "status": "in-review",
+      "status": "done",
       "github": 200,
       "branch": "feat/200-skills-check-ship-handoff-hooks",
       "decision": "DEC-056",
@@ -527,6 +527,19 @@
       "acceptance": {
         "Hooks fire in a generated app and not in unrelated repos": "EXECUTED: headless `claude -p --plugin-dir plugin/loaded-vibes` writing a CC-FEAT-001 violation. In template/.sandbox/ship-dry (hipster-stack new, crm): PostToolUse:Write exit 2 with [CC-FEAT-001], Stop exit 2 listing the file. In an unrelated git repo (scratchpad/unrelated): PostToolUse exit 0 and Stop exit 0, no feedback. tests/plugin/hooks.test.ts pins both (4 passed).",
         "`ship` produces a working URL on a test app": "NOT_RUN: a production deploy needs the owner's go-ahead (decision card pending). Dry run EXECUTED in template/.sandbox/ship-dry: ship-env.mjs dry run listed names only (exit 1 on unset required DATABASE_URL, as designed); pnpm build exit 0 (dummy env); pnpm start + smoke.mjs http://localhost:3217 -> PASS GET / (200, <h1>), PASS /dashboard (307 -> /sign-in). `vercel deploy --prod` not run."
+      },
+      "pr": 253,
+      "merged": "64d6bcde"
+    },
+    "CC-041": {
+      "status": "in-review",
+      "github": 201,
+      "branch": "feat/201-agents-reviewer-verifier",
+      "decision": "DEC-057",
+      "note": "agents/reviewer.md (doctrine + AUTH §11 table mapped to CC IDs, findings [sev] CC-ID file:line), agents/verifier.md (reruns claimed commands, CONFIRMED/CONTRADICTED/UNVERIFIABLE/MISSING). Both read-only (Read, Grep, Glob, Bash).",
+      "acceptance": {
+        "Reviewer catches a planted violation (cross-tenant query without predicate)": "EXECUTED: in template/.sandbox/ship-dry (hipster-stack new, crm) added findCrmDealsByTitle with tx.crmDeal.findMany where { title, archivedAt } (no organizationId) next to a correct getCrmDealCount; headless `claude -p 'Use the loaded-vibes:reviewer agent to review the uncommitted changes' --plugin-dir plugin/loaded-vibes` -> '[high] CC-SEC-001 lib/fetchers/crmFetchers.ts:204 findMany on tx.crmDeal ... no organizationId', getCrmDealCount passed, verdict changes requested. No files edited by the agent ($0.25).",
+        "Verifier flags a claimed-but-not-run check": "EXECUTED: same app, planted SD-001 in-review with claims `pnpm lint` exit 0 (true), `pnpm test` 9 files/64 passed (false: 8/46), `pnpm test:rls` 12 passed (impossible: no DATABASE_URL_TEST). Headless loaded-vibes:verifier reran lint, test, test:rls, validate -> CONFIRMED lint, CONTRADICTED test, CONTRADICTED test:rls ('DATABASE_URL_TEST is required'), MISSING validate and build. No edits ($0.15). Wording then tightened so a missing-prerequisite failure reads UNVERIFIABLE."
       }
     }
   },
@@ -563,7 +576,8 @@
     "CC-036",
     "CC-037",
     "CC-038",
-    "CC-039"
+    "CC-039",
+    "CC-040"
   ],
   "evidence": [
     {
@@ -2651,6 +2665,24 @@
       "state": "NOT_RUN",
       "command": "vercel deploy --prod (CC-040 ship on a test app)",
       "result": "waiting on the owner's decision; no cloud resource created"
+    },
+    {
+      "date": "2026-10-24",
+      "state": "EXECUTED",
+      "command": "headless claude -p loaded-vibes:reviewer on a planted tenant query without organizationId (ship-dry)",
+      "result": "[high] CC-SEC-001 at the planted findMany; verdict changes requested"
+    },
+    {
+      "date": "2026-10-24",
+      "state": "EXECUTED",
+      "command": "headless claude -p loaded-vibes:verifier on planted SD-001 claims (ship-dry)",
+      "result": "lint CONFIRMED; test and test:rls CONTRADICTED; validate, build MISSING"
+    },
+    {
+      "date": "2026-10-24",
+      "state": "EXECUTED",
+      "command": "claude plugin validate plugin/loaded-vibes --strict; pnpm exec vitest run tests/plugin/plugin.test.ts",
+      "result": "validation passed; 3 passed"
     }
   ],
   "known_findings": [
