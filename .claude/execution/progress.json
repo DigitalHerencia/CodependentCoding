@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/progress/v1",
-  "updated": "2026-10-24T20:25:00Z",
+  "updated": "2026-10-24T20:40:00Z",
   "format": "Evidence states: EXECUTED | INSPECTED | NOT_RUN | BLOCKED. Never mark an issue done without EXECUTED evidence for its Validation commands.",
   "milestones": {
     "M0": {
@@ -494,13 +494,26 @@
       "merged": "b9bda2e"
     },
     "CC-038": {
-      "status": "in-review",
+      "status": "done",
       "github": 198,
       "branch": "feat/198-skill-plan",
       "decision": "DEC-054",
       "note": "template/scripts/sync-issues.mjs (+ .d.mts, issues:sync), app issues README format, skills/plan/SKILL.md, tests/plugin/syncIssues.test.ts.",
       "acceptance": {
         "Generated issues parse with the sync script dry run": "EXECUTED: composed greenroute (--preset crm) in template/.sandbox/plan-dry, carried over the /idea dry-run docs, wrote 9 issues per skills/plan/SKILL.md (GR-001..GR-009: 4 slices, completion policy, price hiding, recurrence spike, deploy, G1 test). `node scripts/sync-issues.mjs` in the app -> '9 issues valid', 10 labels and milestone 'M1 · MVP' would be created, 9 would-create lines, exit 0. Broken files -> exit 1 with each problem named (tests/plugin/syncIssues.test.ts)."
+      },
+      "pr": 251,
+      "merged": "fd02417"
+    },
+    "CC-039": {
+      "status": "in-review",
+      "github": 199,
+      "branch": "feat/199-skills-slice-classify",
+      "decision": "DEC-055",
+      "note": "skills/slice/SKILL.md, skills/classify/SKILL.md, evals/classify-* (10 cases).",
+      "acceptance": {
+        "Slice skill on a sample entity yields lint-clean code with domain logic filled": "EXECUTED: headless `claude -p --plugin-dir plugin/loaded-vibes '/loaded-vibes:slice ... GR-004 visit + 3 rules'` in template/.sandbox/slice-dry (greenroute, crm + property/crew/job sliced first). It ran the CLI (dry run, then 26 files), added withVisitRules refinements (skipped needs note; completedAt only when done), stamped completedAt in create/update actions, today-onward ordered fetcher, 4 rule tests. Verified independently: pnpm lint exit 0, typecheck exit 0, test 12 files 70 passed/1 skipped, no eslint-disable. Its writes to .claude/execution were refused by the headless permission mode (sensitive path), so it reported the records instead; test:rls not run (no DATABASE_URL_TEST).",
+        "Classify answers 10 sample prompts correctly": "EXECUTED: `claude plugin eval plugin/loaded-vibes --tag classify --runs 2 --ablation none` -> 10/10 cases, 20/20 runs, score 1.00 ($1.06). First run (before the naming/DTO clarification) scored 8/10."
       }
     }
   },
@@ -535,7 +548,8 @@
     "CC-027",
     "CC-035",
     "CC-036",
-    "CC-037"
+    "CC-037",
+    "CC-038"
   ],
   "evidence": [
     {
@@ -2569,6 +2583,24 @@
       "state": "EXECUTED",
       "command": "template: format (non-sandbox), eslint, typecheck, check:modules, check:ownership, check:env, test",
       "result": "all exit 0; test 15 files, 66 passed/1 skipped"
+    },
+    {
+      "date": "2026-10-24",
+      "state": "EXECUTED",
+      "command": "claude plugin eval plugin/loaded-vibes --tag classify --runs 1 --ablation none",
+      "result": "8/10 (form-new-crew, type-visit-dto failed) -> skill clarified"
+    },
+    {
+      "date": "2026-10-24",
+      "state": "EXECUTED",
+      "command": "claude plugin eval plugin/loaded-vibes --tag classify --runs 2 --ablation none",
+      "result": "10 cases, all 1.00 (20/20 runs)"
+    },
+    {
+      "date": "2026-10-24",
+      "state": "EXECUTED",
+      "command": "headless /loaded-vibes:slice visit (slice-dry) then pnpm lint; pnpm typecheck; pnpm test",
+      "result": "lint 0, typecheck 0, 70 passed/1 skipped"
     }
   ],
   "known_findings": [

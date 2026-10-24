@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/decisions/v1",
-  "updated": "2026-10-24T20:25:00Z",
+  "updated": "2026-10-24T20:40:00Z",
   "format": "Append new decisions; never rewrite history. Supersede by adding a new entry and setting status=superseded + superseded_by on the old one.",
   "decisions": [
     {
@@ -559,6 +559,15 @@
       "context": "Generated apps need the factory's issue format and a sync script, but scripts/github/sync-issues.mjs is factory-specific (CC- prefix, fixed milestones, labels.yml) and does not validate.",
       "decision": "template/scripts/sync-issues.mjs (base-owned, so every composed app ships it) with `pnpm issues:sync`: dry run validates every context/specs/issues file (name <PREFIX>-NNN-<slug>.md, required fields, enums, id = file name, Summary/Scope/Acceptance sections, unique ids, depends_on targets) and exits 1 on any problem; it stays offline without a GitHub remote. `--apply` upserts labels (frontmatter labels, else type/area/priority/size), creates frontmatter milestones and missing issues matched by '<ID> ·' title prefix, then rewrites Depends on with numbers (.github-map.json). The app issue README format gains milestone and labels, matching the factory frontmatter. plugin skills/plan/SKILL.md decomposes the PRD into slice, rule, module, deploy and goal-test issues, runs the dry run, updates handoff, and only offers --apply (it writes to GitHub).",
       "refs": ["CC-038", "DEC-053"]
+    },
+    {
+      "id": "DEC-055",
+      "date": "2026-10-24",
+      "status": "accepted",
+      "title": "CC-039: /slice and /classify skills, classify measured by plugin evals",
+      "context": "'Classify answers 10 sample prompts correctly' needs a repeatable measure; 'slice yields lint-clean code with domain logic filled' needs a real run.",
+      "decision": "skills/slice/SKILL.md: gather from the issue/PRD, `hipster-stack slice --dry-run` then for real, fill only rules (schemas refine, action-derived values, authz policies, permissions, workflows, transactions, fetcher order), a test per rule, then format/lint/typecheck/test(/test:rls). skills/classify/SKILL.md: answer path/layer/why/rules from references/doctrine.md only; slice naming wins in features/<d>/; DTO types live in types/<d>Types.ts. Ten classify cases in plugin/loaded-vibes/evals/classify-* with regex graders on the path line, run with `claude plugin eval` (first run 8/10 exposed the form-name and DTO-type ambiguity; the skill now states both; rerun 20/20). Skill examples use a different domain (shop) so evals do not leak answers.",
+      "refs": ["CC-039", "DEC-047", "DEC-053"]
     }
   ]
 }
