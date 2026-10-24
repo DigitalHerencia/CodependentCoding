@@ -1,11 +1,12 @@
 import type { Command } from "commander";
 
 import { registerAdd } from "#cli/commands/add";
+import { registerCompose } from "#cli/commands/compose";
 import { registerDoctor } from "#cli/commands/doctor";
 import { registerNew } from "#cli/commands/new";
 import { registerSlice } from "#cli/commands/slice";
 
-/** Registers subcommands (Architecture.md §6); `compose` follows. */
+/** Registers subcommands (Architecture.md §6). */
 export function registerCommands(
   program: Command,
   cliVersion: string,
@@ -14,5 +15,6 @@ export function registerCommands(
   registerAdd(program);
   registerSlice(program);
   registerDoctor(program);
+  registerCompose(program, cliVersion);
   return program;
 }

@@ -8,7 +8,7 @@ priority: p2
 size: s
 labels: [type:feature, area:cli, priority:p2, size:s]
 depends_on: [CC-029]
-status: in-review
+status: done
 ---
 
 # CC-034 · `doctor` command

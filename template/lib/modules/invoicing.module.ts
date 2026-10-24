@@ -27,4 +27,5 @@ export const invoicingModule = {
       VIEWER: ["invoicing:read"],
     },
   },
+  records: [{ label: "Invoices", model: "invoice" }],
 } satisfies ModuleDefinition;

@@ -28,4 +28,5 @@ export const marketingModule = {
       VIEWER: ["marketing:read"],
     },
   },
+  records: [{ label: "Campaigns", model: "campaign" }],
 } satisfies ModuleDefinition;

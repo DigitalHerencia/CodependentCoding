@@ -28,4 +28,5 @@ export const aiModule = {
       VIEWER: ["ai:read"],
     },
   },
+  records: [{ label: "AI generations", model: "aiGeneration" }],
 } satisfies ModuleDefinition;

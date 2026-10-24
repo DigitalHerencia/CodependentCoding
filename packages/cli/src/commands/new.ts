@@ -49,9 +49,10 @@ function cancelled<T>(value: T): Exclude<T, symbol> {
   return value as Exclude<T, symbol>;
 }
 
-function fromFlags(
+/** Modules from --all / --modules / --preset; null when none was given. */
+export function fromFlags(
   manifest: TemplateManifest,
-  options: NewOptions,
+  options: Pick<NewOptions, "all" | "modules" | "preset">,
 ): string[] | null {
   if (options.all) return manifest.modules.map(({ id }) => id);
   if (options.modules) {

@@ -35,4 +35,5 @@ export const projectsModule = {
       VIEWER: ["projects:read"],
     },
   },
+  records: [{ label: "Projects", model: "project" }],
 } satisfies ModuleDefinition;

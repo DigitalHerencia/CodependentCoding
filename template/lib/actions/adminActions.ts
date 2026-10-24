@@ -3,20 +3,13 @@
 import {
   addAdminMembershipSchema,
   changeAdminMembershipSchema,
-  reconcileAdminProviderStateSchema,
   updateAdminMembershipStatusSchema,
 } from "@/schemas/adminSchemas";
 import { requireIdentity } from "@/lib/auth/auth";
 import { assertPermission } from "@/lib/authz/permissions";
-import {
-  toAdminMembershipDTO,
-  toAdminProviderStateDTO,
-} from "@/lib/db/dto/admin.dto";
+import { toAdminMembershipDTO } from "@/lib/db/dto/admin.dto";
 import { withTenantTransaction } from "@/lib/db/tenant";
-import {
-  reconcileAdministrativeProviderStateTx,
-  updateMembershipAdministrationTx,
-} from "@/lib/db/transactions/admin.tx";
+import { updateMembershipAdministrationTx } from "@/lib/db/transactions/admin.tx";
 import { adminMembershipSelect } from "@/lib/db/selects/admin.selects";
 import { InvariantViolationError } from "@/lib/db/transactions/errors";
 
@@ -77,27 +70,6 @@ export async function restoreAdminMembership(rawInput: unknown) {
       status: "ACTIVE",
     });
     return toAdminMembershipDTO(membership);
-  });
-}
-
-export async function reconcileAdminProviderState(rawInput: unknown) {
-  const input = reconcileAdminProviderStateSchema.parse(rawInput);
-  const identity = await requireIdentity();
-
-  return withTenantTransaction(identity, async (tx, access) => {
-    assertPermission(access, "admin:records");
-    const subscription = await reconcileAdministrativeProviderStateTx(tx, {
-      organizationId: access.organizationId,
-      actorUserId: access.userId,
-      provider: input.provider,
-      providerCustomerId: input.providerCustomerId ?? null,
-      providerSubscriptionId: input.providerSubscriptionId ?? null,
-      planKey: input.planKey,
-      status: input.status,
-      currentPeriodEnd: input.currentPeriodEnd ?? null,
-      cancelAtPeriodEnd: input.cancelAtPeriodEnd,
-    });
-    return toAdminProviderStateDTO(subscription);
   });
 }
 

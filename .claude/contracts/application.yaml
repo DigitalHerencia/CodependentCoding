@@ -293,7 +293,7 @@ modules:
     invoicing: [invoicing, billing, uploads]
     social: [social, media, uploads]
     ai: [ai, inference, billing, ratelimit]
-    portal: [portal, uploads, billing]
+    portal: [portal, invoicing, uploads, billing]
     admin: [admin]
 
 base:
