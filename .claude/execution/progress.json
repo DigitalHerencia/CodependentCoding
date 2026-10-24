@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/progress/v1",
-  "updated": "2026-10-24T20:40:00Z",
+  "updated": "2026-10-24T21:50:00Z",
   "format": "Evidence states: EXECUTED | INSPECTED | NOT_RUN | BLOCKED. Never mark an issue done without EXECUTED evidence for its Validation commands.",
   "milestones": {
     "M0": {
@@ -506,7 +506,7 @@
       "merged": "fd02417"
     },
     "CC-039": {
-      "status": "in-review",
+      "status": "done",
       "github": 199,
       "branch": "feat/199-skills-slice-classify",
       "decision": "DEC-055",
@@ -514,6 +514,19 @@
       "acceptance": {
         "Slice skill on a sample entity yields lint-clean code with domain logic filled": "EXECUTED: headless `claude -p --plugin-dir plugin/loaded-vibes '/loaded-vibes:slice ... GR-004 visit + 3 rules'` in template/.sandbox/slice-dry (greenroute, crm + property/crew/job sliced first). It ran the CLI (dry run, then 26 files), added withVisitRules refinements (skipped needs note; completedAt only when done), stamped completedAt in create/update actions, today-onward ordered fetcher, 4 rule tests. Verified independently: pnpm lint exit 0, typecheck exit 0, test 12 files 70 passed/1 skipped, no eslint-disable. Its writes to .claude/execution were refused by the headless permission mode (sensitive path), so it reported the records instead; test:rls not run (no DATABASE_URL_TEST).",
         "Classify answers 10 sample prompts correctly": "EXECUTED: `claude plugin eval plugin/loaded-vibes --tag classify --runs 2 --ablation none` -> 10/10 cases, 20/20 runs, score 1.00 ($1.06). First run (before the naming/DTO clarification) scored 8/10."
+      },
+      "pr": 252,
+      "merged": "745887e"
+    },
+    "CC-040": {
+      "status": "in-review",
+      "github": 200,
+      "branch": "feat/200-skills-check-ship-handoff-hooks",
+      "decision": "DEC-056",
+      "note": "skills/check, skills/ship, skills/handoff; hooks/hooks.json + hooks/when-app.mjs (factory hooks copied unchanged); scripts lint-findings, ship-env, smoke, execution-check.",
+      "acceptance": {
+        "Hooks fire in a generated app and not in unrelated repos": "EXECUTED: headless `claude -p --plugin-dir plugin/loaded-vibes` writing a CC-FEAT-001 violation. In template/.sandbox/ship-dry (hipster-stack new, crm): PostToolUse:Write exit 2 with [CC-FEAT-001], Stop exit 2 listing the file. In an unrelated git repo (scratchpad/unrelated): PostToolUse exit 0 and Stop exit 0, no feedback. tests/plugin/hooks.test.ts pins both (4 passed).",
+        "`ship` produces a working URL on a test app": "NOT_RUN: a production deploy needs the owner's go-ahead (decision card pending). Dry run EXECUTED in template/.sandbox/ship-dry: ship-env.mjs dry run listed names only (exit 1 on unset required DATABASE_URL, as designed); pnpm build exit 0 (dummy env); pnpm start + smoke.mjs http://localhost:3217 -> PASS GET / (200, <h1>), PASS /dashboard (307 -> /sign-in). `vercel deploy --prod` not run."
       }
     }
   },
@@ -549,7 +562,8 @@
     "CC-035",
     "CC-036",
     "CC-037",
-    "CC-038"
+    "CC-038",
+    "CC-039"
   ],
   "evidence": [
     {
@@ -2601,6 +2615,42 @@
       "state": "EXECUTED",
       "command": "headless /loaded-vibes:slice visit (slice-dry) then pnpm lint; pnpm typecheck; pnpm test",
       "result": "lint 0, typecheck 0, 70 passed/1 skipped"
+    },
+    {
+      "date": "2026-10-24",
+      "state": "EXECUTED",
+      "command": "headless claude -p --plugin-dir plugin/loaded-vibes (Write CC-FEAT-001 file) in a generated app and in an unrelated repo",
+      "result": "app: PostToolUse exit 2 [CC-FEAT-001], Stop exit 2; unrelated: both exit 0, silent"
+    },
+    {
+      "date": "2026-10-24",
+      "state": "EXECUTED",
+      "command": "pnpm exec vitest run tests/plugin/hooks.test.ts tests/plugin/shipHandoff.test.ts",
+      "result": "7 passed"
+    },
+    {
+      "date": "2026-10-24",
+      "state": "EXECUTED",
+      "command": "template/.sandbox/ship-dry: pnpm build; pnpm start -p 3217; node plugin/loaded-vibes/scripts/smoke.mjs http://localhost:3217",
+      "result": "build exit 0; smoke 2/2 PASS"
+    },
+    {
+      "date": "2026-10-24",
+      "state": "EXECUTED",
+      "command": "claude plugin validate plugin/loaded-vibes --strict; claude plugin install loaded-vibes@codependent-coding (isolated CLAUDE_CONFIG_DIR); claude plugin details",
+      "result": "validation passed; Skills (7) check, classify, handoff, idea, plan, ship, slice; Hooks (2) PostToolUse, Stop"
+    },
+    {
+      "date": "2026-10-24",
+      "state": "EXECUTED",
+      "command": "pnpm validate",
+      "result": "exit 0 (12 test files, 78 tests)"
+    },
+    {
+      "date": "2026-10-24",
+      "state": "NOT_RUN",
+      "command": "vercel deploy --prod (CC-040 ship on a test app)",
+      "result": "waiting on the owner's decision; no cloud resource created"
     }
   ],
   "known_findings": [

@@ -434,7 +434,7 @@ The repo is its own plugin marketplace (`.claude-plugin/marketplace.json`, name 
 /plugin install loaded-vibes@codependent-coding
 ```
 
-`/plugin marketplace add DigitalHerencia/CodependentCoding` works too, without a clone. Restart Claude Code after installing; the plugin's skills then appear under the `loaded-vibes:` namespace. `plugin/loaded-vibes/references/doctrine.md` is generated: run `pnpm plugin:doctrine` after changing the classifier (Architecture.md §3.3) or `validation.yaml`.
+`/plugin marketplace add DigitalHerencia/CodependentCoding` works too, without a clone. Restart Claude Code after installing; the plugin's skills then appear under the `loaded-vibes:` namespace. In a generated app (one with `hipster.json`) the plugin's hooks lint every edited file and remind Claude to update `.claude/execution/` before stopping; in any other repository they do nothing. `plugin/loaded-vibes/references/doctrine.md` is generated: run `pnpm plugin:doctrine` after changing the classifier (Architecture.md §3.3) or `validation.yaml`.
 
 ---
 
