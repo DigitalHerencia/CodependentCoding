@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/progress/v1",
-  "updated": "2026-10-24T17:30:00Z",
+  "updated": "2026-10-24T17:40:00Z",
   "format": "Evidence states: EXECUTED | INSPECTED | NOT_RUN | BLOCKED. Never mark an issue done without EXECUTED evidence for its Validation commands.",
   "milestones": {
     "M0": {
@@ -422,7 +422,7 @@
       }
     },
     "CC-032": {
-      "status": "in-review",
+      "status": "done",
       "github": 192,
       "branch": "feat/192-slice-scaffolder",
       "decision": "DEC-047",
@@ -430,6 +430,16 @@
       "acceptance": {
         "`hipster-stack slice invoice --module invoicing --fields \"number:string,amount:decimal,status:enum(draft|sent|paid)\"` in a generated app -> lint, typecheck, build pass": "EXECUTED",
         "Generated files satisfy every CC rule without edits": "EXECUTED"
+      }
+    },
+    "CC-033": {
+      "status": "in-review",
+      "github": 193,
+      "branch": "feat/193-add-command",
+      "decision": "DEC-048",
+      "note": "`hipster-stack add <modules...> [--dir] [--no-install] [--dry-run]` in packages/cli/src/compose/addModules.ts + commands/add.ts.",
+      "acceptance": {
+        "`hipster-stack add crm` in a blank app -> validate and build pass": "EXECUTED"
       }
     }
   },
@@ -2307,6 +2317,46 @@
       "env": "cloud container",
       "command": "pnpm validate (root); pnpm vitest run tests/cli",
       "result": "validate exit 0; tests/cli 5 files, 51 passed"
+    },
+    {
+      "date": "2026-10-24",
+      "state": "EXECUTED",
+      "issue": "CC-033",
+      "env": "cloud container",
+      "command": "pnpm cli new template/.sandbox/add --preset blank --yes; pnpm cli add crm --dir template/.sandbox/add",
+      "result": "exit 0: crm files created, identity.prisma regained its 8 // @module crm lines in their template blocks, manifest/registry/hipster.json updated, prisma format + validate + generate ran"
+    },
+    {
+      "date": "2026-10-24",
+      "state": "EXECUTED",
+      "issue": "CC-033",
+      "env": "cloud container",
+      "command": "pnpm --dir template/.sandbox/add validate; test; build",
+      "result": "validate exit 0 (ownership base 344, crm 66); test 8 files, 46 passed, 1 skipped; build exit 0 with the /crm routes"
+    },
+    {
+      "date": "2026-10-24",
+      "state": "EXECUTED",
+      "issue": "CC-033",
+      "env": "cloud container",
+      "command": "diff the add result against `new --preset crm`",
+      "result": "registry, hipster.modules.json, .env.example and every created file identical; identity.prisma has the same tagged lines (only prisma-format whitespace differs)"
+    },
+    {
+      "date": "2026-10-24",
+      "state": "EXECUTED",
+      "issue": "CC-033",
+      "env": "cloud container",
+      "command": "node packages/cli/dist/cli.mjs add support --dir template/.sandbox/add2 (blank app); validate; test; check:schema-modules; build; add email again",
+      "result": "closure added support + email, package.json gained @sendgrid/eventwebhook + @sendgrid/mail, SENDGRID_* listed in next steps; validate 0 (support 43, email 7); test 7 files 41 passed; schema-modules ok; build 0; re-add prints 'Already installed: email.'"
+    },
+    {
+      "date": "2026-10-24",
+      "state": "EXECUTED",
+      "issue": "CC-033",
+      "env": "cloud container",
+      "command": "pnpm vitest run tests/cli/add.test.ts; pnpm validate (root)",
+      "result": "6 passed (restoreTagged, crm vs fresh compose, closure + packages + env, conflict refusal writes nothing, unknown module, slice modules kept); root validate exit 0, 57 tests"
     }
   ],
   "known_findings": [

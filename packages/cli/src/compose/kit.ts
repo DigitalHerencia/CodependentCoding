@@ -2,6 +2,7 @@ import path from "node:path";
 import { pathToFileURL } from "node:url";
 
 import type * as ComposeScript from "@/template/scripts/compose.mjs";
+import type * as EnvScript from "@/template/scripts/env-example.mjs";
 import type * as SchemaScript from "@/template/scripts/modules-schema.mjs";
 
 /**
@@ -12,6 +13,7 @@ import type * as SchemaScript from "@/template/scripts/modules-schema.mjs";
 export interface TemplateKit {
   compose: typeof ComposeScript;
   schema: typeof SchemaScript;
+  env: typeof EnvScript;
   /** Formats text the pipeline wrote with the template's Prettier and config. */
   format: (relativePath: string, text: string) => Promise<string>;
 }
@@ -27,9 +29,10 @@ export async function loadTemplateKit(
   const load = (file: string) =>
     import(pathToFileURL(path.join(templateDir, "scripts", file)).href);
   try {
-    const [compose, schema, prettier] = await Promise.all([
+    const [compose, schema, env, prettier] = await Promise.all([
       load("compose.mjs"),
       load("modules-schema.mjs"),
+      load("env-example.mjs"),
       import(
         pathToFileURL(
           path.join(templateDir, "node_modules", "prettier", "index.mjs"),
@@ -43,7 +46,7 @@ export async function loadTemplateKit(
       // would otherwise resolve from the not-yet-installed app.
       return prettier.format(text, { ...config, plugins: [], filepath: file });
     };
-    return { compose, schema, format } as TemplateKit;
+    return { compose, schema, env, format } as TemplateKit;
   } catch (error) {
     throw new Error(
       `Could not load the template's scripts from ${templateDir}. Run \`pnpm install\` there first.\n${(error as Error).message}`,
