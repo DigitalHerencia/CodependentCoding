@@ -1,0 +1,40 @@
+# {{appName}} — validation contract
+# Executable form: eslint/doctrine-map.mjs + eslint/codependent-plugin.mjs. Rule IDs: Architecture.md §4.
+schema: codependent-coding/validation/v1
+version: 0.1.0
+updated: {{createdAt}}
+
+evidence:
+  states: [EXECUTED, INSPECTED, NOT_RUN, BLOCKED]
+  rule: Never record "passed" without an EXECUTED command and its result.
+  record_in: .claude/execution/progress.json
+  completion_requires:
+    [
+      acceptance criteria met,
+      required checks EXECUTED and passing,
+      execution files updated,
+    ]
+
+profiles:
+  edit: { when: after every file edit, run: ["pnpm exec eslint <file>"] }
+  quick:
+    {
+      when: before commit,
+      run: ["pnpm format:check", "pnpm lint", "pnpm typecheck"],
+    }
+  full: { when: before a PR, run: ["pnpm validate", "pnpm test", "pnpm build"] }
+  security:
+    { when: schema, RLS, auth or action changes, run: ["pnpm test:rls"] }
+
+rules:
+  source: eslint/doctrine-map.mjs
+  ids: Architecture.md §4
+  disable_to_pass: forbidden # fix the cause; never add eslint-disable for a CC-* finding
+  review_only:
+    - actions validate with Zod before writing
+    - tenant scope lives in the query predicate
+    - consequential decisions never read stale cache
+    - webhooks reconcile current provider truth
+
+# App-specific checks (performance budgets, contract tests, ...). From tech-requirements.md §4.
+app_checks: [] # TODO

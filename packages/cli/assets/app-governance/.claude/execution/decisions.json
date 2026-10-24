@@ -1,0 +1,16 @@
+{
+  "$schema": "codependent-coding/execution/decisions/v1",
+  "updated": "{{createdAt}}",
+  "format": "Append-only. One entry per decision: id DEC-NNN, date, status, title, context, decision, refs.",
+  "decisions": [
+    {
+      "id": "DEC-001",
+      "date": "{{createdAt}}",
+      "status": "accepted",
+      "title": "Generated with hipster-stack",
+      "context": "The app starts from the Codependent Coding Maximal Template.",
+      "decision": "Modules {{modules}} from template commit {{templateCommit}}; doctrine in context/docs/Architecture.md and AUTH.md applies unchanged.",
+      "refs": ["hipster.json", "hipster.modules.json"]
+    }
+  ]
+}

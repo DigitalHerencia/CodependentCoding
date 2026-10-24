@@ -1,0 +1,10 @@
+{
+  "$schema": "codependent-coding/execution/progress/v1",
+  "updated": "{{createdAt}}",
+  "format": "Issue status and EXECUTED evidence (command and result). Never record a pass without running the command.",
+  "issues": {},
+  "completed": [],
+  "evidence": [],
+  "known_findings": [],
+  "blocked": []
+}

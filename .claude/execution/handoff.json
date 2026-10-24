@@ -1,15 +1,17 @@
 {
   "$schema": "codependent-coding/execution/handoff/v1",
-  "updated": "2026-10-23T16:12:00Z",
+  "updated": "2026-10-23T16:25:00Z",
   "format": "Overwrite each session. Minimum state the next session needs to resume safely.",
   "status": "ready-for-claude-code",
   "milestone": "M4",
-  "current_issue": "CC-029",
-  "next_issue": "CC-030",
-  "queue": ["CC-030", "CC-031"],
-  "branch": "feat/189-compose-new",
+  "current_issue": "CC-030",
+  "next_issue": "CC-031",
+  "queue": ["CC-031", "CC-032"],
+  "branch": "feat/190-app-governance",
   "in_flight": [
-    "PR #241 (CC-028) waits on owner's Windows check; PR for CC-029 stacks on it"
+    "PR #241 (CC-028) waits on owner's Windows check",
+    "PR #242 (CC-029) stacked on #241",
+    "CC-030 PR stacked on #242"
   ],
   "notes": [
     "Governance package is uncommitted in the owner's working tree; owner reviews with `git status` / `git diff`, then commits on a branch `chore/governance-package`.",
@@ -48,7 +50,8 @@
     "CC-027 (DEC-042): projects is the golden slice. Actions return ActionResult via lib/utils/actionResult.ts (toActionResult); versioned updates use staleOrMissing (CONFLICT vs NOT_FOUND). Rerun `node scripts/slice-files.mjs projects --write` in template/ when projects files move. To build a composed app, compose into a dir inside template/ (turbopack rejects node_modules symlinks outside its root and anything under node_modules).",
     "M3 closed 2026-10-23 (CC-018..CC-027). Next: M4 starting CC-028 (packages/cli).",
     "CC-028 (DEC-043): packages/cli = hipster-stack. `pnpm cli` runs from source (tsx), `pnpm cli:build` bundles, `pnpm cli:link` links globally (needs `pnpm setup` once so pnpm's global bin dir is on PATH). Template = HIPSTER_TEMPLATE or <repo>/template. CC-029 ports template/scripts/compose.mjs into packages/cli/src/compose.",
-    "CC-029 (DEC-044): `hipster-stack new <dir> [--preset|--modules|--all] [--color] [--yes] [--no-install] [--no-git]`. The CLI needs the template installed (it loads template scripts + Prettier). .sandbox/ is git-ignored scratch for generated apps. Template tests pinning the full module set live in template/tests/template/ and are not copied."
+    "CC-029 (DEC-044): `hipster-stack new <dir> [--preset|--modules|--all] [--color] [--yes] [--no-install] [--no-git]`. The CLI needs the template installed (it loads template scripts + Prettier). .sandbox/ is git-ignored scratch for generated apps. Template tests pinning the full module set live in template/tests/template/ and are not copied.",
+    "CC-030 (DEC-045): governance templates in packages/cli/assets/app-governance; when root doctrine (Architecture §2-4, AUTH) changes, update the asset copies too (tests/cli/governance.test.ts checks rule IDs only)."
   ],
   "risks": [
     "Lint hook exits 0 silently when node_modules/eslint is missing; a failed install hides lint feedback. On Windows, run pnpm install with VS Code closed (DEC-019).",

@@ -31,3 +31,6 @@ context/doctrine/
 
 # Template is a separate pnpm project with its own format:check (it needs template deps for the tailwind plugin)
 template/
+
+# Governance templates: rendered and formatted by hipster-stack new (placeholders are not valid YAML)
+packages/cli/assets/

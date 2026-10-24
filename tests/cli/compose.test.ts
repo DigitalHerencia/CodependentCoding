@@ -16,6 +16,7 @@ import {
   EXCLUDED,
   readManifest,
 } from "@/packages/cli/src/compose/composeApp";
+import { governanceFiles } from "@/packages/cli/src/compose/governance";
 import { prunePackageJson } from "@/packages/cli/src/compose/packageJson";
 import { closure } from "@/template/scripts/compose.mjs";
 import { ownerOf } from "@/template/scripts/ownership.mjs";
@@ -76,12 +77,16 @@ describe.each([
     expect(result.modules).toEqual(kept);
 
     const files = walk(outDir);
+    const governance = new Set(governanceFiles());
+    expect(result.governance).toEqual([...governance]);
     for (const file of files) {
       const { owner } = ownerOf(file, manifest);
       expect(owner === "base" || kept.includes(owner ?? ""), file).toBe(true);
+      if (governance.has(file)) continue;
       for (const prefix of EXCLUDED)
         expect(file.startsWith(prefix)).toBe(false);
     }
+    for (const file of governance) expect(files).toContain(file);
 
     const hipster = JSON.parse(read(outDir, "hipster.json"));
     expect(hipster).toMatchObject({

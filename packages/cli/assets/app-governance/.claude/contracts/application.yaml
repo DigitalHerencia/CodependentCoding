@@ -1,0 +1,62 @@
+# {{appName}} — application contract
+# Compiled from: context/docs/PRD.md, tech-requirements.md, Architecture.md, AUTH.md.
+# The docs are the authority; this file is their machine form. Keep both in sync.
+schema: codependent-coding/application/v1
+version: 0.1.0
+updated: {{createdAt}}
+
+identity:
+  name: {{appName}}
+  generated_by: hipster-stack
+  template_commit: {{templateCommit}}
+  modules: {{modulesList}}
+
+# From PRD.md §3 and §4. Agents stop and ask before building a non-goal.
+goals: [] # TODO
+non_goals: [] # TODO
+
+environment:
+  runtime: node 24
+  package_manager: pnpm
+  owner_shell: TODO # e.g. PowerShell 7 or zsh; commands handed to the owner use it
+
+architecture:
+  doctrine: context/docs/Architecture.md
+  classifier: context/docs/Architecture.md §3.3
+  enforcement: eslint/doctrine-map.mjs
+  invent_layers: false
+
+modules:
+  manifest: hipster.modules.json
+  ownership: computed (pnpm check:ownership)
+  registry: lib/modules/registry.ts (generated)
+  # From Architecture.md §6.
+  domains: [] # TODO
+
+security:
+  doctrine: context/docs/AUTH.md
+  identity_provider: clerk
+  tenancy_authority: application-postgres
+  rls: every tenant table, prisma/rls/<owner>.sql, pnpm test:rls
+  action_result:
+    [
+      UNAUTHENTICATED,
+      FORBIDDEN,
+      NOT_FOUND,
+      VALIDATION,
+      CONFLICT,
+      RATE_LIMITED,
+      INTERNAL,
+    ]
+
+governance:
+  router: CLAUDE.md
+  execution: .claude/execution/{progress,decisions,handoff}.json
+  issues: context/specs/issues/
+  stop_and_ask:
+    - deleting anything outside the current issue's scope
+    - force-pushing, rewriting history, or touching main directly
+    - adding paid services, creating cloud resources, or provisioning
+    - reading or committing .env* files or secrets
+    - changing product scope (PRD non-goals)
+    - any decision that contradicts context/docs/* or decisions.json
