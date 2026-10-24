@@ -1,0 +1,10 @@
+{
+  "name": "loaded-vibes",
+  "version": "0.1.0",
+  "description": "Drives a Hipster Stack app from idea to deployed MVP inside the Codependent Coding doctrine: classify before creating a file, lint-enforced CC-* rules, evidence-only checks.",
+  "author": { "name": "Digital Herencia" },
+  "homepage": "https://github.com/DigitalHerencia/CodependentCoding",
+  "repository": "https://github.com/DigitalHerencia/CodependentCoding",
+  "license": "MIT",
+  "keywords": ["codependent-coding", "hipster-stack", "nextjs", "doctrine"]
+}

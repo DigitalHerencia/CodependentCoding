@@ -24,6 +24,7 @@
     "test:e2e:headed": "playwright test --headed",
     "test:e2e:debug": "playwright test --debug",
     "issues:sync": "node scripts/github/sync-issues.mjs",
+    "plugin:doctrine": "node scripts/plugin-doctrine.mjs",
     "cli": "tsx packages/cli/src/cli.ts",
     "cli:build": "pnpm --filter hipster-stack build",
     "cli:link": "pnpm cli:build && node scripts/cli-link.mjs"
