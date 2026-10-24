@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/decisions/v1",
-  "updated": "2026-10-24T19:50:00Z",
+  "updated": "2026-10-24T20:05:00Z",
   "format": "Append new decisions; never rewrite history. Supersede by adding a new entry and setting status=superseded + superseded_by on the old one.",
   "decisions": [
     {
@@ -541,6 +541,15 @@
       "context": "CC-036 asks for references/doctrine.md 'generated from validation.yaml', but the classifier lives in Architecture.md §3.3 (intent, highest authority), not in the contract.",
       "decision": "plugin/loaded-vibes/.claude-plugin/plugin.json (loaded-vibes 0.1.0, MIT like the repo) and root .claude-plugin/marketplace.json (marketplace codependent-coding, source ./plugin/loaded-vibes). scripts/plugin-doctrine.mjs (`pnpm plugin:doctrine`, `--check`) renders the classifier from Architecture.md §3.3 and the CC rule table from validation.yaml, Prettier-formatted; tests/plugin/plugin.test.ts fails when the file is stale or misses a rule. No skills/agents/hooks yet (CC-037..CC-041). No plugin icon: the validator's ICON_MISSING warning only matters for directory submission.",
       "refs": ["CC-036", "DEC-050", "DEC-051"]
+    },
+    {
+      "id": "DEC-053",
+      "date": "2026-10-24",
+      "status": "accepted",
+      "title": "CC-037: /idea skill and the governance check",
+      "context": "The skill must write docs and compile YAML in a generated app, prove the YAML is valid and ask at most ~12 questions. Generated apps have no yaml package, and the plugin cannot install dependencies.",
+      "decision": "plugin/loaded-vibes/skills/idea/SKILL.md runs a 12-question Mad-Libs grill (one proposal per question, skip -> PRD open questions), edits only the app-owned sections (PRD all; tech §4-5; Architecture §1, §6; AUTH §12; Design §1 paragraph) and the TODO keys of the three contracts, records DEC entries, and hands back ordered `hipster-stack slice` commands without running them. plugin/loaded-vibes/scripts/governance-check.mjs parses the contracts with the app's own Prettier (yaml parser) and fails on any TODO outside HTML comments; the skill calls it via ${CLAUDE_PLUGIN_ROOT}. skills/idea/example.md is the worked GreenRoute session.",
+      "refs": ["CC-037", "DEC-052"]
     }
   ]
 }
