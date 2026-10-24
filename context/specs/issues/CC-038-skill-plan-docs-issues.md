@@ -8,7 +8,7 @@ priority: p1
 size: s
 labels: [type:feature, area:plugin, priority:p1, size:s]
 depends_on: [CC-037]
-status: todo
+status: in-review
 ---
 
 # CC-038 · Skill: plan (docs → issues)

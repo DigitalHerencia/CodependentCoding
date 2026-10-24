@@ -27,15 +27,16 @@ Installed modules: {{modules}}. Each module's providers and env are listed in `h
 
 ## 2. Scripts
 
-| Script     | Does                                                                    |
-| ---------- | ----------------------------------------------------------------------- |
-| `dev`      | `next dev`                                                              |
-| `validate` | format check, lint (doctrine), typecheck, check:modules, ownership, env |
-| `test`     | unit tests                                                              |
-| `test:rls` | cross-tenant isolation against `DATABASE_URL_TEST`                      |
-| `test:e2e` | Playwright smoke                                                        |
-| `build`    | production build                                                        |
-| `db:init`  | migrate (dev for a fresh database, deploy otherwise) + apply RLS SQL    |
+| Script        | Does                                                                    |
+| ------------- | ----------------------------------------------------------------------- |
+| `dev`         | `next dev`                                                              |
+| `validate`    | format check, lint (doctrine), typecheck, check:modules, ownership, env |
+| `test`        | unit tests                                                              |
+| `test:rls`    | cross-tenant isolation against `DATABASE_URL_TEST`                      |
+| `test:e2e`    | Playwright smoke                                                        |
+| `build`       | production build                                                        |
+| `db:init`     | migrate (dev for a fresh database, deploy otherwise) + apply RLS SQL    |
+| `issues:sync` | validate the issue files (dry run); `--apply` syncs them to GitHub      |
 
 ## 3. Environment
 

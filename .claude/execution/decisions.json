@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/decisions/v1",
-  "updated": "2026-10-24T20:05:00Z",
+  "updated": "2026-10-24T20:25:00Z",
   "format": "Append new decisions; never rewrite history. Supersede by adding a new entry and setting status=superseded + superseded_by on the old one.",
   "decisions": [
     {
@@ -550,6 +550,15 @@
       "context": "The skill must write docs and compile YAML in a generated app, prove the YAML is valid and ask at most ~12 questions. Generated apps have no yaml package, and the plugin cannot install dependencies.",
       "decision": "plugin/loaded-vibes/skills/idea/SKILL.md runs a 12-question Mad-Libs grill (one proposal per question, skip -> PRD open questions), edits only the app-owned sections (PRD all; tech §4-5; Architecture §1, §6; AUTH §12; Design §1 paragraph) and the TODO keys of the three contracts, records DEC entries, and hands back ordered `hipster-stack slice` commands without running them. plugin/loaded-vibes/scripts/governance-check.mjs parses the contracts with the app's own Prettier (yaml parser) and fails on any TODO outside HTML comments; the skill calls it via ${CLAUDE_PLUGIN_ROOT}. skills/idea/example.md is the worked GreenRoute session.",
       "refs": ["CC-037", "DEC-052"]
+    },
+    {
+      "id": "DEC-054",
+      "date": "2026-10-24",
+      "status": "accepted",
+      "title": "CC-038: /plan skill and the app's issues:sync",
+      "context": "Generated apps need the factory's issue format and a sync script, but scripts/github/sync-issues.mjs is factory-specific (CC- prefix, fixed milestones, labels.yml) and does not validate.",
+      "decision": "template/scripts/sync-issues.mjs (base-owned, so every composed app ships it) with `pnpm issues:sync`: dry run validates every context/specs/issues file (name <PREFIX>-NNN-<slug>.md, required fields, enums, id = file name, Summary/Scope/Acceptance sections, unique ids, depends_on targets) and exits 1 on any problem; it stays offline without a GitHub remote. `--apply` upserts labels (frontmatter labels, else type/area/priority/size), creates frontmatter milestones and missing issues matched by '<ID> ·' title prefix, then rewrites Depends on with numbers (.github-map.json). The app issue README format gains milestone and labels, matching the factory frontmatter. plugin skills/plan/SKILL.md decomposes the PRD into slice, rule, module, deploy and goal-test issues, runs the dry run, updates handoff, and only offers --apply (it writes to GitHub).",
+      "refs": ["CC-038", "DEC-053"]
     }
   ]
 }

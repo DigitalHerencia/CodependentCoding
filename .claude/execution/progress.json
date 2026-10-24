@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/progress/v1",
-  "updated": "2026-10-24T20:05:00Z",
+  "updated": "2026-10-24T20:25:00Z",
   "format": "Evidence states: EXECUTED | INSPECTED | NOT_RUN | BLOCKED. Never mark an issue done without EXECUTED evidence for its Validation commands.",
   "milestones": {
     "M0": {
@@ -481,7 +481,7 @@
       "merged": "1f60920"
     },
     "CC-037": {
-      "status": "in-review",
+      "status": "done",
       "github": 197,
       "branch": "feat/197-skill-idea",
       "decision": "DEC-053",
@@ -489,6 +489,18 @@
       "acceptance": {
         "Dry run on a sample idea produces coherent docs and valid YAML": "EXECUTED: composed greenroute (--preset crm) in template/.sandbox/idea-dry, filled the docs/contracts/decisions following SKILL.md from the 12 answers in skills/idea/example.md. governance-check -> 'governance ok' (exit 0, before: 30 problems); yaml.parse of the 3 contracts -> goals 3, non_goals 5, domains crm+field, owner_shell zsh; prettier --check context .claude -> clean. Coherence: the 4 handed-back slice commands ran (exit 0 each) and the app then passed typecheck 0, lint 0, check:modules ok, check:ownership (field 70 files), test 12 files 66 passed/1 skipped (after git init: the registry test lists files via git).",
         "Asks at most ~12 questions": "INSPECTED: SKILL.md caps the grill at 12 (table rows 1-12, 'Never exceed 12'); the dry run used exactly 12."
+      },
+      "pr": 250,
+      "merged": "b9bda2e"
+    },
+    "CC-038": {
+      "status": "in-review",
+      "github": 198,
+      "branch": "feat/198-skill-plan",
+      "decision": "DEC-054",
+      "note": "template/scripts/sync-issues.mjs (+ .d.mts, issues:sync), app issues README format, skills/plan/SKILL.md, tests/plugin/syncIssues.test.ts.",
+      "acceptance": {
+        "Generated issues parse with the sync script dry run": "EXECUTED: composed greenroute (--preset crm) in template/.sandbox/plan-dry, carried over the /idea dry-run docs, wrote 9 issues per skills/plan/SKILL.md (GR-001..GR-009: 4 slices, completion policy, price hiding, recurrence spike, deploy, G1 test). `node scripts/sync-issues.mjs` in the app -> '9 issues valid', 10 labels and milestone 'M1 · MVP' would be created, 9 would-create lines, exit 0. Broken files -> exit 1 with each problem named (tests/plugin/syncIssues.test.ts)."
       }
     }
   },
@@ -522,7 +534,8 @@
     "CC-026",
     "CC-027",
     "CC-035",
-    "CC-036"
+    "CC-036",
+    "CC-037"
   ],
   "evidence": [
     {
@@ -2538,6 +2551,24 @@
       "state": "EXECUTED",
       "command": "claude plugin validate plugin/loaded-vibes --strict",
       "result": "Validation passed (ICON_MISSING directory warning)"
+    },
+    {
+      "date": "2026-10-24",
+      "state": "EXECUTED",
+      "command": "node scripts/sync-issues.mjs (plan dry-run app, 9 GR issues)",
+      "result": "DRY RUN, 9 issues valid, exit 0"
+    },
+    {
+      "date": "2026-10-24",
+      "state": "EXECUTED",
+      "command": "npx vitest run tests/plugin/syncIssues.test.ts",
+      "result": "3 passed"
+    },
+    {
+      "date": "2026-10-24",
+      "state": "EXECUTED",
+      "command": "template: format (non-sandbox), eslint, typecheck, check:modules, check:ownership, check:env, test",
+      "result": "all exit 0; test 15 files, 66 passed/1 skipped"
     }
   ],
   "known_findings": [

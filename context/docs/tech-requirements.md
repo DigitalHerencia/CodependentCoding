@@ -92,22 +92,23 @@ Removed: `.agents/`, `packages/core`, `packages/schema`, `packages/loaded-vibes`
 
 ### Template (`template/`)
 
-| Script                    | Command                                                                           |
-| ------------------------- | --------------------------------------------------------------------------------- |
-| `dev`                     | `next dev` (no tunnels or personal URLs)                                          |
-| `build`                   | `next build --turbopack`                                                          |
-| `lint` / `lint:fix`       | `eslint . --max-warnings=0` (doctrine included)                                   |
-| `doctrine:test`           | `node --test eslint/*.test.mjs`                                                   |
-| `typecheck`               | `next typegen && tsc --noEmit`                                                    |
-| `format` / `format:check` | Prettier                                                                          |
-| `test`                    | `vitest run`                                                                      |
-| `test:rls`                | RLS cross-tenant suite against `DATABASE_URL_TEST`                                |
-| `test:e2e`                | Playwright smoke                                                                  |
-| `check:ownership`         | orphan/ambiguous-owner check over all files                                       |
-| `check:env`               | manifest env ↔ `lib/env/*.ts`; fresh `.env.example`; no `process.env` elsewhere   |
-| `db:init`                 | `prisma migrate dev --name init` + apply `prisma/rls/*.sql` as a second migration |
-| `validate`                | `format:check && lint && doctrine:test && typecheck && check:ownership && test`   |
-| `postinstall`             | `prisma generate`                                                                 |
+| Script                    | Command                                                                                    |
+| ------------------------- | ------------------------------------------------------------------------------------------ |
+| `dev`                     | `next dev` (no tunnels or personal URLs)                                                   |
+| `build`                   | `next build --turbopack`                                                                   |
+| `lint` / `lint:fix`       | `eslint . --max-warnings=0` (doctrine included)                                            |
+| `doctrine:test`           | `node --test eslint/*.test.mjs`                                                            |
+| `typecheck`               | `next typegen && tsc --noEmit`                                                             |
+| `format` / `format:check` | Prettier                                                                                   |
+| `test`                    | `vitest run`                                                                               |
+| `test:rls`                | RLS cross-tenant suite against `DATABASE_URL_TEST`                                         |
+| `test:e2e`                | Playwright smoke                                                                           |
+| `check:ownership`         | orphan/ambiguous-owner check over all files                                                |
+| `check:env`               | manifest env ↔ `lib/env/*.ts`; fresh `.env.example`; no `process.env` elsewhere            |
+| `db:init`                 | `prisma migrate dev --name init` + apply `prisma/rls/*.sql` as a second migration          |
+| `issues:sync`             | validate `context/specs/issues/*.md`; `--apply` syncs labels, milestones, issues to GitHub |
+| `validate`                | `format:check && lint && doctrine:test && typecheck && check:ownership && test`            |
+| `postinstall`             | `prisma generate`                                                                          |
 
 ## 5. Next.js configuration
 
