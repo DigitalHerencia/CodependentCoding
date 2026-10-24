@@ -58,3 +58,6 @@ blob-report/
 playwright/.cache/
 # CLI output for local checks (hipster-stack new .sandbox/<app>)
 .sandbox/
+
+# plugin eval runs (claude plugin eval)
+plugin/*/evals/results/
