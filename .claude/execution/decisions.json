@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/decisions/v1",
-  "updated": "2026-10-24T17:40:00Z",
+  "updated": "2026-10-24T17:45:00Z",
   "format": "Append new decisions; never rewrite history. Supersede by adding a new entry and setting status=superseded + superseded_by on the old one.",
   "decisions": [
     {
@@ -491,6 +491,21 @@
         "DEC-044",
         "DEC-047",
         "Architecture.md §6",
+        "tech-requirements.md §9"
+      ]
+    },
+    {
+      "id": "DEC-049",
+      "date": "2026-10-24",
+      "status": "accepted",
+      "title": "CC-034: doctor is read-only and reads env presence only",
+      "context": "doctor must report env, database, migrations, RLS, lint and ownership readiness with fix hints, on apps that may hold real credentials in .env.local.",
+      "decision": "packages/cli/src/doctor/checks.ts runs six checks and returns pass/warn/fail/skip rows with a hint; the command prints a plain table and exits 1 on any fail. Env: required names from the app manifest (base + modules) against the shell, .env.local and .env (Next.js precedence); values are only tested for presence and never printed; missing ones warn by name. Database: DIRECT_DATABASE_URL, else DATABASE_URL, through the template's `pg` (as provisioning, DEC-046) with a 10s connect timeout; unreachable skips the dependent checks. Migrations: prisma/migrations dirs vs finished rows in _prisma_migrations. RLS: relrowsecurity and relforcerowsecurity on every model with a required organizationId plus User and Organization (the template's rlsFiles test rule). Lint and ownership run the app's own scripts; --no-tools skips them; not installed warns. doctor writes nothing.",
+      "refs": [
+        "CC-034",
+        "DEC-038",
+        "DEC-046",
+        "AUTH.md §6",
         "tech-requirements.md §9"
       ]
     }

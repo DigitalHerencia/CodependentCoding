@@ -8,7 +8,7 @@ priority: p2
 size: m
 labels: [type:feature, area:cli, priority:p2, size:m]
 depends_on: [CC-029]
-status: in-review
+status: done
 ---
 
 # CC-033 · `add` command
