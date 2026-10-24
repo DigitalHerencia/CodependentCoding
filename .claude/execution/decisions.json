@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/decisions/v1",
-  "updated": "2026-10-24T17:55:00Z",
+  "updated": "2026-10-24T19:50:00Z",
   "format": "Append new decisions; never rewrite history. Supersede by adding a new entry and setting status=superseded + superseded_by on the old one.",
   "decisions": [
     {
@@ -527,11 +527,20 @@
     {
       "id": "DEC-051",
       "date": "2026-10-24",
-      "status": "proposed",
+      "status": "accepted",
       "title": "CC-035: fix the undeclared admin and portal dependencies the preset matrix found",
       "context": "The presets matrix failed typecheck for admin (counts rows in eight domain modules; writes BillingSubscription) and portal (reads Invoice) because neither declares those modules. check:compose only composed add-ons alone.",
-      "decision": "ModuleDefinition gains `records` ({label, model}); each domain module lists its countable table and admin's record summary counts whatever the registry holds (as nav/dashboard do, DEC-036). The provider-state reconcile moves from admin to billing (schemas/billingSchemas.ts, lib/actions/billingActions.ts reconcileBillingProviderState, lib/db/transactions/billing-reconcile-provider-state.tx.ts, select/DTO/types in billing files) under a new billing:manage permission (OWNER/ADMIN). portal declares dependsOn invoicing; the portal preset becomes [portal, invoicing, uploads, billing] (Architecture.md §5, application.yaml). Admin preset stays [admin]. Proposed pending the owner's choice on the decision card.",
+      "decision": "ModuleDefinition gains `records` ({label, model}); each domain module lists its countable table and admin's record summary counts whatever the registry holds (as nav/dashboard do, DEC-036). The provider-state reconcile moves from admin to billing (schemas/billingSchemas.ts, lib/actions/billingActions.ts reconcileBillingProviderState, lib/db/transactions/billing-reconcile-provider-state.tx.ts, select/DTO/types in billing files) under a new billing:manage permission (OWNER/ADMIN). portal declares dependsOn invoicing; the portal preset becomes [portal, invoicing, uploads, billing] (Architecture.md §5, application.yaml). Admin preset stays [admin]. Accepted by the owner on 2026-10-24 (decision card option \"Modules report their own counts\").",
       "refs": ["CC-035", "DEC-036", "DEC-039", "DEC-050"]
+    },
+    {
+      "id": "DEC-052",
+      "date": "2026-10-24",
+      "status": "accepted",
+      "title": "CC-036: plugin skeleton, local marketplace and generated doctrine reference",
+      "context": "CC-036 asks for references/doctrine.md 'generated from validation.yaml', but the classifier lives in Architecture.md §3.3 (intent, highest authority), not in the contract.",
+      "decision": "plugin/loaded-vibes/.claude-plugin/plugin.json (loaded-vibes 0.1.0, MIT like the repo) and root .claude-plugin/marketplace.json (marketplace codependent-coding, source ./plugin/loaded-vibes). scripts/plugin-doctrine.mjs (`pnpm plugin:doctrine`, `--check`) renders the classifier from Architecture.md §3.3 and the CC rule table from validation.yaml, Prettier-formatted; tests/plugin/plugin.test.ts fails when the file is stale or misses a rule. No skills/agents/hooks yet (CC-037..CC-041). No plugin icon: the validator's ICON_MISSING warning only matters for directory submission.",
+      "refs": ["CC-036", "DEC-050", "DEC-051"]
     }
   ]
 }

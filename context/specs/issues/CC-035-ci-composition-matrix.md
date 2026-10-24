@@ -8,7 +8,7 @@ priority: p0
 size: m
 labels: [type:ci, area:ci, priority:p0, size:m]
 depends_on: [CC-029]
-status: in-review
+status: done
 ---
 
 # CC-035 · CI composition matrix

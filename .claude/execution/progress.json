@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/progress/v1",
-  "updated": "2026-10-24T17:55:00Z",
+  "updated": "2026-10-24T19:50:00Z",
   "format": "Evidence states: EXECUTED | INSPECTED | NOT_RUN | BLOCKED. Never mark an issue done without EXECUTED evidence for its Validation commands.",
   "milestones": {
     "M0": {
@@ -53,7 +53,7 @@
       "note": "All M3 issues merged. Release profile on the CC-027 branch tip (= main after squash): template validate (format, lint 0, typecheck, check:modules, check:ownership, check:env), test 66 passed/1 skipped, doctrine:test 50/50, check:schema-modules, check:compose (6 add-ons alone + blank, CI job compose), projects composes alone and next-builds, build, test:rls 10/10 (local Postgres 16; CI rls job on Neon), root validate. CLI compose (M4) replaces scripts/compose.mjs."
     },
     "M4": {
-      "status": "in_progress",
+      "status": "done",
       "issues": [
         "CC-028",
         "CC-029",
@@ -63,7 +63,10 @@
         "CC-033",
         "CC-034",
         "CC-035"
-      ]
+      ],
+      "closed": "2026-10-24",
+      "prs": [241, 242, 243, 244, 245, 246, 247, 248],
+      "note": "All M4 issues merged. Release evidence: main push run 40126226541 on 9aa0700 green, which covers root validate + CLI build, template validate chain, compose (add-ons alone), RLS on a Neon branch and the preset matrix (blank, 9 presets, --all: compose, install, lint, typecheck, build). Deferred owner checks: CC-028 Windows global link, CC-031 real --provision."
     },
     "M5": {
       "status": "todo",
@@ -453,13 +456,26 @@
       }
     },
     "CC-035": {
-      "status": "in-review",
+      "status": "done",
       "github": 195,
       "branch": "ci/195-composition-matrix",
       "decision": "DEC-050",
       "note": "ci.yml jobs `changes` + `presets` (11-way matrix); new `hipster-stack compose` command.",
       "acceptance": {
-        "All matrix jobs green on main": "NOT_RUN: checked after merge on the main push run"
+        "All matrix jobs green on main": "EXECUTED: CI run 40126226541 (push, main 9aa0700) completed success; all 11 Preset jobs (blank, crm, projects, support, marketing, invoicing, social, ai, portal, admin, all) plus Factory, Maximal Template, Compose, RLS, Changes success"
+      },
+      "pr": 248,
+      "merged": "9aa0700"
+    },
+    "CC-036": {
+      "status": "in-review",
+      "github": 196,
+      "branch": "feat/196-plugin-skeleton",
+      "decision": "DEC-052",
+      "note": "plugin.json, root marketplace.json, generated references/doctrine.md (pnpm plugin:doctrine), README install section.",
+      "acceptance": {
+        "Plugin installs in Claude Code on Windows": "EXECUTED on Linux only (claude 2.1.310, isolated CLAUDE_CONFIG_DIR): `claude plugin marketplace add <repo>` -> added codependent-coding; `claude plugin install loaded-vibes@codependent-coding` -> installed, enabled, version 0.1.0. Windows install is an owner check: NOT_RUN.",
+        "Skills list shows the plugin namespace": "NOT_RUN: the skeleton has no skills yet (inventory Skills 0); the loaded-vibes: namespace appears with the first skill (CC-037)."
       }
     }
   },
@@ -491,7 +507,8 @@
     "CC-024",
     "CC-025",
     "CC-026",
-    "CC-027"
+    "CC-027",
+    "CC-035"
   ],
   "evidence": [
     {
@@ -2441,6 +2458,42 @@
       "env": "GitHub Actions (PR #248, 69d5096)",
       "command": "presets matrix",
       "result": "Preset admin and Preset portal failed typecheck (undeclared billing/invoicing and cross-module counts); led to DEC-051"
+    },
+    {
+      "date": "2026-10-24",
+      "state": "EXECUTED",
+      "command": "claude plugin validate plugin/loaded-vibes --strict",
+      "result": "Validation passed (1 plugin-directory warning ICON_MISSING, does not affect result)"
+    },
+    {
+      "date": "2026-10-24",
+      "state": "EXECUTED",
+      "command": "claude plugin validate . --strict (marketplace.json)",
+      "result": "Validation passed"
+    },
+    {
+      "date": "2026-10-24",
+      "state": "EXECUTED",
+      "command": "claude plugin marketplace add <repo>; claude plugin install loaded-vibes@codependent-coding; claude plugin list",
+      "result": "installed, enabled, 0.1.0, read from plugin/loaded-vibes"
+    },
+    {
+      "date": "2026-10-24",
+      "state": "EXECUTED",
+      "command": "node scripts/plugin-doctrine.mjs --check",
+      "result": "exit 0"
+    },
+    {
+      "date": "2026-10-24",
+      "state": "EXECUTED",
+      "command": "pnpm validate (root, CC-036 branch)",
+      "result": "format, lint, typecheck 0; vitest 8 files, 65 passed"
+    },
+    {
+      "date": "2026-10-24",
+      "state": "EXECUTED",
+      "command": "gh run view 40126226541 (CI on main 9aa0700)",
+      "result": "completed success; 17 jobs success incl. 11 presets"
     }
   ],
   "known_findings": [

@@ -425,6 +425,17 @@ The plugin should help an agent:
 9. run proportional smoke/quality checks;
 10. produce evidence-backed handoff.
 
+### Install the plugin (Claude Code)
+
+The repo is its own plugin marketplace (`.claude-plugin/marketplace.json`, name `codependent-coding`). Inside Claude Code:
+
+```text
+/plugin marketplace add C:\path\to\CodependentCoding
+/plugin install loaded-vibes@codependent-coding
+```
+
+`/plugin marketplace add DigitalHerencia/CodependentCoding` works too, without a clone. Restart Claude Code after installing; the plugin's skills then appear under the `loaded-vibes:` namespace. `plugin/loaded-vibes/references/doctrine.md` is generated: run `pnpm plugin:doctrine` after changing the classifier (Architecture.md §3.3) or `validation.yaml`.
+
 ---
 
 # System Identity and Product Topology

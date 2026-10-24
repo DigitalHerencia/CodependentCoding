@@ -8,7 +8,7 @@ priority: p0
 size: s
 labels: [type:feature, area:plugin, priority:p0, size:s]
 depends_on: [CC-030]
-status: todo
+status: in-review
 ---
 
 # CC-036 · Plugin skeleton and local marketplace
