@@ -190,16 +190,19 @@ describe("cross-tenant isolation through the runtime role", () => {
 
 describe("negative check", () => {
   test("the probes report a leak when a table loses its policy", async () => {
-    const table = catalog.tenantTables.find((t) => t.name === "CrmContact");
-    assert.ok(table, "CrmContact is a tenant table");
+    // Any tenant table will do; every app has one, whatever its modules.
+    const table = catalog.tenantTables[0];
+    assert.ok(table, "the app has a tenant table");
     const leaks = await inTransaction(owner, async () => {
-      await owner.query(`ALTER TABLE "CrmContact" DISABLE ROW LEVEL SECURITY`);
+      await owner.query(
+        `ALTER TABLE "${table.name}" DISABLE ROW LEVEL SECURITY`,
+      );
       await owner.query(`SET LOCAL ROLE "${appRole}"`);
       return probeAll(owner, orgA, orgB, [table]);
     });
     assert.ok(
-      leaks.some((leak) => leak.startsWith("CrmContact: select")),
-      `expected a CrmContact leak, got ${JSON.stringify(leaks)}`,
+      leaks.some((leak) => leak.startsWith(`${table.name}: select`)),
+      `expected a ${table.name} leak, got ${JSON.stringify(leaks)}`,
     );
   });
 });

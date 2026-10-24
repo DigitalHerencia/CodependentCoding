@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/handoff/v1",
-  "updated": "2026-10-24T22:05:00Z",
+  "updated": "2026-10-24T22:45:00Z",
   "format": "Overwrite each session. Minimum state the next session needs to resume safely.",
   "status": "ready-for-claude-code",
   "milestone": "M5",
@@ -61,7 +61,8 @@
     "CC-038 (DEC-054): apps ship scripts/sync-issues.mjs (`pnpm issues:sync`, dry run validates; --apply writes to GitHub, owner go-ahead only). A composed app inside the factory checkout without its own git repo inherits the factory's origin: git init it before running the sync dry run.",
     "CC-039 (DEC-055): plugin evals in plugin/loaded-vibes/evals (claude plugin eval ... --tag classify --ablation none; ~$1 for 2 runs x 10). Headless skill runs: `claude -p '<prompt>' --plugin-dir plugin/loaded-vibes --permission-mode acceptEdits --allowedTools ...` (prompt before the variadic flags); writes under .claude/ are refused in that mode. A hipster-stack shim on PATH: node packages/cli/dist/cli.mjs after pnpm cli:build.",
     "CC-040 (DEC-056): plugin hooks run only where hipster.json exists (hooks/when-app.mjs); plugin/loaded-vibes/hooks/*.mjs must stay identical to .claude/hooks/ (test). /ship helper scripts: ship-env.mjs (dry run default, --apply), smoke.mjs <url>; /handoff checks with execution-check.mjs. The Vercel CLI is not installed in the cloud container (scratchpad npm install works for --help).",
-    "CC-041 (DEC-057): plugin agents loaded-vibes:reviewer and loaded-vibes:verifier, read-only. M5 closes after CC-041 merges (CC-040's live ship check stays deferred to the owner)."
+    "CC-041 (DEC-057): plugin agents loaded-vibes:reviewer and loaded-vibes:verifier, read-only. M5 closes after CC-041 merges (CC-040's live ship check stays deferred to the owner).",
+    "#255 fixed on fix/255-rls-negative-check (DEC-059): RLS negative check uses the first tenant table."
   ],
   "risks": [
     "Lint hook exits 0 silently when node_modules/eslint is missing; a failed install hides lint feedback. On Windows, run pnpm install with VS Code closed (DEC-019).",
