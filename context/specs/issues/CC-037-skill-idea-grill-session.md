@@ -8,7 +8,7 @@ priority: p0
 size: m
 labels: [type:feature, area:plugin, priority:p0, size:m]
 depends_on: [CC-036]
-status: todo
+status: in-review
 ---
 
 # CC-037 · Skill: idea (grill session)

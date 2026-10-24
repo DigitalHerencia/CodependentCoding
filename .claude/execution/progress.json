@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/progress/v1",
-  "updated": "2026-10-24T19:50:00Z",
+  "updated": "2026-10-24T20:05:00Z",
   "format": "Evidence states: EXECUTED | INSPECTED | NOT_RUN | BLOCKED. Never mark an issue done without EXECUTED evidence for its Validation commands.",
   "milestones": {
     "M0": {
@@ -468,14 +468,27 @@
       "merged": "9aa0700"
     },
     "CC-036": {
-      "status": "in-review",
+      "status": "done",
       "github": 196,
       "branch": "feat/196-plugin-skeleton",
       "decision": "DEC-052",
       "note": "plugin.json, root marketplace.json, generated references/doctrine.md (pnpm plugin:doctrine), README install section.",
       "acceptance": {
         "Plugin installs in Claude Code on Windows": "EXECUTED on Linux only (claude 2.1.310, isolated CLAUDE_CONFIG_DIR): `claude plugin marketplace add <repo>` -> added codependent-coding; `claude plugin install loaded-vibes@codependent-coding` -> installed, enabled, version 0.1.0. Windows install is an owner check: NOT_RUN.",
-        "Skills list shows the plugin namespace": "NOT_RUN: the skeleton has no skills yet (inventory Skills 0); the loaded-vibes: namespace appears with the first skill (CC-037)."
+        "Skills list shows the plugin namespace": "EXECUTED on Linux (CC-037 branch): `claude plugin details loaded-vibes@codependent-coding` -> Skills (1) idea, i.e. /loaded-vibes:idea. Windows: owner check, NOT_RUN."
+      },
+      "pr": 249,
+      "merged": "1f60920"
+    },
+    "CC-037": {
+      "status": "in-review",
+      "github": 197,
+      "branch": "feat/197-skill-idea",
+      "decision": "DEC-053",
+      "note": "skills/idea/SKILL.md + example.md, scripts/governance-check.mjs (+ .d.mts), tests/plugin/governanceCheck.test.ts.",
+      "acceptance": {
+        "Dry run on a sample idea produces coherent docs and valid YAML": "EXECUTED: composed greenroute (--preset crm) in template/.sandbox/idea-dry, filled the docs/contracts/decisions following SKILL.md from the 12 answers in skills/idea/example.md. governance-check -> 'governance ok' (exit 0, before: 30 problems); yaml.parse of the 3 contracts -> goals 3, non_goals 5, domains crm+field, owner_shell zsh; prettier --check context .claude -> clean. Coherence: the 4 handed-back slice commands ran (exit 0 each) and the app then passed typecheck 0, lint 0, check:modules ok, check:ownership (field 70 files), test 12 files 66 passed/1 skipped (after git init: the registry test lists files via git).",
+        "Asks at most ~12 questions": "INSPECTED: SKILL.md caps the grill at 12 (table rows 1-12, 'Never exceed 12'); the dry run used exactly 12."
       }
     }
   },
@@ -508,7 +521,8 @@
     "CC-025",
     "CC-026",
     "CC-027",
-    "CC-035"
+    "CC-035",
+    "CC-036"
   ],
   "evidence": [
     {
@@ -2494,6 +2508,36 @@
       "state": "EXECUTED",
       "command": "gh run view 40126226541 (CI on main 9aa0700)",
       "result": "completed success; 17 jobs success incl. 11 presets"
+    },
+    {
+      "date": "2026-10-24",
+      "state": "EXECUTED",
+      "command": "node plugin/loaded-vibes/scripts/governance-check.mjs template/.sandbox/idea-dry (fresh compose)",
+      "result": "exit 1, 30 problems (TODO in all 8 files)"
+    },
+    {
+      "date": "2026-10-24",
+      "state": "EXECUTED",
+      "command": "node plugin/loaded-vibes/scripts/governance-check.mjs (after the /idea dry run)",
+      "result": "governance ok, exit 0"
+    },
+    {
+      "date": "2026-10-24",
+      "state": "EXECUTED",
+      "command": "hipster-stack slice property|crew|job|visit --module field ... (dry-run app, installed)",
+      "result": "exit 0 x4; then pnpm typecheck 0, lint 0, test 66 passed/1 skipped"
+    },
+    {
+      "date": "2026-10-24",
+      "state": "EXECUTED",
+      "command": "npx vitest run tests/plugin",
+      "result": "2 files, 5 passed"
+    },
+    {
+      "date": "2026-10-24",
+      "state": "EXECUTED",
+      "command": "claude plugin validate plugin/loaded-vibes --strict",
+      "result": "Validation passed (ICON_MISSING directory warning)"
     }
   ],
   "known_findings": [
