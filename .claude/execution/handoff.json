@@ -1,14 +1,14 @@
 {
   "$schema": "codependent-coding/execution/handoff/v1",
-  "updated": "2026-10-24T20:05:00Z",
+  "updated": "2026-10-24T20:25:00Z",
   "format": "Overwrite each session. Minimum state the next session needs to resume safely.",
   "status": "ready-for-claude-code",
   "milestone": "M5",
-  "current_issue": "CC-037",
-  "next_issue": "CC-038",
-  "queue": ["CC-038", "CC-039", "CC-040", "CC-041"],
-  "branch": "feat/197-skill-idea",
-  "in_flight": ["CC-037 idea skill PR (Closes #197)"],
+  "current_issue": "CC-038",
+  "next_issue": "CC-039",
+  "queue": ["CC-039", "CC-040", "CC-041"],
+  "branch": "feat/198-skill-plan",
+  "in_flight": ["CC-038 plan skill PR (Closes #198)"],
   "notes": [
     "Governance package is uncommitted in the owner's working tree; owner reviews with `git status` / `git diff`, then commits on a branch `chore/governance-package`.",
     "Template already contains the doctrine ESLint plugin (template/eslint/) and the new eslint.config.mjs; CC-009 turns findings into fixes.",
@@ -57,7 +57,8 @@
     "DEC-051 accepted by the owner 2026-10-24: modules list countable tables in ModuleDefinition.records; billing owns reconcileBillingProviderState (billing:manage); portal dependsOn invoicing.",
     "M4 closed 2026-10-24 (CC-028..CC-035): main run 40126226541 green incl. preset matrix.",
     "CC-036 (DEC-052): plugin at plugin/loaded-vibes (plugin.json 0.1.0), marketplace at .claude-plugin/marketplace.json (codependent-coding). references/doctrine.md is generated: `pnpm plugin:doctrine` after editing Architecture.md §3.3 or validation.yaml (test fails when stale). Test installs with an isolated CLAUDE_CONFIG_DIR so the session's own config is untouched.",
-    "CC-037 (DEC-053): /loaded-vibes:idea in plugin/loaded-vibes/skills/idea; `node <plugin>/scripts/governance-check.mjs <app>` checks the 3 contracts parse and no TODO is left (uses the app's Prettier, so run it on an installed app or one inside template/). A composed app outside git makes the template's registry test see 0 files: git init it first."
+    "CC-037 (DEC-053): /loaded-vibes:idea in plugin/loaded-vibes/skills/idea; `node <plugin>/scripts/governance-check.mjs <app>` checks the 3 contracts parse and no TODO is left (uses the app's Prettier, so run it on an installed app or one inside template/). A composed app outside git makes the template's registry test see 0 files: git init it first.",
+    "CC-038 (DEC-054): apps ship scripts/sync-issues.mjs (`pnpm issues:sync`, dry run validates; --apply writes to GitHub, owner go-ahead only). A composed app inside the factory checkout without its own git repo inherits the factory's origin: git init it before running the sync dry run."
   ],
   "risks": [
     "Lint hook exits 0 silently when node_modules/eslint is missing; a failed install hides lint feedback. On Windows, run pnpm install with VS Code closed (DEC-019).",
