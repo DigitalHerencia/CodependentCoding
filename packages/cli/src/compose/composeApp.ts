@@ -76,7 +76,7 @@ export function readManifest(templateDir: string): TemplateManifest {
   ) as TemplateManifest;
 }
 
-function templateCommit(templateDir: string): string | null {
+export function templateCommit(templateDir: string): string | null {
   try {
     return execFileSync("git", ["rev-parse", "HEAD"], {
       cwd: templateDir,

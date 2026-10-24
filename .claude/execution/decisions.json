@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/decisions/v1",
-  "updated": "2026-10-24T17:30:00Z",
+  "updated": "2026-10-24T17:40:00Z",
   "format": "Append new decisions; never rewrite history. Supersede by adding a new entry and setting status=superseded + superseded_by on the old one.",
   "decisions": [
     {
@@ -475,6 +475,21 @@
         "CC-032",
         "CC-027",
         "DEC-042",
+        "Architecture.md §6",
+        "tech-requirements.md §9"
+      ]
+    },
+    {
+      "id": "DEC-048",
+      "date": "2026-10-24",
+      "status": "accepted",
+      "title": "CC-033: `add` carries the difference between two template compositions into the app",
+      "context": "`add` must bring a module (and its dependsOn) into an app that may have changed since `new`, including slice modules and slice back-relations in base schema files, and must refuse instead of overwriting the app's changes.",
+      "decision": "planAdd composes the current template twice into a temp dir (the app's installed template modules, and those plus the requested closure) with the same exclusions as `new`, and applies only what differs: files new in the second composition are created (a file already at that path is a conflict unless identical); schema files regain their `// @module <added>` lines, each inserted after its preceding non-blank template line inside the same model block (app lines stay; a missing block is a conflict); any other changed file is replaced only if the app still has the first composition's content. Registry, hipster.modules.json (template modules in template order, then the app's own modules) and .env.example are rebuilt; package.json gains the added modules' `packages` at the template's versions; hipster.json lists the template modules. All conflicts are listed and nothing is written. Then template prisma format + validate, pnpm install (unless --no-install) and prisma generate. A template commit different from hipster.json's is a warning, not a refusal.",
+      "refs": [
+        "CC-033",
+        "DEC-044",
+        "DEC-047",
         "Architecture.md §6",
         "tech-requirements.md §9"
       ]
