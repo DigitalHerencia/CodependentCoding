@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/decisions/v1",
-  "updated": "2026-10-24T21:50:00Z",
+  "updated": "2026-10-24T22:05:00Z",
   "format": "Append new decisions; never rewrite history. Supersede by adding a new entry and setting status=superseded + superseded_by on the old one.",
   "decisions": [
     {
@@ -583,6 +583,15 @@
         "tests/plugin/hooks.test.ts",
         "tests/plugin/shipHandoff.test.ts"
       ]
+    },
+    {
+      "id": "DEC-057",
+      "date": "2026-10-24",
+      "status": "accepted",
+      "title": "CC-041: read-only reviewer and verifier agents",
+      "context": "Review and evidence checks must be independent of the session that did the work.",
+      "decision": "agents/reviewer.md and agents/verifier.md have tools Read, Grep, Glob, Bash only (a test forbids Edit/Write) and say they change nothing. The reviewer maps each AUTH.md §11 item to a CC ID (CC-WRITE-003, CC-SEC-001..006, CC-TX-002, CC-CLIENT-001), runs lint-findings.mjs first, and reports '[severity] CC-ID file:line what. Fix: ...' plus a verdict. The verifier reruns every EXECUTED claim for the scoped issues exactly as written, compares exit codes and counts, and reports CONFIRMED / CONTRADICTED / UNVERIFIABLE / MISSING (required profile checks with no claim); it never runs deploys, GitHub writes or production database commands. Measured with headless runs on planted violations rather than plugin evals: the cases need an installed app as fixture.",
+      "refs": ["plugin/loaded-vibes/agents/", "tests/plugin/plugin.test.ts"]
     }
   ]
 }

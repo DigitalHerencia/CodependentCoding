@@ -57,3 +57,23 @@ test("references/doctrine.md is current and carries every CC rule", () => {
   for (const { id } of rules) expect(doctrine).toContain(`| ${id} `);
   expect(doctrine).toContain("None of the above?");
 });
+
+test("the agents are read-only reviewers with a name and a trigger", () => {
+  for (const name of ["reviewer", "verifier"]) {
+    const text = readFileSync(
+      path.join(repo, `plugin/loaded-vibes/agents/${name}.md`),
+      "utf8",
+    );
+    const front = parse(/^---\n([\s\S]*?)\n---\n/.exec(text)?.[1] ?? "") as {
+      name: string;
+      description: string;
+      tools: string;
+    };
+    expect(front.name).toBe(name);
+    expect(front.description).toMatch(/^.{40,}Use /);
+    const tools = front.tools.split(",").map((tool) => tool.trim());
+    expect(tools).not.toContain("Edit");
+    expect(tools).not.toContain("Write");
+    expect(text).toContain("${CLAUDE_PLUGIN_ROOT}/");
+  }
+});
