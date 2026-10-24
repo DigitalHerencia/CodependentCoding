@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/progress/v1",
-  "updated": "2026-10-23T15:20:00Z",
+  "updated": "2026-10-23T15:58:00Z",
   "format": "Evidence states: EXECUTED | INSPECTED | NOT_RUN | BLOCKED. Never mark an issue done without EXECUTED evidence for its Validation commands.",
   "milestones": {
     "M0": {
@@ -53,7 +53,7 @@
       "note": "All M3 issues merged. Release profile on the CC-027 branch tip (= main after squash): template validate (format, lint 0, typecheck, check:modules, check:ownership, check:env), test 66 passed/1 skipped, doctrine:test 50/50, check:schema-modules, check:compose (6 add-ons alone + blank, CI job compose), projects composes alone and next-builds, build, test:rls 10/10 (local Postgres 16; CI rls job on Neon), root validate. CLI compose (M4) replaces scripts/compose.mjs."
     },
     "M4": {
-      "status": "todo",
+      "status": "in_progress",
       "issues": [
         "CC-028",
         "CC-029",
@@ -387,6 +387,13 @@
         "cross-tenant ids yield NOT_FOUND": "pass: fetchers return null -> notFound(); versioned updates use staleOrMissing; tests cover both",
         "RLS for every tenant table, covered by test:rls": "pass: Project, ProjectMember, Milestone, Task, TaskDependency in prisma/rls/projects.sql; test:rls 10/10"
       }
+    },
+    "CC-028": {
+      "status": "in_review",
+      "github": 188,
+      "branch": "feat/188-cli-skeleton",
+      "decision": "DEC-043",
+      "note": "packages/cli (hipster-stack, commander 15.0.0 + @clack/prompts 1.8.1, tsdown bundle to dist/cli.mjs); root scripts cli, cli:build, cli:link (scripts/cli-link.mjs); template = HIPSTER_TEMPLATE or <repo>/template, shown in --help. Windows check by owner pending."
     }
   },
   "completed": [
@@ -1959,6 +1966,62 @@
       "env": "cloud container",
       "command": "pnpm validate (root)",
       "result": "exit 0"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-028",
+      "env": "cloud container",
+      "command": "pnpm cli:build",
+      "result": "dist/cli.mjs 2.38 kB, exit 0"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-028",
+      "env": "cloud container",
+      "command": "pnpm cli:link (PNPM_HOME set, $PNPM_HOME/bin on PATH), then from /: hipster-stack --help; hipster-stack -v",
+      "result": "help printed with 'Template: /home/claude/CodependentCoding/template (repo checkout)'; 0.1.0 (Linux)"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-028",
+      "env": "cloud container",
+      "command": "HIPSTER_TEMPLATE=/tmp hipster-stack --help",
+      "result": "'Template: not found. HIPSTER_TEMPLATE points at /tmp, which has no hipster.modules.json.'"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-028",
+      "env": "cloud container",
+      "command": "hipster-stack bogus",
+      "result": "'error: too many arguments', help shown, exit 1"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-028",
+      "env": "cloud container",
+      "command": "pnpm validate (root)",
+      "result": "exit 0; tests/cli/template.test.ts 5 passed"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-028",
+      "env": "cloud container",
+      "command": "pnpm build (root)",
+      "result": "exit 0"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "NOT_RUN",
+      "issue": "CC-028",
+      "env": "owner Windows",
+      "command": "pnpm cli:link; hipster-stack --help from another directory",
+      "result": "pending owner"
     }
   ],
   "known_findings": [

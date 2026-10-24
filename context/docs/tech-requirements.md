@@ -86,7 +86,7 @@ Removed: `.agents/`, `packages/core`, `packages/schema`, `packages/loaded-vibes`
 | `test`                    | `vitest run` (CLI unit + composition tests)                      |
 | `cli`                     | `tsx packages/cli/src/cli.ts`                                    |
 | `cli:build`               | bundle CLI to `packages/cli/dist`                                |
-| `cli:link`                | build + `pnpm link --global` in `packages/cli`                   |
+| `cli:link`                | build + `pnpm add --global link:<abs path>/packages/cli`         |
 | `validate`                | `format:check && lint && typecheck && test`                      |
 | `issues:sync`             | `node scripts/github/sync-issues.mjs` (dry run unless `--apply`) |
 

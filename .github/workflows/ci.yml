@@ -35,6 +35,12 @@ jobs:
         if: ${{ !cancelled() }}
       - run: pnpm test
         if: ${{ !cancelled() }}
+      - name: CLI builds and runs
+        if: ${{ !cancelled() }}
+        run: |
+          pnpm cli:build
+          node packages/cli/dist/cli.mjs --version
+          node packages/cli/dist/cli.mjs --help
 
   template:
     name: Maximal Template
