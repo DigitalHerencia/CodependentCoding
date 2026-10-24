@@ -8,7 +8,7 @@ priority: p0
 size: l
 labels: [type:feature, area:cli, priority:p0, size:l]
 depends_on: [CC-028, CC-019, CC-021, CC-022]
-status: todo
+status: in-review
 ---
 
 # CC-029 · Composition engine and `new` command

@@ -24,8 +24,12 @@ jobs:
         with:
           node-version-file: .node-version
           cache: pnpm
-          cache-dependency-path: pnpm-lock.yaml
+          cache-dependency-path: |
+            pnpm-lock.yaml
+            template/pnpm-lock.yaml
       - run: pnpm install --frozen-lockfile
+      # The CLI composition tests load the template's scripts (zod, prettier).
+      - run: pnpm --dir template install --frozen-lockfile
       # Root has no continue-on-error (CC-004). `!cancelled()` keeps every check reporting
       # even when an earlier one fails, so one red step does not hide the others.
       - run: pnpm format:check

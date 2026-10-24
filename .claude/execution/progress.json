@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/progress/v1",
-  "updated": "2026-10-23T15:58:00Z",
+  "updated": "2026-10-23T16:12:00Z",
   "format": "Evidence states: EXECUTED | INSPECTED | NOT_RUN | BLOCKED. Never mark an issue done without EXECUTED evidence for its Validation commands.",
   "milestones": {
     "M0": {
@@ -394,6 +394,13 @@
       "branch": "feat/188-cli-skeleton",
       "decision": "DEC-043",
       "note": "packages/cli (hipster-stack, commander 15.0.0 + @clack/prompts 1.8.1, tsdown bundle to dist/cli.mjs); root scripts cli, cli:build, cli:link (scripts/cli-link.mjs); template = HIPSTER_TEMPLATE or <repo>/template, shown in --help. Windows check by owner pending."
+    },
+    "CC-029": {
+      "status": "in_review",
+      "github": 189,
+      "branch": "feat/189-compose-new",
+      "decision": "DEC-044",
+      "note": "packages/cli/src/compose (composeApp, kit, brand, packageJson) + commands/new.ts. Engine reuses template scripts (compose.mjs closure+compose, modules-schema, ownership, prettier) loaded from the resolved template. Template-pinned tests moved to template/tests/template/ (not copied)."
     }
   },
   "completed": [
@@ -2022,6 +2029,70 @@
       "env": "owner Windows",
       "command": "pnpm cli:link; hipster-stack --help from another directory",
       "result": "pending owner"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-029",
+      "env": "cloud container",
+      "command": "hipster-stack new .sandbox/demo --preset blank --yes (built CLI)",
+      "result": "exit 0: base + [] 336 files, 8 provider packages pruned, prisma validate ok, pnpm install 35s, git init"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-029",
+      "env": "cloud container",
+      "command": "pnpm --dir .sandbox/demo validate",
+      "result": "exit 0 (format, lint, typecheck, check:modules 0 modules, check:ownership base 337, check:env 1 owner)"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-029",
+      "env": "cloud container",
+      "command": "pnpm --dir .sandbox/demo test",
+      "result": "7 files, 41 passed, 1 skipped"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-029",
+      "env": "cloud container",
+      "command": "pnpm --dir .sandbox/demo build (dummy env)",
+      "result": "exit 0; /, /faq, /privacy, /terms, /dashboard, /onboarding, /settings/*, /sign-in, /sign-up"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-029",
+      "env": "cloud container",
+      "command": "hipster-stack new .sandbox/tty --no-install --no-git under a pseudo-TTY (Enter, Down+Enter, #1d4f5c)",
+      "result": "hipster.json modules [crm], color #1d4f5c; --primary 192 52% 24%"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-029",
+      "env": "cloud container",
+      "command": "pnpm test (root) tests/cli/compose.test.ts + template.test.ts",
+      "result": "2 files, 17 passed (compose blank/crm/all, determinism, non-empty target, closure + cycle, brand, prune)"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-029",
+      "env": "cloud container",
+      "command": "pnpm --dir template validate / test / doctrine:test / check:compose",
+      "result": "exit 0 / 66 passed 1 skipped / 50 pass / 6 add-ons + blank ok"
+    },
+    {
+      "date": "2026-10-23",
+      "state": "EXECUTED",
+      "issue": "CC-029",
+      "env": "cloud container",
+      "command": "pnpm validate (root)",
+      "result": "exit 0"
     }
   ],
   "known_findings": [
