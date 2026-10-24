@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/progress/v1",
-  "updated": "2026-10-24T17:40:00Z",
+  "updated": "2026-10-24T17:45:00Z",
   "format": "Evidence states: EXECUTED | INSPECTED | NOT_RUN | BLOCKED. Never mark an issue done without EXECUTED evidence for its Validation commands.",
   "milestones": {
     "M0": {
@@ -433,13 +433,23 @@
       }
     },
     "CC-033": {
-      "status": "in-review",
+      "status": "done",
       "github": 193,
       "branch": "feat/193-add-command",
       "decision": "DEC-048",
       "note": "`hipster-stack add <modules...> [--dir] [--no-install] [--dry-run]` in packages/cli/src/compose/addModules.ts + commands/add.ts.",
       "acceptance": {
         "`hipster-stack add crm` in a blank app -> validate and build pass": "EXECUTED"
+      }
+    },
+    "CC-034": {
+      "status": "in-review",
+      "github": 194,
+      "branch": "feat/194-doctor-command",
+      "decision": "DEC-049",
+      "note": "`hipster-stack doctor [--dir] [--no-tools]` in packages/cli/src/doctor/checks.ts + commands/doctor.ts. Read-only.",
+      "acceptance": {
+        "Clear output on a fresh app (missing env -> warn with exact variable names)": "EXECUTED"
       }
     }
   },
@@ -2357,6 +2367,46 @@
       "env": "cloud container",
       "command": "pnpm vitest run tests/cli/add.test.ts; pnpm validate (root)",
       "result": "6 passed (restoreTagged, crm vs fresh compose, closure + packages + env, conflict refusal writes nothing, unknown module, slice modules kept); root validate exit 0, 57 tests"
+    },
+    {
+      "date": "2026-10-24",
+      "state": "EXECUTED",
+      "issue": "CC-034",
+      "env": "cloud container",
+      "command": "pnpm cli doctor --dir template/.sandbox/add (fresh crm app, no .env.local)",
+      "result": "exit 0: 'warn env missing DATABASE_URL' + hint; database/migrations/rls skip with 'Set DATABASE_URL' hint; lint pass; ownership pass"
+    },
+    {
+      "date": "2026-10-24",
+      "state": "EXECUTED",
+      "issue": "CC-034",
+      "env": "cloud container",
+      "command": "local Postgres 16 (port 5499, throwaway owner role); .env.local in the sandbox app; pnpm cli doctor --no-tools",
+      "result": "exit 1: env pass, database pass, 'FAIL migrations no migrations applied -> pnpm db:init', 'FAIL rls missing tables ...' (9 tenant tables)"
+    },
+    {
+      "date": "2026-10-24",
+      "state": "EXECUTED",
+      "issue": "CC-034",
+      "env": "cloud container",
+      "command": "pnpm --dir template/.sandbox/add db:init; pnpm cli doctor",
+      "result": "db:init exit 0; doctor exit 0, all six checks pass (2 migrations applied, RLS forced on 9 tenant tables)"
+    },
+    {
+      "date": "2026-10-24",
+      "state": "EXECUTED",
+      "issue": "CC-034",
+      "env": "cloud container",
+      "command": "ALTER TABLE \"CrmDeal\" NO FORCE ROW LEVEL SECURITY; doctor --no-tools; DIRECT_DATABASE_URL pointing at a closed port",
+      "result": "'FAIL rls not forced on CrmDeal'; 'FAIL database connect ECONNREFUSED 127.0.0.1:5498' with migrations/rls skipped; no password printed"
+    },
+    {
+      "date": "2026-10-24",
+      "state": "EXECUTED",
+      "issue": "CC-034",
+      "env": "cloud container",
+      "command": "pnpm vitest run tests/cli/doctor.test.ts",
+      "result": "6 passed"
     }
   ],
   "known_findings": [

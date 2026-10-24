@@ -76,3 +76,34 @@ export function templateSqlRunner(templateDir: string): RunSql {
     }
   };
 }
+
+export type QuerySql = (
+  url: string,
+  sql: string,
+) => Promise<Record<string, unknown>[]>;
+
+/** Like templateSqlRunner, returning the rows (doctor's read-only checks). */
+export function templateSqlQuery(templateDir: string): QuerySql {
+  return async (url, sql) => {
+    const require = createRequire(path.join(templateDir, "package.json"));
+    const pg = require("pg") as {
+      Client: new (config: {
+        connectionString: string;
+        connectionTimeoutMillis: number;
+      }) => PgClient;
+    };
+    const client = new pg.Client({
+      connectionString: url,
+      connectionTimeoutMillis: 10_000,
+    });
+    await client.connect();
+    try {
+      const result = (await client.query(sql)) as {
+        rows: Record<string, unknown>[];
+      };
+      return result.rows;
+    } finally {
+      await client.end();
+    }
+  };
+}
