@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/decisions/v1",
-  "updated": "2026-10-24T17:45:00Z",
+  "updated": "2026-10-24T17:55:00Z",
   "format": "Append new decisions; never rewrite history. Supersede by adding a new entry and setting status=superseded + superseded_by on the old one.",
   "decisions": [
     {
@@ -507,6 +507,21 @@
         "DEC-046",
         "AUTH.md §6",
         "tech-requirements.md §9"
+      ]
+    },
+    {
+      "id": "DEC-050",
+      "date": "2026-10-24",
+      "status": "accepted",
+      "title": "CC-035: preset matrix in ci.yml, gated by a changes job; `compose` command for CI",
+      "context": "Every preset and --all must compose, install, lint, typecheck and build, on PRs touching template/ or packages/cli/ and on main. Architecture §6 lists `compose` as the non-interactive CI command.",
+      "decision": "`hipster-stack compose <dir> --preset|--modules|--all [--color] [--name]` runs composeApp + prisma validate with no prompts, install or git (fromFlags shared with `new`). ci.yml gets job `changes` (git diff against the PR base; always true on push) and job `presets`, an 11-way fail-fast:false matrix (blank, nine presets, all) that composes into template/.sandbox/<p> (turbopack needs the app inside template/), installs with --no-frozen-lockfile (pruned package.json), then lint, typecheck and build with placeholder env values. ci.yml itself also triggers the matrix. pnpm store cached by setup-node on both lockfiles. The older `compose` job (each add-on alone, template script) stays.",
+      "refs": [
+        "CC-035",
+        "DEC-041",
+        "DEC-044",
+        "Architecture.md §6",
+        "tech-requirements.md §11"
       ]
     }
   ]

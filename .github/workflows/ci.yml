@@ -176,22 +176,83 @@ jobs:
             -H "Authorization: Bearer $NEON_API_KEY" \
             "https://console.neon.tech/api/v2/projects/$NEON_PROJECT_ID/branches/$BRANCH_ID"
 
-  # Enabled in CC-035 once the CLI exists.
-  # compose:
-  #   name: Compose ${{ matrix.preset }}
-  #   needs: [root, template]
-  #   strategy:
-  #     fail-fast: false
-  #     matrix:
-  #       preset: [blank, crm, projects, support, marketing, invoicing, social, ai, portal, admin, all]
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v7
-  #     - uses: actions/setup-node@v7
-  #       with: { node-version-file: .node-version }
-  #     - run: corepack enable
-  #     - run: pnpm install --frozen-lockfile
-  #     - run: pnpm cli compose .sandbox/${{ matrix.preset }} --preset ${{ matrix.preset }}
-  #     - run: pnpm --dir .sandbox/${{ matrix.preset }} install
-  #     - run: pnpm --dir .sandbox/${{ matrix.preset }} validate
-  #     - run: pnpm --dir .sandbox/${{ matrix.preset }} build
+  changes:
+    name: Changes
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      compose: ${{ steps.diff.outputs.compose }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      # Pushes to main always run the matrix; PRs only when the template or the CLI changed.
+      - id: diff
+        env:
+          EVENT: ${{ github.event_name }}
+          BASE: ${{ github.event.pull_request.base.sha }}
+        run: |
+          if [ "$EVENT" != pull_request ] || git diff --name-only "$BASE" HEAD | grep -qE '^(template|packages/cli)/|^\.github/workflows/ci\.yml$'; then
+            echo "compose=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "compose=false" >> "$GITHUB_OUTPUT"
+          fi
+
+  presets:
+    name: Preset ${{ matrix.preset }}
+    needs: changes
+    if: needs.changes.outputs.compose == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        preset:
+          - blank
+          - crm
+          - projects
+          - support
+          - marketing
+          - invoicing
+          - social
+          - ai
+          - portal
+          - admin
+          - all
+    env:
+      # Placeholders so Prisma, Clerk and the env schemas load at build; nothing is contacted.
+      DATABASE_URL: postgresql://ci:ci@localhost:5432/ci
+      DIRECT_DATABASE_URL: postgresql://ci:ci@localhost:5432/ci
+      NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: pk_test_ZXhhbXBsZS5jbGVyay5hY2NvdW50cy5kZXYk
+      CLERK_SECRET_KEY: sk_test_placeholder
+      CLERK_WEBHOOK_SIGNING_SECRET: whsec_placeholder
+      STRIPE_SECRET_KEY: sk_test_placeholder
+      STRIPE_WEBHOOK_SECRET: whsec_placeholder
+      SENDGRID_API_KEY: SG.placeholder
+      SENDGRID_FROM_EMAIL: ci@example.com
+      # Inside template/: turbopack rejects node_modules symlinks outside its root.
+      APP: template/.sandbox/${{ matrix.preset }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+          cache-dependency-path: |
+            pnpm-lock.yaml
+            template/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+      # The CLI loads the template's scripts, Prettier and Prisma.
+      - run: pnpm --dir template install --frozen-lockfile
+      - name: hipster-stack compose
+        env:
+          PRESET: ${{ matrix.preset }}
+        run: |
+          if [ "$PRESET" = all ]; then selection=(--all); else selection=(--preset "$PRESET"); fi
+          pnpm cli compose "$APP" "${selection[@]}"
+      # Composition prunes package.json, so the copied lockfile is updated, not frozen.
+      - run: pnpm --dir "$APP" install --no-frozen-lockfile
+      - run: pnpm --dir "$APP" lint
+      - run: pnpm --dir "$APP" typecheck
+      - run: pnpm --dir "$APP" build

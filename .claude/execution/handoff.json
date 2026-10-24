@@ -1,14 +1,16 @@
 {
   "$schema": "codependent-coding/execution/handoff/v1",
-  "updated": "2026-10-24T17:45:00Z",
+  "updated": "2026-10-24T17:55:00Z",
   "format": "Overwrite each session. Minimum state the next session needs to resume safely.",
   "status": "ready-for-claude-code",
   "milestone": "M4",
-  "current_issue": "CC-034",
-  "next_issue": "CC-035",
-  "queue": ["CC-035"],
-  "branch": "feat/194-doctor-command",
-  "in_flight": ["CC-034 doctor PR (Closes #194)"],
+  "current_issue": "CC-035",
+  "next_issue": "CC-036",
+  "queue": ["CC-036"],
+  "branch": "ci/195-composition-matrix",
+  "in_flight": [
+    "CC-035 preset matrix PR (Closes #195); acceptance = matrix green on the main push run"
+  ],
   "notes": [
     "Governance package is uncommitted in the owner's working tree; owner reviews with `git status` / `git diff`, then commits on a branch `chore/governance-package`.",
     "Template already contains the doctrine ESLint plugin (template/eslint/) and the new eslint.config.mjs; CC-009 turns findings into fixes.",
@@ -52,7 +54,8 @@
     "2026-10-24: owner deferred the CC-028 Windows check and the CC-031 real --provision run. Existing Neon project snowy-pine-46483828 (linked to Vercel + GitHub) is the infrastructure; do not create new cloud resources.",
     "CC-032 (DEC-047): `hipster-stack slice <entity> --module <id> --fields <dsl> [--plural] [--label] [--icon] [--dir] [--dry-run]`. Templates in packages/cli/templates/slice (excluded from Prettier); when projects golden files change, update the .tpl files too. Refs must be tenant models or User.",
     "CC-033 (DEC-048): `hipster-stack add <modules...> [--dir] [--no-install] [--dry-run]` diffs two compositions of the current template; refuses (lists conflicts) when the app changed or created a file the module would write.",
-    "CC-034 (DEC-049): `hipster-stack doctor [--dir] [--no-tools]`: env presence, DB, migrations, forced RLS, lint, ownership; read-only, exit 1 on fail. Local Postgres for testing: run initdb/pg_ctl as the postgres user under /var/lib/postgresql (it cannot reach the scratchpad)."
+    "CC-034 (DEC-049): `hipster-stack doctor [--dir] [--no-tools]`: env presence, DB, migrations, forced RLS, lint, ownership; read-only, exit 1 on fail. Local Postgres for testing: run initdb/pg_ctl as the postgres user under /var/lib/postgresql (it cannot reach the scratchpad).",
+    "CC-035 (DEC-050): ci.yml `presets` matrix (blank, 9 presets, all) via `hipster-stack compose`; runs on main and on PRs touching template/, packages/cli/ or ci.yml. M4 closes once the main run is green."
   ],
   "risks": [
     "Lint hook exits 0 silently when node_modules/eslint is missing; a failed install hides lint feedback. On Windows, run pnpm install with VS Code closed (DEC-019).",
