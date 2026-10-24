@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/progress/v1",
-  "updated": "2026-10-24T17:05:00Z",
+  "updated": "2026-10-24T17:30:00Z",
   "format": "Evidence states: EXECUTED | INSPECTED | NOT_RUN | BLOCKED. Never mark an issue done without EXECUTED evidence for its Validation commands.",
   "milestones": {
     "M0": {
@@ -419,6 +419,17 @@
       "acceptance": {
         "Manual run with --provision creates repo, Neon project, Vercel project": "DEFERRED by owner 2026-10-24: existing Neon project snowy-pine-46483828 is already linked to Vercel and GitHub; no new cloud resources. Verified against stub gh/neonctl/vercel + local Postgres 16.",
         "Without --provision, no network calls are made": "EXECUTED"
+      }
+    },
+    "CC-032": {
+      "status": "in-review",
+      "github": 192,
+      "branch": "feat/192-slice-scaffolder",
+      "decision": "DEC-047",
+      "note": "`hipster-stack slice <entity> --module <id> --fields <dsl>` in packages/cli/src/slice; templates in packages/cli/templates/slice derived from projects.",
+      "acceptance": {
+        "`hipster-stack slice invoice --module invoicing --fields \"number:string,amount:decimal,status:enum(draft|sent|paid)\"` in a generated app -> lint, typecheck, build pass": "EXECUTED",
+        "Generated files satisfy every CC rule without edits": "EXECUTED"
       }
     }
   },
@@ -2240,6 +2251,62 @@
       "env": "owner PC",
       "command": "hipster-stack new .sandbox/prov --preset blank --provision (owner accounts)",
       "result": "Owner decision 2026-10-24: skip for now"
+    },
+    {
+      "date": "2026-10-24",
+      "state": "EXECUTED",
+      "issue": "CC-032",
+      "env": "cloud container",
+      "command": "pnpm cli new template/.sandbox/demo --preset blank --yes; pnpm cli slice invoice --module invoicing --fields \"number:string,amount:decimal,status:enum(draft|sent|paid)\" --dir template/.sandbox/demo",
+      "result": "exit 0 (~9s): 24 files created, identity.prisma back-relation tagged // @module invoicing, manifest + registry updated, prisma format/generate, prettier and eslint --fix ran"
+    },
+    {
+      "date": "2026-10-24",
+      "state": "EXECUTED",
+      "issue": "CC-032",
+      "env": "cloud container",
+      "command": "pnpm --dir template/.sandbox/demo validate",
+      "result": "exit 0: format, lint (0 problems), typecheck, check:modules, check:ownership (base 343, invoicing 24, 0 ambiguities), check:env"
+    },
+    {
+      "date": "2026-10-24",
+      "state": "EXECUTED",
+      "issue": "CC-032",
+      "env": "cloud container",
+      "command": "pnpm --dir template/.sandbox/demo test; node scripts/check-schema-modules (check:schema-modules)",
+      "result": "8 files, 46 passed, 1 skipped (generated invoicesActions.test.ts included); schema-modules ok"
+    },
+    {
+      "date": "2026-10-24",
+      "state": "EXECUTED",
+      "issue": "CC-032",
+      "env": "cloud container",
+      "command": "pnpm --dir template/.sandbox/demo build",
+      "result": "exit 0; /invoices, /invoices/new, /invoices/[invoiceId], /invoices/[invoiceId]/edit built"
+    },
+    {
+      "date": "2026-10-24",
+      "state": "EXECUTED",
+      "issue": "CC-032",
+      "env": "cloud container",
+      "command": "crm app: slice quote --module crm --fields with every type + accountId:ref(CrmAccount), ownerId:ref(User)?; validate; test; check:schema-modules; build",
+      "result": "validate exit 0; 9 files 51 passed; schema-modules ok; build exit 0; crm.module.ts gained the Quotes nav link and quote resource (merge mode into existing crm module files)"
+    },
+    {
+      "date": "2026-10-24",
+      "state": "EXECUTED",
+      "issue": "CC-032",
+      "env": "cloud container",
+      "command": "pnpm cli:build; node packages/cli/dist/cli.mjs slice invoice ... --dir template/.sandbox/demo2; lint; typecheck; rerun slice",
+      "result": "slice exit 0, lint 0, typecheck 0; rerun exit 1 with 'hipster-stack: The schema already declares Invoice.' and no files changed"
+    },
+    {
+      "date": "2026-10-24",
+      "state": "EXECUTED",
+      "issue": "CC-032",
+      "env": "cloud container",
+      "command": "pnpm validate (root); pnpm vitest run tests/cli",
+      "result": "validate exit 0; tests/cli 5 files, 51 passed"
     }
   ],
   "known_findings": [

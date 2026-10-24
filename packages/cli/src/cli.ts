@@ -29,4 +29,13 @@ export function buildProgram(): Command {
   return registerCommands(program, pkg.version);
 }
 
-await buildProgram().parseAsync(process.argv);
+try {
+  await buildProgram().parseAsync(process.argv);
+} catch (error) {
+  // Expected failures (bad flags, conflicts) read better without a stack;
+  // HIPSTER_DEBUG=1 shows it.
+  process.stderr.write(
+    `hipster-stack: ${process.env.HIPSTER_DEBUG ? ((error as Error).stack ?? String(error)) : (error as Error).message}\n`,
+  );
+  process.exitCode = 1;
+}
