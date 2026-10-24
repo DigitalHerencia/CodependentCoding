@@ -1,5 +1,4 @@
-import { spawnSync } from "node:child_process";
-import { tmpdir } from "node:os";
+import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 
 import * as p from "@clack/prompts";
@@ -14,6 +13,10 @@ import {
   type TemplateManifest,
 } from "#cli/compose/composeApp";
 import { resolveTemplate } from "#cli/manifest/template";
+import { templateSqlRunner } from "#cli/setup/database";
+import { spawnExec } from "#cli/setup/exec";
+import { setupApp } from "#cli/setup/postCompose";
+import { provision, type StepId } from "#cli/setup/provision";
 
 interface NewOptions {
   preset?: string;
@@ -24,7 +27,17 @@ interface NewOptions {
   yes?: boolean;
   install: boolean;
   git: boolean;
+  provision?: boolean;
+  github: boolean;
+  neon: boolean;
+  vercel: boolean;
 }
+
+const STEP_PROMPT: Record<StepId, string> = {
+  github: "Create a private GitHub repo and push (gh)?",
+  neon: "Create a Neon project with owner and app_user roles (neonctl)?",
+  vercel: "Link a Vercel project and set its database env vars (vercel)?",
+};
 
 const CUSTOM = "__custom__";
 
@@ -87,19 +100,62 @@ async function promptModules(manifest: TemplateManifest): Promise<string[]> {
   );
 }
 
-/** Runs a step command; a failure stops `new` with the command's exit code. */
-function run(command: string, args: string[], cwd: string): void {
-  const { status } = spawnSync(command, args, {
-    cwd,
-    stdio: "inherit",
-    // pnpm and git are .cmd shims on some Windows installs.
-    shell: process.platform === "win32",
+/** Returns whether .env.local now holds the database URLs. */
+async function provisionApp(
+  appDir: string,
+  name: string,
+  committed: boolean,
+  templateDir: string,
+  options: NewOptions,
+  interactive: boolean,
+): Promise<boolean> {
+  const outcomes = await provision({
+    appDir,
+    name,
+    git: committed,
+    exec: spawnExec,
+    runSql: templateSqlRunner(templateDir),
+    log: {
+      info: (message) => p.log.info(message),
+      warn: (message) => p.log.warn(message),
+    },
+    enabled: {
+      github: options.github,
+      neon: options.neon,
+      vercel: options.vercel,
+    },
+    confirm: interactive
+      ? async (step) =>
+          cancelled(
+            await p.confirm({ message: STEP_PROMPT[step], initialValue: true }),
+          )
+      : undefined,
   });
-  if (status !== 0) {
-    throw new Error(
-      `\`${command} ${args.join(" ")}\` failed in ${cwd} (exit ${status}).`,
-    );
-  }
+  if (outcomes.some(({ status }) => status === "failed")) process.exitCode = 1;
+  return outcomes.some(
+    ({ step, status }) =>
+      step === "neon" && (status === "done" || status === "exists"),
+  );
+}
+
+function printNextSteps(
+  appDir: string,
+  installed: boolean,
+  database: boolean,
+): void {
+  const relative = path.relative(process.cwd(), appDir);
+  const next = [
+    `cd ${relative && !relative.startsWith("..") ? relative : appDir}`,
+    ...(installed ? [] : ["pnpm install"]),
+    database
+      ? "# .env.local has the database URLs; add the remaining keys"
+      : process.platform === "win32"
+        ? "Copy-Item .env.example .env.local  # then fill in values"
+        : "cp .env.example .env.local  # then fill in values",
+    "pnpm db:init",
+    "pnpm dev",
+  ];
+  p.note(next.join("\n"), "Next steps");
 }
 
 export function registerNew(program: Command, cliVersion: string): void {
@@ -117,7 +173,14 @@ export function registerNew(program: Command, cliVersion: string): void {
       "no prompts; unanswered choices use defaults (blank preset)",
     )
     .option("--no-install", "skip pnpm install")
-    .option("--no-git", "skip git init")
+    .option("--no-git", "skip git init and the initial commit")
+    .option(
+      "--provision",
+      "create the GitHub repo, Neon project and Vercel project (network)",
+    )
+    .option("--no-github", "with --provision: skip the GitHub repo")
+    .option("--no-neon", "with --provision: skip the Neon project")
+    .option("--no-vercel", "with --provision: skip the Vercel project")
     .action(async (dir: string, options: NewOptions) => {
       const outDir = path.resolve(dir);
       const { dir: templateDir } = resolveTemplate();
@@ -125,6 +188,35 @@ export function registerNew(program: Command, cliVersion: string): void {
       const interactive = !options.yes && process.stdin.isTTY === true;
 
       if (interactive) p.intro("hipster-stack new");
+
+      // Re-running on an app `new` already generated only provisions: the
+      // steps skip what exists, so a missing CLI or login can be fixed later.
+      if (options.provision && existsSync(path.join(outDir, "hipster.json"))) {
+        const app = JSON.parse(
+          readFileSync(path.join(outDir, "package.json"), "utf8"),
+        ) as { name: string };
+        p.log.info(`${outDir} is an existing app; provisioning only.`);
+        const committed =
+          spawnExec("git", ["rev-parse", "--verify", "--quiet", "HEAD"], {
+            cwd: outDir,
+            capture: "all",
+          }).status === 0;
+        const database = await provisionApp(
+          outDir,
+          app.name,
+          committed,
+          templateDir,
+          options,
+          interactive,
+        );
+        printNextSteps(
+          outDir,
+          existsSync(path.join(outDir, "node_modules")),
+          database,
+        );
+        if (interactive) p.outro("Done.");
+        return;
+      }
 
       let name = options.name ?? toAppName(path.basename(outDir));
       if (interactive && !options.name) {
@@ -185,34 +277,27 @@ export function registerNew(program: Command, cliVersion: string): void {
         );
       }
 
-      // The template's own Prisma; cwd outside the app so its prisma.config.ts
-      // (which needs the app's dependencies) is not loaded before install.
-      run(
-        process.execPath,
-        [
-          path.join(templateDir, "node_modules", "prisma", "build", "index.js"),
-          "validate",
-          "--schema",
-          path.join(outDir, "prisma", "schema"),
-        ],
-        tmpdir(),
-      );
-      // Pruning changed package.json, so the copied lockfile must be updated.
-      if (options.install)
-        run("pnpm", ["install", "--no-frozen-lockfile"], outDir);
-      if (options.git) run("git", ["init", "--quiet"], outDir);
+      const { committed } = setupApp({
+        appDir: outDir,
+        templateDir,
+        install: options.install,
+        git: options.git,
+        exec: spawnExec,
+        warn: (message) => p.log.warn(message),
+      });
 
-      const relative = path.relative(process.cwd(), outDir);
-      const next = [
-        `cd ${relative && !relative.startsWith("..") ? relative : outDir}`,
-        ...(options.install ? [] : ["pnpm install"]),
-        process.platform === "win32"
-          ? "Copy-Item .env.example .env.local  # then fill in values"
-          : "cp .env.example .env.local  # then fill in values",
-        "pnpm db:init",
-        "pnpm dev",
-      ];
-      p.note(next.join("\n"), "Next steps");
+      // Nothing below touches the network without --provision.
+      const database = options.provision
+        ? await provisionApp(
+            outDir,
+            name,
+            committed,
+            templateDir,
+            options,
+            interactive,
+          )
+        : false;
+      printNextSteps(outDir, options.install, database);
       if (interactive) p.outro("Done.");
     });
 }

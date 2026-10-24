@@ -1,17 +1,16 @@
 {
   "$schema": "codependent-coding/execution/handoff/v1",
-  "updated": "2026-10-23T16:25:00Z",
+  "updated": "2026-10-24T17:05:00Z",
   "format": "Overwrite each session. Minimum state the next session needs to resume safely.",
   "status": "ready-for-claude-code",
   "milestone": "M4",
-  "current_issue": "CC-030",
-  "next_issue": "CC-031",
-  "queue": ["CC-031", "CC-032"],
-  "branch": "feat/190-app-governance",
+  "current_issue": "CC-032",
+  "next_issue": "CC-032",
+  "queue": ["CC-032", "CC-033"],
+  "branch": "feat/191-post-compose-provision",
   "in_flight": [
-    "PR #241 (CC-028) waits on owner's Windows check",
-    "PR #242 (CC-029) stacked on #241",
-    "CC-030 PR stacked on #242"
+    "CLI stack #241-#244 merging under the standing rule",
+    "CC-032 slice scaffolder on feat/192-slice-scaffolder"
   ],
   "notes": [
     "Governance package is uncommitted in the owner's working tree; owner reviews with `git status` / `git diff`, then commits on a branch `chore/governance-package`.",
@@ -51,14 +50,18 @@
     "M3 closed 2026-10-23 (CC-018..CC-027). Next: M4 starting CC-028 (packages/cli).",
     "CC-028 (DEC-043): packages/cli = hipster-stack. `pnpm cli` runs from source (tsx), `pnpm cli:build` bundles, `pnpm cli:link` links globally (needs `pnpm setup` once so pnpm's global bin dir is on PATH). Template = HIPSTER_TEMPLATE or <repo>/template. CC-029 ports template/scripts/compose.mjs into packages/cli/src/compose.",
     "CC-029 (DEC-044): `hipster-stack new <dir> [--preset|--modules|--all] [--color] [--yes] [--no-install] [--no-git]`. The CLI needs the template installed (it loads template scripts + Prettier). .sandbox/ is git-ignored scratch for generated apps. Template tests pinning the full module set live in template/tests/template/ and are not copied.",
-    "CC-030 (DEC-045): governance templates in packages/cli/assets/app-governance; when root doctrine (Architecture §2-4, AUTH) changes, update the asset copies too (tests/cli/governance.test.ts checks rule IDs only)."
+    "CC-030 (DEC-045): governance templates in packages/cli/assets/app-governance; when root doctrine (Architecture §2-4, AUTH) changes, update the asset copies too (tests/cli/governance.test.ts checks rule IDs only).",
+    "CC-031 (DEC-046): `new` commits `chore: scaffold from hipster-stack`; `--provision` runs gh/neon/vercel steps (skip with --no-github/--no-neon/--no-vercel). `new <existing app> --provision` provisions only. app_user is created in SQL (NOBYPASSRLS) with default privileges; .env.local gets DATABASE_URL + DIRECT_DATABASE_URL.",
+    "2026-10-24: owner deferred the CC-028 Windows check and the CC-031 real --provision run. Existing Neon project snowy-pine-46483828 (linked to Vercel + GitHub) is the infrastructure; do not create new cloud resources."
   ],
   "risks": [
     "Lint hook exits 0 silently when node_modules/eslint is missing; a failed install hides lint feedback. On Windows, run pnpm install with VS Code closed (DEC-019).",
     "pnpm/action-setup@v4 runs on deprecated Node 20 (forced to 24); bump when a newer major is available.",
     "Template pages cannot render in the cloud container without Clerk keys. Owner checked all CC-010 pages locally (passed). Template has no `test` script until CC-017.",
     "portal fetcher getPortalBilling reads invoices (invoicing tables) though portal does not depend on invoicing; the lint can't see it (Prisma client is base). Resolve in CC-026/027 compose tests.",
-    "Modules other than projects still throw from actions instead of returning ActionResult; their client callers rely on thrown errors. Migrate module by module (follow-up issue)."
+    "Modules other than projects still throw from actions instead of returning ActionResult; their client callers rely on thrown errors. Migrate module by module (follow-up issue).",
+    "Docs say DIRECT_URL (AUTH.md, tech-requirements §6) but the template and provisioning use DIRECT_DATABASE_URL; Vercel's Neon integration adds DATABASE_URL_UNPOOLED. Reconcile names at the template deploy issue.",
+    "Deferred owner checks: CC-028 Windows global link (`pnpm cli:link`, `hipster-stack -v`) and CC-031 real-account `--provision`. Neither has run on the owner's machine."
   ],
   "do_not": [
     "Delete or rewrite context/doctrine/ books",
