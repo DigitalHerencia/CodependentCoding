@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/progress/v1",
-  "updated": "2026-10-23T16:40:00Z",
+  "updated": "2026-10-24T17:05:00Z",
   "format": "Evidence states: EXECUTED | INSPECTED | NOT_RUN | BLOCKED. Never mark an issue done without EXECUTED evidence for its Validation commands.",
   "milestones": {
     "M0": {
@@ -389,34 +389,35 @@
       }
     },
     "CC-028": {
-      "status": "in_review",
+      "status": "done",
       "github": 188,
       "branch": "feat/188-cli-skeleton",
       "decision": "DEC-043",
-      "note": "packages/cli (hipster-stack, commander 15.0.0 + @clack/prompts 1.8.1, tsdown bundle to dist/cli.mjs); root scripts cli, cli:build, cli:link (scripts/cli-link.mjs); template = HIPSTER_TEMPLATE or <repo>/template, shown in --help. Windows check by owner pending."
+      "note": "packages/cli (hipster-stack, commander 15.0.0 + @clack/prompts 1.8.1, tsdown bundle to dist/cli.mjs); root scripts cli, cli:build, cli:link (scripts/cli-link.mjs); template = HIPSTER_TEMPLATE or <repo>/template, shown in --help. Windows check by owner pending.",
+      "deferred": "Windows check (pnpm cli:link; hipster-stack -v from $HOME) deferred by owner 2026-10-24"
     },
     "CC-029": {
-      "status": "in_review",
+      "status": "done",
       "github": 189,
       "branch": "feat/189-compose-new",
       "decision": "DEC-044",
       "note": "packages/cli/src/compose (composeApp, kit, brand, packageJson) + commands/new.ts. Engine reuses template scripts (compose.mjs closure+compose, modules-schema, ownership, prettier) loaded from the resolved template. Template-pinned tests moved to template/tests/template/ (not copied)."
     },
     "CC-030": {
-      "status": "in_review",
+      "status": "done",
       "github": 190,
       "branch": "feat/190-app-governance",
       "decision": "DEC-045",
       "note": "packages/cli/assets/app-governance (13 files) rendered with {{placeholders}} and the template's Prettier by `new`; template .claude/ no longer copied."
     },
     "CC-031": {
-      "status": "in_review",
+      "status": "done",
       "github": 191,
       "branch": "feat/191-post-compose-provision",
       "decision": "DEC-046",
       "note": "Initial commit + `--provision` (gh/neonctl/vercel) in packages/cli/src/setup. Real-account run of the Validation command is the owner's (creates cloud resources).",
       "acceptance": {
-        "Manual run with --provision creates repo, Neon project, Vercel project": "PENDING owner run; verified against stub gh/neonctl/vercel + local Postgres 16",
+        "Manual run with --provision creates repo, Neon project, Vercel project": "DEFERRED by owner 2026-10-24: existing Neon project snowy-pine-46483828 is already linked to Vercel and GitHub; no new cloud resources. Verified against stub gh/neonctl/vercel + local Postgres 16.",
         "Without --provision, no network calls are made": "EXECUTED"
       }
     }
@@ -2223,6 +2224,22 @@
       "env": "owner PC",
       "command": "hipster-stack new .sandbox/prov --preset blank --provision",
       "result": "needs Ivan's gh/neonctl/vercel logins; creates a private repo, Neon project and Vercel project"
+    },
+    {
+      "date": "2026-10-24",
+      "state": "DEFERRED",
+      "issue": "CC-028",
+      "env": "owner PC",
+      "command": "pnpm cli:link; hipster-stack -v (Windows, owner PC)",
+      "result": "Owner decision 2026-10-24: skip for now"
+    },
+    {
+      "date": "2026-10-24",
+      "state": "DEFERRED",
+      "issue": "CC-031",
+      "env": "owner PC",
+      "command": "hipster-stack new .sandbox/prov --preset blank --provision (owner accounts)",
+      "result": "Owner decision 2026-10-24: skip for now"
     }
   ],
   "known_findings": [

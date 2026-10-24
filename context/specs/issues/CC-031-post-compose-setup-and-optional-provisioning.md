@@ -8,7 +8,7 @@ priority: p1
 size: m
 labels: [type:feature, area:cli, priority:p1, size:m]
 depends_on: [CC-029]
-status: in-review
+status: done
 ---
 
 # CC-031 · Post-compose setup and optional provisioning

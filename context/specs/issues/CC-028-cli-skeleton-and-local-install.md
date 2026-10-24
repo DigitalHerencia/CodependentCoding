@@ -8,7 +8,7 @@ priority: p0
 size: s
 labels: [type:feature, area:cli, priority:p0, size:s]
 depends_on: [CC-018]
-status: in-review
+status: done
 ---
 
 # CC-028 · CLI skeleton and local install
