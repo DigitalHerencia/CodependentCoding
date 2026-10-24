@@ -8,7 +8,7 @@ priority: p0
 size: l
 labels: [type:feature, area:cli, priority:p0, size:l]
 depends_on: [CC-027, CC-029]
-status: todo
+status: in-review
 ---
 
 # CC-032 · `slice` scaffolder

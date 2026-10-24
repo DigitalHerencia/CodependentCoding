@@ -10,7 +10,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 /** packages/cli, found from src/compose (tsx) or dist (bundle). */
-function cliRoot(moduleUrl: string): string {
+export function cliRoot(moduleUrl: string): string {
   let dir = path.dirname(fileURLToPath(moduleUrl));
   for (;;) {
     const pkg = path.join(dir, "package.json");

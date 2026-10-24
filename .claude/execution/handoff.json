@@ -1,17 +1,14 @@
 {
   "$schema": "codependent-coding/execution/handoff/v1",
-  "updated": "2026-10-24T17:05:00Z",
+  "updated": "2026-10-24T17:30:00Z",
   "format": "Overwrite each session. Minimum state the next session needs to resume safely.",
   "status": "ready-for-claude-code",
   "milestone": "M4",
   "current_issue": "CC-032",
-  "next_issue": "CC-032",
-  "queue": ["CC-032", "CC-033"],
-  "branch": "feat/191-post-compose-provision",
-  "in_flight": [
-    "CLI stack #241-#244 merging under the standing rule",
-    "CC-032 slice scaffolder on feat/192-slice-scaffolder"
-  ],
+  "next_issue": "CC-033",
+  "queue": ["CC-033", "CC-034", "CC-035"],
+  "branch": "feat/192-slice-scaffolder",
+  "in_flight": ["CC-032 slice scaffolder PR (Closes #192)"],
   "notes": [
     "Governance package is uncommitted in the owner's working tree; owner reviews with `git status` / `git diff`, then commits on a branch `chore/governance-package`.",
     "Template already contains the doctrine ESLint plugin (template/eslint/) and the new eslint.config.mjs; CC-009 turns findings into fixes.",
@@ -52,7 +49,8 @@
     "CC-029 (DEC-044): `hipster-stack new <dir> [--preset|--modules|--all] [--color] [--yes] [--no-install] [--no-git]`. The CLI needs the template installed (it loads template scripts + Prettier). .sandbox/ is git-ignored scratch for generated apps. Template tests pinning the full module set live in template/tests/template/ and are not copied.",
     "CC-030 (DEC-045): governance templates in packages/cli/assets/app-governance; when root doctrine (Architecture §2-4, AUTH) changes, update the asset copies too (tests/cli/governance.test.ts checks rule IDs only).",
     "CC-031 (DEC-046): `new` commits `chore: scaffold from hipster-stack`; `--provision` runs gh/neon/vercel steps (skip with --no-github/--no-neon/--no-vercel). `new <existing app> --provision` provisions only. app_user is created in SQL (NOBYPASSRLS) with default privileges; .env.local gets DATABASE_URL + DIRECT_DATABASE_URL.",
-    "2026-10-24: owner deferred the CC-028 Windows check and the CC-031 real --provision run. Existing Neon project snowy-pine-46483828 (linked to Vercel + GitHub) is the infrastructure; do not create new cloud resources."
+    "2026-10-24: owner deferred the CC-028 Windows check and the CC-031 real --provision run. Existing Neon project snowy-pine-46483828 (linked to Vercel + GitHub) is the infrastructure; do not create new cloud resources.",
+    "CC-032 (DEC-047): `hipster-stack slice <entity> --module <id> --fields <dsl> [--plural] [--label] [--icon] [--dir] [--dry-run]`. Templates in packages/cli/templates/slice (excluded from Prettier); when projects golden files change, update the .tpl files too. Refs must be tenant models or User."
   ],
   "risks": [
     "Lint hook exits 0 silently when node_modules/eslint is missing; a failed install hides lint feedback. On Windows, run pnpm install with VS Code closed (DEC-019).",

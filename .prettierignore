@@ -34,3 +34,6 @@ template/
 
 # Governance templates: rendered and formatted by hipster-stack new (placeholders are not valid YAML)
 packages/cli/assets/
+
+# Slice templates: {{tokens}} are not valid TS until rendered by hipster-stack slice
+packages/cli/templates/slice/

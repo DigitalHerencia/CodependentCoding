@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/decisions/v1",
-  "updated": "2026-10-23T16:40:00Z",
+  "updated": "2026-10-24T17:30:00Z",
   "format": "Append new decisions; never rewrite history. Supersede by adding a new entry and setting status=superseded + superseded_by on the old one.",
   "decisions": [
     {
@@ -462,6 +462,21 @@
         "tech-requirements.md §9",
         "DEC-032",
         "DEC-044"
+      ]
+    },
+    {
+      "id": "DEC-047",
+      "date": "2026-10-24",
+      "status": "accepted",
+      "title": "CC-032: slice scaffolder renders projects-derived templates and merges into existing module files",
+      "context": "`slice` must generate a full vertical slice that passes every CC rule without edits, both as a new module and inside an existing one, without overwriting anything.",
+      "decision": "packages/cli/src/slice: fields.ts (DSL: string, text, int, decimal, boolean, datetime, enum(a|b), ref(Model) with `<rel>Id` names, optional `?`; enum values become UPPER_SNAKE), tokens.ts (per-type Prisma/Zod/DTO/form fragments; render() throws on unknown tokens), merge.ts (TS-AST merge using the app's typescript: named imports join or add import lines, bodies are appended, name clashes refuse), prismaSchema.ts, sliceApp.ts (planSlice computes every write and throws on any conflict before writing). Templates: packages/cli/templates/slice/*.tpl with {{token}}, excluded from Prettier. New module: lib/modules/<m>.module.ts, a manifest entry (kind domain, owns app/(tenant)/<route>/**, dependsOn = owners of ref targets) and a regenerated registry. Existing module: nav link + resource are added to its definition. Back-relations go on Organization and ref targets tagged `// @module <m>`; RLS appends to prisma/rls/<m>.sql. Refs are tenant-checked in the action (tenant model by id + organizationId, User via membership). After writing: prisma format + generate, prettier --write, eslint --fix. The CLI entry prints `hipster-stack: <message>` and exits 1 (HIPSTER_DEBUG=1 shows the stack).",
+      "refs": [
+        "CC-032",
+        "CC-027",
+        "DEC-042",
+        "Architecture.md §6",
+        "tech-requirements.md §9"
       ]
     }
   ]
