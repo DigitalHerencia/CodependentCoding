@@ -31,4 +31,5 @@ export const portalModule = {
       VIEWER: ["portal:read"],
     },
   },
+  records: [{ label: "Portal documents", model: "portalDocument" }],
 } satisfies ModuleDefinition;

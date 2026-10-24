@@ -1,11 +1,6 @@
-import type {
-  AdminMembershipDTO,
-  AdminProviderStateDTO,
-  AuditEventDTO,
-} from "@/types/adminTypes";
+import type { AdminMembershipDTO, AuditEventDTO } from "@/types/adminTypes";
 import type {
   AdminMembershipRecord,
-  AdminProviderSubscriptionRecord,
   AuditEventRecord,
 } from "@/lib/db/selects/admin.selects";
 
@@ -36,16 +31,5 @@ export function toAdminMembershipDTO(
     status: record.status,
     user: record.user,
     createdAt: record.createdAt.toISOString(),
-  };
-}
-
-export function toAdminProviderStateDTO(
-  record: AdminProviderSubscriptionRecord,
-): AdminProviderStateDTO {
-  return {
-    ...record,
-    currentPeriodEnd: record.currentPeriodEnd?.toISOString() ?? null,
-    createdAt: record.createdAt.toISOString(),
-    updatedAt: record.updatedAt.toISOString(),
   };
 }

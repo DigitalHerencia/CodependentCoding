@@ -523,6 +523,15 @@
         "Architecture.md §6",
         "tech-requirements.md §11"
       ]
+    },
+    {
+      "id": "DEC-051",
+      "date": "2026-10-24",
+      "status": "proposed",
+      "title": "CC-035: fix the undeclared admin and portal dependencies the preset matrix found",
+      "context": "The presets matrix failed typecheck for admin (counts rows in eight domain modules; writes BillingSubscription) and portal (reads Invoice) because neither declares those modules. check:compose only composed add-ons alone.",
+      "decision": "ModuleDefinition gains `records` ({label, model}); each domain module lists its countable table and admin's record summary counts whatever the registry holds (as nav/dashboard do, DEC-036). The provider-state reconcile moves from admin to billing (schemas/billingSchemas.ts, lib/actions/billingActions.ts reconcileBillingProviderState, lib/db/transactions/billing-reconcile-provider-state.tx.ts, select/DTO/types in billing files) under a new billing:manage permission (OWNER/ADMIN). portal declares dependsOn invoicing; the portal preset becomes [portal, invoicing, uploads, billing] (Architecture.md §5, application.yaml). Admin preset stays [admin]. Proposed pending the owner's choice on the decision card.",
+      "refs": ["CC-035", "DEC-036", "DEC-039", "DEC-050"]
     }
   ]
 }

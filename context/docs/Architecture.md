@@ -198,7 +198,7 @@ Review-only rules (not mechanizable, checked by the `reviewer` agent): actions v
     "invoicing": ["invoicing", "billing", "uploads"],
     "social": ["social", "media", "uploads"],
     "ai": ["ai", "inference", "billing", "ratelimit"],
-    "portal": ["portal", "uploads", "billing"],
+    "portal": ["portal", "invoicing", "uploads", "billing"],
     "admin": ["admin"],
   },
 }

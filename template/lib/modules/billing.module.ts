@@ -5,7 +5,7 @@ export const billingModule = {
   settings: [{ label: "Billing", href: "/settings/billing" }],
   permissions: {
     resources: [],
-    catalog: ["billing:read"],
+    catalog: ["billing:read", "billing:manage"],
     grants: { BILLING: ["billing:read"] },
   },
   integration: {

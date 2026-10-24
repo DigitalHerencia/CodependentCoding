@@ -55,13 +55,13 @@
     "CC-032 (DEC-047): `hipster-stack slice <entity> --module <id> --fields <dsl> [--plural] [--label] [--icon] [--dir] [--dry-run]`. Templates in packages/cli/templates/slice (excluded from Prettier); when projects golden files change, update the .tpl files too. Refs must be tenant models or User.",
     "CC-033 (DEC-048): `hipster-stack add <modules...> [--dir] [--no-install] [--dry-run]` diffs two compositions of the current template; refuses (lists conflicts) when the app changed or created a file the module would write.",
     "CC-034 (DEC-049): `hipster-stack doctor [--dir] [--no-tools]`: env presence, DB, migrations, forced RLS, lint, ownership; read-only, exit 1 on fail. Local Postgres for testing: run initdb/pg_ctl as the postgres user under /var/lib/postgresql (it cannot reach the scratchpad).",
-    "CC-035 (DEC-050): ci.yml `presets` matrix (blank, 9 presets, all) via `hipster-stack compose`; runs on main and on PRs touching template/, packages/cli/ or ci.yml. M4 closes once the main run is green."
+    "CC-035 (DEC-050): ci.yml `presets` matrix (blank, 9 presets, all) via `hipster-stack compose`; runs on main and on PRs touching template/, packages/cli/ or ci.yml. M4 closes once the main run is green.",
+    "DEC-051 (proposed, owner deciding): admin record summary comes from ModuleDefinition.records; billing owns reconcileBillingProviderState (billing:manage); portal dependsOn invoicing."
   ],
   "risks": [
     "Lint hook exits 0 silently when node_modules/eslint is missing; a failed install hides lint feedback. On Windows, run pnpm install with VS Code closed (DEC-019).",
     "pnpm/action-setup@v4 runs on deprecated Node 20 (forced to 24); bump when a newer major is available.",
     "Template pages cannot render in the cloud container without Clerk keys. Owner checked all CC-010 pages locally (passed). Template has no `test` script until CC-017.",
-    "portal fetcher getPortalBilling reads invoices (invoicing tables) though portal does not depend on invoicing; the lint can't see it (Prisma client is base). Resolve in CC-026/027 compose tests.",
     "Modules other than projects still throw from actions instead of returning ActionResult; their client callers rely on thrown errors. Migrate module by module (follow-up issue).",
     "Docs say DIRECT_URL (AUTH.md, tech-requirements §6) but the template and provisioning use DIRECT_DATABASE_URL; Vercel's Neon integration adds DATABASE_URL_UNPOOLED. Reconcile names at the template deploy issue.",
     "Deferred owner checks: CC-028 Windows global link (`pnpm cli:link`, `hipster-stack -v`) and CC-031 real-account `--provision`. Neither has run on the owner's machine."

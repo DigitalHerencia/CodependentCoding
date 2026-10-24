@@ -2425,6 +2425,22 @@
       "env": "cloud container",
       "command": "pnpm cli compose template/.sandbox/all --all; pnpm --dir template/.sandbox/all install --no-frozen-lockfile; lint; typecheck; build (placeholder env)",
       "result": "compose exit 0 (15 modules, 763 files); install 0; lint 0; typecheck 0; build 0; 246 s end to end"
+    },
+    {
+      "date": "2026-10-24",
+      "state": "EXECUTED",
+      "issue": "CC-035",
+      "env": "cloud container",
+      "command": "after DEC-051: template check:modules/ownership/env/schema-modules, typecheck, lint, test; compose --preset admin and --preset portal then install/lint/typecheck/build; pnpm check:compose",
+      "result": "all exit 0; template tests 15 files 66 passed (ownership snapshot billing 19->22, grants test adds billing:manage for OWNER/ADMIN); admin and portal presets build; check:compose ok for every add-on"
+    },
+    {
+      "date": "2026-10-24",
+      "state": "EXECUTED",
+      "issue": "CC-035",
+      "env": "GitHub Actions (PR #248, 69d5096)",
+      "command": "presets matrix",
+      "result": "Preset admin and Preset portal failed typecheck (undeclared billing/invoicing and cross-module counts); led to DEC-051"
     }
   ],
   "known_findings": [

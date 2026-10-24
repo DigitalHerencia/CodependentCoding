@@ -1,5 +1,7 @@
 import type { Route } from "next";
 
+import type { Prisma } from "@/generated/prisma/client";
+
 import type { AppRole } from "@/types/accessTypes";
 
 /** `<module>:<action>`; the catalog is base permissions plus each installed module's. */
@@ -50,6 +52,12 @@ export interface ModuleIntegration {
   env: readonly string[];
 }
 
+/** A tenant table the admin record summary counts; `model` is its Prisma client delegate (e.g. "crmContact"). */
+export interface ModuleRecordCount {
+  label: string;
+  model: Uncapitalize<Prisma.ModelName>;
+}
+
 /** Runtime contributions of one module (Architecture.md §5.4). Build-time facts live in hipster.modules.json. */
 export interface ModuleDefinition {
   id: string;
@@ -59,4 +67,5 @@ export interface ModuleDefinition {
   dashboard?: readonly ModuleDashboardEntry[];
   permissions?: ModulePermissions;
   integration?: ModuleIntegration;
+  records?: readonly ModuleRecordCount[];
 }

@@ -121,9 +121,11 @@ const legacyGrants: Record<string, string[]> = {
 
 // Grants added since: billing:read guards Settings > Billing (CC-024), held by
 // the same roles that held portal:billing, which guarded it before.
+// billing:manage guards the provider-state reconcile that moved from admin
+// (CC-035); OWNER and ADMIN hold every catalog permission.
 const addedGrants: Record<string, string[]> = {
-  OWNER: ["billing:read"],
-  ADMIN: ["billing:read"],
+  OWNER: ["billing:read", "billing:manage"],
+  ADMIN: ["billing:read", "billing:manage"],
   BILLING: ["billing:read"],
 };
 

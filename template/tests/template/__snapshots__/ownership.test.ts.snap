@@ -6,7 +6,7 @@ exports[`ownership report for the current template 1`] = `
   "modules": {
     "admin": 37,
     "ai": 30,
-    "billing": 19,
+    "billing": 22,
     "crm": 66,
     "email": 7,
     "inference": 5,

@@ -110,7 +110,7 @@
       "kind": "domain",
       "label": "Client Portal",
       "description": "Client workspace, documents, billing",
-      "dependsOn": ["uploads", "billing"],
+      "dependsOn": ["uploads", "billing", "invoicing"],
       "owns": ["app/(tenant)/portal/**"]
     },
     {
@@ -223,7 +223,7 @@
     "invoicing": ["invoicing", "billing", "uploads"],
     "social": ["social", "media", "uploads"],
     "ai": ["ai", "inference", "billing", "ratelimit"],
-    "portal": ["portal", "uploads", "billing"],
+    "portal": ["portal", "invoicing", "uploads", "billing"],
     "admin": ["admin"]
   }
 }

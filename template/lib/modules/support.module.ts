@@ -31,4 +31,5 @@ export const supportModule = {
       VIEWER: ["support:read"],
     },
   },
+  records: [{ label: "Support tickets", model: "supportTicket" }],
 } satisfies ModuleDefinition;

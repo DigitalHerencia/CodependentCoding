@@ -31,4 +31,5 @@ export const crmModule = {
       VIEWER: ["crm:read"],
     },
   },
+  records: [{ label: "CRM contacts", model: "crmContact" }],
 } satisfies ModuleDefinition;

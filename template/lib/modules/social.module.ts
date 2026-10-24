@@ -28,4 +28,5 @@ export const socialModule = {
       VIEWER: ["social:read"],
     },
   },
+  records: [{ label: "Social posts", model: "socialPost" }],
 } satisfies ModuleDefinition;

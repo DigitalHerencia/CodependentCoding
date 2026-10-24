@@ -7,6 +7,12 @@ import {
   auditEventSelect,
 } from "@/lib/db/selects/admin.selects";
 import { withAuthenticatedRead } from "@/lib/db/tenant";
+import { installedModules } from "@/lib/modules/registry";
+
+/** Every `records` model is a tenant table, so each delegate takes this count. */
+interface TenantCounter {
+  count(args: { where: { organizationId: string } }): Promise<number>;
+}
 
 export async function getAuditEvents(limit = 100) {
   return withAuthenticatedRead(async (tx, access) => {
@@ -39,46 +45,20 @@ export async function getAdminMemberships() {
   });
 }
 
+/** Counts the tables installed modules list in `records` (registry order). */
 export async function getAdminRecordSummary() {
+  const records = installedModules.flatMap(({ records }) => records ?? []);
   return withAuthenticatedRead(async (tx, access) => {
     assertPermission(access, "admin:records");
-    const [
-      contacts,
-      projects,
-      tickets,
-      campaigns,
-      invoices,
-      socialPosts,
-      generations,
-      documents,
-    ] = await Promise.all([
-      tx.crmContact.count({ where: { organizationId: access.organizationId } }),
-      tx.project.count({ where: { organizationId: access.organizationId } }),
-      tx.supportTicket.count({
-        where: { organizationId: access.organizationId },
-      }),
-      tx.campaign.count({ where: { organizationId: access.organizationId } }),
-      tx.invoice.count({ where: { organizationId: access.organizationId } }),
-      tx.socialPost.count({ where: { organizationId: access.organizationId } }),
-      tx.aiGeneration.count({
-        where: { organizationId: access.organizationId },
-      }),
-      tx.portalDocument.count({
-        where: { organizationId: access.organizationId },
-      }),
-    ]);
-    return [
-      ["CRM contacts", contacts],
-      ["Projects", projects],
-      ["Support tickets", tickets],
-      ["Campaigns", campaigns],
-      ["Invoices", invoices],
-      ["Social posts", socialPosts],
-      ["AI generations", generations],
-      ["Portal documents", documents],
-    ].map(([resource, count]) => ({
-      resource: String(resource),
-      count: Number(count),
+    const where = { organizationId: access.organizationId };
+    const counts = await Promise.all(
+      records.map(({ model }) =>
+        (tx[model] as unknown as TenantCounter).count({ where }),
+      ),
+    );
+    return records.map(({ label }, index) => ({
+      resource: label,
+      count: counts[index] ?? 0,
     }));
   });
 }
