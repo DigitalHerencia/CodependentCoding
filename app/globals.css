@@ -2180,89 +2180,81 @@ textarea {
 .site-content {
   width: min(100%, calc(var(--site-content-max) + 2 * var(--site-gutter)));
   margin-inline: auto;
-  padding: clamp(2.5rem, 6vw, 6rem) var(--site-gutter);
+  padding: 1.5rem var(--site-gutter) clamp(2rem, 5vw, 3rem);
   flex: 1;
   position: relative;
   z-index: 2;
 }
 .site-horizon {
   width: 100%;
-  margin-top: clamp(2rem, 8vw, 8rem);
   line-height: 0;
+  aspect-ratio: 5.6;
+  max-height: 22rem;
+  overflow: hidden;
 }
 .site-horizon img {
   width: 100%;
-  height: auto;
-  object-fit: contain;
-  object-position: center bottom;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 70%;
+}
+.site-header,
+.site-footer {
+  position: relative;
+  z-index: 50;
+  width: 100%;
+  max-width: none;
+  min-height: 0;
+  margin-inline: 0;
+  padding: 0.6rem var(--site-gutter);
+  border: 0;
+  background: #000;
 }
 .site-header {
-  min-height: var(--site-header-height);
-  padding: 1rem var(--site-gutter);
+  position: sticky;
+  top: 0;
+}
+.site-bar {
+  width: min(100%, 44rem);
+  margin-inline: auto;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 2rem;
-  border-bottom: 1px solid #18333b;
-  background: rgba(5, 3, 11, 0.94);
-  position: sticky;
-  top: 0;
-  z-index: 50;
 }
 .site-header .wordmark img {
   display: block;
-  width: min(24rem, 42vw);
+  width: min(13.5rem, 34vw);
   height: auto;
-}
-.site-header nav {
-  display: flex;
-  align-items: center;
-  gap: clamp(0.8rem, 2.5vw, 2.5rem);
-}
-.nav-link {
-  appearance: none;
-  border: 0;
-  background: none;
-  color: white;
-  text-decoration: none;
-  text-transform: uppercase;
-  font-family:
-    var(--font-copperplate-fallback), "Copperplate Gothic Bold", serif;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  padding: 0.5rem 0;
-  cursor: pointer;
-  border-bottom: 2px solid transparent;
-}
-.nav-link:hover,
-.nav-link:focus-visible {
-  color: var(--site-cyan);
-  border-bottom-color: var(--site-cyan);
-}
-.site-footer {
-  position: relative;
-  z-index: 2;
-  padding: 1rem var(--site-gutter) 2rem;
-  background: #05030b;
-}
-.footer-bar {
-  max-width: var(--site-content-max);
-  margin: auto;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 2rem;
 }
 .heritage-wordmark img {
-  width: min(15rem, 45vw);
+  display: block;
+  width: min(6.5rem, 26vw);
   height: auto;
 }
-.footer-bar nav {
+.site-bar nav {
   display: flex;
-  gap: 1.5rem;
+  align-items: center;
+  gap: clamp(1rem, 4vw, 2.5rem);
 }
-.footer-bar nav a {
+.site-footer nav {
+  gap: clamp(1.5rem, 6vw, 4.5rem);
+}
+.site-bar .nav-link {
+  color: #b9d3dc;
   text-decoration: none;
+  text-transform: uppercase;
+  font-family: var(--font-big-shoulders-display), "Archivo Black", sans-serif;
+  font-size: 0.82rem;
+  letter-spacing: 0.04em;
+  padding: 0.35rem 0;
+  border-bottom: 2px solid transparent;
+}
+.site-bar .nav-link:hover,
+.site-bar .nav-link:focus-visible {
+  transform: none;
+  color: var(--site-cyan);
+  border-bottom-color: var(--site-cyan);
 }
 .eyebrow {
   margin: 0 0 0.75rem;
@@ -2290,91 +2282,70 @@ pre {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 3rem;
-  padding: 0.7rem 1.15rem;
-  border: 1px solid var(--site-cyan);
-  background: var(--site-cyan);
-  color: white;
+  width: 12.5rem;
+  min-height: 2.4rem;
+  padding: 0.4rem 1rem;
+  border: 0;
+  background: #2f7389;
+  color: #eef6f8;
   text-decoration: none;
   text-transform: uppercase;
-  font-weight: 800;
+  font-family: var(--font-jetbrains-mono), monospace;
+  font-size: 1.05rem;
+  letter-spacing: 0.06em;
   cursor: pointer;
 }
-.brand-button-outline {
-  background: transparent;
+.brand-button:hover {
+  background: #3a8aa2;
 }
 .landing-page {
   display: grid;
   justify-items: center;
   text-align: center;
-  gap: clamp(3rem, 7vw, 7rem);
 }
 .landing-crown {
-  width: min(72rem, 100%);
+  width: min(60rem, 100%);
   height: auto;
   object-fit: contain;
 }
+.landing-copy {
+  margin-top: clamp(4rem, 12vw, 9rem);
+}
 .landing-copy h1 {
-  font-size: clamp(2.3rem, 6.5vw, 6.4rem);
   margin: 0;
+  font-size: clamp(1.7rem, 4.4vw, 2.7rem);
+  line-height: 1.18;
+  color: #fff;
+  text-shadow: none;
 }
 .landing-copy p {
-  font-family: var(--font-copperplate-fallback), serif;
-  font-size: clamp(1rem, 2vw, 1.55rem);
+  margin: 1.5rem 0 1.8rem;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: clamp(0.72rem, 1.6vw, 0.95rem);
+  letter-spacing: 0.04em;
   text-transform: uppercase;
-  line-height: 1.6;
-}
-.landing-copy strong {
-  display: block;
-  margin-top: 2.5rem;
-  text-transform: uppercase;
+  color: #9dbac5;
 }
 .landing-actions {
   display: flex;
+  width: auto;
+  margin-top: 0;
   justify-content: center;
-  gap: 1rem;
+  gap: 1.3rem;
   flex-wrap: wrap;
 }
-.landing-factory {
-  width: min(64rem, 100%);
-  scroll-margin-top: calc(var(--site-header-height) + 2rem);
-}
-.landing-factory h2 {
-  margin: 0 0 1.5rem;
-  font-size: clamp(1.4rem, 3vw, 2.2rem);
-}
-.landing-factory ul {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
-  gap: 1rem;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  text-align: left;
-}
-.landing-factory li {
-  padding: 1.25rem;
-  border: 1px solid var(--signal-border);
-  background: var(--background-strong);
-}
-.landing-factory li span {
-  color: var(--foreground);
-  font-size: 0.8rem;
-  font-weight: 800;
-  letter-spacing: 0.16em;
+.landing-copy strong {
+  display: block;
+  margin-top: 2.2rem;
+  font-family: var(--font-jetbrains-mono), monospace;
+  font-weight: 400;
+  font-size: 1.05rem;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
 }
-.landing-factory h3 {
-  margin: 0.5rem 0;
-  font-size: 1.05rem;
-}
-.landing-factory p {
-  margin: 0;
-  color: var(--site-muted);
-  line-height: 1.5;
-}
 .landing-heritage {
-  width: min(44rem, 90%);
+  margin-top: clamp(4rem, 10vw, 7rem);
+  width: min(38rem, 90%);
   height: auto;
   object-fit: contain;
 }
@@ -2522,19 +2493,24 @@ pre {
   font-size: 0.9rem;
   text-transform: uppercase;
 }
-@media (max-width: 52rem) {
-  .site-header {
-    align-items: flex-start;
+@media (max-width: 36rem) {
+  .site-header .site-bar {
     flex-direction: column;
+    gap: 0.6rem;
   }
   .site-header .wordmark img {
-    width: min(21rem, 80vw);
+    width: min(14rem, 70vw);
   }
   .site-header nav {
-    width: 100%;
-    overflow-x: auto;
-    gap: 1.25rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.4rem 0.9rem;
   }
+  .site-bar .nav-link {
+    font-size: 0.72rem;
+  }
+}
+@media (max-width: 52rem) {
   .simples-mega {
     display: none !important;
   }

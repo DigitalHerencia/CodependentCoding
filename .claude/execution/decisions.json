@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/decisions/v1",
-  "updated": "2026-10-24T22:50:00Z",
+  "updated": "2026-10-25T21:30:00Z",
   "format": "Append new decisions; never rewrite history. Supersede by adding a new entry and setting status=superseded + superseded_by on the old one.",
   "decisions": [
     {
@@ -615,6 +615,10 @@
       "id": "DEC-060",
       "date": "2026-10-25",
       "status": "accepted",
+      "title": "Remove GitHub Actions CI",
+      "context": "The owner called the GitHub Actions runs excessive and wasteful and asked for all of them to be removed.",
+      "decision": "Delete .github/workflows/ci.yml (the only workflow file) and disable the leftover registered workflows. PRs merge when the local checks pass: root `pnpm validate` and `pnpm --dir template validate` (plus `pnpm --dir template test:rls` when RLS code changes). Dependabot config is untouched.",
+      "refs": [".github/workflows/ci.yml"]
       "title": "No app deploys in v1; the job is the template",
       "context": "CC-040 and CC-042 asked for a deployed URL from a generated app, which needed new cloud resources. Owner (2026-10-25): \"Our job here is to make the template, not to deploy apps.\"",
       "decision": "PRD G2 and §8.4 now measure a validated app running locally. /ship stays in the plugin for the owner to use per app; no thread deploys apps or asks for Clerk/Neon/Vercel resources. CC-042 closed on local evidence. Owner also removed GitHub Actions (2026-10-25); merges rely on local checks.",
