@@ -2768,6 +2768,30 @@
       "state": "EXECUTED",
       "command": "pnpm validate (root, on docs/203-readme-doctrine-check)",
       "result": "format, lint, typecheck, doctrine:check, test 13 files/80 tests: all exit 0"
+    },
+    {
+      "date": "2026-10-25",
+      "state": "EXECUTED",
+      "issue": "homepage-mockup",
+      "env": "cloud container",
+      "command": "pnpm build (root)",
+      "result": "exit 0, / prerendered static"
+    },
+    {
+      "date": "2026-10-25",
+      "state": "EXECUTED",
+      "issue": "homepage-mockup",
+      "env": "cloud container",
+      "command": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test (root)",
+      "result": "all exit 0"
+    },
+    {
+      "date": "2026-10-25",
+      "state": "EXECUTED",
+      "issue": "homepage-mockup",
+      "env": "cloud container",
+      "command": "playwright screenshots of / at 390, 894, 1440 px",
+      "result": "layout matches Landing Mockup.jpg"
     }
   ],
   "known_findings": [
