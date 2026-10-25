@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/decisions/v1",
-  "updated": "2026-10-24T22:50:00Z",
+  "updated": "2026-10-25T21:30:00Z",
   "format": "Append new decisions; never rewrite history. Supersede by adding a new entry and setting status=superseded + superseded_by on the old one.",
   "decisions": [
     {
@@ -610,6 +610,15 @@
       "context": "The CC-042 dogfood run found that test:rls fails in every generated app without the crm module: the negative check looked up CrmContact by name. PRD §8 needs RLS evidence for generated apps, so v1 cannot ship with it.",
       "decision": "The negative check now disables RLS on catalog.tenantTables[0] (every app has one; the harness seeds every tenant table) instead of a named crm table. The other dogfood issues (#256-#261) stay for the owner to schedule.",
       "refs": ["#255", "template/tests/rls/tenantIsolation.test.ts"]
+    },
+    {
+      "id": "DEC-060",
+      "date": "2026-10-25",
+      "status": "accepted",
+      "title": "Remove GitHub Actions CI",
+      "context": "The owner called the GitHub Actions runs excessive and wasteful and asked for all of them to be removed.",
+      "decision": "Delete .github/workflows/ci.yml (the only workflow file) and disable the leftover registered workflows. PRs merge when the local checks pass: root `pnpm validate` and `pnpm --dir template validate` (plus `pnpm --dir template test:rls` when RLS code changes). Dependabot config is untouched.",
+      "refs": [".github/workflows/ci.yml"]
     }
   ]
 }

@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/progress/v1",
-  "updated": "2026-10-24T22:50:00Z",
+  "updated": "2026-10-25T21:30:00Z",
   "format": "Evidence states: EXECUTED | INSPECTED | NOT_RUN | BLOCKED. Never mark an issue done without EXECUTED evidence for its Validation commands.",
   "milestones": {
     "M0": {
@@ -2750,6 +2750,12 @@
       "state": "EXECUTED",
       "command": "#255 fix: template pnpm test:rls (local Postgres 16, fresh db); eslint + prettier on the changed file; template lint (sandboxes ignored); typecheck",
       "result": "10 passed; all exit 0"
+    },
+    {
+      "date": "2026-10-25",
+      "state": "EXECUTED",
+      "command": "git rm .github/workflows/ci.yml; gh api actions/runs?status=in_progress|queued|waiting|pending; gh api branches/main/protection",
+      "result": "workflow deleted; 0 running or queued runs to cancel; main has no branch protection, so no required check depends on CI"
     }
   ],
   "known_findings": [
