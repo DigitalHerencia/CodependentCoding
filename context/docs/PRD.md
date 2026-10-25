@@ -11,7 +11,7 @@ compiles_to: .claude/contracts/application.yaml
 
 ## 1. Purpose
 
-Codependent Coding is Ivan's **internal software factory**: a local toolchain that turns a SaaS idea into a deployed, architecture-conformant MVP in **hours instead of weeks**, so ideas can be validated before committing to a full build.
+Codependent Coding is Ivan's **internal software factory**: a local toolchain that turns a SaaS idea into a running, architecture-conformant MVP in **hours instead of weeks**, so ideas can be validated before committing to a full build.
 
 It is not a hosted product. It has one user, runs locally, and is never published to npm. The landing page exists as a portfolio/brand surface only.
 
@@ -28,7 +28,7 @@ The first implementation tried to be a product: a public catalog site, a configu
 | ID  | Goal                                           | Measure                                                                                        |
 | --- | ---------------------------------------------- | ---------------------------------------------------------------------------------------------- |
 | G1  | Scaffold a new SaaS app locally in one command | `hipster-stack new` → running app with auth + tenancy in ≤ 10 minutes                          |
-| G2  | Template-to-MVP in hours                       | A dogfood idea reaches a deployed, shareable MVP in ≤ 1 working day                            |
+| G2  | Template-to-MVP in hours                       | A dogfood idea reaches a validated MVP running locally in ≤ 1 working day                      |
 | G3  | Doctrine is executable                         | Every mechanizable doctrine rule is an ESLint rule with a `CC-*` ID; template lints clean      |
 | G4  | One source of truth per fact                   | Module ownership is computed from naming conventions; no hand-maintained file catalogs         |
 | G5  | Agents build inside the rails                  | Loaded Vibes plugin + hooks keep Claude Code on the template's patterns and nomenclature       |
@@ -118,7 +118,7 @@ Retired vocabulary: Anthimeria, Virgule, Arrangement, Simples, Ontologies (as pr
 1. `hipster-stack new demo --preset blank --yes` produces an app that installs, lints, type-checks, and builds.
 2. CI composes blank, each preset, and the maximal set; all pass lint/typecheck/build.
 3. Template: 0 doctrine findings; RLS cross-tenant test passes against real Postgres.
-4. A timed dogfood run (idea → `/idea` → 3 slices → `/ship`) produces a shareable deployed URL in one working day.
+4. A timed dogfood run (idea → `/idea` → 3 slices → `/check`) produces a validated app running locally in one working day. Deploying an app (`/ship`) is the owner's call per app, not a v1 gate (DEC-060).
 5. All issues in milestones M0–M6 closed with evidence recorded in `progress.json`.
 
 ## 9. Risks
