@@ -66,15 +66,17 @@
     "CC-042 (DEC-058): dogfood app at template/.sandbox/fixlist (git-ignored, has its own git + node_modules + prisma/migrations). Local Postgres 16 cluster at /var/lib/postgresql/dogfood on port 5499 (trust auth, socket /tmp). Friction issues #255-#261 (dogfood label).",
     "#255 fixed on fix/255-rls-negative-check (DEC-059): RLS negative check uses the first tenant table.",
     "#255 merged (PR #263, 9353843).",
+    "DEC-060 (2026-10-25): GitHub Actions removed at the owner's request. There is no CI. Merge a PR when the local checks pass: `pnpm validate` at root and `pnpm --dir template validate` (plus `pnpm --dir template test:rls` for RLS changes). Paste their output as PR evidence. Do not add workflows back."
     "CC-043 (DEC-060): README rewritten; pnpm doctrine:check in root validate. No app deploys (owner). GitHub Actions removed by the owner 2026-10-25: verify locally (pnpm validate; pnpm --dir template validate) before merging."
   ],
   "risks": [
     "Lint hook exits 0 silently when node_modules/eslint is missing; a failed install hides lint feedback. On Windows, run pnpm install with VS Code closed (DEC-019).",
-    "pnpm/action-setup@v4 runs on deprecated Node 20 (forced to 24); bump when a newer major is available.",
     "Template pages cannot render in the cloud container without Clerk keys. Owner checked all CC-010 pages locally (passed). Template has no `test` script until CC-017.",
     "Modules other than projects still throw from actions instead of returning ActionResult; their client callers rely on thrown errors. Migrate module by module (follow-up issue).",
     "Deferred owner checks: CC-028 Windows global link (`pnpm cli:link`, `hipster-stack -v`) and CC-031 real-account `--provision`. Neither has run on the owner's machine.",
     "CC-036 acceptance on Windows (install + skills namespace) not run; the namespace only shows once CC-037 adds the first skill.",
+    "CC-040 acceptance 'ship produces a working URL on a test app' is NOT_RUN: needs a Vercel deploy (owner decision card). Everything up to `vercel deploy --prod` ran locally.",
+    "No CI since DEC-060: nothing checks a PR unless the local checks are run before merging."
     "CC-040/CC-042 deployed-URL checks are out of scope (DEC-060)."
   ],
   "do_not": [

@@ -2766,6 +2766,8 @@
     {
       "date": "2026-10-25",
       "state": "EXECUTED",
+      "command": "git rm .github/workflows/ci.yml; gh api actions/runs?status=in_progress|queued|waiting|pending; gh api branches/main/protection",
+      "result": "workflow deleted; 0 running or queued runs to cancel; main has no branch protection, so no required check depends on CI"
       "command": "pnpm validate (root, on docs/203-readme-doctrine-check)",
       "result": "format, lint, typecheck, doctrine:check, test 13 files/80 tests: all exit 0"
     },
