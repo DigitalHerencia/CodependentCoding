@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/progress/v1",
-  "updated": "2026-10-25T21:30:00Z",
+  "updated": "2026-10-25T21:50:00Z",
   "format": "Evidence states: EXECUTED | INSPECTED | NOT_RUN | BLOCKED. Never mark an issue done without EXECUTED evidence for its Validation commands.",
   "milestones": {
     "M0": {
@@ -76,8 +76,11 @@
       "note": "All M5 issues merged. Release evidence: main push run 40136570161 on 3826bc1 green (root, template, compose, RLS on Neon, preset matrix blank + 9 presets + all). Deferred owner checks: CC-036 Windows plugin install, CC-040 live /ship URL (folded into CC-042's deploy)."
     },
     "M6": {
-      "status": "todo",
-      "issues": ["CC-042", "CC-043", "CC-044"]
+      "status": "done",
+      "issues": ["CC-042", "CC-043", "CC-044"],
+      "closed": "2026-10-25",
+      "prs": [262, 263, 264],
+      "note": "Dogfood run (local), README + doctrine:check, v1.0.0. Dogfood follow-ups #256-#261 left open outside M6."
     }
   },
   "issues": {
@@ -573,7 +576,7 @@
       }
     },
     "CC-043": {
-      "status": "in-review",
+      "status": "done",
       "github": 203,
       "branch": "docs/203-readme-doctrine-check",
       "decision": "DEC-060",
@@ -581,6 +584,21 @@
       "acceptance": {
         "pnpm doctrine:check passes": "EXECUTED: exit 0, \"doctrine ok: 47 rules in .claude/contracts/validation.yaml; 35 IDs and 12 rules in template/eslint agree\". Negative: a planted unknown ID and an unlisted plugin rule were both reported, exit 1.",
         "README instructions work on a clean clone": "EXECUTED on a fresh clone in the scratchpad with an isolated HOME: pnpm install, pnpm --dir template install, pnpm setup, pnpm cli:link (needed pnpm global bin dir on PATH; README now says so), hipster-stack --help, hipster-stack new ../my-app --preset crm --yes; in the app pnpm typecheck 0, pnpm lint 0, pnpm build 0 (placeholder env); claude plugin marketplace add <clone> + plugin install loaded-vibes@codependent-coding enabled (isolated CLAUDE_CONFIG_DIR)."
+      }
+    },
+    "CC-044": {
+      "status": "in-review",
+      "github": 204,
+      "branch": "chore/204-release-v1",
+      "decision": "DEC-061",
+      "note": "Release profile run on a fresh clone of main 403e37b in the scratchpad. GitHub Actions removed by the owner 2026-10-25, so every check is local.",
+      "acceptance": {
+        "PRD §8.1 blank app installs, lints, type-checks, builds": "EXECUTED: hipster-stack new <dir> --preset blank --yes exit 0; pnpm lint 0, pnpm typecheck 0, pnpm build 0 (placeholder env).",
+        "PRD §8.2 blank, each preset and the maximal set pass lint/typecheck/build": "EXECUTED earlier: CI presets matrix green on main run 40136570161 (M5 close). Not rerun locally for v1.",
+        "PRD §8.3 template 0 doctrine findings; RLS cross-tenant test on real Postgres": "EXECUTED: pnpm --dir template validate exit 0 (format, lint, typecheck, check:modules, check:ownership, check:env); template pnpm test 66 passed/1 skipped; test:rls 10/10 on local Postgres 16.",
+        "PRD §8.4 dogfood run": "EXECUTED (CC-042, DEC-060): idea to validated local app in 873 s of agent time; deploy out of scope.",
+        "PRD §8.5 M0-M6 closed with evidence": "EXECUTED: every M0-M6 issue closed; dogfood follow-ups #256-#261 moved out of M6 (still open, no milestone).",
+        "Tag exists": "pending: tag v1.0.0 on the merge commit of this PR."
       }
     }
   },
@@ -620,7 +638,8 @@
     "CC-039",
     "CC-040",
     "CC-041",
-    "CC-042"
+    "CC-042",
+    "CC-043"
   ],
   "evidence": [
     {
@@ -2774,6 +2793,8 @@
     {
       "date": "2026-10-25",
       "state": "EXECUTED",
+      "command": "Release profile on fresh clone of main 403e37b: pnpm validate; pnpm --dir template validate; template pnpm test; template test:rls (local Postgres 16)",
+      "result": "root exit 0 (80 tests); template validate exit 0; 66 passed/1 skipped; rls 10/10"
       "issue": "homepage-mockup",
       "env": "cloud container",
       "command": "pnpm build (root)",

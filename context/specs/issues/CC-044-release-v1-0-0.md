@@ -8,7 +8,7 @@ priority: p0
 size: xs
 labels: [type:chore, area:governance, priority:p0, size:xs]
 depends_on: [CC-043]
-status: todo
+status: in-review
 ---
 
 # CC-044 · Release v1.0.0
