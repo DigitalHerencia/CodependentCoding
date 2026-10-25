@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="public/Codependent Coding Crown.jpg" alt="Vouch" width="800" />
+  <img src="public/Codependent Coding Crown.jpg" alt="Codependent Coding" width="800" />
 
   <br />
   <br />
@@ -18,25 +18,17 @@
   </p>
 
 <p align="center">
-  <a href="#the-typescripture-canonical-doctrine">TypeScripture™</a>
+  <a href="#what-this-is">What This Is</a>
+  ·
+  <a href="#quick-start">Quick Start</a>
+  ·
+  <a href="#the-mvp-loop">MVP Loop</a>
   ·
   <a href="#the-hipster-stack-technology-stack">Hipster Stack™</a>
   ·
-  <a href="#the-anthimeria-workbench">Anthimeria™</a>
-  ·
-  <a href="#the-simples-normalized-blocks">Simples™</a>
-  ·
   <a href="#the-maximal-template-domain-library">Maximal Template™</a>
   ·
-  <a href="#the-ontology-normalized-defaults">Ontology™</a>
-  ·
-  <a href="#the-virgule-application-definition">Virgule™</a>
-  ·
-  <a href="#the-arrangement-generated-artifact">Arrangement™</a>
-  ·
-  <a href="#the-loaded-vibes-codex-plugin">Loaded Vibes™</a>
-  ·
-  <a href="#system-identity-and-product-topology">System Topology</a>
+  <a href="#the-loaded-vibes-plugin">Loaded Vibes™</a>
   ·
   <a href="#single-responsibility-principle">Architecture</a>
   ·
@@ -48,9 +40,6 @@
   ·
   <a href="#license">License</a>
 </p>
-<p align="center">
-  <img alt="Next.js" src="https://img.shields.io/badge/NEXT.JS-000000?style=flat-square&logo=nextdotjs&logoColor=white" />
-  <img alt="React" src="https://img.shields.io/badge/REACT-000000?style=flat-square&logo=react&logoColor=61DAFB" />
   <img alt="TypeScript" src="https://img.shields.io/badge/TYPESCRIPT-000000?style=flat-square&logo=typescript&logoColor=3178C6" />
   <img alt="Node.js" src="https://img.shields.io/badge/NODE.JS-000000?style=flat-square&logo=nodedotjs&logoColor=5FA04E" />
   <img alt="pnpm" src="https://img.shields.io/badge/PNPM-000000?style=flat-square&logo=pnpm&logoColor=F69220" />
@@ -78,6 +67,8 @@
 
 </div>
 
+</div>
+
 # THE CODEPENDENT CODING™ WEBAPP ARCHITECTURE
 
 > [!IMPORTANT]
@@ -88,29 +79,88 @@
 
 ---
 
-The **Codependent Coding™ WebApp Architecture** is the umbrella system for defining how a modern, opinionated, multi-tenant TypeScript web application is structured, configured, generated, extended, and validated.
+## What This Is
 
-| Entity                                    | Definition                                                                                                                                                                                                                                                                               |
-| ----------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **The Hipster Stack™ Technology Stack**   | The concrete technology stack together with the deterministic constitution and generation system, resolver, and CLI that transform a normalized Application Definition into a materialized software project.                                                                             |
-| **The Maximal Template™ Domain Library**  | The single runnable superset application containing every supported implementation that the generation system may retain, remove, configure, or transform when producing a generated application.                                                                                        |
-| **The Ontology™ Normalized Defaults**     | The canonical set of nine normalized starter Application Definitions that encode the supported default domain structures and configuration choices supplied to the shared resolver.                                                                                                      |
-| **The Anthimeria™ Workbench**             | The stateless web configuration workbench operating over the shared Application Definition and resolver to construct, modify, resolve, and preview application configurations without becoming the persistent authority for application state.                                           |
-| **The Simples™ Normalized Blocks**        | The maximal normalized library of supported reusable implementation blocks from which application capabilities are selected and constituted.                                                                                                                                             |
-| **The BusinessLogic Blocks™ Workflows**   | The reusable domain and business-logic workflow layer that orchestrates application behavior through the appropriate server operations, helpers, contracts, types, and supporting implementation boundaries.                                                                             |
-| **The PureUI Blocks™ Presentation Layer** | The reusable pure-presentation layer that composes UI primitives, component variants, semantic design tokens, and presentation structures without owning domain or business logic.                                                                                                       |
-| **The Virgule™ Application Definition**   | The dependency-closed resolved Application Definition that serves as the authoritative machine-readable input for preview and materialization.                                                                                                                                           |
-| **The Arrangement™ Generated Artifact**   | The standalone white-label application materialized by the generation system from a resolved Virgule™ Application Definition.                                                                                                                                                            |
-| **The Loaded Vibes™ Codex Plugin**        | The Codex-oriented architecture-enforcement and software-operations layer comprising governance, agents, skills, instructions, prompts, validators, smoke tests, and developer-environment assets used to enforce and execute Codependent Coding doctrine.                               |
-| **The Visual Vibes™ Design System**       | The concrete design system implementing the Codependent Coding visual language through semantic design tokens, presentation primitives, component variants, composition rules, and interface conventions for a dark industrial neo-brutalist technical aesthetic with restrained signal. |
+Codependent Coding is an internal software factory. One command turns the template into a new multi-tenant Next.js SaaS app with auth, tenancy and row-level security already wired, and a Claude Code plugin keeps the agent building inside the template's patterns from there.
 
-# THE TYPESCRIPTURE™ CANONICAL DOCTRINE
+| Part                         | Where                  | What it does                                                                                                    |
+| ---------------------------- | ---------------------- | --------------------------------------------------------------------------------------------------------------- |
+| **The Maximal Template™**    | `template/`            | One runnable superset app holding every supported module. Every generated app is cut from it.                   |
+| **The Hipster Stack™ CLI**   | `packages/cli/`        | `hipster-stack`: makes apps from the template, adds modules, scaffolds vertical slices, checks an app's health. |
+| **The Loaded Vibes™ Plugin** | `plugin/loaded-vibes/` | Claude Code skills, hooks and agents that turn an idea into docs, issues and slices, and lint every edit.       |
+| **The doctrine**             | `.claude/contracts/`   | Every architecture rule has a `CC-*` ID in `validation.yaml` and is enforced by ESLint in `template/eslint/`.   |
+| **The landing page**         | `app/`                 | The public brand page. Static, no data.                                                                         |
 
-| Entity                                    | Definition                                                                                                                                                                                                                                                                                           |
-| ----------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **The TypeScripture™ Canonical Doctrine** | The canonical documentation authority for Codependent Coding™, organized as two paired bodies of doctrine: **The Book of Knowledge™**, which defines the meaning and conceptual authority of the system, and **The Book of Implementation™**, which defines its concrete software realization.       |
-| **The Book of Knowledge™**                | The conceptual authority that defines **what exists, why it exists, what it means, how it relates, how it is classified, what constraints apply, what constitutes valid evidence, and what forms the system permits**.                                                                               |
-| **The Book of Implementation™**           | The implementation authority that defines **how the concepts established by the Book of Knowledge become concrete architectures, contracts, interfaces, schemas, patterns, workflows, transactions, routes, authorization boundaries, infrastructure, runtime configurations, and executable code**. |
+Read more in `context/docs/`: `PRD.md` (what and why), `Architecture.md` (layers and the classifier), `tech-requirements.md` (versions and scripts), `Design.md` and `AUTH.md`.
+
+---
+
+## Quick Start
+
+You need Node 24, pnpm 12, Git and Claude Code. Commands are PowerShell 7; they run the same in bash.
+
+### 1. Install the CLI
+
+```powershell
+git clone https://github.com/DigitalHerencia/CodependentCoding.git
+cd CodependentCoding
+pnpm install
+pnpm --dir template install
+pnpm setup        # once per machine, puts pnpm's global bin on PATH; open a new shell after
+pnpm cli:link     # builds packages/cli and links `hipster-stack` globally
+hipster-stack --help
+```
+
+On Windows, close VS Code before `pnpm install`, or it fails with "Access is denied" on `node_modules`.
+
+### 2. Make an app
+
+```powershell
+hipster-stack new ..\my-app                    # asks for a preset and modules
+hipster-stack new ..\my-app --preset crm --yes # no prompts
+```
+
+Presets: `blank`, `crm`, `projects`, `support`, `marketing`, `invoicing`, `social`, `ai`, `portal`, `admin`. Add modules later with `hipster-stack add <module>` inside the app, and check its env, database, RLS and lint with `hipster-stack doctor`.
+
+### 3. Install the plugin
+
+The repo is its own plugin marketplace (`.claude-plugin/marketplace.json`, name `codependent-coding`). Inside Claude Code:
+
+```text
+/plugin marketplace add C:\path\to\CodependentCoding
+/plugin install loaded-vibes@codependent-coding
+```
+
+`/plugin marketplace add DigitalHerencia/CodependentCoding` works too, without a clone. Restart Claude Code after installing; the skills then appear as `/loaded-vibes:<skill>`.
+
+---
+
+## The MVP Loop
+
+Open the new app in Claude Code and run the skills in order:
+
+| Step                    | What happens                                                                                          |
+| ----------------------- | ----------------------------------------------------------------------------------------------------- |
+| `/loaded-vibes:idea`    | A grill session turns your idea into the app's PRD, architecture, design docs and YAML contracts.     |
+| `/loaded-vibes:plan`    | The PRD becomes issue files in `context/specs/issues/`, optionally synced to GitHub.                  |
+| `/loaded-vibes:slice`   | One entity at a time: `hipster-stack slice <entity>` scaffolds it, the agent writes the domain logic. |
+| `/loaded-vibes:check`   | Runs the app's validation, groups lint findings by `CC-*` rule ID, fixes causes, reruns until green.  |
+| `/loaded-vibes:handoff` | Writes progress, decisions and handoff to `.claude/execution/` so the next session picks up cold.     |
+
+`/loaded-vibes:classify` answers "where does this file go" at any point. `/loaded-vibes:ship` deploys an app to Vercel when you decide that app is worth deploying; nothing in the loop deploys on its own.
+
+While you work, the plugin's hooks lint every file the agent edits and remind it to update `.claude/execution/` before it stops. They only run in a generated app (one with `hipster.json`); anywhere else they do nothing.
+
+### Working on the factory itself
+
+| Task                       | Command                        |
+| -------------------------- | ------------------------------ |
+| Validate the root repo     | `pnpm validate`                |
+| Validate the template      | `pnpm --dir template validate` |
+| Check rule IDs agree       | `pnpm doctrine:check`          |
+| Regenerate plugin doctrine | `pnpm plugin:doctrine`         |
+
+`pnpm doctrine:check` fails when a `CC-*` ID used in `template/eslint/`, the plugin, the docs or this README is missing from `validation.yaml`, or when a contract rule points at an ESLint rule that does not exist. Run `pnpm plugin:doctrine` after changing the classifier (Architecture.md §3.3) or `validation.yaml`. Root and template are separate pnpm projects.
 
 ---
 
@@ -158,75 +208,6 @@ We've already checked.
 - **Redux Toolkit**: absolutely fucking not
 - **Codex**: pretty fucking cool
 - **ChatGPT**: management denies allegations of involvement
-
----
-
-## THE ANTHIMERIA™ WORKBENCH
-
-    No, Simples™ cannot be arranged "Hipster-Wise"
-    They are simply a dynamic system arranged in a
-    configuration that is currently "Hipster-ing"
-
-The Anthimeria™ is the stateless web application used to configure an Ontology™ or build a custom Virgule™ Application Definition from supported Simples™ in The Maximal Template™.
-
-It is an adapter over the same configuration semantics used by the CLI and portable config file.
-
-> [!NOTE]
-> Routes own URL and HTTP boundaries. Features orchestrate application capabilities. UI blocks render. Fetchers read persisted data. Actions own ordinary CRUD mutation boundaries. Schemas validate runtime input. Workflows constitute reusable application logic from server operations and helpers. Transactions preserve atomic database invariants. Authentication establishes identity. Authorization decides access. Integrations own provider mechanics. Webhooks own provider HTTP request lifecycles.
-
----
-
-## THE SIMPLES™ NORMALIZED BLOCKS
-
-    Process Over Nominalization
-
-A **Simple™** is one of two normalized block families exposed from **The Maximal Template™ Domain Library**:
-
-- **PureUI Block™**: which is a normalized reusable presentation arrangement
-- **BusinessLogic Block™**: which is a normalized reusable domain Workflow arrangement
-
-### THE PURE UI BLOCKS™ PRESENTATION LAYER
-
-A **Pure UI Block™** is a pure reusable UI composition implemented in:
-
-    components/blocks/
-
-The canonical presentation arrangement is:
-
-```text
-PureUI Block™
-      ↓
-UI Block
-      ↓
-UI Primitives
-      ↓
-Primitive Variants
-      ↓
-Semantic Design Tokens
-```
-
-### THE BUSINESSLOGIC BLOCKS™ DOMAIN WORKFLOWS
-
-A **BusinessLogic Block™** is a normalized Domain Workflow.
-
-    lib/workflows/{domain}/*Workflow.ts
-
-The canonical behavioral arrangement is:
-
-```text
-BusinessLogic Block™
-      ↓
-Domain Workflow
-      ↓
-Server Operations
-+ Helpers
-+ Types
-+ Interfaces
-+ Schemas
-+ Integrations
-+ Data Transport
-+ Cache / Constants / Utils
-```
 
 ---
 
@@ -321,127 +302,30 @@ Server Operations
 
 ---
 
-## THE ONTOLOGY™ NORMALIZED DEFAULTS
+## THE LOADED VIBES™ PLUGIN
 
-An **Ontology™** is a preset over the same normalized **Virgule Application Definition**.
-
-### Ontology catalog
-
-| Ontology                          | Primary surfaces                                       | Representative workflows                           | Common integrations                            |
-| --------------------------------- | ------------------------------------------------------ | -------------------------------------------------- | ---------------------------------------------- |
-| CRM / Pipeline Tracker            | pipeline, contacts, accounts, analytics                | deal stage, stalled deal, pipeline value, velocity | email, optional Stripe                         |
-| Project Management / Task Tracker | projects, backlog, task detail, timeline, my tasks     | dependencies, health, milestone progress           | Blob, Cloudinary, email                        |
-| Customer Support / Ticketing      | inbox, ticket workspace, knowledge base, SLA analytics | SLA, escalation, priority, assignment              | email, Blob, Cloudinary                        |
-| Marketing Automation & Analytics  | campaigns, audiences, analytics                        | audience rules, sequences, attribution             | email, Cloudinary, analytics providers         |
-| Invoicing & Expense Tracker       | invoices, invoice editor, expenses, billing            | totals, taxes, invoice status, expense rules       | Stripe, Blob, optional OCR                     |
-| Social Media Scheduler            | calendar, composer, media                              | publish time, variants, publishing lifecycle       | Cloudinary, Blob, social providers             |
-| AI-Powered Wrapper / Micro-SaaS   | generation, playground, usage                          | usage, credits, rate limits, model selection       | Hugging Face, optional model providers, Stripe |
-| B2B Client Portal                 | shared dashboard, documents, billing                   | approvals, project state, document lifecycle       | Blob, Cloudinary, Stripe, email                |
-| Internal Tools / Admin Portal     | records, users, audit                                  | audit classification, bulk operations              | provider admin surfaces as required            |
-
----
-
-## THE VIRGULE™ APPLICATION DEFINITION
-
-    The dependency-closed resolved
-    Application Definition that serves
-    as the authoritative machine-readable
-    input for preview and materialization
-
-The generated standalone application is a white-label project produced when **The Hipster Stack** consumes a dependency-closed **Virgule™ Application Definition** against **The Maximal Template**. It contains no runtime dependency on the generator and no requirement to remain connected to a hosted control plane.
-
-The architecture is deliberately opinionated. It does not ask each project, developer, or coding agent to rediscover where reads, writes, workflows, policies, provider code, transactions, forms, presentation, routes, or webhooks belong. Responsibility is classified by what code does.
-
-### Governing structural rule
-
-```text
-functional responsibility first
-    ↓
-minimum hierarchy necessary
-    ↓
-stable explicit boundaries
-    ↓
-deterministic configuration
-    ↓
-generated standalone application
-```
-
----
-
-## THE ARRANGEMENT™ GENERATED ARTIFACT
-
-**The Arrangement** is the finished generated application:
-
-- standalone
-- white-label
-- runnable
-- understandable without generator internals
-- architecture-conformant
-- dependency-complete
-- configured only with supported capabilities
-- free of unused maximal-template surfaces intentionally removed by generation
-- equipped with required local configuration/examples without secrets
-- capable of normal source-control ownership after generation
-
-### Generated artifact boundary
-
-```text
-generator metadata          generated application
-------------------          ---------------------
-ownership catalog     ─X→   no
-pruning rules         ─X→   no
-Anthimeria UI state   ─X→   no
-CLI implementation    ─X→   no
-
-app code               →    yes
-application tests      →    yes
-application docs       →    yes, when useful
-app-local AGENTS/rules →    yes, when they govern the app
-env examples           →    yes
-CI/deployment config   →    yes, when supported
-portable provenance    →    yes, when intentionally part of handoff
-```
-
----
-
-## THE LOADED VIBES™ CODEX PLUGIN
-
-**Loaded Vibes** is the architecture-aware Codex plugin purpose-built to work with **Arrangements** and other repositories that explicitly adopt the **Codependent Coding WebApp Architecture**.
+**Loaded Vibes** is the architecture-aware Claude Code plugin for apps made by `hipster-stack`.
 
 Its purpose is not to invent architecture. Its purpose is to make the architecture operational for coding agents.
 
-### Plugin responsibility
-
-The plugin should help an agent:
+It ships seven skills (`idea`, `plan`, `slice`, `classify`, `check`, `ship`, `handoff`), two hooks (lint on edit, execution-state check on stop) and two agents (`reviewer`, `verifier`). It helps an agent:
 
 1. inspect the actual repository and local instructions;
-2. identify the relevant architectural context before changes;
-3. classify requested work into the correct layers;
-4. preserve route/feature/presentation and server-operation boundaries;
-5. respect auth/authz/tenancy/provider/security invariants;
-6. plan bounded work;
-7. implement without architecture drift;
-8. validate architecture boundaries;
-9. run proportional smoke/quality checks;
-10. produce evidence-backed handoff.
+2. classify requested work into the correct layers;
+3. preserve route/feature/presentation and server-operation boundaries;
+4. respect auth/authz/tenancy/provider/security invariants;
+5. plan bounded work and implement without architecture drift;
+6. validate architecture boundaries and run proportional checks;
+7. produce evidence-backed handoff.
 
-### Install the plugin (Claude Code)
-
-The repo is its own plugin marketplace (`.claude-plugin/marketplace.json`, name `codependent-coding`). Inside Claude Code:
-
-```text
-/plugin marketplace add C:\path\to\CodependentCoding
-/plugin install loaded-vibes@codependent-coding
-```
-
-`/plugin marketplace add DigitalHerencia/CodependentCoding` works too, without a clone. Restart Claude Code after installing; the plugin's skills then appear under the `loaded-vibes:` namespace. In a generated app (one with `hipster.json`) the plugin's hooks lint every edited file and remind Claude to update `.claude/execution/` before stopping; in any other repository they do nothing. `plugin/loaded-vibes/references/doctrine.md` is generated: run `pnpm plugin:doctrine` after changing the classifier (Architecture.md §3.3) or `validation.yaml`.
+`plugin/loaded-vibes/references/doctrine.md` is generated by `pnpm plugin:doctrine`.
 
 ---
 
 # System Identity and Product Topology
 
 <div align="center">
-  <img src="public/webapp_architecture.png" alt="Vouch" width="600" />
+  <img src="public/webapp_architecture.png" alt="System topology" width="600" />
 
 </div>
 
@@ -556,9 +440,9 @@ Build-safe fallbacks are required. Typography should be treated as a role contra
 
 The visual system is configured through semantic tokens rather than arbitrary per-component colors.
 
-The Anthimeria Workbench may expose normalized theme controls that deterministically transform the supported `globals.css`/Tailwind theme layer.
+The tokens live in the template's `globals.css` theme layer; `hipster-stack new --color <hex>` sets the brand signal for a new app.
 
-Supported dimensions may include:
+Token dimensions include:
 
 - palette
 - background/foreground
