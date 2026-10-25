@@ -619,6 +619,15 @@
       "context": "CC-040 and CC-042 asked for a deployed URL from a generated app, which needed new cloud resources. Owner (2026-10-25): \"Our job here is to make the template, not to deploy apps.\"",
       "decision": "PRD G2 and §8.4 now measure a validated app running locally. /ship stays in the plugin for the owner to use per app; no thread deploys apps or asks for Clerk/Neon/Vercel resources. CC-042 closed on local evidence. Owner also removed GitHub Actions (2026-10-25); merges rely on local checks.",
       "refs": ["#202", "#203", "context/docs/PRD.md"]
+    },
+    {
+      "id": "DEC-061",
+      "date": "2026-10-25",
+      "status": "accepted",
+      "title": "Release v1.0.0 on local checks; dogfood follow-ups leave M6",
+      "context": "CC-044 closes M0-M6 and tags v1.0.0. The owner removed GitHub Actions and asked for the dogfood issues #256-#261 to stay open unless they block v1; none does.",
+      "decision": "The release profile runs locally on a fresh clone of main. #256-#261 have no milestone now (still open). Tag v1.0.0 on the CC-044 merge commit with notes from progress.json.",
+      "refs": ["#204", "#256", "#261"]
     }
   ]
 }
