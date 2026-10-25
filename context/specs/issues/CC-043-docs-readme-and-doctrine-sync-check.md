@@ -8,7 +8,7 @@ priority: p1
 size: s
 labels: [type:docs, area:governance, priority:p1, size:s]
 depends_on: [CC-042]
-status: todo
+status: in-review
 ---
 
 # CC-043 · Docs, README and doctrine sync check

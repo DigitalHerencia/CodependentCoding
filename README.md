@@ -113,12 +113,16 @@ hipster-stack --help
 
 On Windows, close VS Code before `pnpm install`, or it fails with "Access is denied" on `node_modules`.
 
+If `pnpm cli:link` stops with `ERR_PNPM_GLOBAL_BIN_DIR_NOT_IN_PATH`, add the directory it names to PATH and run it again.
+
 ### 2. Make an app
 
 ```powershell
 hipster-stack new ..\my-app                    # asks for a preset and modules
 hipster-stack new ..\my-app --preset crm --yes # no prompts
 ```
+
+The CLI prints the app's next steps: copy `.env.example` to `.env.local` and fill it in, then `pnpm db:init` and `pnpm dev`. The app lints and type-checks without it; `pnpm build` and `pnpm dev` need it.
 
 Presets: `blank`, `crm`, `projects`, `support`, `marketing`, `invoicing`, `social`, `ai`, `portal`, `admin`. Add modules later with `hipster-stack add <module>` inside the app, and check its env, database, RLS and lint with `hipster-stack doctor`.
 

@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/progress/v1",
-  "updated": "2026-10-24T22:50:00Z",
+  "updated": "2026-10-25T21:30:00Z",
   "format": "Evidence states: EXECUTED | INSPECTED | NOT_RUN | BLOCKED. Never mark an issue done without EXECUTED evidence for its Validation commands.",
   "milestones": {
     "M0": {
@@ -548,7 +548,7 @@
       "merged": "3826bc1"
     },
     "CC-042": {
-      "status": "in-progress",
+      "status": "done",
       "github": 202,
       "branch": "spike/202-dogfood-run",
       "decision": "DEC-058",
@@ -568,8 +568,19 @@
       "cost_usd": 2.08,
       "friction_issues": [255, 256, 257, 258, 259, 260, 261],
       "acceptance": {
-        "Deployed URL exists": "NOT_RUN: deploy needs the owner's go-ahead to create a Vercel project and a Neon branch (decision card). /ship dry run EXECUTED: validate, test (61 passed/1 skipped), build exit 0; ship-env dry run lists names only; stopped before vercel deploy.",
+        "Deployed URL exists": "OUT_OF_SCOPE (DEC-060): owner decided 2026-10-25 that the job is the template, not deploying apps. Local evidence EXECUTED: validate, test (61 passed/1 skipped), build exit 0; ship-env dry run lists names only.",
         "Total time ≤ 1 working day or a written gap analysis": "EXECUTED: new to /ship dry run took 873 s (14.6 min) of agent time across 9 headless runs, $2.08; plus db:init and test:rls by hand. Gap: the deploy (provisioning + vercel deploy + smoke) is not yet timed; 7 friction issues #255-#261 (one bug: test:rls fails without crm, #255)."
+      }
+    },
+    "CC-043": {
+      "status": "in-review",
+      "github": 203,
+      "branch": "docs/203-readme-doctrine-check",
+      "decision": "DEC-060",
+      "note": "README rewritten (what it is, install CLI, make an app, install plugin, MVP loop; retired terms removed). pnpm doctrine:check = scripts/doctrine-check.mjs, part of pnpm validate. PRD G2/§8.4 no longer require a deployed URL; AUTH.md + tech-requirements use DIRECT_DATABASE_URL.",
+      "acceptance": {
+        "pnpm doctrine:check passes": "EXECUTED: exit 0, \"doctrine ok: 47 rules in .claude/contracts/validation.yaml; 35 IDs and 12 rules in template/eslint agree\". Negative: a planted unknown ID and an unlisted plugin rule were both reported, exit 1.",
+        "README instructions work on a clean clone": "EXECUTED on a fresh clone in the scratchpad with an isolated HOME: pnpm install, pnpm --dir template install, pnpm setup, pnpm cli:link (needed pnpm global bin dir on PATH; README now says so), hipster-stack --help, hipster-stack new ../my-app --preset crm --yes; in the app pnpm typecheck 0, pnpm lint 0, pnpm build 0 (placeholder env); claude plugin marketplace add <clone> + plugin install loaded-vibes@codependent-coding enabled (isolated CLAUDE_CONFIG_DIR)."
       }
     }
   },
@@ -608,7 +619,8 @@
     "CC-038",
     "CC-039",
     "CC-040",
-    "CC-041"
+    "CC-041",
+    "CC-042"
   ],
   "evidence": [
     {
@@ -2750,6 +2762,12 @@
       "state": "EXECUTED",
       "command": "#255 fix: template pnpm test:rls (local Postgres 16, fresh db); eslint + prettier on the changed file; template lint (sandboxes ignored); typecheck",
       "result": "10 passed; all exit 0"
+    },
+    {
+      "date": "2026-10-25",
+      "state": "EXECUTED",
+      "command": "pnpm validate (root, on docs/203-readme-doctrine-check)",
+      "result": "format, lint, typecheck, doctrine:check, test 13 files/80 tests: all exit 0"
     }
   ],
   "known_findings": [
