@@ -8,7 +8,7 @@ priority: p1
 size: s
 labels: [type:feature, area:plugin, priority:p1, size:s]
 depends_on: [CC-036]
-status: in-review
+status: done
 ---
 
 # CC-041 · Agents: reviewer and verifier

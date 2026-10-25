@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/progress/v1",
-  "updated": "2026-10-24T22:45:00Z",
+  "updated": "2026-10-24T22:50:00Z",
   "format": "Evidence states: EXECUTED | INSPECTED | NOT_RUN | BLOCKED. Never mark an issue done without EXECUTED evidence for its Validation commands.",
   "milestones": {
     "M0": {
@@ -69,8 +69,11 @@
       "note": "All M4 issues merged. Release evidence: main push run 40126226541 on 9aa0700 green, which covers root validate + CLI build, template validate chain, compose (add-ons alone), RLS on a Neon branch and the preset matrix (blank, 9 presets, --all: compose, install, lint, typecheck, build). Deferred owner checks: CC-028 Windows global link, CC-031 real --provision."
     },
     "M5": {
-      "status": "todo",
-      "issues": ["CC-036", "CC-037", "CC-038", "CC-039", "CC-040", "CC-041"]
+      "status": "done",
+      "issues": ["CC-036", "CC-037", "CC-038", "CC-039", "CC-040", "CC-041"],
+      "closed": "2026-10-24",
+      "prs": [249, 250, 251, 252, 253, 254],
+      "note": "All M5 issues merged. Release evidence: main push run 40136570161 on 3826bc1 green (root, template, compose, RLS on Neon, preset matrix blank + 9 presets + all). Deferred owner checks: CC-036 Windows plugin install, CC-040 live /ship URL (folded into CC-042's deploy)."
     },
     "M6": {
       "status": "todo",
@@ -532,7 +535,7 @@
       "merged": "64d6bcde"
     },
     "CC-041": {
-      "status": "in-review",
+      "status": "done",
       "github": 201,
       "branch": "feat/201-agents-reviewer-verifier",
       "decision": "DEC-057",
@@ -540,6 +543,33 @@
       "acceptance": {
         "Reviewer catches a planted violation (cross-tenant query without predicate)": "EXECUTED: in template/.sandbox/ship-dry (hipster-stack new, crm) added findCrmDealsByTitle with tx.crmDeal.findMany where { title, archivedAt } (no organizationId) next to a correct getCrmDealCount; headless `claude -p 'Use the loaded-vibes:reviewer agent to review the uncommitted changes' --plugin-dir plugin/loaded-vibes` -> '[high] CC-SEC-001 lib/fetchers/crmFetchers.ts:204 findMany on tx.crmDeal ... no organizationId', getCrmDealCount passed, verdict changes requested. No files edited by the agent ($0.25).",
         "Verifier flags a claimed-but-not-run check": "EXECUTED: same app, planted SD-001 in-review with claims `pnpm lint` exit 0 (true), `pnpm test` 9 files/64 passed (false: 8/46), `pnpm test:rls` 12 passed (impossible: no DATABASE_URL_TEST). Headless loaded-vibes:verifier reran lint, test, test:rls, validate -> CONFIRMED lint, CONTRADICTED test, CONTRADICTED test:rls ('DATABASE_URL_TEST is required'), MISSING validate and build. No edits ($0.15). Wording then tightened so a missing-prerequisite failure reads UNVERIFIABLE."
+      },
+      "pr": 254,
+      "merged": "3826bc1"
+    },
+    "CC-042": {
+      "status": "in-progress",
+      "github": 202,
+      "branch": "spike/202-dogfood-run",
+      "decision": "DEC-058",
+      "note": "Dogfood app FixList (maintenance tracker for small landlords), base only + new maintenance domain, in template/.sandbox/fixlist (git-ignored). Every phase ran as a headless `claude -p` with --plugin-dir plugin/loaded-vibes; owner answers given up front.",
+      "timings_seconds": {
+        "new": 7,
+        "idea": 116,
+        "plan": 106,
+        "slice FL-001 property": 137,
+        "slice FL-002 vendor": 142,
+        "slice FL-003 workOrder": 183,
+        "check": 54,
+        "handoff": 64,
+        "ship (dry run, stops before deploy)": 64,
+        "total": 873
+      },
+      "cost_usd": 2.08,
+      "friction_issues": [255, 256, 257, 258, 259, 260, 261],
+      "acceptance": {
+        "Deployed URL exists": "NOT_RUN: deploy needs the owner's go-ahead to create a Vercel project and a Neon branch (decision card). /ship dry run EXECUTED: validate, test (61 passed/1 skipped), build exit 0; ship-env dry run lists names only; stopped before vercel deploy.",
+        "Total time ≤ 1 working day or a written gap analysis": "EXECUTED: new to /ship dry run took 873 s (14.6 min) of agent time across 9 headless runs, $2.08; plus db:init and test:rls by hand. Gap: the deploy (provisioning + vercel deploy + smoke) is not yet timed; 7 friction issues #255-#261 (one bug: test:rls fails without crm, #255)."
       }
     }
   },
@@ -577,7 +607,8 @@
     "CC-037",
     "CC-038",
     "CC-039",
-    "CC-040"
+    "CC-040",
+    "CC-041"
   ],
   "evidence": [
     {
@@ -2683,6 +2714,30 @@
       "state": "EXECUTED",
       "command": "claude plugin validate plugin/loaded-vibes --strict; pnpm exec vitest run tests/plugin/plugin.test.ts",
       "result": "validation passed; 3 passed"
+    },
+    {
+      "date": "2026-10-24",
+      "state": "EXECUTED",
+      "command": "main push run 40136570161 (3826bc1)",
+      "result": "success: 17 jobs incl. preset matrix (M5 release evidence)"
+    },
+    {
+      "date": "2026-10-24",
+      "state": "EXECUTED",
+      "command": "dogfood: hipster-stack new fixlist; headless /idea, /plan, /slice x3, /check, /handoff, /ship (dry)",
+      "result": "all exit 0, 873 s, $2.08; app validate/test/build green"
+    },
+    {
+      "date": "2026-10-24",
+      "state": "EXECUTED",
+      "command": "fixlist: independent pnpm lint; pnpm typecheck; pnpm test",
+      "result": "lint 0, typecheck 0, 12 files 61 passed/1 skipped"
+    },
+    {
+      "date": "2026-10-24",
+      "state": "EXECUTED",
+      "command": "fixlist: pnpm db:init then DATABASE_URL_TEST=<local postgres 16> pnpm test:rls",
+      "result": "9 passed, 1 failed: negative check hardcodes CrmContact (#255)"
     },
     {
       "date": "2026-10-24",
