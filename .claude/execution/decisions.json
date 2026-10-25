@@ -610,6 +610,15 @@
       "context": "The CC-042 dogfood run found that test:rls fails in every generated app without the crm module: the negative check looked up CrmContact by name. PRD §8 needs RLS evidence for generated apps, so v1 cannot ship with it.",
       "decision": "The negative check now disables RLS on catalog.tenantTables[0] (every app has one; the harness seeds every tenant table) instead of a named crm table. The other dogfood issues (#256-#261) stay for the owner to schedule.",
       "refs": ["#255", "template/tests/rls/tenantIsolation.test.ts"]
+    },
+    {
+      "id": "DEC-060",
+      "date": "2026-10-25",
+      "status": "accepted",
+      "title": "No app deploys in v1; the job is the template",
+      "context": "CC-040 and CC-042 asked for a deployed URL from a generated app, which needed new cloud resources. Owner (2026-10-25): \"Our job here is to make the template, not to deploy apps.\"",
+      "decision": "PRD G2 and §8.4 now measure a validated app running locally. /ship stays in the plugin for the owner to use per app; no thread deploys apps or asks for Clerk/Neon/Vercel resources. CC-042 closed on local evidence. Owner also removed GitHub Actions (2026-10-25); merges rely on local checks.",
+      "refs": ["#202", "#203", "context/docs/PRD.md"]
     }
   ]
 }

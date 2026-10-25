@@ -120,7 +120,7 @@ Removed: `.agents/`, `packages/core`, `packages/schema`, `packages/loaded-vibes`
 ## 6. Data
 
 - Neon Postgres. Two roles: `owner` (migrations) and `app_user` (runtime, **no BYPASSRLS**).
-- `DATABASE_URL` (app_user, pooled), `DIRECT_URL` (owner, migrations), `DATABASE_URL_TEST` (test branch).
+- `DATABASE_URL` (app_user, pooled), `DIRECT_DATABASE_URL` (owner, migrations), `DATABASE_URL_TEST` (test branch).
 - Prisma 7 with `@prisma/adapter-neon`; client generated to `generated/prisma` (git-ignored).
 - Multi-file schema at `prisma/schema/`; RLS SQL at `prisma/rls/`.
 - Generated apps start without migrations; `pnpm db:init` creates `init` then `rls`.
