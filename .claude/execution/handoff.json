@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/handoff/v1",
-  "updated": "2026-10-26T23:20:00Z",
+  "updated": "2026-10-26T23:35:00Z",
   "format": "Overwrite each session. Minimum state the next session needs to resume safely.",
   "status": "follow-ups",
   "milestone": "M6",
@@ -9,7 +9,7 @@
   "queue": [],
   "branch": "main",
   "in_flight": [
-    "#234 PR on claude/project-thread-lxg6je: four roles + new permission strings + lib/db/rls.ts (DEC-065 proposed). Merge only after the owner picks the role mapping. #260 and #261 wait on the owner's notes."
+    "Thread 'Rebuild authorization and fix test-run notes': #234 four roles merged (DEC-065, owner chose viewer = outside client). Next PRs from that thread: #260 invitations + tenancy, then the tenancy/RBAC-ABAC CLI choice, then the CLI wizard."
   ],
   "notes": [
     "Governance package is uncommitted in the owner's working tree; owner reviews with `git status` / `git diff`, then commits on a branch `chore/governance-package`.",
@@ -74,7 +74,7 @@
     "CC-043 (DEC-060): README rewritten; pnpm doctrine:check in root validate. No app deploys (owner). GitHub Actions removed by the owner 2026-10-25: verify locally (pnpm validate; pnpm --dir template validate) before merging.",
     "#256/#259 (DEC-063): progress.json format is an object every skill follows; execution-check rejects unknown progress keys; generated apps ship .claude/settings.json with Edit/Write(.claude/**).",
     "#257/#258 (DEC-064): `hipster-stack new` asks for the Neon connection string (--database-url for scripts), writes pooled app_user + direct owner URLs, runs db:init before the initial commit.",
-    "#234 (DEC-065): roles OWNER/ADMIN/MEMBER/VIEWER, permissions `<module>.<resource>:<action>`, base resources `base.*`; RBAC in lib/authz/permissions.ts, ABAC in lib/authz/policies.ts; RLS wrapper lib/db/rls.ts."
+    "DEC-066: CI is back as one targeted workflow (.github/workflows/ci.yml, job `changes` decides what runs) plus pr-title.yml. A docs-only PR runs only format:check. RLS runs in CI on a Postgres service container when prisma/, tests/rls/ or lib/db/ change. PR titles must be Conventional (they become the squash commit; owner sets squash-only + PR_TITLE in repo settings). Projects v2 workflows on #19 are set by the owner from his PC."
   ],
   "risks": [
     "Lint hook exits 0 silently when node_modules/eslint is missing; a failed install hides lint feedback. On Windows, run pnpm install with VS Code closed (DEC-019).",
@@ -83,7 +83,6 @@
     "Deferred owner checks: CC-028 Windows global link (`pnpm cli:link`, `hipster-stack -v`) and CC-031 real-account `--provision`. Neither has run on the owner's machine.",
     "CC-036 acceptance on Windows (install + skills namespace) not run; the namespace only shows once CC-037 adds the first skill.",
     "CC-040 acceptance 'ship produces a working URL on a test app' is NOT_RUN: needs a Vercel deploy (owner decision card). Everything up to `vercel deploy --prod` ran locally.",
-    "No CI since DEC-062: nothing checks a PR unless the local checks are run before merging.",
     "CC-040/CC-042 deployed-URL checks are out of scope (DEC-060)."
   ],
   "do_not": [

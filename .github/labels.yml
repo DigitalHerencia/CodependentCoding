@@ -23,6 +23,13 @@
     description: "Documentation and governance text",
   }
 - { name: "type:ci", color: "fbca04", description: "CI/CD workflows" }
+- { name: "type:perf", color: "a2eeef", description: "Faster or lighter" }
+- {
+    name: "type:build",
+    color: "bfd4f2",
+    description: "Build system, package manager, dependencies",
+  }
+- { name: "type:revert", color: "e99695", description: "Reverts a change" }
 - {
     name: "type:spike",
     color: "c5def5",
@@ -64,6 +71,11 @@
 - { name: "size:m", color: "bdbdbd", description: "~half day" }
 - { name: "size:l", color: "9e9e9e", description: "~1 day" }
 - { name: "size:xl", color: "757575", description: "Too big - split it" }
+- {
+    name: "dependencies",
+    color: "0366d6",
+    description: "Dependabot version bumps",
+  }
 - {
     name: "dogfood",
     color: "5319e7",

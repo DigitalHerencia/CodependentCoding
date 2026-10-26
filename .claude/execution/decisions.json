@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/decisions/v1",
-  "updated": "2026-10-26T23:20:00Z",
+  "updated": "2026-10-26T22:55:00Z",
   "format": "Append new decisions; never rewrite history. Supersede by adding a new entry and setting status=superseded + superseded_by on the old one.",
   "decisions": [
     {
@@ -659,15 +659,29 @@
     {
       "id": "DEC-065",
       "date": "2026-10-26",
-      "status": "proposed",
+      "status": "accepted",
       "title": "Four roles and <module>.<resource>:<action> permissions (#234)",
-      "context": "AUTH.md §5.2 and application.yaml define owner > admin > member > viewer and `<module>.<resource>:<action>`; the code had 8 roles and `<module>:<action>` (DEC-036 deferred it). Owner (2026-10-26): authorization lives in lib/authz with roles, permissions, an RBAC part and an ABAC part, used by every fetcher and action; lib/db holds selects/, transactions/, dto/, the one Prisma client file, an auth wrapper and an RLS wrapper. Proposed until the owner picks the role mapping on the decision card.",
+      "context": "AUTH.md §5.2 and application.yaml define owner > admin > member > viewer and `<module>.<resource>:<action>`; the code had 8 roles and `<module>:<action>` (DEC-036 deferred it). Owner (2026-10-26): authorization lives in lib/authz with roles, permissions, an RBAC part and an ABAC part, used by every fetcher and action; lib/db holds selects/, transactions/, dto/, the one Prisma client file, an auth wrapper and an RLS wrapper. Owner chose \"Viewer means outside client\" on the decision card (2026-10-26).",
       "decision": "Prisma enum MembershipRole is OWNER, ADMIN, MEMBER, VIEWER (uppercase kept); migration 20261026000000_four_membership_roles maps MANAGER/BILLING/SUPPORT to MEMBER and CLIENT to VIEWER. MEMBER is staff with the union of the old staff grants (read/create/update per module, delete in crm, billing read); VIEWER is an outside person (client) with the old CLIENT grants, and policies limit viewers to shared or own records. Module definitions list `<module>.<resource>` resources and per-role grants as actions or single permissions; the catalog is resources x actions. Base resources use the `base.` prefix. Old MANAGER loses manage-any-record (members manage own or assigned). lib/authz: roles.ts adds the hierarchy and isOutsideRole; policies.ts is the ABAC layer (limitedToOwnRecords replaces role === CLIENT). lib/db/provider.ts is now lib/db/rls.ts with setRlsContext, which tenant.ts (the auth wrapper) also uses. Slice templates generate `<module>.<entity>` resources with MEMBER read/create/update.",
       "refs": [
         "#234",
         "AUTH.md §5",
         "template/lib/authz",
         "template/lib/db/rls.ts"
+      ]
+    },
+    {
+      "id": "DEC-066",
+      "date": "2026-10-26",
+      "status": "accepted",
+      "title": "One targeted CI workflow plus a Conventional PR-title check (replaces DEC-062's no-CI rule)",
+      "context": "Owner (2026-10-26, note on #261): bring CI back, industry standard but lightweight and targeted: lint, format, typegen/typecheck, and only the Vitest/Playwright tests an edit needs; no per-module fan-out; proper GitHub workflow with Conventional titles, labels, milestones, issues traced to docs, PRs that auto-close issues and clean up branches. The old ci.yml ran root, template, compose, Neon RLS and an 11-preset build matrix on every PR.",
+      "decision": ".github/workflows/ci.yml: job `changes` diffs the PR base (or previous main) and gates `root`, `template` and `template-db`. Docs-only edits run only root format:check. Root tests are chosen by area (tests/cli, tests/plugin, tests/doctrine). Template runs its ~3 s unit suite whole; Playwright smoke only when app code changes; `build` only when build config or deps change; RLS runs against a Postgres 16 service container (no Neon branch, no secrets). The preset matrix and check:compose job are dropped. .github/workflows/pr-title.yml enforces Conventional PR titles. Squash-only with the PR title as the commit title is a repo setting the owner applies (the cloud proxy blocks settings writes). Issue forms carry Conventional titles, a required Docs / spec field and auto-add to Project #19; labels gained type:perf/build/revert and dependencies; Dependabot uses chore(deps)/ci(deps). Milestones M0-M6 closed; open follow-ups moved to v1.1.0.",
+      "refs": [
+        "#261",
+        "DEC-062",
+        ".github/workflows/ci.yml",
+        "context/docs/tech-requirements.md §11"
       ]
     }
   ]
