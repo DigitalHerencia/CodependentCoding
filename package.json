@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "The Codependent Coding web application, architecture documentation system, Anthimeria workbench, and Hipster Stack workspace.",
+  "description": "Codependent Coding software factory: the Maximal Template, the hipster-stack CLI, the Loaded Vibes Claude Code plugin and the landing page.",
   "packageManager": "pnpm@12.3.4",
   "engines": {
     "node": "24.x"

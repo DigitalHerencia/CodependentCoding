@@ -9,7 +9,7 @@ export function LandingPageTemplate() {
   return (
     <section>
       <Image
-        src="/seperator.png"
+        src="/separator.png"
         alt={landingCopy.separatorAlt}
         width={1200}
         height={400}
@@ -24,7 +24,7 @@ export function LandingPageTemplate() {
         secondaryAction={landingCopy.secondaryAction}
       />
       <Image
-        src="/logo cloud.png"
+        src="/logo-cloud.png"
         alt={landingCopy.integrationsAlt}
         width={1200}
         height={200}
@@ -50,7 +50,7 @@ export function LandingPageTemplate() {
         secondaryAction={landingCopy.secondaryAction}
       />
       <Image
-        src="/seperator.png"
+        src="/separator.png"
         alt={landingCopy.separatorAlt}
         width={1200}
         height={400}

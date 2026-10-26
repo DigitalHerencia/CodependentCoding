@@ -17,7 +17,7 @@ export function SiteFooter() {
           aria-label="Digital Herencia"
         >
           <Image
-            src="/Digital Herencia.jpg"
+            src="/digital-herencia.jpg"
             alt="Digital Herencia, a data cartel"
             width={1059}
             height={465}
