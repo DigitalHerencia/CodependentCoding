@@ -10,7 +10,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
       <div className="site-content">{children}</div>
       <div className="site-horizon" aria-hidden="true">
         <Image
-          src="/Digital Herencia Desert BG.jpg"
+          src="/digital-herencia-desert-bg.jpg"
           alt=""
           width={1792}
           height={1024}

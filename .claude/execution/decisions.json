@@ -683,6 +683,15 @@
         ".github/workflows/ci.yml",
         "context/docs/tech-requirements.md §11"
       ]
+    },
+    {
+      "id": "DEC-067",
+      "date": "2026-10-26",
+      "status": "accepted",
+      "title": "Repo hygiene: kebab-case asset names, standard community file names",
+      "context": "Owner asked to clean up the repo and organize it to industry conventions. Asset file names had spaces, mixed case and misspellings (BusinnesLogic, seperator); community files were CODE_Of_CONDUCT.md and SUPPORT.MD; .gitignore had a typo (.evn.local) and entries for removed tooling.",
+      "decision": "Rename public/ and template/public/ assets to kebab-case (business-logic-logo.jpg, separator.png, logo-cloud.png) and update every reference; rename to CODE_OF_CONDUCT.md and SUPPORT.md; tidy .gitignore; drop the stale .agents exclude from tsconfig.build.json; drop the retired Anthimeria term from package.json. No files deleted: the unused brand logos stay in public/ for the owner to decide.",
+      "refs": ["public/", "template/public/", ".gitignore"]
     }
   ]
 }

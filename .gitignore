@@ -24,13 +24,8 @@ temp/
 
 # Environment
 .env
-.evn.local
 .env.*
 !.env.example
-
-# Agent / generated working state
-/.agent_work/
-.loaded-vibes/logs/
 
 # Logs
 *.log
@@ -56,8 +51,9 @@ playwright-report/
 test-results/
 blob-report/
 playwright/.cache/
-# CLI output for local checks (hipster-stack new .sandbox/<app>)
+
+# Generated apps for local checks (hipster-stack new .sandbox/<app>)
 .sandbox/
 
-# plugin eval runs (claude plugin eval)
+# Plugin eval runs (claude plugin eval)
 plugin/*/evals/results/

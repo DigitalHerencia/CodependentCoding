@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="public/Codependent Coding Crown.jpg" alt="Codependent Coding" width="800" />
+  <img src="public/codependent-coding-crown.jpg" alt="Codependent Coding" width="800" />
 
   <br />
   <br />
@@ -329,7 +329,7 @@ It ships seven skills (`idea`, `plan`, `slice`, `classify`, `check`, `ship`, `ha
 # System Identity and Product Topology
 
 <div align="center">
-  <img src="public/webapp_architecture.png" alt="System topology" width="600" />
+  <img src="public/webapp-architecture.png" alt="System topology" width="600" />
 
 </div>
 

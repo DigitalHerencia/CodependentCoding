@@ -7,7 +7,7 @@ export function PrivacyPageTemplate() {
   return (
     <section>
       <Image
-        src="/seperator.png"
+        src="/separator.png"
         alt={privacyCopy.separatorAlt}
         width={1200}
         height={400}
@@ -20,7 +20,7 @@ export function PrivacyPageTemplate() {
       />
       <LegalDocumentSection {...privacyCopy} />
       <Image
-        src="/seperator.png"
+        src="/separator.png"
         alt={privacyCopy.separatorAlt}
         width={1200}
         height={400}
