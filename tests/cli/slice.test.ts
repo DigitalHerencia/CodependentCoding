@@ -116,6 +116,7 @@ describe("field DSL", () => {
       param: "lineItemId",
       labelPlural: "Line items",
       Module: "Invoicing",
+      resource: "invoicing.line-item",
     });
     expect(toNames("category", "crm").entities).toBe("categories");
     expect(toNames("box", "crm").entities).toBe("boxes");
@@ -172,23 +173,23 @@ describe("merging into module files", () => {
       "export const crmModule = {",
       '  id: "crm",',
       '  nav: { label: "CRM", icon: "users", links: [{ label: "Contacts", href: "/crm/contacts" }] },',
-      '  permissions: { resources: ["crm"], catalog: [], grants: {} },',
+      '  permissions: { resources: ["crm.contact"], grants: {} },',
       "} satisfies ModuleDefinition;",
     ].join("\n");
     const once = extendModule(
       ts,
       definition,
       { label: "Quotes", href: "/quotes" },
-      "quote",
+      "crm.quote",
     );
     expect(once.skipped).toEqual([]);
     expect(once.text).toContain('{ label: "Quotes", href: "/quotes" }');
-    expect(once.text).toContain('resources: ["crm", "quote"]');
+    expect(once.text).toContain('resources: ["crm.contact", "crm.quote"]');
     const twice = extendModule(
       ts,
       once.text,
       { label: "Quotes", href: "/quotes" },
-      "quote",
+      "crm.quote",
     );
     expect(twice.text).toBe(once.text);
   });

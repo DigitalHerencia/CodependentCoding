@@ -10,7 +10,7 @@ import { withAuthenticatedRead } from "@/lib/db/tenant";
 
 export async function getCampaigns(limit = 50) {
   return withAuthenticatedRead(async (tx, access) => {
-    assertPermission(access, "marketing:read");
+    assertPermission(access, "marketing.campaign:read");
 
     const rows = await tx.campaign.findMany({
       where: {
@@ -29,7 +29,7 @@ export async function getCampaigns(limit = 50) {
 
 export async function getAudiences(limit = 100) {
   return withAuthenticatedRead(async (tx, access) => {
-    assertPermission(access, "marketing:read");
+    assertPermission(access, "marketing.audience:read");
     const rows = await tx.audience.findMany({
       where: { organizationId: access.organizationId },
       orderBy: { updatedAt: "desc" },
@@ -42,7 +42,7 @@ export async function getAudiences(limit = 100) {
 
 export async function getCampaign(campaignId: string) {
   return withAuthenticatedRead(async (tx, access) => {
-    assertPermission(access, "marketing:read");
+    assertPermission(access, "marketing.campaign:read");
     const row = await tx.campaign.findFirst({
       where: { id: campaignId, organizationId: access.organizationId },
       select: campaignSelect,
@@ -52,7 +52,7 @@ export async function getCampaign(campaignId: string) {
 }
 export async function getAudience(audienceId: string) {
   return withAuthenticatedRead(async (tx, access) => {
-    assertPermission(access, "marketing:read");
+    assertPermission(access, "marketing.audience:read");
     const row = await tx.audience.findFirst({
       where: { id: audienceId, organizationId: access.organizationId },
       select: audienceSelect,
@@ -63,7 +63,7 @@ export async function getAudience(audienceId: string) {
 
 export async function getCampaignSteps(campaignId: string) {
   return withAuthenticatedRead(async (tx, access) => {
-    assertPermission(access, "marketing:read");
+    assertPermission(access, "marketing.campaign:read");
     const rows = await tx.campaignStep.findMany({
       where: { organizationId: access.organizationId, campaignId },
       orderBy: { position: "asc" },

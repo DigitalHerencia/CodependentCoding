@@ -10,7 +10,7 @@ import { withAuthenticatedRead } from "@/lib/db/tenant";
 
 export async function getInvoices(limit = 50) {
   return withAuthenticatedRead(async (tx, access) => {
-    assertPermission(access, "invoicing:read");
+    assertPermission(access, "invoicing.invoice:read");
 
     const rows = await tx.invoice.findMany({
       where: {
@@ -29,7 +29,7 @@ export async function getInvoices(limit = 50) {
 
 export async function getInvoice(invoiceId: string) {
   return withAuthenticatedRead(async (tx, access) => {
-    assertPermission(access, "invoicing:read");
+    assertPermission(access, "invoicing.invoice:read");
 
     const record = await tx.invoice.findFirst({
       where: {
@@ -45,7 +45,7 @@ export async function getInvoice(invoiceId: string) {
 
 export async function getExpenses(limit = 100) {
   return withAuthenticatedRead(async (tx, access) => {
-    assertPermission(access, "invoicing:read");
+    assertPermission(access, "invoicing.expense:read");
     const rows = await tx.expense.findMany({
       where: { organizationId: access.organizationId },
       orderBy: { incurredAt: "desc" },
@@ -58,7 +58,7 @@ export async function getExpenses(limit = 100) {
 
 export async function getExpense(expenseId: string) {
   return withAuthenticatedRead(async (tx, access) => {
-    assertPermission(access, "invoicing:read");
+    assertPermission(access, "invoicing.expense:read");
     const row = await tx.expense.findFirst({
       where: { id: expenseId, organizationId: access.organizationId },
       select: expenseSelect,

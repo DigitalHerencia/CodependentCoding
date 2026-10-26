@@ -29,7 +29,7 @@ export async function createInvoice(rawInput: unknown) {
   const input = createInvoiceSchema.parse(rawInput);
   const identity = await requireIdentity();
   return withTenantTransaction(identity, async (tx, access) => {
-    assertPermission(access, "invoicing:write");
+    assertPermission(access, "invoicing.invoice:create");
     const record = await createInvoiceTx(tx, {
       organizationId: access.organizationId,
       createdByMembershipId: access.membershipId,
@@ -62,7 +62,7 @@ export async function updateInvoiceStatus(rawInput: unknown) {
   const input = updateInvoiceStatusSchema.parse(rawInput);
   const identity = await requireIdentity();
   return withTenantTransaction(identity, async (tx, access) => {
-    assertPermission(access, "invoicing:write");
+    assertPermission(access, "invoicing.invoice:update");
     const record = await updateInvoiceStatusTx(tx, {
       organizationId: access.organizationId,
       invoiceId: input.invoiceId,
@@ -77,7 +77,7 @@ export async function updateInvoice(rawInput: unknown) {
   const input = updateInvoiceSchema.parse(rawInput);
   const identity = await requireIdentity();
   return withTenantTransaction(identity, async (tx, access) => {
-    assertPermission(access, "invoicing:write");
+    assertPermission(access, "invoicing.invoice:update");
     const calculated = calculateInvoiceTotals(input.lines);
     const result = await tx.invoice.updateMany({
       where: {
@@ -132,7 +132,7 @@ export async function createExpense(rawInput: unknown) {
   const input = expenseFormSchema.parse(rawInput);
   const identity = await requireIdentity();
   return withTenantTransaction(identity, async (tx, access) => {
-    assertPermission(access, "invoicing:write");
+    assertPermission(access, "invoicing.expense:create");
     return toExpenseDTO(
       await submitExpenseTx(tx, {
         ...input,
@@ -146,7 +146,7 @@ export async function updateExpense(rawInput: unknown) {
   const input = updateExpenseSchema.parse(rawInput);
   const identity = await requireIdentity();
   return withTenantTransaction(identity, async (tx, access) => {
-    assertPermission(access, "invoicing:write");
+    assertPermission(access, "invoicing.expense:update");
     const result = await tx.expense.updateMany({
       where: {
         id: input.expenseId,
@@ -179,7 +179,7 @@ export async function approveInvoice(rawInput: unknown) {
     .parse(rawInput);
   const identity = await requireIdentity();
   return withTenantTransaction(identity, async (tx, access) => {
-    assertPermission(access, "invoicing:write");
+    assertPermission(access, "invoicing.invoice:update");
     return toInvoiceDTO(
       await approveInvoiceTx(tx, {
         ...input,
@@ -195,7 +195,7 @@ export async function issueApprovedInvoice(rawInput: unknown) {
     .parse(rawInput);
   const identity = await requireIdentity();
   return withTenantTransaction(identity, async (tx, access) => {
-    assertPermission(access, "invoicing:write");
+    assertPermission(access, "invoicing.invoice:update");
     const result = await tx.invoice.updateMany({
       where: {
         id: input.invoiceId,

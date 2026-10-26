@@ -1,6 +1,7 @@
 import "server-only";
 
 import { assertPermission } from "@/lib/authz/permissions";
+import { limitedToOwnRecords } from "@/lib/authz/policies";
 import {
   toKnowledgeArticleDTO,
   toSupportTicketDTO,
@@ -13,12 +14,14 @@ import { withAuthenticatedRead } from "@/lib/db/tenant";
 
 export async function getSupportInbox(limit = 100) {
   return withAuthenticatedRead(async (tx, access) => {
-    assertPermission(access, "support:read");
+    assertPermission(access, "support.ticket:read");
 
     const rows = await tx.supportTicket.findMany({
       where: {
         organizationId: access.organizationId,
-        ...(access.role === "CLIENT" ? { requesterUserId: access.userId } : {}),
+        ...(limitedToOwnRecords(access)
+          ? { requesterUserId: access.userId }
+          : {}),
         status: {
           not: "CLOSED",
         },
@@ -41,13 +44,15 @@ export async function getSupportInbox(limit = 100) {
 
 export async function getSupportTicket(ticketId: string) {
   return withAuthenticatedRead(async (tx, access) => {
-    assertPermission(access, "support:read");
+    assertPermission(access, "support.ticket:read");
 
     const record = await tx.supportTicket.findFirst({
       where: {
         id: ticketId,
         organizationId: access.organizationId,
-        ...(access.role === "CLIENT" ? { requesterUserId: access.userId } : {}),
+        ...(limitedToOwnRecords(access)
+          ? { requesterUserId: access.userId }
+          : {}),
       },
       select: supportTicketSelect,
     });
@@ -58,7 +63,7 @@ export async function getSupportTicket(ticketId: string) {
 
 export async function getKnowledgeArticles(limit = 100) {
   return withAuthenticatedRead(async (tx, access) => {
-    assertPermission(access, "support:read");
+    assertPermission(access, "support.article:read");
     const rows = await tx.knowledgeArticle.findMany({
       where: { organizationId: access.organizationId, status: "PUBLISHED" },
       orderBy: { updatedAt: "desc" },
@@ -71,12 +76,14 @@ export async function getKnowledgeArticles(limit = 100) {
 
 export async function getSupportMessages(ticketId: string) {
   return withAuthenticatedRead(async (tx, access) => {
-    assertPermission(access, "support:read");
+    assertPermission(access, "support.ticket:read");
     const ticket = await tx.supportTicket.findFirst({
       where: {
         id: ticketId,
         organizationId: access.organizationId,
-        ...(access.role === "CLIENT" ? { requesterUserId: access.userId } : {}),
+        ...(limitedToOwnRecords(access)
+          ? { requesterUserId: access.userId }
+          : {}),
       },
       select: { id: true },
     });
@@ -85,7 +92,7 @@ export async function getSupportMessages(ticketId: string) {
       where: {
         ticketId,
         organizationId: access.organizationId,
-        ...(access.role === "CLIENT" ? { isInternal: false } : {}),
+        ...(limitedToOwnRecords(access) ? { isInternal: false } : {}),
       },
       orderBy: { createdAt: "asc" },
       select: {
@@ -105,7 +112,7 @@ export async function getSupportMessages(ticketId: string) {
 
 export async function getKnowledgeArticle(articleId: string) {
   return withAuthenticatedRead(async (tx, access) => {
-    assertPermission(access, "support:read");
+    assertPermission(access, "support.article:read");
     const row = await tx.knowledgeArticle.findFirst({
       where: {
         id: articleId,

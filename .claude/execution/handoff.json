@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/handoff/v1",
-  "updated": "2026-10-26T23:40:00Z",
+  "updated": "2026-10-26T23:35:00Z",
   "format": "Overwrite each session. Minimum state the next session needs to resume safely.",
   "status": "follow-ups",
   "milestone": "M6",
@@ -9,7 +9,7 @@
   "queue": [],
   "branch": "main",
   "in_flight": [
-    "Thread 'Rebuild authorization and fix test-run notes': #234 authz after the owner picks the role mapping; #260 and #261 wait on the owner's notes."
+    "Thread 'Rebuild authorization and fix test-run notes': #234 four roles merged (DEC-065, owner chose viewer = outside client). Next PRs from that thread: #260 invitations + tenancy, then the tenancy/RBAC-ABAC CLI choice, then the CLI wizard."
   ],
   "notes": [
     "Governance package is uncommitted in the owner's working tree; owner reviews with `git status` / `git diff`, then commits on a branch `chore/governance-package`.",

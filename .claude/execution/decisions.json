@@ -657,6 +657,20 @@
       "refs": ["#257", "#258", "packages/cli/src/setup/connectDatabase.ts"]
     },
     {
+      "id": "DEC-065",
+      "date": "2026-10-26",
+      "status": "accepted",
+      "title": "Four roles and <module>.<resource>:<action> permissions (#234)",
+      "context": "AUTH.md §5.2 and application.yaml define owner > admin > member > viewer and `<module>.<resource>:<action>`; the code had 8 roles and `<module>:<action>` (DEC-036 deferred it). Owner (2026-10-26): authorization lives in lib/authz with roles, permissions, an RBAC part and an ABAC part, used by every fetcher and action; lib/db holds selects/, transactions/, dto/, the one Prisma client file, an auth wrapper and an RLS wrapper. Owner chose \"Viewer means outside client\" on the decision card (2026-10-26).",
+      "decision": "Prisma enum MembershipRole is OWNER, ADMIN, MEMBER, VIEWER (uppercase kept); migration 20261026000000_four_membership_roles maps MANAGER/BILLING/SUPPORT to MEMBER and CLIENT to VIEWER. MEMBER is staff with the union of the old staff grants (read/create/update per module, delete in crm, billing read); VIEWER is an outside person (client) with the old CLIENT grants, and policies limit viewers to shared or own records. Module definitions list `<module>.<resource>` resources and per-role grants as actions or single permissions; the catalog is resources x actions. Base resources use the `base.` prefix. Old MANAGER loses manage-any-record (members manage own or assigned). lib/authz: roles.ts adds the hierarchy and isOutsideRole; policies.ts is the ABAC layer (limitedToOwnRecords replaces role === CLIENT). lib/db/provider.ts is now lib/db/rls.ts with setRlsContext, which tenant.ts (the auth wrapper) also uses. Slice templates generate `<module>.<entity>` resources with MEMBER read/create/update.",
+      "refs": [
+        "#234",
+        "AUTH.md §5",
+        "template/lib/authz",
+        "template/lib/db/rls.ts"
+      ]
+    },
+    {
       "id": "DEC-066",
       "date": "2026-10-26",
       "status": "accepted",

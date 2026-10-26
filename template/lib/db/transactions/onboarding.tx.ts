@@ -24,7 +24,7 @@ export async function completeOnboardingTx(
     select: { name: true },
   });
   if (organization.name !== name) {
-    assertPermission(access, "organization:write");
+    assertPermission(access, "base.organization:update");
     await tx.organization.update({
       where: { id: access.organizationId },
       data: { name },

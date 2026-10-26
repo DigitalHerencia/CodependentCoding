@@ -40,7 +40,7 @@ test("members cannot rename an organization during onboarding", async () => {
   const { tx, writes } = fixture();
   await assert.rejects(
     completeOnboardingTx(tx, access, "Unauthorized rename"),
-    /organization:write/,
+    /base\.organization:update/,
   );
   assert.equal(writes.length, 0);
 });

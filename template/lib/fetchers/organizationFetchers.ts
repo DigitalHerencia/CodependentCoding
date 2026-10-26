@@ -7,7 +7,7 @@ import { organizationOverviewSelect } from "@/lib/db/selects/organization.select
 
 export async function getCurrentOrganization() {
   return withAuthenticatedRead(async (tx, access) => {
-    assertPermission(access, "organization:read");
+    assertPermission(access, "base.organization:read");
 
     const record = await tx.organization.findFirstOrThrow({
       where: {
@@ -22,7 +22,7 @@ export async function getCurrentOrganization() {
 
 export async function getOrganizationMembers() {
   return withAuthenticatedRead(async (tx, access) => {
-    assertPermission(access, "organization:read");
+    assertPermission(access, "base.membership:read");
     const rows = await tx.membership.findMany({
       where: { organizationId: access.organizationId },
       orderBy: { createdAt: "asc" },

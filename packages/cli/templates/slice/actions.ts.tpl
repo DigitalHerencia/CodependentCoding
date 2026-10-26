@@ -22,7 +22,7 @@ export async function create{{Entity}}(
   return toActionResult(async () => {
     const identity = await requireIdentity();
     const saved = await withTenantTransaction(identity, async (tx, access) => {
-      assertPermission(access, "{{module}}:write");
+      assertPermission(access, "{{resource}}:create");
       const input = create{{Entity}}Schema.parse(rawInput);
 {{refCheckCall}}
       const record = await tx.{{entity}}.create({
@@ -54,7 +54,7 @@ export async function update{{Entity}}(
   return toActionResult(async () => {
     const identity = await requireIdentity();
     const saved = await withTenantTransaction(identity, async (tx, access) => {
-      assertPermission(access, "{{module}}:write");
+      assertPermission(access, "{{resource}}:update");
       const input = update{{Entity}}Schema.parse(rawInput);
 {{refCheckCall}}
       const result = await tx.{{entity}}.updateMany({

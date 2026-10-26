@@ -59,7 +59,7 @@ Replace each `TODO` with the answers. Keep every heading, table shape and HTML c
 | `context/docs/Design.md`            | §1 Visual principles, the app-specific paragraph only            | §2 to §6                           |
 
 - Architecture §6 routes follow the slice convention: `/<plural>` and `/<plural>/[id]` inside `(tenant)`.
-- AUTH §12 permissions follow §5.2 (`<module>:<action>`); name them, do not implement them.
+- AUTH §12 permissions follow §5.2 (`<module>.<resource>:<action>`); name them, do not implement them.
 - A doctrine section that contradicts an answer stays as it is. Record the conflict as a proposed decision and tell the owner.
 
 ## 3. Compile the contracts

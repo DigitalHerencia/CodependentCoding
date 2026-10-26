@@ -21,7 +21,7 @@ export async function createCampaign(rawInput: unknown) {
   const input = createCampaignSchema.parse(rawInput);
   const identity = await requireIdentity();
   return withTenantTransaction(identity, async (tx, access) => {
-    assertPermission(access, "marketing:write");
+    assertPermission(access, "marketing.campaign:create");
     if (
       input.audienceId &&
       !(await tx.audience.findFirst({
@@ -50,7 +50,7 @@ export async function updateCampaignStatus(rawInput: unknown) {
   const input = updateCampaignStatusSchema.parse(rawInput);
   const identity = await requireIdentity();
   return withTenantTransaction(identity, async (tx, access) => {
-    assertPermission(access, "marketing:write");
+    assertPermission(access, "marketing.campaign:update");
     const result = await tx.campaign.updateMany({
       where: {
         id: input.campaignId,
@@ -77,7 +77,7 @@ export async function updateCampaign(rawInput: unknown) {
   const input = updateCampaignSchema.parse(rawInput);
   const identity = await requireIdentity();
   return withTenantTransaction(identity, async (tx, access) => {
-    assertPermission(access, "marketing:write");
+    assertPermission(access, "marketing.campaign:update");
     if (
       input.audienceId &&
       !(await tx.audience.findFirst({
@@ -115,7 +115,7 @@ export async function createAudience(rawInput: unknown) {
   const input = audienceFormSchema.parse(rawInput);
   const identity = await requireIdentity();
   return withTenantTransaction(identity, async (tx, access) => {
-    assertPermission(access, "marketing:write");
+    assertPermission(access, "marketing.audience:create");
     return toAudienceDTO(
       await tx.audience.create({
         data: { ...input, organizationId: access.organizationId },
@@ -128,7 +128,7 @@ export async function updateAudience(rawInput: unknown) {
   const input = updateAudienceSchema.parse(rawInput);
   const identity = await requireIdentity();
   return withTenantTransaction(identity, async (tx, access) => {
-    assertPermission(access, "marketing:write");
+    assertPermission(access, "marketing.audience:update");
     const result = await tx.audience.updateMany({
       where: {
         id: input.audienceId,

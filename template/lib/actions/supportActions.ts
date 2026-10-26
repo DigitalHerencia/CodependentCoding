@@ -26,7 +26,7 @@ export async function createSupportTicket(rawInput: unknown) {
   const input = createSupportTicketSchema.parse(rawInput);
   const identity = await requireIdentity();
   return withTenantTransaction(identity, async (tx, access) => {
-    assertPermission(access, "support:write");
+    assertPermission(access, "support.ticket:create");
     await lockSupportTicketNumberTx(tx, access.organizationId);
     const latest = await tx.supportTicket.aggregate({
       where: { organizationId: access.organizationId },
@@ -61,8 +61,8 @@ export async function updateSupportTicketStatus(rawInput: unknown) {
     });
     if (!target) throw new Error("Support ticket was not found.");
 
-    authorizeOwnedOrAssignedWrite(access, "support:write", {
-      kind: "support-ticket",
+    authorizeOwnedOrAssignedWrite(access, "support.ticket:update", {
+      kind: "support.ticket",
       organizationId: target.organizationId,
       requesterUserId: target.requesterUserId,
       assigneeMembershipId: target.assignedMembershipId,
@@ -91,8 +91,8 @@ export async function replyToSupportTicket(rawInput: unknown) {
       },
     });
     if (!target) throw new Error("Ticket not found.");
-    authorizeOwnedOrAssignedWrite(access, "support:write", {
-      kind: "support-ticket",
+    authorizeOwnedOrAssignedWrite(access, "support.ticket:update", {
+      kind: "support.ticket",
       organizationId: target.organizationId,
       requesterUserId: target.requesterUserId,
       assigneeMembershipId: target.assignedMembershipId,
@@ -118,9 +118,7 @@ export async function createKnowledgeArticle(rawInput: unknown) {
   const input = knowledgeArticleFormSchema.parse(rawInput);
   const identity = await requireIdentity();
   return withTenantTransaction(identity, async (tx, access) => {
-    assertPermission(access, "support:write");
-    if (access.role === "CLIENT")
-      throw new Error("Article authoring requires a team membership.");
+    assertPermission(access, "support.article:create");
     return toKnowledgeArticleDTO(
       await tx.knowledgeArticle.create({
         data: {
@@ -139,9 +137,7 @@ export async function updateKnowledgeArticle(rawInput: unknown) {
   const input = updateKnowledgeArticleSchema.parse(rawInput);
   const identity = await requireIdentity();
   return withTenantTransaction(identity, async (tx, access) => {
-    assertPermission(access, "support:write");
-    if (access.role === "CLIENT")
-      throw new Error("Article authoring requires a team membership.");
+    assertPermission(access, "support.article:update");
     const result = await tx.knowledgeArticle.updateMany({
       where: {
         id: input.articleId,

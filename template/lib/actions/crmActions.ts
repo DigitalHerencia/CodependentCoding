@@ -34,7 +34,7 @@ export async function createCrmDeal(rawInput: unknown) {
   const input = createCrmDealSchema.parse(rawInput);
   const identity = await requireIdentity();
   return withTenantTransaction(identity, async (tx, access) => {
-    assertPermission(access, "crm:write");
+    assertPermission(access, "crm.deal:create");
     const account = await tx.crmAccount.findFirst({
       where: {
         id: input.accountId,
@@ -99,7 +99,7 @@ export async function updateCrmDealStage(rawInput: unknown) {
   const input = updateCrmDealStageSchema.parse(rawInput);
   const identity = await requireIdentity();
   return withTenantTransaction(identity, async (tx, access) => {
-    assertPermission(access, "crm:write");
+    assertPermission(access, "crm.deal:update");
     const record = await updateDealStageTx(tx, {
       organizationId: access.organizationId,
       dealId: input.dealId,
@@ -124,7 +124,7 @@ export async function createContact(rawInput: unknown) {
   const input = createContactSchema.parse(rawInput);
   const identity = await requireIdentity();
   return withTenantTransaction(identity, async (tx, access) => {
-    assertPermission(access, "crm:write");
+    assertPermission(access, "crm.contact:create");
     const record = await tx.crmContact.create({
       data: {
         organizationId: access.organizationId,
@@ -164,8 +164,8 @@ export async function updateContact(rawInput: unknown) {
       select: crmContactAccessSelect,
     });
     if (!existing) throw new ResourceNotFoundError("CRM contact");
-    authorizeOwnedOrAssignedWrite(access, "crm:write", {
-      kind: "crm",
+    authorizeOwnedOrAssignedWrite(access, "crm.contact:update", {
+      kind: "crm.contact",
       organizationId: existing.organizationId,
       ownerMembershipId: existing.ownerMembershipId,
     });
@@ -223,8 +223,8 @@ export async function archiveContact(rawInput: unknown) {
       select: crmContactAccessSelect,
     });
     if (!existing) throw new ResourceNotFoundError("CRM contact");
-    authorizeOwnedOrAssignedWrite(access, "crm:write", {
-      kind: "crm",
+    authorizeOwnedOrAssignedWrite(access, "crm.contact:delete", {
+      kind: "crm.contact",
       organizationId: existing.organizationId,
       ownerMembershipId: existing.ownerMembershipId,
     });
@@ -257,7 +257,7 @@ export async function createCrmAccount(rawInput: unknown) {
   const input = crmAccountFormSchema.parse(rawInput);
   const identity = await requireIdentity();
   return withTenantTransaction(identity, async (tx, access) => {
-    assertPermission(access, "crm:write");
+    assertPermission(access, "crm.account:create");
     const record = await tx.crmAccount.create({
       data: {
         organizationId: access.organizationId,
@@ -285,8 +285,8 @@ export async function updateCrmAccount(rawInput: unknown) {
       select: { organizationId: true, ownerMembershipId: true },
     });
     if (!existing) throw new ResourceNotFoundError("Account");
-    authorizeOwnedOrAssignedWrite(access, "crm:write", {
-      kind: "crm",
+    authorizeOwnedOrAssignedWrite(access, "crm.account:update", {
+      kind: "crm.account",
       ...existing,
     });
     const result = await tx.crmAccount.updateMany({

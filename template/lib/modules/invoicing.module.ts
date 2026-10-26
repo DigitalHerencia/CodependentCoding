@@ -19,13 +19,8 @@ export const invoicingModule = {
     },
   ],
   permissions: {
-    resources: ["invoice"],
-    catalog: ["invoicing:read", "invoicing:write"],
-    grants: {
-      MANAGER: ["invoicing:read"],
-      BILLING: ["invoicing:read", "invoicing:write"],
-      VIEWER: ["invoicing:read"],
-    },
+    resources: ["invoicing.invoice", "invoicing.expense"],
+    grants: { MEMBER: ["read", "create", "update"] },
   },
   records: [{ label: "Invoices", model: "invoice" }],
 } satisfies ModuleDefinition;

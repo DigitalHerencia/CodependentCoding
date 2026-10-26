@@ -18,16 +18,28 @@ test("the registry lists every manifest module once, in manifest order", () => {
   );
 });
 
-test("module permissions use the module id as prefix", () => {
+test("module resources and grants use the module id as prefix", () => {
+  const actions = ["read", "create", "update", "delete", "manage"];
   for (const { id, permissions: own } of installedModules) {
-    for (const permission of own?.catalog ?? []) {
-      expect(permission.startsWith(`${id}:`)).toBe(true);
+    for (const resource of own?.resources ?? []) {
+      expect(resource).toMatch(new RegExp(`^${id}\\.[a-z-]+$`));
     }
     for (const granted of Object.values(own?.grants ?? {})) {
-      for (const permission of granted) {
-        expect(own?.catalog).toContain(permission);
+      for (const grant of granted) {
+        if (actions.includes(grant)) continue;
+        expect(own?.resources).toContain(grant.split(":")[0]);
+        expect(actions).toContain(grant.split(":")[1]);
       }
     }
+  }
+});
+
+test("every permission is <module>.<resource>:<action>", () => {
+  expect(permissions.length).toBeGreaterThan(0);
+  for (const permission of permissions) {
+    expect(permission).toMatch(
+      /^[a-z]+\.[a-z-]+:(read|create|update|delete|manage)$/,
+    );
   }
 });
 

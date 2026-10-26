@@ -3,7 +3,7 @@ import "server-only";
 import {
   withProviderOrganizationTransaction,
   withProviderTransaction,
-} from "@/lib/db/provider";
+} from "@/lib/db/rls";
 import type { getBillingSubscriptionInputFromEvent } from "@/lib/integrations/stripe/subscriptions";
 import {
   claimWebhookEventTx,

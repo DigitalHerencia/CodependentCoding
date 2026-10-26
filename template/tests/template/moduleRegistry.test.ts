@@ -2,144 +2,50 @@
 // Generated apps hold a subset, so the CLI does not copy tests/template/.
 import { expect, test } from "vitest";
 
-import { grants } from "@/lib/authz/permissions";
+import { grants, permissions } from "@/lib/authz/permissions";
 import { installedModules } from "@/lib/modules/registry";
 
-// The role grants before the registry existed (CC-021); assembling them from
-// modules must not change who can do what.
-const legacyGrants: Record<string, string[]> = {
-  OWNER: [
-    "organization:read",
-    "organization:write",
-    "crm:read",
-    "crm:write",
-    "projects:read",
-    "projects:write",
-    "support:read",
-    "support:write",
-    "marketing:read",
-    "marketing:write",
-    "invoicing:read",
-    "invoicing:write",
-    "social:read",
-    "social:write",
-    "ai:read",
-    "ai:write",
-    "portal:read",
-    "portal:write",
-    "portal:billing",
-    "admin:audit",
-    "admin:records",
-    "admin:users",
-    "admin:bulk",
-  ],
-  ADMIN: [
-    "organization:read",
-    "organization:write",
-    "crm:read",
-    "crm:write",
-    "projects:read",
-    "projects:write",
-    "support:read",
-    "support:write",
-    "marketing:read",
-    "marketing:write",
-    "invoicing:read",
-    "invoicing:write",
-    "social:read",
-    "social:write",
-    "ai:read",
-    "ai:write",
-    "portal:read",
-    "portal:write",
-    "portal:billing",
-    "admin:audit",
-    "admin:records",
-    "admin:users",
-    "admin:bulk",
-  ],
-  MANAGER: [
-    "organization:read",
-    "crm:read",
-    "crm:write",
-    "projects:read",
-    "projects:write",
-    "support:read",
-    "support:write",
-    "marketing:read",
-    "marketing:write",
-    "invoicing:read",
-    "social:read",
-    "social:write",
-    "ai:read",
-    "ai:write",
-    "portal:read",
-    "portal:write",
-  ],
-  MEMBER: [
-    "organization:read",
-    "crm:read",
-    "crm:write",
-    "projects:read",
-    "projects:write",
-    "support:read",
-    "support:write",
-    "marketing:read",
-    "social:read",
-    "social:write",
-    "ai:read",
-    "ai:write",
-    "portal:read",
-  ],
-  BILLING: [
-    "organization:read",
-    "invoicing:read",
-    "invoicing:write",
-    "portal:read",
-    "portal:billing",
-  ],
-  SUPPORT: [
-    "organization:read",
-    "support:read",
-    "support:write",
-    "crm:read",
-    "portal:read",
-  ],
-  CLIENT: ["organization:read", "support:read", "support:write", "portal:read"],
-  VIEWER: [
-    "organization:read",
-    "crm:read",
-    "projects:read",
-    "support:read",
-    "marketing:read",
-    "invoicing:read",
-    "social:read",
-    "ai:read",
-    "portal:read",
-  ],
-};
-
-// Grants added since: billing:read guards Settings > Billing (CC-024), held by
-// the same roles that held portal:billing, which guarded it before.
-// billing:manage guards the provider-state reconcile that moved from admin
-// (CC-035); OWNER and ADMIN hold every catalog permission.
-const addedGrants: Record<string, string[]> = {
-  OWNER: ["billing:read", "billing:manage"],
-  ADMIN: ["billing:read", "billing:manage"],
-  BILLING: ["billing:read"],
-};
-
-test("assembled grants match the pre-registry grants", () => {
-  const assembled = Object.fromEntries(
-    Object.entries(grants).map(([role, set]) => [role, [...set].sort()]),
+// Who can do what after the four-role migration (DEC-065): OWNER and ADMIN hold
+// every permission; MEMBER is staff; VIEWER is an outside person (client) whose
+// records policies limit to shared or their own.
+const all = (resources: string[], actions: string[]) =>
+  resources.flatMap((resource) =>
+    actions.map((action) => `${resource}:${action}`),
   );
-  const expected = Object.fromEntries(
-    Object.entries(legacyGrants).map(([role, list]) => [
-      role,
-      [...list, ...(addedGrants[role] ?? [])].sort(),
-    ]),
-  );
-  expect(assembled).toEqual(expected);
+const staff = ["read", "create", "update"];
+
+const expectedMember = [
+  ...all(["base.organization", "base.membership", "base.settings"], ["read"]),
+  ...all(["crm.contact", "crm.account", "crm.deal"], [...staff, "delete"]),
+  ...all(["projects.project", "projects.task"], staff),
+  ...all(["support.ticket", "support.article"], staff),
+  ...all(["marketing.campaign", "marketing.audience"], staff),
+  ...all(["invoicing.invoice", "invoicing.expense"], staff),
+  ...all(["social.post", "social.account", "social.media"], staff),
+  ...all(["ai.generation"], staff),
+  ...all(["portal.document", "portal.billing"], staff),
+  "billing.subscription:read",
+];
+
+const expectedViewer = [
+  ...all(["base.organization", "base.membership", "base.settings"], ["read"]),
+  "support.ticket:read",
+  "support.ticket:create",
+  "support.ticket:update",
+  "support.article:read",
+  "portal.document:read",
+];
+
+test("assembled grants match the four-role model", () => {
+  const sorted = (list: Iterable<string>) => [...list].sort();
+  expect(Object.keys(grants)).toEqual(["OWNER", "ADMIN", "MEMBER", "VIEWER"]);
+  expect(sorted(grants.OWNER)).toEqual(sorted(permissions));
+  expect(sorted(grants.ADMIN)).toEqual(sorted(permissions));
+  expect(sorted(grants.MEMBER)).toEqual(sorted(expectedMember));
+  expect(sorted(grants.VIEWER)).toEqual(sorted(expectedViewer));
+  expect(permissions).toHaveLength(5 * 24);
+  expect(grants.MEMBER.has("admin.membership:read")).toBe(false);
+  expect(grants.MEMBER.has("base.settings:update")).toBe(false);
 });
 
 test("the dashboard renders one workspace link per registry entry", async () => {

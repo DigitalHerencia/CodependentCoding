@@ -18,7 +18,7 @@ export async function changeAdminMembership(rawInput: unknown) {
   const identity = await requireIdentity();
 
   return withTenantTransaction(identity, async (tx, access) => {
-    assertPermission(access, "admin:users");
+    assertPermission(access, "admin.membership:update");
     if (input.membershipId === access.membershipId) {
       throw new InvariantViolationError(
         "An administrator cannot change their own role.",
@@ -40,7 +40,7 @@ export async function suspendAdminMembership(rawInput: unknown) {
   const identity = await requireIdentity();
 
   return withTenantTransaction(identity, async (tx, access) => {
-    assertPermission(access, "admin:users");
+    assertPermission(access, "admin.membership:update");
     if (input.membershipId === access.membershipId) {
       throw new InvariantViolationError(
         "An administrator cannot suspend their own membership.",
@@ -62,7 +62,7 @@ export async function restoreAdminMembership(rawInput: unknown) {
   const identity = await requireIdentity();
 
   return withTenantTransaction(identity, async (tx, access) => {
-    assertPermission(access, "admin:users");
+    assertPermission(access, "admin.membership:update");
     const membership = await updateMembershipAdministrationTx(tx, {
       organizationId: access.organizationId,
       actorUserId: access.userId,
@@ -77,7 +77,7 @@ export async function addAdminMembership(rawInput: unknown) {
   const input = addAdminMembershipSchema.parse(rawInput);
   const identity = await requireIdentity();
   return withTenantTransaction(identity, async (tx, access) => {
-    assertPermission(access, "admin:users");
+    assertPermission(access, "admin.membership:create");
     const user = await tx.user.findFirst({
       where: { email: { equals: input.email, mode: "insensitive" } },
       select: { id: true },

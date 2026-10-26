@@ -7,6 +7,7 @@ import {
 } from "@/schemas/portalSchemas";
 import { requireIdentity } from "@/lib/auth/auth";
 import { assertPermission } from "@/lib/authz/permissions";
+import { limitedToOwnRecords } from "@/lib/authz/policies";
 import { toPortalDocumentDTO } from "@/lib/db/dto/portal.dto";
 import { portalDocumentSelect } from "@/lib/db/selects/portal.selects";
 import { withTenantTransaction } from "@/lib/db/tenant";
@@ -18,7 +19,7 @@ export async function createPortalDocument(rawInput: unknown) {
   const input = createPortalDocumentSchema.parse(rawInput);
   const identity = await requireIdentity();
   return withTenantTransaction(identity, async (tx, access) => {
-    assertPermission(access, "portal:write");
+    assertPermission(access, "portal.document:create");
     const record = await tx.portalDocument.create({
       data: {
         organizationId: access.organizationId,
@@ -36,7 +37,7 @@ export async function addPortalDocumentVersion(rawInput: unknown) {
   const input = addPortalDocumentVersionSchema.parse(rawInput);
   const identity = await requireIdentity();
   return withTenantTransaction(identity, async (tx, access) => {
-    assertPermission(access, "portal:write");
+    assertPermission(access, "portal.document:update");
     const record = await addPortalVersionTx(tx, {
       organizationId: access.organizationId,
       membershipId: access.membershipId,
@@ -53,7 +54,7 @@ export async function sharePortalDocument(rawInput: unknown) {
   const input = portalDocumentCommandSchema.parse(rawInput);
   const identity = await requireIdentity();
   return withTenantTransaction(identity, async (tx, access) => {
-    assertPermission(access, "portal:write");
+    assertPermission(access, "portal.document:update");
     return toPortalDocumentDTO(
       await sharePortalDocumentTx(tx, {
         ...input,
@@ -68,12 +69,12 @@ export async function downloadPortalDocument(rawInput: unknown) {
     .parse(rawInput);
   const identity = await requireIdentity();
   const asset = await withTenantTransaction(identity, async (tx, access) => {
-    assertPermission(access, "portal:read");
+    assertPermission(access, "portal.document:read");
     const document = await tx.portalDocument.findFirst({
       where: {
         id: documentId,
         organizationId: access.organizationId,
-        ...(access.role === "CLIENT"
+        ...(limitedToOwnRecords(access)
           ? { clientVisible: true, status: { not: "ARCHIVED" as const } }
           : {}),
       },
