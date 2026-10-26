@@ -134,14 +134,13 @@ Removed: `.agents/`, `packages/core`, `packages/schema`, `packages/loaded-vibes`
 
 ## 8. Testing
 
-| Level           | Tool                          | Scope                                                                                |
-| --------------- | ----------------------------- | ------------------------------------------------------------------------------------ |
-| Doctrine        | node:test + ESLint RuleTester | Every CC rule has valid/invalid cases                                                |
-| Unit            | Vitest                        | workflows, schemas, DTO mappers, CLI composition                                     |
-| Integration     | Vitest + real Postgres        | RLS cross-tenant isolation, transactions, webhook idempotency                        |
-| E2E smoke       | Playwright                    | public page, sign-in redirect, one tenant route                                      |
-| Composition     | Vitest (root)                 | `compose` output for blank / each preset / maximal: prisma validate, ownership, lint |
-| CI build matrix | GitHub Actions                | compose → install → lint → typecheck → build                                         |
+| Level       | Tool                          | Scope                                                                                |
+| ----------- | ----------------------------- | ------------------------------------------------------------------------------------ |
+| Doctrine    | node:test + ESLint RuleTester | Every CC rule has valid/invalid cases                                                |
+| Unit        | Vitest                        | workflows, schemas, DTO mappers, CLI composition                                     |
+| Integration | Vitest + real Postgres        | RLS cross-tenant isolation, transactions, webhook idempotency                        |
+| E2E smoke   | Playwright                    | public page, sign-in redirect, one tenant route                                      |
+| Composition | Vitest (root)                 | `compose` output for blank / each preset / maximal: prisma validate, ownership, lint |
 
 ## 9. CLI technical requirements
 
@@ -170,11 +169,20 @@ Removed: `.agents/`, `packages/core`, `packages/schema`, `packages/loaded-vibes`
 
 ## 11. CI/CD
 
-- `.github/workflows/ci.yml` on PR and push to `main`: install (frozen lockfile), format check, lint, doctrine tests, typecheck, unit tests — for root and template.
-- Composition matrix job `presets`: blank, each preset and `--all`, each `hipster-stack compose template/.sandbox/<p>` → `pnpm install` → lint → typecheck → build with placeholder env. It runs on every push to `main` and on PRs that touch `template/`, `packages/cli/` or `ci.yml` (job `changes`).
-- Vercel deploys the landing page from `main`.
-- Branching: GitHub Flow — `main` plus short-lived issue branches `<type>/<issue>-<slug>`; squash-merge PRs with `Closes #N` (DEC-010).
-- Conventional Commits: `feat|fix|refactor|docs|test|chore|ci(scope): subject`.
+- One workflow, `.github/workflows/ci.yml`, on PRs and pushes to `main`. Job `changes` diffs against the PR base (or the previous `main` commit) and the other jobs run only for what changed. Editing `ci.yml` or a manual run checks everything.
+
+| Job                       | Runs when                                                             | Does                                                                                                                                                                                                                                                               |
+| ------------------------- | --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `root`                    | any file outside `template/` changed                                  | `format:check`; for code (not docs, `context/`, `.claude/execution/`): `lint`, `typecheck`, `doctrine:check`; Vitest only for the changed areas (`tests/cli`, `tests/plugin`, `tests/doctrine`, all on root config change); CLI build when `packages/cli/` changed |
+| `template`                | a non-Markdown file in `template/`                                    | `format:check`, `lint`, `typecheck`, module/ownership/env checks, unit tests; `doctrine:test` if `eslint/` changed; `check:schema-modules` if `prisma/` changed; Playwright smoke if app code changed; `build` if build config or deps changed                     |
+| `template-db`             | `prisma/`, `tests/rls/`, `lib/db/` or the RLS/db-init scripts changed | `test:rls` against a Postgres 16 service container in the runner (no cloud database)                                                                                                                                                                               |
+| `pr-title` (own workflow) | PR opened, edited or pushed                                           | Title is a Conventional Commit (it becomes the squash commit)                                                                                                                                                                                                      |
+
+- No per-preset matrix: `hipster-stack compose` output is covered by `tests/cli`; run a preset build locally when composition changes.
+- Vercel builds and deploys the landing page from `main` (and preview builds on PRs). CI does not deploy.
+- Branching: GitHub Flow — `main` plus short-lived issue branches `<type>/<issue>-<slug>`; squash-merge only, the PR title is the commit title, `Closes #N` closes the issue and the branch is deleted on merge (DEC-010).
+- Conventional Commits: `type(scope): subject` with types `feat fix docs style refactor perf test build ci chore revert`; `.gitmessage` is the commit template (`git config commit.template .gitmessage`).
+- Issues use the forms in `.github/ISSUE_TEMPLATE/` (Conventional title, required Docs / spec link, auto-added to Project #19); labels come from `.github/labels.yml` via `pnpm issues:sync -- --apply`.
 
 ## 12. Performance and quality budgets
 

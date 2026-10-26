@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/progress/v1",
-  "updated": "2026-10-26T22:55:00Z",
+  "updated": "2026-10-26T23:40:00Z",
   "format": "Evidence states: EXECUTED | INSPECTED | NOT_RUN | BLOCKED. Never mark an issue done without EXECUTED evidence for its Validation commands.",
   "milestones": {
     "M0": {
@@ -2872,6 +2872,13 @@
       "issue": "#257 #258",
       "command": "pnpm --dir template validate; template pnpm test; template pnpm test:rls (local Postgres 16)",
       "result": "exit 0; 66 passed/1 skipped; 10 passed"
+    },
+    {
+      "date": "2026-10-26",
+      "state": "EXECUTED",
+      "issue": "#261 (GitHub workflow + CI)",
+      "command": "pnpm format:check; pnpm lint; pnpm typecheck; pnpm doctrine:check; pnpm exec vitest run (root); template: format:check, lint, typecheck, check:modules/ownership/env, pnpm test, pnpm test:e2e (placeholder env), pnpm build (placeholder env), pnpm test:rls (local Postgres 16); ci.yml `changes` script on sample file lists",
+      "result": "all exit 0; root 87 tests passed; template 66 passed/1 skipped; e2e 2 passed; RLS 10 passed; README-only diff -> root format check only, full file list -> every job"
     }
   ],
   "known_findings": [
