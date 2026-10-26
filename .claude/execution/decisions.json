@@ -706,6 +706,19 @@
         "template/lib/db/transactions/invitation.tx.ts",
         "template/prisma/rls/identity.sql"
       ]
+    },
+    {
+      "id": "DEC-069",
+      "date": "2026-10-26",
+      "status": "accepted",
+      "title": "The root site grows past one page",
+      "context": "Ivan asked (thread 'Build homepage nav and footer pages') to replace the dead header anchors with real pages and restore FAQ/Terms/Privacy. DEC-002 and PRD FR-SITE-1 limited the site to `/`.",
+      "decision": "Supersedes DEC-002 for the site only. Header: Doctrine, Maximal, Hipster Stack, Loaded Vibes (owner pick; retired names may appear only as in-page flavor). Footer: /faq, /terms, /privacy using the approved template copy adapted to a static site (operator Digital Herencia, contact via GitHub issues). All pages static, no data access, nothing new on Vercel. Pages ship in five PRs; unfinished ones show a coming-soon block. Root CSS now imports Tailwind theme+utilities (no preflight) so blocks can use utilities without changing existing styles. Copy lives in lib/constants/siteCopy.ts.",
+      "consequences": [
+        "PRD §4, §6, §7.1 and tech-requirements layout updated",
+        "The Hipster Stack builder must read commands/flags from packages/cli at build time with a drift test"
+      ],
+      "refs": ["PRD.md §7.1", "DEC-002"]
     }
   ]
 }

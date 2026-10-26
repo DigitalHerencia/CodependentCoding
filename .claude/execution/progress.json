@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/progress/v1",
-  "updated": "2026-10-26T23:55:00Z",
+  "updated": "2026-10-27T00:05:00Z",
   "format": "Evidence states: EXECUTED | INSPECTED | NOT_RUN | BLOCKED. Never mark an issue done without EXECUTED evidence for its Validation commands.",
   "milestones": {
     "M0": {
@@ -2935,6 +2935,34 @@
       "issue": "#260",
       "command": "template pnpm test:rls (fresh local Postgres 16 db, non-superuser owner)",
       "result": "11 passed (new: invitee sees own-email invitation only, cannot write it)"
+    },
+    {
+      "date": "2026-10-26",
+      "state": "EXECUTED",
+      "issue": "site-pages PR1",
+      "command": "pnpm lint / typecheck / format:check",
+      "result": "clean"
+    },
+    {
+      "date": "2026-10-26",
+      "state": "EXECUTED",
+      "issue": "site-pages PR1",
+      "command": "pnpm build",
+      "result": "10 static routes incl. /doctrine /maximal /hipster-stack /loaded-vibes /faq /terms /privacy"
+    },
+    {
+      "date": "2026-10-26",
+      "state": "EXECUTED",
+      "issue": "site-pages PR1",
+      "command": "pnpm test (root, template deps not installed locally)",
+      "result": "14 failed / 51 passed, identical count on main before the change: template/node_modules missing; CI installs it"
+    },
+    {
+      "date": "2026-10-26",
+      "state": "EXECUTED",
+      "issue": "site-pages PR1",
+      "command": "playwright screenshots / /faq /privacy /hipster-stack@390px",
+      "result": "render with header/footer; links resolve"
     }
   ],
   "known_findings": [
