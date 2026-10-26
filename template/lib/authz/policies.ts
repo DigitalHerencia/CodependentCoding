@@ -5,6 +5,7 @@ import type {
   Permission,
   ResourceAccessDescriptor,
 } from "@/types/accessTypes";
+import { accessControl } from "@/lib/constants/access";
 
 import { isOutsideRole, isPrivilegedRole } from "./roles";
 import { assertPermission } from "./permissions";
@@ -13,7 +14,10 @@ import { assertPermission } from "./permissions";
  * ABAC: record-level rules that run after the RBAC permission check. They
  * read attributes of the caller (organization, membership, role) and of the
  * record (organization, owner, assignee, requester, shared flag).
+ * With `accessControl` "rbac" only the organization boundary applies here:
+ * the role's permissions alone decide.
  */
+const recordRules = (): boolean => accessControl === "abac";
 
 export class ResourceAuthorizationError extends Error {
   readonly code = "FORBIDDEN";
@@ -54,7 +58,7 @@ export function requestedResource(
 
 /** Outside viewers (clients) see only what is shared with them or theirs; staff see the whole organization. */
 export function limitedToOwnRecords(context: AccessContext): boolean {
-  return isOutsideRole(context.role);
+  return recordRules() && isOutsideRole(context.role);
 }
 
 export function canReadResource(
@@ -86,6 +90,7 @@ export function canManageOwnedOrAssignedResource(
   }
 
   return (
+    !recordRules() ||
     isPrivilegedRole(context.role) ||
     ownsResource(context, resource) ||
     isAssignedResource(context, resource) ||

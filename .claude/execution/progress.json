@@ -2935,6 +2935,20 @@
       "issue": "#260",
       "command": "template pnpm test:rls (fresh local Postgres 16 db, non-superuser owner)",
       "result": "11 passed (new: invitee sees own-email invitation only, cannot write it)"
+    },
+    {
+      "date": "2026-10-26",
+      "state": "EXECUTED",
+      "issue": "#260",
+      "command": "root pnpm validate; pnpm --dir template validate; template pnpm test",
+      "result": "exit 0, 90 passed; exit 0; 79 passed/1 skipped"
+    },
+    {
+      "date": "2026-10-26",
+      "state": "EXECUTED",
+      "issue": "#260",
+      "command": "pnpm cli compose template/.sandbox/acc --preset crm --tenancy single --access rbac; prisma generate; tsc --noEmit",
+      "result": "constants written; tsc exit 0"
     }
   ],
   "known_findings": [

@@ -4,6 +4,13 @@ import path from "node:path";
 import * as p from "@clack/prompts";
 import type { Command } from "commander";
 
+import {
+  type AccessChoices,
+  accessControls,
+  defaultAccess,
+  parseChoice,
+  tenancies,
+} from "#cli/compose/access";
 import { parseHex } from "#cli/compose/brand";
 import {
   composeApp,
@@ -25,6 +32,8 @@ interface NewOptions {
   all?: boolean;
   color?: string;
   name?: string;
+  tenancy?: string;
+  access?: string;
   yes?: boolean;
   databaseUrl?: string;
   install: boolean;
@@ -49,6 +58,68 @@ function cancelled<T>(value: T): Exclude<T, symbol> {
     process.exit(1);
   }
   return value as Exclude<T, symbol>;
+}
+
+/** --tenancy / --access, prompting for whichever is missing when interactive. */
+export async function accessChoices(
+  options: Pick<NewOptions, "tenancy" | "access">,
+  interactive: boolean,
+): Promise<AccessChoices> {
+  const flaggedTenancy =
+    options.tenancy === undefined
+      ? undefined
+      : parseChoice("--tenancy", options.tenancy, tenancies);
+  const flaggedAccess =
+    options.access === undefined
+      ? undefined
+      : parseChoice("--access", options.access, accessControls);
+  if (!interactive) {
+    return {
+      tenancy: flaggedTenancy ?? defaultAccess.tenancy,
+      accessControl: flaggedAccess ?? defaultAccess.accessControl,
+    };
+  }
+  const tenancy =
+    flaggedTenancy ??
+    cancelled(
+      await p.select({
+        message: "Organizations",
+        initialValue: defaultAccess.tenancy,
+        options: [
+          {
+            value: "multi" as const,
+            label: "Multi-tenant",
+            hint: "every sign-up gets its own organization; invite others in",
+          },
+          {
+            value: "single" as const,
+            label: "Single organization",
+            hint: "the first sign-up owns it; everyone else joins by invitation",
+          },
+        ],
+      }),
+    );
+  const accessControl =
+    flaggedAccess ??
+    cancelled(
+      await p.select({
+        message: "Authorization",
+        initialValue: defaultAccess.accessControl,
+        options: [
+          {
+            value: "abac" as const,
+            label: "RBAC + ABAC",
+            hint: "role permissions, then record rules (owner, assignee, shared with clients)",
+          },
+          {
+            value: "rbac" as const,
+            label: "RBAC only",
+            hint: "role permissions decide; any record in the organization",
+          },
+        ],
+      }),
+    );
+  return { tenancy, accessControl };
 }
 
 /** Modules from --all / --modules / --preset; null when none was given. */
@@ -172,6 +243,8 @@ export function registerNew(program: Command, cliVersion: string): void {
     .option("--all", "every module")
     .option("--color <hex>", "brand color, e.g. #2f7a8d")
     .option("--name <name>", "package name (default: directory name)")
+    .option("--tenancy <mode>", "multi (default) or single organization")
+    .option("--access <model>", "abac (RBAC + ABAC, default) or rbac")
     .option(
       "-y, --yes",
       "no prompts; unanswered choices use defaults (blank preset)",
@@ -264,6 +337,8 @@ export function registerNew(program: Command, cliVersion: string): void {
         color = answer ? parseHex(answer) : null;
       }
 
+      const access = await accessChoices(options, interactive);
+
       // --provision creates its own database, so only ask without it.
       let databaseUrl = options.databaseUrl?.trim() || undefined;
       if (databaseUrl && !isPostgresUrl(databaseUrl))
@@ -289,6 +364,7 @@ export function registerNew(program: Command, cliVersion: string): void {
         modules,
         name,
         color,
+        access,
         cliVersion,
         now: new Date(),
       });
