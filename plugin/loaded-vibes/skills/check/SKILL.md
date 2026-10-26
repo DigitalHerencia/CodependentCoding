@@ -17,7 +17,7 @@ Pick `full`, plus `security` when the diff touches `prisma/`, `lib/auth*`, `lib/
 
 ## 1. Run
 
-Run each command in order and keep its exit code and the last lines of output. `pnpm build` needs the env from `.env.local`; when a required variable is missing, record the check as `BLOCKED` with the variable's name (never its value) and go on with the rest. `pnpm test:rls` needs `DATABASE_URL_TEST`; without it the check is `NOT_RUN`, never "passed".
+Run each command in order and keep its exit code and the last lines of output. `pnpm build` needs the env from `.env.local`; when a required variable is missing, record the check as `BLOCKED` with the variable's name (never its value) and go on with the rest. `pnpm test:rls` needs `DATABASE_URL_TEST`; without it the check is `NOT_RUN`, never "passed". It also needs `prisma/migrations`: when the app has none, run `pnpm db:init` once, commit `prisma/migrations`, then run it.
 
 ## 2. Group the lint findings
 
