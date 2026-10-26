@@ -56,6 +56,8 @@ pnpm test
 pnpm test:rls     # when DATABASE_URL_TEST is set; otherwise say it was not run
 ```
 
+`pnpm test:rls` needs `prisma/migrations`. If the app has none yet, run `pnpm db:init` once (it creates them from the schema), commit `prisma/migrations`, then run the RLS check.
+
 A lint finding prints a `CC-*` ID: fix the cause, never add `eslint-disable`. Rerun until all exit 0. Record each command and its result as EXECUTED evidence in `.claude/execution/progress.json` under the issue, and add a decision for any rule you had to interpret.
 
 ## Record format

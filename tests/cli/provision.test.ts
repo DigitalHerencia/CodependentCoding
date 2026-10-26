@@ -4,7 +4,13 @@ import path from "node:path";
 
 import { describe, expect, test } from "vitest";
 
-import { appRoleSql, withCredentials } from "@/packages/cli/src/setup/database";
+import { connectDatabase } from "@/packages/cli/src/setup/connectDatabase";
+import {
+  appRoleSql,
+  databaseUrls,
+  isPostgresUrl,
+  withCredentials,
+} from "@/packages/cli/src/setup/database";
 import { parseEnv, upsertEnv } from "@/packages/cli/src/setup/envFile";
 import type { Exec, ExecResult } from "@/packages/cli/src/setup/exec";
 import { INITIAL_COMMIT, setupApp } from "@/packages/cli/src/setup/postCompose";
@@ -162,7 +168,99 @@ describe("app role SQL", () => {
   });
 });
 
+describe("pasted connection string", () => {
+  const pooled =
+    "postgresql://neondb_owner:pw@ep-cool-1-pooler.us-east-2.aws.neon.tech/neondb?sslmode=require";
+  const direct =
+    "postgresql://neondb_owner:pw@ep-cool-1.us-east-2.aws.neon.tech/neondb?sslmode=require";
+
+  test("a Neon string yields its pooled and direct (no -pooler) forms", () => {
+    expect(databaseUrls(pooled)).toEqual({ pooled, direct });
+    expect(databaseUrls(` ${direct} `)).toEqual({ pooled, direct });
+  });
+
+  test("another host is used as is; non-postgres input is refused", () => {
+    const local = "postgresql://me:pw@localhost:5432/app";
+    expect(databaseUrls(local)).toEqual({ pooled: local, direct: local });
+    expect(isPostgresUrl("https://neon.tech")).toBe(false);
+    expect(isPostgresUrl("not a url")).toBe(false);
+    expect(() => databaseUrls("mysql://x@y/z")).toThrow(/postgresql/);
+  });
+
+  test("creates app_user as the owner over the direct URL and writes both URLs", async () => {
+    const dir = mkdtempSync(path.join(tmpdir(), "hs-connect-"));
+    writeFileSync(
+      path.join(dir, ".env.example"),
+      'DATABASE_URL=""\nDIRECT_DATABASE_URL=""\nCLERK_SECRET_KEY=""\n',
+    );
+    const sql: { url: string; sql: string }[] = [];
+    await connectDatabase({
+      appDir: dir,
+      connectionString: pooled,
+      runSql: async (url, text) => {
+        sql.push({ url, sql: text });
+      },
+      password: () => "apppw123",
+    });
+    expect(sql).toHaveLength(1);
+    expect(sql[0]?.url).toBe(direct);
+    expect(sql[0]?.sql).toContain('FOR ROLE "neondb_owner"');
+    expect(
+      parseEnv(readFileSync(path.join(dir, ".env.local"), "utf8")),
+    ).toEqual(
+      new Map([
+        [
+          "DATABASE_URL",
+          "postgresql://app_user:apppw123@ep-cool-1-pooler.us-east-2.aws.neon.tech/neondb?sslmode=require",
+        ],
+        ["DIRECT_DATABASE_URL", direct],
+      ]),
+    );
+  });
+});
+
 describe("setupApp", () => {
+  test("with a wired database, db:init runs after install and before the commit", () => {
+    const { exec, calls } = fakeExec({
+      [process.execPath]: () => ({}),
+      pnpm: () => ({}),
+      git: () => ({}),
+    });
+    const result = setupApp({
+      appDir: "/app",
+      templateDir: "/template",
+      install: true,
+      git: true,
+      dbInit: true,
+      exec,
+      warn: () => {},
+    });
+    expect(result).toEqual({ committed: true, migrated: true });
+    expect(
+      calls.map(({ command, args }) => `${command} ${args[0]}`).slice(1, 4),
+    ).toEqual(["pnpm install", "pnpm db:init", "git init"]);
+  });
+
+  test("a failed db:init warns and still commits", () => {
+    const warnings: string[] = [];
+    const { exec } = fakeExec({
+      [process.execPath]: () => ({}),
+      pnpm: (args) => (args[0] === "db:init" ? fail : {}),
+      git: () => ({}),
+    });
+    const result = setupApp({
+      appDir: "/app",
+      templateDir: "/t",
+      install: true,
+      git: true,
+      dbInit: true,
+      exec,
+      warn: (message) => warnings.push(message),
+    });
+    expect(result).toEqual({ committed: true, migrated: false });
+    expect(warnings[0]).toContain("pnpm db:init");
+  });
+
   test("validates, installs, inits and commits; no provisioning CLI runs", () => {
     const { exec, calls } = fakeExec({
       [process.execPath]: () => ({}),

@@ -10,24 +10,30 @@ export interface SetupOptions {
   templateDir: string;
   install: boolean;
   git: boolean;
+  /** .env.local has the database URLs: run `pnpm db:init` before the commit. */
+  dbInit?: boolean;
   exec: Exec;
   warn: (message: string) => void;
 }
 
 export interface SetupResult {
   committed: boolean;
+  /** prisma/migrations exists, so `pnpm test:rls` can run. */
+  migrated: boolean;
 }
 
 /**
  * Local only: prisma validate, pnpm install (the registry is its one network
- * use; --no-install skips it), git init and the initial commit. Provisioning
- * is a separate opt-in step.
+ * use; --no-install skips it), `pnpm db:init` when a database is wired (so the
+ * initial commit carries prisma/migrations), git init and the initial commit.
+ * Provisioning is a separate opt-in step.
  */
 export function setupApp({
   appDir,
   templateDir,
   install,
   git,
+  dbInit = false,
   exec,
   warn,
 }: SetupOptions): SetupResult {
@@ -47,7 +53,15 @@ export function setupApp({
   // Pruning changed package.json, so the copied lockfile must be updated.
   if (install)
     runOrThrow(exec, "pnpm", ["install", "--no-frozen-lockfile"], appDir);
-  if (!git) return { committed: false };
+  let migrated = false;
+  if (install && dbInit) {
+    migrated = exec("pnpm", ["db:init"], { cwd: appDir }).status === 0;
+    if (!migrated)
+      warn(
+        "`pnpm db:init` failed. Check the database URLs in .env.local, run `pnpm db:init`, then commit prisma/migrations.",
+      );
+  }
+  if (!git) return { committed: false, migrated };
 
   runOrThrow(exec, "git", ["init", "--quiet"], appDir);
   runOrThrow(exec, "git", ["add", "--all"], appDir);
@@ -59,7 +73,7 @@ export function setupApp({
     warn(
       `Initial commit failed. Set \`git config --global user.name\` and \`user.email\`, then run \`git commit -m "${INITIAL_COMMIT}"\` in the app.`,
     );
-    return { committed: false };
+    return { committed: false, migrated };
   }
-  return { committed: true };
+  return { committed: true, migrated };
 }

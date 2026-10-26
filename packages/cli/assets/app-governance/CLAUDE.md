@@ -38,7 +38,8 @@ If `context/docs/PRD.md` still has `TODO` sections, the app has no product yet: 
 ```text
 pnpm validate        format, lint, typecheck, modules, ownership, env
 pnpm test            unit tests
-pnpm test:rls        cross-tenant isolation (needs DATABASE_URL_TEST)
+pnpm db:init         once per database; commit prisma/migrations it creates
+pnpm test:rls        cross-tenant isolation (needs DATABASE_URL_TEST and migrations)
 pnpm build           production build
 ```
 

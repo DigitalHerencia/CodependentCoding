@@ -13,7 +13,8 @@ import {
   type TemplateManifest,
 } from "#cli/compose/composeApp";
 import { resolveTemplate } from "#cli/manifest/template";
-import { templateSqlRunner } from "#cli/setup/database";
+import { connectDatabase } from "#cli/setup/connectDatabase";
+import { isPostgresUrl, templateSqlRunner } from "#cli/setup/database";
 import { spawnExec } from "#cli/setup/exec";
 import { setupApp } from "#cli/setup/postCompose";
 import { provision, type StepId } from "#cli/setup/provision";
@@ -25,6 +26,7 @@ interface NewOptions {
   color?: string;
   name?: string;
   yes?: boolean;
+  databaseUrl?: string;
   install: boolean;
   git: boolean;
   provision?: boolean;
@@ -143,6 +145,7 @@ function printNextSteps(
   appDir: string,
   installed: boolean,
   database: boolean,
+  migrated = false,
 ): void {
   const relative = path.relative(process.cwd(), appDir);
   const next = [
@@ -153,7 +156,7 @@ function printNextSteps(
       : process.platform === "win32"
         ? "Copy-Item .env.example .env.local  # then fill in values"
         : "cp .env.example .env.local  # then fill in values",
-    "pnpm db:init",
+    ...(migrated ? [] : ["pnpm db:init  # then commit prisma/migrations"]),
     "pnpm dev",
   ];
   p.note(next.join("\n"), "Next steps");
@@ -172,6 +175,10 @@ export function registerNew(program: Command, cliVersion: string): void {
     .option(
       "-y, --yes",
       "no prompts; unanswered choices use defaults (blank preset)",
+    )
+    .option(
+      "--database-url <url>",
+      "Neon connection string (pooled or direct) to wire into .env.local",
     )
     .option("--no-install", "skip pnpm install")
     .option("--no-git", "skip git init and the initial commit")
@@ -257,6 +264,25 @@ export function registerNew(program: Command, cliVersion: string): void {
         color = answer ? parseHex(answer) : null;
       }
 
+      // --provision creates its own database, so only ask without it.
+      let databaseUrl = options.databaseUrl?.trim() || undefined;
+      if (databaseUrl && !isPostgresUrl(databaseUrl))
+        throw new Error("--database-url must be a postgresql:// URL.");
+      if (!databaseUrl && interactive && !options.provision) {
+        databaseUrl = cancelled(
+          await p.text({
+            message:
+              "Neon connection string (Neon dashboard > Connect; pooled or direct)",
+            placeholder:
+              "postgresql://neondb_owner:...@ep-...-pooler.<region>.aws.neon.tech/neondb?sslmode=require",
+            validate: (value) =>
+              value && isPostgresUrl(value)
+                ? undefined
+                : "Paste the postgresql:// connection string",
+          }),
+        ).trim();
+      }
+
       const result = await composeApp({
         templateDir,
         outDir,
@@ -278,17 +304,38 @@ export function registerNew(program: Command, cliVersion: string): void {
         );
       }
 
-      const { committed } = setupApp({
+      let connected = false;
+      if (databaseUrl) {
+        try {
+          await connectDatabase({
+            appDir: outDir,
+            connectionString: databaseUrl,
+            runSql: templateSqlRunner(templateDir),
+          });
+          connected = true;
+          p.log.success(
+            "Database wired: DATABASE_URL (app_user, pooled) and DIRECT_DATABASE_URL (owner, direct) are in .env.local.",
+          );
+        } catch (error) {
+          p.log.warn(
+            `Could not set up the database (${(error as Error).message}). Fix the connection string and fill DATABASE_URL and DIRECT_DATABASE_URL in .env.local.`,
+          );
+        }
+      }
+
+      const { committed, migrated } = setupApp({
         appDir: outDir,
         templateDir,
         install: options.install,
         git: options.git,
+        dbInit: connected,
         exec: spawnExec,
         warn: (message) => p.log.warn(message),
       });
 
-      // Nothing below touches the network without --provision.
-      const database = options.provision
+      // Nothing below touches the network without --provision. A wired
+      // database makes its Neon step report "exists".
+      const provisioned = options.provision
         ? await provisionApp(
             outDir,
             name,
@@ -298,7 +345,8 @@ export function registerNew(program: Command, cliVersion: string): void {
             interactive,
           )
         : false;
-      printNextSteps(outDir, options.install, database);
+      const database = connected || provisioned;
+      printNextSteps(outDir, options.install, database, migrated);
       if (interactive) p.outro("Done.");
     });
 }

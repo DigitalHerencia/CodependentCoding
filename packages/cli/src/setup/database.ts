@@ -107,3 +107,35 @@ export function templateSqlQuery(templateDir: string): QuerySql {
     }
   };
 }
+
+export function isPostgresUrl(value: string): boolean {
+  try {
+    return /^postgres(?:ql)?:$/.test(new URL(value.trim()).protocol);
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * The pooled (runtime) and direct (Prisma migrations) forms of a pasted
+ * connection string. Neon's pooled host carries `-pooler` after the endpoint
+ * id; any other host is used as is for both.
+ */
+export function databaseUrls(input: string): {
+  pooled: string;
+  direct: string;
+} {
+  if (!isPostgresUrl(input))
+    throw new Error("Expected a postgresql:// connection string.");
+  const url = new URL(input.trim());
+  if (!url.hostname.endsWith(".neon.tech"))
+    return { pooled: url.href, direct: url.href };
+  const [endpoint = "", ...rest] = url.hostname.split(".");
+  const id = endpoint.replace(/-pooler$/, "");
+  const withHost = (host: string) => {
+    const next = new URL(url.href);
+    next.hostname = [host, ...rest].join(".");
+    return next.href;
+  };
+  return { pooled: withHost(`${id}-pooler`), direct: withHost(id) };
+}

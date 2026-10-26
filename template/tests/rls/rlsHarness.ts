@@ -1,5 +1,7 @@
 import { execFileSync } from "node:child_process";
 import { randomUUID } from "node:crypto";
+import { existsSync, readdirSync } from "node:fs";
+import path from "node:path";
 
 import { config } from "dotenv";
 import pg from "pg";
@@ -76,6 +78,17 @@ export async function connect(url: string): Promise<pg.Client> {
 
 /** Migrate as the owner, then apply prisma/rls/*.sql (identity, then modules). */
 export async function migrate(owner: pg.Client): Promise<void> {
+  const migrations = path.join(process.cwd(), "prisma", "migrations");
+  if (
+    !existsSync(migrations) ||
+    !readdirSync(migrations, { withFileTypes: true }).some((entry) =>
+      entry.isDirectory(),
+    )
+  ) {
+    throw new Error(
+      "No prisma/migrations yet: run `pnpm db:init` once and commit prisma/migrations, then rerun `pnpm test:rls`.",
+    );
+  }
   try {
     execFileSync("pnpm", ["exec", "prisma", "migrate", "deploy"], {
       env: childEnv({ DATABASE_URL: ownerUrl, DIRECT_DATABASE_URL: ownerUrl }),

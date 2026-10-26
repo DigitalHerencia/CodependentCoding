@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/progress/v1",
-  "updated": "2026-10-26T22:45:00Z",
+  "updated": "2026-10-26T22:55:00Z",
   "format": "Evidence states: EXECUTED | INSPECTED | NOT_RUN | BLOCKED. Never mark an issue done without EXECUTED evidence for its Validation commands.",
   "milestones": {
     "M0": {
@@ -2837,6 +2837,41 @@
       "issue": "#256 #259",
       "command": "pnpm validate (root)",
       "result": "exit 0: format, lint, typecheck, doctrine:check, 13 files/82 tests"
+    },
+    {
+      "date": "2026-10-26",
+      "state": "EXECUTED",
+      "issue": "#257 #258",
+      "command": "pnpm cli new <scratch>/demo --yes --database-url postgresql://owner:***@localhost:5432/demo (local Postgres 16)",
+      "result": "exit 0; app_user created; .env.local has DATABASE_URL (app_user) + DIRECT_DATABASE_URL (owner); db:init made init + rls migrations; initial commit includes prisma/migrations"
+    },
+    {
+      "date": "2026-10-26",
+      "state": "EXECUTED",
+      "issue": "#257 #258",
+      "command": "demo app: pnpm build (no extra env)",
+      "result": "exit 0"
+    },
+    {
+      "date": "2026-10-26",
+      "state": "EXECUTED",
+      "issue": "#257 #258",
+      "command": "demo app: DATABASE_URL_TEST=<local> pnpm test:rls",
+      "result": "10 passed; with prisma/migrations moved away: exit 1 with 'run pnpm db:init once and commit prisma/migrations'"
+    },
+    {
+      "date": "2026-10-26",
+      "state": "EXECUTED",
+      "issue": "#257 #258",
+      "command": "pnpm validate (root)",
+      "result": "exit 0, 13 files/87 tests"
+    },
+    {
+      "date": "2026-10-26",
+      "state": "EXECUTED",
+      "issue": "#257 #258",
+      "command": "pnpm --dir template validate; template pnpm test; template pnpm test:rls (local Postgres 16)",
+      "result": "exit 0; 66 passed/1 skipped; 10 passed"
     }
   ],
   "known_findings": [
