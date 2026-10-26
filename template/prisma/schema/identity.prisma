@@ -13,6 +13,12 @@ enum MembershipStatus {
   REVOKED
 }
 
+enum InvitationStatus {
+  PENDING
+  ACCEPTED
+  REVOKED
+}
+
 enum WebhookStatus {
   RECEIVED
   PROCESSING
@@ -52,6 +58,7 @@ model Organization {
   imageUrl String?
 
   memberships  Membership[]
+  invitations  Invitation[]
   settings     OrganizationSettings?
   subscription BillingSubscription? // @module billing
 
@@ -99,6 +106,28 @@ model Organization {
 
   createdAt DateTime @default(now()) @db.Timestamptz(6)
   updatedAt DateTime @updatedAt @db.Timestamptz(6)
+}
+
+/// An email invited into an organization with a role. The link carries a token;
+/// only its SHA-256 is stored. Accepting creates (or reactivates) the membership.
+model Invitation {
+  id              String           @id @default(uuid()) @db.Uuid
+  organizationId  String           @db.Uuid
+  email           String
+  role            MembershipRole   @default(MEMBER)
+  status          InvitationStatus @default(PENDING)
+  tokenHash       String           @unique
+  invitedByUserId String?          @db.Uuid
+  expiresAt       DateTime         @db.Timestamptz(6)
+  acceptedAt      DateTime?        @db.Timestamptz(6)
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
+
+  @@index([organizationId, status])
+  @@index([email, status])
 }
 
 model Membership {
