@@ -74,7 +74,7 @@
     "CC-043 (DEC-060): README rewritten; pnpm doctrine:check in root validate. No app deploys (owner). GitHub Actions removed by the owner 2026-10-25: verify locally (pnpm validate; pnpm --dir template validate) before merging.",
     "#256/#259 (DEC-063): progress.json format is an object every skill follows; execution-check rejects unknown progress keys; generated apps ship .claude/settings.json with Edit/Write(.claude/**).",
     "#257/#258 (DEC-064): `hipster-stack new` asks for the Neon connection string (--database-url for scripts), writes pooled app_user + direct owner URLs, runs db:init before the initial commit.",
-    "DEC-066: CI is back as one targeted workflow (.github/workflows/ci.yml, job `changes` decides what runs) plus pr-title.yml. A docs-only PR runs only format:check. RLS runs in CI on a Postgres service container when prisma/, tests/rls/ or lib/db/ change. Repo is squash-only with the PR title as the commit title, so PR titles must be Conventional. Projects v2 workflows on #19 are set by the owner from his PC."
+    "DEC-066: CI is back as one targeted workflow (.github/workflows/ci.yml, job `changes` decides what runs) plus pr-title.yml. A docs-only PR runs only format:check. RLS runs in CI on a Postgres service container when prisma/, tests/rls/ or lib/db/ change. PR titles must be Conventional (they become the squash commit; owner sets squash-only + PR_TITLE in repo settings). Projects v2 workflows on #19 are set by the owner from his PC."
   ],
   "risks": [
     "Lint hook exits 0 silently when node_modules/eslint is missing; a failed install hides lint feedback. On Windows, run pnpm install with VS Code closed (DEC-019).",
