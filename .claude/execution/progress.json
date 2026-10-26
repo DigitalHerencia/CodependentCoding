@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/progress/v1",
-  "updated": "2026-10-25T21:50:00Z",
+  "updated": "2026-10-26T22:45:00Z",
   "format": "Evidence states: EXECUTED | INSPECTED | NOT_RUN | BLOCKED. Never mark an issue done without EXECUTED evidence for its Validation commands.",
   "milestones": {
     "M0": {
@@ -2787,6 +2787,10 @@
       "state": "EXECUTED",
       "command": "git rm .github/workflows/ci.yml; gh api actions/runs?status=in_progress|queued|waiting|pending; gh api branches/main/protection",
       "result": "workflow deleted; 0 running or queued runs to cancel; main has no branch protection, so no required check depends on CI"
+    },
+    {
+      "date": "2026-10-25",
+      "state": "EXECUTED",
       "command": "pnpm validate (root, on docs/203-readme-doctrine-check)",
       "result": "format, lint, typecheck, doctrine:check, test 13 files/80 tests: all exit 0"
     },
@@ -2795,6 +2799,10 @@
       "state": "EXECUTED",
       "command": "Release profile on fresh clone of main 403e37b: pnpm validate; pnpm --dir template validate; template pnpm test; template test:rls (local Postgres 16)",
       "result": "root exit 0 (80 tests); template validate exit 0; 66 passed/1 skipped; rls 10/10"
+    },
+    {
+      "date": "2026-10-25",
+      "state": "EXECUTED",
       "issue": "homepage-mockup",
       "env": "cloud container",
       "command": "pnpm build (root)",
@@ -2815,6 +2823,20 @@
       "env": "cloud container",
       "command": "playwright screenshots of / at 390, 894, 1440 px",
       "result": "layout matches Landing Mockup.jpg"
+    },
+    {
+      "date": "2026-10-26",
+      "state": "EXECUTED",
+      "issue": "#256 #259",
+      "command": "pnpm exec vitest run tests/cli/governance.test.ts tests/plugin/shipHandoff.test.ts",
+      "result": "2 files, 10 tests passed"
+    },
+    {
+      "date": "2026-10-26",
+      "state": "EXECUTED",
+      "issue": "#256 #259",
+      "command": "pnpm validate (root)",
+      "result": "exit 0: format, lint, typecheck, doctrine:check, 13 files/82 tests"
     }
   ],
   "known_findings": [

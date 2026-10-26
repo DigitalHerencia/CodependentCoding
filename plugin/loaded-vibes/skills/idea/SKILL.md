@@ -91,6 +91,16 @@ pnpm format
 
 The check must exit 0: all three contracts parse and no `TODO` is left in the five docs or three contracts. Fix and rerun until it does; never report it passing without running it. Then run `pnpm format:check` and record both results as EXECUTED evidence in `.claude/execution/progress.json` (`evidence` array: date, state, command, result).
 
+## Record format
+
+Write `.claude/execution/progress.json` only in the shape its `format` field spells out: statuses `todo`, `in-progress`, `in-review`, `done`, `blocked`; issue entries under `issues.<ID>`; one `evidence` entry per command, `{ "date", "state", "command", "result" }`, with `state` one of `EXECUTED`, `INSPECTED`, `NOT_RUN`, `BLOCKED`. Never add other top-level keys. Before handing back, run:
+
+```text
+node "${CLAUDE_PLUGIN_ROOT}/scripts/execution-check.mjs" .
+```
+
+Fix until it exits 0.
+
 ## 6. Hand back
 
 Reply with:

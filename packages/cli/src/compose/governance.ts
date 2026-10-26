@@ -76,7 +76,7 @@ export function renderGovernance(text: string, vars: GovernanceVars): string {
 }
 
 /**
- * Writes the app's governance (CLAUDE.md, context/docs, .claude contracts and
+ * Writes the app's governance (CLAUDE.md, context/docs, .claude settings, contracts and
  * execution state, issue README) from assets/app-governance. `new` calls it
  * once; `add` never does, so the owner's edits are never overwritten.
  */

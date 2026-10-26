@@ -190,12 +190,14 @@ test("a fresh app's execution state is consistent and broken state is named", ()
       "SH-002": { status: "shipped" },
     },
     evidence: [{ command: "pnpm test" }],
+    checks: [{ command: "pnpm lint", result: "exit 0" }],
   });
 
   expect(checkExecution(appDir)).toEqual([
     "decisions.json: decisions[1]: DEC-001 is not after DEC-001 (append only)",
     "decisions.json: decisions[2]: id must be DEC-NNN",
     "handoff.json: next_issue: SH-009 has no file in context/specs/issues",
+    "progress.json: checks is not part of the record format (use evidence)",
     'progress.json: issues.SH-001: acceptance "passed" must start with EXECUTED, INSPECTED, NOT_RUN or BLOCKED',
     "progress.json: issues.SH-001: done needs at least one EXECUTED acceptance line",
     "progress.json: issues: SH-002 has no file in context/specs/issues",
@@ -211,7 +213,7 @@ test("a fresh app's execution state is consistent and broken state is named", ()
     },
   );
   expect(cli.status).toBe(1);
-  expect(cli.stderr).toContain("8 problem(s) in .claude/execution.");
+  expect(cli.stderr).toContain("9 problem(s) in .claude/execution.");
   expect(checkExecution(sandbox)).toEqual([
     `${sandbox}: not a generated app (no hipster.json)`,
   ]);

@@ -1,7 +1,13 @@
 {
   "$schema": "codependent-coding/execution/progress/v1",
   "updated": "{{createdAt}}",
-  "format": "Issue status and EXECUTED evidence (command and result). Never record a pass without running the command.",
+  "format": {
+    "rule": "Every skill writes this one shape. Never record a pass without running the command; then run the plugin's scripts/execution-check.mjs until it exits 0.",
+    "statuses": ["todo", "in-progress", "in-review", "done", "blocked"],
+    "issue": "issues.<ID> = { status, branch, pr, decisions: [DEC-NNN], acceptance: { <criterion>: \"<STATE>: <command> -> <result>\" } }; in-review and done need at least one EXECUTED line.",
+    "evidence": "Append one entry per command run, in order (the session's changelog): { date: YYYY-MM-DD, state, command, result }.",
+    "states": "EXECUTED (ran it), INSPECTED (read it), NOT_RUN (with why), BLOCKED (with what is needed)."
+  },
   "issues": {},
   "completed": [],
   "evidence": [],

@@ -14,6 +14,16 @@ import { pathToFileURL } from "node:url";
 export const STATUSES = ["todo", "in-progress", "in-review", "done", "blocked"];
 export const EVIDENCE = /^(EXECUTED|INSPECTED|NOT_RUN|BLOCKED)\b/;
 const FILES = ["progress", "decisions", "handoff"];
+const PROGRESS_KEYS = [
+  "$schema",
+  "updated",
+  "format",
+  "issues",
+  "completed",
+  "evidence",
+  "known_findings",
+  "blocked",
+];
 
 function readJson(appDir, name, problems) {
   const file = `.claude/execution/${name}.json`;
@@ -100,6 +110,12 @@ export function checkExecution(appDir) {
   }
 
   if (progress) {
+    for (const key of Object.keys(progress)) {
+      if (!PROGRESS_KEYS.includes(key))
+        problems.push(
+          `progress.json: ${key} is not part of the record format (use evidence)`,
+        );
+    }
     const issues = progress.issues ?? {};
     for (const [id, entry] of Object.entries(issues)) {
       const where = `progress.json: issues.${id}`;
