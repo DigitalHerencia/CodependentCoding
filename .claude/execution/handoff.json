@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/handoff/v1",
-  "updated": "2026-10-26T23:55:00Z",
+  "updated": "2026-10-27T00:00:00Z",
   "format": "Overwrite each session. Minimum state the next session needs to resume safely.",
   "status": "follow-ups",
   "milestone": "M6",
@@ -9,7 +9,7 @@
   "queue": [],
   "branch": "main",
   "in_flight": [
-    "Thread 'Rebuild authorization and fix test-run notes': #276 invitations merged. PR for --tenancy/--access (closes #260) open; next and last: the `new` wizard (banner, keys, confirm screen) from local branch local/wizard."
+    "Thread 'Rebuild authorization and fix test-run notes': last PR is the `new` wizard (banner, Clerk/Neon/integration keys, confirm screen). After it merges, #234/#256-#261 work from that thread is done."
   ],
   "notes": [
     "Governance package is uncommitted in the owner's working tree; owner reviews with `git status` / `git diff`, then commits on a branch `chore/governance-package`.",
