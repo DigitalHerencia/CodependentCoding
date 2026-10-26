@@ -26,6 +26,6 @@
     "commander": "15.0.0"
   },
   "devDependencies": {
-    "tsdown": "0.23.1"
+    "tsdown": "0.23.2"
   }
 }
