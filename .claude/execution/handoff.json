@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/handoff/v1",
-  "updated": "2026-10-26T22:55:00Z",
+  "updated": "2026-10-26T23:20:00Z",
   "format": "Overwrite each session. Minimum state the next session needs to resume safely.",
   "status": "follow-ups",
   "milestone": "M6",
@@ -9,7 +9,7 @@
   "queue": [],
   "branch": "main",
   "in_flight": [
-    "Thread 'Rebuild authorization and fix test-run notes': #234 authz after the owner picks the role mapping; #260 and #261 wait on the owner's notes."
+    "#234 PR on claude/project-thread-lxg6je: four roles + new permission strings + lib/db/rls.ts (DEC-065 proposed). Merge only after the owner picks the role mapping. #260 and #261 wait on the owner's notes."
   ],
   "notes": [
     "Governance package is uncommitted in the owner's working tree; owner reviews with `git status` / `git diff`, then commits on a branch `chore/governance-package`.",
@@ -73,7 +73,8 @@
     "DEC-062 (2026-10-25): GitHub Actions removed at the owner's request. There is no CI. Merge a PR when the local checks pass: `pnpm validate` at root and `pnpm --dir template validate` (plus `pnpm --dir template test:rls` for RLS changes). Paste their output as PR evidence. Do not add workflows back.",
     "CC-043 (DEC-060): README rewritten; pnpm doctrine:check in root validate. No app deploys (owner). GitHub Actions removed by the owner 2026-10-25: verify locally (pnpm validate; pnpm --dir template validate) before merging.",
     "#256/#259 (DEC-063): progress.json format is an object every skill follows; execution-check rejects unknown progress keys; generated apps ship .claude/settings.json with Edit/Write(.claude/**).",
-    "#257/#258 (DEC-064): `hipster-stack new` asks for the Neon connection string (--database-url for scripts), writes pooled app_user + direct owner URLs, runs db:init before the initial commit."
+    "#257/#258 (DEC-064): `hipster-stack new` asks for the Neon connection string (--database-url for scripts), writes pooled app_user + direct owner URLs, runs db:init before the initial commit.",
+    "#234 (DEC-065): roles OWNER/ADMIN/MEMBER/VIEWER, permissions `<module>.<resource>:<action>`, base resources `base.*`; RBAC in lib/authz/permissions.ts, ABAC in lib/authz/policies.ts; RLS wrapper lib/db/rls.ts."
   ],
   "risks": [
     "Lint hook exits 0 silently when node_modules/eslint is missing; a failed install hides lint feedback. On Windows, run pnpm install with VS Code closed (DEC-019).",

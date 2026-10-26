@@ -71,7 +71,7 @@ test("signed-out callers get UNAUTHENTICATED", async () => {
   assert.equal(!result.ok && result.error.code, "UNAUTHENTICATED");
 });
 
-test("roles without {{module}}:write get FORBIDDEN before any write", async () => {
+test("roles without {{resource}}:create get FORBIDDEN before any write", async () => {
   state.role = "VIEWER";
   state.tx = {
     {{entity}}: { create: () => assert.fail("viewer reached the write") },

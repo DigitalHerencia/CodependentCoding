@@ -5,7 +5,7 @@ import type { NextRequest } from "next/server";
 import { config } from "dotenv";
 
 import type { ClerkUserProjection } from "@/types/integrationTypes";
-import { withProviderTransaction } from "@/lib/db/provider";
+import { withProviderTransaction } from "@/lib/db/rls";
 import { baseEnv } from "@/lib/env/base";
 import {
   anonymizeClerkUserTx,

@@ -4,9 +4,8 @@ export const billingModule = {
   id: "billing",
   settings: [{ label: "Billing", href: "/settings/billing" }],
   permissions: {
-    resources: [],
-    catalog: ["billing:read", "billing:manage"],
-    grants: { BILLING: ["billing:read"] },
+    resources: ["billing.subscription"],
+    grants: { MEMBER: ["read"] },
   },
   integration: {
     name: "Stripe",

@@ -27,13 +27,8 @@ export const projectsModule = {
     },
   ],
   permissions: {
-    resources: ["project", "task"],
-    catalog: ["projects:read", "projects:write"],
-    grants: {
-      MANAGER: ["projects:read", "projects:write"],
-      MEMBER: ["projects:read", "projects:write"],
-      VIEWER: ["projects:read"],
-    },
+    resources: ["projects.project", "projects.task"],
+    grants: { MEMBER: ["read", "create", "update"] },
   },
   records: [{ label: "Projects", model: "project" }],
 } satisfies ModuleDefinition;

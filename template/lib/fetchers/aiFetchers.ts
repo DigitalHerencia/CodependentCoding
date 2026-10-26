@@ -9,7 +9,7 @@ import { withAuthenticatedRead } from "@/lib/db/tenant";
 
 export async function getMyAiGenerations(limit = 50) {
   return withAuthenticatedRead(async (tx, access) => {
-    assertPermission(access, "ai:read");
+    assertPermission(access, "ai.generation:read");
 
     const rows = await tx.aiGeneration.findMany({
       where: {
@@ -45,7 +45,7 @@ export async function getMyAiGenerations(limit = 50) {
 
 export async function getMyAiUsage() {
   return withAuthenticatedRead(async (tx, access) => {
-    assertPermission(access, "ai:read");
+    assertPermission(access, "ai.generation:read");
 
     const aggregate = await tx.aiUsageLedger.aggregate({
       where: {

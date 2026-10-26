@@ -21,7 +21,7 @@ import { withAuthenticatedRead } from "@/lib/db/tenant";
 
 export async function getCrmDeals(limit = 50) {
   return withAuthenticatedRead(async (tx, access) => {
-    assertPermission(access, "crm:read");
+    assertPermission(access, "crm.deal:read");
 
     const rows = await tx.crmDeal.findMany({
       where: {
@@ -46,7 +46,7 @@ export async function getCrmDeals(limit = 50) {
 
 export async function getCrmDeal(dealId: string) {
   return withAuthenticatedRead(async (tx, access) => {
-    assertPermission(access, "crm:read");
+    assertPermission(access, "crm.deal:read");
 
     const record = await tx.crmDeal.findFirst({
       where: {
@@ -63,7 +63,7 @@ export async function getCrmDeal(dealId: string) {
 
 export async function getClosedWonCrmValue(periodStart: Date, periodEnd: Date) {
   return withAuthenticatedRead(async (tx, access) => {
-    assertPermission(access, "crm:read");
+    assertPermission(access, "crm.deal:read");
 
     const result = await tx.crmDeal.aggregate({
       where: {
@@ -86,7 +86,7 @@ export async function getContacts(rawCriteria: unknown = {}) {
   const criteria = contactListCriteriaSchema.parse(rawCriteria);
 
   return withAuthenticatedRead(async (tx, access) => {
-    assertPermission(access, "crm:read");
+    assertPermission(access, "crm.contact:read");
 
     const orderBy =
       criteria.sort === "updated-desc"
@@ -145,7 +145,7 @@ export async function getContactById(rawContactId: unknown) {
   const contactId = contactIdSchema.parse(rawContactId);
 
   return withAuthenticatedRead(async (tx, access) => {
-    assertPermission(access, "crm:read");
+    assertPermission(access, "crm.contact:read");
     const row = await tx.crmContact.findFirst({
       where: {
         id: contactId,
@@ -160,7 +160,7 @@ export async function getContactById(rawContactId: unknown) {
 
 export async function getCrmAccount(accountId: string) {
   return withAuthenticatedRead(async (tx, access) => {
-    assertPermission(access, "crm:read");
+    assertPermission(access, "crm.account:read");
     const row = await tx.crmAccount.findFirst({
       where: {
         id: accountId,
@@ -175,7 +175,7 @@ export async function getCrmAccount(accountId: string) {
 
 export async function getCrmAccounts(limit = 100) {
   return withAuthenticatedRead(async (tx, access) => {
-    assertPermission(access, "crm:read");
+    assertPermission(access, "crm.account:read");
     const rows = await tx.crmAccount.findMany({
       where: { organizationId: access.organizationId, archivedAt: null },
       orderBy: { name: "asc" },

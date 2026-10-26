@@ -39,7 +39,7 @@ export async function createProject(
   return toActionResult(async () => {
     const identity = await requireIdentity();
     const saved = await withTenantTransaction(identity, async (tx, access) => {
-      assertPermission(access, "projects:write");
+      assertPermission(access, "projects.project:create");
       const input = createProjectSchema.parse(rawInput);
       const record = await tx.project.create({
         data: {
@@ -82,7 +82,7 @@ export async function createTask(
   return toActionResult(async () => {
     const identity = await requireIdentity();
     const saved = await withTenantTransaction(identity, async (tx, access) => {
-      assertPermission(access, "projects:write");
+      assertPermission(access, "projects.task:create");
       const input = createTaskSchema.parse(rawInput);
       const project = await tx.project.findFirst({
         where: {
@@ -156,7 +156,7 @@ export async function updateTaskStatus(
   return toActionResult(async () => {
     const identity = await requireIdentity();
     const saved = await withTenantTransaction(identity, async (tx, access) => {
-      assertPermission(access, "projects:write");
+      assertPermission(access, "projects.task:update");
       const input = updateTaskStatusSchema.parse(rawInput);
       const record = await updateTaskStatusTx(tx, {
         organizationId: access.organizationId,
@@ -177,7 +177,7 @@ export async function updateProject(
   return toActionResult(async () => {
     const identity = await requireIdentity();
     const saved = await withTenantTransaction(identity, async (tx, access) => {
-      assertPermission(access, "projects:write");
+      assertPermission(access, "projects.project:update");
       const input = updateProjectSchema.parse(rawInput);
       const result = await tx.project.updateMany({
         where: {
@@ -222,7 +222,7 @@ export async function updateTask(
   return toActionResult(async () => {
     const identity = await requireIdentity();
     const saved = await withTenantTransaction(identity, async (tx, access) => {
-      assertPermission(access, "projects:write");
+      assertPermission(access, "projects.task:update");
       const input = updateTaskSchema.parse(rawInput);
       const result = await tx.task.updateMany({
         where: {
@@ -267,7 +267,7 @@ export async function assignProjectTask(
   return toActionResult(async () => {
     const identity = await requireIdentity();
     const saved = await withTenantTransaction(identity, async (tx, access) => {
-      assertPermission(access, "projects:write");
+      assertPermission(access, "projects.task:update");
       const input = assignTaskSchema.parse(rawInput);
       return toTaskDTO(
         await assignTaskTx(tx, {

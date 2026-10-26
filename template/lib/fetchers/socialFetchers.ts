@@ -15,7 +15,7 @@ import { withAuthenticatedRead } from "@/lib/db/tenant";
 
 export async function getScheduledSocialPosts(limit = 100) {
   return withAuthenticatedRead(async (tx, access) => {
-    assertPermission(access, "social:read");
+    assertPermission(access, "social.post:read");
 
     const rows = await tx.socialPost.findMany({
       where: {
@@ -35,7 +35,7 @@ export async function getScheduledSocialPosts(limit = 100) {
 
 export async function getSocialAccounts() {
   return withAuthenticatedRead(async (tx, access) => {
-    assertPermission(access, "social:read");
+    assertPermission(access, "social.account:read");
     const rows = await tx.socialAccount.findMany({
       where: { organizationId: access.organizationId, active: true },
       orderBy: { displayName: "asc" },
@@ -47,7 +47,7 @@ export async function getSocialAccounts() {
 
 export async function getMediaAssets(limit = 100) {
   return withAuthenticatedRead(async (tx, access) => {
-    assertPermission(access, "social:read");
+    assertPermission(access, "social.media:read");
     const rows = await tx.asset.findMany({
       where: { organizationId: access.organizationId },
       orderBy: { createdAt: "desc" },
@@ -60,7 +60,7 @@ export async function getMediaAssets(limit = 100) {
 
 export async function getSocialPosts(limit = 100) {
   return withAuthenticatedRead(async (tx, access) => {
-    assertPermission(access, "social:read");
+    assertPermission(access, "social.post:read");
     const rows = await tx.socialPost.findMany({
       where: { organizationId: access.organizationId },
       orderBy: [{ scheduledAt: "asc" }, { createdAt: "desc" }],

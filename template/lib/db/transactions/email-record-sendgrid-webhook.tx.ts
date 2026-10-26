@@ -5,7 +5,7 @@ import type { z } from "zod";
 import {
   withProviderOrganizationTransaction,
   withProviderTransaction,
-} from "@/lib/db/provider";
+} from "@/lib/db/rls";
 import type { sendGridWebhookEventsSchema } from "@/schemas/integrationSchemas";
 import {
   claimWebhookEventTx,

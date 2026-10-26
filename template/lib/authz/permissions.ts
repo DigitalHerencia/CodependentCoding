@@ -1,52 +1,50 @@
 import "server-only";
 
 import type { AccessContext, AppRole, Permission } from "@/types/accessTypes";
+import type { ModulePermissions, PermissionAction } from "@/types/moduleTypes";
 
 import { installedModules } from "@/lib/modules/registry";
 
-export const basePermissions = [
-  "organization:read",
-  "organization:write",
-] as const;
+import { appRoles, isPrivilegedRole } from "./roles";
+import { baseResources, permissionActions, resourceKinds } from "./resources";
 
-/** Base permissions plus every installed module's catalog. */
-export const permissions: readonly Permission[] = [
-  ...basePermissions,
-  ...installedModules.flatMap((entry) => entry.permissions?.catalog ?? []),
-];
+/** Every `<module>.<resource>:<action>`: each known resource with each action. */
+export const permissions: readonly Permission[] = resourceKinds.flatMap(
+  (resource) =>
+    permissionActions.map((action) => `${resource}:${action}` as Permission),
+);
 
-const baseGrants: Record<AppRole, readonly Permission[]> = {
-  OWNER: basePermissions,
-  ADMIN: basePermissions,
-  MANAGER: ["organization:read"],
-  MEMBER: ["organization:read"],
-  BILLING: ["organization:read"],
-  SUPPORT: ["organization:read"],
-  CLIENT: ["organization:read"],
-  VIEWER: ["organization:read"],
+/** Base grants below ADMIN: staff and outside viewers can read the organization. */
+const baseGrants: ModulePermissions = {
+  resources: baseResources,
+  grants: { MEMBER: ["read"], VIEWER: ["read"] },
 };
 
+function expand(
+  { resources, grants }: ModulePermissions,
+  role: AppRole,
+): Permission[] {
+  return (grants[role] ?? []).flatMap((grant) =>
+    permissionActions.includes(grant as PermissionAction)
+      ? resources.map((resource) => `${resource}:${grant}` as Permission)
+      : [grant as Permission],
+  );
+}
+
 function grantsFor(role: AppRole): ReadonlySet<Permission> {
-  if (role === "OWNER" || role === "ADMIN") return new Set(permissions);
+  if (isPrivilegedRole(role)) return new Set(permissions);
   return new Set([
-    ...baseGrants[role],
-    ...installedModules.flatMap(
-      (entry) => entry.permissions?.grants[role] ?? [],
+    ...expand(baseGrants, role),
+    ...installedModules.flatMap((entry) =>
+      entry.permissions ? expand(entry.permissions, role) : [],
     ),
   ]);
 }
 
-/** OWNER and ADMIN hold the whole catalog; other roles get base grants plus what each module grants them. */
-export const grants: Record<AppRole, ReadonlySet<Permission>> = {
-  OWNER: grantsFor("OWNER"),
-  ADMIN: grantsFor("ADMIN"),
-  MANAGER: grantsFor("MANAGER"),
-  MEMBER: grantsFor("MEMBER"),
-  BILLING: grantsFor("BILLING"),
-  SUPPORT: grantsFor("SUPPORT"),
-  CLIENT: grantsFor("CLIENT"),
-  VIEWER: grantsFor("VIEWER"),
-};
+/** OWNER and ADMIN hold every permission; MEMBER and VIEWER get base grants plus each module's. */
+export const grants = Object.fromEntries(
+  appRoles.map((role) => [role, grantsFor(role)]),
+) as Record<AppRole, ReadonlySet<Permission>>;
 
 export class AuthorizationError extends Error {
   readonly code = "FORBIDDEN";
@@ -57,6 +55,7 @@ export class AuthorizationError extends Error {
   }
 }
 
+/** RBAC: does the caller's role allow this action on this kind of resource? */
 export function hasPermission(
   context: AccessContext,
   permission: Permission,

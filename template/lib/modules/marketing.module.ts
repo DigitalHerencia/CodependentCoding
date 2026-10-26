@@ -20,13 +20,8 @@ export const marketingModule = {
     },
   ],
   permissions: {
-    resources: ["campaign"],
-    catalog: ["marketing:read", "marketing:write"],
-    grants: {
-      MANAGER: ["marketing:read", "marketing:write"],
-      MEMBER: ["marketing:read"],
-      VIEWER: ["marketing:read"],
-    },
+    resources: ["marketing.campaign", "marketing.audience"],
+    grants: { MEMBER: ["read", "create", "update"] },
   },
   records: [{ label: "Campaigns", model: "campaign" }],
 } satisfies ModuleDefinition;

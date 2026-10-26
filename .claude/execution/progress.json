@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/progress/v1",
-  "updated": "2026-10-26T22:55:00Z",
+  "updated": "2026-10-26T23:20:00Z",
   "format": "Evidence states: EXECUTED | INSPECTED | NOT_RUN | BLOCKED. Never mark an issue done without EXECUTED evidence for its Validation commands.",
   "milestones": {
     "M0": {
@@ -2872,6 +2872,41 @@
       "issue": "#257 #258",
       "command": "pnpm --dir template validate; template pnpm test; template pnpm test:rls (local Postgres 16)",
       "result": "exit 0; 66 passed/1 skipped; 10 passed"
+    },
+    {
+      "date": "2026-10-26",
+      "state": "EXECUTED",
+      "issue": "#234",
+      "command": "template: pnpm exec prisma migrate deploy on a db at the previous migration with one membership per old role (local Postgres 16)",
+      "result": "OWNER/ADMIN kept; MANAGER, MEMBER, BILLING, SUPPORT -> MEMBER; CLIENT, VIEWER -> VIEWER; RLS still enabled+forced; prisma migrate diff vs schema: empty"
+    },
+    {
+      "date": "2026-10-26",
+      "state": "EXECUTED",
+      "issue": "#234",
+      "command": "template: prisma migrate deploy as a non-superuser owner on an empty db",
+      "result": "all migrations applied"
+    },
+    {
+      "date": "2026-10-26",
+      "state": "EXECUTED",
+      "issue": "#234",
+      "command": "pnpm validate (root)",
+      "result": "exit 0, 13 files/87 tests (slice templates included)"
+    },
+    {
+      "date": "2026-10-26",
+      "state": "EXECUTED",
+      "issue": "#234",
+      "command": "pnpm --dir template validate; template pnpm test; template pnpm build",
+      "result": "exit 0; 72 passed/1 skipped; build exit 0"
+    },
+    {
+      "date": "2026-10-26",
+      "state": "EXECUTED",
+      "issue": "#234",
+      "command": "template pnpm test:rls (fresh local Postgres 16 db)",
+      "result": "10 passed"
     }
   ],
   "known_findings": [

@@ -145,6 +145,8 @@ export interface Names {
   labelPlural: string;
   /** invoicing */
   module: string;
+  /** invoicing.invoice (authz resource; permissions are `<resource>:<action>`) */
+  resource: string;
   /** Invoicing */
   Module: string;
 }
@@ -200,6 +202,7 @@ export function toNames(
     label: pascal(words(entity)),
     labelPlural: pascal(words(entities)),
     module: moduleId,
+    resource: `${moduleId}.${kebab(entity)}`,
     Module: pascal(moduleId),
   };
 }

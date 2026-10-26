@@ -97,7 +97,7 @@ architecture_checks:
 
   database_runtime_expected:
     - lib/db/client.ts
-    - lib/db/provider.ts
+    - lib/db/rls.ts
     - lib/db/tenant.ts
     - lib/db/selects
     - lib/db/dto

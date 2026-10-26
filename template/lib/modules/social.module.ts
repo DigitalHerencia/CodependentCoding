@@ -20,13 +20,8 @@ export const socialModule = {
     },
   ],
   permissions: {
-    resources: ["social-post"],
-    catalog: ["social:read", "social:write"],
-    grants: {
-      MANAGER: ["social:read", "social:write"],
-      MEMBER: ["social:read", "social:write"],
-      VIEWER: ["social:read"],
-    },
+    resources: ["social.post", "social.account", "social.media"],
+    grants: { MEMBER: ["read", "create", "update"] },
   },
   records: [{ label: "Social posts", model: "socialPost" }],
 } satisfies ModuleDefinition;

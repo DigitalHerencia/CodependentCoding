@@ -12,8 +12,7 @@ export const adminModule = {
     ],
   },
   permissions: {
-    resources: ["audit-event"],
-    catalog: ["admin:audit", "admin:records", "admin:users", "admin:bulk"],
+    resources: ["admin.audit-event", "admin.record", "admin.membership"],
     grants: {},
   },
 } satisfies ModuleDefinition;

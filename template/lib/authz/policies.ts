@@ -6,8 +6,14 @@ import type {
   ResourceAccessDescriptor,
 } from "@/types/accessTypes";
 
-import { isPrivilegedRole } from "./roles";
+import { isOutsideRole, isPrivilegedRole } from "./roles";
 import { assertPermission } from "./permissions";
+
+/**
+ * ABAC: record-level rules that run after the RBAC permission check. They
+ * read attributes of the caller (organization, membership, role) and of the
+ * record (organization, owner, assignee, requester, shared flag).
+ */
 
 export class ResourceAuthorizationError extends Error {
   readonly code = "FORBIDDEN";
@@ -46,6 +52,11 @@ export function requestedResource(
   return resource.requesterUserId === context.userId;
 }
 
+/** Outside viewers (clients) see only what is shared with them or theirs; staff see the whole organization. */
+export function limitedToOwnRecords(context: AccessContext): boolean {
+  return isOutsideRole(context.role);
+}
+
 export function canReadResource(
   context: AccessContext,
   resource: ResourceAccessDescriptor,
@@ -54,7 +65,7 @@ export function canReadResource(
     return false;
   }
 
-  if (context.role !== "CLIENT") {
+  if (!limitedToOwnRecords(context)) {
     return true;
   }
 
@@ -76,13 +87,13 @@ export function canManageOwnedOrAssignedResource(
 
   return (
     isPrivilegedRole(context.role) ||
-    context.role === "MANAGER" ||
     ownsResource(context, resource) ||
     isAssignedResource(context, resource) ||
-    (context.role === "CLIENT" && requestedResource(context, resource))
+    (limitedToOwnRecords(context) && requestedResource(context, resource))
   );
 }
 
+/** RBAC then ABAC for a write to one record. */
 export function authorizeOwnedOrAssignedWrite(
   context: AccessContext,
   permission: Permission,

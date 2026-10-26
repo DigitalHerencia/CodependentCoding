@@ -32,7 +32,7 @@ async function createGeneration(
   const input = createAiGenerationSchema.parse(rawInput);
   const identity = await requireIdentity();
   return withTenantTransaction(identity, async (tx, access) => {
-    assertPermission(access, "ai:write");
+    assertPermission(access, "ai.generation:create");
 
     if (rateLimit) {
       if (!Number.isInteger(rateLimit.limit) || rateLimit.limit < 1) {
@@ -86,7 +86,7 @@ export async function completeAiGenerationRecord(rawInput: unknown) {
   const input = completeAiGenerationSchema.parse(rawInput);
   const identity = await requireIdentity();
   return withTenantTransaction(identity, async (tx, access) => {
-    assertPermission(access, "ai:write");
+    assertPermission(access, "ai.generation:update");
     const record = await completeAiGenerationTx(tx, {
       organizationId: access.organizationId,
       generationId: input.generationId,
@@ -103,7 +103,7 @@ export async function failAiGenerationRecord(rawInput: unknown) {
   const input = failAiGenerationSchema.parse(rawInput);
   const identity = await requireIdentity();
   return withTenantTransaction(identity, async (tx, access) => {
-    assertPermission(access, "ai:write");
+    assertPermission(access, "ai.generation:update");
     return failAiGenerationTx(tx, {
       organizationId: access.organizationId,
       generationId: input.generationId,

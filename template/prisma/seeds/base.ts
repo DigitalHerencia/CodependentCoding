@@ -126,14 +126,14 @@ export async function seedBase(
     update: {
       organizationId: organization.id,
       userId: agent.id,
-      role: "SUPPORT",
+      role: "MEMBER",
       status: "ACTIVE",
     },
     create: {
       id: seedIds.agentMembership,
       organizationId: organization.id,
       userId: agent.id,
-      role: "SUPPORT",
+      role: "MEMBER",
       status: "ACTIVE",
     },
   });

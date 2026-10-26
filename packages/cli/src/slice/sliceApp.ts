@@ -368,7 +368,7 @@ export async function planSlice(options: SliceOptions): Promise<SlicePlan> {
       ts,
       currentModule,
       { label: names.labelPlural, href: `/${names.route}` },
-      names.entity,
+      names.resource,
     );
     skipped.push(...extended.skipped);
     put(moduleFile, extended.text, false);

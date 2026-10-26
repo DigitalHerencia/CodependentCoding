@@ -20,13 +20,8 @@ export const aiModule = {
     },
   ],
   permissions: {
-    resources: ["ai-generation"],
-    catalog: ["ai:read", "ai:write"],
-    grants: {
-      MANAGER: ["ai:read", "ai:write"],
-      MEMBER: ["ai:read", "ai:write"],
-      VIEWER: ["ai:read"],
-    },
+    resources: ["ai.generation"],
+    grants: { MEMBER: ["read", "create", "update"] },
   },
   records: [{ label: "AI generations", model: "aiGeneration" }],
 } satisfies ModuleDefinition;
