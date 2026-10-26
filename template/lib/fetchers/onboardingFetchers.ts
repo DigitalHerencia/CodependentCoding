@@ -23,7 +23,7 @@ export const getOnboardingState = cache(async () =>
     return {
       completed: Boolean(completion),
       workspaceName: organization.name,
-      canRename: hasPermission(access, "organization:write"),
+      canRename: hasPermission(access, "base.organization:update"),
     };
   }),
 );

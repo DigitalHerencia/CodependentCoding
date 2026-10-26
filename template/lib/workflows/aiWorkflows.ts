@@ -33,7 +33,7 @@ export async function getAiWorkspaceWorkflow() {
 // Provider configuration is not a persisted read, so it lives here rather than in a fetcher.
 export async function getAiPlaygroundConfiguration() {
   return withAuthenticatedRead(async (_tx, access) => {
-    assertPermission(access, "ai:read");
+    assertPermission(access, "ai.generation:read");
     return {
       configured: isHuggingFaceConfigured(),
       model: getConfiguredHuggingFaceModel(),

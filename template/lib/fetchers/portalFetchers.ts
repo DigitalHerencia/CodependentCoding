@@ -1,6 +1,7 @@
 import "server-only";
 
 import { assertPermission, hasPermission } from "@/lib/authz/permissions";
+import { limitedToOwnRecords } from "@/lib/authz/policies";
 import {
   toPortalBillingSubscriptionDTO,
   toPortalDocumentDTO,
@@ -15,9 +16,9 @@ import { withAuthenticatedRead } from "@/lib/db/tenant";
 
 export async function getPortalDocuments(limit = 100) {
   return withAuthenticatedRead(async (tx, access) => {
-    assertPermission(access, "portal:read");
+    assertPermission(access, "portal.document:read");
 
-    const clientOnly = access.role === "CLIENT";
+    const clientOnly = limitedToOwnRecords(access);
 
     const rows = await tx.portalDocument.findMany({
       where: {
@@ -44,7 +45,7 @@ export async function getPortalDocuments(limit = 100) {
 
 export async function getPortalBilling() {
   return withAuthenticatedRead(async (tx, access) => {
-    assertPermission(access, "portal:billing");
+    assertPermission(access, "portal.billing:read");
     const [subscription, invoices] = await Promise.all([
       tx.billingSubscription.findUnique({
         where: { organizationId: access.organizationId },
@@ -68,13 +69,13 @@ export async function getPortalBilling() {
 
 export async function getPortalWriteAccess() {
   return withAuthenticatedRead(async (_tx, access) => {
-    return hasPermission(access, "portal:write");
+    return hasPermission(access, "portal.document:create");
   });
 }
 
 export async function getPortalAssets() {
   return withAuthenticatedRead(async (tx, access) => {
-    assertPermission(access, "portal:write");
+    assertPermission(access, "portal.document:create");
     return tx.asset.findMany({
       where: { organizationId: access.organizationId },
       orderBy: { createdAt: "desc" },
@@ -86,12 +87,12 @@ export async function getPortalAssets() {
 
 export async function getPortalDocument(documentId: string) {
   return withAuthenticatedRead(async (tx, access) => {
-    assertPermission(access, "portal:read");
+    assertPermission(access, "portal.document:read");
     const row = await tx.portalDocument.findFirst({
       where: {
         id: documentId,
         organizationId: access.organizationId,
-        ...(access.role === "CLIENT"
+        ...(limitedToOwnRecords(access)
           ? { clientVisible: true, status: { not: "ARCHIVED" as const } }
           : {}),
       },

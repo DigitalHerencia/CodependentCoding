@@ -52,7 +52,7 @@ URL ─► app/ (route) ─► features/ ─► components/blocks ─► compone
 | CRUD write               | `lib/actions/<domain>Actions.ts`                                               | `"use server"`; auth → authz → Zod → write/tx → invalidate → `ActionResult` |
 | Application logic        | `lib/workflows/<domain>Workflows.ts` or `lib/workflows/<domain>/<verbNoun>.ts` | `server-only`; arranges operations; no Prisma client, no SDKs               |
 | Atomic write             | `lib/db/transactions/<domain>-<verb>-<noun>.tx.ts`                             | DB-only; no network                                                         |
-| DB runtime               | `lib/db/client.ts`, `provider.ts`, `tenant.ts`                                 | Prisma client, adapter, RLS context                                         |
+| DB runtime               | `lib/db/client.ts`, `rls.ts`, `tenant.ts`                                      | Prisma client, adapter, RLS context                                         |
 | Projection               | `lib/db/selects/<domain>.selects.ts`                                           | Precise selects                                                             |
 | Mapping                  | `lib/db/dto/<domain>.dto.ts`                                                   | Record → transport-safe DTO                                                 |
 | Identity                 | `lib/auth/{clerk,auth,redirects,clerk-webhooks}.ts`                            | Clerk only here                                                             |

@@ -18,7 +18,7 @@ export async function uploadWorkspaceAssetWorkflow(formData: FormData) {
   const access = await withTenantTransaction(identity, async (_tx, access) => {
     assertPermission(
       access,
-      domain === "portal" ? "portal:write" : "social:write",
+      domain === "portal" ? "portal.document:create" : "social.media:create",
     );
     return access;
   });
@@ -32,7 +32,7 @@ export async function uploadWorkspaceAssetWorkflow(formData: FormData) {
     return await withTenantTransaction(identity, async (tx, current) => {
       assertPermission(
         current,
-        domain === "portal" ? "portal:write" : "social:write",
+        domain === "portal" ? "portal.document:create" : "social.media:create",
       );
       if (current.organizationId !== access.organizationId)
         throw new Error("Workspace changed during upload.");

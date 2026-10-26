@@ -7,7 +7,7 @@ export function TermsPageTemplate() {
   return (
     <section>
       <Image
-        src="/seperator.png"
+        src="/separator.png"
         alt={termsCopy.separatorAlt}
         width={1200}
         height={400}
@@ -20,7 +20,7 @@ export function TermsPageTemplate() {
       />
       <LegalDocumentSection {...termsCopy} />
       <Image
-        src="/seperator.png"
+        src="/separator.png"
         alt={termsCopy.separatorAlt}
         width={1200}
         height={400}

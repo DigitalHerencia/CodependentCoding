@@ -4,8 +4,12 @@ import type { Prisma } from "@/generated/prisma/client";
 
 import type { AppRole } from "@/types/accessTypes";
 
-/** `<module>:<action>`; the catalog is base permissions plus each installed module's. */
-export type ModulePermission = `${string}:${string}`;
+/** What a permission allows on a resource (AUTH.md §5.2). */
+export type PermissionAction =
+  "read" | "create" | "update" | "delete" | "manage";
+
+/** `<module>.<resource>:<action>`, e.g. `crm.contact:update`. */
+export type ModulePermission = `${string}.${string}:${PermissionAction}`;
 
 /** Icon names the tenant shell knows how to draw. */
 export type ModuleIcon =
@@ -37,12 +41,15 @@ export interface ModuleDashboardEntry {
 }
 
 export interface ModulePermissions {
-  /** Resource kinds the module's policies check (`ResourceAccessDescriptor.kind`). */
-  resources: readonly string[];
-  /** Every permission the module defines. OWNER and ADMIN hold all of them. */
-  catalog: readonly ModulePermission[];
-  /** Grants for the remaining roles; a role left out gets none. */
-  grants: Partial<Record<AppRole, readonly ModulePermission[]>>;
+  /** `<module>.<resource>`; each gets every action. Policies check `ResourceAccessDescriptor.kind` against them. */
+  resources: readonly `${string}.${string}`[];
+  /**
+   * Grants for MEMBER and VIEWER (OWNER and ADMIN hold everything): an action
+   * applies to every resource of the module, a full permission to one.
+   */
+  grants: Partial<
+    Record<AppRole, readonly (PermissionAction | ModulePermission)[]>
+  >;
 }
 
 /** A provider an add-on wraps; Settings > Integrations reports it configured when every `env` name is set. */

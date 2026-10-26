@@ -22,14 +22,8 @@ export const crmModule = {
     },
   ],
   permissions: {
-    resources: ["crm"],
-    catalog: ["crm:read", "crm:write"],
-    grants: {
-      MANAGER: ["crm:read", "crm:write"],
-      MEMBER: ["crm:read", "crm:write"],
-      SUPPORT: ["crm:read"],
-      VIEWER: ["crm:read"],
-    },
+    resources: ["crm.contact", "crm.account", "crm.deal"],
+    grants: { MEMBER: ["read", "create", "update", "delete"] },
   },
   records: [{ label: "CRM contacts", model: "crmContact" }],
 } satisfies ModuleDefinition;

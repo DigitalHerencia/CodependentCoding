@@ -9,12 +9,7 @@ export const {{module}}Module = {
     links: [{ label: "{{labelPlural}}", href: "/{{route}}" }],
   },
   permissions: {
-    resources: ["{{entity}}"],
-    catalog: ["{{module}}:read", "{{module}}:write"],
-    grants: {
-      MANAGER: ["{{module}}:read", "{{module}}:write"],
-      MEMBER: ["{{module}}:read", "{{module}}:write"],
-      VIEWER: ["{{module}}:read"],
-    },
+    resources: ["{{resource}}"],
+    grants: { MEMBER: ["read", "create", "update"] },
   },
 } satisfies ModuleDefinition;

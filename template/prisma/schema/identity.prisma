@@ -1,11 +1,8 @@
+/// owner > admin > member (staff) > viewer (outside people such as clients; see lib/authz).
 enum MembershipRole {
   OWNER
   ADMIN
-  MANAGER
   MEMBER
-  BILLING
-  SUPPORT
-  CLIENT
   VIEWER
 }
 

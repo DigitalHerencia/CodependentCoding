@@ -1,11 +1,10 @@
 import type { appRoles } from "@/lib/constants/roles";
-import type { basePermissions } from "@/lib/authz/permissions";
 import type { ModulePermission } from "@/types/moduleTypes";
 
 export type AppRole = (typeof appRoles)[number];
 
-/** Base permissions are literal; module permissions come from the registry at runtime. */
-export type Permission = (typeof basePermissions)[number] | ModulePermission;
+/** `<module>.<resource>:<action>`; base resources use the `base` prefix. */
+export type Permission = ModulePermission;
 
 /** Clerk establishes user identity only. Application tenancy is resolved locally. */
 export interface AuthenticatedIdentity {
@@ -37,8 +36,8 @@ export interface AccessContext extends AuthenticatedIdentity {
   role: AppRole;
 }
 
-/** "organization" or a resource kind a module declares in `permissions.resources`. */
-export type ResourceKind = string;
+/** A base resource (`base.organization`) or one a module declares in `permissions.resources`. */
+export type ResourceKind = `${string}.${string}`;
 
 export interface ResourceAccessDescriptor {
   kind: ResourceKind;

@@ -7,7 +7,7 @@ import { withAuthenticatedRead } from "@/lib/db/tenant";
 
 export async function getBillingSubscription() {
   return withAuthenticatedRead(async (tx, access) => {
-    assertPermission(access, "billing:read");
+    assertPermission(access, "billing.subscription:read");
     const subscription = await tx.billingSubscription.findUnique({
       where: { organizationId: access.organizationId },
       select: billingSubscriptionSelect,

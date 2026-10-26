@@ -72,7 +72,7 @@ test("signed-out callers get UNAUTHENTICATED", async () => {
   assert.equal(!result.ok && result.error.code, "UNAUTHENTICATED");
 });
 
-test("roles without projects:write get FORBIDDEN before any write", async () => {
+test("roles without projects.project:create get FORBIDDEN before any write", async () => {
   state.role = "VIEWER";
   state.tx = {
     project: {

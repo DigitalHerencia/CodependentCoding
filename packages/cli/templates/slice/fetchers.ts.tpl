@@ -8,7 +8,7 @@ import { withAuthenticatedRead } from "@/lib/db/tenant";
 
 export async function get{{Entities}}(limit = 50) {
   return withAuthenticatedRead(async (tx, access) => {
-    assertPermission(access, "{{module}}:read");
+    assertPermission(access, "{{resource}}:read");
     const rows = await tx.{{entity}}.findMany({
       where: { organizationId: access.organizationId },
       orderBy: { updatedAt: "desc" },
@@ -21,7 +21,7 @@ export async function get{{Entities}}(limit = 50) {
 
 export async function get{{Entity}}({{param}}: string) {
   return withAuthenticatedRead(async (tx, access) => {
-    assertPermission(access, "{{module}}:read");
+    assertPermission(access, "{{resource}}:read");
     const row = await tx.{{entity}}.findFirst({
       where: { id: {{param}}, organizationId: access.organizationId },
       select: {{entity}}Select,

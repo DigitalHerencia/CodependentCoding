@@ -20,15 +20,10 @@ export const portalModule = {
     },
   ],
   permissions: {
-    resources: ["portal-document"],
-    catalog: ["portal:read", "portal:write", "portal:billing"],
+    resources: ["portal.document", "portal.billing"],
     grants: {
-      MANAGER: ["portal:read", "portal:write"],
-      MEMBER: ["portal:read"],
-      BILLING: ["portal:read", "portal:billing"],
-      SUPPORT: ["portal:read"],
-      CLIENT: ["portal:read"],
-      VIEWER: ["portal:read"],
+      MEMBER: ["read", "create", "update"],
+      VIEWER: ["portal.document:read"],
     },
   },
   records: [{ label: "Portal documents", model: "portalDocument" }],

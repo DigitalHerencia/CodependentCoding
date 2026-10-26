@@ -8,7 +8,7 @@ import { getProviderStatuses } from "@/lib/integrations/status";
 // Provider status comes from configuration, not persisted reads, so it lives here rather than in a fetcher.
 export async function getIntegrationStatuses() {
   return withAuthenticatedRead(async (_tx, access) => {
-    assertPermission(access, "organization:read");
+    assertPermission(access, "base.settings:read");
     return getProviderStatuses();
   });
 }

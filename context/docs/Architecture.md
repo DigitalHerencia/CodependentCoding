@@ -70,7 +70,7 @@ URL ─► app/ (route) ─► features/ ─► components/blocks ─► compone
 | CRUD write               | `lib/actions/<domain>Actions.ts`                                               | `"use server"`; auth → authz → Zod → write/tx → invalidate → `ActionResult` |
 | Application logic        | `lib/workflows/<domain>Workflows.ts` or `lib/workflows/<domain>/<verbNoun>.ts` | `server-only`; arranges operations; no Prisma client, no SDKs               |
 | Atomic write             | `lib/db/transactions/<domain>-<verb>-<noun>.tx.ts`                             | DB-only; no network                                                         |
-| DB runtime               | `lib/db/client.ts`, `provider.ts`, `tenant.ts`                                 | Prisma client, adapter, RLS context                                         |
+| DB runtime               | `lib/db/client.ts`, `rls.ts`, `tenant.ts`                                      | Prisma client, adapter, RLS context                                         |
 | Projection               | `lib/db/selects/<domain>.selects.ts`                                           | Precise selects                                                             |
 | Mapping                  | `lib/db/dto/<domain>.dto.ts`                                                   | Record → transport-safe DTO                                                 |
 | Identity                 | `lib/auth/{clerk,auth,redirects,clerk-webhooks}.ts`                            | Clerk only here                                                             |
@@ -253,13 +253,9 @@ export const crmModule = {
   nav: [{ label: "Pipeline", href: "/crm/pipeline", icon: "kanban" }],
   dashboard: [{ id: "crm-pipeline-value", title: "Pipeline value" }],
   permissions: {
-    resources: ["crm.contact", "crm.account", "crm.lead", "crm.deal"],
-    grants: {
-      owner: ["*"],
-      admin: ["*"],
-      member: ["read", "create", "update"],
-      viewer: ["read"],
-    },
+    resources: ["crm.contact", "crm.account", "crm.deal"],
+    // OWNER and ADMIN hold everything; an action applies to every resource above.
+    grants: { MEMBER: ["read", "create", "update", "delete"] },
   },
 } satisfies ModuleDefinition;
 ```
@@ -351,7 +347,7 @@ Conflict rule: intent wins; fix the contract, then the enforcement, in the same 
 
 ## Appendix A. Golden slice: `projects`
 
-`projects` is the reference module that scaffolds copy (CC-027). Every file opens with a one-line `Why:` comment naming its layer's job. Reads follow AUTH.md §5.3: fetchers run in `withAuthenticatedRead`, check `projects:read`, put `organizationId` in every predicate and return `null` when a row is absent, so features call `notFound()`. Writes go through `lib/actions/projectsActions.ts`: authenticate, open the tenant transaction (RLS context set), check `projects:write`, parse with the shared Zod schema, write, then invalidate the affected routes and return an `ActionResult` (AUTH.md §8). A versioned update that matches no row is `CONFLICT` when the row exists in the organization and `NOT_FOUND` otherwise.
+`projects` is the reference module that scaffolds copy (CC-027). Every file opens with a one-line `Why:` comment naming its layer's job. Reads follow AUTH.md §5.3: fetchers run in `withAuthenticatedRead`, check `projects.project:read` (or `projects.task:read`), put `organizationId` in every predicate and return `null` when a row is absent, so features call `notFound()`. Writes go through `lib/actions/projectsActions.ts`: authenticate, open the tenant transaction (RLS context set), check `projects.project:create`/`:update`, parse with the shared Zod schema, write, then invalidate the affected routes and return an `ActionResult` (AUTH.md §8). A versioned update that matches no row is `CONFLICT` when the row exists in the organization and `NOT_FOUND` otherwise.
 
 The list below is generated; rerun `node scripts/slice-files.mjs projects --write` from `template/` after adding or moving a file.
 

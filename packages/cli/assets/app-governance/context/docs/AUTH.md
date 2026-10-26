@@ -88,9 +88,11 @@ enum MembershipStatus { active invited suspended }
 | ---------------- | ------------------------------------------------------------------- |
 | `roles.ts`       | Role hierarchy `owner > admin > member > viewer`                    |
 | `resources.ts`   | Base resources + module resources from `installedModules`           |
-| `permissions.ts` | `assertPermission(ctx, "crm.contact:update")`, `hasPermission(...)` |
-| `policies.ts`    | Resource policies (ownership, status-dependent rules)               |
-| `attributes.ts`  | Only when a module needs ABAC attributes                            |
+| `permissions.ts` | RBAC: `assertPermission(ctx, "crm.contact:update")`, `hasPermission(...)` |
+| `policies.ts`    | ABAC: record rules after the role check (tenant, owner, assignee, requester, shared) |
+| `attributes.ts`  | Only when a module needs ABAC attributes beyond the record's own    |
+
+Every fetcher and action runs both checks in order: the role check (may this role do this action on this kind of resource?), then the record check (is this record in the caller's organization, and may this caller touch it?). `owner` and `admin` hold every permission. `member` is staff. `viewer` is for people outside the staff, such as clients: policies limit them to records shared with them (`clientVisible`) or their own (owner, assignee, requester).
 
 Role and enum **values** shown in the UI live in `lib/constants` or `types/`, never imported from `lib/authz` by client code (CC-FEAT-004, CC-SCHEMA-001).
 
@@ -108,7 +110,7 @@ type TenantContext = {
 
 ### 5.2 Permission strings
 
-`<module>.<resource>:<action>` with actions `read | create | update | delete | manage`. Base resources: `organization`, `membership`, `settings`, `billing` (when installed). Grants per role come from base + each module's `permissions.grants`.
+`<module>.<resource>:<action>` with actions `read | create | update | delete | manage`. Base resources: `base.organization`, `base.membership`, `base.settings`; billing adds `billing.subscription` when installed. Each module lists its `<module>.<resource>` names in `permissions.resources`; `permissions.grants` gives `member` and `viewer` actions (applied to every resource of the module) or single permissions.
 
 ### 5.3 Standard read and write paths
 
@@ -203,7 +205,7 @@ type ErrorCode =
 | owner  | everything in the org     | TODO   |
 | admin  | TODO                      | TODO   |
 | member | TODO                      | TODO   |
-| viewer | read what members can see | write  |
+| viewer | read what is shared with them or theirs | staff records |
 
 Resource policies beyond role checks (ownership, status rules):
 

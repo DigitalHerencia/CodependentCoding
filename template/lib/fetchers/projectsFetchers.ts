@@ -11,7 +11,7 @@ import { withAuthenticatedRead } from "@/lib/db/tenant";
 
 export async function getProjects(limit = 50) {
   return withAuthenticatedRead(async (tx, access) => {
-    assertPermission(access, "projects:read");
+    assertPermission(access, "projects.project:read");
 
     const rows = await tx.project.findMany({
       where: {
@@ -31,7 +31,7 @@ export async function getProjects(limit = 50) {
 
 export async function getProject(projectId: string) {
   return withAuthenticatedRead(async (tx, access) => {
-    assertPermission(access, "projects:read");
+    assertPermission(access, "projects.project:read");
     const row = await tx.project.findFirst({
       where: {
         id: projectId,
@@ -46,7 +46,7 @@ export async function getProject(projectId: string) {
 
 export async function getProjectTasks(projectId: string, limit = 100) {
   return withAuthenticatedRead(async (tx, access) => {
-    assertPermission(access, "projects:read");
+    assertPermission(access, "projects.task:read");
 
     const rows = await tx.task.findMany({
       where: {
@@ -71,7 +71,7 @@ export async function getProjectTasks(projectId: string, limit = 100) {
 
 export async function getMyTasks(limit = 100) {
   return withAuthenticatedRead(async (tx, access) => {
-    assertPermission(access, "projects:read");
+    assertPermission(access, "projects.task:read");
 
     const rows = await tx.task.findMany({
       where: {
@@ -99,7 +99,7 @@ export async function getMyTasks(limit = 100) {
 
 export async function getProjectTaskDependencyFacts(projectId: string) {
   return withAuthenticatedRead(async (tx, access) => {
-    assertPermission(access, "projects:read");
+    assertPermission(access, "projects.task:read");
     return tx.task.findMany({
       where: { organizationId: access.organizationId, projectId },
       orderBy: [{ position: "asc" }, { createdAt: "asc" }],
@@ -114,7 +114,7 @@ export async function getProjectTaskDependencyFacts(projectId: string) {
 
 export async function getProjectTask(projectId: string, taskId: string) {
   return withAuthenticatedRead(async (tx, access) => {
-    assertPermission(access, "projects:read");
+    assertPermission(access, "projects.task:read");
     const row = await tx.task.findFirst({
       where: { id: taskId, projectId, organizationId: access.organizationId },
       select: taskSelect,

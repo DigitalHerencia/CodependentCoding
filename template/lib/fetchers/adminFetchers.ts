@@ -16,7 +16,7 @@ interface TenantCounter {
 
 export async function getAuditEvents(limit = 100) {
   return withAuthenticatedRead(async (tx, access) => {
-    assertPermission(access, "admin:audit");
+    assertPermission(access, "admin.audit-event:read");
 
     const rows = await tx.auditEvent.findMany({
       where: {
@@ -35,7 +35,7 @@ export async function getAuditEvents(limit = 100) {
 
 export async function getAdminMemberships() {
   return withAuthenticatedRead(async (tx, access) => {
-    assertPermission(access, "admin:users");
+    assertPermission(access, "admin.membership:read");
     const rows = await tx.membership.findMany({
       where: { organizationId: access.organizationId },
       orderBy: { createdAt: "asc" },
@@ -49,7 +49,7 @@ export async function getAdminMemberships() {
 export async function getAdminRecordSummary() {
   const records = installedModules.flatMap(({ records }) => records ?? []);
   return withAuthenticatedRead(async (tx, access) => {
-    assertPermission(access, "admin:records");
+    assertPermission(access, "admin.record:read");
     const where = { organizationId: access.organizationId };
     const counts = await Promise.all(
       records.map(({ model }) =>

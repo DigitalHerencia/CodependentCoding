@@ -21,14 +21,10 @@ export const supportModule = {
     },
   ],
   permissions: {
-    resources: ["support-ticket"],
-    catalog: ["support:read", "support:write"],
+    resources: ["support.ticket", "support.article"],
     grants: {
-      MANAGER: ["support:read", "support:write"],
-      MEMBER: ["support:read", "support:write"],
-      SUPPORT: ["support:read", "support:write"],
-      CLIENT: ["support:read", "support:write"],
-      VIEWER: ["support:read"],
+      MEMBER: ["read", "create", "update"],
+      VIEWER: ["read", "support.ticket:create", "support.ticket:update"],
     },
   },
   records: [{ label: "Support tickets", model: "supportTicket" }],

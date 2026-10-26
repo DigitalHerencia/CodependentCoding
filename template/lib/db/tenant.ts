@@ -9,6 +9,7 @@ import type {
 
 import { requireIdentity } from "@/lib/auth/auth";
 import { prisma } from "@/lib/db/client";
+import { setRlsContext } from "@/lib/db/rls";
 
 export class TenantContextError extends Error {
   readonly code = "FORBIDDEN";
@@ -23,9 +24,7 @@ async function resolveAccessContext(
   tx: Prisma.TransactionClient,
   identity: AuthenticatedIdentity,
 ): Promise<AccessContext> {
-  await tx.$queryRaw`
-    SELECT set_config('app.clerk_user_id', ${identity.clerkUserId}, true)
-  `;
+  await setRlsContext(tx, { clerkUserId: identity.clerkUserId });
 
   const user = await tx.user.findUnique({
     where: { clerkUserId: identity.clerkUserId },
@@ -48,9 +47,7 @@ async function resolveAccessContext(
     );
   }
 
-  await tx.$queryRaw`
-    SELECT set_config('app.organization_id', ${membership.organizationId}, true)
-  `;
+  await setRlsContext(tx, { organizationId: membership.organizationId });
 
   return {
     clerkUserId: identity.clerkUserId,
@@ -61,6 +58,12 @@ async function resolveAccessContext(
   };
 }
 
+/**
+ * Authentication and authorization wrapper: resolves the signed-in user's
+ * active membership (organization and role) inside the transaction, locks
+ * RLS to that organization, then runs `work` with the access context that
+ * every fetcher and action checks with lib/authz.
+ */
 export async function withTenantTransaction<T>(
   identity: AuthenticatedIdentity,
   work: (tx: Prisma.TransactionClient, access: AccessContext) => Promise<T>,

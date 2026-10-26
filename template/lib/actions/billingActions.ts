@@ -12,7 +12,7 @@ export async function reconcileBillingProviderState(rawInput: unknown) {
   const identity = await requireIdentity();
 
   return withTenantTransaction(identity, async (tx, access) => {
-    assertPermission(access, "billing:manage");
+    assertPermission(access, "billing.subscription:manage");
     const subscription = await reconcileBillingProviderStateTx(tx, {
       organizationId: access.organizationId,
       actorUserId: access.userId,

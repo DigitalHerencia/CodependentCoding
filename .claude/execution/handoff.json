@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/handoff/v1",
-  "updated": "2026-10-26T23:40:00Z",
+  "updated": "2026-10-26T23:55:00Z",
   "format": "Overwrite each session. Minimum state the next session needs to resume safely.",
   "status": "follow-ups",
   "milestone": "M6",
@@ -9,7 +9,7 @@
   "queue": [],
   "branch": "main",
   "in_flight": [
-    "Thread 'Rebuild authorization and fix test-run notes': #234 authz after the owner picks the role mapping; #260 and #261 wait on the owner's notes."
+    "Thread 'Rebuild authorization and fix test-run notes': #234 four roles merged (DEC-065, owner chose viewer = outside client). Next PRs from that thread: #260 invitations + tenancy, then the tenancy/RBAC-ABAC CLI choice, then the CLI wizard."
   ],
   "notes": [
     "Governance package is uncommitted in the owner's working tree; owner reviews with `git status` / `git diff`, then commits on a branch `chore/governance-package`.",
@@ -74,7 +74,8 @@
     "CC-043 (DEC-060): README rewritten; pnpm doctrine:check in root validate. No app deploys (owner). GitHub Actions removed by the owner 2026-10-25: verify locally (pnpm validate; pnpm --dir template validate) before merging.",
     "#256/#259 (DEC-063): progress.json format is an object every skill follows; execution-check rejects unknown progress keys; generated apps ship .claude/settings.json with Edit/Write(.claude/**).",
     "#257/#258 (DEC-064): `hipster-stack new` asks for the Neon connection string (--database-url for scripts), writes pooled app_user + direct owner URLs, runs db:init before the initial commit.",
-    "DEC-066: CI is back as one targeted workflow (.github/workflows/ci.yml, job `changes` decides what runs) plus pr-title.yml. A docs-only PR runs only format:check. RLS runs in CI on a Postgres service container when prisma/, tests/rls/ or lib/db/ change. PR titles must be Conventional (they become the squash commit; owner sets squash-only + PR_TITLE in repo settings). Projects v2 workflows on #19 are set by the owner from his PC."
+    "DEC-066: CI is back as one targeted workflow (.github/workflows/ci.yml, job `changes` decides what runs) plus pr-title.yml. A docs-only PR runs only format:check. RLS runs in CI on a Postgres service container when prisma/, tests/rls/ or lib/db/ change. PR titles must be Conventional (they become the squash commit; owner sets squash-only + PR_TITLE in repo settings). Projects v2 workflows on #19 are set by the owner from his PC.",
+    "DEC-067: asset files are kebab-case (public/, template/public/); reference them as /name-like-this.jpg."
   ],
   "risks": [
     "Lint hook exits 0 silently when node_modules/eslint is missing; a failed install hides lint feedback. On Windows, run pnpm install with VS Code closed (DEC-019).",

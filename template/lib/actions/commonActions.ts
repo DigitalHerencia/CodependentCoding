@@ -11,7 +11,7 @@ export async function updateOrganizationSettings(rawInput: unknown) {
   const input = organizationSettingsSchema.parse(rawInput);
   const identity = await requireIdentity();
   return withTenantTransaction(identity, async (tx, access) => {
-    assertPermission(access, "organization:write");
+    assertPermission(access, "base.settings:update");
     await tx.organizationSettings.upsert({
       where: { organizationId: access.organizationId },
       update: {
