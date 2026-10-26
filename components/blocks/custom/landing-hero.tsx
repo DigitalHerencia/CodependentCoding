@@ -7,7 +7,7 @@ export function LandingHero() {
     <main className="landing-page">
       <Image
         className="landing-crown"
-        src="/Codependent Coding Crown.jpg"
+        src="/codependent-coding-crown.jpg"
         alt="The Codependent Coding WebApp Architecture"
         width={1792}
         height={1024}
@@ -36,7 +36,7 @@ export function LandingHero() {
       </section>
       <Image
         className="landing-heritage"
-        src="/Digital Herencia Logo.jpg"
+        src="/digital-herencia-logo.jpg"
         alt="Digital Herencia, a data cartel"
         width={1792}
         height={1024}

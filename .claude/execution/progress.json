@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/progress/v1",
-  "updated": "2026-10-26T23:40:00Z",
+  "updated": "2026-10-26T23:55:00Z",
   "format": "Evidence states: EXECUTED | INSPECTED | NOT_RUN | BLOCKED. Never mark an issue done without EXECUTED evidence for its Validation commands.",
   "milestones": {
     "M0": {
@@ -2914,6 +2914,13 @@
       "issue": "#234",
       "command": "template pnpm test:rls (fresh local Postgres 16 db)",
       "result": "10 passed"
+    },
+    {
+      "date": "2026-10-26",
+      "state": "EXECUTED",
+      "issue": "repo-cleanup",
+      "command": "pnpm validate; pnpm build (root); template eslint components/templates, check:ownership, pnpm test",
+      "result": "root validate 0 (80 tests), build 0; template lint 0, ownership 0 ambiguities, 66 passed/1 skipped"
     },
     {
       "date": "2026-10-26",

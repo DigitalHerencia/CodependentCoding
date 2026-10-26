@@ -18,7 +18,7 @@ export function SiteHeader() {
           aria-label="The Codependent Coding Web App Architecture home"
         >
           <Image
-            src="/Codependent Coding Logo.jpg"
+            src="/codependent-coding-logo.jpg"
             alt="The Codependent Coding Web App Architecture"
             width={1623}
             height={293}
