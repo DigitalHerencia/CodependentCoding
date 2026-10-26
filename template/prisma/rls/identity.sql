@@ -43,6 +43,23 @@ USING (
 )
 WITH CHECK ("id"::text = NULLIF(current_setting('app.organization_id', true), ''));
 
+-- Invitations belong to their organization; the invitee also sees invitations
+-- sent to their own email so they can accept before joining. Writes stay
+-- inside the organization (accepting sets app.organization_id first).
+ALTER TABLE "Invitation" ENABLE ROW LEVEL SECURITY;
+ALTER TABLE "Invitation" FORCE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "invitation_application_access" ON "Invitation";
+CREATE POLICY "invitation_application_access" ON "Invitation"
+FOR ALL
+USING (
+  "organizationId"::text = NULLIF(current_setting('app.organization_id', true), '')
+  OR lower("email") IN (
+    SELECT lower("email") FROM "User"
+    WHERE "clerkUserId" = NULLIF(current_setting('app.clerk_user_id', true), '')
+  )
+)
+WITH CHECK ("organizationId"::text = NULLIF(current_setting('app.organization_id', true), ''));
+
 ALTER TABLE "AuditEvent" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "AuditEvent" FORCE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "tenant_isolation" ON "AuditEvent";

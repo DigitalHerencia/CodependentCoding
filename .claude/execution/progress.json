@@ -2914,6 +2914,20 @@
       "issue": "#234",
       "command": "template pnpm test:rls (fresh local Postgres 16 db)",
       "result": "10 passed"
+    },
+    {
+      "date": "2026-10-26",
+      "state": "EXECUTED",
+      "issue": "#260",
+      "command": "pnpm --dir template validate; template pnpm test; template pnpm build; root pnpm validate",
+      "result": "exit 0; 77 passed/1 skipped; build exit 0; root 87 passed"
+    },
+    {
+      "date": "2026-10-26",
+      "state": "EXECUTED",
+      "issue": "#260",
+      "command": "template pnpm test:rls (fresh local Postgres 16 db, non-superuser owner)",
+      "result": "11 passed (new: invitee sees own-email invitation only, cannot write it)"
     }
   ],
   "known_findings": [

@@ -22,3 +22,16 @@ export const organizationOverviewSelect = {
 export type OrganizationOverviewRecord = Prisma.OrganizationGetPayload<{
   select: typeof organizationOverviewSelect;
 }>;
+
+export const invitationSelect = {
+  id: true,
+  email: true,
+  role: true,
+  status: true,
+  expiresAt: true,
+  createdAt: true,
+} satisfies Prisma.InvitationSelect;
+
+export type InvitationRecord = Prisma.InvitationGetPayload<{
+  select: typeof invitationSelect;
+}>;

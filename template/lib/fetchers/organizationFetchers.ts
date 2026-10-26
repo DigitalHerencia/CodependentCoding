@@ -1,9 +1,16 @@
 import "server-only";
 
-import { assertPermission } from "@/lib/authz/permissions";
+import type { InvitationListDTO } from "@/types/commonTypes";
+import { assertPermission, hasPermission } from "@/lib/authz/permissions";
 import { withAuthenticatedRead } from "@/lib/db/tenant";
-import { toOrganizationDTO } from "@/lib/db/dto/organization.dto";
-import { organizationOverviewSelect } from "@/lib/db/selects/organization.selects";
+import {
+  toInvitationDTO,
+  toOrganizationDTO,
+} from "@/lib/db/dto/organization.dto";
+import {
+  invitationSelect,
+  organizationOverviewSelect,
+} from "@/lib/db/selects/organization.selects";
 
 export async function getCurrentOrganization() {
   return withAuthenticatedRead(async (tx, access) => {
@@ -39,5 +46,24 @@ export async function getOrganizationMembers() {
       status: row.status,
       name: row.user.displayName ?? "Member",
     }));
+  });
+}
+
+/** Pending invitations, for members who may invite; others get an empty list. */
+export async function getPendingInvitations(): Promise<InvitationListDTO> {
+  return withAuthenticatedRead(async (tx, access) => {
+    if (!hasPermission(access, "base.membership:create"))
+      return { canInvite: false, invitations: [] };
+    const rows = await tx.invitation.findMany({
+      where: {
+        organizationId: access.organizationId,
+        status: "PENDING",
+        expiresAt: { gt: new Date() },
+      },
+      orderBy: { createdAt: "desc" },
+      take: 100,
+      select: invitationSelect,
+    });
+    return { canInvite: true, invitations: rows.map(toInvitationDTO) };
   });
 }

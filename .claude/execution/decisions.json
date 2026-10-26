@@ -683,6 +683,20 @@
         ".github/workflows/ci.yml",
         "context/docs/tech-requirements.md §11"
       ]
+    },
+    {
+      "id": "DEC-067",
+      "date": "2026-10-26",
+      "status": "accepted",
+      "title": "Invitations and single or multi tenancy (#260)",
+      "context": "Owner (2026-10-26, #260): onboarding and invitations wired when appropriate, custom orgs in Prisma, RLS on sensitive tables, idempotent transactions. The template had an INVITED membership status but no way to invite anyone.",
+      "decision": "New Invitation model (email, role, status PENDING/ACCEPTED/REVOKED, sha256 tokenHash, expiresAt) with RLS: org rows plus read-only rows sent to the signed-in user's email; writes stay in the org. Owners/admins invite (base.membership:create) and get a one-time /invite/<token> link; revoke needs base.membership:delete. invitation.tx.ts accepts idempotently (sets the org RLS context, PENDING to ACCEPTED, create or reactivate membership, active membership keeps its role, audit event). The Clerk user.created webhook accepts a pending invitation by email first. lib/constants/tenancy.ts: tenancy multi (new user gets own org) or single (first user claims slug main via INSERT ON CONFLICT DO NOTHING, others join by invite). The CLI choice that sets tenancy and RBAC/ABAC comes in the next PR.",
+      "refs": [
+        "#260",
+        "AUTH.md §4.3",
+        "template/lib/db/transactions/invitation.tx.ts",
+        "template/prisma/rls/identity.sql"
+      ]
     }
   ]
 }

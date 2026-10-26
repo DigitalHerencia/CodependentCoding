@@ -172,6 +172,51 @@ describe("cross-tenant isolation through the runtime role", () => {
     });
   });
 
+  test("an invitee sees invitations to their email but cannot write them", async () => {
+    const email = `invitee-${orgA.clerkUserId}@example.test`;
+    await inTransaction(owner, async () => {
+      await setTenantContext(owner, orgA);
+      await owner.query(`UPDATE "User" SET email = $1 WHERE id = $2`, [
+        email,
+        orgA.userId,
+      ]);
+      await setTenantContext(owner, orgB);
+      const insert = `INSERT INTO "Invitation" (id, "organizationId", email, "tokenHash", "expiresAt", "updatedAt")
+        VALUES (gen_random_uuid(), $1, $2, gen_random_uuid()::text, now() + interval '1 day', now())
+        RETURNING id`;
+      const mine = await owner.query<{ id: string }>(insert, [
+        orgB.organizationId,
+        email.toUpperCase(),
+      ]);
+      await owner.query(insert, [
+        orgB.organizationId,
+        "someone-else@example.test",
+      ]);
+      await owner.query(`SET LOCAL ROLE "${appRole}"`);
+
+      await owner.query(
+        `SELECT set_config('app.organization_id', '', true),
+                set_config('app.clerk_user_id', $1, true)`,
+        [orgA.clerkUserId],
+      );
+      const visible = await owner.query<{ id: string }>(
+        `SELECT id FROM "Invitation" WHERE "organizationId" = $1`,
+        [orgB.organizationId],
+      );
+      assert.deepEqual(
+        visible.rows.map((row) => row.id),
+        [mine.rows[0]?.id],
+      );
+      await assert.rejects(
+        owner.query(
+          `UPDATE "Invitation" SET status = 'ACCEPTED' WHERE id = $1`,
+          [mine.rows[0]?.id],
+        ),
+        /row-level security/,
+      );
+    });
+  });
+
   test("missing tenant context returns zero rows", async () => {
     await inTransaction(app, async () => {
       for (const name of [
