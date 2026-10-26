@@ -720,6 +720,15 @@
         "template/lib/constants/access.ts",
         "packages/cli/src/compose/access.ts"
       ]
+    },
+    {
+      "id": "DEC-070",
+      "date": "2026-10-26",
+      "status": "accepted",
+      "title": "`hipster-stack new` wizard",
+      "context": "Owner (2026-10-26): the CLI should feel like a modern retro CLI with an animated ASCII banner and real menus, and ask for the project path, domain, Clerk keys (app ID, publishable, secret, prod and dev webhook secrets, ngrok domain), the Neon string, the domain's integration keys, RBAC/ABAC and tenancy, then confirm before generating.",
+      "decision": "Keep @clack/prompts (select, multiselect, password, box, confirm) and add gradient-string 3.0.0 for the banner, which sweeps a synthwave gradient for about a second on a color TTY and prints plain otherwise (CI, NO_COLOR, dumb terminals). The folder is a plain text prompt: clack's path prompt only accepts existing paths. Clerk keys are shape-checked; every key may be blank. Dev keys go to .env.local, the prod webhook secret to .env.production.local, app ID and ngrok domain to hipster.json; next steps print the ngrok command and the Clerk webhook URL. No new flags for keys: non-interactive runs leave them for .env.local.",
+      "refs": ["packages/cli/src/wizard", "tech-requirements.md"]
     }
   ]
 }

@@ -1,4 +1,4 @@
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 
 import * as p from "@clack/prompts";
@@ -25,6 +25,15 @@ import { isPostgresUrl, templateSqlRunner } from "#cli/setup/database";
 import { spawnExec } from "#cli/setup/exec";
 import { setupApp } from "#cli/setup/postCompose";
 import { provision, type StepId } from "#cli/setup/provision";
+import { writeEnvFile, writeEnvLocal } from "#cli/setup/envFile";
+import { showBanner } from "#cli/wizard/banner";
+import { type ClerkKeys, envPlan, integrationVars } from "#cli/wizard/keys";
+import {
+  cancelled,
+  confirmSummary,
+  promptClerk,
+  promptIntegrations,
+} from "#cli/wizard/prompts";
 
 interface NewOptions {
   preset?: string;
@@ -51,14 +60,6 @@ const STEP_PROMPT: Record<StepId, string> = {
 };
 
 const CUSTOM = "__custom__";
-
-function cancelled<T>(value: T): Exclude<T, symbol> {
-  if (p.isCancel(value)) {
-    p.cancel("Cancelled.");
-    process.exit(1);
-  }
-  return value as Exclude<T, symbol>;
-}
 
 /** --tenancy / --access, prompting for whichever is missing when interactive. */
 export async function accessChoices(
@@ -146,10 +147,12 @@ export function fromFlags(
   return null;
 }
 
-async function promptModules(manifest: TemplateManifest): Promise<string[]> {
+async function promptModules(
+  manifest: TemplateManifest,
+): Promise<{ domain: string; modules: string[] }> {
   const preset = cancelled(
     await p.select({
-      message: "Preset",
+      message: "Domain",
       options: [
         ...Object.entries(manifest.presets).map(([id, modules]) => ({
           value: id,
@@ -160,8 +163,9 @@ async function promptModules(manifest: TemplateManifest): Promise<string[]> {
       ],
     }),
   );
-  if (preset !== CUSTOM) return manifest.presets[preset] ?? [];
-  return cancelled(
+  if (preset !== CUSTOM)
+    return { domain: preset, modules: manifest.presets[preset] ?? [] };
+  const modules = cancelled(
     await p.multiselect({
       message: "Modules (dependencies are added for you)",
       options: manifest.modules.map(({ id, kind }) => ({
@@ -172,6 +176,7 @@ async function promptModules(manifest: TemplateManifest): Promise<string[]> {
       required: false,
     }),
   );
+  return { domain: "custom", modules };
 }
 
 /** Returns whether .env.local now holds the database URLs. */
@@ -217,6 +222,7 @@ function printNextSteps(
   installed: boolean,
   database: boolean,
   migrated = false,
+  ngrokDomain?: string,
 ): void {
   const relative = path.relative(process.cwd(), appDir);
   const next = [
@@ -229,6 +235,12 @@ function printNextSteps(
         : "cp .env.example .env.local  # then fill in values",
     ...(migrated ? [] : ["pnpm db:init  # then commit prisma/migrations"]),
     "pnpm dev",
+    ...(ngrokDomain
+      ? [
+          `ngrok http --url=${ngrokDomain} 3000  # second terminal`,
+          `# Clerk dev webhook endpoint: https://${ngrokDomain}/api/clerk/webhooks`,
+        ]
+      : []),
   ];
   p.note(next.join("\n"), "Next steps");
 }
@@ -237,7 +249,7 @@ export function registerNew(program: Command, cliVersion: string): void {
   program
     .command("new")
     .description("Generate an app from the template")
-    .argument("<dir>", "directory to create (must be empty or missing)")
+    .argument("[dir]", "directory to create (must be empty or missing)")
     .option("--preset <id>", "module preset from hipster.modules.json")
     .option("--modules <ids>", "comma-separated modules (dependsOn added)")
     .option("--all", "every module")
@@ -262,13 +274,34 @@ export function registerNew(program: Command, cliVersion: string): void {
     .option("--no-github", "with --provision: skip the GitHub repo")
     .option("--no-neon", "with --provision: skip the Neon project")
     .option("--no-vercel", "with --provision: skip the Vercel project")
-    .action(async (dir: string, options: NewOptions) => {
-      const outDir = path.resolve(dir);
+    .action(async (dirArg: string | undefined, options: NewOptions) => {
       const { dir: templateDir } = resolveTemplate();
       const manifest = readManifest(templateDir);
       const interactive = !options.yes && process.stdin.isTTY === true;
 
-      if (interactive) p.intro("hipster-stack new");
+      if (interactive) {
+        await showBanner("retro-modern apps from the Maximal Template");
+        p.intro("hipster-stack new");
+      }
+      const dir =
+        dirArg ??
+        (interactive
+          ? cancelled(
+              await p.text({
+                message: "Project folder (new or empty)",
+                placeholder: `.${path.sep}my-app`,
+                validate: (value) =>
+                  !value
+                    ? "Type a folder path"
+                    : existsSync(value) && readdirSync(value).length > 0
+                      ? "That folder is not empty"
+                      : undefined,
+              }),
+            )
+          : null);
+      if (!dir)
+        throw new Error("new needs a directory: hipster-stack new <dir>");
+      const outDir = path.resolve(dir);
 
       // Re-running on an app `new` already generated only provisions: the
       // steps skip what exists, so a missing CLI or login can be fixed later.
@@ -314,7 +347,11 @@ export function registerNew(program: Command, cliVersion: string): void {
       }
 
       let modules = fromFlags(manifest, options);
-      if (!modules) modules = interactive ? await promptModules(manifest) : [];
+      let domain = options.preset ?? (modules ? "custom" : "blank");
+      if (!modules) {
+        if (interactive) ({ domain, modules } = await promptModules(manifest));
+        else modules = [];
+      }
 
       let color: string | null = null;
       if (options.color) {
@@ -337,7 +374,7 @@ export function registerNew(program: Command, cliVersion: string): void {
         color = answer ? parseHex(answer) : null;
       }
 
-      const access = await accessChoices(options, interactive);
+      const clerk: Partial<ClerkKeys> = interactive ? await promptClerk() : {};
 
       // --provision creates its own database, so only ask without it.
       let databaseUrl = options.databaseUrl?.trim() || undefined;
@@ -358,6 +395,35 @@ export function registerNew(program: Command, cliVersion: string): void {
         ).trim();
       }
 
+      const integrations = interactive
+        ? await promptIntegrations(integrationVars(manifest, modules))
+        : {};
+      const access = await accessChoices(options, interactive);
+      const env = envPlan(clerk, integrations);
+
+      if (interactive) {
+        const requiredVars = integrationVars(manifest, modules).filter(
+          (variable) => variable.required,
+        );
+        await confirmSummary({
+          dir: outDir,
+          name,
+          domain,
+          modules,
+          ...access,
+          color,
+          databaseUrl,
+          clerk,
+          integrations,
+          missing: [
+            ...(databaseUrl ? [] : ["DATABASE_URL"]),
+            ...requiredVars
+              .map((variable) => variable.name)
+              .filter((key) => !(key in integrations)),
+          ],
+        });
+      }
+
       const result = await composeApp({
         templateDir,
         outDir,
@@ -365,9 +431,16 @@ export function registerNew(program: Command, cliVersion: string): void {
         name,
         color,
         access,
+        clerk: {
+          ...(clerk.appId ? { appId: clerk.appId } : {}),
+          ...(clerk.ngrokDomain ? { ngrokDomain: clerk.ngrokDomain } : {}),
+        },
         cliVersion,
         now: new Date(),
       });
+      if (Object.keys(env.local).length > 0) writeEnvLocal(outDir, env.local);
+      if (Object.keys(env.production).length > 0)
+        writeEnvFile(outDir, ".env.production.local", env.production);
       p.log.success(
         `Composed base + [${result.modules.join(", ")}]: ${result.files} files, ${result.removed} module files left out.`,
       );
@@ -422,7 +495,13 @@ export function registerNew(program: Command, cliVersion: string): void {
           )
         : false;
       const database = connected || provisioned;
-      printNextSteps(outDir, options.install, database, migrated);
+      printNextSteps(
+        outDir,
+        options.install,
+        database,
+        migrated,
+        clerk.ngrokDomain,
+      );
       if (interactive) p.outro("Done.");
     });
 }

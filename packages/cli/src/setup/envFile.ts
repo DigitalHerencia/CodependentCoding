@@ -63,3 +63,14 @@ export function writeEnvLocal(
       : "";
   writeFileSync(file, upsertEnv(base, values), { mode: 0o600 });
 }
+
+/** Writes keys into another git-ignored env file, e.g. .env.production.local. */
+export function writeEnvFile(
+  appDir: string,
+  name: string,
+  values: Readonly<Record<string, string>>,
+): void {
+  const file = path.join(appDir, name);
+  const base = existsSync(file) ? readFileSync(file, "utf8") : "";
+  writeFileSync(file, upsertEnv(base, values), { mode: 0o600 });
+}

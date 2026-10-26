@@ -53,6 +53,8 @@ export interface ComposeAppOptions {
   color: string | null;
   /** Organizations and authorization (AUTH.md §4.3, §5). */
   access?: AccessChoices;
+  /** Non-secret Clerk details for hipster.json (keys go to .env files). */
+  clerk?: { appId?: string; ngrokDomain?: string };
   cliVersion: string;
   now: Date;
 }
@@ -71,6 +73,7 @@ interface ManifestEntry {
   kind: string;
   dependsOn?: string[];
   packages?: string[];
+  env?: { name: string; required?: boolean; description?: string }[];
 }
 
 export interface TemplateManifest {
@@ -167,6 +170,9 @@ export async function composeApp(
     modules: ids,
     color,
     ...access,
+    ...(options.clerk && Object.keys(options.clerk).length > 0
+      ? { clerk: options.clerk }
+      : {}),
   };
   writeFileSync(path.join(outDir, "hipster.json"), JSON.stringify(hipster));
 
