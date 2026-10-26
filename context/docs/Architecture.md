@@ -277,13 +277,13 @@ flowchart TD
   J --> K
 ```
 
-| Command                                                                                            | Purpose                                                                        |
-| -------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
-| `new <dir> [--preset p] [--modules a,b] [--color #hex] [--database-url url] [--provision] [--yes]` | Generate an app                                                                |
-| `add <module>`                                                                                     | Copy a module's owned files from the template into an app, re-tag, re-register |
-| `slice <entity> --module <id> --fields "<dsl>"`                                                    | Full vertical slice from golden templates                                      |
-| `doctor`                                                                                           | Env, DB, migrations, lint, ownership                                           |
-| `compose <dir> --all\|--preset\|--modules`                                                         | Non-interactive (CI)                                                           |
+| Command                                                                 | Purpose                                                                        |
+| ----------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| `new <dir> [--preset p] [--modules a,b] [--color #hex] [--tenancy multi | single] [--access abac                                                         | rbac] [--database-url url] [--provision] [--yes]` | Generate an app |
+| `add <module>`                                                          | Copy a module's owned files from the template into an app, re-tag, re-register |
+| `slice <entity> --module <id> --fields "<dsl>"`                         | Full vertical slice from golden templates                                      |
+| `doctor`                                                                | Env, DB, migrations, lint, ownership                                           |
+| `compose <dir> --all\|--preset\|--modules`                              | Non-interactive (CI)                                                           |
 
 `hipster.json` (generated app):
 

@@ -3,7 +3,7 @@ import path from "node:path";
 import * as p from "@clack/prompts";
 import type { Command } from "commander";
 
-import { fromFlags } from "#cli/commands/new";
+import { accessChoices, fromFlags } from "#cli/commands/new";
 import { parseHex } from "#cli/compose/brand";
 import { composeApp, readManifest, toAppName } from "#cli/compose/composeApp";
 import { resolveTemplate } from "#cli/manifest/template";
@@ -16,6 +16,8 @@ interface ComposeOptions {
   all?: boolean;
   color?: string;
   name?: string;
+  tenancy?: string;
+  access?: string;
 }
 
 /** `new` without prompts, install or git: the file steps plus prisma validate (CI). */
@@ -29,6 +31,8 @@ export function registerCompose(program: Command, cliVersion: string): void {
     .option("--all", "every module")
     .option("--color <hex>", "brand color, e.g. #2f7a8d")
     .option("--name <name>", "package name (default: directory name)")
+    .option("--tenancy <mode>", "multi (default) or single organization")
+    .option("--access <model>", "abac (RBAC + ABAC, default) or rbac")
     .action(async (dir: string, options: ComposeOptions) => {
       const outDir = path.resolve(dir);
       const { dir: templateDir } = resolveTemplate();
@@ -48,6 +52,7 @@ export function registerCompose(program: Command, cliVersion: string): void {
         modules,
         name: options.name ?? toAppName(path.basename(outDir)),
         color,
+        access: await accessChoices(options, false),
         cliVersion,
         now: new Date(),
       });

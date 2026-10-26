@@ -9,7 +9,7 @@
   "queue": [],
   "branch": "main",
   "in_flight": [
-    "Thread 'Rebuild authorization and fix test-run notes': #234 four roles merged (DEC-065, owner chose viewer = outside client). Next PRs from that thread: #260 invitations + tenancy, then the tenancy/RBAC-ABAC CLI choice, then the CLI wizard."
+    "Thread 'Rebuild authorization and fix test-run notes': #276 invitations merged. PR for --tenancy/--access (closes #260) open; next and last: the `new` wizard (banner, keys, confirm screen) from local branch local/wizard."
   ],
   "notes": [
     "Governance package is uncommitted in the owner's working tree; owner reviews with `git status` / `git diff`, then commits on a branch `chore/governance-package`.",

@@ -4,7 +4,7 @@ import { randomUUID } from "node:crypto";
 
 import type { Prisma } from "@/generated/prisma/client";
 import type { ClerkUserProjection } from "@/types/integrationTypes";
-import { SINGLE_ORGANIZATION_SLUG, tenancy } from "@/lib/constants/tenancy";
+import { SINGLE_ORGANIZATION_SLUG, tenancy } from "@/lib/constants/access";
 import { setRlsContext } from "@/lib/db/rls";
 
 import { acceptInvitationTx } from "./invitation.tx";

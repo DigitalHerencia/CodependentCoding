@@ -84,10 +84,10 @@ enum MembershipStatus { active invited suspended }
 
 ### 4.3 Invitations and tenancy mode
 
-- An owner or admin (`base.membership:create`) invites an email with a role (`admin`, `member` or `viewer`). The action returns a one-time link `/invite/<token>`; only the token's SHA-256 is stored in `Invitation.tokenHash`. Invitations expire after `INVITATION_TTL_DAYS` (`lib/constants/tenancy.ts`) and can be revoked (`base.membership:delete`).
+- An owner or admin (`base.membership:create`) invites an email with a role (`admin`, `member` or `viewer`). The action returns a one-time link `/invite/<token>`; only the token's SHA-256 is stored in `Invitation.tokenHash`. Invitations expire after `INVITATION_TTL_DAYS` (`lib/constants/access.ts`) and can be revoked (`base.membership:delete`).
 - Accepting (`invitation.tx.ts`) is one idempotent transaction: it sets the invitation's organization as RLS context, flips `pending → accepted`, creates the membership or reactivates a suspended one (an active membership keeps its role), and writes an audit event. The Clerk `user.created` webhook accepts a pending invitation to the user's email before anything else.
 - RLS on `Invitation`: rows of the selected organization, plus invitations sent to the signed-in user's own email (read only). Writes stay inside the organization.
-- `tenancy` in `lib/constants/tenancy.ts` is `multi` (each new user without an invitation gets their own organization) or `single` (the first user creates the one organization, slug `main`, and owns it; everyone else joins by invitation).
+- `tenancy` in `lib/constants/access.ts` is `multi` (each new user without an invitation gets their own organization) or `single` (the first user creates the one organization, slug `main`, and owns it; everyone else joins by invitation).
 
 ## 5. Authorization — `lib/authz/`
 
@@ -98,6 +98,8 @@ enum MembershipStatus { active invited suspended }
 | `permissions.ts` | RBAC: `assertPermission(ctx, "crm.contact:update")`, `hasPermission(...)` |
 | `policies.ts`    | ABAC: record rules after the role check (tenant, owner, assignee, requester, shared) |
 | `attributes.ts`  | Only when a module needs ABAC attributes beyond the record's own    |
+
+`accessControl` in `lib/constants/access.ts` (set by `hipster-stack new --access`) is `abac` (both checks below) or `rbac` (the role check alone; the record check keeps only the organization boundary, so viewers are not limited to shared or own records). RLS applies either way.
 
 Every fetcher and action runs both checks in order: the role check (may this role do this action on this kind of resource?), then the record check (is this record in the caller's organization, and may this caller touch it?). `owner` and `admin` hold every permission. `member` is staff. `viewer` is for people outside the staff, such as clients: policies limit them to records shared with them (`clientVisible`) or their own (owner, assignee, requester).
 
