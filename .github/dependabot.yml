@@ -3,6 +3,8 @@ updates:
   - package-ecosystem: npm
     directory: /
     schedule: { interval: monthly }
+    commit-message: { prefix: "chore(deps)" }
+    labels: [dependencies, "type:build"]
     open-pull-requests-limit: 3
     groups:
       minor-and-patch:
@@ -14,6 +16,8 @@ updates:
   - package-ecosystem: npm
     directory: /template
     schedule: { interval: monthly }
+    commit-message: { prefix: "chore(deps)" }
+    labels: [dependencies, "type:build", "area:template"]
     open-pull-requests-limit: 3
     groups:
       minor-and-patch:
@@ -24,3 +28,5 @@ updates:
   - package-ecosystem: github-actions
     directory: /
     schedule: { interval: monthly }
+    commit-message: { prefix: "ci(deps)" }
+    labels: [dependencies, "type:ci", "area:ci"]

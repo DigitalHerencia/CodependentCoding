@@ -1,8 +1,17 @@
+<!--
+Title: a Conventional Commit, because it becomes the squash commit on main.
+  type(scope): summary      e.g. fix(cli): ask for the Neon connection string
+  types: feat fix docs style refactor perf test build ci chore revert   (add ! for breaking)
+Branch: <type>/<issue#>-<slug>. Merging deletes the branch and closes the issue below.
+-->
+
 ## Summary
 
 <!-- One or two sentences: what changed and why. -->
 
 Closes #
+
+Docs / spec: <!-- context/docs/<file>.md §N or context/specs/issues/CC-NNN-*.md -->
 
 ## Issue scope
 
@@ -11,7 +20,8 @@ Closes #
 
 ## Evidence
 
-<!-- Paste the commands you EXECUTED and their result. "Should pass" is not evidence. -->
+<!-- CI runs only the checks the changed files need. Paste anything you ran locally
+     that CI does not (e.g. pnpm --dir template test:rls against Neon). "Should pass" is not evidence. -->
 
 ```text
 pnpm validate                    →

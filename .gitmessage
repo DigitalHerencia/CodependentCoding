@@ -1,0 +1,13 @@
+# type(scope): summary            <- 72 chars max, imperative, no period
+#
+# types: feat fix docs style refactor perf test build ci chore revert
+# scope: site template modules cli plugin governance ci deps (optional)
+# breaking change: add ! after the scope, e.g. feat(cli)!: drop --legacy
+#
+# Body: why the change was needed, wrapped at 72 columns.
+#
+# Footer:
+# Closes #123
+# BREAKING CHANGE: what callers must change
+#
+# Use it once per clone:  git config commit.template .gitmessage

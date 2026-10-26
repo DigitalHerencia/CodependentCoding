@@ -655,6 +655,20 @@
       "context": "Dogfood issues #257 (test:rls fails until db:init has made migrations) and #258 (build needs DATABASE_URL). Owner (2026-10-26): have the CLI require the Neon connection string, wire it up, and use the non-pooler URL as Prisma's direct URL.",
       "decision": "Interactive `new` without --provision asks for the connection string (required at the prompt; `--database-url` for scripts; `--yes` alone skips). The CLI derives pooled/direct by adding/removing `-pooler` on a neon.tech host (other hosts are used as is), creates app_user as the string's owner role, writes DATABASE_URL (app_user, pooled) and DIRECT_DATABASE_URL (owner, direct), and runs `pnpm db:init` before the initial commit so prisma/migrations is committed. The RLS harness now fails with 'run pnpm db:init once and commit prisma/migrations' when there are none, and prisma.config treats a blank DIRECT_DATABASE_URL as unset. Build-time-optional DATABASE_URL was not done: the prompt fills .env.local instead.",
       "refs": ["#257", "#258", "packages/cli/src/setup/connectDatabase.ts"]
+    },
+    {
+      "id": "DEC-066",
+      "date": "2026-10-26",
+      "status": "accepted",
+      "title": "One targeted CI workflow plus a Conventional PR-title check (replaces DEC-062's no-CI rule)",
+      "context": "Owner (2026-10-26, note on #261): bring CI back, industry standard but lightweight and targeted: lint, format, typegen/typecheck, and only the Vitest/Playwright tests an edit needs; no per-module fan-out; proper GitHub workflow with Conventional titles, labels, milestones, issues traced to docs, PRs that auto-close issues and clean up branches. The old ci.yml ran root, template, compose, Neon RLS and an 11-preset build matrix on every PR.",
+      "decision": ".github/workflows/ci.yml: job `changes` diffs the PR base (or previous main) and gates `root`, `template` and `template-db`. Docs-only edits run only root format:check. Root tests are chosen by area (tests/cli, tests/plugin, tests/doctrine). Template runs its ~3 s unit suite whole; Playwright smoke only when app code changes; `build` only when build config or deps change; RLS runs against a Postgres 16 service container (no Neon branch, no secrets). The preset matrix and check:compose job are dropped. .github/workflows/pr-title.yml enforces Conventional PR titles. Squash-only with the PR title as the commit title is a repo setting the owner applies (the cloud proxy blocks settings writes). Issue forms carry Conventional titles, a required Docs / spec field and auto-add to Project #19; labels gained type:perf/build/revert and dependencies; Dependabot uses chore(deps)/ci(deps). Milestones M0-M6 closed; open follow-ups moved to v1.1.0.",
+      "refs": [
+        "#261",
+        "DEC-062",
+        ".github/workflows/ci.yml",
+        "context/docs/tech-requirements.md §11"
+      ]
     }
   ]
 }

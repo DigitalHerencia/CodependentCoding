@@ -1,18 +1,26 @@
 name: Task
 description: Chore, refactor, test, docs, CI, or spike
-title: "CC-NNN · "
+title: "chore(<area>): "
+projects: ["DigitalHerencia/19"]
 body:
   - type: dropdown
     id: type
     attributes:
       label: Type
-      options: [chore, refactor, test, docs, ci, spike]
+      options: [chore, refactor, perf, test, docs, build, ci, spike]
     validations: { required: true }
   - type: dropdown
     id: area
     attributes:
       label: Area
       options: [governance, site, template, modules, cli, plugin, ci]
+    validations: { required: true }
+  - type: input
+    id: docs
+    attributes:
+      label: Docs / spec
+      description: The doc section or spec file this traces to. New planned work also gets a `context/specs/issues/CC-NNN-*.md` file (next free number).
+      placeholder: "context/docs/AUTH.md §4 · context/specs/issues/CC-045-*.md"
     validations: { required: true }
   - type: textarea
     id: summary
