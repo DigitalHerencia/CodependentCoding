@@ -61,6 +61,16 @@ pnpm format
 - `decisions.json`: the id prefix, and any capability you split, deferred or turned into a spike.
 - `handoff.json`: `status: ready`, `next_issue` = the first issue with no unmet `depends_on`, `queue` = the rest in dependency order, `notes` = one line on the plan.
 
+## Record format
+
+Write `.claude/execution/progress.json` only in the shape its `format` field spells out: statuses `todo`, `in-progress`, `in-review`, `done`, `blocked`; issue entries under `issues.<ID>`; one `evidence` entry per command, `{ "date", "state", "command", "result" }`, with `state` one of `EXECUTED`, `INSPECTED`, `NOT_RUN`, `BLOCKED`. Never add other top-level keys. Before handing back, run:
+
+```text
+node "${CLAUDE_PLUGIN_ROOT}/scripts/execution-check.mjs" .
+```
+
+Fix until it exits 0.
+
 ## 5. Hand back
 
 Reply with a table (id, title, size, depends on), the next issue, and the open spikes. Then offer the GitHub sync:

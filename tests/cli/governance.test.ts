@@ -28,6 +28,7 @@ test("ships the full governance shape", () => {
     ".claude/execution/decisions.json",
     ".claude/execution/handoff.json",
     ".claude/execution/progress.json",
+    ".claude/settings.json",
     "CLAUDE.md",
     "context/docs/AUTH.md",
     "context/docs/Architecture.md",
@@ -78,4 +79,32 @@ test("doctrine docs carry no factory-only paths", () => {
       /template\/|\(DEC-\d+\)/,
     );
   }
+});
+
+test("skills may write .claude in headless and auto-accept runs", () => {
+  const settings = JSON.parse(asset(".claude/settings.json")) as {
+    permissions: { allow: string[] };
+  };
+  expect(settings.permissions.allow).toEqual(
+    expect.arrayContaining(["Edit(.claude/**)", "Write(.claude/**)"]),
+  );
+  expect(settings.permissions.allow).not.toContain(
+    "Bash(pnpm issues:sync --apply)",
+  );
+});
+
+test("progress.json spells out the one record format every skill writes", () => {
+  const progress = JSON.parse(
+    renderGovernance(asset(".claude/execution/progress.json"), vars),
+  ) as { format: { statuses: string[]; evidence: string } };
+  expect(progress.format.statuses).toEqual([
+    "todo",
+    "in-progress",
+    "in-review",
+    "done",
+    "blocked",
+  ]);
+  expect(progress.format.evidence).toContain(
+    "{ date: YYYY-MM-DD, state, command, result }",
+  );
 });

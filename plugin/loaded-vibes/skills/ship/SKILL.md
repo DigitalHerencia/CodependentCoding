@@ -46,6 +46,16 @@ Two checks, the same as `tests/e2e/smoke.spec.ts`: `/` returns 200 with an `<h1>
 - `decisions.json`: a decision when you changed an env name, the project, or the domain.
 - `handoff.json`: the production URL in `notes`, and any check that was `NOT_RUN`.
 
+## Record format
+
+Write `.claude/execution/progress.json` only in the shape its `format` field spells out: statuses `todo`, `in-progress`, `in-review`, `done`, `blocked`; issue entries under `issues.<ID>`; one `evidence` entry per command, `{ "date", "state", "command", "result" }`, with `state` one of `EXECUTED`, `INSPECTED`, `NOT_RUN`, `BLOCKED`. Never add other top-level keys. Before handing back, run:
+
+```text
+node "${CLAUDE_PLUGIN_ROOT}/scripts/execution-check.mjs" .
+```
+
+Fix until it exits 0.
+
 ## 6. Hand back
 
 The URL, the smoke results, the env names pushed (names only), and what was not run.

@@ -58,6 +58,16 @@ pnpm test:rls     # when DATABASE_URL_TEST is set; otherwise say it was not run
 
 A lint finding prints a `CC-*` ID: fix the cause, never add `eslint-disable`. Rerun until all exit 0. Record each command and its result as EXECUTED evidence in `.claude/execution/progress.json` under the issue, and add a decision for any rule you had to interpret.
 
+## Record format
+
+Write `.claude/execution/progress.json` only in the shape its `format` field spells out: statuses `todo`, `in-progress`, `in-review`, `done`, `blocked`; issue entries under `issues.<ID>`; one `evidence` entry per command, `{ "date", "state", "command", "result" }`, with `state` one of `EXECUTED`, `INSPECTED`, `NOT_RUN`, `BLOCKED`. Never add other top-level keys. Before handing back, run:
+
+```text
+node "${CLAUDE_PLUGIN_ROOT}/scripts/execution-check.mjs" .
+```
+
+Fix until it exits 0.
+
 ## 5. Hand back
 
 The files the CLI wrote (count), the files you changed for rules (each with one line why), the check results, and anything not run.

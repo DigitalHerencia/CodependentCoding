@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/decisions/v1",
-  "updated": "2026-10-25T21:30:00Z",
+  "updated": "2026-10-26T22:45:00Z",
   "format": "Append new decisions; never rewrite history. Supersede by adding a new entry and setting status=superseded + superseded_by on the old one.",
   "decisions": [
     {
@@ -615,10 +615,6 @@
       "id": "DEC-060",
       "date": "2026-10-25",
       "status": "accepted",
-      "title": "Remove GitHub Actions CI",
-      "context": "The owner called the GitHub Actions runs excessive and wasteful and asked for all of them to be removed.",
-      "decision": "Delete .github/workflows/ci.yml (the only workflow file) and disable the leftover registered workflows. PRs merge when the local checks pass: root `pnpm validate` and `pnpm --dir template validate` (plus `pnpm --dir template test:rls` when RLS code changes). Dependabot config is untouched.",
-      "refs": [".github/workflows/ci.yml"]
       "title": "No app deploys in v1; the job is the template",
       "context": "CC-040 and CC-042 asked for a deployed URL from a generated app, which needed new cloud resources. Owner (2026-10-25): \"Our job here is to make the template, not to deploy apps.\"",
       "decision": "PRD G2 and §8.4 now measure a validated app running locally. /ship stays in the plugin for the owner to use per app; no thread deploys apps or asks for Clerk/Neon/Vercel resources. CC-042 closed on local evidence. Owner also removed GitHub Actions (2026-10-25); merges rely on local checks.",
@@ -632,6 +628,24 @@
       "context": "CC-044 closes M0-M6 and tags v1.0.0. The owner removed GitHub Actions and asked for the dogfood issues #256-#261 to stay open unless they block v1; none does.",
       "decision": "The release profile runs locally on a fresh clone of main. #256-#261 have no milestone now (still open). Tag v1.0.0 on the CC-044 merge commit with notes from progress.json.",
       "refs": ["#204", "#256", "#261"]
+    },
+    {
+      "id": "DEC-062",
+      "date": "2026-10-25",
+      "status": "accepted",
+      "title": "Remove GitHub Actions CI",
+      "context": "The owner called the GitHub Actions runs excessive and wasteful and asked for all of them to be removed. PR #265 wrote this as a second DEC-060 inside the existing entry, which broke the file; restored as its own entry on 2026-10-26.",
+      "decision": "Delete .github/workflows/ci.yml (the only workflow file) and disable the leftover registered workflows. PRs merge when the local checks pass: root `pnpm validate` and `pnpm --dir template validate` (plus `pnpm --dir template test:rls` when RLS code changes). Dependabot config is untouched.",
+      "refs": [".github/workflows/ci.yml", "#265"]
+    },
+    {
+      "id": "DEC-063",
+      "date": "2026-10-26",
+      "status": "accepted",
+      "title": "One progress record format for every skill; generated apps allow .claude writes",
+      "context": "Dogfood issues #256 and #259: skills wrote progress.json in different shapes, and headless runs could not write .claude/ at all. Owner (2026-10-26): the three JSON files are decisions, progress (the per-turn changelog) and handoff (persists across sessions), and skills must be able to write them.",
+      "decision": "The app-governance progress.json `format` field is now an object with the statuses, issue entry, evidence entry and evidence states. /idea, /plan, /slice, /check and /ship point at it and end by running execution-check.mjs, which now also rejects unknown top-level keys in progress.json. Generated apps ship .claude/settings.json allowing Edit/Write(.claude/**) plus the read-only commands the skills run (not `issues:sync --apply`). Also repaired this repo's three execution files, which #265 and #267 left as invalid JSON; the CI-removal decision is now DEC-062.",
+      "refs": ["#256", "#259", "packages/cli/assets/app-governance/.claude"]
     }
   ]
 }

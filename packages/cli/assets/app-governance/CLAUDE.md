@@ -46,6 +46,6 @@ pnpm build           production build
 
 Update `.claude/execution/`:
 
-- `progress.json`: issue status and EXECUTED evidence (command and result)
+- `progress.json`: issue status and EXECUTED evidence (command and result), in the shape its `format` field gives
 - `decisions.json`: append any decision you made (DEC-NNN)
 - `handoff.json`: current state, next issue, risks

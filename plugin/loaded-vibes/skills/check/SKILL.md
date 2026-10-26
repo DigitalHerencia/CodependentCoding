@@ -50,6 +50,16 @@ Add each command to `.claude/execution/progress.json` as evidence:
 
 Use `NOT_RUN` or `BLOCKED` with the reason for anything not run. Then run `/loaded-vibes:handoff` if the session is ending.
 
+## Record format
+
+Write `.claude/execution/progress.json` only in the shape its `format` field spells out: statuses `todo`, `in-progress`, `in-review`, `done`, `blocked`; issue entries under `issues.<ID>`; one `evidence` entry per command, `{ "date", "state", "command", "result" }`, with `state` one of `EXECUTED`, `INSPECTED`, `NOT_RUN`, `BLOCKED`. Never add other top-level keys. Before handing back, run:
+
+```text
+node "${CLAUDE_PLUGIN_ROOT}/scripts/execution-check.mjs" .
+```
+
+Fix until it exits 0.
+
 ## 5. Hand back
 
 One line per command (`pnpm lint: exit 0`), the rule groups fixed with their counts, the files changed, and anything `NOT_RUN` or `BLOCKED` with why.

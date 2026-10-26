@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Edit(.claude/**)",
+      "Write(.claude/**)",
+      "Bash(git status:*)",
+      "Bash(git log:*)",
+      "Bash(git diff:*)",
+      "Bash(git branch:*)",
+      "Bash(pnpm format:*)",
+      "Bash(pnpm lint:*)",
+      "Bash(pnpm typecheck:*)",
+      "Bash(pnpm test:*)",
+      "Bash(pnpm build:*)",
+      "Bash(pnpm validate:*)",
+      "Bash(pnpm issues:sync)",
+      "Bash(node *scripts/execution-check.mjs*)",
+      "Bash(node *scripts/governance-check.mjs*)"
+    ]
+  }
+}
