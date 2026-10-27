@@ -2,6 +2,11 @@ import { execFileSync } from "node:child_process";
 import { existsSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 
+import {
+  type AccessChoices,
+  defaultAccess,
+  writeAccessChoices,
+} from "#cli/compose/access";
 import { applyBrandColor, type BrandResult } from "#cli/compose/brand";
 import { writeGovernance } from "#cli/compose/governance";
 import { loadTemplateKit } from "#cli/compose/kit";
@@ -17,6 +22,7 @@ export const EXCLUDED = [".claude/", "prisma/migrations/", "tests/template/"];
 /** Files the pipeline writes or rewrites; formatted before it returns. */
 const FORMATTED = [
   "hipster.json",
+  "lib/constants/access.ts",
   "hipster.modules.json",
   "lib/modules/registry.ts",
   "package.json",
@@ -45,6 +51,10 @@ export interface ComposeAppOptions {
   name: string;
   /** Brand hex; null keeps the template's reviewed default tokens. */
   color: string | null;
+  /** Organizations and authorization (AUTH.md §4.3, §5). */
+  access?: AccessChoices;
+  /** Non-secret Clerk details for hipster.json (keys go to .env files). */
+  clerk?: { appId?: string; ngrokDomain?: string };
   cliVersion: string;
   now: Date;
 }
@@ -63,6 +73,7 @@ interface ManifestEntry {
   kind: string;
   dependsOn?: string[];
   packages?: string[];
+  env?: { name: string; required?: boolean; description?: string }[];
 }
 
 export interface TemplateManifest {
@@ -142,6 +153,9 @@ export async function composeApp(
     kit.format,
   );
 
+  const access = options.access ?? defaultAccess;
+  writeAccessChoices(outDir, access);
+
   let brand: BrandResult | null = null;
   if (color) {
     const cssPath = path.join(outDir, "app", "globals.css");
@@ -155,6 +169,10 @@ export async function composeApp(
     createdAt: options.now.toISOString(),
     modules: ids,
     color,
+    ...access,
+    ...(options.clerk && Object.keys(options.clerk).length > 0
+      ? { clerk: options.clerk }
+      : {}),
   };
   writeFileSync(path.join(outDir, "hipster.json"), JSON.stringify(hipster));
 

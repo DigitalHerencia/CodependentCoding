@@ -711,6 +711,29 @@
       "id": "DEC-069",
       "date": "2026-10-26",
       "status": "accepted",
+      "title": "Tenancy and RBAC or RBAC+ABAC as setup choices (#260)",
+      "context": "Owner (#260): the CLI asks whether the app is multi-tenant and whether it uses RBAC or ABAC, then wires the matching code.",
+      "decision": "template lib/constants/access.ts holds tenancy (multi|single) and accessControl (abac|rbac). policies.ts reads accessControl: with rbac the record rules step aside and only the organization boundary remains (limitedToOwnRecords false, manage checks pass inside the org); RLS is unchanged. `hipster-stack new|compose --tenancy --access` (interactive new prompts with selects) rewrites the two constants via packages/cli/src/compose/access.ts and records them in hipster.json. One file with a constant instead of swapped file variants, so both modes stay type-checked and tested in the template.",
+      "refs": [
+        "#260",
+        "AUTH.md §4.3, §5",
+        "template/lib/constants/access.ts",
+        "packages/cli/src/compose/access.ts"
+      ]
+    },
+    {
+      "id": "DEC-070",
+      "date": "2026-10-26",
+      "status": "accepted",
+      "title": "`hipster-stack new` wizard",
+      "context": "Owner (2026-10-26): the CLI should feel like a modern retro CLI with an animated ASCII banner and real menus, and ask for the project path, domain, Clerk keys (app ID, publishable, secret, prod and dev webhook secrets, ngrok domain), the Neon string, the domain's integration keys, RBAC/ABAC and tenancy, then confirm before generating.",
+      "decision": "Keep @clack/prompts (select, multiselect, password, box, confirm) and add gradient-string 3.0.0 for the banner, which sweeps a synthwave gradient for about a second on a color TTY and prints plain otherwise (CI, NO_COLOR, dumb terminals). The folder is a plain text prompt: clack's path prompt only accepts existing paths. Clerk keys are shape-checked; every key may be blank. Dev keys go to .env.local, the prod webhook secret to .env.production.local, app ID and ngrok domain to hipster.json; next steps print the ngrok command and the Clerk webhook URL. No new flags for keys: non-interactive runs leave them for .env.local.",
+      "refs": ["packages/cli/src/wizard", "tech-requirements.md"]
+    },
+    {
+      "id": "DEC-071",
+      "date": "2026-10-26",
+      "status": "accepted",
       "title": "The root site grows past one page",
       "context": "Ivan asked (thread 'Build homepage nav and footer pages') to replace the dead header anchors with real pages and restore FAQ/Terms/Privacy. DEC-002 and PRD FR-SITE-1 limited the site to `/`.",
       "decision": "Supersedes DEC-002 for the site only. Header: Doctrine, Maximal, Hipster Stack, Loaded Vibes (owner pick; retired names may appear only as in-page flavor). Footer: /faq, /terms, /privacy using the approved template copy adapted to a static site (operator Digital Herencia, contact via GitHub issues). All pages static, no data access, nothing new on Vercel. Pages ship in five PRs; unfinished ones show a coming-soon block. Root CSS now imports Tailwind theme+utilities (no preflight) so blocks can use utilities without changing existing styles. Copy lives in lib/constants/siteCopy.ts.",

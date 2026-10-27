@@ -49,7 +49,7 @@ Exact versions only (no `^`/`~`). Upgrades are explicit issues.
 
 ```text
 codependent-coding/
-├── app/                      static site routes (DEC-069)
+├── app/                      static site routes (DEC-071)
 ├── components/               site presentation
 ├── public/                   brand assets
 ├── packages/cli/             Hipster Stack CLI (local, unpublished)
@@ -154,6 +154,8 @@ Removed: `.agents/`, `packages/core`, `packages/schema`, `packages/loaded-vibes`
 - `compose <dir> --preset|--modules|--all` is `new` without prompts, install or git (file steps + `prisma validate`), for CI.
 - No network access during composition. Provisioning is a separate, opt-in step.
 - Without `--provision`, interactive `new` asks for the Neon connection string (or takes `--database-url`). The CLI derives the direct URL by dropping `-pooler` from a Neon host, creates `app_user` (NOBYPASSRLS) as the string's owner role, writes `DATABASE_URL` (app_user, pooled) and `DIRECT_DATABASE_URL` (owner, direct, used by Prisma) to `.env.local`, and runs `pnpm db:init` after install so the initial commit carries `prisma/migrations`. `--yes` without `--database-url` skips it.
+- `new` asks (or takes `--tenancy multi|single` and `--access abac|rbac`) whether the app has many organizations or one, and whether record rules (ABAC) run after role permissions (RBAC). The answers are written to the app's `lib/constants/access.ts` and `hipster.json` (AUTH.md §4.3, §5).
+- Interactive `new` is a wizard (`packages/cli/src/wizard/`, @clack/prompts + gradient-string): animated banner, then project folder and name, domain (preset or custom modules), brand color, Clerk application ID, publishable and secret keys, development and production webhook signing secrets and ngrok domain, the Neon connection string, the keys of every integration the domain brings in, organizations and authorization, and a confirm screen with secrets masked. Nothing is written before the confirm. Development keys go to `.env.local`, the production webhook secret to `.env.production.local` (both git-ignored), the Clerk application ID and ngrok domain to `hipster.json`. Every key can be left blank and filled in later.
 - `new --provision` runs three independent steps, each skippable (`--no-github`, `--no-neon`, `--no-vercel`, or declined at the prompt) and check-before-create: `gh repo create --private --push`; `neonctl projects create --role owner`, then `app_user` (LOGIN, NOBYPASSRLS, table rights + default privileges) created in SQL, with `DATABASE_URL` (app_user, pooled) and `DIRECT_DATABASE_URL` (owner, direct) written to `.env.local`; `vercel project create` + `vercel link` + `vercel env add` (production, preview; values on stdin). A missing CLI or login prints install/sign-in guidance and the next step still runs. `new <existing app> --provision` provisions only, so a step can be finished later.
 
 ## 10. Plugin technical requirements

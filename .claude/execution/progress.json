@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/progress/v1",
-  "updated": "2026-10-27T00:05:00Z",
+  "updated": "2026-10-26T23:55:00Z",
   "format": "Evidence states: EXECUTED | INSPECTED | NOT_RUN | BLOCKED. Never mark an issue done without EXECUTED evidence for its Validation commands.",
   "milestones": {
     "M0": {
@@ -2939,37 +2939,37 @@
     {
       "date": "2026-10-26",
       "state": "EXECUTED",
-      "issue": "site-pages PR1",
-      "command": "pnpm lint / typecheck / format:check",
-      "result": "clean"
+      "issue": "#260",
+      "command": "root pnpm validate; pnpm --dir template validate; template pnpm test",
+      "result": "exit 0, 90 passed; exit 0; 79 passed/1 skipped"
     },
     {
       "date": "2026-10-26",
       "state": "EXECUTED",
-      "issue": "site-pages PR1",
-      "command": "pnpm build",
-      "result": "10 static routes incl. /doctrine /maximal /hipster-stack /loaded-vibes /faq /terms /privacy"
+      "issue": "#260",
+      "command": "pnpm cli compose template/.sandbox/acc --preset crm --tenancy single --access rbac; prisma generate; tsc --noEmit",
+      "result": "constants written; tsc exit 0"
     },
     {
       "date": "2026-10-26",
       "state": "EXECUTED",
-      "issue": "site-pages PR1",
-      "command": "pnpm test (root, template deps not installed locally)",
-      "result": "14 failed / 51 passed, identical count on main before the change: template/node_modules missing; CI installs it"
+      "issue": "CLI wizard",
+      "command": "root pnpm validate (incl. tests/cli/wizard.test.ts)",
+      "result": "exit 0, 95 passed"
     },
     {
       "date": "2026-10-26",
       "state": "EXECUTED",
-      "issue": "site-pages PR1",
-      "command": "playwright screenshots / /faq /privacy /hipster-stack@390px",
-      "result": "render with header/footer; links resolve"
+      "issue": "CLI wizard",
+      "command": "pnpm cli new --no-install --no-git driven through a pty (invoicing domain, Clerk keys, local Postgres, single + rbac)",
+      "result": "banner, every prompt and the masked confirm screen rendered; app composed; .env.local holds Clerk, Stripe, Blob and database keys; hipster.json has tenancy, accessControl, clerk.appId and ngrokDomain"
     },
     {
       "date": "2026-10-27",
       "state": "EXECUTED",
       "issue": "site-pages",
       "command": "pnpm lint && pnpm typecheck && pnpm build",
-      "result": "clean; all 8 site routes plus 47 doctrine pages prerender static"
+      "result": "clean; all site routes plus doctrine pages prerender static"
     }
   ],
   "known_findings": [
