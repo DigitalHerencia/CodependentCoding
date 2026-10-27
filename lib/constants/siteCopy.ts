@@ -241,11 +241,6 @@ export const privacyCopy: LegalDocument = {
 };
 
 export const comingSoonCopy = {
-  maximal: {
-    title: "The Maximal Template™",
-    subtitle: "The template source, in Monaco",
-    line: "Build maximal. Select deliberately. Delete aggressively. Browsing comes first.",
-  },
   hipsterStack: {
     title: "Hipster Stack™",
     subtitle: "The CLI command builder",
@@ -316,4 +311,11 @@ export const loadedVibesCopy = {
       text: "/handoff writes it all down so tomorrow-you doesn't have to ask.",
     },
   ],
+} as const;
+
+export const maximalCopy = {
+  kicker: "The",
+  title: "Maximal Template™",
+  subtitle: "Normalized defaults · read-only",
+  line: "One runnable app containing the base and every module. Build maximal. Select deliberately. Delete aggressively.",
 } as const;
