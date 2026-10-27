@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
-import { ComingSoon } from "@/components/blocks/coming-soon";
-import { comingSoonCopy } from "@/lib/constants/siteCopy";
+import { PluginProductFeature } from "@/features/plugin/pluginProductFeature";
 
 export const metadata: Metadata = {
   title: "Loaded Vibes™ · Codependent Coding™",
 };
 
 export default function Page() {
-  return <ComingSoon {...comingSoonCopy.loadedVibes} />;
+  return <PluginProductFeature />;
 }
