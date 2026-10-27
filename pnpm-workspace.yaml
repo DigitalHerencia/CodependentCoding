@@ -8,3 +8,4 @@ allowBuilds:
 
 minimumReleaseAgeExclude:
   - lucide-react@1.38.0
+  - marked@18.1.2

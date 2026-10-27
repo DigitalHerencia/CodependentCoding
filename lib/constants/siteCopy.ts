@@ -241,11 +241,6 @@ export const privacyCopy: LegalDocument = {
 };
 
 export const comingSoonCopy = {
-  doctrine: {
-    title: "Doctrine",
-    subtitle: "The rules, rendered as a docs section",
-    line: "The docs are being normalized. The linter is already enforcing them anyway.",
-  },
   maximal: {
     title: "The Maximal Template™",
     subtitle: "The template source, in Monaco",

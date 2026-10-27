@@ -2587,3 +2587,77 @@ pre {
 .site-bar .nav-link {
   white-space: nowrap;
 }
+
+.doctrine-prose {
+  color: var(--foreground-muted);
+  font-size: 0.875rem;
+  line-height: 1.75;
+}
+
+.doctrine-prose :is(h2, h3, h4) {
+  scroll-margin-top: 1.5rem;
+  margin: 2.25rem 0 0.75rem;
+  font-size: 1.05rem;
+}
+
+.doctrine-prose :is(h3, h4) {
+  font-size: 0.85rem;
+  text-shadow: none;
+}
+
+.doctrine-prose a {
+  color: var(--signal);
+}
+
+.doctrine-prose strong {
+  color: var(--foreground);
+}
+
+.doctrine-prose :not(pre) > code {
+  padding: 0.1rem 0.3rem;
+  border: 1px solid var(--signal-border);
+  color: var(--foreground);
+  font-size: 0.8em;
+}
+
+.doctrine-prose pre {
+  overflow-x: auto;
+  padding: 1rem;
+  border: 1px solid var(--signal-border);
+  background: var(--background-strong);
+  color: var(--foreground);
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+
+.doctrine-prose blockquote {
+  margin: 1.5rem 0;
+  padding: 0.75rem 1rem;
+  border-left: 3px solid var(--signal);
+  background: var(--signal-soft);
+  color: var(--foreground);
+}
+
+.doctrine-prose table {
+  display: block;
+  overflow-x: auto;
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.75rem;
+}
+
+.doctrine-prose :is(th, td) {
+  padding: 0.5rem 0.65rem;
+  border: 1px solid var(--signal-border);
+  text-align: left;
+  vertical-align: top;
+}
+
+.doctrine-prose th {
+  color: var(--signal);
+  text-transform: uppercase;
+}
+
+.doctrine-prose td code {
+  white-space: nowrap;
+}

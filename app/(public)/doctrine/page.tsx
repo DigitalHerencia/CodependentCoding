@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
-import { ComingSoon } from "@/components/blocks/coming-soon";
-import { comingSoonCopy } from "@/lib/constants/siteCopy";
+import { DoctrineDocsFeature } from "@/features/doctrine/doctrineDocsFeature";
 
 export const metadata: Metadata = { title: "Doctrine · Codependent Coding™" };
 
 export default function Page() {
-  return <ComingSoon {...comingSoonCopy.doctrine} />;
+  return <DoctrineDocsFeature slug="" />;
 }
