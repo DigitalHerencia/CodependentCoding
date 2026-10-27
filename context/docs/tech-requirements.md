@@ -49,8 +49,8 @@ Exact versions only (no `^`/`~`). Upgrades are explicit issues.
 
 ```text
 codependent-coding/
-├── app/                      landing page only
-├── components/               landing-page presentation
+├── app/                      static site routes (DEC-071)
+├── components/               site presentation
 ├── public/                   brand assets
 ├── packages/cli/             Hipster Stack CLI (local, unpublished)
 ├── template/                 Maximal Template — runnable Next.js app

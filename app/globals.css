@@ -1,3 +1,6 @@
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
+
 :root {
   color-scheme: dark;
   --background: #05030b;
@@ -2530,5 +2533,148 @@ pre {
     scroll-behavior: auto !important;
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
+  }
+}
+
+@keyframes site-rise {
+  from {
+    opacity: 0;
+    transform: translateY(0.75rem);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes accordion-down {
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--radix-accordion-content-height);
+  }
+}
+
+@keyframes accordion-up {
+  from {
+    height: var(--radix-accordion-content-height);
+  }
+  to {
+    height: 0;
+  }
+}
+
+.site-rise {
+  animation: site-rise 480ms ease-out both;
+}
+
+.accordion-content[data-state="open"] {
+  animation: accordion-down 240ms ease-out;
+}
+
+.accordion-content[data-state="closed"] {
+  animation: accordion-up 200ms ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-rise,
+  .accordion-content[data-state] {
+    animation: none;
+  }
+}
+
+.site-bar .nav-link {
+  white-space: nowrap;
+}
+
+.doctrine-prose {
+  color: var(--foreground-muted);
+  font-size: 0.875rem;
+  line-height: 1.75;
+}
+
+.doctrine-prose :is(h2, h3, h4) {
+  scroll-margin-top: 1.5rem;
+  margin: 2.25rem 0 0.75rem;
+  font-size: 1.05rem;
+}
+
+.doctrine-prose :is(h3, h4) {
+  font-size: 0.85rem;
+  text-shadow: none;
+}
+
+.doctrine-prose a {
+  color: var(--signal);
+}
+
+.doctrine-prose strong {
+  color: var(--foreground);
+}
+
+.doctrine-prose :not(pre) > code {
+  padding: 0.1rem 0.3rem;
+  border: 1px solid var(--signal-border);
+  color: var(--foreground);
+  font-size: 0.8em;
+}
+
+.doctrine-prose pre {
+  overflow-x: auto;
+  padding: 1rem;
+  border: 1px solid var(--signal-border);
+  background: var(--background-strong);
+  color: var(--foreground);
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+
+.doctrine-prose blockquote {
+  margin: 1.5rem 0;
+  padding: 0.75rem 1rem;
+  border-left: 3px solid var(--signal);
+  background: var(--signal-soft);
+  color: var(--foreground);
+}
+
+.doctrine-prose table {
+  display: block;
+  overflow-x: auto;
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.75rem;
+}
+
+.doctrine-prose :is(th, td) {
+  padding: 0.5rem 0.65rem;
+  border: 1px solid var(--signal-border);
+  text-align: left;
+  vertical-align: top;
+}
+
+.doctrine-prose th {
+  color: var(--signal);
+  text-transform: uppercase;
+}
+
+.doctrine-prose td code {
+  white-space: nowrap;
+}
+
+@keyframes site-caret {
+  50% {
+    opacity: 0;
+  }
+}
+
+.site-caret {
+  color: var(--signal);
+  animation: site-caret 1s steps(1) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-caret {
+    animation: none;
   }
 }

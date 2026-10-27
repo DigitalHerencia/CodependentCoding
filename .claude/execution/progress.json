@@ -2963,6 +2963,13 @@
       "issue": "CLI wizard",
       "command": "pnpm cli new --no-install --no-git driven through a pty (invoicing domain, Clerk keys, local Postgres, single + rbac)",
       "result": "banner, every prompt and the masked confirm screen rendered; app composed; .env.local holds Clerk, Stripe, Blob and database keys; hipster.json has tenancy, accessControl, clerk.appId and ngrokDomain"
+    },
+    {
+      "date": "2026-10-27",
+      "state": "EXECUTED",
+      "issue": "site-pages",
+      "command": "pnpm lint && pnpm typecheck && pnpm build",
+      "result": "clean; all site routes plus doctrine pages prerender static"
     }
   ],
   "known_findings": [

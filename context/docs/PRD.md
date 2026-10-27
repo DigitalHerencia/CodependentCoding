@@ -37,7 +37,7 @@ The first implementation tried to be a product: a public catalog site, a configu
 ## 4. Non-goals
 
 - Publishing the CLI or template as a package or hosted service.
-- A web configuration workbench, catalog site, or docs site (removed).
+- A hosted configuration workbench or server-backed catalog. (The site's static doctrine docs, template browser and command builder are allowed: DEC-071.)
 - Supporting stacks other than the fixed Hipster Stack (Next.js / Prisma / Neon / Clerk).
 - Multi-user collaboration features for the factory itself.
 - Production hardening of generated apps beyond the base security contract (that happens after an idea is validated).
@@ -50,13 +50,13 @@ Constraint that shapes everything: **agent usage is metered**. Deterministic wor
 
 ## 6. Product components
 
-| Component | Name               | Role                                                                                                  |
-| --------- | ------------------ | ----------------------------------------------------------------------------------------------------- |
-| Doctrine  | Codependent Coding | Architecture rules, naming, layer contracts — enforced by ESLint/Prettier                             |
-| Template  | Maximal Template   | One runnable Next.js app containing the base + every module; the workshop where modules are developed |
-| CLI       | Hipster Stack      | Local CLI: `new`, `add`, `slice`, `doctor`, `compose`                                                 |
-| Plugin    | Loaded Vibes       | Claude Code plugin: idea grill, planning, slicing, checking, shipping, handoff                        |
-| Site      | Landing page       | Single static page describing the factory                                                             |
+| Component | Name               | Role                                                                                                         |
+| --------- | ------------------ | ------------------------------------------------------------------------------------------------------------ |
+| Doctrine  | Codependent Coding | Architecture rules, naming, layer contracts — enforced by ESLint/Prettier                                    |
+| Template  | Maximal Template   | One runnable Next.js app containing the base + every module; the workshop where modules are developed        |
+| CLI       | Hipster Stack      | Local CLI: `new`, `add`, `slice`, `doctor`, `compose`                                                        |
+| Plugin    | Loaded Vibes       | Claude Code plugin: idea grill, planning, slicing, checking, shipping, handoff                               |
+| Site      | Landing page       | Static site: landing, Doctrine docs, Maximal browser, Hipster Stack builder, Loaded Vibes, FAQ/Terms/Privacy |
 
 Retired vocabulary: Anthimeria, Virgule, Arrangement, Simples, Ontologies (as product terms). Starter bundles are now called **presets**.
 
@@ -64,7 +64,7 @@ Retired vocabulary: Anthimeria, Virgule, Arrangement, Simples, Ontologies (as pr
 
 ### 7.1 Landing page (FR-SITE)
 
-- FR-SITE-1 Only `/` remains (plus framework `not-found`, `error`, `loading`). All other routes are deleted.
+- FR-SITE-1 Routes: `/`, `/doctrine`, `/maximal`, `/hipster-stack`, `/loaded-vibes`, `/faq`, `/terms`, `/privacy` (plus framework `not-found`, `error`, `loading`). Header and footer link only to these (DEC-071).
 - FR-SITE-2 Keeps current visual language and assets (crown, Digital Herencia, desert).
 - FR-SITE-3 Static; no data access; deploys on Vercel.
 

@@ -2,10 +2,10 @@ import Image from "next/image";
 import Link from "next/link";
 
 const primaryLinks = [
-  { label: "Ontologies", href: "#ontologies" },
-  { label: "Simples", href: "#simples" },
-  { label: "Anthimeria", href: "#anthimeria" },
-  { label: "Maximal", href: "#maximal" },
+  { label: "Doctrine", href: "/doctrine" },
+  { label: "Maximal", href: "/maximal" },
+  { label: "Hipster Stack", href: "/hipster-stack" },
+  { label: "Loaded Vibes", href: "/loaded-vibes" },
 ] as const;
 
 export function SiteHeader() {
@@ -27,9 +27,9 @@ export function SiteHeader() {
         </Link>
         <nav aria-label="Primary navigation">
           {primaryLinks.map((link) => (
-            <a className="nav-link" href={link.href} key={link.label}>
+            <Link className="nav-link" href={link.href} key={link.label}>
               {link.label}
-            </a>
+            </Link>
           ))}
         </nav>
       </div>
