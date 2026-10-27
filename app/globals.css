@@ -2661,3 +2661,20 @@ pre {
 .doctrine-prose td code {
   white-space: nowrap;
 }
+
+@keyframes site-caret {
+  50% {
+    opacity: 0;
+  }
+}
+
+.site-caret {
+  color: var(--signal);
+  animation: site-caret 1s steps(1) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-caret {
+    animation: none;
+  }
+}

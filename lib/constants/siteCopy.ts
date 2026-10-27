@@ -240,14 +240,6 @@ export const privacyCopy: LegalDocument = {
   ],
 };
 
-export const comingSoonCopy = {
-  hipsterStack: {
-    title: "Hipster Stack™",
-    subtitle: "The CLI command builder",
-    line: "Formerly The Anthimeria™ Workbench, now with 100% fewer servers.",
-  },
-} as const;
-
 export const loadedVibesCopy = {
   kicker: "The",
   title: "Loaded Vibes™",
@@ -318,4 +310,11 @@ export const maximalCopy = {
   title: "Maximal Template™",
   subtitle: "Normalized defaults · read-only",
   line: "One runnable app containing the base and every module. Build maximal. Select deliberately. Delete aggressively.",
+} as const;
+
+export const hipsterStackCopy = {
+  kicker: "The",
+  title: "Hipster Stack™",
+  subtitle: "Command builder · formerly The Anthimeria™ Workbench",
+  line: "Now with 100% fewer servers. Pick the command, fill the form, copy the pasta. The flags come straight from the CLI source, so this page changes when the CLI does.",
 } as const;

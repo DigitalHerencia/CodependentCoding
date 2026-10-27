@@ -9,8 +9,7 @@
   "queue": [],
   "branch": "main",
   "in_flight": [
-    "Thread 'Rebuild authorization and fix test-run notes': #234 four roles merged (DEC-065, owner chose viewer = outside client). Next PRs from that thread: #260 invitations + tenancy, then the tenancy/RBAC-ABAC CLI choice, then the CLI wizard.",
-    "Thread 'Build homepage nav and footer pages' (DEC-069): PR1 groundwork + FAQ/Terms/Privacy on branch claude/project-thread-flfk6h. Next: Doctrine docs, Maximal Monaco browser, Loaded Vibes page, Hipster Stack builder (reads flags from packages/cli; after CLI wizard). Plan: https://claude.ai/artifact/NYmfujFVgQq8nT9RdPcqDo"
+    "Thread 'Rebuild authorization and fix test-run notes': #234 four roles merged (DEC-065, owner chose viewer = outside client). Next PRs from that thread: #260 invitations + tenancy, then the tenancy/RBAC-ABAC CLI choice, then the CLI wizard."
   ],
   "notes": [
     "Governance package is uncommitted in the owner's working tree; owner reviews with `git status` / `git diff`, then commits on a branch `chore/governance-package`.",
@@ -76,7 +75,8 @@
     "#256/#259 (DEC-063): progress.json format is an object every skill follows; execution-check rejects unknown progress keys; generated apps ship .claude/settings.json with Edit/Write(.claude/**).",
     "#257/#258 (DEC-064): `hipster-stack new` asks for the Neon connection string (--database-url for scripts), writes pooled app_user + direct owner URLs, runs db:init before the initial commit.",
     "DEC-066: CI is back as one targeted workflow (.github/workflows/ci.yml, job `changes` decides what runs) plus pr-title.yml. A docs-only PR runs only format:check. RLS runs in CI on a Postgres service container when prisma/, tests/rls/ or lib/db/ change. PR titles must be Conventional (they become the squash commit; owner sets squash-only + PR_TITLE in repo settings). Projects v2 workflows on #19 are set by the owner from his PC.",
-    "DEC-067: asset files are kebab-case (public/, template/public/); reference them as /name-like-this.jpg."
+    "DEC-067: asset files are kebab-case (public/, template/public/); reference them as /name-like-this.jpg.",
+    "Site pages (DEC-069) shipped in PR #278: /doctrine (from Architecture.md, validation.yaml, TypeScripture), /maximal (Monaco, file list at build, contents from raw GitHub main), /hipster-stack (flags parsed from packages/cli/src/commands at build, so the CLI wizard's flag changes show up automatically), /loaded-vibes (from plugin files), /faq /terms /privacy."
   ],
   "risks": [
     "Lint hook exits 0 silently when node_modules/eslint is missing; a failed install hides lint feedback. On Windows, run pnpm install with VS Code closed (DEC-019).",
