@@ -14,8 +14,9 @@ const CONTRACT = ".claude/contracts/validation.yaml";
 const LINT_MAP = "template/eslint/doctrine-map.mjs";
 
 interface DoctrineMapModule {
-  layers: { id: string }[];
+  layers: { id: string; match: RegExp }[];
   boundaries: Record<string, BoundaryRecord>;
+  genericNames: RegExp;
 }
 
 let summary: Promise<DoctrineSummary> | undefined;
@@ -38,4 +39,15 @@ async function readDoctrine(): Promise<DoctrineSummary> {
       .map((layer) => toDoctrineLayerDTO(layer.id, map.boundaries[layer.id])),
     rules: contract.rules.map(toDoctrineRuleDTO),
   };
+}
+
+/** Code paths the doctrine has no layer for, or that use an invented folder name. */
+export async function findUnplacedPaths(paths: string[]): Promise<string[]> {
+  const map = await importWorkspaceModule<DoctrineMapModule>(LINT_MAP);
+  return paths.filter(
+    (file) =>
+      /\.tsx?$/.test(file) &&
+      (!map.layers.some((layer) => layer.match.test(file)) ||
+        map.genericNames.test(file)),
+  );
 }
