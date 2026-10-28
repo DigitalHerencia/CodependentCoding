@@ -3,10 +3,5 @@
 import { render } from "ink";
 
 import { RootLayout } from "@/app/layout";
-import { HomePage } from "@/app/page";
 
-render(
-  <RootLayout>
-    <HomePage />
-  </RootLayout>,
-);
+render(<RootLayout />);

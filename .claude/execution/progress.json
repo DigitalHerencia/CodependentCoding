@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/progress/v1",
-  "updated": "2026-10-28T20:50:00Z",
+  "updated": "2026-10-28T21:00:00Z",
   "format": "Evidence states: EXECUTED | INSPECTED | NOT_RUN | BLOCKED. Never mark an issue done without EXECUTED evidence for its Validation commands.",
   "milestones": {
     "M0": {
@@ -614,7 +614,7 @@
       "pr": 281
     },
     "TUI-2": {
-      "status": "in-review",
+      "status": "done",
       "branch": "claude/project-thread-63a8tz",
       "decision": "DEC-073",
       "note": "Step 2 of #280: empty packages/tui with hello screen.",
@@ -624,6 +624,18 @@
         "test": "EXECUTED: pnpm --dir packages/tui test -> 1 passed (home screen renders 'Workspace: MAIN' and key hint)",
         "build and run": "EXECUTED: pnpm --dir packages/tui build -> dist/main.mjs 21.91 kB; node dist/main.mjs prints banner + 'Workspace: MAIN'",
         "root unaffected": "EXECUTED: pnpm format:check, pnpm lint, pnpm typecheck at root -> all exit 0"
+      },
+      "pr": 282
+    },
+    "TUI-3": {
+      "status": "in-review",
+      "branch": "claude/project-thread-63a8tz",
+      "note": "Step 3 of #280: command-center home and read-only doctrine browser. Data: lib/db/client.ts reads the checkout (CODEPENDENT_ROOT or nearest folder holding template/eslint/doctrine-map.mjs); fetchers read validation.yaml (Zod-checked) and the doctrine map; features use React use() under Suspense with skeletons; the .client companion drives termcn Select.",
+      "acceptance": {
+        "lint": "EXECUTED: pnpm --dir packages/tui lint -> exit 0",
+        "typecheck": "EXECUTED: pnpm --dir packages/tui typecheck -> exit 0",
+        "tests": "EXECUTED: pnpm --dir packages/tui test x3 -> 3 passed each (doctrine reads; home shows repository + layer/rule counts; key 2 opens doctrine, down+enter shows the route layer with CC-ROUTE-001)",
+        "real terminal": "EXECUTED: node dist/main.mjs in a 110x40 pty, key 2 -> layer list + route-handler detail with CC-HOOK-001 and its import limits"
       }
     }
   },
