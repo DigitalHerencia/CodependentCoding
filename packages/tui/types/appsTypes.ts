@@ -1,4 +1,4 @@
-// Why: shared shapes for composing a new app from the Maximal Template.
+// Why: shared shapes for composing a new app and listing the ones already made.
 import type { CheckRun } from "@/types/checksTypes";
 
 export interface NewAppRequest {
@@ -14,4 +14,18 @@ export interface NewAppOutcome {
   appDir: string;
   modules: string[];
   steps: CheckRun[];
+}
+
+export interface GeneratedApp {
+  dir: string;
+  name: string;
+  /** False when the folder or its hipster.json is gone. */
+  found: boolean;
+  modules: string[];
+  tenancy: string | null;
+  accessControl: string | null;
+  color: string | null;
+  createdAt: string | null;
+  cliVersion: string | null;
+  templateCommit: string | null;
 }

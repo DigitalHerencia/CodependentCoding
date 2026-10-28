@@ -1,6 +1,7 @@
 // Why: data runtime: the Codependent Coding checkout on disk is this app's database.
 import { existsSync } from "node:fs";
 import { readFile } from "node:fs/promises";
+import os from "node:os";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 
@@ -31,4 +32,24 @@ export async function importWorkspaceModule<T>(rel: string): Promise<T> {
   return (await import(
     pathToFileURL(path.join(workspaceRoot(), rel)).href
   )) as T;
+}
+
+/** The terminal app's own settings file (not part of any checkout). */
+export function settingsFile(): string {
+  return path.join(
+    path.resolve(
+      tuiEnv.CODEPENDENT_HOME ?? path.join(os.homedir(), ".codependent"),
+    ),
+    "settings.json",
+  );
+}
+
+/** A file's text, or null when it does not exist. */
+export async function readTextIfPresent(file: string): Promise<string | null> {
+  try {
+    return await readFile(file, "utf8");
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === "ENOENT") return null;
+    throw error;
+  }
 }

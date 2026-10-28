@@ -18,7 +18,7 @@ export function AppFrame({
         <AppShell.Content>{children}</AppShell.Content>
         <AppShell.Hints
           items={[
-            " 1-6 screens ",
+            " 1-8 screens ",
             " ↑↓ move ",
             " enter open ",
             " esc home ",

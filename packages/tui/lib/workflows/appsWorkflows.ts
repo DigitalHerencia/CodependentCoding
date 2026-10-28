@@ -1,7 +1,10 @@
 // Why: makes a new app from a preset: compose, validate, install, first commit, with live progress.
 import path from "node:path";
 
+import { updateSettingsTx } from "@/lib/db/transactions/settings-update.tx";
+import { forgetGeneratedApps } from "@/lib/fetchers/appsFetchers";
 import { getModuleCatalog } from "@/lib/fetchers/modulesFetchers";
+import { forgetSettings } from "@/lib/fetchers/settingsFetchers";
 import { getWorkspaceInfo } from "@/lib/fetchers/workspaceFetchers";
 import {
   composeNewApp,
@@ -63,6 +66,7 @@ export async function createAppWorkflow(
   const passed =
     (await step("compose", async () => {
       modules = await composeNewApp(request, templateDir, modules);
+      await rememberApp(appDir);
       return null;
     })) &&
     (await step("validate", async () => {
@@ -82,4 +86,25 @@ export async function createAppWorkflow(
     });
   }
   return { appDir, modules, steps };
+}
+
+/** Puts an app first in the remembered list (once) so the apps screen shows it. */
+export async function rememberApp(appDir: string): Promise<string[]> {
+  const { apps } = await updateSettingsTx((current) => ({
+    ...current,
+    apps: [appDir, ...current.apps.filter((dir) => dir !== appDir)],
+  }));
+  forgetSettings();
+  forgetGeneratedApps();
+  return apps;
+}
+
+export async function forgetApp(appDir: string): Promise<string[]> {
+  const { apps } = await updateSettingsTx((current) => ({
+    ...current,
+    apps: current.apps.filter((dir) => dir !== appDir),
+  }));
+  forgetSettings();
+  forgetGeneratedApps();
+  return apps;
 }
