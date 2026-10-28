@@ -28,7 +28,8 @@
     "doctrine:check": "node scripts/doctrine-check.mjs",
     "cli": "tsx packages/cli/src/cli.ts",
     "cli:build": "pnpm --filter hipster-stack build",
-    "cli:link": "pnpm cli:build && node scripts/cli-link.mjs"
+    "cli:link": "pnpm cli:build && node scripts/cli-link.mjs",
+    "tui": "pnpm --filter @codependent/tui dev"
   },
   "dependencies": {
     "@monaco-editor/react": "4.7.0",

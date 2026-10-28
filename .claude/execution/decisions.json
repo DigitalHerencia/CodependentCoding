@@ -755,6 +755,15 @@
         ".claude/contracts/validation.yaml terminal_profile",
         "template/eslint/doctrine-map.mjs"
       ]
+    },
+    {
+      "id": "DEC-073",
+      "date": "2026-10-28",
+      "status": "accepted",
+      "title": "Terminal app package setup (packages/tui)",
+      "context": "Step 2 of #280: an empty terminal app on termcn's Ink flavor, linted by the template doctrine with the terminal profile (DEC-072).",
+      "decision": "@codependent/tui in packages/tui: Ink 6.8.0, React 19.3.1, layer folders at the package root, own tsconfig (strict, noUncheckedIndexedAccess, exactOptionalPropertyTypes), own eslint.config.mjs using doctrineTerminal through a devDependency link to the template (maximal-template@link:../../template) so the import stays a package import (CC-STYLE-002). termcn components are added with `pnpm dlx shadcn@3.5.0 add @termcn/ink/<name>` from packages/tui, then helpers move to the doctrine folders: lib/terminal-{style,symbols,text}.ts -> lib/utils/, lib/terminal-themes -> lib/constants/terminal-themes, providers/* -> components/shells/. Vendored files get only minimal type fixes for exactOptionalPropertyTypes (InteractionProps fields allow undefined, aria-state booleans, conditional aria-label, globalThis window check). Lint uses the classic react-hooks rules (rules-of-hooks, exhaustive-deps); the React Compiler rules flag vendored termcn code. Root lint and tsc skip packages/tui; CI runs its lint, typecheck, tests and build when packages/tui, template/eslint or the lockfile change.",
+      "refs": ["#280", "packages/tui", "DEC-072"]
     }
   ]
 }

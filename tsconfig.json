@@ -70,6 +70,7 @@
     "build",
     "coverage",
     "template",
+    "packages/tui",
     ".agents"
   ]
 }
