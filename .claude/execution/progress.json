@@ -506,7 +506,7 @@
       "decision": "DEC-054",
       "note": "template/scripts/sync-issues.mjs (+ .d.mts, issues:sync), app issues README format, skills/plan/SKILL.md, tests/plugin/syncIssues.test.ts.",
       "acceptance": {
-        "Generated issues parse with the sync script dry run": "EXECUTED: composed greenroute (--preset crm) in template/.sandbox/plan-dry, carried over the /idea dry-run docs, wrote 9 issues per skills/plan/SKILL.md (GR-001..GR-009: 4 slices, completion policy, price hiding, recurrence spike, deploy, G1 test). `node scripts/sync-issues.mjs` in the app -> '9 issues valid', 10 labels and milestone 'M1 \u00b7 MVP' would be created, 9 would-create lines, exit 0. Broken files -> exit 1 with each problem named (tests/plugin/syncIssues.test.ts)."
+        "Generated issues parse with the sync script dry run": "EXECUTED: composed greenroute (--preset crm) in template/.sandbox/plan-dry, carried over the /idea dry-run docs, wrote 9 issues per skills/plan/SKILL.md (GR-001..GR-009: 4 slices, completion policy, price hiding, recurrence spike, deploy, G1 test). `node scripts/sync-issues.mjs` in the app -> '9 issues valid', 10 labels and milestone 'M1 · MVP' would be created, 9 would-create lines, exit 0. Broken files -> exit 1 with each problem named (tests/plugin/syncIssues.test.ts)."
       },
       "pr": 251,
       "merged": "fd02417"
@@ -542,7 +542,7 @@
       "github": 201,
       "branch": "feat/201-agents-reviewer-verifier",
       "decision": "DEC-057",
-      "note": "agents/reviewer.md (doctrine + AUTH \u00a711 table mapped to CC IDs, findings [sev] CC-ID file:line), agents/verifier.md (reruns claimed commands, CONFIRMED/CONTRADICTED/UNVERIFIABLE/MISSING). Both read-only (Read, Grep, Glob, Bash).",
+      "note": "agents/reviewer.md (doctrine + AUTH §11 table mapped to CC IDs, findings [sev] CC-ID file:line), agents/verifier.md (reruns claimed commands, CONFIRMED/CONTRADICTED/UNVERIFIABLE/MISSING). Both read-only (Read, Grep, Glob, Bash).",
       "acceptance": {
         "Reviewer catches a planted violation (cross-tenant query without predicate)": "EXECUTED: in template/.sandbox/ship-dry (hipster-stack new, crm) added findCrmDealsByTitle with tx.crmDeal.findMany where { title, archivedAt } (no organizationId) next to a correct getCrmDealCount; headless `claude -p 'Use the loaded-vibes:reviewer agent to review the uncommitted changes' --plugin-dir plugin/loaded-vibes` -> '[high] CC-SEC-001 lib/fetchers/crmFetchers.ts:204 findMany on tx.crmDeal ... no organizationId', getCrmDealCount passed, verdict changes requested. No files edited by the agent ($0.25).",
         "Verifier flags a claimed-but-not-run check": "EXECUTED: same app, planted SD-001 in-review with claims `pnpm lint` exit 0 (true), `pnpm test` 9 files/64 passed (false: 8/46), `pnpm test:rls` 12 passed (impossible: no DATABASE_URL_TEST). Headless loaded-vibes:verifier reran lint, test, test:rls, validate -> CONFIRMED lint, CONTRADICTED test, CONTRADICTED test:rls ('DATABASE_URL_TEST is required'), MISSING validate and build. No edits ($0.15). Wording then tightened so a missing-prerequisite failure reads UNVERIFIABLE."
@@ -572,7 +572,7 @@
       "friction_issues": [255, 256, 257, 258, 259, 260, 261],
       "acceptance": {
         "Deployed URL exists": "OUT_OF_SCOPE (DEC-060): owner decided 2026-10-25 that the job is the template, not deploying apps. Local evidence EXECUTED: validate, test (61 passed/1 skipped), build exit 0; ship-env dry run lists names only.",
-        "Total time \u2264 1 working day or a written gap analysis": "EXECUTED: new to /ship dry run took 873 s (14.6 min) of agent time across 9 headless runs, $2.08; plus db:init and test:rls by hand. Gap: the deploy (provisioning + vercel deploy + smoke) is not yet timed; 7 friction issues #255-#261 (one bug: test:rls fails without crm, #255)."
+        "Total time ≤ 1 working day or a written gap analysis": "EXECUTED: new to /ship dry run took 873 s (14.6 min) of agent time across 9 headless runs, $2.08; plus db:init and test:rls by hand. Gap: the deploy (provisioning + vercel deploy + smoke) is not yet timed; 7 friction issues #255-#261 (one bug: test:rls fails without crm, #255)."
       }
     },
     "CC-043": {
@@ -580,7 +580,7 @@
       "github": 203,
       "branch": "docs/203-readme-doctrine-check",
       "decision": "DEC-060",
-      "note": "README rewritten (what it is, install CLI, make an app, install plugin, MVP loop; retired terms removed). pnpm doctrine:check = scripts/doctrine-check.mjs, part of pnpm validate. PRD G2/\u00a78.4 no longer require a deployed URL; AUTH.md + tech-requirements use DIRECT_DATABASE_URL.",
+      "note": "README rewritten (what it is, install CLI, make an app, install plugin, MVP loop; retired terms removed). pnpm doctrine:check = scripts/doctrine-check.mjs, part of pnpm validate. PRD G2/§8.4 no longer require a deployed URL; AUTH.md + tech-requirements use DIRECT_DATABASE_URL.",
       "acceptance": {
         "pnpm doctrine:check passes": "EXECUTED: exit 0, \"doctrine ok: 47 rules in .claude/contracts/validation.yaml; 35 IDs and 12 rules in template/eslint agree\". Negative: a planted unknown ID and an unlisted plugin rule were both reported, exit 1.",
         "README instructions work on a clean clone": "EXECUTED on a fresh clone in the scratchpad with an isolated HOME: pnpm install, pnpm --dir template install, pnpm setup, pnpm cli:link (needed pnpm global bin dir on PATH; README now says so), hipster-stack --help, hipster-stack new ../my-app --preset crm --yes; in the app pnpm typecheck 0, pnpm lint 0, pnpm build 0 (placeholder env); claude plugin marketplace add <clone> + plugin install loaded-vibes@codependent-coding enabled (isolated CLAUDE_CONFIG_DIR)."
@@ -593,11 +593,11 @@
       "decision": "DEC-061",
       "note": "Release profile run on a fresh clone of main 403e37b in the scratchpad. GitHub Actions removed by the owner 2026-10-25, so every check is local.",
       "acceptance": {
-        "PRD \u00a78.1 blank app installs, lints, type-checks, builds": "EXECUTED: hipster-stack new <dir> --preset blank --yes exit 0; pnpm lint 0, pnpm typecheck 0, pnpm build 0 (placeholder env).",
-        "PRD \u00a78.2 blank, each preset and the maximal set pass lint/typecheck/build": "EXECUTED earlier: CI presets matrix green on main run 40136570161 (M5 close). Not rerun locally for v1.",
-        "PRD \u00a78.3 template 0 doctrine findings; RLS cross-tenant test on real Postgres": "EXECUTED: pnpm --dir template validate exit 0 (format, lint, typecheck, check:modules, check:ownership, check:env); template pnpm test 66 passed/1 skipped; test:rls 10/10 on local Postgres 16.",
-        "PRD \u00a78.4 dogfood run": "EXECUTED (CC-042, DEC-060): idea to validated local app in 873 s of agent time; deploy out of scope.",
-        "PRD \u00a78.5 M0-M6 closed with evidence": "EXECUTED: every M0-M6 issue closed; dogfood follow-ups #256-#261 moved out of M6 (still open, no milestone).",
+        "PRD §8.1 blank app installs, lints, type-checks, builds": "EXECUTED: hipster-stack new <dir> --preset blank --yes exit 0; pnpm lint 0, pnpm typecheck 0, pnpm build 0 (placeholder env).",
+        "PRD §8.2 blank, each preset and the maximal set pass lint/typecheck/build": "EXECUTED earlier: CI presets matrix green on main run 40136570161 (M5 close). Not rerun locally for v1.",
+        "PRD §8.3 template 0 doctrine findings; RLS cross-tenant test on real Postgres": "EXECUTED: pnpm --dir template validate exit 0 (format, lint, typecheck, check:modules, check:ownership, check:env); template pnpm test 66 passed/1 skipped; test:rls 10/10 on local Postgres 16.",
+        "PRD §8.4 dogfood run": "EXECUTED (CC-042, DEC-060): idea to validated local app in 873 s of agent time; deploy out of scope.",
+        "PRD §8.5 M0-M6 closed with evidence": "EXECUTED: every M0-M6 issue closed; dogfood follow-ups #256-#261 moved out of M6 (still open, no milestone).",
         "Tag exists": "pending: tag v1.0.0 on the merge commit of this PR."
       }
     },
@@ -607,7 +607,7 @@
       "decision": "DEC-072",
       "note": "Terminal app plan approved by Ivan 2026-10-28 (plan doc https://claude.ai/artifact/D2bQyknDraP3A54tR5oMgu). Step 1: doctrine terminal profile.",
       "acceptance": {
-        "terminal profile in doctrine-map + plugin + contract + Architecture \u00a74.1": "EXECUTED: pnpm doctrine:check -> doctrine ok: 47 rules; 35 IDs and 12 rules agree",
+        "terminal profile in doctrine-map + plugin + contract + Architecture §4.1": "EXECUTED: pnpm doctrine:check -> doctrine ok: 47 rules; 35 IDs and 12 rules agree",
         "RuleTester cases": "EXECUTED: pnpm --dir template doctrine:test -> 55 pass, 0 fail",
         "web doctrine unchanged": "EXECUTED: pnpm --dir template lint -> exit 0; pnpm format:check (root + template) clean; vitest tests/doctrine 1 passed"
       },
@@ -743,7 +743,7 @@
       "date": "2026-10-22",
       "state": "EXECUTED",
       "command": "eslint . --fix (copy of template)",
-      "result": "241 \u2192 73 findings; tsc error count unchanged at 123 (pre-existing, Prisma client not generated in sandbox)"
+      "result": "241 → 73 findings; tsc error count unchanged at 123 (pre-existing, Prisma client not generated in sandbox)"
     },
     {
       "date": "2026-10-22",
@@ -858,7 +858,7 @@
       "date": "2026-10-22",
       "state": "EXECUTED",
       "command": "pnpm issues:sync (dry run, owner's PC)",
-      "result": "DRY RUN \u00b7 44 issues \u00b7 27 labels; labels: 27 would upsert; no issues or milestones would be created (idempotent)",
+      "result": "DRY RUN · 44 issues · 27 labels; labels: 27 would upsert; no issues or milestones would be created (idempotent)",
       "issue": "CC-003"
     },
     {
@@ -1065,7 +1065,7 @@
       "issue": "CC-006",
       "env": "linux node 22.22.0, pnpm 12.3.4",
       "command": "pnpm build",
-      "result": "exit 0; Route (app): \u25cb / and \u25cb /_not-found only"
+      "result": "exit 0; Route (app): ○ / and ○ /_not-found only"
     },
     {
       "date": "2026-10-23",
@@ -1585,7 +1585,7 @@
       "issue": "CC-015",
       "env": "cloud container linux, dummy env vars (no real services)",
       "command": "pnpm --dir template build",
-      "result": "exit 0; / , /faq, /privacy, /terms are \u25cb static with Revalidate 1d; tenant routes \u0192 dynamic"
+      "result": "exit 0; / , /faq, /privacy, /terms are ○ static with Revalidate 1d; tenant routes ƒ dynamic"
     },
     {
       "date": "2026-10-23",

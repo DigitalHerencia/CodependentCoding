@@ -33,17 +33,17 @@
       "status": "accepted",
       "title": "Subtractive composition from one runnable Maximal Template with computed ownership",
       "context": "The old generator's hand-maintained ownership catalog drifted: 226 of 300 paths no longer existed and a 'bare' app shipped 63 pages. An additive base+modules layout would force development in composed sandboxes and copy-back.",
-      "decision": "Develop in one real app (`template/`). A file's owning module is computed from its path (explicit owns glob \u2192 path segment \u2192 basename prefix \u2192 base). The CLI deletes files owned by unselected modules.",
+      "decision": "Develop in one real app (`template/`). A file's owning module is computed from its path (explicit owns glob → path segment → basename prefix → base). The CLI deletes files owned by unselected modules.",
       "alternatives": [
-        "Additive base + module folders (TanStack-style) \u2014 rejected: worse solo DX, same metadata need",
-        "Keep hand catalog \u2014 rejected: proven to drift"
+        "Additive base + module folders (TanStack-style) — rejected: worse solo DX, same metadata need",
+        "Keep hand catalog — rejected: proven to drift"
       ],
       "consequences": [
         "Naming conventions are load-bearing and lint-enforced",
         "Orphan/ambiguity check required (CC-MOD-003)",
         "CI composes every preset alone"
       ],
-      "refs": ["context/docs/Architecture.md \u00a71.1, \u00a75"]
+      "refs": ["context/docs/Architecture.md §1.1, §5"]
     },
     {
       "id": "DEC-004",
@@ -67,7 +67,7 @@
       "status": "accepted",
       "title": "Pin TypeScript 6.0.3 and ESLint 9.39.5 everywhere",
       "context": "Root used TypeScript 7.0.2, which typescript-eslint 8.x rejects, so lint could not run. The template's TS 6.0.3 + ESLint 9.39.5 + eslint-config-next 16.3.4 lints successfully (verified 2026-10-22).",
-      "decision": "Exact pins per tech-requirements.md \u00a72; majors are explicit issues.",
+      "decision": "Exact pins per tech-requirements.md §2; majors are explicit issues.",
       "refs": ["CC-001"]
     },
     {
@@ -77,7 +77,7 @@
       "title": "Presentation exceptions: forms, skeletons, client companions",
       "context": "The old validator reported 154 violations; 97 were skeletons importing ui/skeleton and client companions importing input controls, 53 were false positives.",
       "decision": "Form features may use UI primitives and 'use client'; skeletons may import ui/skeleton; .client.tsx companions may import interactive UI controls. Normal server features still render blocks only.",
-      "refs": ["context/docs/Architecture.md \u00a73.2", "CC-FEAT-002..004"]
+      "refs": ["context/docs/Architecture.md §3.2", "CC-FEAT-002..004"]
     },
     {
       "id": "DEC-008",
@@ -85,7 +85,7 @@
       "status": "accepted",
       "title": "Doctrine enforced by a local ESLint plugin with CC-* rule IDs",
       "decision": "template/eslint/doctrine-map.mjs (tables) + codependent-plugin.mjs (mechanics) replace the separate architecture.mjs validator. One data-driven layer-boundaries rule avoids flat-config no-restricted-imports override collisions. Rule tests via ESLint RuleTester.",
-      "evidence": "44/44 rule tests pass; on the current template: 241 findings, auto-fix \u2192 73, typecheck errors unchanged (123, all pre-existing).",
+      "evidence": "44/44 rule tests pass; on the current template: 241 findings, auto-fix → 73, typecheck errors unchanged (123, all pre-existing).",
       "refs": ["validation.yaml", "CC-009"]
     },
     {
@@ -111,7 +111,7 @@
       "status": "accepted",
       "title": "Active organization in an httpOnly cookie, re-validated every request",
       "decision": "Tenancy authority stays in Postgres; the cookie only names the org. Clerk Organizations are not used for tenancy.",
-      "refs": ["context/docs/AUTH.md \u00a74.1"]
+      "refs": ["context/docs/AUTH.md §4.1"]
     },
     {
       "id": "DEC-012",
@@ -119,7 +119,7 @@
       "status": "accepted",
       "title": "Caching: ISR for public routes, fresh tenant routes, Cache Components off in v1",
       "decision": "Keep one simple mental model for v1; revisit Cache Components after v1.0.0.",
-      "refs": ["context/docs/tech-requirements.md \u00a77"]
+      "refs": ["context/docs/tech-requirements.md §7"]
     },
     {
       "id": "DEC-013",
@@ -127,7 +127,7 @@
       "status": "accepted",
       "title": "Branded names kept for three components only",
       "decision": "Codependent Coding (doctrine/umbrella), Hipster Stack (CLI), Loaded Vibes (plugin), Maximal Template (template). Code and docs otherwise use plain engineering terms.",
-      "refs": ["context/docs/PRD.md \u00a76"]
+      "refs": ["context/docs/PRD.md §6"]
     },
     {
       "id": "DEC-014",
@@ -142,7 +142,7 @@
       "id": "DEC-015",
       "date": "2026-10-22",
       "status": "accepted",
-      "title": "CC-001 pin details not fixed by tech-requirements \u00a72",
+      "title": "CC-001 pin details not fixed by tech-requirements §2",
       "context": "CC-001 asked for `yaml` (exact) without a version and for a root test script that works before M4 tests exist.",
       "decision": "Pin yaml 2.9.1 (latest stable on 2026-10-22). Root `test` is `vitest run --passWithNoTests` until M4 adds real tests. typescript-eslint dropped as a direct dependency: no config imports it (eslint-config-next brings it transitively).",
       "refs": ["CC-001"]
@@ -152,7 +152,7 @@
       "date": "2026-10-22",
       "status": "accepted",
       "title": "Project board is user Project #19",
-      "context": "context/specs/README.md named Project #3, which is an unrelated closed board. Two candidates existed: #19 'Codependent Coding\u2122 \u2014 Canonical Remediation' (open, all 8 built-in workflows on) and #21 'Loaded Vibes Generator' (holds 34 older LV-/HS- issues, none of CC-001..044). Owner said either is fine.",
+      "context": "context/specs/README.md named Project #3, which is an unrelated closed board. Two candidates existed: #19 'Codependent Coding™ — Canonical Remediation' (open, all 8 built-in workflows on) and #21 'Loaded Vibes Generator' (holds 34 older LV-/HS- issues, none of CC-001..044). Owner said either is fine.",
       "decision": "Use Project #19. issues:sync docs and script usage point at --project 19. #21 is left untouched.",
       "refs": ["CC-003", "PR #207", "context/specs/README.md"]
     },
@@ -216,7 +216,7 @@
       "status": "accepted",
       "title": "CC-008 interpretation: doctrine anchor target and metadata copy",
       "context": "CC-008 asks for a 'Read the doctrine' on-page anchor and a compact section listing the four components, but names no anchor target. The root layout's metadata description still used retired vocabulary (TypeScripture, Ontologies, Simples, Anthimeria) and no other issue owns it.",
-      "decision": "The four-component section is the anchor target (id=doctrine), with one line per component taken from PRD \u00a76. The GitHub link is a plain <a> to the public repo in the header and the CTA row. Footer keeps only the Digital Herencia wordmark. Rewrite the metadata description to name the four components. Dead CSS for deleted routes stays for CC-013.",
+      "decision": "The four-component section is the anchor target (id=doctrine), with one line per component taken from PRD §6. The GitHub link is a plain <a> to the public repo in the header and the CTA row. Footer keeps only the Digital Herencia wordmark. Rewrite the metadata description to name the four components. Dead CSS for deleted routes stays for CC-013.",
       "refs": ["CC-008", "CC-013", "DEC-021"]
     },
     {
@@ -305,18 +305,18 @@
       "date": "2026-10-23",
       "status": "accepted",
       "title": "CC-018: module manifest facts and validation",
-      "context": "CC-018 asks for template/hipster.modules.json with a Zod schema (template/scripts until packages/cli exists) and a generated JSON Schema. Architecture \u00a75.1 shows crm dependsOn email as an example, while application.yaml's crm preset is [crm] alone.",
+      "context": "CC-018 asks for template/hipster.modules.json with a Zod schema (template/scripts until packages/cli exists) and a generated JSON Schema. Architecture §5.1 shows crm dependsOn email as an example, while application.yaml's crm preset is [crm] alone.",
       "decision": "Domain dependsOn equals the add-ons its application.yaml preset pulls in (crm has none), so presets and dependencies agree. Add-on owns/packages/env come from the existing lib/integrations/*, app/api/* and .env.example; ratelimit has none yet (CC-026). Explicit owns only where a route folder name differs from the module id (my-tasks -> projects, invoices/expenses -> invoicing); everything else is left to the computed conventions in CC-019. Objects are strict so unknown fields fail. hipster.modules.schema.json is generated with z.toJSONSchema; check-modules.mjs compares it structurally and fails when stale (--write regenerates). A .d.mts gives the TypeScript test types because allowJs is off. CI's template job runs pnpm check:modules.",
-      "refs": ["CC-018", "CC-019", "CC-026", "Architecture.md \u00a75.1"]
+      "refs": ["CC-018", "CC-019", "CC-026", "Architecture.md §5.1"]
     },
     {
       "id": "DEC-034",
       "date": "2026-10-23",
       "status": "accepted",
       "title": "CC-019: ownership resolver semantics and report",
-      "context": "Architecture \u00a75.2 orders the ownership rules (owns glob, path segment, basename prefix, base) and calls two modules matching the same file an error, without saying whether a later rule can conflict with an earlier one.",
+      "context": "Architecture §5.2 orders the ownership rules (owns glob, path segment, basename prefix, base) and calls two modules matching the same file an error, without saying whether a later rule can conflict with an earlier one.",
       "decision": "Rules are tried in order and the first rule that matches any module decides; two or more modules matching at that rule is the ambiguity (owner null). So features/social/mediaLibraryFeature.tsx is social (segment beats basename) while app/(tenant)/social/media/page.tsx is ambiguous (two segments). The segment rule looks at directory segments only; file names go through the basename rule. Files come from git ls-files --cached --others --exclude-standard so ignored output never counts. Globs use node:path matchesGlob (no new dependency). The snapshot test records module counts and ambiguities but not the base count, which changes with every tooling or test file. check:ownership is not in CI yet: it exits 1 on the 2 current ambiguities, which CC-020 fixes and then wires into CI/validate.",
-      "refs": ["CC-019", "CC-020", "CC-MOD-003", "Architecture.md \u00a75.2"]
+      "refs": ["CC-019", "CC-020", "CC-MOD-003", "Architecture.md §5.2"]
     },
     {
       "id": "DEC-035",
@@ -332,14 +332,9 @@
       "date": "2026-10-23",
       "status": "accepted",
       "title": "CC-021: module registry drives nav, dashboard and the permission catalog (current role model kept)",
-      "context": "CC-021 makes base read modules only through lib/modules/registry.ts, including the authz permission catalog. The code uses 8 MembershipRole values and '<module>:<action>' strings; AUTH.md \u00a75.2 and application.yaml describe 4 roles and '<module>.<resource>:<action>'. No backlog issue owns that migration, which needs a Prisma enum migration and edits to every action and fetcher. Asked the owner on a decision card with this option recommended; work proceeds on it meanwhile.",
+      "context": "CC-021 makes base read modules only through lib/modules/registry.ts, including the authz permission catalog. The code uses 8 MembershipRole values and '<module>:<action>' strings; AUTH.md §5.2 and application.yaml describe 4 roles and '<module>.<resource>:<action>'. No backlog issue owns that migration, which needs a Prisma enum migration and edits to every action and fetcher. Asked the owner on a decision card with this option recommended; work proceeds on it meanwhile.",
       "decision": "types/moduleTypes.ts defines ModuleDefinition {id, nav, settings, dashboard, permissions{resources, catalog, grants}}. One lib/modules/<id>.module.ts per manifest module (add-ons are mostly id only; billing contributes the Settings > Billing link). registry.ts carries the generated header and lists modules in manifest order, typed readonly ModuleDefinition[] so an empty array still type-checks and builds. lib/authz/permissions.ts assembles the catalog as base (organization:read/write) plus each module's catalog; OWNER/ADMIN hold everything, other roles get base grants plus module grants. A test pins the assembled grants to the pre-registry table, so behavior is unchanged. Permission is now base literals | `${string}:${string}`; to keep typo safety a test checks that every permission literal passed to assertPermission/hasPermission/authorizeOwnedOrAssignedWrite exists in the catalog. ResourceKind is a string; lib/authz/resources.ts exposes resourceKinds from the registry. The tenant shell builds sidebar groups from lib/modules/navigation.ts and maps icon names to lucide icons; the dashboard renders each module's dashboard entries; applicationCapabilities and the module entries in lib/constants/routes.ts are removed. The AUTH.md role/permission format gap stays open for a separate issue if the owner confirms.",
-      "refs": [
-        "CC-021",
-        "AUTH.md \u00a75.2",
-        "Architecture.md \u00a75.3-5.4",
-        "DEC-033"
-      ]
+      "refs": ["CC-021", "AUTH.md §5.2", "Architecture.md §5.3-5.4", "DEC-033"]
     },
     {
       "id": "DEC-037",
@@ -357,7 +352,7 @@
       "title": "CC-023: RLS SQL per owner, idempotent, shared by db:init and test:rls",
       "context": "CC-023 moves RLS into prisma/rls/<owner>.sql and adds db:init. The template already ships migrations that create the same policies (applied on Ivan's Neon test branch), and generated apps start without migrations (the CLI does not copy prisma/migrations).",
       "decision": "prisma/rls/identity.sql (User, Organization, Membership, OrganizationSettings, AuditEvent) and one file per module with tenant tables, written from the policies a migrated database actually has (same names and predicates, readable SQL; CrmActivity's ::uuid variant normalized to the ::text form used by every other table). Each file is idempotent (ENABLE, FORCE, DROP POLICY IF EXISTS, CREATE POLICY) so it can run on top of the existing migrations. scripts/rls-sql.mjs orders files identity first, then manifest module order; db-init.mjs and the CC-016 harness both apply that text. db:init: with no migrations, migrate dev --name init, then migrate dev --create-only --name rls filled with the SQL and applied; with migrations, migrate deploy then prisma db execute of the same SQL. Existing migrations are not rewritten. tests/rlsFiles.test.ts requires every model with a required organizationId (plus User and Organization) to be forced exactly once, in its owner's file.",
-      "refs": ["CC-023", "CC-016", "DEC-032", "DEC-037", "AUTH.md \u00a76"]
+      "refs": ["CC-023", "CC-016", "DEC-032", "DEC-037", "AUTH.md §6"]
     },
     {
       "id": "DEC-039",
@@ -372,7 +367,7 @@
         "CC-021",
         "DEC-034",
         "DEC-036",
-        "Architecture.md \u00a75"
+        "Architecture.md §5"
       ]
     },
     {
@@ -382,12 +377,7 @@
       "title": "CC-025: env declared per owner with defineEnv, checked against the manifest",
       "context": "CC-025 replaces ad-hoc process.env reads. Add-ons must keep working in demo mode when their keys are unset (Settings > Integrations shows MISSING SECRET), base had no place in the manifest for its variables, and lib/env/*.ts is TypeScript + server-only while repo checks are Node scripts.",
       "decision": "lib/env/base.ts exports defineEnv(owner, shape) with required()/optional() helpers (blank counts as unset, values trimmed). Each owner object validates lazily: read() throws once naming the owner and every missing variable, configured() and value(name) never throw, so demo mode stays. The manifest base gains env (schema change, Architecture.md 5.1); validateManifest rejects an env name declared twice and public scope without NEXT_PUBLIC_. scripts/env-example.mjs renders .env.example from the manifest (base, then modules in order). scripts/check-env.mjs runs under tsx --conditions=react-server, imports each lib/env/<owner>.ts and compares names and required with the manifest, checks .env.example freshness and fails on process.env outside lib/env/** and *.config.*; it is pnpm check:env in validate and CI. NODE_ENV goes through lib/env/mode.ts (not server-only, Next inlines it) so client and vendored components need no process.env. Test and child-process env go through baseEnv.value and childEnv. prisma seed runs with --conditions=react-server. lib/integrations/status.ts (base) still lists add-on variable names via hasValues until CC-026 moves integration status into the modules.",
-      "refs": [
-        "CC-025",
-        "CC-018",
-        "CC-026",
-        "Architecture.md \u00a72, \u00a75.1"
-      ]
+      "refs": ["CC-025", "CC-018", "CC-026", "Architecture.md §2, §5.1"]
     },
     {
       "id": "DEC-041",
@@ -400,7 +390,7 @@
         "CC-026",
         "CC-024",
         "CC-025",
-        "AUTH.md \u00a78",
+        "AUTH.md §8",
         "application.yaml cli.new.pipeline"
       ]
     },
@@ -409,13 +399,13 @@
       "date": "2026-10-23",
       "status": "accepted",
       "title": "CC-027: projects is the golden slice; ActionResult contract lands in projects first",
-      "context": "AUTH.md \u00a75.3/\u00a78 require actions to return ActionResult and cross-tenant ids to yield NOT_FOUND. projects actions threw, versioned updates reported CONFLICT even for ids outside the organization, and the workspace workflow threw on a missing project.",
+      "context": "AUTH.md §5.3/§8 require actions to return ActionResult and cross-tenant ids to yield NOT_FOUND. projects actions threw, versioned updates reported CONFLICT even for ids outside the organization, and the workspace workflow threw on a missing project.",
       "decision": "types/actionTypes.ts defines ActionResult/ActionErrorCode; lib/utils/actionResult.ts maps errors by their `code` (ZodError -> VALIDATION with fieldErrors, unknown -> INTERNAL with a generic message, redirect/notFound rethrown). Base errors carry codes (UNAUTHENTICATED, FORBIDDEN, NOT_FOUND, CONFLICT, VALIDATION). projects actions: requireIdentity -> withTenantTransaction -> assertPermission -> schema.parse -> write -> invalidatePaths -> ActionResult. A versioned update matching no row counts the row in the org: CONFLICT if present, NOT_FOUND otherwise (staleOrMissing). Fetchers/workflows return null and features call notFound(). Each projects file opens with a one-line `Why:` comment; Architecture.md Appendix A lists the slice, generated by template/scripts/slice-files.mjs. Other modules keep throwing until a follow-up migrates them; AUTH.md requireTenant/permission-string naming stays deferred to #234.",
       "refs": [
         "CC-027",
-        "AUTH.md \u00a75.3",
-        "AUTH.md \u00a78",
-        "AUTH.md \u00a711",
+        "AUTH.md §5.3",
+        "AUTH.md §8",
+        "AUTH.md §11",
         "DEC-036",
         "#234"
       ]
@@ -429,9 +419,9 @@
       "decision": "packages/cli is the workspace package `hipster-stack` (private, bin hipster-stack -> dist/cli.mjs, built by tsdown; dependencies stay external because the global link points at packages/cli and resolves its own node_modules). Root `cli:link` = `pnpm cli:build && node scripts/cli-link.mjs`, which runs `pnpm add --global link:<absolute packages/cli>`; it needs pnpm's global bin dir on PATH (`pnpm setup` once). Template resolution: HIPSTER_TEMPLATE, else <repo>/template found by walking up to packages/; the directory must hold hipster.modules.json; --help prints the resolved template. Subcommands register in src/commands/index.ts from CC-029. Root CI builds and runs the bundle.",
       "refs": [
         "CC-028",
-        "tech-requirements.md \u00a74",
-        "tech-requirements.md \u00a79",
-        "Architecture.md \u00a76"
+        "tech-requirements.md §4",
+        "tech-requirements.md §9",
+        "Architecture.md §6"
       ]
     },
     {
@@ -443,10 +433,10 @@
       "decision": "packages/cli/src/compose/composeApp.ts loads template/scripts/{compose,modules-schema}.mjs and the template's Prettier from the resolved template (needs the template's install), then: closure (now detects cycles) -> compose() with exclude [prisma/migrations/, tests/template/] -> prune package.json deps only removed modules declare + rename -> optional brand color -> hipster.json -> Prettier on written files. new.ts adds prompts/flags (--preset, --modules, --all, --color, --name, --yes, --no-install, --no-git), prisma validate with the template's Prisma (cwd outside the app), pnpm install --no-frozen-lockfile, git init. Brand: --primary = chosen hex as HSL triplet, --primary-foreground = whichever palette source contrasts more (warn under 4.5:1), --signal follows --primary only if that token exists (globals.css has none today). Without --color the template's reviewed tokens stay and hipster.json color is null (the documented #2f7a8d default measures 4.35:1 on the template foreground). Template tests that pin the full module set move to template/tests/template/; the generic invariants stay and their sanity thresholds became > 0.",
       "refs": [
         "CC-029",
-        "Architecture.md \u00a76",
-        "tech-requirements.md \u00a79",
+        "Architecture.md §6",
+        "tech-requirements.md §9",
         "application.yaml cli.new.pipeline",
-        "Design.md \u00a73.2",
+        "Design.md §3.2",
         "DEC-041"
       ]
     },
@@ -456,13 +446,8 @@
       "status": "accepted",
       "title": "CC-030: generated-app governance from static assets, doctrine pre-filled, drift-checked",
       "context": "Generated apps need the factory's governance shape (router, docs, contracts, execution state) without the factory's content. The template's own .claude/ is stale Maximal Template history that still points at .agents/.",
-      "decision": "packages/cli/assets/app-governance holds 13 files with {{appName}}, {{createdAt}}, {{modules}}, {{modulesList}}, {{templateCommit}}, {{color}}, {{colorYaml}} placeholders; `new` renders them (unknown placeholder = error), refuses to overwrite, and formats them with the template's Prettier; `add` will never write them. Architecture.md \u00a72-4 and AUTH.md \u00a71-11 are copied from the factory doctrine with factory paths removed; app sections are TODO prompts for /idea. A root test fails if any CC-* id in template/eslint is missing from the asset Architecture.md. The CLI no longer copies the template's .claude/. Assets are in root .prettierignore because placeholders are not valid YAML until rendered.",
-      "refs": [
-        "CC-030",
-        "Architecture.md \u00a72-\u00a74",
-        "AUTH.md",
-        "DEC-044"
-      ]
+      "decision": "packages/cli/assets/app-governance holds 13 files with {{appName}}, {{createdAt}}, {{modules}}, {{modulesList}}, {{templateCommit}}, {{color}}, {{colorYaml}} placeholders; `new` renders them (unknown placeholder = error), refuses to overwrite, and formats them with the template's Prettier; `add` will never write them. Architecture.md §2-4 and AUTH.md §1-11 are copied from the factory doctrine with factory paths removed; app sections are TODO prompts for /idea. A root test fails if any CC-* id in template/eslint is missing from the asset Architecture.md. The CLI no longer copies the template's .claude/. Assets are in root .prettierignore because placeholders are not valid YAML until rendered.",
+      "refs": ["CC-030", "Architecture.md §2-§4", "AUTH.md", "DEC-044"]
     },
     {
       "id": "DEC-046",
@@ -473,8 +458,8 @@
       "decision": "packages/cli/src/setup holds exec (one injectable runner; Windows args quoted for the cmd shim), postCompose (prisma validate, pnpm install, git init, `chore: scaffold from hipster-stack`; a failed commit warns), provision (github, neon, vercel steps: check CLI + login, check before create, a failing step does not stop the next) and database. `neonctl projects create --role owner`; app_user is created in SQL as the owner with LOGIN NOBYPASSRLS, table rights and default privileges for tables db:init creates later (an existing app_user with BYPASSRLS is refused); SQL runs with the template's `pg`, like the template Prettier (DEC-044). .env.local gets DATABASE_URL (app_user, pooled) and DIRECT_DATABASE_URL (owner, direct), the template's key names. Vercel env vars go to production and preview as sensitive, value on stdin, --force. `new <dir with hipster.json> --provision` provisions only, so guidance can say re-run. Without --provision no gh/neonctl/vercel command runs; pnpm install is the only network use and --no-install removes it.",
       "refs": [
         "CC-031",
-        "AUTH.md \u00a76",
-        "tech-requirements.md \u00a79",
+        "AUTH.md §6",
+        "tech-requirements.md §9",
         "DEC-032",
         "DEC-044"
       ]
@@ -490,8 +475,8 @@
         "CC-032",
         "CC-027",
         "DEC-042",
-        "Architecture.md \u00a76",
-        "tech-requirements.md \u00a79"
+        "Architecture.md §6",
+        "tech-requirements.md §9"
       ]
     },
     {
@@ -505,8 +490,8 @@
         "CC-033",
         "DEC-044",
         "DEC-047",
-        "Architecture.md \u00a76",
-        "tech-requirements.md \u00a79"
+        "Architecture.md §6",
+        "tech-requirements.md §9"
       ]
     },
     {
@@ -520,8 +505,8 @@
         "CC-034",
         "DEC-038",
         "DEC-046",
-        "AUTH.md \u00a76",
-        "tech-requirements.md \u00a79"
+        "AUTH.md §6",
+        "tech-requirements.md §9"
       ]
     },
     {
@@ -529,14 +514,14 @@
       "date": "2026-10-24",
       "status": "accepted",
       "title": "CC-035: preset matrix in ci.yml, gated by a changes job; `compose` command for CI",
-      "context": "Every preset and --all must compose, install, lint, typecheck and build, on PRs touching template/ or packages/cli/ and on main. Architecture \u00a76 lists `compose` as the non-interactive CI command.",
+      "context": "Every preset and --all must compose, install, lint, typecheck and build, on PRs touching template/ or packages/cli/ and on main. Architecture §6 lists `compose` as the non-interactive CI command.",
       "decision": "`hipster-stack compose <dir> --preset|--modules|--all [--color] [--name]` runs composeApp + prisma validate with no prompts, install or git (fromFlags shared with `new`). ci.yml gets job `changes` (git diff against the PR base; always true on push) and job `presets`, an 11-way fail-fast:false matrix (blank, nine presets, all) that composes into template/.sandbox/<p> (turbopack needs the app inside template/), installs with --no-frozen-lockfile (pruned package.json), then lint, typecheck and build with placeholder env values. ci.yml itself also triggers the matrix. pnpm store cached by setup-node on both lockfiles. The older `compose` job (each add-on alone, template script) stays.",
       "refs": [
         "CC-035",
         "DEC-041",
         "DEC-044",
-        "Architecture.md \u00a76",
-        "tech-requirements.md \u00a711"
+        "Architecture.md §6",
+        "tech-requirements.md §11"
       ]
     },
     {
@@ -545,7 +530,7 @@
       "status": "accepted",
       "title": "CC-035: fix the undeclared admin and portal dependencies the preset matrix found",
       "context": "The presets matrix failed typecheck for admin (counts rows in eight domain modules; writes BillingSubscription) and portal (reads Invoice) because neither declares those modules. check:compose only composed add-ons alone.",
-      "decision": "ModuleDefinition gains `records` ({label, model}); each domain module lists its countable table and admin's record summary counts whatever the registry holds (as nav/dashboard do, DEC-036). The provider-state reconcile moves from admin to billing (schemas/billingSchemas.ts, lib/actions/billingActions.ts reconcileBillingProviderState, lib/db/transactions/billing-reconcile-provider-state.tx.ts, select/DTO/types in billing files) under a new billing:manage permission (OWNER/ADMIN). portal declares dependsOn invoicing; the portal preset becomes [portal, invoicing, uploads, billing] (Architecture.md \u00a75, application.yaml). Admin preset stays [admin]. Accepted by the owner on 2026-10-24 (decision card option \"Modules report their own counts\").",
+      "decision": "ModuleDefinition gains `records` ({label, model}); each domain module lists its countable table and admin's record summary counts whatever the registry holds (as nav/dashboard do, DEC-036). The provider-state reconcile moves from admin to billing (schemas/billingSchemas.ts, lib/actions/billingActions.ts reconcileBillingProviderState, lib/db/transactions/billing-reconcile-provider-state.tx.ts, select/DTO/types in billing files) under a new billing:manage permission (OWNER/ADMIN). portal declares dependsOn invoicing; the portal preset becomes [portal, invoicing, uploads, billing] (Architecture.md §5, application.yaml). Admin preset stays [admin]. Accepted by the owner on 2026-10-24 (decision card option \"Modules report their own counts\").",
       "refs": ["CC-035", "DEC-036", "DEC-039", "DEC-050"]
     },
     {
@@ -553,8 +538,8 @@
       "date": "2026-10-24",
       "status": "accepted",
       "title": "CC-036: plugin skeleton, local marketplace and generated doctrine reference",
-      "context": "CC-036 asks for references/doctrine.md 'generated from validation.yaml', but the classifier lives in Architecture.md \u00a73.3 (intent, highest authority), not in the contract.",
-      "decision": "plugin/loaded-vibes/.claude-plugin/plugin.json (loaded-vibes 0.1.0, MIT like the repo) and root .claude-plugin/marketplace.json (marketplace codependent-coding, source ./plugin/loaded-vibes). scripts/plugin-doctrine.mjs (`pnpm plugin:doctrine`, `--check`) renders the classifier from Architecture.md \u00a73.3 and the CC rule table from validation.yaml, Prettier-formatted; tests/plugin/plugin.test.ts fails when the file is stale or misses a rule. No skills/agents/hooks yet (CC-037..CC-041). No plugin icon: the validator's ICON_MISSING warning only matters for directory submission.",
+      "context": "CC-036 asks for references/doctrine.md 'generated from validation.yaml', but the classifier lives in Architecture.md §3.3 (intent, highest authority), not in the contract.",
+      "decision": "plugin/loaded-vibes/.claude-plugin/plugin.json (loaded-vibes 0.1.0, MIT like the repo) and root .claude-plugin/marketplace.json (marketplace codependent-coding, source ./plugin/loaded-vibes). scripts/plugin-doctrine.mjs (`pnpm plugin:doctrine`, `--check`) renders the classifier from Architecture.md §3.3 and the CC rule table from validation.yaml, Prettier-formatted; tests/plugin/plugin.test.ts fails when the file is stale or misses a rule. No skills/agents/hooks yet (CC-037..CC-041). No plugin icon: the validator's ICON_MISSING warning only matters for directory submission.",
       "refs": ["CC-036", "DEC-050", "DEC-051"]
     },
     {
@@ -563,7 +548,7 @@
       "status": "accepted",
       "title": "CC-037: /idea skill and the governance check",
       "context": "The skill must write docs and compile YAML in a generated app, prove the YAML is valid and ask at most ~12 questions. Generated apps have no yaml package, and the plugin cannot install dependencies.",
-      "decision": "plugin/loaded-vibes/skills/idea/SKILL.md runs a 12-question Mad-Libs grill (one proposal per question, skip -> PRD open questions), edits only the app-owned sections (PRD all; tech \u00a74-5; Architecture \u00a71, \u00a76; AUTH \u00a712; Design \u00a71 paragraph) and the TODO keys of the three contracts, records DEC entries, and hands back ordered `hipster-stack slice` commands without running them. plugin/loaded-vibes/scripts/governance-check.mjs parses the contracts with the app's own Prettier (yaml parser) and fails on any TODO outside HTML comments; the skill calls it via ${CLAUDE_PLUGIN_ROOT}. skills/idea/example.md is the worked GreenRoute session.",
+      "decision": "plugin/loaded-vibes/skills/idea/SKILL.md runs a 12-question Mad-Libs grill (one proposal per question, skip -> PRD open questions), edits only the app-owned sections (PRD all; tech §4-5; Architecture §1, §6; AUTH §12; Design §1 paragraph) and the TODO keys of the three contracts, records DEC entries, and hands back ordered `hipster-stack slice` commands without running them. plugin/loaded-vibes/scripts/governance-check.mjs parses the contracts with the app's own Prettier (yaml parser) and fails on any TODO outside HTML comments; the skill calls it via ${CLAUDE_PLUGIN_ROOT}. skills/idea/example.md is the worked GreenRoute session.",
       "refs": ["CC-037", "DEC-052"]
     },
     {
@@ -572,7 +557,7 @@
       "status": "accepted",
       "title": "CC-038: /plan skill and the app's issues:sync",
       "context": "Generated apps need the factory's issue format and a sync script, but scripts/github/sync-issues.mjs is factory-specific (CC- prefix, fixed milestones, labels.yml) and does not validate.",
-      "decision": "template/scripts/sync-issues.mjs (base-owned, so every composed app ships it) with `pnpm issues:sync`: dry run validates every context/specs/issues file (name <PREFIX>-NNN-<slug>.md, required fields, enums, id = file name, Summary/Scope/Acceptance sections, unique ids, depends_on targets) and exits 1 on any problem; it stays offline without a GitHub remote. `--apply` upserts labels (frontmatter labels, else type/area/priority/size), creates frontmatter milestones and missing issues matched by '<ID> \u00b7' title prefix, then rewrites Depends on with numbers (.github-map.json). The app issue README format gains milestone and labels, matching the factory frontmatter. plugin skills/plan/SKILL.md decomposes the PRD into slice, rule, module, deploy and goal-test issues, runs the dry run, updates handoff, and only offers --apply (it writes to GitHub).",
+      "decision": "template/scripts/sync-issues.mjs (base-owned, so every composed app ships it) with `pnpm issues:sync`: dry run validates every context/specs/issues file (name <PREFIX>-NNN-<slug>.md, required fields, enums, id = file name, Summary/Scope/Acceptance sections, unique ids, depends_on targets) and exits 1 on any problem; it stays offline without a GitHub remote. `--apply` upserts labels (frontmatter labels, else type/area/priority/size), creates frontmatter milestones and missing issues matched by '<ID> ·' title prefix, then rewrites Depends on with numbers (.github-map.json). The app issue README format gains milestone and labels, matching the factory frontmatter. plugin skills/plan/SKILL.md decomposes the PRD into slice, rule, module, deploy and goal-test issues, runs the dry run, updates handoff, and only offers --apply (it writes to GitHub).",
       "refs": ["CC-038", "DEC-053"]
     },
     {
@@ -605,7 +590,7 @@
       "status": "accepted",
       "title": "CC-041: read-only reviewer and verifier agents",
       "context": "Review and evidence checks must be independent of the session that did the work.",
-      "decision": "agents/reviewer.md and agents/verifier.md have tools Read, Grep, Glob, Bash only (a test forbids Edit/Write) and say they change nothing. The reviewer maps each AUTH.md \u00a711 item to a CC ID (CC-WRITE-003, CC-SEC-001..006, CC-TX-002, CC-CLIENT-001), runs lint-findings.mjs first, and reports '[severity] CC-ID file:line what. Fix: ...' plus a verdict. The verifier reruns every EXECUTED claim for the scoped issues exactly as written, compares exit codes and counts, and reports CONFIRMED / CONTRADICTED / UNVERIFIABLE / MISSING (required profile checks with no claim); it never runs deploys, GitHub writes or production database commands. Measured with headless runs on planted violations rather than plugin evals: the cases need an installed app as fixture.",
+      "decision": "agents/reviewer.md and agents/verifier.md have tools Read, Grep, Glob, Bash only (a test forbids Edit/Write) and say they change nothing. The reviewer maps each AUTH.md §11 item to a CC ID (CC-WRITE-003, CC-SEC-001..006, CC-TX-002, CC-CLIENT-001), runs lint-findings.mjs first, and reports '[severity] CC-ID file:line what. Fix: ...' plus a verdict. The verifier reruns every EXECUTED claim for the scoped issues exactly as written, compares exit codes and counts, and reports CONFIRMED / CONTRADICTED / UNVERIFIABLE / MISSING (required profile checks with no claim); it never runs deploys, GitHub writes or production database commands. Measured with headless runs on planted violations rather than plugin evals: the cases need an installed app as fixture.",
       "refs": ["plugin/loaded-vibes/agents/", "tests/plugin/plugin.test.ts"]
     },
     {
@@ -622,7 +607,7 @@
       "date": "2026-10-24",
       "status": "accepted",
       "title": "Fix dogfood bug #255 before CC-043",
-      "context": "The CC-042 dogfood run found that test:rls fails in every generated app without the crm module: the negative check looked up CrmContact by name. PRD \u00a78 needs RLS evidence for generated apps, so v1 cannot ship with it.",
+      "context": "The CC-042 dogfood run found that test:rls fails in every generated app without the crm module: the negative check looked up CrmContact by name. PRD §8 needs RLS evidence for generated apps, so v1 cannot ship with it.",
       "decision": "The negative check now disables RLS on catalog.tenantTables[0] (every app has one; the harness seeds every tenant table) instead of a named crm table. The other dogfood issues (#256-#261) stay for the owner to schedule.",
       "refs": ["#255", "template/tests/rls/tenantIsolation.test.ts"]
     },
@@ -632,7 +617,7 @@
       "status": "accepted",
       "title": "No app deploys in v1; the job is the template",
       "context": "CC-040 and CC-042 asked for a deployed URL from a generated app, which needed new cloud resources. Owner (2026-10-25): \"Our job here is to make the template, not to deploy apps.\"",
-      "decision": "PRD G2 and \u00a78.4 now measure a validated app running locally. /ship stays in the plugin for the owner to use per app; no thread deploys apps or asks for Clerk/Neon/Vercel resources. CC-042 closed on local evidence. Owner also removed GitHub Actions (2026-10-25); merges rely on local checks.",
+      "decision": "PRD G2 and §8.4 now measure a validated app running locally. /ship stays in the plugin for the owner to use per app; no thread deploys apps or asks for Clerk/Neon/Vercel resources. CC-042 closed on local evidence. Owner also removed GitHub Actions (2026-10-25); merges rely on local checks.",
       "refs": ["#202", "#203", "context/docs/PRD.md"]
     },
     {
@@ -676,11 +661,11 @@
       "date": "2026-10-26",
       "status": "accepted",
       "title": "Four roles and <module>.<resource>:<action> permissions (#234)",
-      "context": "AUTH.md \u00a75.2 and application.yaml define owner > admin > member > viewer and `<module>.<resource>:<action>`; the code had 8 roles and `<module>:<action>` (DEC-036 deferred it). Owner (2026-10-26): authorization lives in lib/authz with roles, permissions, an RBAC part and an ABAC part, used by every fetcher and action; lib/db holds selects/, transactions/, dto/, the one Prisma client file, an auth wrapper and an RLS wrapper. Owner chose \"Viewer means outside client\" on the decision card (2026-10-26).",
+      "context": "AUTH.md §5.2 and application.yaml define owner > admin > member > viewer and `<module>.<resource>:<action>`; the code had 8 roles and `<module>:<action>` (DEC-036 deferred it). Owner (2026-10-26): authorization lives in lib/authz with roles, permissions, an RBAC part and an ABAC part, used by every fetcher and action; lib/db holds selects/, transactions/, dto/, the one Prisma client file, an auth wrapper and an RLS wrapper. Owner chose \"Viewer means outside client\" on the decision card (2026-10-26).",
       "decision": "Prisma enum MembershipRole is OWNER, ADMIN, MEMBER, VIEWER (uppercase kept); migration 20261026000000_four_membership_roles maps MANAGER/BILLING/SUPPORT to MEMBER and CLIENT to VIEWER. MEMBER is staff with the union of the old staff grants (read/create/update per module, delete in crm, billing read); VIEWER is an outside person (client) with the old CLIENT grants, and policies limit viewers to shared or own records. Module definitions list `<module>.<resource>` resources and per-role grants as actions or single permissions; the catalog is resources x actions. Base resources use the `base.` prefix. Old MANAGER loses manage-any-record (members manage own or assigned). lib/authz: roles.ts adds the hierarchy and isOutsideRole; policies.ts is the ABAC layer (limitedToOwnRecords replaces role === CLIENT). lib/db/provider.ts is now lib/db/rls.ts with setRlsContext, which tenant.ts (the auth wrapper) also uses. Slice templates generate `<module>.<entity>` resources with MEMBER read/create/update.",
       "refs": [
         "#234",
-        "AUTH.md \u00a75",
+        "AUTH.md §5",
         "template/lib/authz",
         "template/lib/db/rls.ts"
       ]
@@ -696,7 +681,7 @@
         "#261",
         "DEC-062",
         ".github/workflows/ci.yml",
-        "context/docs/tech-requirements.md \u00a711"
+        "context/docs/tech-requirements.md §11"
       ]
     },
     {
@@ -717,7 +702,7 @@
       "decision": "New Invitation model (email, role, status PENDING/ACCEPTED/REVOKED, sha256 tokenHash, expiresAt) with RLS: org rows plus read-only rows sent to the signed-in user's email; writes stay in the org. Owners/admins invite (base.membership:create) and get a one-time /invite/<token> link; revoke needs base.membership:delete. invitation.tx.ts accepts idempotently (sets the org RLS context, PENDING to ACCEPTED, create or reactivate membership, active membership keeps its role, audit event). The Clerk user.created webhook accepts a pending invitation by email first. lib/constants/tenancy.ts: tenancy multi (new user gets own org) or single (first user claims slug main via INSERT ON CONFLICT DO NOTHING, others join by invite). The CLI choice that sets tenancy and RBAC/ABAC comes in the next PR.",
       "refs": [
         "#260",
-        "AUTH.md \u00a74.3",
+        "AUTH.md §4.3",
         "template/lib/db/transactions/invitation.tx.ts",
         "template/prisma/rls/identity.sql"
       ]
@@ -731,7 +716,7 @@
       "decision": "template lib/constants/access.ts holds tenancy (multi|single) and accessControl (abac|rbac). policies.ts reads accessControl: with rbac the record rules step aside and only the organization boundary remains (limitedToOwnRecords false, manage checks pass inside the org); RLS is unchanged. `hipster-stack new|compose --tenancy --access` (interactive new prompts with selects) rewrites the two constants via packages/cli/src/compose/access.ts and records them in hipster.json. One file with a constant instead of swapped file variants, so both modes stay type-checked and tested in the template.",
       "refs": [
         "#260",
-        "AUTH.md \u00a74.3, \u00a75",
+        "AUTH.md §4.3, §5",
         "template/lib/constants/access.ts",
         "packages/cli/src/compose/access.ts"
       ]
@@ -753,10 +738,10 @@
       "context": "Ivan asked (thread 'Build homepage nav and footer pages') to replace the dead header anchors with real pages and restore FAQ/Terms/Privacy. DEC-002 and PRD FR-SITE-1 limited the site to `/`.",
       "decision": "Supersedes DEC-002 for the site only. Header: Doctrine, Maximal, Hipster Stack, Loaded Vibes (owner pick; retired names may appear only as in-page flavor). Footer: /faq, /terms, /privacy using the approved template copy adapted to a static site (operator Digital Herencia, contact via GitHub issues). All pages static, no data access, nothing new on Vercel. Pages ship in five PRs; unfinished ones show a coming-soon block. Root CSS now imports Tailwind theme+utilities (no preflight) so blocks can use utilities without changing existing styles. Copy lives in lib/constants/siteCopy.ts.",
       "consequences": [
-        "PRD \u00a74, \u00a76, \u00a77.1 and tech-requirements layout updated",
+        "PRD §4, §6, §7.1 and tech-requirements layout updated",
         "The Hipster Stack builder must read commands/flags from packages/cli at build time with a drift test"
       ],
-      "refs": ["PRD.md \u00a77.1", "DEC-002"]
+      "refs": ["PRD.md §7.1", "DEC-002"]
     },
     {
       "id": "DEC-072",
@@ -766,7 +751,7 @@
       "context": "Ivan approved the terminal app plan (thread 'Plan the termcn TUI on the doctrine'): a termcn/Ink app in packages/tui laid out like the template and linted by the template's doctrine. Three rules check web-only directives, and the keyboard-companion control list has no terminal controls.",
       "decision": "doctrine-map.mjs exports terminalProfile (rules off + extra controls); codependent-plugin.mjs exports doctrineTerminal, which sets settings.codependent.profile = 'terminal' and turns off require-server-only, use-server-actions and use-client-placement. With that profile, layer-boundaries treats components/ui/{menu,tabs,command-palette,multi-select,tree-select,confirm} as ui-control. Web apps and the default doctrine config are unchanged.",
       "refs": [
-        "Architecture.md \u00a74.1",
+        "Architecture.md §4.1",
         ".claude/contracts/validation.yaml terminal_profile",
         "template/eslint/doctrine-map.mjs"
       ]
