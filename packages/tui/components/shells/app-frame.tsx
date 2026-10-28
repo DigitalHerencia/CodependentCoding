@@ -17,7 +17,7 @@ export function AppFrame({
         <AppShell.Header>{nav}</AppShell.Header>
         <AppShell.Content>{children}</AppShell.Content>
         <AppShell.Hints
-          items={[" 1-2 screens ", " ↑↓ move ", " enter open ", " q quit "]}
+          items={[" 1-4 screens ", " ↑↓ move ", " enter open ", " q quit "]}
         />
       </AppShell>
     </ThemeProvider>
