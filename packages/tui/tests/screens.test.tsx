@@ -68,3 +68,18 @@ describe("modules screen", () => {
     unmount();
   });
 });
+
+describe("new app screen", () => {
+  it("asks for a folder, then offers the template's presets", async () => {
+    const { lastFrame, stdin, unmount } = render(<RootLayout />);
+    await frameWith(lastFrame, "Repository");
+    await press(stdin, "6");
+    await frameWith(lastFrame, "Folder for the new app");
+    await press(stdin, "../demo");
+    await press(stdin, "\r");
+    const frame = await frameWith(lastFrame, "Preset");
+    expect(frame).toContain("Folder: ../demo");
+    expect(frame).toContain("blank");
+    unmount();
+  });
+});

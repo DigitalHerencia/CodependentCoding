@@ -12,6 +12,7 @@
     "./slice": "./src/slice/sliceApp.ts",
     "./fields": "./src/slice/fields.ts",
     "./exec": "./src/setup/exec.ts",
+    "./setup": "./src/setup/postCompose.ts",
     "./package.json": "./package.json"
   },
   "bin": {

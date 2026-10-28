@@ -15,7 +15,7 @@
     "skipLibCheck": true,
     "noEmit": true,
     "types": ["node"],
-    "paths": { "@/*": ["./*"] }
+    "paths": { "@/*": ["./*"], "@/template/*": ["../../template/*"] }
   },
   "include": ["**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules", "dist"]
