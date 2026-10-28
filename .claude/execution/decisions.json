@@ -742,6 +742,19 @@
         "The Hipster Stack builder must read commands/flags from packages/cli at build time with a drift test"
       ],
       "refs": ["PRD.md §7.1", "DEC-002"]
+    },
+    {
+      "id": "DEC-072",
+      "date": "2026-10-28",
+      "status": "accepted",
+      "title": "Terminal profile for the doctrine",
+      "context": "Ivan approved the terminal app plan (thread 'Plan the termcn TUI on the doctrine'): a termcn/Ink app in packages/tui laid out like the template and linted by the template's doctrine. Three rules check web-only directives, and the keyboard-companion control list has no terminal controls.",
+      "decision": "doctrine-map.mjs exports terminalProfile (rules off + extra controls); codependent-plugin.mjs exports doctrineTerminal, which sets settings.codependent.profile = 'terminal' and turns off require-server-only, use-server-actions and use-client-placement. With that profile, layer-boundaries treats components/ui/{menu,tabs,command-palette,multi-select,tree-select,confirm} as ui-control. Web apps and the default doctrine config are unchanged.",
+      "refs": [
+        "Architecture.md §4.1",
+        ".claude/contracts/validation.yaml terminal_profile",
+        "template/eslint/doctrine-map.mjs"
+      ]
     }
   ]
 }

@@ -574,6 +574,19 @@ export const filenameConventions = [
   { dir: /^hooks\/$/, file: /^use-[a-z0-9-]+\.tsx?$/, example: "use-theme.ts" },
 ];
 
+/**
+ * Terminal profile (DEC-072). Apps that render in a terminal (Ink) run as one
+ * Node process: there is no server/browser split, so the directive rules are
+ * off, and keyboard companions may also use the terminal-only controls below.
+ * Every other rule applies unchanged. Opt in with the `doctrineTerminal`
+ * config from codependent-plugin.mjs.
+ */
+export const terminalProfile = {
+  off: ["require-server-only", "use-server-actions", "use-client-placement"],
+  controls:
+    /^components\/ui\/(menu|tabs|command-palette|multi-select|tree-select|confirm)(\.tsx?)?$/,
+};
+
 /** Path segments / basenames that signal invented layers. */
 export const genericNames =
   /(^|\/)(services?|managers?|processors?|helpers?|misc|stuff|common|handlers?)(\/|\.tsx?$)/;

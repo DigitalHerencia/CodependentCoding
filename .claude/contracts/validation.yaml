@@ -3,7 +3,7 @@
 # Executable form: template/eslint/doctrine-map.mjs (+ codependent-plugin.mjs). Keep IDs in sync.
 schema: codependent-coding/validation/v1
 version: 1.0.0
-updated: 2026-10-22
+updated: 2026-10-28
 
 evidence:
   states: [EXECUTED, INSPECTED, NOT_RUN, BLOCKED]
@@ -378,6 +378,15 @@ structure:
       "template/.agents",
       "template/context",
     ]
+
+terminal_profile:
+  # DEC-072. Terminal apps (Ink) lint with the doctrineTerminal config.
+  # One Node process, no server/browser split. Everything else is unchanged.
+  config: "template/eslint/codependent-plugin.mjs#doctrineTerminal"
+  rules_off: [CC-SRV-001, CC-WRITE-002, CC-CLIENT-001]
+  extra_controls:
+    rule: CC-FEAT-004
+    add: [menu, tabs, command-palette, multi-select, tree-select, confirm]
 
 generation:
   checks:
