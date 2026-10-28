@@ -20,6 +20,7 @@ import {
   layers,
   prismaWriteMethods,
   serverOnlyPaths,
+  terminalProfile,
   useClientAllowed,
 } from "./doctrine-map.mjs";
 
@@ -54,14 +55,26 @@ export function resolveSpecifier(spec, rel) {
   return { kind: "package", value: spec };
 }
 
-export function categoriesOf(resolved) {
+export function categoriesOf(resolved, profile) {
   const hits = [];
   for (const [name, def] of Object.entries(categories)) {
     const patterns = resolved.kind === "internal" ? def.internal : def.packages;
     if (patterns?.some((pattern) => pattern.test(resolved.value)))
       hits.push(name);
   }
+  if (
+    profile === "terminal" &&
+    resolved.kind === "internal" &&
+    terminalProfile.controls.test(resolved.value) &&
+    !hits.includes("ui-control")
+  )
+    hits.push("ui-control");
   return hits;
+}
+
+/** The doctrine profile set in ESLint settings: "web" (default) or "terminal". */
+function profileOf(context) {
+  return context.settings?.codependent?.profile ?? "web";
 }
 
 function isTypeOnly(node) {
@@ -136,8 +149,9 @@ const layerBoundaries = {
     if (!boundary) return {};
     const deny = new Set(boundary.deny);
     const except = new Set(boundary.except ?? []);
+    const profile = profileOf(context);
     return onEachSource((spec, sourceNode, node) => {
-      const hits = categoriesOf(resolveSpecifier(spec, rel));
+      const hits = categoriesOf(resolveSpecifier(spec, rel), profile);
       if (hits.some((hit) => except.has(hit))) return;
       const denied = hits.find((hit) => deny.has(hit));
       if (!denied) return;
@@ -554,6 +568,21 @@ export const doctrine = {
   plugins: { codependent: plugin },
   rules: Object.fromEntries(
     Object.keys(rules).map((name) => [`codependent/${name}`, "error"]),
+  ),
+};
+
+/** Terminal apps (Ink): the doctrine with the terminal profile (DEC-072). */
+export const doctrineTerminal = {
+  ...doctrine,
+  name: "codependent/doctrine-terminal",
+  settings: { codependent: { profile: "terminal" } },
+  rules: Object.fromEntries(
+    Object.entries(doctrine.rules).map(([name, level]) => [
+      name,
+      terminalProfile.off.includes(name.replace("codependent/", ""))
+        ? "off"
+        : level,
+    ]),
   ),
 };
 

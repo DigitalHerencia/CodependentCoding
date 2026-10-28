@@ -2,7 +2,7 @@
 title: Codependent Coding — Architecture
 doc: architecture
 status: active
-updated: 2026-10-22
+updated: 2026-10-28
 compiles_to: .claude/contracts/application.yaml, .claude/contracts/validation.yaml
 supersedes: Codependent Coding WebApp Architecture master source (2026.08) — product topology only; layer doctrine carried forward
 ---
@@ -157,6 +157,10 @@ Doctrine is code. `template/eslint/doctrine-map.mjs` is the machine table (layer
 | CC-TS-001        | `strict`, `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`                         | tsconfig                             |
 
 Review-only rules (not mechanizable, checked by the `reviewer` agent): actions validate with Zod before writing; tenant scope lives in the query predicate; consequential decisions never read stale cache; webhooks reconcile current provider truth.
+
+### 4.1 Terminal profile (DEC-072)
+
+Apps that render in a terminal with Ink (the planned `packages/tui`) use the same layers, folders and naming, and lint with the `doctrineTerminal` config from `template/eslint/codependent-plugin.mjs`. A terminal app is one Node process with no server/browser split, so three directive rules are off: CC-SRV-001 (`server-only`), CC-WRITE-002 (`"use server"`) and CC-CLIENT-001 (`"use client"` placement). Keyboard companions (`*.client.tsx`, CC-FEAT-004) may also import the terminal controls `menu`, `tabs`, `command-palette`, `multi-select`, `tree-select` and `confirm`. Every other rule applies unchanged; web apps are not affected.
 
 ## 5. Module system
 

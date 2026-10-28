@@ -1,15 +1,15 @@
 {
   "$schema": "codependent-coding/execution/handoff/v1",
-  "updated": "2026-10-27T00:00:00Z",
+  "updated": "2026-10-28T20:40:00Z",
   "format": "Overwrite each session. Minimum state the next session needs to resume safely.",
-  "status": "follow-ups",
+  "status": "terminal-app",
   "milestone": "M6",
   "current_issue": null,
   "next_issue": null,
   "queue": [],
-  "branch": "main",
+  "branch": "claude/project-thread-63a8tz",
   "in_flight": [
-    "Thread 'Rebuild authorization and fix test-run notes': last PR is the `new` wizard (banner, Clerk/Neon/integration keys, confirm screen). After it merges, #234/#256-#261 work from that thread is done."
+    "Thread 'Plan the termcn TUI on the doctrine': Ivan approved the plan (https://claude.ai/artifact/D2bQyknDraP3A54tR5oMgu). Step 1 (DEC-072 terminal profile) in review. Next: step 2, empty packages/tui (Ink 6 + termcn, layer folders at package root, linted with doctrineTerminal), then home+doctrine, modules, check, slice, new app, apps+settings."
   ],
   "notes": [
     "Governance package is uncommitted in the owner's working tree; owner reviews with `git status` / `git diff`, then commits on a branch `chore/governance-package`.",

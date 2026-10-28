@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/progress/v1",
-  "updated": "2026-10-26T23:55:00Z",
+  "updated": "2026-10-28T20:40:00Z",
   "format": "Evidence states: EXECUTED | INSPECTED | NOT_RUN | BLOCKED. Never mark an issue done without EXECUTED evidence for its Validation commands.",
   "milestones": {
     "M0": {
@@ -599,6 +599,17 @@
         "PRD §8.4 dogfood run": "EXECUTED (CC-042, DEC-060): idea to validated local app in 873 s of agent time; deploy out of scope.",
         "PRD §8.5 M0-M6 closed with evidence": "EXECUTED: every M0-M6 issue closed; dogfood follow-ups #256-#261 moved out of M6 (still open, no milestone).",
         "Tag exists": "pending: tag v1.0.0 on the merge commit of this PR."
+      }
+    },
+    "TUI-1": {
+      "status": "in-review",
+      "branch": "claude/project-thread-63a8tz",
+      "decision": "DEC-072",
+      "note": "Terminal app plan approved by Ivan 2026-10-28 (plan doc https://claude.ai/artifact/D2bQyknDraP3A54tR5oMgu). Step 1: doctrine terminal profile.",
+      "acceptance": {
+        "terminal profile in doctrine-map + plugin + contract + Architecture §4.1": "EXECUTED: pnpm doctrine:check -> doctrine ok: 47 rules; 35 IDs and 12 rules agree",
+        "RuleTester cases": "EXECUTED: pnpm --dir template doctrine:test -> 55 pass, 0 fail",
+        "web doctrine unchanged": "EXECUTED: pnpm --dir template lint -> exit 0; pnpm format:check (root + template) clean; vitest tests/doctrine 1 passed"
       }
     }
   },

@@ -7,7 +7,9 @@ import { describe, it } from "node:test";
 
 import { RuleTester } from "eslint";
 
-import { rules } from "./codependent-plugin.mjs";
+import assert from "node:assert/strict";
+
+import { doctrineTerminal, rules } from "./codependent-plugin.mjs";
 
 RuleTester.describe = describe;
 RuleTester.it = it;
@@ -344,4 +346,54 @@ tester.run("module-boundaries", rules["module-boundaries"], {
       errors: [{ messageId: "base" }],
     },
   ],
+});
+
+const terminal = { codependent: { profile: "terminal" } };
+
+tester.run("layer-boundaries (terminal profile)", rules["layer-boundaries"], {
+  valid: [
+    {
+      name: "DEC-072 terminal companion may use a terminal control (CC-FEAT-004)",
+      filename: at("features/doctrine/doctrineRules.client.tsx"),
+      code: 'import { CommandPalette } from "@/components/ui/command-palette";\nimport { Tabs } from "@/components/ui/tabs";',
+      settings: terminal,
+    },
+  ],
+  invalid: [
+    {
+      name: "DEC-072 web companion still may not use a menu (CC-FEAT-004)",
+      filename: at("features/doctrine/doctrineRules.client.tsx"),
+      code: 'import { Menu } from "@/components/ui/menu";',
+      errors: [{ messageId: "denied" }],
+    },
+    {
+      name: "DEC-072 terminal companion still may not use a data view (CC-FEAT-004)",
+      filename: at("features/doctrine/doctrineRules.client.tsx"),
+      code: 'import { Table } from "@/components/ui/table";',
+      settings: terminal,
+      errors: [{ messageId: "denied" }],
+    },
+    {
+      name: "DEC-072 terminal feature still may not import primitives (CC-FEAT-001)",
+      filename: at("features/doctrine/doctrineRulesFeature.tsx"),
+      code: 'import { Tabs } from "@/components/ui/tabs";',
+      settings: terminal,
+      errors: [{ messageId: "denied" }],
+    },
+  ],
+});
+
+describe("doctrineTerminal config", () => {
+  it("DEC-072 turns off only the three directive rules", () => {
+    const off = Object.entries(doctrineTerminal.rules)
+      .filter(([, level]) => level === "off")
+      .map(([name]) => name)
+      .sort();
+    assert.deepEqual(off, [
+      "codependent/require-server-only",
+      "codependent/use-client-placement",
+      "codependent/use-server-actions",
+    ]);
+    assert.equal(doctrineTerminal.settings.codependent.profile, "terminal");
+  });
 });
