@@ -41,6 +41,7 @@ describe("screens", () => {
     const frame = await frameWith(lastFrame, "Repository");
     expect(frame).toContain("Workspace: MAIN");
     expect(frame).toMatch(/\d+ layers · \d+ rules/);
+    expect(frame).toMatch(/\d+ modules · \d+ presets/);
     unmount();
   });
 
@@ -53,6 +54,17 @@ describe("screens", () => {
     await press(stdin, "\r");
     const frame = await frameWith(lastFrame, "Routes own URL boundaries");
     expect(frame).toContain("CC-ROUTE-001");
+    unmount();
+  });
+});
+
+describe("modules screen", () => {
+  it("lists modules and shows the chosen one's presets", async () => {
+    const { lastFrame, stdin, unmount } = render(<RootLayout />);
+    await frameWith(lastFrame, "Repository");
+    await press(stdin, "3");
+    const frame = await frameWith(lastFrame, "CRM / Pipeline");
+    expect(frame).toMatch(/Presets\s+.*crm/);
     unmount();
   });
 });

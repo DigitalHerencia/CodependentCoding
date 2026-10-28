@@ -8,10 +8,14 @@ export function WorkspaceTemplate({
   repository,
   layerCount,
   ruleCount,
+  moduleCount,
+  presetCount,
 }: {
   repository: string;
   layerCount: number;
   ruleCount: number;
+  moduleCount: number;
+  presetCount: number;
 }) {
   return (
     <Box flexDirection="column">
@@ -23,6 +27,10 @@ export function WorkspaceTemplate({
           {
             label: "Doctrine",
             value: `${layerCount} layers · ${ruleCount} rules`,
+          },
+          {
+            label: "Modules",
+            value: `${moduleCount} modules · ${presetCount} presets`,
           },
           {
             label: "Workflows",

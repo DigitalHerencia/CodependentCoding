@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/progress/v1",
-  "updated": "2026-10-28T21:00:00Z",
+  "updated": "2026-10-28T21:10:00Z",
   "format": "Evidence states: EXECUTED | INSPECTED | NOT_RUN | BLOCKED. Never mark an issue done without EXECUTED evidence for its Validation commands.",
   "milestones": {
     "M0": {
@@ -628,7 +628,7 @@
       "pr": 282
     },
     "TUI-3": {
-      "status": "in-review",
+      "status": "done",
       "branch": "claude/project-thread-63a8tz",
       "note": "Step 3 of #280: command-center home and read-only doctrine browser. Data: lib/db/client.ts reads the checkout (CODEPENDENT_ROOT or nearest folder holding template/eslint/doctrine-map.mjs); fetchers read validation.yaml (Zod-checked) and the doctrine map; features use React use() under Suspense with skeletons; the .client companion drives termcn Select.",
       "acceptance": {
@@ -636,6 +636,18 @@
         "typecheck": "EXECUTED: pnpm --dir packages/tui typecheck -> exit 0",
         "tests": "EXECUTED: pnpm --dir packages/tui test x3 -> 3 passed each (doctrine reads; home shows repository + layer/rule counts; key 2 opens doctrine, down+enter shows the route layer with CC-ROUTE-001)",
         "real terminal": "EXECUTED: node dist/main.mjs in a 110x40 pty, key 2 -> layer list + route-handler detail with CC-HOOK-001 and its import limits"
+      },
+      "pr": 283
+    },
+    "TUI-4": {
+      "status": "in-review",
+      "branch": "claude/project-thread-63a8tz",
+      "note": "Steps 4-5 of #280: modules browser (template/hipster.modules.json via modulesFetchers, Zod-checked) and checks screen (key 4, r runs format, lint, types, module manifest and ownership in template/ through checksActions -> checksWorkflows -> lib/integrations/process/run-command.ts).",
+      "acceptance": {
+        "lint": "EXECUTED: pnpm --dir packages/tui lint -> exit 0",
+        "typecheck": "EXECUTED: pnpm --dir packages/tui typecheck -> exit 0",
+        "tests": "EXECUTED: pnpm --dir packages/tui test -> 5 passed (adds modules screen shows CRM / Pipeline with its presets; checks action runs in order and keeps a failure's last lines, process mocked)",
+        "real run": "EXECUTED: node dist/main.mjs in a pty, keys 4 then r -> Format 10.6s, Lint 21.5s, Types 20.4s, Module manifest 0.6s, File ownership 0.7s all passed; 'All checks passed.'"
       }
     }
   },
