@@ -7,6 +7,13 @@
   "imports": {
     "#cli/*": "./src/*.ts"
   },
+  "exports": {
+    "./compose": "./src/compose/composeApp.ts",
+    "./slice": "./src/slice/sliceApp.ts",
+    "./fields": "./src/slice/fields.ts",
+    "./exec": "./src/setup/exec.ts",
+    "./package.json": "./package.json"
+  },
   "bin": {
     "hipster-stack": "./dist/cli.mjs"
   },
