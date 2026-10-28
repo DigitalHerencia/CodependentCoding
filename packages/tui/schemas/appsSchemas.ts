@@ -14,3 +14,16 @@ export const newAppRequestSchema = z.object({
       "Color: a 6-digit hex like #2f7a8d, or empty.",
     ),
 });
+
+/** The parts of an app's hipster.json the apps screen shows. */
+export const hipsterJsonSchema = z.object({
+  template: z.object({ commit: z.string().nullable() }).partial().optional(),
+  cli: z.string().optional(),
+  createdAt: z.string().optional(),
+  modules: z.array(z.string()).default([]),
+  color: z.string().nullable().optional(),
+  tenancy: z.string().optional(),
+  accessControl: z.string().optional(),
+});
+
+export type HipsterJson = z.infer<typeof hipsterJsonSchema>;

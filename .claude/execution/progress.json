@@ -663,8 +663,7 @@
       "pr": 285
     },
     "TUI-6": {
-      "status": "in-review",
-      "branch": "claude/project-thread-63a8tz",
+      "status": "done",
       "note": "Step 7 of #280: new app screen (key 6). Questions one at a time (folder, preset, organizations, access, color) -> summary -> confirm -> compose (CLI composeApp), prisma validate (CLI setupApp), pnpm install, first commit. CLI tool output is captured (quietExec) so it does not draw over the screen. CLI exports ./setup.",
       "acceptance": {
         "lint": "EXECUTED: pnpm --dir packages/tui lint -> exit 0",
@@ -672,6 +671,19 @@
         "tests": "EXECUTED: pnpm --dir packages/tui test -> 9 passed (adds: bad color rejected; failed step stops the rest; key 6 asks folder then lists presets)",
         "build": "EXECUTED: pnpm --dir packages/tui build -> dist/main.mjs 79 kB",
         "real run": "EXECUTED: createAppAction (tsx) preset blank, single, rbac, #2f7a8d into the scratchpad -> compose, validate, install (12.4s), first commit all passed; hipster.json has tenancy single, accessControl rbac; git log shows chore: scaffold from hipster-stack"
+      },
+      "pr": 286
+    },
+    "TUI-7": {
+      "status": "in-review",
+      "branch": "claude/project-thread-63a8tz",
+      "note": "Step 8 of #280: Apps screen (key 7, each remembered app's hipster.json) and Settings screen (key 8: checkout, settings file, app folders; a adds, enter + x forgets). Settings in ~/.codependent/settings.json via settings-update.tx.ts (DEC-074). New-app workflow remembers the app after compose.",
+      "acceptance": {
+        "lint": "EXECUTED: pnpm --dir packages/tui lint -> exit 0",
+        "typecheck": "EXECUTED: pnpm --dir packages/tui typecheck -> exit 0",
+        "tests": "EXECUTED: pnpm --dir packages/tui test -> 11 passed (adds: settings a + folder writes settings.json, then key 7 lists it with base, crm and single; folder without hipster.json refused NOT_FOUND)",
+        "build": "EXECUTED: pnpm --dir packages/tui build -> dist/main.mjs 89.7 kB",
+        "real run": "EXECUTED: node packages/tui/dist/main.mjs in a 110x40 pty with CODEPENDENT_HOME pointing at a settings file listing the scratch app, key 7 -> tui-newapp with Organizations single, Access rbac, Color #2f7a8d, Template 8b3dc6b"
       }
     }
   },

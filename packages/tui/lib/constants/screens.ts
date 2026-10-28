@@ -6,6 +6,8 @@ export const screens = [
   { id: "checks", label: "Checks", key: "4" },
   { id: "slices", label: "Slice", key: "5" },
   { id: "newApp", label: "New app", key: "6" },
+  { id: "apps", label: "Apps", key: "7" },
+  { id: "settings", label: "Settings", key: "8" },
 ] as const;
 
 export type ScreenId = (typeof screens)[number]["id"];

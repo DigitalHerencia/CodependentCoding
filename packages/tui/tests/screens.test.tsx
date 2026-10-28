@@ -3,24 +3,7 @@ import { describe, expect, it } from "vitest";
 
 import { RootLayout } from "@/app/layout";
 import { getDoctrineSummary } from "@/lib/fetchers/doctrineFetchers";
-
-async function frameWith(read: () => string | undefined, text: string) {
-  for (let attempt = 0; attempt < 50; attempt += 1) {
-    const frame = read() ?? "";
-    if (frame.includes(text)) return frame;
-    await new Promise((resolve) => setTimeout(resolve, 20));
-  }
-  throw new Error(`"${text}" never rendered:\n${read() ?? ""}`);
-}
-
-const settle = () => new Promise((resolve) => setTimeout(resolve, 100));
-
-/** Ink registers input handlers in effects, so let each render settle first. */
-async function press(stdin: { write: (data: string) => void }, key: string) {
-  await settle();
-  stdin.write(key);
-  await settle();
-}
+import { frameWith, press } from "@/tests/ink-helpers";
 
 describe("doctrine reads", () => {
   it("reads every layer and rule from the checkout", async () => {

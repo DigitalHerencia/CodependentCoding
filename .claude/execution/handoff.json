@@ -9,7 +9,7 @@
   "queue": [],
   "branch": "claude/project-thread-63a8tz",
   "in_flight": [
-    "Thread 'Plan the termcn TUI on the doctrine' (#280, plan https://claude.ai/artifact/D2bQyknDraP3A54tR5oMgu): steps 1-6 merged (#281-#285). Step 7 new app screen in review. Next: step 8 apps + settings. Workflows may not import lib/db/client (prisma-runtime category); they get the root through getWorkspaceInfo(). CLI tools run through quietExec so output doesn't draw over Ink."
+    "Thread 'Plan the termcn TUI on the doctrine' (#280, plan https://claude.ai/artifact/D2bQyknDraP3A54tR5oMgu): steps 1-7 merged (#281-#286). Step 8 apps + settings in review; after it merges, close #280. Later ideas (not started): `hipster-stack` with no args opens the TUI; agents screen for Loaded Vibes."
   ],
   "notes": [
     "Governance package is uncommitted in the owner's working tree; owner reviews with `git status` / `git diff`, then commits on a branch `chore/governance-package`.",
