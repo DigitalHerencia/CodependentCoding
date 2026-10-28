@@ -1,6 +1,13 @@
-// Why: the home screen; static for now, so it composes a block directly.
-import { WelcomePanel } from "@/components/blocks/welcome-panel";
+// Why: the home screen: the command center behind its loading state.
+import { Suspense } from "react";
+
+import { WorkspaceFeature } from "@/features/workspace/workspaceFeature";
+import { WorkspaceSkeleton } from "@/features/workspace/workspaceSkeleton";
 
 export function HomePage() {
-  return <WelcomePanel workspace="main" />;
+  return (
+    <Suspense fallback={<WorkspaceSkeleton />}>
+      <WorkspaceFeature />
+    </Suspense>
+  );
 }
