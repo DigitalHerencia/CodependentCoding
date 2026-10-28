@@ -1,6 +1,7 @@
 // Why: the screen registry: which page each screen id shows.
 import type { ReactNode } from "react";
 
+import { NewAppPage } from "@/app/apps/new/page";
 import { ChecksPage } from "@/app/checks/page";
 import { DoctrinePage } from "@/app/doctrine/page";
 import { ModulesPage } from "@/app/modules/page";
@@ -14,4 +15,5 @@ export const routes: Record<ScreenId, () => ReactNode> = {
   modules: () => <ModulesPage />,
   checks: () => <ChecksPage />,
   slices: () => <SlicesPage />,
+  newApp: () => <NewAppPage />,
 };

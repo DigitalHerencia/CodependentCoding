@@ -651,15 +651,28 @@
       "pr": 284
     },
     "TUI-5": {
-      "status": "in-review",
-      "branch": "claude/project-thread-63a8tz",
+      "status": "done",
       "note": "Step 6 of #280: slice screen (key 5). Form (app folder, entity, module, fields) -> preview of files -> confirm -> doctrine path check, write, format, app lint and typecheck, then git status. Uses the CLI's planSlice/writePlan/formatPlan through a new packages/cli exports map (hipster-stack/slice, /fields, /exec, /compose).",
       "acceptance": {
         "lint": "EXECUTED: pnpm --dir packages/tui lint -> exit 0",
         "typecheck": "EXECUTED: pnpm --dir packages/tui typecheck -> exit 0",
-        "tests": "EXECUTED: pnpm --dir packages/tui test -> 6 passed (adds: slice stops before writing when a path has no doctrine layer, CLI engine mocked)"
+        "tests": "EXECUTED: pnpm --dir packages/tui test -> 6 passed (adds: slice stops before writing when a path has no doctrine layer, CLI engine mocked)",
+        "real run": "EXECUTED: createSliceAction (tsx) on an app made by the new-app workflow: invoice in new module billing -> doctrine, write, format, lint, typecheck all passed; git status lists the billing slice files"
       },
-      "risks": "Not run against a real generated app here; the built bin loads the CLI's .ts sources through Node type stripping (dev path via tsx is fine)."
+      "risks": "none open; built bin loads the CLI sources in plain Node (checked: import('hipster-stack/compose') from packages/tui -> ok)",
+      "pr": 285
+    },
+    "TUI-6": {
+      "status": "in-review",
+      "branch": "claude/project-thread-63a8tz",
+      "note": "Step 7 of #280: new app screen (key 6). Questions one at a time (folder, preset, organizations, access, color) -> summary -> confirm -> compose (CLI composeApp), prisma validate (CLI setupApp), pnpm install, first commit. CLI tool output is captured (quietExec) so it does not draw over the screen. CLI exports ./setup.",
+      "acceptance": {
+        "lint": "EXECUTED: pnpm --dir packages/tui lint -> exit 0",
+        "typecheck": "EXECUTED: pnpm --dir packages/tui typecheck -> exit 0",
+        "tests": "EXECUTED: pnpm --dir packages/tui test -> 9 passed (adds: bad color rejected; failed step stops the rest; key 6 asks folder then lists presets)",
+        "build": "EXECUTED: pnpm --dir packages/tui build -> dist/main.mjs 79 kB",
+        "real run": "EXECUTED: createAppAction (tsx) preset blank, single, rbac, #2f7a8d into the scratchpad -> compose, validate, install (12.4s), first commit all passed; hipster.json has tenancy single, accessControl rbac; git log shows chore: scaffold from hipster-stack"
+      }
     }
   },
   "completed": [

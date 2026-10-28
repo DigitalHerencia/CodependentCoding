@@ -5,6 +5,7 @@ export const screens = [
   { id: "modules", label: "Modules", key: "3" },
   { id: "checks", label: "Checks", key: "4" },
   { id: "slices", label: "Slice", key: "5" },
+  { id: "newApp", label: "New app", key: "6" },
 ] as const;
 
 export type ScreenId = (typeof screens)[number]["id"];

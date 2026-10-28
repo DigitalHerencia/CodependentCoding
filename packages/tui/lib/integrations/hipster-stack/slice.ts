@@ -1,7 +1,7 @@
 // Why: the hipster-stack CLI's slice engine, so the terminal app and `hipster-stack slice` write the same files.
 import path from "node:path";
 
-import { spawnExec } from "hipster-stack/exec";
+import { quietExec } from "@/lib/integrations/hipster-stack/exec";
 import { parseFields } from "hipster-stack/fields";
 import {
   formatPlan,
@@ -29,5 +29,5 @@ export function writeAppSlice(appDir: string, plan: SlicePlan): void {
 
 /** prisma format/generate, Prettier and eslint --fix; returns the steps that failed. */
 export function formatAppSlice(appDir: string, plan: SlicePlan): string[] {
-  return formatPlan(path.resolve(appDir), plan, spawnExec);
+  return formatPlan(path.resolve(appDir), plan, quietExec);
 }
