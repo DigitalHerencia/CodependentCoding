@@ -1,0 +1,43 @@
+{
+  "name": "@codependent/tui",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Codependent Coding terminal app: termcn (Ink) on the Maximal Template's layers (local, unpublished).",
+  "type": "module",
+  "bin": {
+    "codependent": "./dist/main.mjs"
+  },
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": "24.x"
+  },
+  "scripts": {
+    "dev": "tsx app/main.tsx",
+    "build": "tsdown",
+    "lint": "eslint . --max-warnings=0",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "cli-spinners": "3.4.0",
+    "ink": "6.8.0",
+    "react": "19.3.1",
+    "string-width": "8.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "26.6.5",
+    "@types/react": "19.3.0",
+    "eslint": "9.39.5",
+    "eslint-config-prettier": "10.1.8",
+    "eslint-plugin-react-hooks": "7.1.1",
+    "ink-testing-library": "4.0.0",
+    "maximal-template": "link:../../template",
+    "tsdown": "0.23.2",
+    "tsx": "4.23.15",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.68.0",
+    "vitest": "4.1.12"
+  }
+}

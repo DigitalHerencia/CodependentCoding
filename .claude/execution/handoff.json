@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/handoff/v1",
-  "updated": "2026-10-28T20:40:00Z",
+  "updated": "2026-10-28T20:50:00Z",
   "format": "Overwrite each session. Minimum state the next session needs to resume safely.",
   "status": "terminal-app",
   "milestone": "M6",
@@ -9,7 +9,7 @@
   "queue": [],
   "branch": "claude/project-thread-63a8tz",
   "in_flight": [
-    "Thread 'Plan the termcn TUI on the doctrine': Ivan approved the plan (https://claude.ai/artifact/D2bQyknDraP3A54tR5oMgu). Step 1 (DEC-072 terminal profile) in review. Next: step 2, empty packages/tui (Ink 6 + termcn, layer folders at package root, linted with doctrineTerminal), then home+doctrine, modules, check, slice, new app, apps+settings."
+    "Thread 'Plan the termcn TUI on the doctrine' (#280, plan https://claude.ai/artifact/D2bQyknDraP3A54tR5oMgu): step 1 merged (#281, DEC-072). Step 2 (empty packages/tui, DEC-073) in review. Next: step 3 home screen + doctrine browser, then modules, check, slice, new app, apps+settings. Add termcn parts with `pnpm dlx shadcn@3.5.0 add @termcn/ink/<name>` in packages/tui, then move helpers per DEC-073 and rerun typecheck."
   ],
   "notes": [
     "Governance package is uncommitted in the owner's working tree; owner reviews with `git status` / `git diff`, then commits on a branch `chore/governance-package`.",

@@ -27,6 +27,7 @@ jobs:
       root_code: ${{ steps.scope.outputs.root_code }}
       root_tests: ${{ steps.scope.outputs.root_tests }}
       cli: ${{ steps.scope.outputs.cli }}
+      tui: ${{ steps.scope.outputs.tui }}
       template: ${{ steps.scope.outputs.template }}
       template_eslint: ${{ steps.scope.outputs.template_eslint }}
       template_schema: ${{ steps.scope.outputs.template_schema }}
@@ -74,6 +75,7 @@ jobs:
             echo "root_code=$([ -n "$(grep -vE "$docs" "$list" | grep -vE '^template/' || true)" ] && echo true || echo false)"
             echo "root_tests=${tests# }"
             echo "cli=$(has '^(packages/cli/|template/scripts/|template/hipster\.modules\.json$)')"
+            echo "tui=$(has '^(packages/tui/|template/eslint/|pnpm-lock\.yaml$)')"
             echo "template=$([ -n "$(grep -E '^template/' "$list" | grep -vE '\.md$' || true)" ] && echo true || echo false)"
             echo "template_eslint=$(has '^template/eslint/')"
             echo "template_schema=$(has '^template/(prisma/|hipster\.modules\.json$)')"
@@ -116,6 +118,14 @@ jobs:
       - name: Tests for the changed areas
         if: ${{ !cancelled() && needs.changes.outputs.root_tests != '' }}
         run: pnpm exec vitest run ${{ needs.changes.outputs.root_tests }}
+      - name: Terminal app lint, typecheck, tests, build
+        if: ${{ !cancelled() && needs.changes.outputs.tui == 'true' }}
+        working-directory: packages/tui
+        run: |
+          pnpm lint
+          pnpm typecheck
+          pnpm test
+          pnpm build
       - name: CLI builds and runs
         if: ${{ !cancelled() && needs.changes.outputs.cli == 'true' }}
         run: |

@@ -17,6 +17,8 @@ export default defineConfig([
     "dist/**",
     "template/**",
     "plugin/**",
+    // Lints itself with the terminal profile (pnpm --dir packages/tui lint).
+    "packages/tui/**",
     ".sandbox/**",
     "next-env.d.ts",
   ]),
