@@ -4,10 +4,10 @@ exports[`ownership report for the current template 1`] = `
 {
   "ambiguous": [],
   "modules": {
-    "admin": 37,
-    "ai": 30,
+    "admin": 36,
+    "ai": 27,
     "billing": 22,
-    "crm": 66,
+    "crm": 65,
     "email": 7,
     "inference": 5,
     "invoicing": 44,

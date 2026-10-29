@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/decisions/v1",
-  "updated": "2026-10-28",
+  "updated": "2026-10-29",
   "format": "Append new decisions; never rewrite history. Supersede by adding a new entry and setting status=superseded + superseded_by on the old one.",
   "decisions": [
     {
@@ -773,6 +773,15 @@
       "context": "Steps 6-8 of #280: slice, new app, apps and settings screens.",
       "decision": "The TUI calls the hipster-stack CLI's own functions (planSlice/writePlan/formatPlan, composeApp, setupApp) through a packages/cli exports map, wrapped in lib/integrations/hipster-stack; CLI tools run through quietExec (stdout/stderr captured) so they don't draw over Ink. Long steps (pnpm install, git) run async through lib/integrations/process/run-command. The remembered app folders live in ~/.codependent/settings.json (CODEPENDENT_HOME overrides), written only by lib/db/transactions/settings-update.tx.ts (temp file + rename). The new-app workflow remembers an app right after compose; Settings can add (folder must hold hipster.json) or forget (folder untouched) one. The Apps screen reads each remembered app's hipster.json.",
       "refs": ["#280", "packages/tui", "packages/cli/package.json", "DEC-073"]
+    },
+    {
+      "date": "2026-10-29",
+      "status": "accepted",
+      "title": "One copy per template block; dead logic files removed",
+      "context": "Ivan asked for a dedupe/cleanup audit. components/blocks held two copies of 14 blocks (singular and *-sections/plural names, same exports); 5 were byte-identical. lib/admin/logic and lib/ai/logic (not layers in Architecture.md 3.1) held 3 empty files and a copy of aiWorkflows.calculateUsage; lib/workflows/crm/logic held a copy of the deal-stage rule that lives in crm-update-deal-stage.tx.ts. Nothing imported any of them.",
+      "decision": "Keep the singular block names (Architecture.md: components/blocks/<kebab>.tsx; the used ones are singular). Where neither copy was used and the plural one had accessible names on icon links (team, footer), keep that content under the singular name. contact-sections.tsx stays: its ContactInline has no twin. Delete the empty/copied logic files. Unused catalog blocks and UI primitives stay: the base keeps the full catalog (application.yaml, Design.md).",
+      "refs": ["template/components/blocks", "template/lib"],
+      "id": "DEC-075"
     }
   ]
 }
