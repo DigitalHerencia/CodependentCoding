@@ -3251,6 +3251,13 @@
       "issue": "react-compiler",
       "command": "pnpm exec vitest run tests/cli",
       "result": "78 passed"
+    },
+    {
+      "date": "2026-10-29",
+      "state": "EXECUTED",
+      "issue": "site-doctrine-audit",
+      "command": "git grep for each removed public/ logo name; pnpm build; CI workflow_dispatch run 40815592614",
+      "result": "no references outside execution records; build clean; CI all jobs green"
     }
   ],
   "known_findings": [
