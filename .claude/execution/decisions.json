@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/decisions/v1",
-  "updated": "2026-10-28",
+  "updated": "2026-10-29",
   "format": "Append new decisions; never rewrite history. Supersede by adding a new entry and setting status=superseded + superseded_by on the old one.",
   "decisions": [
     {
@@ -782,6 +782,22 @@
       "context": "Site audit (thread 'Align live site with the doctrine'): the homepage route sat outside app/(public), three blocks lived in an invented components/blocks/custom/ folder, legal copy types lived in lib/constants, and lib/utils.ts held two unused helpers.",
       "decision": "Homepage is app/(public)/page.tsx; landing-hero, loading-state and system-state are flat in components/blocks; LegalDocument/LegalSection types live in types/legalTypes.ts; safeHref and sanitizeCssValue removed from the root lib/utils.ts. Homepage performance: header/footer logos get sizes, Cinzel and Fira Code are not preloaded (unused on /), mobile text minimum 0.75rem, 'More info' link gets screen-reader text. design.yaml landing surface updated to the current header and CTAs.",
       "refs": ["Architecture.md §3.3", "DEC-071"]
+    },
+    {
+      "id": "DEC-077",
+      "date": "2026-10-29",
+      "status": "accepted",
+      "title": "Tests and scripts audit: site link check, generated files untracked, Windows-safe template checks",
+      "context": "Ivan asked for every script and test suite to be run and fixed (thread 'Verify tests and scripts work'). All root, template, CLI and terminal-app checks passed, including RLS against local Postgres 16 and the template e2e smoke. Gaps: root `pnpm test:e2e` failed (no tests/e2e), `next dev`/`next build` dirtied next-env.d.ts and AGENTS.md on every run, two template check scripts and one test could not run on Windows, and template `validate` skipped doctrine:test and test.",
+      "decision": "Root tests/e2e/site.spec.ts crawls every same-site link from / over HTTP (request fixture, no browser) against a production build; CI runs it when site files change. Removed test:e2e:ui/headed/debug (browser modes with no browser tests). next-env.d.ts is gitignored and untracked in root and template, per Next's own docs; root typecheck runs `next typegen` first like the template. Root next.config sets agentRules:false (AGENTS.md routes to CLAUDE.md); /template/AGENTS.md is ignored at the root only, so generated apps keep Next's agent notes. check-compose and check-schema-modules run prisma/tsc/eslint through node instead of pnpm or .bin shims, and use junction links; hooks.test uses a junction. Template validate adds doctrine:test and test (tech-requirements §4). The opt-in AUTH_WEBHOOK_DB_TEST case stays skipped by default: it needs a Neon connection.",
+      "refs": [
+        "playwright.config.ts",
+        "tests/e2e/site.spec.ts",
+        ".github/workflows/ci.yml",
+        "template/scripts/check-compose.mjs",
+        "template/scripts/check-schema-modules.mjs",
+        "context/docs/tech-requirements.md §4"
+      ]
     }
   ]
 }
