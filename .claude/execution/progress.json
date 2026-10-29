@@ -695,6 +695,16 @@
         "test": "EXECUTED: pnpm --dir template test -> 79 passed, 1 skipped",
         "doctrine": "EXECUTED: pnpm --dir template doctrine:test -> 55 pass, 0 fail"
       }
+    },
+    "CLEANUP-2": {
+      "status": "in-review",
+      "branch": "claude/project-thread-fhrdsi",
+      "note": "Audit cleanup 2: (a) 49 template feature skeletons had the same 18-line body; they now render components/blocks/loading-states WorkspaceLoadingState with their route (files kept, one per route, as Architecture.md 3.1 requires). (b) Root package.json drops motion, tsdown and @types/validate-npm-package-name (nothing at root uses them; packages/cli and packages/tui keep their own tsdown). (c) app/globals.css 51.6 KB -> 14.6 KB: removed 336 rules whose selectors only name classes no root site file uses (old catalog, workbench, docs and builder pages).",
+      "acceptance": {
+        "root": "EXECUTED: pnpm validate -> exit 0; pnpm build -> exit 0; pnpm cli:build and tui build -> exit 0",
+        "template": "EXECUTED: pnpm --dir template validate -> exit 0; pnpm --dir template test -> 79 passed, 1 skipped",
+        "visual": "EXECUTED: Playwright full-page screenshots of / /doctrine /doctrine/architecture/system-map /maximal /hipster-stack /loaded-vibes /faq /terms /privacy and a 404, at 1440 and 390 px, before vs after the CSS change -> 20 of 20 pixel-identical"
+      }
     }
   },
   "completed": [
@@ -3142,6 +3152,20 @@
       "issue": "CLEANUP-1",
       "command": "pnpm --dir template validate && pnpm --dir template test && pnpm --dir template doctrine:test",
       "result": "exit 0; 79 passed 1 skipped; 55 pass"
+    },
+    {
+      "date": "2026-10-29",
+      "state": "EXECUTED",
+      "issue": "CLEANUP-2",
+      "command": "pnpm validate && pnpm build && pnpm --dir template validate && pnpm --dir template test",
+      "result": "all exit 0; template 79 passed 1 skipped"
+    },
+    {
+      "date": "2026-10-29",
+      "state": "EXECUTED",
+      "issue": "CLEANUP-2",
+      "command": "Playwright screenshots of 10 site routes at 1440/390 px, old vs new globals.css, PIL pixel diff",
+      "result": "20/20 identical"
     },
     {
       "date": "2026-10-29",
