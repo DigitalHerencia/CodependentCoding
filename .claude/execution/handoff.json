@@ -10,7 +10,6 @@
   "branch": "claude/project-thread-63a8tz",
   "in_flight": [
     "Thread 'Plan the termcn TUI on the doctrine' (#280, plan https://claude.ai/artifact/D2bQyknDraP3A54tR5oMgu): steps 1-7 merged (#281-#286). Step 8 apps + settings in review; after it merges, close #280. Later ideas (not started): `hipster-stack` with no args opens the TUI; agents screen for Loaded Vibes.",
-    "Thread 'Audit configs, errors and broken links' (DEC-076): security headers, terminal-app CI trigger, plugin lint, doc versions. Open: owner choice on React Compiler (tech-requirements §5 asks for it, nothing enables it). (e2e and template validate gaps fixed in DEC-079.)",
     "Thread 'Audit configs, errors and broken links' (DEC-076): security headers, terminal-app CI trigger, plugin lint, doc versions. Open: owner choice on React Compiler (tech-requirements §5 asks for it, nothing enables it). (e2e and template validate gaps fixed in DEC-079.)"
   ],
   "notes": [
