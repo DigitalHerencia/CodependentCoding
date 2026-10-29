@@ -685,6 +685,16 @@
         "build": "EXECUTED: pnpm --dir packages/tui build -> dist/main.mjs 89.7 kB",
         "real run": "EXECUTED: node packages/tui/dist/main.mjs in a 110x40 pty with CODEPENDENT_HOME pointing at a settings file listing the scratch app, key 7 -> tui-newapp with Organizations single, Access rbac, Color #2f7a8d, Template 8b3dc6b"
       }
+    },
+    "CLEANUP-1": {
+      "status": "in-review",
+      "branch": "claude/project-thread-fhrdsi",
+      "note": "Audit cleanup 1 (thread Dedupe and simplify the codebase): removed duplicate template page blocks (5 byte-identical *-sections copies, 7 near-copies of the kept singular blocks; team-section and footer-section now hold the copy that has accessible link names) and dead lib files (3 empty *.logic.ts, lib/ai/logic/calculate-usage.logic.ts copied in aiWorkflows.ts, lib/workflows/crm/logic/advance-deal-stage.logic.ts copied in crm-update-deal-stage.tx.ts). Ownership snapshot updated.",
+      "acceptance": {
+        "validate": "EXECUTED: pnpm --dir template validate -> exit 0",
+        "test": "EXECUTED: pnpm --dir template test -> 79 passed, 1 skipped",
+        "doctrine": "EXECUTED: pnpm --dir template doctrine:test -> 55 pass, 0 fail"
+      }
     }
   },
   "completed": [
@@ -3125,6 +3135,13 @@
       "issue": "config-audit",
       "command": "crawl of the built root site from / (93 internal URLs) + curl of 91 external URLs in the repo",
       "result": "all internal 200; external non-200 are placeholders (example.test, x.ngrok.app) or GitHub pages blocked by the sandbox proxy"
+    },
+    {
+      "date": "2026-10-29",
+      "state": "EXECUTED",
+      "issue": "CLEANUP-1",
+      "command": "pnpm --dir template validate && pnpm --dir template test && pnpm --dir template doctrine:test",
+      "result": "exit 0; 79 passed 1 skipped; 55 pass"
     }
   ],
   "known_findings": [

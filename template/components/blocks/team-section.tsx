@@ -1,16 +1,17 @@
-import * as React from "react";
 import Image from "next/image";
+import * as React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils/cn";
 import { safeHref } from "@/lib/utils/strings";
-import { XIcon, BriefcaseBusiness, Code2, Mail } from "lucide-react";
+import { XIcon, Mail } from "lucide-react";
 
 function getInitials(name: string) {
   const parts = name.trim().split(/\s+/).filter(Boolean);
   if (parts.length === 0) return "?";
-  if (parts.length === 1) return (parts[0]?.[0] ?? "?").toUpperCase();
-  return ((parts.at(0)?.[0] ?? "") + (parts.at(-1)?.[0] ?? "")).toUpperCase();
+  const first = parts[0]?.[0] ?? "";
+  if (parts.length === 1) return (first || "?").toUpperCase();
+  return (first + (parts.at(-1)?.[0] ?? "")).toUpperCase();
 }
 
 export interface TeamMember {
@@ -107,24 +108,42 @@ export function TeamGrid({
                     {member.social.twitter && (
                       <SocialLink
                         href={member.social.twitter}
+                        label="X / Twitter"
                         icon={<XIcon className="h-4 w-4" />}
                       />
                     )}
                     {member.social.linkedin && (
                       <SocialLink
                         href={member.social.linkedin}
-                        icon={<BriefcaseBusiness className="h-4 w-4" />}
+                        label="LinkedIn"
+                        icon={
+                          <span
+                            aria-hidden="true"
+                            className="text-[10px] font-black"
+                          >
+                            in
+                          </span>
+                        }
                       />
                     )}
                     {member.social.github && (
                       <SocialLink
                         href={member.social.github}
-                        icon={<Code2 className="h-4 w-4" />}
+                        label="GitHub"
+                        icon={
+                          <span
+                            aria-hidden="true"
+                            className="text-[9px] font-black"
+                          >
+                            GH
+                          </span>
+                        }
                       />
                     )}
                     {member.social.email && (
                       <SocialLink
                         href={`mailto:${member.social.email}`}
+                        label={`Email ${member.name}`}
                         icon={<Mail className="h-4 w-4" />}
                       />
                     )}
@@ -183,13 +202,22 @@ export function TeamList({ title, members, className }: TeamListProps) {
                   {member.social.twitter && (
                     <SocialLink
                       href={member.social.twitter}
+                      label="X / Twitter"
                       icon={<XIcon className="h-4 w-4" />}
                     />
                   )}
                   {member.social.linkedin && (
                     <SocialLink
                       href={member.social.linkedin}
-                      icon={<BriefcaseBusiness className="h-4 w-4" />}
+                      label="LinkedIn"
+                      icon={
+                        <span
+                          aria-hidden="true"
+                          className="text-[10px] font-black"
+                        >
+                          in
+                        </span>
+                      }
                     />
                   )}
                 </div>
@@ -244,9 +272,8 @@ export function TeamLargePhotos({
                   <Image
                     src={member.avatar}
                     alt={member.name}
-                    height={640}
-                    unoptimized
-                    width={640}
+                    width={600}
+                    height={800}
                     className="h-80 w-full object-cover"
                   />
                 ) : (
@@ -266,6 +293,7 @@ export function TeamLargePhotos({
                       {member.social.twitter && (
                         <SocialLink
                           href={member.social.twitter}
+                          label="X / Twitter"
                           icon={<XIcon className="h-4 w-4" />}
                           light
                           tabIndex={-1}
@@ -274,7 +302,15 @@ export function TeamLargePhotos({
                       {member.social.linkedin && (
                         <SocialLink
                           href={member.social.linkedin}
-                          icon={<BriefcaseBusiness className="h-4 w-4" />}
+                          label="LinkedIn"
+                          icon={
+                            <span
+                              aria-hidden="true"
+                              className="text-[10px] font-black"
+                            >
+                              in
+                            </span>
+                          }
                           light
                           tabIndex={-1}
                         />
@@ -282,7 +318,15 @@ export function TeamLargePhotos({
                       {member.social.github && (
                         <SocialLink
                           href={member.social.github}
-                          icon={<Code2 className="h-4 w-4" />}
+                          label="GitHub"
+                          icon={
+                            <span
+                              aria-hidden="true"
+                              className="text-[9px] font-black"
+                            >
+                              GH
+                            </span>
+                          }
                           light
                           tabIndex={-1}
                         />
@@ -363,11 +407,13 @@ export function TeamCompact({
 // ============================================================================
 function SocialLink({
   href,
+  label,
   icon,
   light = false,
   tabIndex,
 }: {
   href: string;
+  label: string;
   icon: React.ReactNode;
   light?: boolean;
   tabIndex?: number;
@@ -378,6 +424,7 @@ function SocialLink({
       target="_blank"
       rel="noopener noreferrer"
       tabIndex={tabIndex}
+      aria-label={label}
       className={cn(
         "flex h-8 w-8 items-center justify-center border-2 border-foreground transition hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[2px_2px_0px_hsl(var(--shadow-color))]",
         light

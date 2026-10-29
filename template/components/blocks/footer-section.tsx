@@ -1,18 +1,12 @@
+"use client";
+
 import * as React from "react";
 import { cn } from "@/lib/utils/cn";
 import { safeHref } from "@/lib/utils/strings";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import {
-  MessageCircle,
-  Code2,
-  BriefcaseBusiness,
-  Camera,
-  Play,
-  Mail,
-  ArrowRight,
-} from "lucide-react";
+import { Mail, ArrowRight } from "lucide-react";
 
 export interface FooterLink {
   label: string;
@@ -151,12 +145,11 @@ export function FooterWithNewsletter({
   copyright = `© ${new Date().getFullYear()} Your Company. All rights reserved.`,
   className,
 }: FooterWithNewsletterProps) {
-  const [email, setEmail] = React.useState("");
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    onNewsletterSubmit?.(email);
-    setEmail("");
+    const form = new FormData(e.currentTarget);
+    onNewsletterSubmit?.(String(form.get("email") ?? ""));
+    e.currentTarget.reset();
   };
 
   return (
@@ -179,10 +172,9 @@ export function FooterWithNewsletter({
             </p>
             <form onSubmit={handleSubmit} className="flex max-w-md gap-2">
               <Input
+                name="email"
                 type="email"
                 placeholder="Enter your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
                 required
               />
               <Button type="submit" aria-label="Subscribe">
@@ -445,29 +437,38 @@ function SocialIcon({
   href: string;
   size?: "sm" | "default";
 }) {
-  const icons = {
-    twitter: MessageCircle,
-    github: Code2,
-    linkedin: BriefcaseBusiness,
-    instagram: Camera,
-    youtube: Play,
+  const labels: Record<FooterSocialLink["platform"], string> = {
+    twitter: "X / Twitter",
+    github: "GitHub",
+    linkedin: "LinkedIn",
+    instagram: "Instagram",
+    youtube: "YouTube",
   };
 
-  const Icon = icons[platform];
+  const glyphs: Record<FooterSocialLink["platform"], string> = {
+    twitter: "X",
+    github: "GH",
+    linkedin: "in",
+    instagram: "IG",
+    youtube: "YT",
+  };
+
   const sizeClasses = size === "sm" ? "w-7 h-7" : "w-9 h-9";
-  const iconSize = size === "sm" ? "h-3.5 w-3.5" : "h-4 w-4";
+  const textClass = size === "sm" ? "text-[9px]" : "text-[10px]";
 
   return (
     <a
       href={safeHref(href)}
       target="_blank"
       rel="noopener noreferrer"
+      aria-label={labels[platform]}
       className={cn(
-        "flex items-center justify-center border-2 border-foreground bg-muted transition hover:translate-x-[-2px] hover:translate-y-[-2px] hover:bg-primary hover:text-primary-foreground hover:shadow-[2px_2px_0px_hsl(var(--shadow-color))]",
+        "flex items-center justify-center border-2 border-foreground bg-muted font-black transition hover:translate-x-[-2px] hover:translate-y-[-2px] hover:bg-primary hover:text-primary-foreground hover:shadow-[2px_2px_0px_hsl(var(--shadow-color))]",
         sizeClasses,
+        textClass,
       )}
     >
-      <Icon className={iconSize} />
+      <span aria-hidden="true">{glyphs[platform]}</span>
     </a>
   );
 }
