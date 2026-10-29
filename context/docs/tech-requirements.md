@@ -2,7 +2,7 @@
 title: Codependent Coding — Technical Requirements
 doc: tech-requirements
 status: active
-updated: 2026-10-22
+updated: 2026-10-29
 compiles_to: .claude/contracts/application.yaml, .claude/contracts/validation.yaml
 ---
 
@@ -27,23 +27,23 @@ Exact versions only (no `^`/`~`). Upgrades are explicit issues.
 | Package                                        | Version        | Notes                                                  |
 | ---------------------------------------------- | -------------- | ------------------------------------------------------ |
 | typescript                                     | 6.0.3          | TS 7 is unsupported by typescript-eslint 8.x (DEC-006) |
-| eslint                                         | 9.39.5         | Proven with eslint-config-next 16.3.4                  |
-| eslint-config-next                             | 16.3.4         |                                                        |
+| eslint                                         | 9.39.5         | Proven with eslint-config-next 16.4.3                  |
+| eslint-config-next                             | 16.4.3         |                                                        |
 | eslint-config-prettier                         | 10.1.8         | Always last in flat config                             |
-| prettier                                       | 3.9.6          |                                                        |
+| prettier                                       | 3.9.10         |                                                        |
 | prettier-plugin-tailwindcss                    | 0.8.1          | Class sorting (CC-FMT-002)                             |
-| next                                           | 16.3.4         | App Router, Turbopack, typed routes, React Compiler    |
-| react / react-dom                              | 19.2.8         |                                                        |
+| next                                           | 16.4.3         | App Router, Turbopack, typed routes, React Compiler    |
+| react / react-dom                              | 19.3.1         |                                                        |
 | tailwindcss / @tailwindcss/postcss             | 4.3.3          |                                                        |
-| prisma / @prisma/client / @prisma/adapter-neon | 7.10.0         | Multi-file schema                                      |
-| @neondatabase/serverless                       | 1.1.0          |                                                        |
-| @clerk/nextjs                                  | 7.9.1          |                                                        |
-| zod                                            | 4.5.4          |                                                        |
-| react-hook-form / @hookform/resolvers          | 7.87.0 / 5.9.1 | All forms                                              |
-| vitest                                         | 4.1.11         |                                                        |
-| @playwright/test                               | 1.62.1         |                                                        |
-| stripe                                         | 22.6.1         | `billing` module                                       |
-| commander / @clack/prompts                     | CLI only       | Pin on CLI creation                                    |
+| prisma / @prisma/client / @prisma/adapter-neon | 7.10.1         | Multi-file schema                                      |
+| @neondatabase/serverless                       | 1.2.0          |                                                        |
+| @clerk/nextjs                                  | 7.9.20         |                                                        |
+| zod                                            | 4.6.7          |                                                        |
+| react-hook-form / @hookform/resolvers          | 7.91.0 / 5.9.2 | All forms                                              |
+| vitest                                         | 4.1.12         |                                                        |
+| @playwright/test                               | 1.64.1         |                                                        |
+| stripe                                         | 22.6.2         | `billing` module                                       |
+| commander / @clack/prompts                     | 15.0.0 / 1.8.1 | CLI only                                               |
 
 ## 3. Repository layout
 
@@ -51,12 +51,15 @@ Exact versions only (no `^`/`~`). Upgrades are explicit issues.
 codependent-coding/
 ├── app/                      static site routes (DEC-071)
 ├── components/               site presentation
+├── features/ lib/ types/     site features, data and types (same layers as the template)
 ├── public/                   brand assets
 ├── packages/cli/             Hipster Stack CLI (local, unpublished)
+├── packages/tui/             terminal app on termcn (local, unpublished; DEC-072)
 ├── template/                 Maximal Template — runnable Next.js app
 ├── plugin/loaded-vibes/      Claude Code plugin
 ├── .claude-plugin/           local plugin marketplace manifest
-├── scripts/github/           issue/label/milestone sync
+├── scripts/                  doctrine check, plugin doctrine, CLI link; github/ issue sync
+├── tests/                    root Vitest suites (cli, doctrine, plugin)
 ├── context/
 │   ├── docs/                 human intent (this folder)
 │   ├── specs/issues/         work items (sync to GitHub)

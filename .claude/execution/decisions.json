@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/decisions/v1",
-  "updated": "2026-10-28",
+  "updated": "2026-10-29",
   "format": "Append new decisions; never rewrite history. Supersede by adding a new entry and setting status=superseded + superseded_by on the old one.",
   "decisions": [
     {
@@ -784,13 +784,28 @@
       "refs": ["Architecture.md §3.3", "DEC-071"]
     },
     {
+      "id": "DEC-076",
+      "date": "2026-10-29",
+      "status": "accepted",
+      "title": "Config audit: security headers on, terminal app CI follows the CLI, plugin scripts linted",
+      "context": "Ivan asked for an audit of configs, errors and broken links (thread 'Audit configs, errors and broken links'). Root, template, CLI and terminal app checks, builds and links were all clean; the gaps were configs that did not match tech-requirements.md or covered less than they claimed.",
+      "decision": "Root and template next.config.ts now send the four security headers tech-requirements.md §5 already required (X-Content-Type-Options nosniff, Referrer-Policy strict-origin-when-cross-origin, X-Frame-Options DENY, Permissions-Policy denying camera/microphone/geolocation/browsing-topics). CI runs the terminal app checks when packages/cli/ or template/scripts/ change, because the terminal app imports the CLI's compose/slice/setup code. Root ESLint no longer ignores plugin/**: the plugin's hook and script .mjs files get the same rules as scripts/ (they were never linted anywhere). CONTRIBUTING pins pnpm 12.3.4; tech-requirements.md version table and layout match the repo. React Compiler (§5) is still not enabled; left to the owner.",
+      "refs": [
+        "next.config.ts",
+        "template/next.config.ts",
+        ".github/workflows/ci.yml",
+        "eslint.config.mjs",
+        "context/docs/tech-requirements.md"
+      ]
+    },
+    {
       "date": "2026-10-29",
       "status": "accepted",
       "title": "One copy per template block; dead logic files removed",
       "context": "Ivan asked for a dedupe/cleanup audit. components/blocks held two copies of 14 blocks (singular and *-sections/plural names, same exports); 5 were byte-identical. lib/admin/logic and lib/ai/logic (not layers in Architecture.md 3.1) held 3 empty files and a copy of aiWorkflows.calculateUsage; lib/workflows/crm/logic held a copy of the deal-stage rule that lives in crm-update-deal-stage.tx.ts. Nothing imported any of them.",
       "decision": "Keep the singular block names (Architecture.md: components/blocks/<kebab>.tsx; the used ones are singular). Where neither copy was used and the plural one had accessible names on icon links (team, footer), keep that content under the singular name. contact-sections.tsx stays: its ContactInline has no twin. Delete the empty/copied logic files. Unused catalog blocks and UI primitives stay: the base keeps the full catalog (application.yaml, Design.md).",
       "refs": ["template/components/blocks", "template/lib"],
-      "id": "DEC-076"
+      "id": "DEC-077"
     }
   ]
 }
