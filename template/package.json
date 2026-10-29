@@ -28,7 +28,7 @@
     "test:rls": "vitest run --project rls",
     "test:e2e": "playwright test",
     "typecheck": "next typegen && tsc --noEmit",
-    "validate": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm check:modules && pnpm check:ownership && pnpm check:env",
+    "validate": "pnpm format:check && pnpm lint && pnpm doctrine:test && pnpm typecheck && pnpm check:modules && pnpm check:ownership && pnpm check:env && pnpm test",
     "postinstall": "prisma generate"
   },
   "packageManager": "pnpm@12.3.4",
@@ -105,6 +105,7 @@
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0",
     "@types/ws": "8.18.2",
+    "babel-plugin-react-compiler": "1.0.0",
     "eslint": "9.39.5",
     "eslint-config-next": "16.4.3",
     "eslint-config-prettier": "10.1.8",

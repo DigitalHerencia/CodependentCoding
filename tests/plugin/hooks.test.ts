@@ -81,7 +81,7 @@ beforeAll(async () => {
   symlinkSync(
     path.join(templateDir, "node_modules"),
     path.join(appDir, "node_modules"),
-    "dir",
+    "junction",
   );
   execFileSync("git", ["init", "-q"], { cwd: appDir });
   commitAll(appDir);

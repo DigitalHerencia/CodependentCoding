@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/handoff/v1",
-  "updated": "2026-10-29T03:55:00Z",
+  "updated": "2026-10-29T04:00:00Z",
   "format": "Overwrite each session. Minimum state the next session needs to resume safely.",
   "status": "terminal-app",
   "milestone": "M6",
@@ -10,7 +10,7 @@
   "branch": "claude/project-thread-63a8tz",
   "in_flight": [
     "Thread 'Plan the termcn TUI on the doctrine' (#280, plan https://claude.ai/artifact/D2bQyknDraP3A54tR5oMgu): steps 1-7 merged (#281-#286). Step 8 apps + settings in review; after it merges, close #280. Later ideas (not started): `hipster-stack` with no args opens the TUI; agents screen for Loaded Vibes.",
-    "Thread 'Audit configs, errors and broken links' (DEC-076): security headers, terminal-app CI trigger, plugin lint, doc versions. Open: owner choice on React Compiler (tech-requirements §5 asks for it, nothing enables it); root playwright.config.ts points at tests/e2e which does not exist, and template `validate` skips doctrine:test and test though §4 lists them (handed to the tests/scripts thread)."
+    "Thread 'Audit configs, errors and broken links' (DEC-076): security headers, terminal-app CI trigger, plugin lint, doc versions. React Compiler now on in the template (DEC-081). (e2e and template validate gaps fixed in DEC-079.)"
   ],
   "notes": [
     "Governance package is uncommitted in the owner's working tree; owner reviews with `git status` / `git diff`, then commits on a branch `chore/governance-package`.",
@@ -80,7 +80,9 @@
     "Site pages (DEC-071) in PR #278: /doctrine, /maximal (Monaco; contents from raw GitHub main), /hipster-stack (flags parsed from packages/cli/src/commands at build, follows CLI wizard changes), /loaded-vibes, /faq /terms /privacy.",
     "Site doctrine audit (DEC-075): homepage is app/(public)/page.tsx, no components/blocks/custom/. 11 unreferenced logo images removed from root public/ on Ivan's word (2026-10-29); template/public keeps its own maximal-template-logo.jpg. app/globals.css (~51 KB) still carries legacy selectors; ~19 KB unused on /.",
     "Cleanup 1 (DEC-077): one copy per template block (singular names); dead lib/*/logic files deleted. Unused catalog blocks/primitives are kept on purpose (full catalog in base).",
-    "Cleanup 2 (DEC-078): template skeletons share WorkspaceLoadingState; root dropped motion/tsdown/@types/validate-npm-package-name; app/globals.css pruned to 14.6 KB (screenshots identical)."
+    "Cleanup 2 (DEC-078): template skeletons share WorkspaceLoadingState; root dropped motion/tsdown/@types/validate-npm-package-name; app/globals.css pruned to 14.6 KB (screenshots identical).",
+    "Tests/scripts audit (DEC-079): every suite runs green; root has a site link-check e2e; next-env.d.ts untracked; template checks are Windows-safe. Not verified on real Windows: check:compose, check:schema-modules (Ivan can run `pnpm --dir template check:compose`).",
+    "Cleanup 3 (DEC-081): Ivan keeps unused template server helpers on purpose; pipeline value workflow uses the exact weighted calculation."
   ],
   "risks": [
     "Lint hook exits 0 silently when node_modules/eslint is missing; a failed install hides lint feedback. On Windows, run pnpm install with VS Code closed (DEC-019).",

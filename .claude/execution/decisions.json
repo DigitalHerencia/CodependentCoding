@@ -819,6 +819,33 @@
         "package.json"
       ],
       "id": "DEC-078"
+    },
+    {
+      "date": "2026-10-29",
+      "status": "accepted",
+      "title": "One copy per template block; dead logic files removed",
+      "context": "Ivan asked for a dedupe/cleanup audit. components/blocks held two copies of 14 blocks (singular and *-sections/plural names, same exports); 5 were byte-identical. lib/admin/logic and lib/ai/logic (not layers in Architecture.md 3.1) held 3 empty files and a copy of aiWorkflows.calculateUsage; lib/workflows/crm/logic held a copy of the deal-stage rule that lives in crm-update-deal-stage.tx.ts. Nothing imported any of them.",
+      "decision": "Keep the singular block names (Architecture.md: components/blocks/<kebab>.tsx; the used ones are singular). Where neither copy was used and the plural one had accessible names on icon links (team, footer), keep that content under the singular name. contact-sections.tsx stays: its ContactInline has no twin. Delete the empty/copied logic files. Unused catalog blocks and UI primitives stay: the base keeps the full catalog (application.yaml, Design.md).",
+      "refs": ["template/components/blocks", "template/lib"],
+      "id": "DEC-079"
+    },
+    {
+      "date": "2026-10-29",
+      "status": "accepted",
+      "title": "Unused template server helpers stay; pipeline value has one implementation",
+      "context": "The dedupe audit found ~30 files and ~50 functions of template server code nothing calls, and two pipeline-value implementations that disagreed (float unweighted vs exact weighted, DEC-026). Ivan picked keep + fix on a decision card.",
+      "decision": "Keep the unused helpers as building blocks for generated apps; do not delete them in future cleanups. calculatePipelineValueWorkflow delegates to lib/workflows/crm/calculatePipelineValue.ts.",
+      "refs": ["template/lib/workflows/crmWorkflows.ts", "DEC-026", "DEC-077"],
+      "id": "DEC-080"
+    },
+    {
+      "id": "DEC-081",
+      "date": "2026-10-29",
+      "status": "accepted",
+      "title": "Template turns on the React Compiler",
+      "context": "tech-requirements.md §5 asked for reactCompiler: true but nothing enabled it (found in the config audit, DEC-076). Ivan chose to turn it on rather than drop it from the doc.",
+      "decision": "template/next.config.ts sets reactCompiler: true and the template pins babel-plugin-react-compiler 1.0.0 as a dev dependency. The root site is unchanged. Generated apps inherit both through compose.",
+      "refs": ["template/next.config.ts", "template/package.json", "DEC-076"]
     }
   ]
 }

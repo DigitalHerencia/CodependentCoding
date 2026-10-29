@@ -1,6 +1,7 @@
 import "server-only";
 
 import { updateContact, updateCrmDealStage } from "@/lib/actions/crmActions";
+import { calculatePipelineValue } from "@/lib/workflows/crm/calculatePipelineValue";
 import {
   getClosedWonCrmValue,
   getContactById,
@@ -73,11 +74,7 @@ export async function detectStalledDealWorkflow(
 }
 
 export async function calculatePipelineValueWorkflow(limit = 100) {
-  const deals = await getCrmDeals(limit);
-  return deals
-    .filter((deal) => deal.stage !== "LOST")
-    .reduce((total, deal) => total + Number(deal.value), 0)
-    .toFixed(4);
+  return calculatePipelineValue(await getCrmDeals(limit));
 }
 
 export async function calculateSalesVelocityWorkflow(
