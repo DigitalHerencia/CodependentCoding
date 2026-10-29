@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/progress/v1",
-  "updated": "2026-10-29",
+  "updated": "2026-10-29T03:55:00Z",
   "format": "Evidence states: EXECUTED | INSPECTED | NOT_RUN | BLOCKED. Never mark an issue done without EXECUTED evidence for its Validation commands.",
   "milestones": {
     "M0": {
@@ -3166,6 +3166,13 @@
       "issue": "CLEANUP-2",
       "command": "Playwright screenshots of 10 site routes at 1440/390 px, old vs new globals.css, PIL pixel diff",
       "result": "20/20 identical"
+    },
+    {
+      "date": "2026-10-29",
+      "state": "EXECUTED",
+      "issue": "site-doctrine-audit",
+      "command": "git grep for each removed public/ logo name; pnpm build",
+      "result": "no references outside execution records; build clean"
     }
   ],
   "known_findings": [
