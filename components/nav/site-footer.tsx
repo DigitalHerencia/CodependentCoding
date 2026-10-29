@@ -21,6 +21,7 @@ export function SiteFooter() {
             alt="Digital Herencia, a data cartel"
             width={1059}
             height={465}
+            sizes="7rem"
           />
         </Link>
         <nav aria-label="Footer navigation">

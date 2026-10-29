@@ -14,8 +14,10 @@ const heritageDisplay = Archivo_Black({
   variable: "--font-big-shoulders-display",
 });
 
+// Cinzel and Fira Code are not used on the homepage, so they are not preloaded.
 const copperplateFallback = Cinzel({
   subsets: ["latin"],
+  preload: false,
   variable: "--font-copperplate-fallback",
 });
 
@@ -26,6 +28,7 @@ const jetBrainsMono = JetBrains_Mono({
 
 const firaCode = Fira_Code({
   subsets: ["latin"],
+  preload: false,
   variable: "--font-fira-code",
 });
 

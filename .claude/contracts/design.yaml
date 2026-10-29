@@ -21,7 +21,7 @@ avoid:
 
 surfaces:
   landing:
-    path: app/page.tsx
+    path: app/(public)/page.tsx
     mode: dark-only
     keep:
       [
@@ -30,8 +30,8 @@ surfaces:
         Digital Herencia section,
         desert background,
       ]
-    header: [logo, GitHub link]
-    ctas: [Read the doctrine (on-page anchor), GitHub]
+    header: [logo, Doctrine, Maximal, Hipster Stack, Loaded Vibes]
+    ctas: [Get started (GitHub), More info (PRD)]
     tokens: { canvas: "#05030b", text: "#f4f1ea", signal: "#2f7a8d" }
     fonts:
       {
