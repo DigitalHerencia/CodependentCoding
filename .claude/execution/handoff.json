@@ -77,7 +77,7 @@
     "DEC-066: CI is back as one targeted workflow (.github/workflows/ci.yml, job `changes` decides what runs) plus pr-title.yml. A docs-only PR runs only format:check. RLS runs in CI on a Postgres service container when prisma/, tests/rls/ or lib/db/ change. PR titles must be Conventional (they become the squash commit; owner sets squash-only + PR_TITLE in repo settings). Projects v2 workflows on #19 are set by the owner from his PC.",
     "DEC-067: asset files are kebab-case (public/, template/public/); reference them as /name-like-this.jpg.",
     "Site pages (DEC-071) in PR #278: /doctrine, /maximal (Monaco; contents from raw GitHub main), /hipster-stack (flags parsed from packages/cli/src/commands at build, follows CLI wizard changes), /loaded-vibes, /faq /terms /privacy.",
-    "Cleanup 1 (DEC-075): one copy per template block (singular names); dead lib/*/logic files deleted. Unused catalog blocks/primitives are kept on purpose (full catalog in base)."
+    "Cleanup 1 (DEC-076): one copy per template block (singular names); dead lib/*/logic files deleted. Unused catalog blocks/primitives are kept on purpose (full catalog in base)."
   ],
   "risks": [
     "Lint hook exits 0 silently when node_modules/eslint is missing; a failed install hides lint feedback. On Windows, run pnpm install with VS Code closed (DEC-019).",
