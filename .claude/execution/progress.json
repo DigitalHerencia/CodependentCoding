@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/progress/v1",
-  "updated": "2026-10-29",
+  "updated": "2026-10-29T02:45:00Z",
   "format": "Evidence states: EXECUTED | INSPECTED | NOT_RUN | BLOCKED. Never mark an issue done without EXECUTED evidence for its Validation commands.",
   "milestones": {
     "M0": {
@@ -3065,6 +3065,27 @@
       "issue": "site-pages",
       "command": "pnpm lint && pnpm typecheck && pnpm build",
       "result": "clean; all site routes plus doctrine pages prerender static"
+    },
+    {
+      "date": "2026-10-29",
+      "state": "EXECUTED",
+      "issue": "site-doctrine-audit",
+      "command": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm doctrine:check && pnpm test && pnpm build",
+      "result": "all clean; 95/95 tests; 69 static pages"
+    },
+    {
+      "date": "2026-10-29",
+      "state": "EXECUTED",
+      "issue": "site-doctrine-audit",
+      "command": "npx lighthouse@12 http://localhost:3456/ (headless Chromium, default mobile, two runs + --preset=desktop)",
+      "result": "mobile perf 97/98, a11y 100, best practices 100, SEO 100; desktop 100/100/100/100 (before: mobile perf 83, BP 96, SEO 91 from small text and 'More info' link text)"
+    },
+    {
+      "date": "2026-10-29",
+      "state": "EXECUTED",
+      "issue": "site-doctrine-audit",
+      "command": "crawl of every internal link from / on the local build + curl of live routes",
+      "result": "67 internal pages, 0 broken; live / /doctrine /maximal /hipster-stack /loaded-vibes /faq /terms /privacy all 200, unknown path 404"
     },
     {
       "date": "2026-10-29",

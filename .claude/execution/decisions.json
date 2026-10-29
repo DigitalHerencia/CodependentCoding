@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/decisions/v1",
-  "updated": "2026-10-29",
+  "updated": "2026-10-28",
   "format": "Append new decisions; never rewrite history. Supersede by adding a new entry and setting status=superseded + superseded_by on the old one.",
   "decisions": [
     {
@@ -773,6 +773,15 @@
       "context": "Steps 6-8 of #280: slice, new app, apps and settings screens.",
       "decision": "The TUI calls the hipster-stack CLI's own functions (planSlice/writePlan/formatPlan, composeApp, setupApp) through a packages/cli exports map, wrapped in lib/integrations/hipster-stack; CLI tools run through quietExec (stdout/stderr captured) so they don't draw over Ink. Long steps (pnpm install, git) run async through lib/integrations/process/run-command. The remembered app folders live in ~/.codependent/settings.json (CODEPENDENT_HOME overrides), written only by lib/db/transactions/settings-update.tx.ts (temp file + rename). The new-app workflow remembers an app right after compose; Settings can add (folder must hold hipster.json) or forget (folder untouched) one. The Apps screen reads each remembered app's hipster.json.",
       "refs": ["#280", "packages/tui", "packages/cli/package.json", "DEC-073"]
+    },
+    {
+      "id": "DEC-075",
+      "date": "2026-10-29",
+      "status": "accepted",
+      "title": "Root site files follow the classifier exactly",
+      "context": "Site audit (thread 'Align live site with the doctrine'): the homepage route sat outside app/(public), three blocks lived in an invented components/blocks/custom/ folder, legal copy types lived in lib/constants, and lib/utils.ts held two unused helpers.",
+      "decision": "Homepage is app/(public)/page.tsx; landing-hero, loading-state and system-state are flat in components/blocks; LegalDocument/LegalSection types live in types/legalTypes.ts; safeHref and sanitizeCssValue removed from the root lib/utils.ts. Homepage performance: header/footer logos get sizes, Cinzel and Fira Code are not preloaded (unused on /), mobile text minimum 0.75rem, 'More info' link gets screen-reader text. design.yaml landing surface updated to the current header and CTAs.",
+      "refs": ["Architecture.md §3.3", "DEC-071"]
     },
     {
       "date": "2026-10-29",
