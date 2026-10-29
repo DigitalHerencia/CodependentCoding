@@ -3178,6 +3178,55 @@
     {
       "date": "2026-10-29",
       "state": "EXECUTED",
+      "issue": "tests-scripts-audit",
+      "command": "pnpm format:check; lint; typecheck; doctrine:check; test; cli:build (root, clean clone without next-env.d.ts)",
+      "result": "all exit 0; 15 files / 95 tests pass; CLI --version 0.1.0"
+    },
+    {
+      "date": "2026-10-29",
+      "state": "EXECUTED",
+      "issue": "tests-scripts-audit",
+      "command": "packages/tui: pnpm lint; typecheck; test; build",
+      "result": "all exit 0; 5 files / 11 tests"
+    },
+    {
+      "date": "2026-10-29",
+      "state": "EXECUTED",
+      "issue": "tests-scripts-audit",
+      "command": "template: format:check, lint, typecheck, check:modules, check:ownership, check:env, check:compose, check:schema-modules, prisma:validate, doctrine:test, test, validate",
+      "result": "all exit 0; 18 files / 79 tests pass, 1 skipped (opt-in Neon webhook test)"
+    },
+    {
+      "date": "2026-10-29",
+      "state": "EXECUTED",
+      "issue": "tests-scripts-audit",
+      "command": "pnpm --dir template test:rls (local Postgres 16)",
+      "result": "11 / 11 pass"
+    },
+    {
+      "date": "2026-10-29",
+      "state": "EXECUTED",
+      "issue": "tests-scripts-audit",
+      "command": "pnpm --dir template build; pnpm --dir template test:e2e",
+      "result": "build ok; 2 / 2 pass"
+    },
+    {
+      "date": "2026-10-29",
+      "state": "EXECUTED",
+      "issue": "tests-scripts-audit",
+      "command": "pnpm test:e2e (root, before)",
+      "result": "FAIL: Error: No tests found"
+    },
+    {
+      "date": "2026-10-29",
+      "state": "EXECUTED",
+      "issue": "tests-scripts-audit",
+      "command": "pnpm test:e2e (root, after)",
+      "result": "1 / 1 pass: every internal link from / returns 200"
+    },
+    {
+      "date": "2026-10-29",
+      "state": "EXECUTED",
       "issue": "CLEANUP-3",
       "command": "pnpm --dir template validate && pnpm --dir template test",
       "result": "exit 0; 80 passed 1 skipped"

@@ -29,7 +29,13 @@ const cases =
         [],
       ];
 
-const bin = (name) => path.join(root, "node_modules", ".bin", name);
+// Each tool runs through node from its own package, not node_modules/.bin, whose
+// entries are shell shims that execFile cannot start on Windows.
+const tools = {
+  prisma: "prisma/build/index.js",
+  tsc: "typescript/bin/tsc",
+  eslint: "eslint/bin/eslint.js",
+};
 const failures = [];
 for (const selected of cases) {
   const label = selected.length > 0 ? selected.join("+") : "blank";
@@ -39,12 +45,17 @@ for (const selected of cases) {
     symlinkSync(
       path.join(root, "node_modules"),
       path.join(dir, "node_modules"),
+      "junction",
     );
-    const run = (command, args) =>
-      execFileSync(command, args, { cwd: dir, stdio: "pipe" });
-    run(bin("prisma"), ["generate"]);
-    run(bin("tsc"), ["--noEmit", "--incremental", "false"]);
-    run(bin("eslint"), [".", "--max-warnings=0"]);
+    const run = (tool, args) =>
+      execFileSync(
+        process.execPath,
+        [path.join(root, "node_modules", tools[tool]), ...args],
+        { cwd: dir, stdio: "pipe" },
+      );
+    run("prisma", ["generate"]);
+    run("tsc", ["--noEmit", "--incremental", "false"]);
+    run("eslint", [".", "--max-warnings=0"]);
     process.stdout.write(`ok    base + [${modules.join(", ")}]\n`);
   } catch (error) {
     const output =
