@@ -705,6 +705,14 @@
         "template": "EXECUTED: pnpm --dir template validate -> exit 0; pnpm --dir template test -> 79 passed, 1 skipped",
         "visual": "EXECUTED: Playwright full-page screenshots of / /doctrine /doctrine/architecture/system-map /maximal /hipster-stack /loaded-vibes /faq /terms /privacy and a 404, at 1440 and 390 px, before vs after the CSS change -> 20 of 20 pixel-identical"
       }
+    },
+    "CLEANUP-3": {
+      "status": "in-review",
+      "branch": "claude/project-thread-fhrdsi",
+      "note": "Ivan chose (decision card 2026-10-29): keep the unused template server helpers as building blocks; fix the duplicate pipeline math. calculatePipelineValueWorkflow now returns calculatePipelineValue(getCrmDeals(limit)): exact BigInt decimals, weighted by probability, LOST skipped (it summed floats unweighted). Test added in tests/crm/crmWorkflows.test.ts.",
+      "acceptance": {
+        "template": "EXECUTED: pnpm --dir template validate -> exit 0; pnpm --dir template test -> 80 passed, 1 skipped"
+      }
     }
   },
   "completed": [
@@ -3215,6 +3223,13 @@
       "issue": "tests-scripts-audit",
       "command": "pnpm test:e2e (root, after)",
       "result": "1 / 1 pass: every internal link from / returns 200"
+    },
+    {
+      "date": "2026-10-29",
+      "state": "EXECUTED",
+      "issue": "CLEANUP-3",
+      "command": "pnpm --dir template validate && pnpm --dir template test",
+      "result": "exit 0; 80 passed 1 skipped"
     }
   ],
   "known_findings": [
