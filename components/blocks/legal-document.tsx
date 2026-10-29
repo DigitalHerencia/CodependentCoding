@@ -1,5 +1,5 @@
 import { PageHero } from "@/components/blocks/page-hero";
-import { type LegalDocument as LegalDocumentCopy } from "@/lib/constants/siteCopy";
+import type { LegalDocument as LegalDocumentCopy } from "@/types/legalTypes";
 
 type LegalDocumentProps = {
   copy: LegalDocumentCopy;

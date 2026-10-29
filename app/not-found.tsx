@@ -1,4 +1,4 @@
-import { SystemState } from "@/components/blocks/custom/system-state";
+import { SystemState } from "@/components/blocks/system-state";
 export default function NotFound() {
   return (
     <SystemState

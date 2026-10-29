@@ -1,6 +1,8 @@
 // Public page copy for the factory site. Wording comes from the owner-approved
 // template copy (template/content) and the original public copy; preserve it.
 
+import type { LegalDocument } from "@/types/legalTypes";
+
 export const siteOperator = {
   name: "Digital Herencia",
   site: "The Codependent Coding™ Web App Architecture",
@@ -8,22 +10,6 @@ export const siteOperator = {
   securityUrl:
     "https://github.com/DigitalHerencia/CodependentCoding/security/policy",
 } as const;
-
-export type LegalSection = {
-  id: string;
-  title: string;
-  paragraphs: readonly string[];
-};
-
-export type LegalDocument = {
-  kicker: string;
-  title: string;
-  subtitle: string;
-  updatedAt: string;
-  updatedAtDateTime: string;
-  introduction: string;
-  sections: readonly LegalSection[];
-};
 
 export const faqCopy = {
   kicker: "The",
