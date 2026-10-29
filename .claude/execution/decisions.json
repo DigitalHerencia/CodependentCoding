@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/decisions/v1",
-  "updated": "2026-10-28",
+  "updated": "2026-10-29",
   "format": "Append new decisions; never rewrite history. Supersede by adding a new entry and setting status=superseded + superseded_by on the old one.",
   "decisions": [
     {
@@ -782,6 +782,21 @@
       "context": "Site audit (thread 'Align live site with the doctrine'): the homepage route sat outside app/(public), three blocks lived in an invented components/blocks/custom/ folder, legal copy types lived in lib/constants, and lib/utils.ts held two unused helpers.",
       "decision": "Homepage is app/(public)/page.tsx; landing-hero, loading-state and system-state are flat in components/blocks; LegalDocument/LegalSection types live in types/legalTypes.ts; safeHref and sanitizeCssValue removed from the root lib/utils.ts. Homepage performance: header/footer logos get sizes, Cinzel and Fira Code are not preloaded (unused on /), mobile text minimum 0.75rem, 'More info' link gets screen-reader text. design.yaml landing surface updated to the current header and CTAs.",
       "refs": ["Architecture.md §3.3", "DEC-071"]
+    },
+    {
+      "id": "DEC-076",
+      "date": "2026-10-29",
+      "status": "accepted",
+      "title": "Config audit: security headers on, terminal app CI follows the CLI, plugin scripts linted",
+      "context": "Ivan asked for an audit of configs, errors and broken links (thread 'Audit configs, errors and broken links'). Root, template, CLI and terminal app checks, builds and links were all clean; the gaps were configs that did not match tech-requirements.md or covered less than they claimed.",
+      "decision": "Root and template next.config.ts now send the four security headers tech-requirements.md §5 already required (X-Content-Type-Options nosniff, Referrer-Policy strict-origin-when-cross-origin, X-Frame-Options DENY, Permissions-Policy denying camera/microphone/geolocation/browsing-topics). CI runs the terminal app checks when packages/cli/ or template/scripts/ change, because the terminal app imports the CLI's compose/slice/setup code. Root ESLint no longer ignores plugin/**: the plugin's hook and script .mjs files get the same rules as scripts/ (they were never linted anywhere). CONTRIBUTING pins pnpm 12.3.4; tech-requirements.md version table and layout match the repo. React Compiler (§5) is still not enabled; left to the owner.",
+      "refs": [
+        "next.config.ts",
+        "template/next.config.ts",
+        ".github/workflows/ci.yml",
+        "eslint.config.mjs",
+        "context/docs/tech-requirements.md"
+      ]
     }
   ]
 }

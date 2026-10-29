@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/handoff/v1",
-  "updated": "2026-10-29T02:45:00Z",
+  "updated": "2026-10-29T03:10:00Z",
   "format": "Overwrite each session. Minimum state the next session needs to resume safely.",
   "status": "terminal-app",
   "milestone": "M6",
@@ -9,7 +9,8 @@
   "queue": [],
   "branch": "claude/project-thread-63a8tz",
   "in_flight": [
-    "Thread 'Plan the termcn TUI on the doctrine' (#280, plan https://claude.ai/artifact/D2bQyknDraP3A54tR5oMgu): steps 1-7 merged (#281-#286). Step 8 apps + settings in review; after it merges, close #280. Later ideas (not started): `hipster-stack` with no args opens the TUI; agents screen for Loaded Vibes."
+    "Thread 'Plan the termcn TUI on the doctrine' (#280, plan https://claude.ai/artifact/D2bQyknDraP3A54tR5oMgu): steps 1-7 merged (#281-#286). Step 8 apps + settings in review; after it merges, close #280. Later ideas (not started): `hipster-stack` with no args opens the TUI; agents screen for Loaded Vibes.",
+    "Thread 'Audit configs, errors and broken links' (DEC-076): security headers, terminal-app CI trigger, plugin lint, doc versions. Open: owner choice on React Compiler (tech-requirements §5 asks for it, nothing enables it); root playwright.config.ts points at tests/e2e which does not exist, and template `validate` skips doctrine:test and test though §4 lists them (handed to the tests/scripts thread)."
   ],
   "notes": [
     "Governance package is uncommitted in the owner's working tree; owner reviews with `git status` / `git diff`, then commits on a branch `chore/governance-package`.",
