@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/progress/v1",
-  "updated": "2026-10-29T02:45:00Z",
+  "updated": "2026-10-29",
   "format": "Evidence states: EXECUTED | INSPECTED | NOT_RUN | BLOCKED. Never mark an issue done without EXECUTED evidence for its Validation commands.",
   "milestones": {
     "M0": {
@@ -3076,6 +3076,55 @@
       "issue": "site-doctrine-audit",
       "command": "crawl of every internal link from / on the local build + curl of live routes",
       "result": "67 internal pages, 0 broken; live / /doctrine /maximal /hipster-stack /loaded-vibes /faq /terms /privacy all 200, unknown path 404"
+    },
+    {
+      "date": "2026-10-29",
+      "state": "EXECUTED",
+      "issue": "config-audit",
+      "command": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm doctrine:check && pnpm test",
+      "result": "clean; 15 files / 95 tests pass"
+    },
+    {
+      "date": "2026-10-29",
+      "state": "EXECUTED",
+      "issue": "config-audit",
+      "command": "pnpm build (root)",
+      "result": "69 static pages prerender; `next start` + curl /doctrine returns the four security headers"
+    },
+    {
+      "date": "2026-10-29",
+      "state": "EXECUTED",
+      "issue": "config-audit",
+      "command": "packages/tui: pnpm lint && pnpm typecheck && pnpm test && pnpm build",
+      "result": "clean; 5 files / 11 tests; dist/main.mjs built"
+    },
+    {
+      "date": "2026-10-29",
+      "state": "EXECUTED",
+      "issue": "config-audit",
+      "command": "pnpm cli:build && node packages/cli/dist/cli.mjs --version; compose --preset portal / blank / bogus",
+      "result": "0.1.0; portal and blank compose; unknown preset exits 1 with the preset list"
+    },
+    {
+      "date": "2026-10-29",
+      "state": "EXECUTED",
+      "issue": "config-audit",
+      "command": "pnpm --dir template format:check, lint, typecheck, check:modules, check:ownership, check:env, doctrine:test, check:schema-modules, test, check:compose, build, test:e2e",
+      "result": "all clean; 55 doctrine tests, 79 unit tests (1 skipped), 7 compose cases, 2 e2e"
+    },
+    {
+      "date": "2026-10-29",
+      "state": "EXECUTED",
+      "issue": "config-audit",
+      "command": "markdown link check over 156 tracked .md files (relative paths + anchors)",
+      "result": "0 broken"
+    },
+    {
+      "date": "2026-10-29",
+      "state": "EXECUTED",
+      "issue": "config-audit",
+      "command": "crawl of the built root site from / (93 internal URLs) + curl of 91 external URLs in the repo",
+      "result": "all internal 200; external non-200 are placeholders (example.test, x.ngrok.app) or GitHub pages blocked by the sandbox proxy"
     }
   ],
   "known_findings": [

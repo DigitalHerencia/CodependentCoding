@@ -75,7 +75,7 @@ jobs:
             echo "root_code=$([ -n "$(grep -vE "$docs" "$list" | grep -vE '^template/' || true)" ] && echo true || echo false)"
             echo "root_tests=${tests# }"
             echo "cli=$(has '^(packages/cli/|template/scripts/|template/hipster\.modules\.json$)')"
-            echo "tui=$(has '^(packages/tui/|template/eslint/|pnpm-lock\.yaml$)')"
+            echo "tui=$(has '^(packages/tui/|packages/cli/|template/eslint/|template/scripts/|pnpm-lock\.yaml$)')"
             echo "template=$([ -n "$(grep -E '^template/' "$list" | grep -vE '\.md$' || true)" ] && echo true || echo false)"
             echo "template_eslint=$(has '^template/eslint/')"
             echo "template_schema=$(has '^template/(prisma/|hipster\.modules\.json$)')"
