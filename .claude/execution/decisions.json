@@ -819,6 +819,15 @@
         "package.json"
       ],
       "id": "DEC-078"
+    },
+    {
+      "date": "2026-10-29",
+      "status": "accepted",
+      "title": "Unused template server helpers stay; pipeline value has one implementation",
+      "context": "The dedupe audit found ~30 files and ~50 functions of template server code nothing calls, and two pipeline-value implementations that disagreed (float unweighted vs exact weighted, DEC-026). Ivan picked keep + fix on a decision card.",
+      "decision": "Keep the unused helpers as building blocks for generated apps; do not delete them in future cleanups. calculatePipelineValueWorkflow delegates to lib/workflows/crm/calculatePipelineValue.ts.",
+      "refs": ["template/lib/workflows/crmWorkflows.ts", "DEC-026", "DEC-077"],
+      "id": "DEC-079"
     }
   ]
 }
