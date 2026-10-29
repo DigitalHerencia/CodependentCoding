@@ -3215,6 +3215,27 @@
       "issue": "tests-scripts-audit",
       "command": "pnpm test:e2e (root, after)",
       "result": "1 / 1 pass: every internal link from / returns 200"
+    },
+    {
+      "date": "2026-10-29",
+      "state": "EXECUTED",
+      "issue": "react-compiler",
+      "command": "pnpm --dir template format:check, lint, typecheck, check:modules, check:ownership, check:env, test",
+      "result": "all clean with reactCompiler on"
+    },
+    {
+      "date": "2026-10-29",
+      "state": "EXECUTED",
+      "issue": "react-compiler",
+      "command": "pnpm --dir template build && pnpm --dir template test:e2e",
+      "result": "compiled; 55 static pages; 2 e2e pass"
+    },
+    {
+      "date": "2026-10-29",
+      "state": "EXECUTED",
+      "issue": "react-compiler",
+      "command": "pnpm exec vitest run tests/cli",
+      "result": "78 passed"
     }
   ],
   "known_findings": [

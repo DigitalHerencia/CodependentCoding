@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/handoff/v1",
-  "updated": "2026-10-29",
+  "updated": "2026-10-29T04:00:00Z",
   "format": "Overwrite each session. Minimum state the next session needs to resume safely.",
   "status": "terminal-app",
   "milestone": "M6",

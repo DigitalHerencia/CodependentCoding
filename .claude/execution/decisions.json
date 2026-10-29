@@ -828,6 +828,15 @@
       "decision": "Keep the singular block names (Architecture.md: components/blocks/<kebab>.tsx; the used ones are singular). Where neither copy was used and the plural one had accessible names on icon links (team, footer), keep that content under the singular name. contact-sections.tsx stays: its ContactInline has no twin. Delete the empty/copied logic files. Unused catalog blocks and UI primitives stay: the base keeps the full catalog (application.yaml, Design.md).",
       "refs": ["template/components/blocks", "template/lib"],
       "id": "DEC-079"
+    },
+    {
+      "id": "DEC-080",
+      "date": "2026-10-29",
+      "status": "accepted",
+      "title": "Template turns on the React Compiler",
+      "context": "tech-requirements.md §5 asked for reactCompiler: true but nothing enabled it (found in the config audit, DEC-076). Ivan chose to turn it on rather than drop it from the doc.",
+      "decision": "template/next.config.ts sets reactCompiler: true and the template pins babel-plugin-react-compiler 1.0.0 as a dev dependency. The root site is unchanged. Generated apps inherit both through compose.",
+      "refs": ["template/next.config.ts", "template/package.json", "DEC-076"]
     }
   ]
 }
