@@ -784,20 +784,28 @@
       "refs": ["Architecture.md §3.3", "DEC-071"]
     },
     {
-      "id": "DEC-077",
+      "id": "DEC-076",
       "date": "2026-10-29",
       "status": "accepted",
-      "title": "Tests and scripts audit: site link check, generated files untracked, Windows-safe template checks",
-      "context": "Ivan asked for every script and test suite to be run and fixed (thread 'Verify tests and scripts work'). All root, template, CLI and terminal-app checks passed, including RLS against local Postgres 16 and the template e2e smoke. Gaps: root `pnpm test:e2e` failed (no tests/e2e), `next dev`/`next build` dirtied next-env.d.ts and AGENTS.md on every run, two template check scripts and one test could not run on Windows, and template `validate` skipped doctrine:test and test.",
-      "decision": "Root tests/e2e/site.spec.ts crawls every same-site link from / over HTTP (request fixture, no browser) against a production build; CI runs it when site files change. Removed test:e2e:ui/headed/debug (browser modes with no browser tests). next-env.d.ts is gitignored and untracked in root and template, per Next's own docs; root typecheck runs `next typegen` first like the template. Root next.config sets agentRules:false (AGENTS.md routes to CLAUDE.md); /template/AGENTS.md is ignored at the root only, so generated apps keep Next's agent notes. check-compose and check-schema-modules run prisma/tsc/eslint through node instead of pnpm or .bin shims, and use junction links; hooks.test uses a junction. Template validate adds doctrine:test and test (tech-requirements §4). The opt-in AUTH_WEBHOOK_DB_TEST case stays skipped by default: it needs a Neon connection.",
+      "title": "Config audit: security headers on, terminal app CI follows the CLI, plugin scripts linted",
+      "context": "Ivan asked for an audit of configs, errors and broken links (thread 'Audit configs, errors and broken links'). Root, template, CLI and terminal app checks, builds and links were all clean; the gaps were configs that did not match tech-requirements.md or covered less than they claimed.",
+      "decision": "Root and template next.config.ts now send the four security headers tech-requirements.md §5 already required (X-Content-Type-Options nosniff, Referrer-Policy strict-origin-when-cross-origin, X-Frame-Options DENY, Permissions-Policy denying camera/microphone/geolocation/browsing-topics). CI runs the terminal app checks when packages/cli/ or template/scripts/ change, because the terminal app imports the CLI's compose/slice/setup code. Root ESLint no longer ignores plugin/**: the plugin's hook and script .mjs files get the same rules as scripts/ (they were never linted anywhere). CONTRIBUTING pins pnpm 12.3.4; tech-requirements.md version table and layout match the repo. React Compiler (§5) is still not enabled; left to the owner.",
       "refs": [
-        "playwright.config.ts",
-        "tests/e2e/site.spec.ts",
+        "next.config.ts",
+        "template/next.config.ts",
         ".github/workflows/ci.yml",
-        "template/scripts/check-compose.mjs",
-        "template/scripts/check-schema-modules.mjs",
-        "context/docs/tech-requirements.md §4"
+        "eslint.config.mjs",
+        "context/docs/tech-requirements.md"
       ]
+    },
+    {
+      "date": "2026-10-29",
+      "status": "accepted",
+      "title": "One copy per template block; dead logic files removed",
+      "context": "Ivan asked for a dedupe/cleanup audit. components/blocks held two copies of 14 blocks (singular and *-sections/plural names, same exports); 5 were byte-identical. lib/admin/logic and lib/ai/logic (not layers in Architecture.md 3.1) held 3 empty files and a copy of aiWorkflows.calculateUsage; lib/workflows/crm/logic held a copy of the deal-stage rule that lives in crm-update-deal-stage.tx.ts. Nothing imported any of them.",
+      "decision": "Keep the singular block names (Architecture.md: components/blocks/<kebab>.tsx; the used ones are singular). Where neither copy was used and the plural one had accessible names on icon links (team, footer), keep that content under the singular name. contact-sections.tsx stays: its ContactInline has no twin. Delete the empty/copied logic files. Unused catalog blocks and UI primitives stay: the base keeps the full catalog (application.yaml, Design.md).",
+      "refs": ["template/components/blocks", "template/lib"],
+      "id": "DEC-077"
     }
   ]
 }

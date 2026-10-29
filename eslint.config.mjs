@@ -8,7 +8,7 @@ import { doctrine } from "./template/eslint/codependent-plugin.mjs";
 /**
  * Factory repo lint contract.
  * The landing page (app/, components/) follows the same doctrine as every
- * generated app; the template and plugin lint themselves.
+ * generated app. The template and the terminal app lint themselves.
  */
 export default defineConfig([
   globalIgnores([
@@ -16,7 +16,6 @@ export default defineConfig([
     "node_modules/**",
     "dist/**",
     "template/**",
-    "plugin/**",
     // Lints itself with the terminal profile (pnpm --dir packages/tui lint).
     "packages/tui/**",
     ".sandbox/**",
@@ -45,7 +44,7 @@ export default defineConfig([
   doctrine,
   {
     name: "factory/cli-and-scripts",
-    files: ["packages/**", "scripts/**", ".claude/hooks/**"],
+    files: ["packages/**", "scripts/**", ".claude/hooks/**", "plugin/**"],
     rules: {
       "codependent/no-default-export": "off",
       "codependent/filename-convention": "off",

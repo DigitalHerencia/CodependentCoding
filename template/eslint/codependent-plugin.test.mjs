@@ -94,7 +94,7 @@ tester.run("layer-boundaries", rules["layer-boundaries"], {
     },
     {
       name: "CC-BLOCK-001 block calls an action",
-      filename: at("components/blocks/hero-sections.tsx"),
+      filename: at("components/blocks/hero-section.tsx"),
       code: 'import { createLead } from "@/lib/actions/crmActions";',
       errors: [{ messageId: "denied" }],
     },
@@ -247,7 +247,7 @@ tester.run("filename-convention", rules["filename-convention"], {
       filename: at("lib/db/transactions/crm-update-deal-stage.tx.ts"),
       code: "",
     },
-    { filename: at("components/blocks/hero-sections.tsx"), code: "" },
+    { filename: at("components/blocks/hero-section.tsx"), code: "" },
   ],
   invalid: [
     {
