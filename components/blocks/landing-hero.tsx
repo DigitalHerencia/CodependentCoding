@@ -29,7 +29,7 @@ export function LandingHero() {
             className="brand-button"
             href={`${repositoryUrl}/blob/main/context/docs/PRD.md`}
           >
-            More info
+            More info<span className="sr-only"> on the product plan</span>
           </a>
         </div>
         <strong>Nothing to borrow. We checked.</strong>

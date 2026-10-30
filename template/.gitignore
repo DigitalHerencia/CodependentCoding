@@ -36,6 +36,7 @@
 
 # Framework, package, test, and generated output
 .next/
+next-env.d.ts
 coverage/
 dist/
 node_modules/

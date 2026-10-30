@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/decisions/v1",
-  "updated": "2026-10-28",
+  "updated": "2026-10-29",
   "format": "Append new decisions; never rewrite history. Supersede by adding a new entry and setting status=superseded + superseded_by on the old one.",
   "decisions": [
     {
@@ -773,6 +773,79 @@
       "context": "Steps 6-8 of #280: slice, new app, apps and settings screens.",
       "decision": "The TUI calls the hipster-stack CLI's own functions (planSlice/writePlan/formatPlan, composeApp, setupApp) through a packages/cli exports map, wrapped in lib/integrations/hipster-stack; CLI tools run through quietExec (stdout/stderr captured) so they don't draw over Ink. Long steps (pnpm install, git) run async through lib/integrations/process/run-command. The remembered app folders live in ~/.codependent/settings.json (CODEPENDENT_HOME overrides), written only by lib/db/transactions/settings-update.tx.ts (temp file + rename). The new-app workflow remembers an app right after compose; Settings can add (folder must hold hipster.json) or forget (folder untouched) one. The Apps screen reads each remembered app's hipster.json.",
       "refs": ["#280", "packages/tui", "packages/cli/package.json", "DEC-073"]
+    },
+    {
+      "id": "DEC-075",
+      "date": "2026-10-29",
+      "status": "accepted",
+      "title": "Root site files follow the classifier exactly",
+      "context": "Site audit (thread 'Align live site with the doctrine'): the homepage route sat outside app/(public), three blocks lived in an invented components/blocks/custom/ folder, legal copy types lived in lib/constants, and lib/utils.ts held two unused helpers.",
+      "decision": "Homepage is app/(public)/page.tsx; landing-hero, loading-state and system-state are flat in components/blocks; LegalDocument/LegalSection types live in types/legalTypes.ts; safeHref and sanitizeCssValue removed from the root lib/utils.ts. Homepage performance: header/footer logos get sizes, Cinzel and Fira Code are not preloaded (unused on /), mobile text minimum 0.75rem, 'More info' link gets screen-reader text. design.yaml landing surface updated to the current header and CTAs.",
+      "refs": ["Architecture.md §3.3", "DEC-071"]
+    },
+    {
+      "id": "DEC-076",
+      "date": "2026-10-29",
+      "status": "accepted",
+      "title": "Config audit: security headers on, terminal app CI follows the CLI, plugin scripts linted",
+      "context": "Ivan asked for an audit of configs, errors and broken links (thread 'Audit configs, errors and broken links'). Root, template, CLI and terminal app checks, builds and links were all clean; the gaps were configs that did not match tech-requirements.md or covered less than they claimed.",
+      "decision": "Root and template next.config.ts now send the four security headers tech-requirements.md §5 already required (X-Content-Type-Options nosniff, Referrer-Policy strict-origin-when-cross-origin, X-Frame-Options DENY, Permissions-Policy denying camera/microphone/geolocation/browsing-topics). CI runs the terminal app checks when packages/cli/ or template/scripts/ change, because the terminal app imports the CLI's compose/slice/setup code. Root ESLint no longer ignores plugin/**: the plugin's hook and script .mjs files get the same rules as scripts/ (they were never linted anywhere). CONTRIBUTING pins pnpm 12.3.4; tech-requirements.md version table and layout match the repo. React Compiler (§5) is still not enabled; left to the owner.",
+      "refs": [
+        "next.config.ts",
+        "template/next.config.ts",
+        ".github/workflows/ci.yml",
+        "eslint.config.mjs",
+        "context/docs/tech-requirements.md"
+      ]
+    },
+    {
+      "date": "2026-10-29",
+      "status": "accepted",
+      "title": "One copy per template block; dead logic files removed",
+      "context": "Ivan asked for a dedupe/cleanup audit. components/blocks held two copies of 14 blocks (singular and *-sections/plural names, same exports); 5 were byte-identical. lib/admin/logic and lib/ai/logic (not layers in Architecture.md 3.1) held 3 empty files and a copy of aiWorkflows.calculateUsage; lib/workflows/crm/logic held a copy of the deal-stage rule that lives in crm-update-deal-stage.tx.ts. Nothing imported any of them.",
+      "decision": "Keep the singular block names (Architecture.md: components/blocks/<kebab>.tsx; the used ones are singular). Where neither copy was used and the plural one had accessible names on icon links (team, footer), keep that content under the singular name. contact-sections.tsx stays: its ContactInline has no twin. Delete the empty/copied logic files. Unused catalog blocks and UI primitives stay: the base keeps the full catalog (application.yaml, Design.md).",
+      "refs": ["template/components/blocks", "template/lib"],
+      "id": "DEC-077"
+    },
+    {
+      "date": "2026-10-29",
+      "status": "accepted",
+      "title": "Identical skeletons share one block; root drops unused packages and dead CSS",
+      "context": "Audit found 49 template skeletons with byte-identical bodies (only the aria label differed), three root packages nothing imports, and ~37 KB of root CSS for pages deleted in CC-006/DEC-071.",
+      "decision": "Add WorkspaceLoadingState({ route }) to components/blocks/loading-states.tsx (skeletons may import blocks; CC-FEAT-003 denies only ui other than skeleton, data and logic). Keep one Skeleton file per route so a skeleton can later diverge to mirror its page. Remove the root packages. Prune CSS rules whose every class is absent from app/, components/, features/ and lib/ TS/TSX; keyframes kept when referenced. Verified by pixel-identical screenshots.",
+      "refs": [
+        "template/components/blocks/loading-states.tsx",
+        "app/globals.css",
+        "package.json"
+      ],
+      "id": "DEC-078"
+    },
+    {
+      "date": "2026-10-29",
+      "status": "accepted",
+      "title": "One copy per template block; dead logic files removed",
+      "context": "Ivan asked for a dedupe/cleanup audit. components/blocks held two copies of 14 blocks (singular and *-sections/plural names, same exports); 5 were byte-identical. lib/admin/logic and lib/ai/logic (not layers in Architecture.md 3.1) held 3 empty files and a copy of aiWorkflows.calculateUsage; lib/workflows/crm/logic held a copy of the deal-stage rule that lives in crm-update-deal-stage.tx.ts. Nothing imported any of them.",
+      "decision": "Keep the singular block names (Architecture.md: components/blocks/<kebab>.tsx; the used ones are singular). Where neither copy was used and the plural one had accessible names on icon links (team, footer), keep that content under the singular name. contact-sections.tsx stays: its ContactInline has no twin. Delete the empty/copied logic files. Unused catalog blocks and UI primitives stay: the base keeps the full catalog (application.yaml, Design.md).",
+      "refs": ["template/components/blocks", "template/lib"],
+      "id": "DEC-079"
+    },
+    {
+      "date": "2026-10-29",
+      "status": "accepted",
+      "title": "Unused template server helpers stay; pipeline value has one implementation",
+      "context": "The dedupe audit found ~30 files and ~50 functions of template server code nothing calls, and two pipeline-value implementations that disagreed (float unweighted vs exact weighted, DEC-026). Ivan picked keep + fix on a decision card.",
+      "decision": "Keep the unused helpers as building blocks for generated apps; do not delete them in future cleanups. calculatePipelineValueWorkflow delegates to lib/workflows/crm/calculatePipelineValue.ts.",
+      "refs": ["template/lib/workflows/crmWorkflows.ts", "DEC-026", "DEC-077"],
+      "id": "DEC-080"
+    },
+    {
+      "id": "DEC-081",
+      "date": "2026-10-29",
+      "status": "accepted",
+      "title": "Template turns on the React Compiler",
+      "context": "tech-requirements.md §5 asked for reactCompiler: true but nothing enabled it (found in the config audit, DEC-076). Ivan chose to turn it on rather than drop it from the doc.",
+      "decision": "template/next.config.ts sets reactCompiler: true and the template pins babel-plugin-react-compiler 1.0.0 as a dev dependency. The root site is unchanged. Generated apps inherit both through compose.",
+      "refs": ["template/next.config.ts", "template/package.json", "DEC-076"]
     }
   ]
 }

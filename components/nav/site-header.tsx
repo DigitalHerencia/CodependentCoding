@@ -22,6 +22,7 @@ export function SiteHeader() {
             alt="The Codependent Coding Web App Architecture"
             width={1623}
             height={293}
+            sizes="(min-width: 40rem) 13.5rem, 34vw"
             priority
           />
         </Link>

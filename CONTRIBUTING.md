@@ -56,7 +56,7 @@ Install dependencies with the repository package manager:
 
 ```powershell
 corepack enable
-corepack prepare pnpm@11.1.1 --activate
+corepack prepare pnpm@12.3.4 --activate
 pnpm install --frozen-lockfile
 ```
 

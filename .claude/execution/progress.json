@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/progress/v1",
-  "updated": "2026-10-28",
+  "updated": "2026-10-29",
   "format": "Evidence states: EXECUTED | INSPECTED | NOT_RUN | BLOCKED. Never mark an issue done without EXECUTED evidence for its Validation commands.",
   "milestones": {
     "M0": {
@@ -684,6 +684,34 @@
         "tests": "EXECUTED: pnpm --dir packages/tui test -> 11 passed (adds: settings a + folder writes settings.json, then key 7 lists it with base, crm and single; folder without hipster.json refused NOT_FOUND)",
         "build": "EXECUTED: pnpm --dir packages/tui build -> dist/main.mjs 89.7 kB",
         "real run": "EXECUTED: node packages/tui/dist/main.mjs in a 110x40 pty with CODEPENDENT_HOME pointing at a settings file listing the scratch app, key 7 -> tui-newapp with Organizations single, Access rbac, Color #2f7a8d, Template 8b3dc6b"
+      }
+    },
+    "CLEANUP-1": {
+      "status": "in-review",
+      "branch": "claude/project-thread-fhrdsi",
+      "note": "Audit cleanup 1 (thread Dedupe and simplify the codebase): removed duplicate template page blocks (5 byte-identical *-sections copies, 7 near-copies of the kept singular blocks; team-section and footer-section now hold the copy that has accessible link names) and dead lib files (3 empty *.logic.ts, lib/ai/logic/calculate-usage.logic.ts copied in aiWorkflows.ts, lib/workflows/crm/logic/advance-deal-stage.logic.ts copied in crm-update-deal-stage.tx.ts). Ownership snapshot updated.",
+      "acceptance": {
+        "validate": "EXECUTED: pnpm --dir template validate -> exit 0",
+        "test": "EXECUTED: pnpm --dir template test -> 79 passed, 1 skipped",
+        "doctrine": "EXECUTED: pnpm --dir template doctrine:test -> 55 pass, 0 fail"
+      }
+    },
+    "CLEANUP-2": {
+      "status": "in-review",
+      "branch": "claude/project-thread-fhrdsi",
+      "note": "Audit cleanup 2: (a) 49 template feature skeletons had the same 18-line body; they now render components/blocks/loading-states WorkspaceLoadingState with their route (files kept, one per route, as Architecture.md 3.1 requires). (b) Root package.json drops motion, tsdown and @types/validate-npm-package-name (nothing at root uses them; packages/cli and packages/tui keep their own tsdown). (c) app/globals.css 51.6 KB -> 14.6 KB: removed 336 rules whose selectors only name classes no root site file uses (old catalog, workbench, docs and builder pages).",
+      "acceptance": {
+        "root": "EXECUTED: pnpm validate -> exit 0; pnpm build -> exit 0; pnpm cli:build and tui build -> exit 0",
+        "template": "EXECUTED: pnpm --dir template validate -> exit 0; pnpm --dir template test -> 79 passed, 1 skipped",
+        "visual": "EXECUTED: Playwright full-page screenshots of / /doctrine /doctrine/architecture/system-map /maximal /hipster-stack /loaded-vibes /faq /terms /privacy and a 404, at 1440 and 390 px, before vs after the CSS change -> 20 of 20 pixel-identical"
+      }
+    },
+    "CLEANUP-3": {
+      "status": "in-review",
+      "branch": "claude/project-thread-fhrdsi",
+      "note": "Ivan chose (decision card 2026-10-29): keep the unused template server helpers as building blocks; fix the duplicate pipeline math. calculatePipelineValueWorkflow now returns calculatePipelineValue(getCrmDeals(limit)): exact BigInt decimals, weighted by probability, LOST skipped (it summed floats unweighted). Test added in tests/crm/crmWorkflows.test.ts.",
+      "acceptance": {
+        "template": "EXECUTED: pnpm --dir template validate -> exit 0; pnpm --dir template test -> 80 passed, 1 skipped"
       }
     }
   },
@@ -3055,6 +3083,181 @@
       "issue": "site-pages",
       "command": "pnpm lint && pnpm typecheck && pnpm build",
       "result": "clean; all site routes plus doctrine pages prerender static"
+    },
+    {
+      "date": "2026-10-29",
+      "state": "EXECUTED",
+      "issue": "site-doctrine-audit",
+      "command": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm doctrine:check && pnpm test && pnpm build",
+      "result": "all clean; 95/95 tests; 69 static pages"
+    },
+    {
+      "date": "2026-10-29",
+      "state": "EXECUTED",
+      "issue": "site-doctrine-audit",
+      "command": "npx lighthouse@12 http://localhost:3456/ (headless Chromium, default mobile, two runs + --preset=desktop)",
+      "result": "mobile perf 97/98, a11y 100, best practices 100, SEO 100; desktop 100/100/100/100 (before: mobile perf 83, BP 96, SEO 91 from small text and 'More info' link text)"
+    },
+    {
+      "date": "2026-10-29",
+      "state": "EXECUTED",
+      "issue": "site-doctrine-audit",
+      "command": "crawl of every internal link from / on the local build + curl of live routes",
+      "result": "67 internal pages, 0 broken; live / /doctrine /maximal /hipster-stack /loaded-vibes /faq /terms /privacy all 200, unknown path 404"
+    },
+    {
+      "date": "2026-10-29",
+      "state": "EXECUTED",
+      "issue": "config-audit",
+      "command": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm doctrine:check && pnpm test",
+      "result": "clean; 15 files / 95 tests pass"
+    },
+    {
+      "date": "2026-10-29",
+      "state": "EXECUTED",
+      "issue": "config-audit",
+      "command": "pnpm build (root)",
+      "result": "69 static pages prerender; `next start` + curl /doctrine returns the four security headers"
+    },
+    {
+      "date": "2026-10-29",
+      "state": "EXECUTED",
+      "issue": "config-audit",
+      "command": "packages/tui: pnpm lint && pnpm typecheck && pnpm test && pnpm build",
+      "result": "clean; 5 files / 11 tests; dist/main.mjs built"
+    },
+    {
+      "date": "2026-10-29",
+      "state": "EXECUTED",
+      "issue": "config-audit",
+      "command": "pnpm cli:build && node packages/cli/dist/cli.mjs --version; compose --preset portal / blank / bogus",
+      "result": "0.1.0; portal and blank compose; unknown preset exits 1 with the preset list"
+    },
+    {
+      "date": "2026-10-29",
+      "state": "EXECUTED",
+      "issue": "config-audit",
+      "command": "pnpm --dir template format:check, lint, typecheck, check:modules, check:ownership, check:env, doctrine:test, check:schema-modules, test, check:compose, build, test:e2e",
+      "result": "all clean; 55 doctrine tests, 79 unit tests (1 skipped), 7 compose cases, 2 e2e"
+    },
+    {
+      "date": "2026-10-29",
+      "state": "EXECUTED",
+      "issue": "config-audit",
+      "command": "markdown link check over 156 tracked .md files (relative paths + anchors)",
+      "result": "0 broken"
+    },
+    {
+      "date": "2026-10-29",
+      "state": "EXECUTED",
+      "issue": "config-audit",
+      "command": "crawl of the built root site from / (93 internal URLs) + curl of 91 external URLs in the repo",
+      "result": "all internal 200; external non-200 are placeholders (example.test, x.ngrok.app) or GitHub pages blocked by the sandbox proxy"
+    },
+    {
+      "date": "2026-10-29",
+      "state": "EXECUTED",
+      "issue": "CLEANUP-1",
+      "command": "pnpm --dir template validate && pnpm --dir template test && pnpm --dir template doctrine:test",
+      "result": "exit 0; 79 passed 1 skipped; 55 pass"
+    },
+    {
+      "date": "2026-10-29",
+      "state": "EXECUTED",
+      "issue": "CLEANUP-2",
+      "command": "pnpm validate && pnpm build && pnpm --dir template validate && pnpm --dir template test",
+      "result": "all exit 0; template 79 passed 1 skipped"
+    },
+    {
+      "date": "2026-10-29",
+      "state": "EXECUTED",
+      "issue": "CLEANUP-2",
+      "command": "Playwright screenshots of 10 site routes at 1440/390 px, old vs new globals.css, PIL pixel diff",
+      "result": "20/20 identical"
+    },
+    {
+      "date": "2026-10-29",
+      "state": "EXECUTED",
+      "issue": "tests-scripts-audit",
+      "command": "pnpm format:check; lint; typecheck; doctrine:check; test; cli:build (root, clean clone without next-env.d.ts)",
+      "result": "all exit 0; 15 files / 95 tests pass; CLI --version 0.1.0"
+    },
+    {
+      "date": "2026-10-29",
+      "state": "EXECUTED",
+      "issue": "tests-scripts-audit",
+      "command": "packages/tui: pnpm lint; typecheck; test; build",
+      "result": "all exit 0; 5 files / 11 tests"
+    },
+    {
+      "date": "2026-10-29",
+      "state": "EXECUTED",
+      "issue": "tests-scripts-audit",
+      "command": "template: format:check, lint, typecheck, check:modules, check:ownership, check:env, check:compose, check:schema-modules, prisma:validate, doctrine:test, test, validate",
+      "result": "all exit 0; 18 files / 79 tests pass, 1 skipped (opt-in Neon webhook test)"
+    },
+    {
+      "date": "2026-10-29",
+      "state": "EXECUTED",
+      "issue": "tests-scripts-audit",
+      "command": "pnpm --dir template test:rls (local Postgres 16)",
+      "result": "11 / 11 pass"
+    },
+    {
+      "date": "2026-10-29",
+      "state": "EXECUTED",
+      "issue": "tests-scripts-audit",
+      "command": "pnpm --dir template build; pnpm --dir template test:e2e",
+      "result": "build ok; 2 / 2 pass"
+    },
+    {
+      "date": "2026-10-29",
+      "state": "EXECUTED",
+      "issue": "tests-scripts-audit",
+      "command": "pnpm test:e2e (root, before)",
+      "result": "FAIL: Error: No tests found"
+    },
+    {
+      "date": "2026-10-29",
+      "state": "EXECUTED",
+      "issue": "tests-scripts-audit",
+      "command": "pnpm test:e2e (root, after)",
+      "result": "1 / 1 pass: every internal link from / returns 200"
+    },
+    {
+      "date": "2026-10-29",
+      "state": "EXECUTED",
+      "issue": "CLEANUP-3",
+      "command": "pnpm --dir template validate && pnpm --dir template test",
+      "result": "exit 0; 80 passed 1 skipped"
+    },
+    {
+      "date": "2026-10-29",
+      "state": "EXECUTED",
+      "issue": "react-compiler",
+      "command": "pnpm --dir template format:check, lint, typecheck, check:modules, check:ownership, check:env, test",
+      "result": "all clean with reactCompiler on"
+    },
+    {
+      "date": "2026-10-29",
+      "state": "EXECUTED",
+      "issue": "react-compiler",
+      "command": "pnpm --dir template build && pnpm --dir template test:e2e",
+      "result": "compiled; 55 static pages; 2 e2e pass"
+    },
+    {
+      "date": "2026-10-29",
+      "state": "EXECUTED",
+      "issue": "react-compiler",
+      "command": "pnpm exec vitest run tests/cli",
+      "result": "78 passed"
+    },
+    {
+      "date": "2026-10-29",
+      "state": "EXECUTED",
+      "issue": "site-doctrine-audit",
+      "command": "git grep for each removed public/ logo name; pnpm build; CI workflow_dispatch run 40815592614",
+      "result": "no references outside execution records; build clean; CI all jobs green"
     }
   ],
   "known_findings": [

@@ -23,6 +23,7 @@ import { fileURLToPath } from "node:url";
 import { validateManifest } from "./modules-schema.mjs";
 
 const root = fileURLToPath(new URL("..", import.meta.url));
+const prisma = join(root, "node_modules", "prisma", "build", "index.js");
 const schemaDir = join(root, "prisma/schema");
 const result = validateManifest(
   JSON.parse(readFileSync(join(root, "hipster.modules.json"), "utf8")),
@@ -86,7 +87,8 @@ for (const removed of cases) {
   try {
     cpSync(schemaDir, dir, { recursive: true });
     strip(dir, removed);
-    execFileSync("pnpm", ["exec", "prisma", "validate", "--schema", dir], {
+    // node + prisma's entry rather than `pnpm`, which is a .cmd shim on Windows.
+    execFileSync(process.execPath, [prisma, "validate", "--schema", dir], {
       cwd: root,
       stdio: "pipe",
     });

@@ -564,7 +564,7 @@ export const filenameConventions = [
   {
     dir: /^components\/.+\/$/,
     file: /^([a-z0-9]+(-[a-z0-9]+)*|index)\.tsx?$/,
-    example: "hero-sections.tsx",
+    example: "hero-section.tsx",
   },
   {
     dir: /^lib\/integrations\/[a-z0-9-]+\/$/,
