@@ -15,13 +15,26 @@ Phase 0 orientation for the rewrite of The TypeScripture™ Canonical Doctrine a
 
 ## 2. Native format for the rewrite
 
-- Each page becomes one Markdown file with YAML frontmatter under `context/doctrine/<NN-section>/<NN-page>.md`.
-- Frontmatter carries the page header: `title`, `class` (content class), `knowledge` (knowledge-stack label), `authority` (authority-registry value), `summary`, `sources`.
-- `doctrineFetchers.ts` reads the section folders in order instead of the old four sources. The machine-contract table stays generated from `validation.yaml` so the lint rules and the docs never drift.
-- Callouts (`> [!NOTE]`, `[!TIP]`, `[!IMPORTANT]`, `[!WARNING]`) render as styled callout blocks.
-- Every old route gets a permanent redirect in `next.config.ts` to its new home, so no inbound link dies.
-- `context/docs/Architecture.md` and the contracts stay where they are as repo working documents for the lint rules. The site stops rendering them directly; their content is absorbed into the pages below.
-- The old book folders are deleted once their chapters are fully absorbed (Section 04 ships last of the two).
+The doctrine is static content, so it follows the same pattern as the other static public pages (Terms, Privacy, landing). No fetcher, no feature layer, no Suspense, no skeletons.
+
+```text
+app/(public)/doctrine/[[...slug]]/page.tsx   route: picks the page from the content file, renders the template
+  -> components/templates/doctrineDocsTemplate.tsx   one page template for every doctrine page
+     -> components/blocks/doctrine-blocks.tsx   every doctrine block, named exports, one file
+        -> components/ui/*   shadcn/ui primitives, used only inside blocks
+lib/constants/doctrineCopy.ts   all doctrine text, typed, one file
+app/loading.tsx   the standard Next.js loading file (already exists)
+```
+
+- **One content file.** `lib/constants/doctrineCopy.ts` holds the tree and every page: `title`, `class` (content class), `knowledge` (knowledge-stack label), `authority` (authority-registry value), `summary`, `sources`, and the body as typed parts (paragraphs, lists, tables, code, callouts). Types live in `types/doctrineTypes.ts`.
+- **One route file, many URLs.** A single optional catch-all route renders the cover at `/doctrine` and every page at its own URL. `generateStaticParams` lists the slugs from the content file, so every page is prerendered HTML.
+- **One page template.** `doctrineDocsTemplate.tsx` lays out header, sidebar, article, table of contents, and previous/next for whichever page it is handed.
+- **One blocks file for the domain.** `doctrine-blocks.tsx` exports `DoctrineSidebar`, `DoctrinePageHeader`, `DoctrineCallout`, `DoctrineBody`, `DoctrineToc`, `DoctrinePager`, `DoctrineTree`. The sidebar marks the current page from the slug the route passes in, so it needs no client code.
+- **Primitives.** shadcn/ui has no docs block, so the blocks are built from its primitives: Sidebar, Breadcrumb, Alert (callouts), Tabs (pages that show prose and a machine contract side by side), Table, Badge (class and authority), ScrollArea, Separator, Collapsible, Sheet (mobile nav).
+- **Machine Contracts.** The rule table moves into the content file. A test compares it against `.claude/contracts/validation.yaml` so the docs and the lint rules cannot drift.
+- **Removed.** `lib/fetchers/doctrineFetchers.ts`, `features/doctrine/`, `components/blocks/doctrine-article.tsx`, and the `marked` dependency. `yaml` stays (the plugin fetcher uses it).
+- **Redirects.** Every old route gets a permanent redirect in `next.config.ts` to its new home.
+- `context/docs/Architecture.md` and the contracts stay as repo working documents for the lint rules. The old book folders under `context/doctrine/` are deleted once their chapters are absorbed (after Section 04).
 
 ## 3. Target tree, routes, classes, and labels
 
@@ -223,7 +236,7 @@ Material read and set aside: MSD §35 (transitional implementation status), `WEB
 
 ## 6. Order of work
 
-1. **Section 01 Ontology.** Ships with the plumbing: new folder layout, frontmatter header, callout rendering, cover page, sidebar from the new tree, redirects for all 60 old routes. Old pages not yet rewritten stay reachable under their redirect targets until their section lands.
+1. **Section 01 Ontology.** Ships with the rebuild: content file, doctrine blocks, page template, single route, cover page, sidebar from the new tree, redirects for all 60 old routes. Old pages not yet rewritten stay reachable under their redirect targets until their section lands.
 2. **Section 02 Epistemology.**
 3. **Section 03 The Book of Knowledge.**
 4. **Section 04 The Book of Implementation.** Old book folders deleted after this one.
