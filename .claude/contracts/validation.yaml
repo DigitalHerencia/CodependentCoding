@@ -152,6 +152,18 @@ rules:
       enforcement: "eslint:codependent/layer-boundaries",
     }
   - {
+      id: CC-FLOW-002,
+      layer: workflow,
+      text: "No pass-through workflows: an exported workflow whose body is a single call to another function",
+      enforcement: "eslint:codependent/no-pass-through",
+    }
+  - {
+      id: CC-FLOW-003,
+      layer: workflow,
+      text: "Workflows never import a 'use server' module (actions); actions may call workflows",
+      enforcement: "eslint:codependent/layer-boundaries",
+    }
+  - {
       id: CC-TX-001,
       layer: transaction,
       text: "Transactions perform database work only",

@@ -1,10 +1,11 @@
 import "server-only";
 
-import {
-  changeAdminMembership,
-  restoreAdminMembership,
-  suspendAdminMembership,
-} from "@/lib/actions/adminActions";
+import { requireIdentity } from "@/lib/auth/auth";
+import { assertPermission } from "@/lib/authz/permissions";
+import { toAdminMembershipDTO } from "@/lib/db/dto/admin.dto";
+import { withTenantTransaction } from "@/lib/db/tenant";
+import { updateMembershipAdministrationTx } from "@/lib/db/transactions/admin.tx";
+import { InvariantViolationError } from "@/lib/db/transactions/errors";
 import type { AdminBulkOperation } from "@/types/adminTypes";
 import {
   getAdminMemberships,
@@ -21,25 +22,33 @@ export async function getAdminWorkspaceWorkflow() {
   return { auditEvents, memberships, records };
 }
 
+/** Every command commits together or none does; an administrator never changes their own membership. */
 export async function executeBulkOperationWorkflow(
   commands: readonly AdminBulkOperation[],
 ) {
-  const results = [];
-  for (const command of commands) {
-    if (command.kind === "suspend") {
-      results.push(await suspendAdminMembership(command));
-    } else if (command.kind === "restore") {
-      results.push(await restoreAdminMembership(command));
-    } else {
-      results.push(await changeAdminMembership(command));
+  const identity = await requireIdentity();
+  return withTenantTransaction(identity, async (tx, access) => {
+    assertPermission(access, "admin.membership:update");
+    const results = [];
+    for (const command of commands) {
+      if (
+        command.kind !== "restore" &&
+        command.membershipId === access.membershipId
+      ) {
+        throw new InvariantViolationError(
+          "An administrator cannot change their own membership.",
+        );
+      }
+      const membership = await updateMembershipAdministrationTx(tx, {
+        organizationId: access.organizationId,
+        actorUserId: access.userId,
+        membershipId: command.membershipId,
+        ...(command.kind === "change-role"
+          ? { role: command.role }
+          : { status: command.kind === "suspend" ? "SUSPENDED" : "ACTIVE" }),
+      });
+      results.push(toAdminMembershipDTO(membership));
     }
-  }
-  return results;
-}
-
-export async function performAdministrativeOverrideWorkflow(
-  command: AdminBulkOperation,
-) {
-  const [result] = await executeBulkOperationWorkflow([command]);
-  return result;
+    return results;
+  });
 }

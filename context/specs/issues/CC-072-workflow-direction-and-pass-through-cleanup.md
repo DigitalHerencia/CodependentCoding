@@ -8,19 +8,19 @@ priority: p0
 size: m
 labels: [type:refactor, area:template, priority:p0, size:m]
 depends_on: []
-status: todo
+status: done
 ---
 
 # CC-072 · Workflow direction and pass-through cleanup
 
 ## Scope
 
-- [ ] Lint rule CC-FLOW-003 (no `"use server"` imports in workflows) and CC-FLOW-002 (no single-call bodies)
-- [ ] Rewrite the five workflows that import actions to use transaction helpers; delete unused pass-throughs
+- [x] Lint rule CC-FLOW-003 (no `"use server"` imports in workflows) and CC-FLOW-002 (no single-call bodies)
+- [x] Rewrite the five workflows that import actions to use transaction helpers; delete unused pass-throughs
 
 ## Acceptance criteria
 
-- [ ] `pnpm --dir template lint` clean with both rules on
+- [x] `pnpm --dir template lint` clean with both rules on
 
 ## Validation
 

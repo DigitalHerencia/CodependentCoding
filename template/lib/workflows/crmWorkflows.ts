@@ -1,6 +1,14 @@
 import "server-only";
 
-import { updateContact, updateCrmDealStage } from "@/lib/actions/crmActions";
+import { requireIdentity } from "@/lib/auth/auth";
+import { authorizeOwnedOrAssignedWrite } from "@/lib/authz/policies";
+import { toCrmContactDTO } from "@/lib/db/dto/crm.dto";
+import { withTenantTransaction } from "@/lib/db/tenant";
+import {
+  findCrmContactForWriteTx,
+  qualifyCrmLeadTx,
+} from "@/lib/db/transactions/crm-qualify-lead.tx";
+import { InvariantViolationError } from "@/lib/db/transactions/errors";
 import { calculatePipelineValue } from "@/lib/workflows/crm/calculatePipelineValue";
 import {
   getClosedWonCrmValue,
@@ -27,35 +35,27 @@ export async function getCrmRecordWorkflow(
   if (kind === "account") return getCrmAccount(id);
   return getContactById(id);
 }
-import type {
-  CloseDealCommand,
-  ReopenOpportunityCommand,
-} from "@/types/crmTypes";
-
-export async function closeDealWorkflow(input: CloseDealCommand) {
-  return updateCrmDealStage({ ...input, stage: input.outcome });
-}
-
-export async function reopenOpportunityWorkflow(
-  input: ReopenOpportunityCommand,
-) {
-  return updateCrmDealStage({ ...input, stage: "QUALIFIED" });
-}
-
+/** Read → decide → write in one transaction: only a lead the member may edit becomes active. */
 export async function qualifyLeadWorkflow(contactId: string) {
-  const contact = await getContactById(contactId);
-  if (!contact) throw new Error("CRM lead was not found.");
-  if (contact.status !== "LEAD")
-    throw new Error("Only a lead can be qualified.");
-  return updateContact({
-    contactId: contact.id,
-    firstName: contact.firstName,
-    lastName: contact.lastName,
-    email: contact.email,
-    phone: contact.phone,
-    title: contact.title,
-    status: "ACTIVE",
-    expectedUpdatedAt: new Date(contact.updatedAt),
+  const identity = await requireIdentity();
+  return withTenantTransaction(identity, async (tx, access) => {
+    const contact = await findCrmContactForWriteTx(tx, {
+      organizationId: access.organizationId,
+      contactId,
+    });
+    authorizeOwnedOrAssignedWrite(access, "crm.contact:update", {
+      kind: "crm.contact",
+      organizationId: contact.organizationId,
+      ownerMembershipId: contact.ownerMembershipId,
+    });
+    if (contact.status !== "LEAD")
+      throw new InvariantViolationError("Only a lead can be qualified.");
+    const record = await qualifyCrmLeadTx(tx, {
+      organizationId: access.organizationId,
+      actorUserId: access.userId,
+      contactId: contact.id,
+    });
+    return toCrmContactDTO(record);
   });
 }
 
