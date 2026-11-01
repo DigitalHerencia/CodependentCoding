@@ -4,17 +4,19 @@
  * Fresh app (no migrations yet): `prisma migrate dev --name init`, then an
  * `rls` migration created with --create-only, filled with prisma/rls/*.sql and
  * applied, so RLS travels with the migration history.
- * Existing migrations (this template, or a later run): `prisma migrate deploy`,
- * then the same SQL through `prisma db execute`; the files are idempotent.
+ * Existing migrations (this template, or a later run): `prisma migrate deploy`;
+ * when prisma/rls/*.sql changed since the newest `*_rls` migration, a new one is
+ * written (as `pnpm db:rls` does) and deployed. No SQL runs outside migration
+ * history (CC-MIG-001).
  *
  *   pnpm db:init
  */
 import { execFileSync } from "node:child_process";
-import { existsSync, mkdirSync, readdirSync, writeFileSync } from "node:fs";
+import { existsSync, readdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { rlsFiles, rlsSql } from "./rls-sql.mjs";
+import { rlsFiles, rlsSql, writeRlsMigration } from "./rls-sql.mjs";
 
 const root = fileURLToPath(new URL("..", import.meta.url));
 const migrationsDir = join(root, "prisma", "migrations");
@@ -51,10 +53,10 @@ if (migrations().length === 0) {
   prisma("migrate", "dev");
 } else {
   prisma("migrate", "deploy");
-  const cacheDir = join(root, "node_modules", ".cache");
-  mkdirSync(cacheDir, { recursive: true });
-  const file = join(cacheDir, "db-init-rls.sql");
-  writeFileSync(file, sql);
-  prisma("db", "execute", "--file", file);
+  const rls = writeRlsMigration(root);
+  if (rls) {
+    process.stdout.write(`wrote prisma/migrations/${rls}/migration.sql\n`);
+    prisma("migrate", "deploy");
+  }
 }
 process.stdout.write("db:init done\n");

@@ -152,18 +152,18 @@ describe("app role SQL", () => {
   test("creates or resets a login role without BYPASSRLS, with table rights", () => {
     const sql = appRoleSql("abc123");
     expect(sql).toContain(
-      `CREATE ROLE "app_user" LOGIN NOBYPASSRLS PASSWORD 'abc123'`,
+      `CREATE ROLE "app_runtime" LOGIN NOBYPASSRLS PASSWORD 'abc123'`,
     );
-    expect(sql).toContain(`ALTER ROLE "app_user" LOGIN PASSWORD 'abc123'`);
+    expect(sql).toContain(`ALTER ROLE "app_runtime" LOGIN PASSWORD 'abc123'`);
     expect(sql).toContain(
-      `ALTER DEFAULT PRIVILEGES FOR ROLE "owner" IN SCHEMA public GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO "app_user"`,
+      `ALTER DEFAULT PRIVILEGES FOR ROLE "owner" IN SCHEMA public GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO "app_runtime"`,
     );
     expect(() => appRoleSql("x'; DROP")).toThrow();
   });
 
   test("app URL keeps host, database and options of the owner URL", () => {
-    expect(withCredentials(OWNER_POOLED, "app_user", "pw")).toBe(
-      "postgresql://app_user:pw@ep-x-pooler.neon.tech/neondb?sslmode=require",
+    expect(withCredentials(OWNER_POOLED, "app_runtime", "pw")).toBe(
+      "postgresql://app_runtime:pw@ep-x-pooler.neon.tech/neondb?sslmode=require",
     );
   });
 });
@@ -187,7 +187,7 @@ describe("pasted connection string", () => {
     expect(() => databaseUrls("mysql://x@y/z")).toThrow(/postgresql/);
   });
 
-  test("creates app_user as the owner over the direct URL and writes both URLs", async () => {
+  test("creates app_runtime as the owner over the direct URL and writes both URLs", async () => {
     const dir = mkdtempSync(path.join(tmpdir(), "hs-connect-"));
     writeFileSync(
       path.join(dir, ".env.example"),
@@ -211,7 +211,7 @@ describe("pasted connection string", () => {
       new Map([
         [
           "DATABASE_URL",
-          "postgresql://app_user:apppw123@ep-cool-1-pooler.us-east-2.aws.neon.tech/neondb?sslmode=require",
+          "postgresql://app_runtime:apppw123@ep-cool-1-pooler.us-east-2.aws.neon.tech/neondb?sslmode=require",
         ],
         ["DATABASE_URL_UNPOOLED", direct],
       ]),
@@ -403,7 +403,7 @@ describe("provision", () => {
 
     const env = readFileSync(path.join(dir, ".env.local"), "utf8");
     expect(parseEnv(env).get("DATABASE_URL")).toBe(
-      "postgresql://app_user:apppw123@ep-x-pooler.neon.tech/neondb?sslmode=require",
+      "postgresql://app_runtime:apppw123@ep-x-pooler.neon.tech/neondb?sslmode=require",
     );
     expect(parseEnv(env).get("DATABASE_URL_UNPOOLED")).toBe(OWNER_DIRECT);
     expect(env).toContain('CLERK_SECRET_KEY=""');
@@ -425,7 +425,7 @@ describe("provision", () => {
     expect(envAdds.map(({ args, input }) => [args[2], input])).toEqual([
       [
         "DATABASE_URL",
-        "postgresql://app_user:apppw123@ep-x-pooler.neon.tech/neondb?sslmode=require",
+        "postgresql://app_runtime:apppw123@ep-x-pooler.neon.tech/neondb?sslmode=require",
       ],
       ["DATABASE_URL_UNPOOLED", OWNER_DIRECT],
     ]);

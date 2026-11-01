@@ -44,18 +44,28 @@ const noQuery: QuerySql = () => {
 const byCheck = (results: CheckResult[]) =>
   Object.fromEntries(results.map((result) => [result.check, result]));
 
-/** A database that answers doctor's three queries. */
+const SAFE_ROLE = {
+  rolsuper: false,
+  rolbypassrls: false,
+  neon_superuser: false,
+  runtime: true,
+  owned: 0,
+};
+
+/** A database that answers doctor's four queries. */
 function database(
   applied: string[],
   tables: { name: string; forced: boolean }[],
+  role: Record<string, unknown> | null = SAFE_ROLE,
 ): { query: QuerySql; urls: string[] } {
   const urls: string[] = [];
-  const query: QuerySql = async (url, sql) => {
+  const query: QuerySql = async (url, text) => {
     urls.push(url);
-    if (sql === "select 1") return [{ "?column?": 1 }];
-    if (sql.includes("_prisma_migrations")) {
+    if (text === "select 1") return [{ "?column?": 1 }];
+    if (text.includes("_prisma_migrations")) {
       return applied.map((migration_name) => ({ migration_name }));
     }
+    if (text.includes("pg_roles")) return role ? [role] : [];
     return tables.map(({ name, forced }) => ({
       relname: name,
       relrowsecurity: forced,
@@ -90,7 +100,7 @@ describe("doctor", () => {
     const dir = await app(["crm"]);
     writeFileSync(
       path.join(dir, ".env.local"),
-      `DATABASE_URL="postgresql://app_user:x@db.example/app"\nDATABASE_URL_UNPOOLED="${SECRET}"\n`,
+      `DATABASE_URL="postgresql://app_runtime:x@db.example/app"\nDATABASE_URL_UNPOOLED="${SECRET}"\n`,
     );
     mkdirSync(path.join(dir, "prisma/migrations/20261024000000_init"), {
       recursive: true,
@@ -116,7 +126,10 @@ describe("doctor", () => {
       processEnv: {},
       tools: true,
     });
-    expect(results.map(({ status }) => status)).toEqual(Array(6).fill("pass"));
+    expect(results.map(({ status }) => status)).toEqual(Array(7).fill("pass"));
+    expect(byCheck(results)["runtime role"]).toMatchObject({
+      detail: "app_runtime: not owner, not BYPASSRLS, not in neon_superuser",
+    });
     expect(new Set(urls)).toEqual(new Set([SECRET]));
     expect(ran).toEqual([
       "pnpm run --silent lint",
@@ -167,6 +180,60 @@ describe("doctor", () => {
     });
     expect(checks.ownership?.status).toBe("pass");
     expect(formatResults(results)).toContain("→ pnpm db:init");
+  });
+
+  test("runtime role: the owner, BYPASSRLS or neon_superuser fail", async () => {
+    const dir = await app([]);
+    mkdirSync(path.join(dir, "prisma/migrations/20261024000000_init"), {
+      recursive: true,
+    });
+    const run = async (
+      env: Record<string, string>,
+      role: Record<string, unknown> | null,
+    ) => {
+      const { query } = database(
+        ["20261024000000_init"],
+        tenantTables(dir).map((name) => ({ name, forced: true })),
+        role,
+      );
+      return byCheck(
+        await runDoctor({
+          appDir: dir,
+          exec: noExec,
+          query,
+          processEnv: env,
+          tools: false,
+        }),
+      )["runtime role"];
+    };
+    const runtime = "postgresql://app_runtime:x@db.example/app";
+    expect(
+      await run(
+        {
+          DATABASE_URL: "postgresql://owner:other@db-pooler.example/app",
+          DATABASE_URL_UNPOOLED: SECRET,
+        },
+        SAFE_ROLE,
+      ),
+    ).toMatchObject({ status: "fail", detail: "owner is the owner" });
+    expect(
+      await run(
+        { DATABASE_URL: runtime, DATABASE_URL_UNPOOLED: SECRET },
+        { ...SAFE_ROLE, rolbypassrls: true, neon_superuser: true, owned: 3 },
+      ),
+    ).toMatchObject({
+      status: "fail",
+      detail: "app_runtime: BYPASSRLS, member of neon_superuser, owns 3 tables",
+    });
+    expect(
+      await run(
+        { DATABASE_URL: runtime, DATABASE_URL_UNPOOLED: SECRET },
+        { ...SAFE_ROLE, runtime: false },
+      ),
+    ).toMatchObject({ status: "fail", detail: "app_runtime: not app_runtime" });
+    expect(
+      await run({ DATABASE_URL: runtime, DATABASE_URL_UNPOOLED: SECRET }, null),
+    ).toMatchObject({ status: "fail", detail: "role app_runtime not found" });
   });
 
   test("an unreachable database fails once and skips what depends on it", async () => {

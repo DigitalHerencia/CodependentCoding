@@ -55,7 +55,7 @@ interface NewOptions {
 
 const STEP_PROMPT: Record<StepId, string> = {
   github: "Create a private GitHub repo and push (gh)?",
-  neon: "Create a Neon project with owner and app_user roles (neonctl)?",
+  neon: "Create a Neon project with owner and app_runtime roles (neonctl)?",
   vercel: "Link a Vercel project and set its database env vars (vercel)?",
 };
 
@@ -463,7 +463,7 @@ export function registerNew(program: Command, cliVersion: string): void {
           });
           connected = true;
           p.log.success(
-            "Database wired: DATABASE_URL (app_user, pooled) and DATABASE_URL_UNPOOLED (owner, direct) are in .env.local.",
+            "Database wired: DATABASE_URL (app_runtime, pooled) and DATABASE_URL_UNPOOLED (owner, direct) are in .env.local.",
           );
         } catch (error) {
           p.log.warn(

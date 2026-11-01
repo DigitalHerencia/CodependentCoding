@@ -29,6 +29,10 @@ export const createInvitationSchema = z
 
 export const invitationIdSchema = z.object({ invitationId: z.uuid() }).strict();
 
+export const switchOrganizationSchema = z
+  .object({ organizationId: z.uuid() })
+  .strict();
+
 export const acceptInvitationSchema = z
   .object({ token: z.string().min(32).max(128) })
   .strict();

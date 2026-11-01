@@ -60,7 +60,14 @@ const domains: TreeNode[] = [
   },
 ];
 
-export function TenantShell({ children }: { children: ReactNode }) {
+export function TenantShell({
+  children,
+  organizationSwitcher,
+}: {
+  children: ReactNode;
+  /** Rendered above the user menu; the onboarding gate passes the organization switcher. */
+  organizationSwitcher?: ReactNode;
+}) {
   const pathname = usePathname();
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -174,7 +181,8 @@ export function TenantShell({ children }: { children: ReactNode }) {
           ) : (
             navigation
           )}
-          <div className="border-t pt-4">
+          <div className="space-y-3 border-t pt-4">
+            {!collapsed && organizationSwitcher}
             <UserButton />
           </div>
         </aside>
@@ -208,6 +216,7 @@ export function TenantShell({ children }: { children: ReactNode }) {
             )}
           >
             {navigation}
+            {organizationSwitcher}
             <UserButton />
           </div>
         )}

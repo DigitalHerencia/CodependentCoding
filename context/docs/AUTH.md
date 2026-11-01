@@ -76,7 +76,7 @@ enum MembershipStatus { active invited suspended }
 
 - Stored in an httpOnly, `Secure`, `SameSite=Lax` cookie `active-org` holding the organization ID.
 - **Every request re-validates** it against an active Membership. Invalid or missing → fall back to the user's first active membership → none → redirect `/onboarding`.
-- Switching orgs is a server action that validates membership before setting the cookie.
+- Switching orgs is a server action (`switchOrganization`) that validates membership before setting the cookie. The cookie is read and written only in `lib/auth/active-organization.ts`; the tenant shell shows the switcher to users with two or more organizations.
 
 ### 4.2 Onboarding
 
@@ -136,7 +136,7 @@ Action:   requireTenant → assertPermission(write) → schema.safeParse(input)
 ## 6. Row-level security
 
 - Every tenant-owned table has `organizationId` and RLS **enabled and forced**.
-- Runtime connects as `app_user` (no `BYPASSRLS`); migrations run as `owner` via `DATABASE_URL_UNPOOLED`.
+- Runtime connects as `app_runtime` (no `BYPASSRLS`); migrations run as `owner` via `DATABASE_URL_UNPOOLED`.
 - `withTenantTransaction(ctx, fn)` / `withAuthenticatedRead(ctx, fn)` open an interactive transaction and run
   `select set_config('app.current_organization_id', $1, true)` before `fn`.
 - Policy template (per table, in `prisma/rls/<owner>.sql`):
@@ -150,7 +150,7 @@ create policy contact_tenant_isolation on "Contact"
 ```
 
 - Missing context → `current_setting(..., true)` is null → zero rows (fail closed).
-- **Required test** (`pnpm test:rls`): two orgs, seeded rows, assert org A cannot read/update/delete org B rows through `app_user`, with and without application predicates.
+- **Required test** (`pnpm test:rls`): two orgs, seeded rows, assert org A cannot read/update/delete org B rows through `app_runtime`, with and without application predicates.
 - Omitting RLS from a tenant table requires a decision record.
 
 ## 7. Webhooks

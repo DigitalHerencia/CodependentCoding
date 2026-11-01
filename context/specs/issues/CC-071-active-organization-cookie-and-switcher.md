@@ -8,7 +8,7 @@ priority: p1
 size: m
 labels: [type:feat, area:template, priority:p1, size:m]
 depends_on: [CC-070]
-status: todo
+status: done
 ---
 
 # CC-071 · Active-organization cookie and switcher

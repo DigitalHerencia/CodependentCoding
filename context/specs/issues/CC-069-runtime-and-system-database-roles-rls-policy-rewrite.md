@@ -8,22 +8,22 @@ priority: p0
 size: l
 labels: [type:fix, area:template, priority:p0, size:l]
 depends_on: []
-status: todo
+status: done
 ---
 
 # CC-069 · Runtime and system database roles; RLS policy rewrite
 
 ## Scope
 
-- [ ] Migration creating `app_runtime` and `app_system` (SQL, idempotent, NOBYPASSRLS)
-- [ ] Rewrite `prisma/rls/*.sql`: setting cast, `(SELECT …)`, `TO app_runtime`; AuditEvent insert/select only; RLS on system tables
-- [ ] RLS ships only as migrations; CI diffs `pg_policies` against source
+- [x] Migration creating `app_runtime` and `app_system` (SQL, idempotent, NOBYPASSRLS)
+- [x] Rewrite `prisma/rls/*.sql`: setting cast, `(SELECT …)`, `TO app_runtime`; AuditEvent insert/select only; RLS on system tables
+- [x] RLS ships only as migrations; CI diffs `pg_policies` against source
 
 ## Acceptance criteria
 
-- [ ] `doctor` reports runtime role not owner, not BYPASSRLS, not in neon_superuser
-- [ ] EXPLAIN of a tenant list query under RLS uses the `(organizationId, …)` index
-- [ ] Cross-tenant suite passes as `app_runtime`
+- [x] `doctor` reports runtime role not owner, not BYPASSRLS, not in neon_superuser
+- [x] EXPLAIN of a tenant list query under RLS uses the `(organizationId, …)` index
+- [x] Cross-tenant suite passes as `app_runtime`
 
 ## Validation
 

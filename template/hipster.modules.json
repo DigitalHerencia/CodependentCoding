@@ -43,7 +43,7 @@
         "name": "DATABASE_URL_TEST_APP",
         "required": false,
         "scope": "server",
-        "description": "pnpm test:rls: login role without BYPASSRLS; unset, the suite uses SET ROLE app_user"
+        "description": "pnpm test:rls: app_runtime login (or a member of it); unset, the suite uses SET ROLE app_runtime"
       },
       {
         "name": "AUTH_WEBHOOK_DB_TEST",

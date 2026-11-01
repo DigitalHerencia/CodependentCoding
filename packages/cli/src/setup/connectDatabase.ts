@@ -19,8 +19,8 @@ export interface ConnectDatabaseOptions {
 
 /**
  * Wires a pasted connection string into .env.local without `--provision`:
- * creates `app_user` (NOBYPASSRLS) as the string's owner role, then writes
- * DATABASE_URL (app_user, pooled) and DATABASE_URL_UNPOOLED (owner, direct,
+ * creates `app_runtime` (NOBYPASSRLS) as the string's owner role, then writes
+ * DATABASE_URL (app_runtime, pooled) and DATABASE_URL_UNPOOLED (owner, direct,
  * which Prisma migrates with).
  */
 export async function connectDatabase({
