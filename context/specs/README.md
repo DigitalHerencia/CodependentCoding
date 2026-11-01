@@ -1,18 +1,25 @@
 # Specs — build backlog
 
-The complete build of Codependent Coding v1, decomposed into 44 issues across 7 milestones. Each file in `issues/` is one GitHub issue; frontmatter drives labels, milestone, and dependencies.
+The complete build of Codependent Coding v1, decomposed into 44 issues across 7 milestones, plus the doctrine v1.0 work (33 issues across 7 milestones, DEC-082 … DEC-090; plan in `context/canon/refurbish/PLAN.md`). Each file in `issues/` is one GitHub issue; frontmatter drives labels, milestone, and dependencies.
 
 ## Milestones
 
-| Milestone                     | Goal                                                           | Issues          | Exit criteria                                                             |
-| ----------------------------- | -------------------------------------------------------------- | --------------- | ------------------------------------------------------------------------- |
-| **M0 · Governance bootstrap** | One governance system, working toolchain, CI, GitHub Project   | CC-001 → CC-005 | Lint runs at root and template; CI reports; hooks fire; backlog on GitHub |
-| **M1 · Site reduction**       | Landing page only; legacy generator gone                       | CC-006 → CC-008 | Only `/` builds; no `@hipster-stack/*` imports                            |
-| **M2 · Template conformance** | Template obeys the doctrine                                    | CC-009 → CC-017 | 0 CC findings, typecheck green, RLS test passes                           |
-| **M3 · Module system**        | Computed ownership, registry, multi-file Prisma, RLS per owner | CC-018 → CC-027 | Ownership check passes; base builds with empty registry                   |
-| **M4 · Hipster Stack CLI**    | `new`, `slice`, `add`, `doctor`, `compose`                     | CC-028 → CC-035 | Every preset composes and builds in CI                                    |
-| **M5 · Loaded Vibes plugin**  | Claude Code plugin: skills, hooks, agents                      | CC-036 → CC-041 | Plugin drives a generated app through idea → ship                         |
-| **M6 · Dogfood and v1.0.0**   | Prove the hours-not-weeks goal                                 | CC-042 → CC-044 | Timed MVP run; v1.0.0 tag                                                 |
+| Milestone                      | Goal                                                                            | Issues          | Exit criteria                                                             |
+| ------------------------------ | ------------------------------------------------------------------------------- | --------------- | ------------------------------------------------------------------------- |
+| **M0 · Governance bootstrap**  | One governance system, working toolchain, CI, GitHub Project                    | CC-001 → CC-005 | Lint runs at root and template; CI reports; hooks fire; backlog on GitHub |
+| **M1 · Site reduction**        | Landing page only; legacy generator gone                                        | CC-006 → CC-008 | Only `/` builds; no `@hipster-stack/*` imports                            |
+| **M2 · Template conformance**  | Template obeys the doctrine                                                     | CC-009 → CC-017 | 0 CC findings, typecheck green, RLS test passes                           |
+| **M3 · Module system**         | Computed ownership, registry, multi-file Prisma, RLS per owner                  | CC-018 → CC-027 | Ownership check passes; base builds with empty registry                   |
+| **M4 · Hipster Stack CLI**     | `new`, `slice`, `add`, `doctor`, `compose`                                      | CC-028 → CC-035 | Every preset composes and builds in CI                                    |
+| **M5 · Loaded Vibes plugin**   | Claude Code plugin: skills, hooks, agents                                       | CC-036 → CC-041 | Plugin drives a generated app through idea → ship                         |
+| **M6 · Dogfood and v1.0.0**    | Prove the hours-not-weeks goal                                                  | CC-042 → CC-044 | Timed MVP run; v1.0.0 tag                                                 |
+| **M-S1 · Foundation**          | Site on Cache Components, supply chain, headers, content layer                  | CC-046 → CC-049 | Site static by build guarantee; single-document lockfiles; CSP everywhere |
+| **M-S2 · Design system**       | Tokens, fonts, SVG brand, shells                                                | CC-050 → CC-053 | Contrast script green; no Google Fonts requests                           |
+| **M-S3 · Docs platform**       | MDX pipeline, doctrine routes, rule sync, search, machine endpoints, canon live | CC-054 → CC-059 | Canon live; rule IDs in sync across docs, YAML and lint                   |
+| **M-S4 · Product pages**       | Static template explorer, CLI and plugin references, landing                    | CC-060 → CC-063 | No third-party requests; Lighthouse 100 × 4                               |
+| **M-S5 · Trust pages**         | Terms, Privacy, Security, FAQ banner                                            | CC-064          | Legal copy matches `context/canon/refurbish/legal.md`                     |
+| **M-S6 · PWA and polish**      | Site PWA, transitions, e2e and Lighthouse gates, SEO files                      | CC-065 → CC-068 | Every gate in PLAN §0 green                                               |
+| **M-T · Template conformance** | Template obeys doctrine v1.0                                                    | CC-069 → CC-078 | RLS as `app_runtime` passes; 0 findings with the new rules                |
 
 ## Critical path
 

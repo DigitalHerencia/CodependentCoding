@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/decisions/v1",
-  "updated": "2026-10-29",
+  "updated": "2026-10-31",
   "format": "Append new decisions; never rewrite history. Supersede by adding a new entry and setting status=superseded + superseded_by on the old one.",
   "decisions": [
     {
@@ -846,6 +846,90 @@
       "context": "tech-requirements.md §5 asked for reactCompiler: true but nothing enabled it (found in the config audit, DEC-076). Ivan chose to turn it on rather than drop it from the doc.",
       "decision": "template/next.config.ts sets reactCompiler: true and the template pins babel-plugin-react-compiler 1.0.0 as a dev dependency. The root site is unchanged. Generated apps inherit both through compose.",
       "refs": ["template/next.config.ts", "template/package.json", "DEC-076"]
+    },
+    {
+      "id": "DEC-082",
+      "date": "2026-10-31",
+      "status": "accepted",
+      "title": "Codependent Coding Doctrine v1.0 (canon) replaces TypeScripture",
+      "context": "The live docs published 48 thin, duplicated Book of Knowledge / Book of Implementation pages that contradicted each other (call graph) and the repo intent docs. Reconciled against the PWA Spec Tracker, repo docs, template code, DevNotes archives and current vendor docs.",
+      "decision": "context/canon/doctrine/ (14 chapters + rule index, glossary, golden slice) is the doctrine. 143 rules with ID, tier and enforcement; CC-* IDs unchanged. Every difference from earlier locks is recorded with its reason in context/canon/00-reconciliation-ledger.md. Published on the site by CC-059; TypeScripture archived.",
+      "refs": [
+        "context/canon/README.md",
+        "context/canon/00-reconciliation-ledger.md"
+      ]
+    },
+    {
+      "id": "DEC-083",
+      "date": "2026-10-31",
+      "status": "accepted",
+      "title": "Workflows never import actions; actions may call workflows",
+      "context": "Template workflows imported actions (crmWorkflows qualifyLeadWorkflow: read in one transaction, write in another; two unused pass-through workflows) and three actions imported workflows. Each action commits its own transaction and is a public POST endpoint.",
+      "decision": "CC-FLOW-003: workflows never import a \"use server\" module. Features call workflows and fetchers (reads); forms call actions, which may delegate to workflows that own their transactions (writes). CC-FLOW-002 forbids single-call pass-through workflows. Supersedes tracker L4 call-graph line.",
+      "refs": ["ledger A-1", "ledger A-3", "CC-072"]
+    },
+    {
+      "id": "DEC-084",
+      "date": "2026-10-31",
+      "status": "accepted",
+      "title": "Action pipeline order: authenticate, rate-limit, parse, authorize, write",
+      "context": "Tracker said authorize before parse; authorization needs the membership (inside the tenant transaction) and the parsed record ID.",
+      "decision": "Actions: authenticate → rate-limit → parse with the shared schema → tenant transaction → role check → record-scoped write + audit → commit → invalidate → ActionResult (CC-WRITE-003).",
+      "refs": ["ledger A-2"]
+    },
+    {
+      "id": "DEC-085",
+      "date": "2026-10-31",
+      "status": "accepted",
+      "title": "TypeScript stays on 6.0.x; pnpm 12 allowed with supply-chain settings",
+      "context": "typescript-eslint does not support TS 7 (peer <6.1.0). Vercel now lists pnpm 6-12. pnpm 12 two-document lockfile hides all dependencies from GitHub's dependency graph; minimumReleaseAge was never set (default 1 day).",
+      "decision": "TS 6.0.x for editor and lint; TS 7 only as an optional CI typecheck. Both workspaces: minimumReleaseAge 10080, trustPolicy no-downgrade, pmOnFail ignore (single-document lockfile, checked in CI), no first-party install scripts.",
+      "refs": ["ledger F-1..F-5", "CC-047"]
+    },
+    {
+      "id": "DEC-086",
+      "date": "2026-10-31",
+      "status": "accepted",
+      "title": "Cache Components on in site and template",
+      "context": "Next.js 16.4 recommends Cache Components for every app and makes it the default in Next 17. Supersedes DEC-012.",
+      "decision": "cacheComponents + partialPrefetching on; caching via 'use cache'/cacheLife/cacheTag only; never in protected code (CC-CACHE-002); ensureStatic = 'navigation' on static surfaces; no dynamic/revalidate/fetchCache/dynamicParams exports.",
+      "refs": ["ledger R-1, R-2", "CC-046", "CC-075"]
+    },
+    {
+      "id": "DEC-087",
+      "date": "2026-10-31",
+      "status": "accepted",
+      "title": "Database roles and RLS rewrite",
+      "context": "No runtime role exists (app runs as owner; Neon console roles inherit BYPASSRLS via neon_superuser); policies cast the uuid column to text (index unusable); AuditEvent policy is FOR ALL and cascades; system tables have no RLS; RLS applied outside migration history.",
+      "decision": "app_runtime and app_system created in SQL, NOBYPASSRLS, not owners. Policies: column = (SELECT NULLIF(current_setting(...),'')::uuid) TO app_runtime. AuditEvent insert/select only, onDelete Restrict. RLS on every table. RLS ships as migrations only. DATABASE_URL_UNPOOLED replaces DIRECT_DATABASE_URL.",
+      "refs": ["ledger D-1..D-7", "CC-069", "CC-074"]
+    },
+    {
+      "id": "DEC-088",
+      "date": "2026-10-31",
+      "status": "accepted",
+      "title": "Identity and tenancy: UUID user key, admission modes, active-org cookie, roles in lib/authz",
+      "context": "Tracker wanted DB user ID = Clerk ID; Clerk dev/prod instances issue different IDs. Tracker approval gate vs AUTH.md self-serve. Template picks the oldest membership. Roles and mode flags in lib/constants with a runtime ABAC branch.",
+      "decision": "User.id uuid + unique clerkUserId. Admission modes approval (default) / self-serve / invite-only, baked by the generator. httpOnly active-org cookie re-validated every request. Role tuple in lib/authz/roles.ts (pure), policies.ts emitted per mode, tenancy in lib/authz/mode.ts.",
+      "refs": ["ledger I-1..I-4, I-7", "CC-070", "CC-071"]
+    },
+    {
+      "id": "DEC-089",
+      "date": "2026-10-31",
+      "status": "accepted",
+      "title": "CSP split by path; ClerkProvider in group layouts",
+      "context": "Nonce CSP needs request-time rendering; public pages are static. Clerk documents its CSP hosts.",
+      "decision": "proxy.ts sets a nonce + strict-dynamic policy (Clerk hosts) on dynamic routes and a strict header policy on static pages. <ClerkProvider dynamic> wraps (auth)/(tenant)/(admin) layouts, not the root. Site: header CSP, no raw HTML (MDX at build). Supersedes tracker 'ClerkProvider wraps root layout'.",
+      "refs": ["ledger X-1, X-2, X-5", "CC-048", "CC-075"]
+    },
+    {
+      "id": "DEC-090",
+      "date": "2026-10-31",
+      "status": "accepted",
+      "title": "Site refurbishment plan and display font",
+      "context": "The site needs a rebuild to match the doctrine (audit S1-S17). The brand spec's Copperplate Gothic Bold is a commercial face.",
+      "decision": "context/canon/refurbish/PLAN.md is the plan; issues CC-046..CC-068 (site) and CC-069..CC-078 (template) are queued in milestones M-S1..M-S6 and M-T. Display face: Cinzel self-hosted (OFL); JetBrains Mono for body and code; Fira Code and Archivo Black dropped. Legal copy final in refurbish/legal.md (effective 2026-11-01, GitHub contact). Start at CC-047.",
+      "refs": ["context/canon/refurbish/PLAN.md", "ledger P-10"]
     }
   ]
 }

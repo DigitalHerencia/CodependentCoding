@@ -394,5 +394,302 @@
     "priority": "p0",
     "size": "xs",
     "title": "Release v1.0.0"
+  },
+  {
+    "id": "CC-046",
+    "file": "CC-046-enable-cache-components-and-the-static-guarantee-on-the-site.md",
+    "milestone": "M-S1",
+    "depends_on": [],
+    "priority": "p0",
+    "size": "s",
+    "title": "Enable Cache Components and the static guarantee on the site"
+  },
+  {
+    "id": "CC-047",
+    "file": "CC-047-pnpm-supply-chain-settings-and-single-document-lockfile.md",
+    "milestone": "M-S1",
+    "depends_on": [],
+    "priority": "p0",
+    "size": "s",
+    "title": "pnpm supply-chain settings and single-document lockfile"
+  },
+  {
+    "id": "CC-048",
+    "file": "CC-048-header-csp-full-security-headers-security-txt.md",
+    "milestone": "M-S1",
+    "depends_on": ["CC-046"],
+    "priority": "p0",
+    "size": "s",
+    "title": "Header CSP, full security headers, security.txt"
+  },
+  {
+    "id": "CC-049",
+    "file": "CC-049-move-copy-to-content-and-loaders-to-lib-content.md",
+    "milestone": "M-S1",
+    "depends_on": ["CC-046"],
+    "priority": "p1",
+    "size": "m",
+    "title": "Move copy to content/ and loaders to lib/content"
+  },
+  {
+    "id": "CC-050",
+    "file": "CC-050-unified-tokens-and-contrast-check.md",
+    "milestone": "M-S2",
+    "depends_on": ["CC-049"],
+    "priority": "p1",
+    "size": "m",
+    "title": "Unified tokens and contrast check"
+  },
+  {
+    "id": "CC-051",
+    "file": "CC-051-self-hosted-fonts-drop-fira-code.md",
+    "milestone": "M-S2",
+    "depends_on": ["CC-050"],
+    "priority": "p1",
+    "size": "s",
+    "title": "Self-hosted Cinzel and JetBrains Mono; drop Archivo Black and Fira Code"
+  },
+  {
+    "id": "CC-052",
+    "file": "CC-052-svg-brand-assets-avif-horizon-og-image.md",
+    "milestone": "M-S2",
+    "depends_on": ["CC-050"],
+    "priority": "p1",
+    "size": "m",
+    "title": "SVG brand assets, AVIF horizon, OG image"
+  },
+  {
+    "id": "CC-053",
+    "file": "CC-053-shells-header-footer-docs-sidebar-sheet-skip-link.md",
+    "milestone": "M-S2",
+    "depends_on": ["CC-050", "CC-051", "CC-052"],
+    "priority": "p1",
+    "size": "m",
+    "title": "Shells, header, footer, docs sidebar sheet, skip link"
+  },
+  {
+    "id": "CC-054",
+    "file": "CC-054-mdx-build-pipeline.md",
+    "milestone": "M-S3",
+    "depends_on": ["CC-049"],
+    "priority": "p0",
+    "size": "l",
+    "title": "MDX build pipeline"
+  },
+  {
+    "id": "CC-055",
+    "file": "CC-055-doctrine-routes-chapters-rule-index-rule-pages-glossary-gold.md",
+    "milestone": "M-S3",
+    "depends_on": ["CC-054"],
+    "priority": "p0",
+    "size": "l",
+    "title": "Doctrine routes: chapters, rule index, rule pages, glossary, golden slice, changelog"
+  },
+  {
+    "id": "CC-056",
+    "file": "CC-056-rule-sync-check-in-ci.md",
+    "milestone": "M-S3",
+    "depends_on": ["CC-055"],
+    "priority": "p0",
+    "size": "s",
+    "title": "Rule sync check in CI"
+  },
+  {
+    "id": "CC-057",
+    "file": "CC-057-k-search-with-a-static-index.md",
+    "milestone": "M-S3",
+    "depends_on": ["CC-055"],
+    "priority": "p1",
+    "size": "m",
+    "title": "\u2318K search with a static index"
+  },
+  {
+    "id": "CC-058",
+    "file": "CC-058-llms-txt-raw-md-routes-rules-json.md",
+    "milestone": "M-S3",
+    "depends_on": ["CC-055"],
+    "priority": "p1",
+    "size": "s",
+    "title": "llms.txt, raw .md routes, rules.json"
+  },
+  {
+    "id": "CC-059",
+    "file": "CC-059-publish-the-canon-archive-typescripture.md",
+    "milestone": "M-S3",
+    "depends_on": ["CC-055"],
+    "priority": "p0",
+    "size": "s",
+    "title": "Publish the canon; archive TypeScripture"
+  },
+  {
+    "id": "CC-060",
+    "file": "CC-060-static-template-explorer-remove-monaco-and-runtime-fetches.md",
+    "milestone": "M-S4",
+    "depends_on": ["CC-054"],
+    "priority": "p0",
+    "size": "l",
+    "title": "Static template explorer; remove Monaco and runtime fetches"
+  },
+  {
+    "id": "CC-061",
+    "file": "CC-061-generated-cli-reference-and-command-builder.md",
+    "milestone": "M-S4",
+    "depends_on": ["CC-049"],
+    "priority": "p1",
+    "size": "m",
+    "title": "Generated CLI reference and command builder"
+  },
+  {
+    "id": "CC-062",
+    "file": "CC-062-generated-plugin-reference.md",
+    "milestone": "M-S4",
+    "depends_on": ["CC-049"],
+    "priority": "p2",
+    "size": "s",
+    "title": "Generated plugin reference"
+  },
+  {
+    "id": "CC-063",
+    "file": "CC-063-landing-rebuild.md",
+    "milestone": "M-S4",
+    "depends_on": ["CC-052", "CC-053"],
+    "priority": "p1",
+    "size": "m",
+    "title": "Landing rebuild"
+  },
+  {
+    "id": "CC-064",
+    "file": "CC-064-terms-privacy-security-pages-faq-banner.md",
+    "milestone": "M-S5",
+    "depends_on": ["CC-049"],
+    "priority": "p1",
+    "size": "s",
+    "title": "Terms, Privacy, Security pages; FAQ banner"
+  },
+  {
+    "id": "CC-065",
+    "file": "CC-065-site-pwa-manifest-service-worker-offline-page-install-prompt.md",
+    "milestone": "M-S6",
+    "depends_on": ["CC-055"],
+    "priority": "p2",
+    "size": "m",
+    "title": "Site PWA: manifest, service worker, offline page, install prompt"
+  },
+  {
+    "id": "CC-066",
+    "file": "CC-066-view-transitions-smart-404-error-pages.md",
+    "milestone": "M-S6",
+    "depends_on": ["CC-055"],
+    "priority": "p2",
+    "size": "s",
+    "title": "View Transitions, smart 404, error pages"
+  },
+  {
+    "id": "CC-067",
+    "file": "CC-067-site-e2e-suite-and-lighthouse-ci-gates.md",
+    "milestone": "M-S6",
+    "depends_on": ["CC-063", "CC-060", "CC-065"],
+    "priority": "p0",
+    "size": "m",
+    "title": "Site e2e suite and Lighthouse CI gates"
+  },
+  {
+    "id": "CC-068",
+    "file": "CC-068-sitemap-robots-canonical-urls-per-page-metadata.md",
+    "milestone": "M-S6",
+    "depends_on": ["CC-055"],
+    "priority": "p1",
+    "size": "s",
+    "title": "Sitemap, robots, canonical URLs, per-page metadata"
+  },
+  {
+    "id": "CC-069",
+    "file": "CC-069-runtime-and-system-database-roles-rls-policy-rewrite.md",
+    "milestone": "M-T",
+    "depends_on": [],
+    "priority": "p0",
+    "size": "l",
+    "title": "Runtime and system database roles; RLS policy rewrite"
+  },
+  {
+    "id": "CC-070",
+    "file": "CC-070-roles-and-mode-flags-into-lib-authz-generator-baked-policies.md",
+    "milestone": "M-T",
+    "depends_on": [],
+    "priority": "p0",
+    "size": "m",
+    "title": "Roles and mode flags into lib/authz; generator-baked policies"
+  },
+  {
+    "id": "CC-071",
+    "file": "CC-071-active-organization-cookie-and-switcher.md",
+    "milestone": "M-T",
+    "depends_on": ["CC-070"],
+    "priority": "p1",
+    "size": "m",
+    "title": "Active-organization cookie and switcher"
+  },
+  {
+    "id": "CC-072",
+    "file": "CC-072-workflow-direction-and-pass-through-cleanup.md",
+    "milestone": "M-T",
+    "depends_on": [],
+    "priority": "p0",
+    "size": "m",
+    "title": "Workflow direction and pass-through cleanup"
+  },
+  {
+    "id": "CC-073",
+    "file": "CC-073-single-error-mapper-with-fixed-messages-and-reporting.md",
+    "milestone": "M-T",
+    "depends_on": [],
+    "priority": "p0",
+    "size": "s",
+    "title": "Single error mapper with fixed messages and reporting"
+  },
+  {
+    "id": "CC-074",
+    "file": "CC-074-remove-runtime-dotenv-env-reads-only-in-lib-env.md",
+    "milestone": "M-T",
+    "depends_on": [],
+    "priority": "p1",
+    "size": "s",
+    "title": "Remove runtime dotenv; env reads only in lib/env"
+  },
+  {
+    "id": "CC-075",
+    "file": "CC-075-cache-components-and-nonce-csp-in-the-template.md",
+    "milestone": "M-T",
+    "depends_on": [],
+    "priority": "p0",
+    "size": "m",
+    "title": "Cache Components and nonce CSP in the template"
+  },
+  {
+    "id": "CC-076",
+    "file": "CC-076-core-pwa-in-the-template.md",
+    "milestone": "M-T",
+    "depends_on": ["CC-075"],
+    "priority": "p1",
+    "size": "m",
+    "title": "Core PWA in the template"
+  },
+  {
+    "id": "CC-077",
+    "file": "CC-077-hardened-stripe-webhook-path.md",
+    "milestone": "M-T",
+    "depends_on": ["CC-069"],
+    "priority": "p1",
+    "size": "m",
+    "title": "Hardened Stripe webhook path"
+  },
+  {
+    "id": "CC-078",
+    "file": "CC-078-per-slice-templates-files-and-kebab-presentation-names.md",
+    "milestone": "M-T",
+    "depends_on": [],
+    "priority": "p2",
+    "size": "m",
+    "title": "Per-slice templates files and kebab presentation names"
   }
 ]

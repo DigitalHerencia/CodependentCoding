@@ -1,0 +1,48 @@
+---
+id: CC-051
+title: "Self-hosted Cinzel and JetBrains Mono; drop Archivo Black and Fira Code"
+type: feat
+area: site
+milestone: "M-S2 · Design system"
+priority: p1
+size: s
+labels: [type:feat, area:site, priority:p1, size:s]
+depends_on: [CC-050]
+status: todo
+---
+
+# CC-051 · Self-hosted Cinzel and JetBrains Mono; drop Archivo Black and Fira Code
+
+## Scope
+
+- [ ] Cinzel 600/700 self-hosted via `next/font/local` with `size-adjust` fallback metrics (ledger P-10)
+- [ ] JetBrains Mono variable via `next/font/local`, Latin subset
+- [ ] Remove `Archivo_Black`, `Fira_Code`; rename variables to what they load
+
+## Acceptance criteria
+
+- [ ] No request to fonts.googleapis.com or fonts.gstatic.com at build or runtime
+- [ ] Font payload ≤ 120 KB total
+- [ ] CLS 0 on `/` and a chapter page
+
+## Validation
+
+```powershell
+pnpm build
+lhci autorun
+```
+
+## Depends on
+
+CC-050
+
+## References
+
+- refurbish/PLAN.md §5.2
+- ledger P-8
+
+## Definition of done
+
+- Acceptance criteria checked with EXECUTED evidence in `.claude/execution/progress.json`
+- `decisions.json` updated if a choice was made; `handoff.json` points at the next issue
+- PR uses the template and says `Closes #<this issue>`

@@ -1,18 +1,30 @@
 {
   "$schema": "codependent-coding/execution/handoff/v1",
-  "updated": "2026-10-29T04:00:00Z",
+  "updated": "2026-10-31T18:30:00Z",
   "format": "Overwrite each session. Minimum state the next session needs to resume safely.",
-  "status": "terminal-app",
-  "milestone": "M6",
+  "status": "doctrine-v1",
+  "milestone": "M-S1",
   "current_issue": null,
-  "next_issue": null,
-  "queue": [],
+  "next_issue": "CC-047",
+  "queue": [
+    "CC-047",
+    "CC-069",
+    "CC-046",
+    "CC-048",
+    "CC-049",
+    "CC-072",
+    "CC-073",
+    "CC-074",
+    "CC-070",
+    "CC-075"
+  ],
   "branch": "claude/project-thread-63a8tz",
   "in_flight": [
     "Thread 'Plan the termcn TUI on the doctrine' (#280, plan https://claude.ai/artifact/D2bQyknDraP3A54tR5oMgu): steps 1-7 merged (#281-#286). Step 8 apps + settings in review; after it merges, close #280. Later ideas (not started): `hipster-stack` with no args opens the TUI; agents screen for Loaded Vibes.",
     "Thread 'Audit configs, errors and broken links' (DEC-076): security headers, terminal-app CI trigger, plugin lint, doc versions. React Compiler now on in the template (DEC-081). (e2e and template validate gaps fixed in DEC-079.)"
   ],
   "notes": [
+    "2026-10-31 (DEC-082..DEC-090): doctrine v1.0 locked in context/canon/; 33 issues CC-046..CC-078 added (site M-S1..M-S6, template M-T). Security-critical first: CC-047 (lockfile hides deps from Dependabot; release age) and CC-069 (runtime DB role, RLS rewrite). Issues are not yet on GitHub: run `pnpm issues:sync -- --apply --project 19`.",
     "Governance package is uncommitted in the owner's working tree; owner reviews with `git status` / `git diff`, then commits on a branch `chore/governance-package`.",
     "Template already contains the doctrine ESLint plugin (template/eslint/) and the new eslint.config.mjs; CC-009 turns findings into fixes.",
     "Toolchain now pinned: node 24.x, pnpm 12.3.4, TS 6.0.3, ESLint 9.39.5 at root and template. Root lint/typecheck run but have findings (CC-006/CC-009 onward).",
