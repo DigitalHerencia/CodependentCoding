@@ -14,10 +14,16 @@ import { prunePackageJson } from "#cli/compose/packageJson";
 
 /**
  * Not copied: a new app starts its own migration history (`pnpm db:init`),
- * tests/template/ pins the Maximal Template's full module set, and .claude/ is
- * the template's own governance (the app gets assets/app-governance instead).
+ * tests/template/ pins the Maximal Template's full module set, and .claude/ and
+ * context/ are the template's own governance and docs (the app gets
+ * assets/app-governance instead).
  */
-export const EXCLUDED = [".claude/", "prisma/migrations/", "tests/template/"];
+export const EXCLUDED = [
+  ".claude/",
+  "context/",
+  "prisma/migrations/",
+  "tests/template/",
+];
 
 /** Files the pipeline writes or rewrites; formatted before it returns. */
 const FORMATTED = [
