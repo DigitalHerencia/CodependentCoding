@@ -79,6 +79,7 @@ URL ─► app/ (route) ─► features/ ─► components/blocks ─► compone
 | Cache                    | `lib/cache/{tags,life,invalidate}.ts`                                          | Semantics only                                                              |
 | Module contribution      | `lib/modules/<id>.module.ts`, `registry.ts`                                    | Nav, dashboard widgets, permissions                                         |
 | Env                      | `lib/env/<owner>.ts`                                                           | Zod-validated, `server-only`                                                |
+| Error reporting          | `lib/observability/report.ts`                                                  | `server-only`; `reportError` returns the correlation `ref`                  |
 | Validation               | `schemas/<domain>Schemas.ts`                                                   | Zod; client- and server-safe                                                |
 | Shared types             | `types/<domain>Types.ts`                                                       | Compile-time contracts                                                      |
 | Schema                   | `prisma/schema/<owner>.prisma`, `prisma/rls/<owner>.sql`, `prisma/seed.ts`     | Prisma lifecycle                                                            |
@@ -109,6 +110,7 @@ Webhook HTTP lifecycle?          app/api/<provider>/webhooks/route.ts
 Runtime validation?              schemas/<d>Schemas.ts
 Shared type?                     types/<d>Types.ts
 Cache tag / lifetime?            lib/cache
+Report an unexpected error?      lib/observability/report.ts
 Constant / pure util?            lib/constants | lib/utils
 None of the above?               Stop. Do not invent a layer (CC-NAME-002).
 ```

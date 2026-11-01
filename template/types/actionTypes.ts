@@ -12,6 +12,8 @@ export interface ActionError {
   code: ActionErrorCode;
   message: string;
   fieldErrors?: Record<string, string[]>;
+  /** Correlation ID of the server-side error report; set on INTERNAL only. */
+  ref?: string;
 }
 
 export type ActionResult<T> =
