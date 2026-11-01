@@ -43,6 +43,17 @@ pnpm format
 
 The check exits 1 when a file does not parse or lost its `$schema`, a decision id is out of order, an issue id in handoff or progress has no file, an acceptance line has no evidence state, or an `in-review`/`done` issue has no `EXECUTED` line. Fix until it exits 0.
 
-## 6. Hand back
+## 6. Offer the commit
 
-The issue and its status, the decisions added, the next issue, and anything `NOT_RUN` or `BLOCKED`.
+When the check exits 0 and `git status` shows changes, propose one Conventional Commit that names the issue, and show the command:
+
+```text
+git add -A
+git commit -m "feat(<module>): <summary> (<ID>)"
+```
+
+Commit only when the owner says yes. Never push and never open the PR yourself; say that `git push -u origin <branch>` and a PR are the next step. On the default branch (`main` or `master`), say so and suggest `git switch -c <type>/<ID>-<slug>` before the commit.
+
+## 7. Hand back
+
+The issue and its status, the decisions added, the commit (made or offered), the next issue, and anything `NOT_RUN` or `BLOCKED`.
