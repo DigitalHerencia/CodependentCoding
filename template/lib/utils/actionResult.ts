@@ -1,47 +1,35 @@
 import { unstable_rethrow } from "next/navigation";
 import { ZodError } from "zod";
 
-import type {
-  ActionError,
-  ActionErrorCode,
-  ActionResult,
-} from "@/types/actionTypes";
+import { reportError } from "@/lib/observability/report";
+import type { ActionErrorCode, ActionResult } from "@/types/actionTypes";
 
-const codes = new Set<string>([
-  "UNAUTHENTICATED",
-  "FORBIDDEN",
-  "NOT_FOUND",
-  "VALIDATION",
-  "CONFLICT",
-  "RATE_LIMITED",
-]);
+type CodedErrorCode = Exclude<ActionErrorCode, "INTERNAL">;
 
-/**
- * Maps a thrown error to the action error contract. Errors that carry a known
- * `code` keep their message; anything else is INTERNAL with a generic message
- * so internals never reach the client.
- */
-export function toActionError(cause: unknown): ActionError {
-  if (cause instanceof ZodError) {
-    const fieldErrors: Record<string, string[]> = {};
-    for (const issue of cause.issues) {
-      const field = issue.path.join(".") || "form";
-      (fieldErrors[field] ??= []).push(issue.message);
-    }
-    return {
-      code: "VALIDATION",
-      message: "Check the highlighted fields.",
-      fieldErrors,
-    };
-  }
+/** Fixed, user-facing messages. A thrown error's own message never reaches the client. */
+const clientMessage: Record<CodedErrorCode, string> = {
+  UNAUTHENTICATED: "Sign in to continue.",
+  FORBIDDEN: "You don't have access to do that.",
+  NOT_FOUND: "That item doesn't exist or was removed.",
+  VALIDATION: "Check the highlighted fields.",
+  CONFLICT: "Someone else changed this. Reload and try again.",
+  RATE_LIMITED: "Too many requests. Wait a moment and try again.",
+};
+
+function codeOf(cause: unknown): CodedErrorCode | undefined {
   const code = (cause as { code?: unknown } | null)?.code;
-  if (typeof code === "string" && codes.has(code) && cause instanceof Error) {
-    return { code: code as ActionErrorCode, message: cause.message };
-  }
-  return { code: "INTERNAL", message: "Something went wrong. Try again." };
+  return typeof code === "string" && Object.hasOwn(clientMessage, code)
+    ? (code as CodedErrorCode)
+    : undefined;
 }
 
-/** Runs an action body and returns its `ActionResult`. */
+/**
+ * The single error mapper (CC-ERR-001): runs an action body and converts any
+ * failure into a client-safe `ActionResult`. Next control flow is rethrown,
+ * `ZodError` becomes VALIDATION with field errors, coded domain errors get a
+ * fixed message, and anything else is reported and returned as INTERNAL with
+ * its correlation `ref` (CC-ERR-002).
+ */
 export async function toActionResult<T>(
   run: () => Promise<T>,
 ): Promise<ActionResult<T>> {
@@ -50,6 +38,33 @@ export async function toActionResult<T>(
   } catch (cause) {
     // redirect() and notFound() are control flow, not failures.
     unstable_rethrow(cause);
-    return { ok: false, error: toActionError(cause) };
+    if (cause instanceof ZodError) {
+      const fieldErrors: Record<string, string[]> = {};
+      for (const issue of cause.issues) {
+        (fieldErrors[issue.path.join(".") || "form"] ??= []).push(
+          issue.message,
+        );
+      }
+      return {
+        ok: false,
+        error: {
+          code: "VALIDATION",
+          message: clientMessage.VALIDATION,
+          fieldErrors,
+        },
+      };
+    }
+    const code = codeOf(cause);
+    if (code)
+      return { ok: false, error: { code, message: clientMessage[code] } };
+    const ref = reportError(cause, { boundary: "action" });
+    return {
+      ok: false,
+      error: {
+        code: "INTERNAL",
+        message: "Something went wrong. Try again.",
+        ref,
+      },
+    };
   }
 }

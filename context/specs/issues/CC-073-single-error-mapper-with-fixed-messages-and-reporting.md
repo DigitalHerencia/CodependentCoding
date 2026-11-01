@@ -8,7 +8,7 @@ priority: p0
 size: s
 labels: [type:fix, area:template, priority:p0, size:s]
 depends_on: []
-status: todo
+status: done
 ---
 
 # CC-073 · Single error mapper with fixed messages and reporting

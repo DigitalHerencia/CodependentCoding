@@ -167,6 +167,7 @@ type ActionResult<T> =
         code: ErrorCode;
         message: string;
         fieldErrors?: Record<string, string[]>;
+        ref?: string;
       };
     };
 
@@ -180,6 +181,7 @@ type ErrorCode =
   | "INTERNAL";
 ```
 
+- One mapper, `toActionResult` in `lib/utils/actionResult.ts`, builds every failure. Coded errors get a fixed client message per code; a thrown error's own message never reaches the client. Anything uncoded is `INTERNAL`, reported with `reportError` (`lib/observability/report.ts`), and carries that report's correlation `ref`.
 - Fetchers return `null` for not-found and throw only on unexpected failure.
 - Cross-tenant access returns `NOT_FOUND`, never `FORBIDDEN` (no existence leaks).
 - `RATE_LIMITED` is backed by the `ratelimit` add-on (Upstash, `lib/integrations/upstash/ratelimit.ts`); without it, the code is unused. With the add-on installed but `UPSTASH_*` unset, AI generation falls back to a per-user database count (DEC-041).
