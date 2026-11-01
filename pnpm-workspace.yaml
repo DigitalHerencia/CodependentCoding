@@ -1,6 +1,17 @@
 packages:
   - "packages/*"
 
+# Supply chain (CC-047): skip versions younger than 7 days, refuse a dependency whose
+# publish trust drops, and never write the package-manager env document into the lockfile.
+minimumReleaseAge: 10080
+trustPolicy: no-downgrade
+pmOnFail: ignore
+# Older versions published before their package gained provenance; pinned transitively
+# by next, @babel/core and eslint-config-next.
+trustPolicyExclude:
+  - eslint-import-resolver-typescript@3.10.1
+  - semver@6.3.1
+
 allowBuilds:
   esbuild: true
   sharp: true

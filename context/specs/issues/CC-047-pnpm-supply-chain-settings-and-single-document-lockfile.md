@@ -8,7 +8,7 @@ priority: p0
 size: s
 labels: [type:build, area:ci, priority:p0, size:s]
 depends_on: []
-status: todo
+status: done
 ---
 
 # CC-047 · pnpm supply-chain settings and single-document lockfile

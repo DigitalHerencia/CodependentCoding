@@ -97,11 +97,11 @@ Removed: `.agents/`, `packages/core`, `packages/schema`, `packages/loaded-vibes`
 
 | Script                    | Command                                                                                    |
 | ------------------------- | ------------------------------------------------------------------------------------------ |
-| `dev`                     | `next dev` (no tunnels or personal URLs)                                                   |
-| `build`                   | `next build --turbopack`                                                                   |
+| `dev`                     | `prisma generate && next dev` (no tunnels or personal URLs)                                |
+| `build`                   | `prisma generate && next build --turbopack`                                                |
 | `lint` / `lint:fix`       | `eslint . --max-warnings=0` (doctrine included)                                            |
 | `doctrine:test`           | `node --test eslint/*.test.mjs`                                                            |
-| `typecheck`               | `next typegen && tsc --noEmit`                                                             |
+| `typecheck`               | `prisma generate && next typegen && tsc --noEmit`                                          |
 | `format` / `format:check` | Prettier                                                                                   |
 | `test`                    | `vitest run`                                                                               |
 | `test:rls`                | RLS cross-tenant suite against `DATABASE_URL_TEST`                                         |
@@ -111,7 +111,6 @@ Removed: `.agents/`, `packages/core`, `packages/schema`, `packages/loaded-vibes`
 | `db:init`                 | `prisma migrate dev --name init` + apply `prisma/rls/*.sql` as a second migration          |
 | `issues:sync`             | validate `context/specs/issues/*.md`; `--apply` syncs labels, milestones, issues to GitHub |
 | `validate`                | `format:check && lint && doctrine:test && typecheck && check:ownership && test`            |
-| `postinstall`             | `prisma generate`                                                                          |
 
 ## 5. Next.js configuration
 
