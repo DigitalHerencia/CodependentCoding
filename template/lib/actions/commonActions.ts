@@ -7,12 +7,14 @@ import {
   createInvitationSchema,
   invitationIdSchema,
   organizationSettingsSchema,
+  switchOrganizationSchema,
 } from "@/schemas/commonSchemas";
 import type { ActionResult } from "@/types/actionTypes";
 import type { CreatedInvitationDTO } from "@/types/commonTypes";
+import { setActiveOrganizationPreference } from "@/lib/auth/active-organization";
 import { requireIdentity } from "@/lib/auth/auth";
 import { assertPermission } from "@/lib/authz/permissions";
-import { invalidatePaths } from "@/lib/cache/invalidate";
+import { invalidateAllPaths, invalidatePaths } from "@/lib/cache/invalidate";
 import { INVITATION_TTL_DAYS } from "@/lib/constants/invitations";
 import {
   toInvitationDTO,
@@ -184,5 +186,28 @@ export async function acceptInvitation(
     });
     invalidatePaths(["/dashboard"]);
     return joined;
+  });
+}
+
+/**
+ * Makes another of the caller's organizations the active one. The cookie is
+ * set only after an ACTIVE membership there is confirmed; the tenancy wrapper
+ * re-checks it on every request anyway.
+ */
+export async function switchOrganization(
+  rawInput: unknown,
+): Promise<ActionResult<{ organizationId: string }>> {
+  return toActionResult(async () => {
+    const { organizationId } = switchOrganizationSchema.parse(rawInput);
+    await withIdentityTransaction(async (tx, user) => {
+      const membership = await tx.membership.findFirst({
+        where: { userId: user.id, organizationId, status: "ACTIVE" },
+        select: { id: true },
+      });
+      if (!membership) throw new ResourceNotFoundError("Organization");
+    });
+    await setActiveOrganizationPreference(organizationId);
+    invalidateAllPaths();
+    return { organizationId };
   });
 }

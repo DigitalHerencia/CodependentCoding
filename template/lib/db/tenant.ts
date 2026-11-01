@@ -7,6 +7,7 @@ import type {
   AuthenticatedIdentity,
 } from "@/types/accessTypes";
 
+import { getActiveOrganizationPreference } from "@/lib/auth/active-organization";
 import { requireIdentity } from "@/lib/auth/auth";
 import { prisma } from "@/lib/db/client";
 import { setRlsContext } from "@/lib/db/rls";
@@ -38,17 +39,34 @@ async function resolveUser(
   return user;
 }
 
+const membershipSelect = { id: true, organizationId: true, role: true };
+
+/**
+ * The membership this request acts through: the active-org cookie's
+ * organization when the user still holds an ACTIVE membership there,
+ * otherwise the oldest ACTIVE membership.
+ */
 async function resolveAccessContext(
   tx: Prisma.TransactionClient,
   identity: AuthenticatedIdentity,
+  preferredOrganizationId: string | null,
 ): Promise<AccessContext> {
   const user = await resolveUser(tx, identity);
+  const active = { userId: user.id, status: "ACTIVE" } as const;
 
-  const membership = await tx.membership.findFirst({
-    where: { userId: user.id, status: "ACTIVE" },
-    orderBy: [{ createdAt: "asc" }, { id: "asc" }],
-    select: { id: true, organizationId: true, role: true },
-  });
+  const preferred = preferredOrganizationId
+    ? await tx.membership.findFirst({
+        where: { ...active, organizationId: preferredOrganizationId },
+        select: membershipSelect,
+      })
+    : null;
+  const membership =
+    preferred ??
+    (await tx.membership.findFirst({
+      where: active,
+      orderBy: [{ createdAt: "asc" }, { id: "asc" }],
+      select: membershipSelect,
+    }));
   if (!membership) {
     throw new TenantContextError(
       "The authenticated user does not have an active application membership.",
@@ -68,7 +86,8 @@ async function resolveAccessContext(
 
 /**
  * Authentication and authorization wrapper: resolves the signed-in user's
- * active membership (organization and role) inside the transaction, locks
+ * active membership (organization and role; the active-org cookie picks
+ * among several) inside the transaction, locks
  * RLS to that organization, then runs `work` with the access context that
  * every fetcher and action checks with lib/authz.
  */
@@ -76,8 +95,13 @@ export async function withTenantTransaction<T>(
   identity: AuthenticatedIdentity,
   work: (tx: Prisma.TransactionClient, access: AccessContext) => Promise<T>,
 ): Promise<T> {
+  const preferredOrganizationId = await getActiveOrganizationPreference();
   return prisma.$transaction(
-    async (tx) => work(tx, await resolveAccessContext(tx, identity)),
+    async (tx) =>
+      work(
+        tx,
+        await resolveAccessContext(tx, identity, preferredOrganizationId),
+      ),
     { maxWait: 5_000, timeout: 15_000 },
   );
 }

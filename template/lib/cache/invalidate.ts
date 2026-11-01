@@ -9,3 +9,8 @@ export function invalidateTags(tags: readonly string[]) {
 export function invalidatePaths(paths: readonly string[]) {
   for (const path of new Set(paths)) revalidatePath(path);
 }
+
+/** Every page: data that depends on the active organization changed. */
+export function invalidateAllPaths() {
+  revalidatePath("/", "layout");
+}
