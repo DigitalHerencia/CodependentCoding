@@ -57,7 +57,7 @@ function appDir(): string {
   const dir = mkdtempSync(path.join(tmpdir(), "hipster-prov-"));
   writeFileSync(
     path.join(dir, ".env.example"),
-    '# header\nDATABASE_URL=""\nDIRECT_DATABASE_URL=""\nCLERK_SECRET_KEY=""\n',
+    '# header\nDATABASE_URL=""\nDATABASE_URL_UNPOOLED=""\nCLERK_SECRET_KEY=""\n',
   );
   return dir;
 }
@@ -191,7 +191,7 @@ describe("pasted connection string", () => {
     const dir = mkdtempSync(path.join(tmpdir(), "hs-connect-"));
     writeFileSync(
       path.join(dir, ".env.example"),
-      'DATABASE_URL=""\nDIRECT_DATABASE_URL=""\nCLERK_SECRET_KEY=""\n',
+      'DATABASE_URL=""\nDATABASE_URL_UNPOOLED=""\nCLERK_SECRET_KEY=""\n',
     );
     const sql: { url: string; sql: string }[] = [];
     await connectDatabase({
@@ -213,7 +213,7 @@ describe("pasted connection string", () => {
           "DATABASE_URL",
           "postgresql://app_user:apppw123@ep-cool-1-pooler.us-east-2.aws.neon.tech/neondb?sslmode=require",
         ],
-        ["DIRECT_DATABASE_URL", direct],
+        ["DATABASE_URL_UNPOOLED", direct],
       ]),
     );
   });
@@ -405,7 +405,7 @@ describe("provision", () => {
     expect(parseEnv(env).get("DATABASE_URL")).toBe(
       "postgresql://app_user:apppw123@ep-x-pooler.neon.tech/neondb?sslmode=require",
     );
-    expect(parseEnv(env).get("DIRECT_DATABASE_URL")).toBe(OWNER_DIRECT);
+    expect(parseEnv(env).get("DATABASE_URL_UNPOOLED")).toBe(OWNER_DIRECT);
     expect(env).toContain('CLERK_SECRET_KEY=""');
 
     expect(ran("vercel", "project", "create")?.args).toEqual([
@@ -427,7 +427,7 @@ describe("provision", () => {
         "DATABASE_URL",
         "postgresql://app_user:apppw123@ep-x-pooler.neon.tech/neondb?sslmode=require",
       ],
-      ["DIRECT_DATABASE_URL", OWNER_DIRECT],
+      ["DATABASE_URL_UNPOOLED", OWNER_DIRECT],
     ]);
     // Secrets travel on stdin only.
     for (const call of calls) {

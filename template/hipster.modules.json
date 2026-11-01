@@ -10,7 +10,7 @@
         "description": "Neon pooled connection string (runtime)"
       },
       {
-        "name": "DIRECT_DATABASE_URL",
+        "name": "DATABASE_URL_UNPOOLED",
         "required": false,
         "scope": "server",
         "description": "Neon direct connection string (migrations, seed); falls back to DATABASE_URL"

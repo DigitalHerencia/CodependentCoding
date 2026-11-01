@@ -111,13 +111,13 @@ async function databaseChecks(
   query: QuerySql,
 ): Promise<CheckResult[]> {
   // The owner's direct URL sees every table; the runtime URL is the fallback.
-  const url = env.get("DIRECT_DATABASE_URL") ?? env.get("DATABASE_URL");
+  const url = env.get("DATABASE_URL_UNPOOLED") ?? env.get("DATABASE_URL");
   if (!url) {
     const skip = (check: string): CheckResult => ({
       check,
       status: "skip",
       detail: "no database URL",
-      hint: "Set DATABASE_URL (and DIRECT_DATABASE_URL) in .env.local.",
+      hint: "Set DATABASE_URL (and DATABASE_URL_UNPOOLED) in .env.local.",
     });
     return [skip("database"), skip("migrations"), skip("rls")];
   }
@@ -130,7 +130,7 @@ async function databaseChecks(
         status: "fail",
         // pg messages name the host or role, never the password.
         detail: (error as Error).message.split("\n")[0] ?? "unreachable",
-        hint: "Check DIRECT_DATABASE_URL / DATABASE_URL and that the database is running.",
+        hint: "Check DATABASE_URL_UNPOOLED / DATABASE_URL and that the database is running.",
       },
       { check: "migrations", status: "skip", detail: "database unreachable" },
       { check: "rls", status: "skip", detail: "database unreachable" },

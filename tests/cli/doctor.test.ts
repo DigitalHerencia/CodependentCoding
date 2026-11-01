@@ -90,7 +90,7 @@ describe("doctor", () => {
     const dir = await app(["crm"]);
     writeFileSync(
       path.join(dir, ".env.local"),
-      `DATABASE_URL="postgresql://app_user:x@db.example/app"\nDIRECT_DATABASE_URL="${SECRET}"\n`,
+      `DATABASE_URL="postgresql://app_user:x@db.example/app"\nDATABASE_URL_UNPOOLED="${SECRET}"\n`,
     );
     mkdirSync(path.join(dir, "prisma/migrations/20261024000000_init"), {
       recursive: true,

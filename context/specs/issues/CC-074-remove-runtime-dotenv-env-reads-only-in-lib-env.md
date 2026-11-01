@@ -8,7 +8,7 @@ priority: p1
 size: s
 labels: [type:fix, area:template, priority:p1, size:s]
 depends_on: []
-status: todo
+status: done
 ---
 
 # CC-074 · Remove runtime dotenv; env reads only in lib/env

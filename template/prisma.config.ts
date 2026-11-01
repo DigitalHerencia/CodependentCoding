@@ -7,7 +7,7 @@ config({ quiet: true });
 
 // Blank values (copied from .env.example) count as unset.
 const directDatabaseUrl =
-  process.env.DIRECT_DATABASE_URL?.trim() || process.env.DATABASE_URL?.trim();
+  process.env.DATABASE_URL_UNPOOLED?.trim() || process.env.DATABASE_URL?.trim();
 
 export default defineConfig({
   schema: "prisma/schema",

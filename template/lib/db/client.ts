@@ -2,21 +2,13 @@ import "server-only";
 
 import { createHash } from "node:crypto";
 import { PrismaNeon } from "@prisma/adapter-neon";
-import { config } from "dotenv";
 
 import { PrismaClient } from "@/generated/prisma/client";
 import { baseEnv } from "@/lib/env/base";
-import { isDevelopment, isProduction } from "@/lib/env/mode";
+import { isProduction } from "@/lib/env/mode";
 
-const localEnvironment: Record<string, string> = {};
-config({ path: ".env.local", quiet: true, processEnv: localEnvironment });
-config({ path: ".env.local", quiet: true });
-config({ quiet: true });
-
-// Local development targets the checked-out app, not an unrelated inherited URL.
-const connectionString =
-  (isDevelopment ? localEnvironment.DATABASE_URL : undefined) ??
-  baseEnv.read().DATABASE_URL;
+// Next.js loads .env.local itself; env is read only through lib/env.
+const connectionString = baseEnv.read().DATABASE_URL;
 
 const adapter = new PrismaNeon({
   connectionString,
