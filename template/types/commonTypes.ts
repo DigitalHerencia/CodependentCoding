@@ -30,3 +30,14 @@ export interface InvitationListDTO {
   canInvite: boolean;
   invitations: InvitationDTO[];
 }
+
+/** One organization the signed-in user holds an ACTIVE membership in. */
+export interface OrganizationOptionDTO {
+  id: string;
+  name: string;
+}
+
+export interface OrganizationSwitcherDTO {
+  activeOrganizationId: string;
+  organizations: OrganizationOptionDTO[];
+}

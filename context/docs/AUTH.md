@@ -76,7 +76,7 @@ enum MembershipStatus { active invited suspended }
 
 - Stored in an httpOnly, `Secure`, `SameSite=Lax` cookie `active-org` holding the organization ID.
 - **Every request re-validates** it against an active Membership. Invalid or missing → fall back to the user's first active membership → none → redirect `/onboarding`.
-- Switching orgs is a server action that validates membership before setting the cookie.
+- Switching orgs is a server action (`switchOrganization`) that validates membership before setting the cookie. The cookie is read and written only in `lib/auth/active-organization.ts`; the tenant shell shows the switcher to users with two or more organizations.
 
 ### 4.2 Onboarding
 

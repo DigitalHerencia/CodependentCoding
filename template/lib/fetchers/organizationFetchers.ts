@@ -1,6 +1,9 @@
 import "server-only";
 
-import type { InvitationListDTO } from "@/types/commonTypes";
+import type {
+  InvitationListDTO,
+  OrganizationSwitcherDTO,
+} from "@/types/commonTypes";
 import { assertPermission, hasPermission } from "@/lib/authz/permissions";
 import { withAuthenticatedRead } from "@/lib/db/tenant";
 import {
@@ -24,6 +27,22 @@ export async function getCurrentOrganization() {
     });
 
     return toOrganizationDTO(record);
+  });
+}
+
+/** The organizations the caller can switch between, oldest membership first. */
+export async function getOrganizationSwitcher(): Promise<OrganizationSwitcherDTO> {
+  return withAuthenticatedRead(async (tx, access) => {
+    assertPermission(access, "base.organization:read");
+    const rows = await tx.membership.findMany({
+      where: { userId: access.userId, status: "ACTIVE" },
+      orderBy: [{ createdAt: "asc" }, { id: "asc" }],
+      select: { organization: { select: { id: true, name: true } } },
+    });
+    return {
+      activeOrganizationId: access.organizationId,
+      organizations: rows.map(({ organization }) => organization),
+    };
   });
 }
 
