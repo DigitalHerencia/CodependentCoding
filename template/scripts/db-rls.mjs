@@ -30,12 +30,13 @@ if (!process.argv.includes("--check")) {
 } else {
   config({ path: ".env.local", quiet: true });
   config({ quiet: true });
-  const url = [
-    process.env.DATABASE_URL_UNPOOLED,
-    process.env.DIRECT_DATABASE_URL,
-    process.env.DATABASE_URL,
-  ]
-    .map((value) => value?.trim())
+  // lib/env is the only reader of the environment (check:env); the owner's
+  // direct URL first, whichever of the names this app declares.
+  const { baseEnv } = await import("@/lib/env/base");
+  const declared = Object.keys(baseEnv.schema.shape);
+  const url = ["DATABASE_URL_UNPOOLED", "DIRECT_DATABASE_URL", "DATABASE_URL"]
+    .filter((name) => declared.includes(name))
+    .map((name) => baseEnv.value(name))
     .find(Boolean);
   if (!url) {
     process.stderr.write("db:rls:check needs the owner's database URL.\n");

@@ -59,10 +59,7 @@ export function writeRlsMigration(root, now = new Date()) {
   const file = (name) =>
     join(root, "prisma", "migrations", name, "migration.sql");
   if (latest && readFileSync(file(latest), "utf8") === sql) return null;
-  const stamp = now
-    .toISOString()
-    .replace(/[-:T]/g, "")
-    .replace(/\..*$/, "");
+  const stamp = now.toISOString().replace(/[-:T]/g, "").replace(/\..*$/, "");
   const name = `${stamp}_rls`;
   mkdirSync(join(root, "prisma", "migrations", name), { recursive: true });
   writeFileSync(file(name), sql);
@@ -134,7 +131,9 @@ export async function rlsDrift(client, root) {
   for (const [key, value] of source) {
     if (!live.has(key)) drift.push(`missing   ${key}: ${value}`);
     else if (live.get(key) !== value)
-      drift.push(`differs   ${key}\n  live:   ${live.get(key)}\n  source: ${value}`);
+      drift.push(
+        `differs   ${key}\n  live:   ${live.get(key)}\n  source: ${value}`,
+      );
   }
   for (const [key, value] of live) {
     if (!source.has(key)) drift.push(`unexpected ${key}: ${value}`);

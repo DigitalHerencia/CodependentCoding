@@ -87,7 +87,7 @@ async function probeAll(
 
 beforeAll(async () => {
   owner = await connect(ownerUrl);
-  await migrate(owner);
+  await migrate();
   await prepareAppRole(owner);
   catalog = await readCatalog(owner);
   await seedOrg(owner, catalog, orgA);

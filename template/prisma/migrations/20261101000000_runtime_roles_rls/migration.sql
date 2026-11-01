@@ -31,8 +31,14 @@ GRANT USAGE ON SCHEMA public TO app_runtime, app_system;
 GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO app_runtime;
 ALTER DEFAULT PRIVILEGES IN SCHEMA public
   GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO app_runtime;
--- Prisma's migration ledger belongs to the owner alone.
-REVOKE ALL ON "_prisma_migrations" FROM app_runtime, app_system;
+-- Prisma's migration ledger belongs to the owner alone (absent in Prisma's
+-- shadow database, hence the guard).
+DO $$
+BEGIN
+  IF to_regclass('public."_prisma_migrations"') IS NOT NULL THEN
+    REVOKE ALL ON "_prisma_migrations" FROM app_runtime, app_system;
+  END IF;
+END $$;
 -- The audit trail is insert-only (ledger D-6).
 REVOKE UPDATE, DELETE ON "AuditEvent" FROM app_runtime;
 GRANT SELECT, INSERT, UPDATE, DELETE ON "WebhookEvent", "IdempotencyRecord" TO app_system;

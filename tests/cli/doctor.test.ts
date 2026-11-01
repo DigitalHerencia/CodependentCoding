@@ -57,12 +57,10 @@ function database(
   applied: string[],
   tables: { name: string; forced: boolean }[],
   role: Record<string, unknown> | null = SAFE_ROLE,
-): { query: QuerySql; urls: string[]; sql: string[] } {
+): { query: QuerySql; urls: string[] } {
   const urls: string[] = [];
-  const sql: string[] = [];
   const query: QuerySql = async (url, text) => {
     urls.push(url);
-    sql.push(text);
     if (text === "select 1") return [{ "?column?": 1 }];
     if (text.includes("_prisma_migrations")) {
       return applied.map((migration_name) => ({ migration_name }));

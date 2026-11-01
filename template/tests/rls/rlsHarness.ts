@@ -83,7 +83,7 @@ export async function connect(url: string): Promise<pg.Client> {
  * history (CC-MIG-001); nothing from prisma/rls is applied here, so a source
  * change without its `pnpm db:rls` migration fails the suite.
  */
-export async function migrate(owner: pg.Client): Promise<void> {
+export async function migrate(): Promise<void> {
   const migrations = path.join(process.cwd(), "prisma", "migrations");
   if (
     !existsSync(migrations) ||

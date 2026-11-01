@@ -363,7 +363,7 @@ security:
   permission_format: "<module>.<resource>:<action>"
   actions: [read, create, update, delete, manage]
   rls:
-    runtime_role: app_user
+    runtime_role: app_runtime
     bypassrls: false
     context_setting: app.current_organization_id
     fail_closed: true

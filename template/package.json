@@ -17,7 +17,7 @@
     "issues:sync": "node scripts/sync-issues.mjs",
     "db:init": "node scripts/db-init.mjs",
     "db:rls": "node scripts/db-rls.mjs",
-    "db:rls:check": "node scripts/db-rls.mjs --check",
+    "db:rls:check": "tsx --conditions=react-server scripts/db-rls.mjs --check",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint": "eslint . --max-warnings=0",
