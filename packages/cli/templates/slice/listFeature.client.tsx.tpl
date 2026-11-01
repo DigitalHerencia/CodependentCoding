@@ -2,7 +2,7 @@
 // Why: Client island: filters the already-authorized {{entity}} list in the browser; never fetches.
 import Link from "next/link";
 import { useState } from "react";
-import { {{Module}}{{Entities}}Template } from "@/components/templates/{{module}}{{Entities}}Template";
+import { {{Module}}{{Entities}}Template } from "@/components/templates/{{module}}-templates";
 import { Input } from "@/components/ui/input";
 import type { {{Entity}}DTO } from "@/types/{{module}}Types";
 export function {{Entities}}FeatureClient({

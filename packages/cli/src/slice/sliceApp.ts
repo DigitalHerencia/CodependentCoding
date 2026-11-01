@@ -86,15 +86,7 @@ interface Manifest {
 function targets(
   names: Names,
 ): { template: string; target: string; merge: boolean }[] {
-  const {
-    module: m,
-    entity: e,
-    entities: es,
-    Entities: Es,
-    Entity: E,
-    route,
-    param,
-  } = names;
+  const { module: m, entity: e, entities: es, route, param } = names;
   const feature = (file: string) => `features/${m}/${file}`;
   const page = `app/(tenant)/${route}`;
   return [
@@ -120,15 +112,16 @@ function targets(
       target: `lib/actions/${m}Actions.ts`,
       merge: true,
     },
+    // Both templates go into the slice's one templates file (CC-078).
     {
       template: "listTemplate.tsx.tpl",
-      target: `components/templates/${m}${Es}Template.tsx`,
-      merge: false,
+      target: `components/templates/${m}-templates.tsx`,
+      merge: true,
     },
     {
       template: "detailTemplate.tsx.tpl",
-      target: `components/templates/${m}${E}DetailTemplate.tsx`,
-      merge: false,
+      target: `components/templates/${m}-templates.tsx`,
+      merge: true,
     },
     {
       template: "listFeature.tsx.tpl",
@@ -305,11 +298,15 @@ export async function planSlice(options: SliceOptions): Promise<SlicePlan> {
     );
   }
   for (const { template: file, target, merge } of targets(names)) {
-    const current = read(appDir, target);
+    // A target planned earlier in this loop (two templates, one file) merges
+    // into the planned text and keeps its created/updated entry.
+    const planned = writes.get(target);
+    const current = planned ?? read(appDir, target);
     if (current === null) put(target, template(file), true);
-    else if (merge)
-      put(target, mergeTs(ts, current, template(file), target), false);
-    else throw new Error(`${target} already exists.`);
+    else if (!merge) throw new Error(`${target} already exists.`);
+    else if (planned !== undefined)
+      writes.set(target, mergeTs(ts, current, template(file), target));
+    else put(target, mergeTs(ts, current, template(file), target), false);
   }
 
   // Prisma: model + enums in the module's schema file, back-relations tagged.

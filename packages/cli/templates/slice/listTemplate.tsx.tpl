@@ -1,4 +1,4 @@
-// Why: Template: lays out the {{entity}} list from DTOs; the toolbar is a slot.
+// Why: Templates: pure presentation for the {{module}} pages, laid out from DTOs; data and slots come from features.
 import Link from "next/link";
 import type { ReactNode } from "react";
 import type { {{Entity}}DTO } from "@/types/{{module}}Types";
