@@ -8,7 +8,7 @@ priority: p0
 size: m
 labels: [type:refactor, area:template, priority:p0, size:m]
 depends_on: []
-status: todo
+status: done
 ---
 
 # CC-070 · Roles and mode flags into lib/authz; generator-baked policies
