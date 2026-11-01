@@ -69,8 +69,8 @@ test("coded domain errors map to fixed messages, never their own", async () => {
   assert.deepEqual(logged, []);
 });
 
-test("an INTERNAL result carries a ref and the full error is reported under it", async () => {
-  const cause = new Error("connection string postgres://secret");
+test("an INTERNAL result carries a ref and a redacted report is logged under it", async () => {
+  const cause = coded("ECONNREFUSED", "connection string postgres://secret");
   const result = await toActionResult(fail(cause));
   assert.ok(!result.ok);
   assert.equal(result.error.code, "INTERNAL");
@@ -81,10 +81,17 @@ test("an INTERNAL result carries a ref and the full error is reported under it",
   const report = JSON.parse(logged[0] ?? "{}") as Record<string, unknown>;
   assert.equal(report.ref, result.error.ref);
   assert.equal(report.boundary, "action");
-  assert.deepEqual(
-    (report.error as { message: string }).message,
-    "connection string postgres://secret",
-  );
+  const error = report.error as {
+    name: string;
+    code?: string;
+    frames: string[];
+  };
+  assert.equal(error.name, "Error");
+  assert.equal(error.code, "ECONNREFUSED");
+  assert.ok(error.frames.length > 0);
+  assert.ok(error.frames.every((frame) => frame.startsWith("at ")));
+  // The message (and the stack's first line, which repeats it) is never logged.
+  assert.doesNotMatch(logged[0] ?? "", /secret|postgres:|connection string/);
 });
 
 test("unknown codes and non-Error throws are INTERNAL, not passed through", async () => {
@@ -92,6 +99,7 @@ test("unknown codes and non-Error throws are INTERNAL, not passed through", asyn
     coded("INTERNAL", "boom"),
     coded("P2002", "Unique constraint failed on users_email_key"),
     "plain string with secret",
+    { code: "user@example.com secret" },
     null,
   ]) {
     const result = await toActionResult(fail(cause));
@@ -100,6 +108,9 @@ test("unknown codes and non-Error throws are INTERNAL, not passed through", asyn
     assert.ok(result.error.ref);
     assert.doesNotMatch(result.error.message, /boom|users_email|secret/);
   }
+  assert.equal(logged.length, 5);
+  for (const line of logged)
+    assert.doesNotMatch(line, /boom|users_email|secret|example\.com/);
 });
 
 test("each report gets a distinct ref", () => {
