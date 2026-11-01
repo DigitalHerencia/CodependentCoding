@@ -28,7 +28,7 @@ export const EXCLUDED = [
 /** Files the pipeline writes or rewrites; formatted before it returns. */
 const FORMATTED = [
   "hipster.json",
-  "lib/constants/access.ts",
+  "lib/authz/mode.ts",
   "hipster.modules.json",
   "lib/modules/registry.ts",
   "package.json",

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { invitableRoles } from "@/lib/authz/roles";
 
 export const organizationSettingsSchema = z.object({
   timezone: z.string().min(1).max(100),
@@ -22,7 +23,7 @@ export const createInvitationSchema = z
       .trim()
       .toLowerCase()
       .pipe(z.email("Enter an email address.")),
-    role: z.enum(["ADMIN", "MEMBER", "VIEWER"]),
+    role: z.enum(invitableRoles),
   })
   .strict();
 

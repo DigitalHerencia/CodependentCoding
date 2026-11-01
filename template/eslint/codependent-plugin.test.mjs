@@ -62,6 +62,16 @@ tester.run("layer-boundaries", rules["layer-boundaries"], {
       code: 'import { DealStage } from "@/generated/prisma/enums";',
     },
     {
+      name: "CC-SCHEMA-001 schema may derive role enums from lib/authz/roles",
+      filename: at("schemas/adminSchemas.ts"),
+      code: 'import { appRoles } from "@/lib/authz/roles";',
+    },
+    {
+      name: "CC-FEAT-004 client companion may list roles from lib/authz/roles",
+      filename: at("features/admin/adminUserDetailFeature.client.tsx"),
+      code: 'import { appRoles } from "@/lib/authz/roles";',
+    },
+    {
       name: "CC-BLOCK-002 nav may render Clerk widgets",
       filename: at("components/nav/user-menu.tsx"),
       code: 'import { UserButton } from "@clerk/nextjs";',
@@ -117,6 +127,18 @@ tester.run("layer-boundaries", rules["layer-boundaries"], {
       errors: [{ messageId: "denied" }],
     },
     {
+      name: "CC-SCHEMA-001 schema must not import authz decisions",
+      filename: at("schemas/adminSchemas.ts"),
+      code: 'import { hasPermission } from "@/lib/authz/permissions";',
+      errors: [{ messageId: "denied" }],
+    },
+    {
+      name: "CC-FEAT-004 client companion must not import authz policies",
+      filename: at("features/admin/adminUserDetailFeature.client.tsx"),
+      code: 'import { canReadResource } from "@/lib/authz/policies";',
+      errors: [{ messageId: "denied" }],
+    },
+    {
       name: "CC-LAYER relative import resolved",
       filename: at("features/crm/crmContactsFeature.tsx"),
       code: 'import { prisma } from "../../lib/db/client";',
@@ -131,8 +153,20 @@ tester.run("require-server-only", rules["require-server-only"], {
       filename: at("lib/fetchers/crmFetchers.ts"),
       code: 'import "server-only";\nexport const a = 1;',
     },
+    {
+      name: "CC-SRV-001 lib/authz/roles.ts is role vocabulary the browser may load",
+      filename: at("lib/authz/roles.ts"),
+      code: "export const a = 1;",
+    },
   ],
   invalid: [
+    {
+      name: "CC-SRV-001 other lib/authz files stay server-only",
+      filename: at("lib/authz/mode.ts"),
+      code: "export const a = 1;",
+      output: 'import "server-only";\n\nexport const a = 1;',
+      errors: [{ messageId: "missing" }],
+    },
     {
       filename: at("lib/fetchers/crmFetchers.ts"),
       code: "export const a = 1;",

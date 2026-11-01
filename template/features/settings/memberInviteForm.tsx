@@ -5,8 +5,7 @@ import { createInvitation } from "@/lib/actions/commonActions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-
-const invitableRoles = ["MEMBER", "VIEWER", "ADMIN"] as const;
+import { defaultInvitedRole, invitableRoles } from "@/lib/authz/roles";
 
 export function MemberInviteForm() {
   const router = useRouter();
@@ -47,7 +46,7 @@ export function MemberInviteForm() {
       <select
         id="invite-role"
         name="role"
-        defaultValue="MEMBER"
+        defaultValue={defaultInvitedRole}
         className="control-field"
       >
         {invitableRoles.map((role) => (

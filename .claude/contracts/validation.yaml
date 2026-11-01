@@ -88,7 +88,7 @@ rules:
   - {
       id: CC-FEAT-004,
       layer: feature-client,
-      text: "Client companions: interactive UI controls + actions; no server reads or authz",
+      text: "Client companions: interactive UI controls + actions; no server reads or authz (lib/authz/roles allowed)",
       enforcement: "eslint:codependent/layer-boundaries",
     }
   - {
@@ -208,13 +208,13 @@ rules:
   - {
       id: CC-SCHEMA-001,
       layer: schema,
-      text: "Zod schemas are pure (Prisma enums allowed)",
+      text: "Zod schemas are pure (Prisma enums and lib/authz/roles allowed)",
       enforcement: "eslint:codependent/layer-boundaries",
     }
   - {
       id: CC-SRV-001,
       layer: server,
-      text: "Server modules import 'server-only'",
+      text: "Server modules import 'server-only' (lib/authz/roles.ts excepted: browser-safe role vocabulary)",
       enforcement: "eslint:codependent/require-server-only",
       autofix: true,
     }

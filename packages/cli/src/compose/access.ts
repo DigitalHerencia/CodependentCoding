@@ -1,10 +1,14 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 
+import { cliRoot } from "#cli/compose/governance";
+
 /**
- * Setup choices written into the app's lib/constants/access.ts (AUTH.md
- * §4.3, §5): one organization or many, and role checks alone (RBAC) or role
- * checks plus record rules (ABAC).
+ * Setup choices baked into the app (AUTH.md §4.3, §5): one organization or
+ * many (`lib/authz/mode.ts`), and role checks alone (RBAC) or role checks
+ * plus record rules (ABAC). The template ships ABAC policies; RBAC replaces
+ * `lib/authz/policies.ts` and its test with the files in templates/authz/,
+ * so no app branches on the choice at runtime.
  */
 export const tenancies = ["multi", "single"] as const;
 export const accessControls = ["abac", "rbac"] as const;
@@ -21,7 +25,21 @@ export const defaultAccess: AccessChoices = {
   accessControl: "abac",
 };
 
-export const ACCESS_FILE = path.join("lib", "constants", "access.ts");
+export const MODE_FILE = path.join("lib", "authz", "mode.ts");
+export const POLICIES_FILE = path.join("lib", "authz", "policies.ts");
+export const POLICIES_TEST_FILE = path.join("tests", "authzPolicies.test.ts");
+
+export const AUTHZ_TEMPLATES = path.join(
+  cliRoot(import.meta.url),
+  "templates",
+  "authz",
+);
+
+/** App file → RBAC replacement in templates/authz/. */
+const rbacFiles = [
+  [POLICIES_FILE, "policies.ts.tpl"],
+  [POLICIES_TEST_FILE, "authzPolicies.test.ts.tpl"],
+] as const;
 
 export function parseChoice<T extends string>(
   flag: string,
@@ -34,28 +52,29 @@ export function parseChoice<T extends string>(
   );
 }
 
-export function applyAccessChoices(
-  source: string,
-  choices: AccessChoices,
-): string {
-  let out = source;
-  for (const [name, value] of [
-    ["tenancy", choices.tenancy],
-    ["accessControl", choices.accessControl],
-  ] as const) {
-    const pattern = new RegExp(`(export const ${name}: \\w+ = )"[a-z]+";`);
-    if (!pattern.test(out)) {
-      throw new Error(`${ACCESS_FILE} has no \`${name}\` constant to set.`);
-    }
-    out = out.replace(pattern, `$1"${value}";`);
+export function applyTenancy(source: string, tenancy: Tenancy): string {
+  const pattern = /(const configuredTenancy: Tenancy = )"[a-z]+";/;
+  if (!pattern.test(source)) {
+    throw new Error(`${MODE_FILE} has no \`configuredTenancy\` to set.`);
   }
-  return out;
+  return source.replace(pattern, `$1"${tenancy}";`);
 }
 
 export function writeAccessChoices(
   appDir: string,
   choices: AccessChoices,
 ): void {
-  const file = path.join(appDir, ACCESS_FILE);
-  writeFileSync(file, applyAccessChoices(readFileSync(file, "utf8"), choices));
+  const mode = path.join(appDir, MODE_FILE);
+  writeFileSync(
+    mode,
+    applyTenancy(readFileSync(mode, "utf8"), choices.tenancy),
+  );
+  if (choices.accessControl === "rbac") {
+    for (const [target, template] of rbacFiles) {
+      writeFileSync(
+        path.join(appDir, target),
+        readFileSync(path.join(AUTHZ_TEMPLATES, template), "utf8"),
+      );
+    }
+  }
 }
