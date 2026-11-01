@@ -29,8 +29,3 @@ export interface KnowledgeArticleDTO {
   publishedAt: string | null;
   updatedAt: string;
 }
-
-export interface SupportTicketTransitionCommand {
-  ticketId: string;
-  expectedVersion: number;
-}

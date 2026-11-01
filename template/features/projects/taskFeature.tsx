@@ -1,7 +1,7 @@
 // Why: Server feature: loads one task (null means 404) and composes the detail template.
 import { notFound } from "next/navigation";
 import { ProjectTaskDetailTemplate } from "@/components/templates/projectsTaskDetailTemplate";
-import { getTaskWorkflow } from "@/lib/workflows/projectsWorkflows";
+import { getProjectTask } from "@/lib/fetchers/projectsFetchers";
 import { TaskFeatureClient } from "./taskFeature.client";
 import { getOrganizationMembers } from "@/lib/fetchers/organizationFetchers";
 import { TaskStatusControl } from "./tasksFeature.client";
@@ -12,7 +12,7 @@ export async function TaskFeature({
   projectId: string;
   taskId: string;
 }) {
-  const task = await getTaskWorkflow(projectId, taskId);
+  const task = await getProjectTask(projectId, taskId);
   if (!task) notFound();
   return (
     <ProjectTaskDetailTemplate task={task}>

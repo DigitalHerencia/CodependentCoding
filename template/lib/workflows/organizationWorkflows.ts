@@ -13,10 +13,6 @@ export async function getIntegrationStatuses() {
   });
 }
 
-export async function getOrganizationWorkspaceWorkflow() {
-  return getCurrentOrganization();
-}
-
 export async function getOrganizationSettingsWorkflow() {
   const [organization, integrations] = await Promise.all([
     getCurrentOrganization(),

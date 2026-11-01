@@ -1,7 +1,6 @@
 import "server-only";
 
 import {
-  getPortalDocument,
   getPortalBilling,
   getPortalDocuments,
 } from "@/lib/fetchers/portalFetchers";
@@ -13,10 +12,6 @@ export async function getPortalWorkspaceWorkflow(limit = 100) {
     getPortalBilling(),
   ]);
   return { documents, billing };
-}
-
-export async function getPortalDocumentWorkflow(documentId: string) {
-  return getPortalDocument(documentId);
 }
 
 export function determineApprovalState(decisions: PortalApprovalDecision[]) {

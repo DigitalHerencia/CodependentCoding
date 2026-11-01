@@ -51,6 +51,8 @@ None of the above?               Stop. Do not invent a layer (CC-NAME-002).
 | CC-WRITE-002  | action           | Action modules start with 'use server'                                                                            | `eslint:codependent/use-server-actions`     |
 | CC-WRITE-003  | action           | Actions authenticate, authorize, and Zod-validate before writing; return ActionResult                             | `review`                                    |
 | CC-FLOW-001   | workflow         | Workflows: no Prisma client, provider SDKs, or presentation                                                       | `eslint:codependent/layer-boundaries`       |
+| CC-FLOW-002   | workflow         | No pass-through workflows: an exported workflow whose body is a single call to another function                   | `eslint:codependent/no-pass-through`        |
+| CC-FLOW-003   | workflow         | Workflows never import a 'use server' module (actions); actions may call workflows                                | `eslint:codependent/layer-boundaries`       |
 | CC-TX-001     | transaction      | Transactions perform database work only                                                                           | `eslint:codependent/layer-boundaries`       |
 | CC-TX-002     | transaction      | No fetch() inside transactions                                                                                    | `eslint:codependent/no-transaction-network` |
 | CC-DB-001     | db               | lib/db never imports app layers                                                                                   | `eslint:codependent/layer-boundaries`       |

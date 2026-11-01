@@ -52,6 +52,11 @@ tester.run("layer-boundaries", rules["layer-boundaries"], {
       code: 'import Stripe from "stripe";',
     },
     {
+      name: "CC-FLOW-003 action may call a workflow",
+      filename: at("lib/actions/uploadsActions.ts"),
+      code: 'import { x } from "@/lib/workflows/uploadsWorkflows";',
+    },
+    {
       name: "CC-FLOW-001 workflow uses integration helper",
       filename: at("lib/workflows/aiWorkflows.ts"),
       code: 'import { infer } from "@/lib/integrations/hugging-face/inference";',
@@ -115,6 +120,12 @@ tester.run("layer-boundaries", rules["layer-boundaries"], {
       errors: [{ messageId: "denied" }],
     },
     {
+      name: "CC-FLOW-003 workflow imports an action",
+      filename: at("lib/workflows/crmWorkflows.ts"),
+      code: 'import { updateContact } from "@/lib/actions/crmActions";',
+      errors: [{ message: /^\[CC-FLOW-003\] workflow must not import action/ }],
+    },
+    {
       name: "CC-TX-001 transaction calls integration",
       filename: at("lib/db/transactions/invoicing-create-invoice.tx.ts"),
       code: 'import { charge } from "@/lib/integrations/stripe/checkout";',
@@ -143,6 +154,51 @@ tester.run("layer-boundaries", rules["layer-boundaries"], {
       filename: at("features/crm/crmContactsFeature.tsx"),
       code: 'import { prisma } from "../../lib/db/client";',
       errors: [{ messageId: "denied" }],
+    },
+  ],
+});
+
+tester.run("no-pass-through", rules["no-pass-through"], {
+  valid: [
+    {
+      name: "CC-FLOW-002 workflow combines two fetchers",
+      filename: at("lib/workflows/crmWorkflows.ts"),
+      code: "export async function w(limit) { const [a, b] = await Promise.all([f(limit), g(limit)]); return { a, b }; }",
+    },
+    {
+      name: "CC-FLOW-002 workflow derives a value from a call",
+      filename: at("lib/workflows/crmWorkflows.ts"),
+      code: "export async function w(limit) { return calculate(await getDeals(limit)); }",
+    },
+    {
+      name: "CC-FLOW-002 workflow opens a transaction around its own work",
+      filename: at("lib/workflows/aiWorkflows.ts"),
+      code: "export async function w() { return withRead(async (tx, access) => { check(access); return config(); }); }",
+    },
+    {
+      name: "CC-FLOW-002 single calls outside workflows are not workflows",
+      filename: at("lib/fetchers/crmFetchers.ts"),
+      code: "export async function getDeal(id) { return read(id); }",
+    },
+  ],
+  invalid: [
+    {
+      name: "CC-FLOW-002 workflow returns one fetcher call",
+      filename: at("lib/workflows/projectsWorkflows.ts"),
+      code: "export async function getProjectsWorkflow(limit = 50) { return getProjects(limit); }",
+      errors: [{ messageId: "passThrough" }],
+    },
+    {
+      name: "CC-FLOW-002 workflow only reshapes its input into one call",
+      filename: at("lib/workflows/crmWorkflows.ts"),
+      code: 'export async function closeDealWorkflow(input) { return await updateStage({ ...input, stage: "WON" }); }',
+      errors: [{ messageId: "passThrough" }],
+    },
+    {
+      name: "CC-FLOW-002 arrow workflow with an expression body",
+      filename: at("lib/workflows/supportWorkflows.ts"),
+      code: "export const getTicketWorkflow = (id) => getTicket(id);",
+      errors: [{ messageId: "passThrough" }],
     },
   ],
 });

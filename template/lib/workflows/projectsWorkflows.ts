@@ -2,7 +2,6 @@
 import "server-only";
 
 import {
-  getProjectTask,
   getProject,
   getProjects,
   getProjectTaskDependencyFacts,
@@ -16,10 +15,6 @@ export async function getProjectsDashboardWorkflow(limit = 100) {
     getMyTasks(limit),
   ]);
   return { projects, myTasks };
-}
-
-export async function getTaskWorkflow(projectId: string, taskId: string) {
-  return getProjectTask(projectId, taskId);
 }
 
 export async function getProjectWorkspaceWorkflow(projectId: string) {
@@ -68,8 +63,4 @@ export async function resolveTaskDependenciesWorkflow(projectId: string) {
       (dependency) => !completed.has(dependency.dependsOnTaskId),
     ),
   }));
-}
-
-export async function getProjectsWorkflow(limit = 50) {
-  return getProjects(limit);
 }

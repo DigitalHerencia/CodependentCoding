@@ -2,6 +2,8 @@ import "server-only";
 
 import type { Prisma } from "@/generated/prisma/client";
 
+import { aiGenerationSelect } from "@/lib/db/selects/ai.selects";
+
 export async function lockAiRateLimitTx(
   tx: Prisma.TransactionClient,
   lockKey: string,
@@ -23,6 +25,30 @@ export async function countRecentAiGenerationsTx(
       userId: input.userId,
       createdAt: { gte: input.windowStart },
     },
+  });
+}
+
+/** A PENDING generation the provider call will complete or fail. */
+export async function createAiGenerationTx(
+  tx: Prisma.TransactionClient,
+  input: {
+    organizationId: string;
+    userId: string;
+    provider: string;
+    model: string;
+    input: Prisma.InputJsonObject;
+  },
+) {
+  return tx.aiGeneration.create({
+    data: {
+      organizationId: input.organizationId,
+      userId: input.userId,
+      provider: input.provider,
+      model: input.model,
+      status: "PENDING",
+      input: input.input,
+    },
+    select: aiGenerationSelect,
   });
 }
 

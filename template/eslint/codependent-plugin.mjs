@@ -157,15 +157,16 @@ const layerBoundaries = {
       if (!denied) return;
       // Type-only imports are erased at build time and cannot leak runtime.
       if (isTypeOnly(node)) return;
+      const reported = boundary.overrides?.[denied] ?? boundary;
       context.report({
         node: sourceNode,
         messageId: "denied",
         data: {
-          rule: boundary.rule,
+          rule: reported.rule,
           layer,
           category: denied,
           spec,
-          why: boundary.why,
+          why: reported.why,
         },
       });
     });
@@ -541,6 +542,89 @@ const moduleBoundaries = {
   },
 };
 
+/** Expression nodes that do work of their own; an argument holding one is not a plain pass-along. */
+const WORK = new Set([
+  "CallExpression",
+  "NewExpression",
+  "AwaitExpression",
+  "FunctionExpression",
+  "ArrowFunctionExpression",
+  "ConditionalExpression",
+  "LogicalExpression",
+  "BinaryExpression",
+  "AssignmentExpression",
+  "TaggedTemplateExpression",
+]);
+
+function doesWork(node) {
+  if (!node || typeof node.type !== "string") return false;
+  if (WORK.has(node.type)) return true;
+  for (const [key, value] of Object.entries(node)) {
+    if (key === "parent") continue;
+    const children = Array.isArray(value) ? value : [value];
+    if (children.some((child) => child?.type && doesWork(child))) return true;
+  }
+  return false;
+}
+
+/** The call a function body consists of, when its body is that one call and nothing else. */
+function soleCall(fn) {
+  let expression = fn.body;
+  if (fn.body.type === "BlockStatement") {
+    if (fn.body.body.length !== 1) return null;
+    const [statement] = fn.body.body;
+    if (statement.type === "ReturnStatement") expression = statement.argument;
+    else if (statement.type === "ExpressionStatement")
+      expression = statement.expression;
+    else return null;
+  }
+  if (expression?.type === "AwaitExpression") expression = expression.argument;
+  if (expression?.type !== "CallExpression") return null;
+  if (doesWork(expression.callee)) return null;
+  return expression.arguments.some(doesWork) ? null : expression;
+}
+
+const noPassThrough = {
+  meta: {
+    type: "suggestion",
+    docs: docs(
+      "A workflow whose body is a single call to another function must not exist.",
+      "CC-FLOW-002",
+    ),
+    schema: [],
+    messages: {
+      passThrough:
+        "[CC-FLOW-002] Workflow '{{name}}' only calls '{{callee}}'. Call it directly and delete the workflow.",
+    },
+  },
+  create(context) {
+    if (layerOf(relativeFile(context)) !== "workflow") return {};
+    const check = (name, fn) => {
+      if (!fn || !/Function/.test(fn.type)) return;
+      const call = soleCall(fn);
+      if (!call) return;
+      context.report({
+        node: fn,
+        messageId: "passThrough",
+        data: { name, callee: context.sourceCode.getText(call.callee) },
+      });
+    };
+    return {
+      ExportNamedDeclaration(node) {
+        const declaration = node.declaration;
+        if (declaration?.type === "FunctionDeclaration") {
+          check(declaration.id.name, declaration);
+        } else if (declaration?.type === "VariableDeclaration") {
+          for (const declarator of declaration.declarations) {
+            if (declarator.id.type === "Identifier")
+              check(declarator.id.name, declarator.init);
+          }
+        }
+      },
+    };
+  },
+};
+
 export const rules = {
   "layer-boundaries": layerBoundaries,
   "require-server-only": requireServerOnly,
@@ -554,6 +638,7 @@ export const rules = {
   "no-default-export": noDefaultExport,
   "no-parent-imports": noParentImports,
   "module-boundaries": moduleBoundaries,
+  "no-pass-through": noPassThrough,
 };
 
 const plugin = {

@@ -78,14 +78,3 @@ export interface CrmAccountDTO {
 }
 
 export type CrmDealStage = PrismaCrmDealStage;
-
-export interface CloseDealCommand {
-  dealId: string;
-  outcome: Extract<CrmDealStage, "WON" | "LOST">;
-  expectedVersion: number;
-}
-
-export interface ReopenOpportunityCommand {
-  dealId: string;
-  expectedVersion: number;
-}

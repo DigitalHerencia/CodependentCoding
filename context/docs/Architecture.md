@@ -68,7 +68,7 @@ URL ─► app/ (route) ─► features/ ─► components/blocks ─► compone
 | Primitive                | `components/ui/<kebab>.tsx`                                                    | shadcn/BoldKit-derived                                                      |
 | Read                     | `lib/fetchers/<domain>Fetchers.ts`                                             | `server-only`; auth → authz → scoped select → DTO                           |
 | CRUD write               | `lib/actions/<domain>Actions.ts`                                               | `"use server"`; auth → authz → Zod → write/tx → invalidate → `ActionResult` |
-| Application logic        | `lib/workflows/<domain>Workflows.ts` or `lib/workflows/<domain>/<verbNoun>.ts` | `server-only`; arranges operations; no Prisma client, no SDKs               |
+| Application logic        | `lib/workflows/<domain>Workflows.ts` or `lib/workflows/<domain>/<verbNoun>.ts` | `server-only`; arranges operations; no actions, Prisma client, SDKs         |
 | Atomic write             | `lib/db/transactions/<domain>-<verb>-<noun>.tx.ts`                             | DB-only; no network                                                         |
 | DB runtime               | `lib/db/client.ts`, `rls.ts`, `tenant.ts`                                      | Prisma client, adapter, RLS context                                         |
 | Projection               | `lib/db/selects/<domain>.selects.ts`                                           | Precise selects                                                             |
@@ -136,6 +136,8 @@ Doctrine is code. `template/eslint/doctrine-map.mjs` is the machine table (layer
 | CC-WRITE-001     | Actions: no integrations or SDKs                                                           | layer-boundaries                     |
 | CC-WRITE-002     | Actions start with `"use server"`                                                          | `codependent/use-server-actions`     |
 | CC-FLOW-001      | Workflows: no Prisma client, no SDKs                                                       | layer-boundaries                     |
+| CC-FLOW-002      | No pass-through workflows (body is a single call)                                          | `codependent/no-pass-through`        |
+| CC-FLOW-003      | Workflows never import actions (`"use server"`); actions may call workflows                | layer-boundaries                     |
 | CC-TX-001        | Transactions: DB only                                                                      | layer-boundaries                     |
 | CC-TX-002        | No `fetch()` in transactions                                                               | `codependent/no-transaction-network` |
 | CC-DB-001        | `lib/db` does not reach up into app layers                                                 | layer-boundaries                     |

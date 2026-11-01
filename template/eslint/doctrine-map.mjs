@@ -104,7 +104,8 @@ export const categories = {
 /**
  * Boundaries: for each layer, categories it must not import.
  * `except` lists categories that override a denial (more specific wins).
- * `rule` is the doctrine rule ID reported in the message.
+ * `rule` is the doctrine rule ID reported in the message; `overrides` reports
+ * a denied category under its own rule ID and reason.
  */
 export const boundaries = {
   route: {
@@ -338,6 +339,7 @@ export const boundaries = {
   workflow: {
     rule: "CC-FLOW-001",
     deny: [
+      "action",
       "prisma-runtime",
       "provider-sdk",
       "clerk-server",
@@ -347,7 +349,13 @@ export const boundaries = {
       "ui",
       "form-state",
     ],
-    why: "Workflows arrange fetchers, actions, transactions and integration helpers; they never touch the Prisma client or provider SDKs directly.",
+    why: "Workflows arrange fetchers, transaction helpers and integration functions; they never touch the Prisma client or provider SDKs directly.",
+    overrides: {
+      action: {
+        rule: "CC-FLOW-003",
+        why: "Every action commits its own transaction and is a public POST endpoint; open the transaction here and call transaction helpers instead.",
+      },
+    },
   },
   transaction: {
     rule: "CC-TX-001",

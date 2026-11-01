@@ -1,25 +1,10 @@
 import "server-only";
 
-import { updateSupportTicketStatus } from "@/lib/actions/supportActions";
 import {
-  getKnowledgeArticle,
   getKnowledgeArticles,
   getSupportInbox,
   getSupportTicket,
 } from "@/lib/fetchers/supportFetchers";
-import type { SupportTicketTransitionCommand } from "@/types/supportTypes";
-
-export async function resolveTicketWorkflow(
-  input: SupportTicketTransitionCommand,
-) {
-  return updateSupportTicketStatus({ ...input, status: "RESOLVED" });
-}
-
-export async function reopenTicketWorkflow(
-  input: SupportTicketTransitionCommand,
-) {
-  return updateSupportTicketStatus({ ...input, status: "OPEN" });
-}
 
 export async function getSupportWorkspaceWorkflow(limit = 100) {
   const [tickets, knowledgeArticles] = await Promise.all([
@@ -27,14 +12,6 @@ export async function getSupportWorkspaceWorkflow(limit = 100) {
     getKnowledgeArticles(limit),
   ]);
   return { tickets, knowledgeArticles };
-}
-
-export async function getSupportTicketWorkflow(ticketId: string) {
-  return getSupportTicket(ticketId);
-}
-
-export async function getKnowledgeArticleWorkflow(articleId: string) {
-  return getKnowledgeArticle(articleId);
 }
 
 export async function determineEscalationWorkflow(ticketId: string) {
