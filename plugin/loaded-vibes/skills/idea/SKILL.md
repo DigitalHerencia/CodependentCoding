@@ -44,6 +44,7 @@ Rules for the grill:
 - Stop asking once all twelve are answered or skipped. Never exceed 12; fold clarifications into your next proposal instead of extra questions.
 - Entities are singular camelCase (`job`, `lineItem`). Fields follow the slice DSL: `string`, `text`, `int`, `decimal`, `boolean`, `datetime`, `enum(a|b)`, `ref(Model)` with the field named `<relation>Id`; a trailing `?` means optional. A `ref` targets a tenant model or `User`.
 - An entity an installed module already models (check `prisma/schema/<module>.prisma`) is not sliced again: it maps to that module.
+- Question 10: when a rule scopes a role to "their own" records ("vendors see only work orders assigned to them"), propose the link in the same question: an optional `userId:ref(User)?` field on the entity that stands for the person (`vendor`), or on the record itself when it is owned directly. Add the field to that entity's DSL from question 4 so PRD §6 is right the first time.
 - Anything that lands on a PRD non-goal, a paid service, or a doctrine change is noted, not designed: it goes to Open questions and a proposed decision.
 
 ## 2. Write the docs (owned sections only)
