@@ -35,6 +35,7 @@ jobs:
       template_e2e: ${{ steps.scope.outputs.template_e2e }}
       template_db: ${{ steps.scope.outputs.template_db }}
       template_build: ${{ steps.scope.outputs.template_build }}
+      lockfile: ${{ steps.scope.outputs.lockfile }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -68,7 +69,7 @@ jobs:
           else
             grep -qE '^(packages/cli/|tests/cli/|template/scripts/|template/hipster\.modules\.json$)' "$list" && tests+=" tests/cli"
             grep -qE '^(plugin/|tests/plugin/|scripts/github/|scripts/plugin-doctrine\.mjs$|\.claude/hooks/)' "$list" && tests+=" tests/plugin"
-            grep -qE '^(scripts/doctrine-check\.mjs$|tests/doctrine/|\.claude/contracts/|template/eslint/)' "$list" && tests+=" tests/doctrine"
+            grep -qE '^(scripts/(doctrine-check|check-lockfile)\.mjs$|tests/doctrine/|\.claude/contracts/|template/eslint/)' "$list" && tests+=" tests/doctrine"
           fi
 
           {
@@ -84,7 +85,23 @@ jobs:
             echo "template_e2e=$(has '^template/(app|components|features|lib|hooks|tests/e2e)/|^template/(proxy\.ts|next\.config\.ts|playwright\.config\.ts|package\.json|pnpm-lock\.yaml)$')"
             echo "template_db=$(has '^template/(prisma/|tests/rls/|lib/db/)|^template/scripts/(rls-sql|db-init)\.mjs$')"
             echo "template_build=$(has '^template/(next\.config\.ts|package\.json|pnpm-lock\.yaml|postcss\.config\.mjs|tsconfig\.json)$')"
+            echo "lockfile=$(has '^(template/)?(pnpm-lock|pnpm-workspace)\.yaml$|^scripts/check-lockfile\.mjs$')"
           } | tee -a "$GITHUB_OUTPUT"
+
+  # One YAML document per lockfile, or GitHub's dependency graph sees nothing.
+  # Runs before any install: the script has no dependencies.
+  lockfile:
+    name: Lockfile
+    needs: changes
+    if: needs.changes.outputs.lockfile == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .node-version
+      - run: node scripts/check-lockfile.mjs
 
   root:
     name: Factory (root)

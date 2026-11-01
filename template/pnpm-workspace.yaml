@@ -1,7 +1,23 @@
 packages: []
 # Keep validation commands read-only when dependencies need installing.
 verifyDepsBeforeRun: error
+# Supply chain (CC-047): skip versions younger than 7 days, refuse a dependency whose
+# publish trust drops, and never write the package-manager env document into the lockfile.
+minimumReleaseAge: 10080
 minimumReleaseAgeStrict: true
+trustPolicy: no-downgrade
+pmOnFail: ignore
+# Exact versions whose publish evidence is weaker than an earlier release of the same
+# package. Each is pinned by our dependency tree; review on every upgrade and drop the
+# entry once the pinned version moves. prisma 7.10.x is published by prismabot with a
+# token, while 7.9.0 used GitHub trusted publishing with provenance.
+trustPolicyExclude:
+  - "@vercel/cli-config@0.2.4"
+  - "@vercel/cli-exec@1.0.1"
+  - "@vercel/oidc@3.8.5"
+  - eslint-import-resolver-typescript@3.10.1
+  - prisma@7.10.1
+  - semver@6.3.1
 allowBuilds:
   "@prisma/engines": true
   esbuild: true

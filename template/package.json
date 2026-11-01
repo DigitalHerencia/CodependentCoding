@@ -7,8 +7,8 @@
     "#scripts/*": "./scripts/*"
   },
   "scripts": {
-    "dev": "next dev",
-    "build": "next build --turbopack",
+    "dev": "prisma generate && next dev",
+    "build": "prisma generate && next build --turbopack",
     "check:modules": "node scripts/check-modules.mjs",
     "check:compose": "node scripts/check-compose.mjs",
     "check:env": "tsx --conditions=react-server scripts/check-env.mjs",
@@ -27,9 +27,8 @@
     "test": "vitest run --project unit",
     "test:rls": "vitest run --project rls",
     "test:e2e": "playwright test",
-    "typecheck": "next typegen && tsc --noEmit",
-    "validate": "pnpm format:check && pnpm lint && pnpm doctrine:test && pnpm typecheck && pnpm check:modules && pnpm check:ownership && pnpm check:env && pnpm test",
-    "postinstall": "prisma generate"
+    "typecheck": "prisma generate && next typegen && tsc --noEmit",
+    "validate": "pnpm format:check && pnpm lint && pnpm doctrine:test && pnpm typecheck && pnpm check:modules && pnpm check:ownership && pnpm check:env && pnpm test"
   },
   "packageManager": "pnpm@12.3.4",
   "engines": {
