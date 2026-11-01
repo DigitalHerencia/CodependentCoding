@@ -1,7 +1,7 @@
 // Why: keyboard companion: arrow keys and enter pick an app; never reads the disk itself.
 import { useState } from "react";
 
-import { AppsTemplate } from "@/components/templates/appsTemplate";
+import { AppsTemplate } from "@/components/templates/apps-templates";
 import { Select } from "@/components/ui/select";
 import type { GeneratedApp } from "@/types/appsTypes";
 

@@ -119,7 +119,7 @@ components:
     {
       path: components/templates,
       scope: module-owned,
-      naming: "<module><Thing>Template.tsx",
+      naming: "<module>-templates.tsx",
     }
   nav:
     {

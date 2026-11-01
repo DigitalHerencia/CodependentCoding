@@ -1,4 +1,4 @@
-import { FAQPageTemplate } from "@/components/templates/faqPageTemplate";
+import { FAQPageTemplate } from "@/components/templates/public-templates";
 // ISR: static public copy, regenerated daily (cacheLife.static).
 export const revalidate = 86400;
 

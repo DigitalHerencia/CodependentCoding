@@ -2,7 +2,7 @@ import {
   getOrganizationMembers,
   getPendingInvitations,
 } from "@/lib/fetchers/organizationFetchers";
-import { SharedMembersTemplate } from "@/components/templates/sharedMembersTemplate";
+import { SharedMembersTemplate } from "@/components/templates/shared-templates";
 import { InvitationsFeatureClient } from "@/features/settings/invitationsFeature.client";
 import { MemberInviteForm } from "@/features/settings/memberInviteForm";
 

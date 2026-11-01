@@ -1,7 +1,7 @@
 // Why: Server feature: loads the project workspace and picks the upcoming open work.
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { ProjectDetailTemplate } from "@/components/templates/projectsProjectDetailTemplate";
+import { ProjectDetailTemplate } from "@/components/templates/projects-templates";
 import { DashboardPanel } from "@/components/blocks/dashboard-layout";
 import { getProjectWorkspaceWorkflow } from "@/lib/workflows/projectsWorkflows";
 export async function ProjectFeature({ projectId }: { projectId: string }) {

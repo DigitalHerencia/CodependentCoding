@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
-import { AdminAuditTemplate } from "@/components/templates/adminAuditTemplate";
+import { AdminAuditTemplate } from "@/components/templates/admin-templates";
 import type { AuditEventDTO } from "@/types/adminTypes";
 export function AdminAuditFeatureClient({
   events,

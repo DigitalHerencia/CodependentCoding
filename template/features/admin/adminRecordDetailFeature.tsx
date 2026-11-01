@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { getAdminRecordSummary } from "@/lib/fetchers/adminFetchers";
-import { AdminRecordDetailTemplate } from "@/components/templates/adminRecordDetailTemplate";
+import { AdminRecordDetailTemplate } from "@/components/templates/admin-templates";
 export async function AdminRecordDetailFeature({
   recordId,
 }: {

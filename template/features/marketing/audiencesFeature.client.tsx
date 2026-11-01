@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
-import { MarketingAudiencesTemplate } from "@/components/templates/marketingAudiencesTemplate";
+import { MarketingAudiencesTemplate } from "@/components/templates/marketing-templates";
 import type { AudienceDTO } from "@/types/marketingTypes";
 export function AudiencesFeatureClient({
   audiences,

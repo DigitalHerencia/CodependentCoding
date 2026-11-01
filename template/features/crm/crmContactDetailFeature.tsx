@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { getContactById } from "@/lib/fetchers/crmFetchers";
-import { CrmContactDetailTemplate } from "@/components/templates/crmContactDetailTemplate";
+import { CrmContactDetailTemplate } from "@/components/templates/crm-templates";
 export async function CrmContactDetailFeature({
   contactId,
 }: {

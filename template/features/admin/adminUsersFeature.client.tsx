@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
-import { AdminUsersTemplate } from "@/components/templates/adminUsersTemplate";
+import { AdminUsersTemplate } from "@/components/templates/admin-templates";
 import type { AdminMembershipDTO } from "@/types/adminTypes";
 export function AdminUsersFeatureClient({
   memberships,

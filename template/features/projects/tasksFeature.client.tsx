@@ -5,8 +5,10 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { MyTasksTemplate } from "@/components/templates/projectsMyTasksTemplate";
-import { ProjectTasksTemplate } from "@/components/templates/projectsTasksTemplate";
+import {
+  ProjectTasksTemplate,
+  MyTasksTemplate,
+} from "@/components/templates/projects-templates";
 import { TaskStatus } from "@/schemas/projectsSchemas";
 import { updateTaskStatus } from "@/lib/actions/projectsActions";
 import type { TaskDTO } from "@/types/projectsTypes";

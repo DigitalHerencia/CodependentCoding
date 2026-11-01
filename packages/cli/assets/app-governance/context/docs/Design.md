@@ -53,7 +53,7 @@ Brand color: {{color}}. `hipster-stack new --color <hex>` set `--primary` (and `
 | Primitives       | `components/ui`        | Full shadcn/BoldKit-derived catalog (base)                                                                                                                 |
 | Charts           | `components/chart`     | Recharts wrappers using `chart-*` tokens                                                                                                                   |
 | Blocks           | `components/blocks`    | Generic: hero, feature grid, pricing, FAQ, CTA, stats, footer, data table, record detail, kanban, calendar, timeline, settings, empty/error/loading states |
-| Domain templates | `components/templates` | Module-owned (`crmContactsTemplate.tsx`)                                                                                                                   |
+| Domain templates | `components/templates` | Module-owned, one per slice (`crm-templates.tsx`)                                                                                                          |
 | Nav              | `components/nav`       | public header/footer, user menu, mobile bottom nav                                                                                                         |
 | Shells           | `components/shells`    | `public-shell`, `auth-shell`, `tenant-shell`, `portal-shell`                                                                                               |
 

@@ -52,7 +52,7 @@ test("the dashboard renders one workspace link per registry entry", async () => 
   const { createElement } = await import("react");
   const { renderToStaticMarkup } = await import("react-dom/server");
   const { SharedDashboardTemplate } =
-    await import("@/components/templates/sharedDashboardTemplate");
+    await import("@/components/templates/shared-templates");
   const workspaces = installedModules.flatMap(
     ({ dashboard }) => dashboard ?? [],
   );

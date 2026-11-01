@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
-import { InvoicingExpensesTemplate } from "@/components/templates/invoicingExpensesTemplate";
+import { InvoicingExpensesTemplate } from "@/components/templates/invoicing-templates";
 import type { ExpenseDTO } from "@/types/invoicingTypes";
 export function ExpensesFeatureClient({
   expenses,

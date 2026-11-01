@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { CrmPipelineTemplate } from "@/components/templates/crmPipelineTemplate";
+import { CrmPipelineTemplate } from "@/components/templates/crm-templates";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { updateCrmDealStage } from "@/lib/actions/crmActions";

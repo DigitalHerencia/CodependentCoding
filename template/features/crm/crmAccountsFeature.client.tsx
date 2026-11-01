@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useState } from "react";
-import { CrmAccountsTemplate } from "@/components/templates/crmAccountsTemplate";
+import { CrmAccountsTemplate } from "@/components/templates/crm-templates";
 import { Input } from "@/components/ui/input";
 import type { CrmAccountDTO } from "@/types/crmTypes";
 export function CrmAccountsFeatureClient({

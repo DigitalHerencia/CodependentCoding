@@ -215,9 +215,25 @@ describe("planSlice", () => {
         "prisma/rls/invoicing.sql",
         "lib/modules/invoicing.module.ts",
         "tests/invoicing/invoicesActions.test.ts",
+        "components/templates/invoicing-templates.tsx",
       ]),
     );
     const writes = plan.writes;
+    // One templates file per slice (CC-078): list and detail land together.
+    expect(
+      plan.created.filter((file) => file.startsWith("components/templates/")),
+    ).toEqual(["components/templates/invoicing-templates.tsx"]);
+    const templates =
+      writes.get("components/templates/invoicing-templates.tsx") ?? "";
+    expect(templates).toMatch(/^\/\/ Why: Templates: /);
+    expect(templates).toContain("export function InvoicingInvoicesTemplate(");
+    expect(templates).toContain(
+      "export function InvoicingInvoiceDetailTemplate(",
+    );
+    expect(templates.match(/^import /gm)).toHaveLength(4);
+    expect(
+      writes.get("features/invoicing/invoicesFeature.client.tsx"),
+    ).toContain('from "@/components/templates/invoicing-templates"');
     expect(writes.get("prisma/schema/identity.prisma")).toContain(
       "invoices Invoice[] // @module invoicing",
     );
@@ -262,8 +278,14 @@ describe("planSlice", () => {
         "lib/actions/crmActions.ts",
         "prisma/schema/crm.prisma",
         "lib/modules/crm.module.ts",
+        "components/templates/crm-templates.tsx",
       ]),
     );
+    const templates =
+      plan.writes.get("components/templates/crm-templates.tsx") ?? "";
+    expect(templates).toContain("export function CrmContactsTemplate(");
+    expect(templates).toContain("export function CrmQuotesTemplate(");
+    expect(templates).toContain("export function CrmQuoteDetailTemplate(");
     const actions = plan.writes.get("lib/actions/crmActions.ts") ?? "";
     expect(actions).toContain(
       "tx.crmAccount.findFirst({ where: { id: input.accountId, organizationId }",

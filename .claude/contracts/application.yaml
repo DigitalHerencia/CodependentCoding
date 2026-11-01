@@ -183,7 +183,7 @@ architecture:
       }
     template:
       {
-        path: "components/templates/<d><Thing>Template.tsx",
+        path: "components/templates/<d>-templates.tsx",
         role: domain presentation,
       }
     block:

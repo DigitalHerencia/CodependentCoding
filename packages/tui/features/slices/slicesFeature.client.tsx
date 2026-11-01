@@ -1,7 +1,7 @@
 // Why: keyboard companion: form, then confirm the planned files, then run the slice through its action.
 import { useState } from "react";
 
-import { SlicesTemplate } from "@/components/templates/slicesTemplate";
+import { SlicesTemplate } from "@/components/templates/slices-templates";
 import { Confirm } from "@/components/ui/confirm";
 import { SlicesNewForm } from "@/features/slices/slicesNewForm";
 import { createSliceAction } from "@/lib/actions/slicesActions";

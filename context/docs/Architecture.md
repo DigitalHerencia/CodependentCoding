@@ -62,7 +62,7 @@ URL ─► app/ (route) ─► features/ ─► components/blocks ─► compone
 | Browser behavior         | `features/<domain>/<name>.client.tsx`                                          | `"use client"`; UI controls + actions only                                  |
 | Form                     | `features/<domain>/<domain><Verb><Thing>Form.tsx`                              | React Hook Form + Zod + action; may use UI primitives                       |
 | Loading                  | `features/<domain>/<domain><Thing>Skeleton.tsx`                                | Mirrors real layout; `ui/skeleton` only                                     |
-| Domain presentation      | `components/templates/<domain><Thing>Template.tsx`                             | Pure; composed from blocks                                                  |
+| Domain presentation      | `components/templates/<slice>-templates.tsx`                                   | Pure; composed from blocks; one file per slice                              |
 | Reusable composition     | `components/blocks/<kebab>.tsx`                                                | Pure presentation                                                           |
 | Structure                | `components/nav`, `components/shells`                                          | Frames; Clerk UI widgets allowed                                            |
 | Primitive                | `components/ui/<kebab>.tsx`                                                    | shadcn/BoldKit-derived                                                      |
@@ -220,7 +220,7 @@ A file belongs to module `<id>` when, in order:
 
 1. It matches a module's explicit `owns` glob; else
 2. Any path segment equals `<id>` (`features/crm/`, `app/(tenant)/crm/`, `lib/workflows/crm/`, `tests/crm/`); else
-3. The basename starts with `<id>` followed by an uppercase letter, `.` or `-` (`crmFetchers.ts`, `crm.selects.ts`, `crm.dto.ts`, `crm-update-deal-stage.tx.ts`, `crmContactsTemplate.tsx`, `crm.prisma`, `crm.sql`, `crm.module.ts`); else
+3. The basename starts with `<id>` followed by an uppercase letter, `.` or `-` (`crmFetchers.ts`, `crm.selects.ts`, `crm.dto.ts`, `crm-update-deal-stage.tx.ts`, `crm-templates.tsx`, `crm.prisma`, `crm.sql`, `crm.module.ts`); else
 4. It belongs to **base**.
 
 Two modules matching the same file is an error (CC-MOD-003). Module IDs must not collide with base vocabulary (`organization`, `membership`, `onboarding`, `settings`, `dashboard`, `identity`, `auth`, `webhook`, `audit`).
@@ -376,12 +376,7 @@ The list below is generated; rerun `node scripts/slice-files.mjs projects --writ
 
 **Templates**
 
-- `components/templates/projectsMyTasksTemplate.tsx`
-- `components/templates/projectsProjectDetailTemplate.tsx`
-- `components/templates/projectsTaskDetailTemplate.tsx`
-- `components/templates/projectsTasksTemplate.tsx`
-- `components/templates/projectsTemplate.tsx`
-- `components/templates/projectsTimelineTemplate.tsx`
+- `components/templates/projects-templates.tsx`
 
 **Features**
 

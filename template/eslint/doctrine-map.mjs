@@ -523,9 +523,10 @@ export const filenameConventions = [
       "crmContactsFeature.tsx, crmNewContactForm.tsx, crmContactsSkeleton.tsx, crmPipelineBoard.client.tsx",
   },
   {
+    // One file per slice, kebab-case like the rest of components/ (CC-078).
     dir: /^components\/templates\/$/,
-    file: /^[a-z][a-zA-Z0-9]*Template\.tsx$/,
-    example: "crmContactsTemplate.tsx",
+    file: /^[a-z][a-z0-9]*-templates\.tsx$/,
+    example: "crm-templates.tsx",
   },
   {
     dir: /^lib\/fetchers\/$/,

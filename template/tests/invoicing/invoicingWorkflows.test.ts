@@ -4,7 +4,7 @@ import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { calculateInvoiceTotals } from "@/lib/db/transactions/invoicing-create-invoice.tx";
 import { expenseFormSchema } from "@/schemas/invoicingSchemas";
-import { InvoicingInvoiceDetailTemplate } from "@/components/templates/invoicingInvoiceDetailTemplate";
+import { InvoicingInvoiceDetailTemplate } from "@/components/templates/invoicing-templates";
 import type { InvoiceDTO } from "@/types/invoicingTypes";
 
 const id = "00000000-0000-4000-8000-000000000001";

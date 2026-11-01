@@ -1,7 +1,7 @@
 // Why: keyboard companion: questions, then confirm the summary, then compose through the action.
 import { useState } from "react";
 
-import { AppsNewTemplate } from "@/components/templates/appsNewTemplate";
+import { AppsNewTemplate } from "@/components/templates/apps-templates";
 import { Confirm } from "@/components/ui/confirm";
 import { AppsNewForm } from "@/features/apps/appsNewForm";
 import { createAppAction } from "@/lib/actions/appsActions";

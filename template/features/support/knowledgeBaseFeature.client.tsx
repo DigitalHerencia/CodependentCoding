@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
-import { SupportKnowledgeBaseTemplate } from "@/components/templates/supportKnowledgeBaseTemplate";
+import { SupportKnowledgeBaseTemplate } from "@/components/templates/support-templates";
 import type { KnowledgeArticleDTO } from "@/types/supportTypes";
 export function KnowledgeBaseFeatureClient({
   articles,

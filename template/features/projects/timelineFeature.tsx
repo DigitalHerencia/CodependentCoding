@@ -1,6 +1,6 @@
 // Why: Server feature: loads the project workspace (null means 404) for the timeline.
 import { notFound } from "next/navigation";
-import { ProjectTimelineTemplate } from "@/components/templates/projectsTimelineTemplate";
+import { ProjectTimelineTemplate } from "@/components/templates/projects-templates";
 import { getProjectWorkspaceWorkflow } from "@/lib/workflows/projectsWorkflows";
 export async function TimelineFeature({ projectId }: { projectId: string }) {
   const workspace = await getProjectWorkspaceWorkflow(projectId);

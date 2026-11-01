@@ -44,7 +44,7 @@ URL ─► app/ (route) ─► features/ ─► components/blocks ─► compone
 | Browser behavior         | `features/<domain>/<name>.client.tsx`                                          | `"use client"`; UI controls + actions only                                  |
 | Form                     | `features/<domain>/<domain><Verb><Thing>Form.tsx`                              | React Hook Form + Zod + action; may use UI primitives                       |
 | Loading                  | `features/<domain>/<domain><Thing>Skeleton.tsx`                                | Mirrors real layout; `ui/skeleton` only                                     |
-| Domain presentation      | `components/templates/<domain><Thing>Template.tsx`                             | Pure; composed from blocks                                                  |
+| Domain presentation      | `components/templates/<slice>-templates.tsx`                                   | Pure; composed from blocks; one file per slice                              |
 | Reusable composition     | `components/blocks/<kebab>.tsx`                                                | Pure presentation                                                           |
 | Structure                | `components/nav`, `components/shells`                                          | Frames; Clerk UI widgets allowed                                            |
 | Primitive                | `components/ui/<kebab>.tsx`                                                    | shadcn/BoldKit-derived                                                      |

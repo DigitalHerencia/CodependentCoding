@@ -3,7 +3,7 @@ import {
   getSupportTicket,
   getSupportMessages,
 } from "@/lib/fetchers/supportFetchers";
-import { SupportTicketTemplate } from "@/components/templates/supportTicketTemplate";
+import { SupportTicketTemplate } from "@/components/templates/support-templates";
 import { TicketFeatureClient } from "./ticketFeature.client";
 export async function TicketFeature({ ticketId }: { ticketId: string }) {
   const ticket = await getSupportTicket(ticketId);
