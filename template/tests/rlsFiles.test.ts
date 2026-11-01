@@ -4,24 +4,19 @@ import { fileURLToPath } from "node:url";
 
 import { expect, test } from "vitest";
 
-import { rlsFiles } from "@/scripts/rls-sql.mjs";
+import { rlsFiles, rlsSql } from "@/scripts/rls-sql.mjs";
 
 const root = fileURLToPath(new URL("..", import.meta.url));
 const schemaDir = `${root}/prisma/schema`;
 
-/** model name -> owner file, for models that need RLS (required organizationId, plus User and Organization). */
-function tenantModels() {
+/** model name -> owner file, for every model: RLS is forced on every table (CC-RLS-001, ledger D-7). */
+function schemaModels() {
   const owners = new Map<string, string>();
   for (const file of readdirSync(schemaDir)) {
     const owner = basename(file, ".prisma");
     const source = readFileSync(`${schemaDir}/${file}`, "utf8");
-    for (const [, name, body] of source.matchAll(
-      /^model (\w+) \{\n([\s\S]*?)^\}/gm,
-    )) {
-      const tenant = /^\s+organizationId\s+String\s/m.test(body ?? "");
-      if (tenant || name === "User" || name === "Organization") {
-        owners.set(name ?? "", owner);
-      }
+    for (const [, name] of source.matchAll(/^model (\w+) \{$/gm)) {
+      owners.set(name ?? "", owner);
     }
   }
   return owners;
@@ -43,8 +38,8 @@ function forcedTables() {
   return owners;
 }
 
-test("every tenant table has forced RLS in its owner's file", () => {
-  const models = tenantModels();
+test("every table has forced RLS in its owner's file", () => {
+  const models = schemaModels();
   expect(models.size).toBeGreaterThan(0);
   expect(Object.fromEntries(forcedTables())).toEqual(
     Object.fromEntries(models),
@@ -53,4 +48,17 @@ test("every tenant table has forced RLS in its owner's file", () => {
 
 test("identity.sql is applied first", () => {
   expect(basename(rlsFiles(root)[0] ?? "")).toBe("identity.sql");
+});
+
+test("the newest *_rls migration carries the current prisma/rls source", () => {
+  // `pnpm db:rls` writes it; RLS never reaches a database another way (CC-MIG-001).
+  const latest = readdirSync(`${root}/prisma/migrations`)
+    .filter((name) => name.endsWith("_rls"))
+    .sort()
+    .at(-1);
+  expect(latest, "no *_rls migration: run `pnpm db:rls`").toBeDefined();
+  expect(
+    readFileSync(`${root}/prisma/migrations/${latest}/migration.sql`, "utf8"),
+    "prisma/rls changed without a migration: run `pnpm db:rls`",
+  ).toBe(rlsSql(root));
 });

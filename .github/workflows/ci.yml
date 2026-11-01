@@ -83,7 +83,7 @@ jobs:
             echo "template_eslint=$(has '^template/eslint/')"
             echo "template_schema=$(has '^template/(prisma/|hipster\.modules\.json$)')"
             echo "template_e2e=$(has '^template/(app|components|features|lib|hooks|tests/e2e)/|^template/(proxy\.ts|next\.config\.ts|playwright\.config\.ts|package\.json|pnpm-lock\.yaml)$')"
-            echo "template_db=$(has '^template/(prisma/|tests/rls/|lib/db/)|^template/scripts/(rls-sql|db-init)\.mjs$')"
+            echo "template_db=$(has '^template/(prisma/|tests/rls/|lib/db/)|^template/scripts/(rls-sql|db-init|db-rls)\.mjs$')"
             echo "template_build=$(has '^template/(next\.config\.ts|package\.json|pnpm-lock\.yaml|postcss\.config\.mjs|tsconfig\.json)$')"
             echo "lockfile=$(has '^(template/)?(pnpm-lock|pnpm-workspace)\.yaml$|^scripts/check-lockfile\.mjs$')"
           } | tee -a "$GITHUB_OUTPUT"
@@ -237,6 +237,11 @@ jobs:
           cache: pnpm
           cache-dependency-path: template/pnpm-lock.yaml
       - run: pnpm install --frozen-lockfile
-      # Migrates, applies prisma/rls/*.sql, seeds two organizations and probes every
-      # tenant table as a NOBYPASSRLS role.
+      # Migrates (roles and policies arrive only through migration history), seeds
+      # two organizations and probes every tenant table as app_runtime.
       - run: pnpm test:rls
+      # Live pg_policies, RLS flags and role grants must equal what prisma/rls
+      # produces (CC-MIG-001); drift means a missing `pnpm db:rls` migration.
+      - name: RLS drift (pg_policies vs prisma/rls)
+        if: ${{ !cancelled() }}
+        run: pnpm db:rls:check

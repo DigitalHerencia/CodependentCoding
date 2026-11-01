@@ -7,15 +7,16 @@ import { config } from "dotenv";
 import pg from "pg";
 
 import { baseEnv, childEnv } from "@/lib/env/base";
-import { rlsSql } from "@/scripts/rls-sql.mjs";
 
 config({ path: ".env.local", quiet: true });
 
 // Tables that carry an optional organizationId are system records written before
-// a tenant is known (webhook receipts, idempotency keys). DEC-032.
+// a tenant is known (webhook receipts, idempotency keys). DEC-032, ledger D-7.
 export const SYSTEM_TABLES = ["IdempotencyRecord", "WebhookEvent"] as const;
 
-const DEFAULT_APP_ROLE = "app_user";
+/** Created by the roles block in prisma/rls/identity.sql (ledger D-1). */
+export const RUNTIME_ROLE = "app_runtime";
+export const SYSTEM_ROLE = "app_system";
 
 export interface Column {
   name: string;
@@ -64,9 +65,10 @@ function requiredUrl(): string {
 
 export const ownerUrl = requiredUrl();
 const appUrl = baseEnv.value("DATABASE_URL_TEST_APP");
+/** The login the suite runs as: app_runtime itself, or a login that is a member of it. */
 export const appRole = appUrl
   ? decodeURIComponent(new URL(appUrl).username)
-  : DEFAULT_APP_ROLE;
+  : RUNTIME_ROLE;
 
 const quote = (identifier: string) => `"${identifier.replaceAll('"', '""')}"`;
 
@@ -76,8 +78,12 @@ export async function connect(url: string): Promise<pg.Client> {
   return client;
 }
 
-/** Migrate as the owner, then apply prisma/rls/*.sql (identity, then modules). */
-export async function migrate(owner: pg.Client): Promise<void> {
+/**
+ * Migrate as the owner. Roles and policies arrive only through migration
+ * history (CC-MIG-001); nothing from prisma/rls is applied here, so a source
+ * change without its `pnpm db:rls` migration fails the suite.
+ */
+export async function migrate(): Promise<void> {
   const migrations = path.join(process.cwd(), "prisma", "migrations");
   if (
     !existsSync(migrations) ||
@@ -101,27 +107,24 @@ export async function migrate(owner: pg.Client): Promise<void> {
       `prisma migrate deploy failed:\n${output.replaceAll(ownerUrl, "<DATABASE_URL_TEST>")}`,
     );
   }
-  // The same SQL db:init applies: identity first, then modules in manifest order.
-  await owner.query(rlsSql(process.cwd()));
 }
 
-/** Ensure the runtime role exists without BYPASSRLS and can use every table. */
+/**
+ * The migrations created the roles and their grants; the owner only joins them
+ * so it can `SET ROLE` (seeding runs through the same policies as the app).
+ */
 export async function prepareAppRole(owner: pg.Client): Promise<void> {
-  if (!appUrl) {
-    await owner.query(`
-      DO $$ BEGIN
-        IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = '${DEFAULT_APP_ROLE}') THEN
-          CREATE ROLE ${DEFAULT_APP_ROLE} NOLOGIN NOBYPASSRLS;
-        END IF;
-      END $$;
-    `);
+  for (const role of new Set([RUNTIME_ROLE, SYSTEM_ROLE, appRole])) {
+    await owner.query(`GRANT ${quote(role)} TO CURRENT_USER`);
   }
-  const role = quote(appRole);
-  await owner.query(`GRANT ${role} TO CURRENT_USER`);
-  await owner.query(`GRANT USAGE ON SCHEMA public TO ${role}`);
-  await owner.query(
-    `GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO ${role}`,
-  );
+}
+
+/** Run the rest of the caller's transaction as `role` (default: the runtime login). */
+export async function setLocalRole(
+  db: pg.Client,
+  role: string = appRole,
+): Promise<void> {
+  await db.query(`SET LOCAL ROLE ${quote(role)}`);
 }
 
 /** A session that runs as the runtime role: its own login, or SET ROLE from the owner. */
@@ -380,6 +383,8 @@ export async function seedOrg(
 ): Promise<void> {
   await owner.query("BEGIN");
   try {
+    // Seed through the runtime policies, so the owner need not bypass RLS.
+    await setLocalRole(owner);
     await setTenantContext(owner, org);
     for (const [name, base] of [
       ["User", { id: org.userId, clerkUserId: org.clerkUserId }],
@@ -426,8 +431,10 @@ export async function seedOrg(
 export async function removeOrg(owner: pg.Client, org: OrgSeed): Promise<void> {
   await owner.query("BEGIN");
   try {
+    await setLocalRole(owner);
     await setTenantContext(owner, org);
-    // Tenant rows cascade from Organization; AiGeneration/AiUsageLedger restrict User.
+    // Tenant rows cascade from Organization (foreign-key actions bypass RLS and
+    // the audit grants); AiGeneration/AiUsageLedger restrict User.
     await owner.query(`DELETE FROM "Organization" WHERE id = $1`, [
       org.organizationId,
     ]);
@@ -471,28 +478,39 @@ export async function probeTable(
     params,
   );
   report(reads.rows[0] ?? {});
-  const updates = await db.query<Record<string, string>>(
-    `WITH by_id AS (
-       UPDATE ${t} SET id = id WHERE id = ANY($2::uuid[]) RETURNING 1
-     ), by_org AS (
-       UPDATE ${t} SET id = id WHERE "organizationId" = $1 RETURNING 1
-     )
-     SELECT (SELECT count(*) FROM by_id) AS "update by id",
-            (SELECT count(*) FROM by_org) AS "update with app predicate"`,
-    [victim.organizationId, victimIds],
+  // A revoked grant (AuditEvent is insert/select only) denies before RLS does.
+  const grants = await db.query<{ update: boolean; delete: boolean }>(
+    `SELECT has_table_privilege(current_user, $1, 'UPDATE') AS update,
+            has_table_privilege(current_user, $1, 'DELETE') AS delete`,
+    [t],
   );
-  report(updates.rows[0] ?? {});
-  const deletes = await db.query<Record<string, string>>(
-    `WITH by_id AS (
-       DELETE FROM ${t} WHERE id = ANY($2::uuid[]) RETURNING 1
-     ), by_org AS (
-       DELETE FROM ${t} WHERE "organizationId" = $1 RETURNING 1
-     )
-     SELECT (SELECT count(*) FROM by_id) AS "delete by id",
-            (SELECT count(*) FROM by_org) AS "delete with app predicate"`,
-    [victim.organizationId, victimIds],
-  );
-  report(deletes.rows[0] ?? {});
+  const can = grants.rows[0] ?? { update: true, delete: true };
+  if (can.update) {
+    const updates = await db.query<Record<string, string>>(
+      `WITH by_id AS (
+         UPDATE ${t} SET id = id WHERE id = ANY($2::uuid[]) RETURNING 1
+       ), by_org AS (
+         UPDATE ${t} SET id = id WHERE "organizationId" = $1 RETURNING 1
+       )
+       SELECT (SELECT count(*) FROM by_id) AS "update by id",
+              (SELECT count(*) FROM by_org) AS "update with app predicate"`,
+      [victim.organizationId, victimIds],
+    );
+    report(updates.rows[0] ?? {});
+  }
+  if (can.delete) {
+    const deletes = await db.query<Record<string, string>>(
+      `WITH by_id AS (
+         DELETE FROM ${t} WHERE id = ANY($2::uuid[]) RETURNING 1
+       ), by_org AS (
+         DELETE FROM ${t} WHERE "organizationId" = $1 RETURNING 1
+       )
+       SELECT (SELECT count(*) FROM by_id) AS "delete by id",
+              (SELECT count(*) FROM by_org) AS "delete with app predicate"`,
+      [victim.organizationId, victimIds],
+    );
+    report(deletes.rows[0] ?? {});
+  }
 
   await db.query("SAVEPOINT probe");
   try {
