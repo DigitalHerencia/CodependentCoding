@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { getCrmAccount } from "@/lib/fetchers/crmFetchers";
-import { CrmAccountDetailTemplate } from "@/components/templates/crmAccountDetailTemplate";
+import { CrmAccountDetailTemplate } from "@/components/templates/crm-templates";
 export async function CrmAccountDetailFeature({
   accountId,
 }: {

@@ -2,7 +2,7 @@
 import { useInput } from "ink";
 import { useState } from "react";
 
-import { ChecksTemplate } from "@/components/templates/checksTemplate";
+import { ChecksTemplate } from "@/components/templates/checks-templates";
 import { runTemplateChecksAction } from "@/lib/actions/checksActions";
 import { waitingChecks } from "@/lib/utils/check-runs";
 import type { CheckRun } from "@/types/checksTypes";

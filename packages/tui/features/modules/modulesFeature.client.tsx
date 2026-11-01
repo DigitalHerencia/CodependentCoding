@@ -1,7 +1,7 @@
 // Why: keyboard companion: arrow keys and enter pick a module; never reads the checkout itself.
 import { useState } from "react";
 
-import { ModulesTemplate } from "@/components/templates/modulesTemplate";
+import { ModulesTemplate } from "@/components/templates/modules-templates";
 import { Select } from "@/components/ui/select";
 import type { TemplateModule } from "@/types/modulesTypes";
 

@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
-import { MarketingCampaignsTemplate } from "@/components/templates/marketingCampaignsTemplate";
+import { MarketingCampaignsTemplate } from "@/components/templates/marketing-templates";
 import type { CampaignDTO } from "@/types/marketingTypes";
 export function CampaignsFeatureClient({
   campaigns,

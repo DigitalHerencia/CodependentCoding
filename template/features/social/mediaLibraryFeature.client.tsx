@@ -2,7 +2,7 @@
 import { WorkspaceFileUpload } from "@/features/uploads/workspaceFileUpload.client";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
-import { SocialMediaTemplate } from "@/components/templates/socialMediaTemplate";
+import { SocialMediaTemplate } from "@/components/templates/social-templates";
 import type { MediaAssetDTO } from "@/types/socialTypes";
 import { MediaAssetControls } from "./mediaAssetControls.client";
 export function MediaLibraryFeatureClient({

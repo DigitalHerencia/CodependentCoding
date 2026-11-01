@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { AiPlaygroundTemplate } from "@/components/templates/aiPlaygroundTemplate";
+import { AiPlaygroundTemplate } from "@/components/templates/ai-templates";
 export function AiPlaygroundFeatureClient({
   configuration,
 }: {

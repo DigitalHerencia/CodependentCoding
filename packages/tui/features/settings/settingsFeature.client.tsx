@@ -2,7 +2,7 @@
 import { Text, useInput } from "ink";
 import { useState } from "react";
 
-import { SettingsTemplate } from "@/components/templates/settingsTemplate";
+import { SettingsTemplate } from "@/components/templates/settings-templates";
 import { Select } from "@/components/ui/select";
 import { SettingsAppFolderForm } from "@/features/settings/settingsAppFolderForm";
 import { forgetAppAction } from "@/lib/actions/settingsActions";

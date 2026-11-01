@@ -4,7 +4,7 @@ import {
   getPortalDocument,
   getPortalWriteAccess,
 } from "@/lib/fetchers/portalFetchers";
-import { PortalDocumentDetailTemplate } from "@/components/templates/portalDocumentDetailTemplate";
+import { PortalDocumentDetailTemplate } from "@/components/templates/portal-templates";
 import { PortalDocumentControls } from "./portalDocumentControls.client";
 import { WorkspaceFileUpload } from "@/features/uploads/workspaceFileUpload.client";
 import { DocumentFeatureClient } from "./documentFeature.client";

@@ -3,7 +3,7 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { SocialCalendarTemplate } from "@/components/templates/socialCalendarTemplate";
+import { SocialCalendarTemplate } from "@/components/templates/social-templates";
 import {
   approveSocialPost,
   scheduleSocialPost,

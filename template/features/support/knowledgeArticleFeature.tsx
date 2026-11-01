@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { getKnowledgeArticle } from "@/lib/fetchers/supportFetchers";
-import { SupportKnowledgeArticleTemplate } from "@/components/templates/supportKnowledgeArticleTemplate";
+import { SupportKnowledgeArticleTemplate } from "@/components/templates/support-templates";
 export async function KnowledgeArticleFeature({
   articleId,
 }: {

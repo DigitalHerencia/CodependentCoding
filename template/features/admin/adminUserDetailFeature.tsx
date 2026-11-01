@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { getAdminMemberships } from "@/lib/fetchers/adminFetchers";
-import { AdminUserDetailTemplate } from "@/components/templates/adminUserDetailTemplate";
+import { AdminUserDetailTemplate } from "@/components/templates/admin-templates";
 import { AdminUserDetailFeatureClient } from "./adminUserDetailFeature.client";
 export async function AdminUserDetailFeature({ userId }: { userId: string }) {
   const membership = (await getAdminMemberships()).find(

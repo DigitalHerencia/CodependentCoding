@@ -1,8 +1,10 @@
 "use client";
 import Link from "next/link";
 import { useState } from "react";
-import { CrmLeadsTemplate } from "@/components/templates/crmLeadsTemplate";
-import { CrmContactsTemplate } from "@/components/templates/crmContactsTemplate";
+import {
+  CrmContactsTemplate,
+  CrmLeadsTemplate,
+} from "@/components/templates/crm-templates";
 import { Input } from "@/components/ui/input";
 import type { CrmContactDTO } from "@/types/crmTypes";
 export function CrmContactsFeatureClient({

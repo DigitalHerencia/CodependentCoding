@@ -1,7 +1,7 @@
 "use client";
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { PortalDocumentsTemplate } from "@/components/templates/portalDocumentsTemplate";
+import { PortalDocumentsTemplate } from "@/components/templates/portal-templates";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";

@@ -1,5 +1,5 @@
 import { getPortalBilling } from "@/lib/fetchers/portalFetchers";
-import { PortalBillingTemplate } from "@/components/templates/portalBillingTemplate";
+import { PortalBillingTemplate } from "@/components/templates/portal-templates";
 export async function BillingFeature() {
   return <PortalBillingTemplate billing={await getPortalBilling()} />;
 }

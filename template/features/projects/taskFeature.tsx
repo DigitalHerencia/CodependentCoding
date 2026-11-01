@@ -1,6 +1,6 @@
 // Why: Server feature: loads one task (null means 404) and composes the detail template.
 import { notFound } from "next/navigation";
-import { ProjectTaskDetailTemplate } from "@/components/templates/projectsTaskDetailTemplate";
+import { ProjectTaskDetailTemplate } from "@/components/templates/projects-templates";
 import { getProjectTask } from "@/lib/fetchers/projectsFetchers";
 import { TaskFeatureClient } from "./taskFeature.client";
 import { getOrganizationMembers } from "@/lib/fetchers/organizationFetchers";

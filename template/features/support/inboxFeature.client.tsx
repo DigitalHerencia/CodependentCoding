@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useState } from "react";
-import { SupportInboxTemplate } from "@/components/templates/supportInboxTemplate";
+import { SupportInboxTemplate } from "@/components/templates/support-templates";
 import { Input } from "@/components/ui/input";
 import type { SupportTicketDTO } from "@/types/supportTypes";
 export function InboxFeatureClient({

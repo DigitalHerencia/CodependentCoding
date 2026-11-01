@@ -2,7 +2,7 @@
 // Why: Client island: filters the already-authorized project list in the browser; never fetches.
 import Link from "next/link";
 import { useState } from "react";
-import { ProjectsTemplate } from "@/components/templates/projectsTemplate";
+import { ProjectsTemplate } from "@/components/templates/projects-templates";
 import { Input } from "@/components/ui/input";
 import type { ProjectSummaryDTO } from "@/types/projectsTypes";
 export function ProjectsFeatureClient({

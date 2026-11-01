@@ -1,7 +1,7 @@
 // Why: loads the workspace and doctrine counts for the command center.
 import { use } from "react";
 
-import { WorkspaceTemplate } from "@/components/templates/workspaceTemplate";
+import { WorkspaceTemplate } from "@/components/templates/workspace-templates";
 import { getDoctrineSummary } from "@/lib/fetchers/doctrineFetchers";
 import { getModuleCatalog } from "@/lib/fetchers/modulesFetchers";
 import { getWorkspaceInfo } from "@/lib/fetchers/workspaceFetchers";

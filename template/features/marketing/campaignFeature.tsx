@@ -4,7 +4,7 @@ import {
   getCampaign,
   getCampaignSteps,
 } from "@/lib/fetchers/marketingFetchers";
-import { MarketingCampaignDetailTemplate } from "@/components/templates/marketingCampaignDetailTemplate";
+import { MarketingCampaignDetailTemplate } from "@/components/templates/marketing-templates";
 export async function CampaignFeature({ campaignId }: { campaignId: string }) {
   const campaign = await getCampaign(campaignId);
   if (!campaign) notFound();

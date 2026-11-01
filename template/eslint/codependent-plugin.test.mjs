@@ -338,8 +338,14 @@ tester.run("filename-convention", rules["filename-convention"], {
       code: "",
     },
     { filename: at("components/blocks/hero-section.tsx"), code: "" },
+    { filename: at("components/templates/crm-templates.tsx"), code: "" },
   ],
   invalid: [
+    {
+      filename: at("components/templates/crmContactsTemplate.tsx"),
+      code: "",
+      errors: [{ messageId: "name" }],
+    },
     {
       filename: at("lib/fetchers/crm.ts"),
       code: "",

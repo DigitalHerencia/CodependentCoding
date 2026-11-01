@@ -1,7 +1,7 @@
 // Why: keyboard companion: arrow keys pick a layer; never reads the checkout itself.
 import { useState } from "react";
 
-import { DoctrineTemplate } from "@/components/templates/doctrineTemplate";
+import { DoctrineTemplate } from "@/components/templates/doctrine-templates";
 import { Select } from "@/components/ui/select";
 import type { DoctrineLayer, DoctrineRule } from "@/types/doctrineTypes";
 
