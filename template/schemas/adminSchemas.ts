@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { appRoles } from "@/lib/constants/roles";
+import { appRoles } from "@/lib/authz/roles";
 
 export const adminRoleSchema = z.enum(appRoles);
 

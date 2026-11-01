@@ -25,6 +25,7 @@ Webhook HTTP lifecycle?          app/api/<provider>/webhooks/route.ts
 Runtime validation?              schemas/<d>Schemas.ts
 Shared type?                     types/<d>Types.ts
 Cache tag / lifetime?            lib/cache
+Report an unexpected error?      lib/observability/report.ts
 Constant / pure util?            lib/constants | lib/utils
 None of the above?               Stop. Do not invent a layer (CC-NAME-002).
 ```
@@ -39,7 +40,7 @@ None of the above?               Stop. Do not invent a layer (CC-NAME-002).
 | CC-FEAT-001   | feature          | Normal features: no DB, transactions, integrations, SDKs, UI primitives, React Hook Form                          | `eslint:codependent/layer-boundaries`       |
 | CC-FEAT-002   | feature-form     | Forms: no DB, fetchers, workflows, integrations; initial values arrive as props                                   | `eslint:codependent/layer-boundaries`       |
 | CC-FEAT-003   | feature-skeleton | Skeletons import only components/ui/skeleton and blocks                                                           | `eslint:codependent/layer-boundaries`       |
-| CC-FEAT-004   | feature-client   | Client companions: interactive UI controls + actions; no server reads or authz                                    | `eslint:codependent/layer-boundaries`       |
+| CC-FEAT-004   | feature-client   | Client companions: interactive UI controls + actions; no server reads or authz (lib/authz/roles allowed)          | `eslint:codependent/layer-boundaries`       |
 | CC-BLOCK-001  | block            | Blocks and templates are pure presentation                                                                        | `eslint:codependent/layer-boundaries`       |
 | CC-BLOCK-002  | nav              | Nav and shells are pure presentation; Clerk UI widgets allowed                                                    | `eslint:codependent/layer-boundaries`       |
 | CC-UI-001     | ui               | UI primitives import only primitives, utils, hooks, types                                                         | `eslint:codependent/layer-boundaries`       |
@@ -59,8 +60,8 @@ None of the above?               Stop. Do not invent a layer (CC-NAME-002).
 | CC-INT-001    | integration      | Integrations never persist                                                                                        | `eslint:codependent/layer-boundaries`       |
 | CC-CACHE-001  | cache            | Cache helpers hold semantics only                                                                                 | `eslint:codependent/layer-boundaries`       |
 | CC-PURE-001   | pure             | Constants, utils, types are dependency-free                                                                       | `eslint:codependent/layer-boundaries`       |
-| CC-SCHEMA-001 | schema           | Zod schemas are pure (Prisma enums allowed)                                                                       | `eslint:codependent/layer-boundaries`       |
-| CC-SRV-001    | server           | Server modules import 'server-only'                                                                               | `eslint:codependent/require-server-only`    |
+| CC-SCHEMA-001 | schema           | Zod schemas are pure (Prisma enums and lib/authz/roles allowed)                                                   | `eslint:codependent/layer-boundaries`       |
+| CC-SRV-001    | server           | Server modules import 'server-only' (lib/authz/roles.ts excepted: browser-safe role vocabulary)                   | `eslint:codependent/require-server-only`    |
 | CC-CLIENT-001 | any              | 'use client' only in .client.tsx, Form features, components, hooks, error boundaries                              | `eslint:codependent/use-client-placement`   |
 | CC-NAME-001   | any              | Directory naming conventions                                                                                      | `eslint:codependent/filename-convention`    |
 | CC-NAME-002   | any              | No services/managers/processors/helpers/misc/common/handlers layers                                               | `eslint:codependent/no-generic-names`       |

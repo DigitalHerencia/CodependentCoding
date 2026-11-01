@@ -74,7 +74,7 @@ URL ─► app/ (route) ─► features/ ─► components/blocks ─► compone
 | Projection               | `lib/db/selects/<domain>.selects.ts`                                           | Precise selects                                                             |
 | Mapping                  | `lib/db/dto/<domain>.dto.ts`                                                   | Record → transport-safe DTO                                                 |
 | Identity                 | `lib/auth/{clerk,auth,redirects,clerk-webhooks}.ts`                            | Clerk only here                                                             |
-| Access                   | `lib/authz/{roles,permissions,resources,policies,attributes?}.ts`              | App-owned RBAC/ABAC                                                         |
+| Access                   | `lib/authz/{roles,permissions,resources,policies,mode,attributes?}.ts`         | App-owned RBAC/ABAC; `roles.ts` is the one browser-safe authz file          |
 | Provider                 | `lib/integrations/<provider>/<kebab>.ts`                                       | SDK only here                                                               |
 | Cache                    | `lib/cache/{tags,life,invalidate}.ts`                                          | Semantics only                                                              |
 | Module contribution      | `lib/modules/<id>.module.ts`, `registry.ts`                                    | Nav, dashboard widgets, permissions                                         |
@@ -127,7 +127,7 @@ Doctrine is code. `template/eslint/doctrine-map.mjs` is the machine table (layer
 | CC-FEAT-001      | Normal features: no DB, transactions, integrations, SDKs, UI primitives, RHF               | layer-boundaries                     |
 | CC-FEAT-002      | Forms: no DB, fetchers, workflows, integrations                                            | layer-boundaries                     |
 | CC-FEAT-003      | Skeletons: `ui/skeleton` + blocks only                                                     | layer-boundaries                     |
-| CC-FEAT-004      | Client companions: controls + actions; no server reads                                     | layer-boundaries                     |
+| CC-FEAT-004      | Client companions: controls + actions (+ `lib/authz/roles`); no server reads               | layer-boundaries                     |
 | CC-BLOCK-001     | Blocks/templates are pure presentation                                                     | layer-boundaries                     |
 | CC-BLOCK-002     | Nav/shells pure presentation (+ Clerk UI)                                                  | layer-boundaries                     |
 | CC-UI-001 / 002  | Primitives and hooks stay presentation/browser-side                                        | layer-boundaries                     |
@@ -145,8 +145,8 @@ Doctrine is code. `template/eslint/doctrine-map.mjs` is the machine table (layer
 | CC-INT-001       | Integrations never persist                                                                 | layer-boundaries                     |
 | CC-CACHE-001     | Cache helpers hold semantics only                                                          | layer-boundaries                     |
 | CC-PURE-001      | Constants/utils/types are dependency-free                                                  | layer-boundaries                     |
-| CC-SCHEMA-001    | Schemas are pure                                                                           | layer-boundaries                     |
-| CC-SRV-001       | Server modules import `server-only` (auto-fix)                                             | `codependent/require-server-only`    |
+| CC-SCHEMA-001    | Schemas are pure (Prisma enums and `lib/authz/roles` allowed)                              | layer-boundaries                     |
+| CC-SRV-001       | Server modules import `server-only` (auto-fix; `lib/authz/roles.ts` excepted)              | `codependent/require-server-only`    |
 | CC-CLIENT-001    | `"use client"` placement                                                                   | `codependent/use-client-placement`   |
 | CC-NAME-001      | Directory naming conventions                                                               | `codependent/filename-convention`    |
 | CC-NAME-002      | No `services/`, `managers/`, `helpers/`...                                                 | `codependent/no-generic-names`       |

@@ -61,6 +61,8 @@ export const categories = {
   workflow: { internal: [/^lib\/workflows\//] },
   auth: { internal: [/^lib\/auth\//] },
   authz: { internal: [/^lib\/authz\//] },
+  // Role vocabulary: the one lib/authz file the browser may import.
+  "authz-roles": { internal: [/^lib\/authz\/roles(\.ts)?$/] },
   integration: { internal: [/^lib\/integrations\//] },
   cache: { internal: [/^lib\/cache\//] },
   feature: { internal: [/^features\//] },
@@ -214,7 +216,7 @@ export const boundaries = {
       "server-only",
       "cache",
     ],
-    except: ["ui-control", "ui-skeleton"],
+    except: ["ui-control", "ui-skeleton", "authz-roles"],
     why: "Client companions hold browser state only: interactive UI controls and server actions, never server reads.",
   },
   nav: {
@@ -487,7 +489,8 @@ export const boundaries = {
       "block",
       "ui",
     ],
-    why: "Zod schemas are pure runtime-validation contracts usable on client and server.",
+    except: ["authz-roles"],
+    why: "Zod schemas are pure runtime-validation contracts usable on client and server; role enums come from lib/authz/roles.",
   },
 };
 
@@ -498,7 +501,7 @@ export const serverOnlyPaths = [
   /^lib\/db\/(client|provider|tenant)\.ts$/,
   /^lib\/db\/transactions\/(?!errors\.ts$)/,
   /^lib\/auth\//,
-  /^lib\/authz\//,
+  /^lib\/authz\/(?!roles\.ts$)/,
   /^lib\/integrations\/(?!status\.ts$)/,
   /^lib\/cache\//,
 ];

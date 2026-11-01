@@ -1,4 +1,4 @@
-import type { appRoles } from "@/lib/constants/roles";
+import type { appRoles } from "@/lib/authz/roles";
 import type { ModulePermission } from "@/types/moduleTypes";
 
 export type AppRole = (typeof appRoles)[number];

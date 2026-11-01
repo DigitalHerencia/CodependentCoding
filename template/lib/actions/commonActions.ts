@@ -13,7 +13,7 @@ import type { CreatedInvitationDTO } from "@/types/commonTypes";
 import { requireIdentity } from "@/lib/auth/auth";
 import { assertPermission } from "@/lib/authz/permissions";
 import { invalidatePaths } from "@/lib/cache/invalidate";
-import { INVITATION_TTL_DAYS } from "@/lib/constants/access";
+import { INVITATION_TTL_DAYS } from "@/lib/constants/invitations";
 import {
   toInvitationDTO,
   toOrganizationDTO,
