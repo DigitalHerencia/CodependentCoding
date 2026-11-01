@@ -105,6 +105,81 @@ function localMigrations(appDir: string): string[] {
 
 const DB_HINT = "pnpm db:init";
 
+/** The role the policies are written for (template prisma/rls/identity.sql). */
+export const RUNTIME_ROLE = "app_runtime";
+const ROLE_NAME = /^[A-Za-z_][A-Za-z0-9_$]*$/;
+
+function urlUser(url: string | undefined): string | null {
+  if (!url) return null;
+  try {
+    return decodeURIComponent(new URL(url).username) || null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * CC-DB-004 / ledger D-1: the app's DATABASE_URL logs in as app_runtime (or a
+ * member of it) that is not the owner, not SUPERUSER or BYPASSRLS, not in
+ * neon_superuser (whose members can SET ROLE into BYPASSRLS), and owns no table.
+ */
+async function runtimeRoleCheck(
+  env: Map<string, string>,
+  ownerUrl: string,
+  query: QuerySql,
+): Promise<CheckResult> {
+  const check = "runtime role";
+  const hint = `Point DATABASE_URL at ${RUNTIME_ROLE} (created by the rls migration; set its password with ALTER ROLE ${RUNTIME_ROLE} PASSWORD ...).`;
+  const role = urlUser(env.get("DATABASE_URL"));
+  if (!role) {
+    return {
+      check,
+      status: "fail",
+      detail: "DATABASE_URL names no role",
+      hint,
+    };
+  }
+  if (role === urlUser(ownerUrl) && env.get("DATABASE_URL") !== ownerUrl) {
+    return { check, status: "fail", detail: `${role} is the owner`, hint };
+  }
+  if (!ROLE_NAME.test(role)) {
+    return { check, status: "fail", detail: "unexpected role name", hint };
+  }
+  const [row] = await query(
+    ownerUrl,
+    `select r.rolsuper, r.rolbypassrls,
+       exists (select from pg_roles s where s.rolname = 'neon_superuser'
+               and pg_has_role(r.oid, s.oid, 'MEMBER')) as neon_superuser,
+       exists (select from pg_roles s where s.rolname = '${RUNTIME_ROLE}'
+               and pg_has_role(r.oid, s.oid, 'MEMBER')) as runtime,
+       (select count(*)::int from pg_class c
+        where c.relnamespace = 'public'::regnamespace and c.relowner = r.oid) as owned
+     from pg_roles r where r.rolname = '${role}'`,
+  );
+  if (!row) {
+    return { check, status: "fail", detail: `role ${role} not found`, hint };
+  }
+  const problems = [
+    row.rolsuper ? "SUPERUSER" : "",
+    row.rolbypassrls ? "BYPASSRLS" : "",
+    row.neon_superuser ? "member of neon_superuser" : "",
+    Number(row.owned) > 0 ? `owns ${String(row.owned)} tables` : "",
+    row.runtime ? "" : `not ${RUNTIME_ROLE}`,
+  ].filter(Boolean);
+  return problems.length === 0
+    ? {
+        check,
+        status: "pass",
+        detail: `${role}: not owner, not BYPASSRLS, not in neon_superuser`,
+      }
+    : {
+        check,
+        status: "fail",
+        detail: `${role}: ${problems.join(", ")}`,
+        hint: `Use ${RUNTIME_ROLE}, created in SQL by the rls migration, never in the Neon Console.`,
+      };
+}
+
 async function databaseChecks(
   appDir: string,
   env: Map<string, string>,
@@ -119,7 +194,12 @@ async function databaseChecks(
       detail: "no database URL",
       hint: "Set DATABASE_URL (and DIRECT_DATABASE_URL) in .env.local.",
     });
-    return [skip("database"), skip("migrations"), skip("rls")];
+    return [
+      skip("database"),
+      skip("migrations"),
+      skip("rls"),
+      skip("runtime role"),
+    ];
   }
   try {
     await query(url, "select 1");
@@ -134,6 +214,11 @@ async function databaseChecks(
       },
       { check: "migrations", status: "skip", detail: "database unreachable" },
       { check: "rls", status: "skip", detail: "database unreachable" },
+      {
+        check: "runtime role",
+        status: "skip",
+        detail: "database unreachable",
+      },
     ];
   }
   const results: CheckResult[] = [
@@ -215,6 +300,7 @@ async function databaseChecks(
           hint: `${DB_HINT} (applies prisma/rls/*.sql)`,
         },
   );
+  results.push(await runtimeRoleCheck(env, url, query));
   return results;
 }
 

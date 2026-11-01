@@ -1,7 +1,7 @@
 import { createRequire } from "node:module";
 import path from "node:path";
 
-export const APP_ROLE = "app_user";
+export const APP_ROLE = "app_runtime";
 export const OWNER_ROLE = "owner";
 
 const IDENTIFIER = /^[a-z_][a-z0-9_]*$/;
@@ -12,7 +12,7 @@ const PASSWORD = /^[A-Za-z0-9]+$/;
  * in SQL rather than the Neon API so the attributes are explicit, as in the CI
  * rls job. Default privileges cover the tables `pnpm db:init` creates later as
  * the owner. Re-running resets the password, so the step is idempotent; an
- * existing app_user with BYPASSRLS is refused rather than reused.
+ * existing app_runtime with BYPASSRLS is refused rather than reused.
  */
 export function appRoleSql(password: string, owner = OWNER_ROLE): string {
   if (!PASSWORD.test(password))
