@@ -8,7 +8,7 @@ priority: p2
 size: m
 labels: [type:refactor, area:template, priority:p2, size:m]
 depends_on: []
-status: todo
+status: done
 ---
 
 # CC-078 · Per-slice templates files and kebab presentation names
