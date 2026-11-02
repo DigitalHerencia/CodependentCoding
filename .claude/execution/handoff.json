@@ -1,37 +1,36 @@
 {
   "$schema": "codependent-coding/execution/handoff/v1",
-  "updated": "2026-11-02T04:01:12.847Z",
+  "updated": "2026-11-02T05:23:49.601Z",
   "format": "One current package; history is in progress.json, decisions.json and git.",
-  "status": "goal-paused",
+  "status": "goal-paused-ready",
   "milestone": "M-S1",
   "current_issue": null,
   "next_issue": "CC-077",
   "queue": ["CC-077", "CC-046", "CC-048", "CC-049"],
   "branch": "ci/345-lean-project-validation",
   "in_flight": [
-    "GH-345 cleanup is implemented on ci/345-lean-project-validation; issue-linked PR/GitHub state is authoritative for merge.",
-    "Original implementation goal stays paused until owner explicitly resumes it."
+    "GH-347 operational alignment completed; linked PR/GitHub state is authoritative for merge.",
+    "Original feature goal remains paused until the owner unpauses it."
   ],
   "notes": [
-    "Owner merged CC-076 / #328 / PR #344 at f9c7264. Main updated to the merged commit; obsolete local PWA branch deleted after identical-tree verification.",
-    "No duplicate open GitHub issues found among 164 issues. All 77 duplicated canonical issue cards removed from Project #21; Project #19 is canonical.",
-    "Original snapshot retained only under archive tags; useful local labels/milestones restored; no stash remains. Do not replay old snapshots.",
-    "CI is only changed-file format write, lint fix, type generation/type checking and affected builds. No test/browser/database/title workflows or duplicate main-push run.",
-    "Codex user config reduced to six relevant plugins, no custom MCP startup, 113 disabled skills, 2000-token skill/tool limits, earlier compaction and one subagent maximum. Backup is ~/.codex/backups/resource-cleanup-20261101/config.toml.before. Restart Codex to rebuild tool/skill context.",
-    "Vercel public site production deployment is READY. This root project is separate from the template auth/database setup."
+    "Solo internal generator/dev tool; no users or commercial deployment. Keep process lean, without enterprise review or speculative production-readiness ceremony.",
+    "CI cleanup #346 merged at ef33a7b; only changed-file format write/lint fix/type generation/type-check/affected builds remain.",
+    "The approved template database is aligned on its existing project/default branch. Three pending source migrations applied; all 10 migrations current on retained branches. No resets or new project creation.",
+    "Local and Vercel runtime/migration connections aligned. Stale validation/test/merged-preview branches removed; active development/doc-preview retained.",
+    "Neon CLI context and Windows User defaults now target the owner-selected project/branch. The stale API-key override was removed with private backup; CLI authentication is working.",
+    "Codex lean configuration and backups remain in place; restart Codex before unpausing to reload the reduced tool/skill catalog.",
+    "No stash remains; previous source recovery snapshots are archive tags, not work to replay."
   ],
   "risks": [
-    "Neon OAuth is expired, including refresh. Owner must reconnect Neon and confirm the intended template branch/database before schema or cloud-resource changes.",
-    "Configured local template DB uses neondb_owner, has 13 tables and no RLS/runtime/system roles. Do not deploy tenant functionality with that runtime connection; no migrations were run.",
-    "Clerk template app has no production instance. Configure live Clerk/domain/keys only when the owner authorizes a template production deployment.",
-    "CC-076 PWA runtime requires owner verification: prior CI timed out before worker readiness; merged public-site build does not verify the tenant PWA.",
-    "Stale integration-managed Vercel preview DB env pair for deleted feat/328-template-pwa was identified but not deleted; coordinate with Neon branch cleanup after reauthentication."
+    "PWA browser/runtime verification is owner-run; no agent dev servers.",
+    "Machine-wide environment edits require an administrator shell. User-level defaults are correct; an owner-local administrator script is prepared if all-user scope is desired.",
+    "Live Clerk production setup is only needed if/when the owner requests an actual template production deployment; it does not block ordinary internal development."
   ],
   "do_not": [
-    "Unpause or resume issue implementation without owner instruction",
-    "Start any dev server; request owner browser/runtime checks instead",
-    "Run full suites or unrelated tests; new regressions must fail against unfixed code before passing",
-    "Initiate bulk installs, update CLIs, or repeatedly poll services",
-    "Run migrations, change database roles, delete cloud resources, rotate secrets, or manually deploy production without the specific owner gate"
+    "Resume feature issues until the owner unpauses the goal",
+    "Start any dev server or run full suites",
+    "Repeat successful checks without a relevant change or initiate bulk install retries",
+    "Impose enterprise/compliance/production ceremony on this internal solo-dev tool",
+    "Expose credentials in commands/logs/commits; owner-local backups are outside the repo"
   ]
 }
