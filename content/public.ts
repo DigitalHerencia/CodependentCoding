@@ -1,8 +1,21 @@
 // Owner-approved public page copy; preserve wording.
 
+export const siteNavigation = [
+  { label: "Doctrine", href: "/doctrine" },
+  { label: "Maximal", href: "/maximal" },
+  { label: "Hipster Stack", href: "/hipster-stack" },
+  { label: "Loaded Vibes", href: "/loaded-vibes" },
+] as const;
+
+export const doctrineRelease = {
+  version: "1.0",
+  verifiedOn: "2026-10-31",
+} as const;
+
 export const siteOperator = {
   name: "Digital Herencia",
   site: "The Codependent Coding™ Web App Architecture",
+  repositoryUrl: "https://github.com/DigitalHerencia/CodependentCoding",
   issuesUrl: "https://github.com/DigitalHerencia/CodependentCoding/issues",
   securityUrl:
     "https://github.com/DigitalHerencia/CodependentCoding/security/policy",

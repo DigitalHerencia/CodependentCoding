@@ -1,5 +1,10 @@
 import { HerenciaLockup } from "@/components/brand/herencia-lockup";
 import Link from "next/link";
+import {
+  doctrineRelease,
+  siteNavigation,
+  siteOperator,
+} from "@/content/public";
 
 const footerLinks = [
   { label: "FAQ", href: "/faq" },
@@ -19,12 +24,31 @@ export function SiteFooter() {
           <HerenciaLockup />
         </Link>
         <nav aria-label="Footer navigation">
-          {footerLinks.map((link) => (
+          {siteNavigation.map((link) => (
             <Link className="nav-link" href={link.href} key={link.label}>
               {link.label}
             </Link>
           ))}
         </nav>
+      </div>
+      <div className="site-bar site-footer-details">
+        <p>
+          Doctrine v{doctrineRelease.version} · verified{" "}
+          <time dateTime={doctrineRelease.verifiedOn}>
+            {doctrineRelease.verifiedOn}
+          </time>
+        </p>
+        <nav aria-label="Policies and support">
+          {footerLinks.map((link) => (
+            <Link className="nav-link" href={link.href} key={link.label}>
+              {link.label}
+            </Link>
+          ))}
+          <a className="nav-link" href={siteOperator.securityUrl}>
+            Security
+          </a>
+        </nav>
+        <p>© 2026 {siteOperator.name}</p>
       </div>
     </footer>
   );

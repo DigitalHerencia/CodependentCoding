@@ -1,15 +1,16 @@
 {
   "$schema": "codependent-coding/execution/handoff/v1",
-  "updated": "2026-11-02T13:08:40.626793+00:00",
+  "updated": "2026-11-02T13:22:12.393344+00:00",
   "format": "One current package; history is in progress.json, decisions.json and git.",
   "status": "in-review",
   "milestone": "M-S2",
-  "current_issue": "CC-052",
-  "next_issue": "CC-052",
-  "queue": ["CC-052", "CC-053", "CC-063"],
-  "branch": "codex/304-brand-assets",
+  "current_issue": "CC-053",
+  "next_issue": "CC-053",
+  "queue": ["CC-053", "CC-063"],
+  "branch": "codex/305-responsive-shells",
   "in_flight": [
-    "CC-052 PR #354: initial CI caught invalid image suffix under catch-all; replaced with /og/[...slug] GET and explicit chapter metadata. Focused lint/typecheck pass after fix. Corrected CI and owner previews pending.",
+    "CC-053 responsive shell implemented, focused formatting/ESLint/TypeScript pass. Draft PR on codex/305-responsive-shells stacked on #354; affected-site CI and owner keyboard/focus/320px appearance checks pending. Full global search and RSS feed are not part of this package.",
+    "CC-052 PR #354 head 8aa052e: corrected CI 41450934164 and Vercel preview SUCCESS. Owner appearance/share checks pending.",
     "CC-050 PR #352 and CC-051 PR #353 have passing affected-site CI and Vercel previews; owner appearance checks remain pending. CC-052 is stacked on #353.",
     "Homepage PR #349 has passing CI and ready preview; owner desktop/mobile verification remains pending.",
     "CC-077 Stripe hardening remains stopped at owner direction."

@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/progress/v1",
-  "updated": "2026-11-02T13:08:40.626793+00:00",
+  "updated": "2026-11-02T13:22:12.393344+00:00",
   "format": "Evidence states: EXECUTED | INSPECTED | NOT_RUN | BLOCKED. Never mark an issue done without EXECUTED evidence for its Validation commands.",
   "milestones": {
     "M0": {
@@ -876,7 +876,13 @@
       "status": "in-review",
       "github": 304,
       "branch": "codex/304-brand-assets",
-      "note": "Stacked on PR #353. SVG brands replace five JPEGs; 26,818-byte 1920px AVIF; root/chapter social images. Focused ESLint and build-tsconfig typecheck passed. Direct ImageResponse PNG render inspected for root and longest chapter. Affected-site CI and owner appearance/GitHub/Slack preview pending. PR #354 initial CI 41450504485 failed on forbidden nested catch-all image URL. Corrected to terminal catch-all /og/[...slug] GET route and explicit chapter OG/Twitter metadata; affected-file lint/typecheck passed. Corrected CI pending."
+      "note": "Stacked on PR #353. SVG brands replace five JPEGs; 26,818-byte 1920px AVIF; root/chapter social images. Focused ESLint and build-tsconfig typecheck passed. Direct ImageResponse PNG render inspected for root and longest chapter. Affected-site CI and owner appearance/GitHub/Slack preview pending. PR #354 initial CI 41450504485 failed on forbidden nested catch-all image URL. Corrected to terminal catch-all /og/[...slug] GET route and explicit chapter OG/Twitter metadata; affected-file lint/typecheck passed. Corrected head 8aa052e: CI 41450934164 and Vercel preview SUCCESS; owner appearance/share previews still pending."
+    },
+    "CC-053": {
+      "status": "in-review",
+      "github": 305,
+      "branch": "codex/305-responsive-shells",
+      "note": "Stacked on implemented CC-052 PR #354. Responsive shell, native modal chapter drawer, skip links and release footer. Chapter-title filtering remains the current search; full palette belongs to CC-057. RSS deferred until a real doctrine changelog feed exists. Owner checks: first Tab/skip target, Escape/focus return, 320px overflow and desktop/mobile appearance. Changed-file formatting/ESLint and root build-tsconfig TypeScript passed; no local build/server/browser suite. Affected-site CI and owner preview pending."
     }
   },
   "completed": [
@@ -3696,6 +3702,21 @@
       "state": "EXECUTED",
       "command": "CI 41450504485; focused ESLint for chapter metadata and OG route; tsc --project tsconfig.build.json --noEmit",
       "result": "CI failed: catch-all must be last URL part. Moved image endpoint to /og/[...slug] and linked chapter metadata. Focused lint and typecheck passed after fix. Corrected CI pending."
+    },
+    {
+      "date": "2026-11-02T13:20:34.303518+00:00",
+      "state": "EXECUTED",
+      "issue": "CC-052",
+      "command": "gh pr view 354 --json state,statusCheckRollup",
+      "result": "Head 8aa052e: CI 41450934164 SUCCESS, Vercel SUCCESS. No repeated local checks."
+    },
+    {
+      "issue": "CC-053",
+      "date": "2026-11-02T13:22:12.393344+00:00",
+      "state": "EXECUTED",
+      "command": "Changed-file Prettier; node node_modules/eslint/bin/eslint.js <changed TS/TSX> --max-warnings=0; node node_modules/typescript/bin/tsc --project tsconfig.build.json --noEmit; git diff --check",
+      "result": "Formatting, changed-code lint, TypeScript and diff whitespace pass. TypeScript initially caught removed lucide Github export and exact optional onClick; replaced with inline GitHub SVG and definite click handler. Only affected checks rerun. Initial pnpm formatter invocation refreshed cached dependencies, reporting zero downloads; remaining commands used installed binaries directly.",
+      "not_run": "Owner-run keyboard/focus/320px/appearance checks; local build, browser suite, full test suite."
     }
   ],
   "known_findings": [
