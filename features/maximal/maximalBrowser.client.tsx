@@ -263,7 +263,7 @@ export function MaximalBrowser({ files }: { files: string[] }) {
             readOnly: true,
             minimap: { enabled: false },
             fontSize: 13,
-            fontFamily: "Fira Code, JetBrains Mono, monospace",
+            fontFamily: "var(--type-code)",
             scrollBeyondLastLine: false,
           }}
         />

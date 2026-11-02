@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/progress/v1",
-  "updated": "2026-11-02T12:51:23.743235+00:00",
+  "updated": "2026-11-02T12:59:14.590152+00:00",
   "format": "Evidence states: EXECUTED | INSPECTED | NOT_RUN | BLOCKED. Never mark an issue done without EXECUTED evidence for its Validation commands.",
   "milestones": {
     "M0": {
@@ -862,7 +862,15 @@
       "status": "in-review",
       "github": 302,
       "branch": "codex/302-site-tokens",
-      "note": "Approved Plan 5.1 colors applied, duplicate/legacy tokens removed, public consumers aligned. Contrast check caught old teal text below 4.5:1 before correction; all 38 declared pairs pass. Changed-code lint and site TypeScript passed. CI and owner browser checks pending; no additional CI jobs."
+      "note": "Approved Plan 5.1 colors applied, duplicate/legacy tokens removed, public consumers aligned. Contrast check caught old teal text below 4.5:1 before correction; all 38 declared pairs pass. Changed-code lint and site TypeScript passed. CI run 41448398143 and Vercel preview passed; owner browser checks pending; no additional CI jobs.",
+      "pr": 352,
+      "commit": "a9d6775"
+    },
+    "CC-051": {
+      "status": "in-review",
+      "github": 303,
+      "branch": "codex/303-local-fonts",
+      "note": "Stacked on #352 (CC-050 implemented, owner visual review pending). Self-hosted Latin variable Cinzel and JetBrains Mono total 66,308 bytes. Installed Next local-font loader validates both files and generates fallback metrics; changed-code lint and site TypeScript passed. CI and owner CLS verification pending."
     }
   },
   "completed": [
@@ -3656,6 +3664,20 @@
       "issue": "CC-050",
       "command": "node scripts/check-contrast.mjs; changed-file Prettier and ESLint; tsc --project tsconfig.build.json --noEmit",
       "result": "Before correction: actual signal text fails at 4.19:1 on background and 4.00:1 on prior raised surface. Approved brighter text tokens: all 38 declared text/UI pairs pass. Changed-code lint and TypeScript exit 0. No local build, dev server, full suite or installs. Browser/axe checks NOT_RUN; owner-run preview check pending."
+    },
+    {
+      "date": "2026-11-02T12:59:14.590152+00:00",
+      "state": "EXECUTED",
+      "issue": "CC-050",
+      "command": "gh pr checks 352",
+      "result": "Run 41448398143: affected-site CI and Vercel preview passed; unaffected template skipped. Local branch synced at a9d6775. Owner browser verification remains pending."
+    },
+    {
+      "date": "2026-11-02T12:59:14.590152+00:00",
+      "state": "EXECUTED",
+      "issue": "CC-051",
+      "command": "Installed Next local-font loader against both WOFF2 files; changed-file Prettier and ESLint; node node_modules/typescript/bin/tsc --project tsconfig.build.json --noEmit",
+      "result": "All passed. Actual font loader emitted weight ranges 600 700 / 100 800 and fallback size-adjust 137.38% / 131.49%. Combined WOFF2 payload 66,308 bytes. Google loader removed. No build, server, full suite or dependency install. Browser CLS NOT_RUN."
     }
   ],
   "known_findings": [
