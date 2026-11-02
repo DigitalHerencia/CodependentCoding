@@ -9,7 +9,7 @@
   "queue": ["CC-052", "CC-053", "CC-063"],
   "branch": "codex/304-brand-assets",
   "in_flight": [
-    "CC-052 implementation complete on codex/304-brand-assets; focused lint/typecheck and direct root/chapter PNG render passed. One affected-site CI run and owner desktop/mobile/share preview remain.",
+    "CC-052 PR #354: initial CI caught invalid image suffix under catch-all; replaced with /og/[...slug] GET and explicit chapter metadata. Focused lint/typecheck pass after fix. Corrected CI and owner previews pending.",
     "CC-050 PR #352 and CC-051 PR #353 have passing affected-site CI and Vercel previews; owner appearance checks remain pending. CC-052 is stacked on #353.",
     "Homepage PR #349 has passing CI and ready preview; owner desktop/mobile verification remains pending.",
     "CC-077 Stripe hardening remains stopped at owner direction."
