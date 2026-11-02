@@ -12,7 +12,7 @@ export function SystemState({
   retry?: () => void;
 }) {
   return (
-    <main className="system-state">
+    <main id="main-content" tabIndex={-1} className="system-state">
       <p className="eyebrow">{code}</p>
       <h1>{title}</h1>
       <p>{description}</p>

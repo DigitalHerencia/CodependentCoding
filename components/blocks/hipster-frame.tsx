@@ -4,7 +4,7 @@ import { hipsterStackCopy } from "@/content/public";
 
 export function HipsterFrame({ children }: { children: ReactNode }) {
   return (
-    <main className="px-4 pb-16">
+    <main id="main-content" tabIndex={-1} className="px-4 pb-16">
       <PageHero
         kicker={hipsterStackCopy.kicker}
         title={hipsterStackCopy.title}

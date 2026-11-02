@@ -11,7 +11,7 @@ function summary(description: string) {
 
 export function PluginProduct({ plugin }: { plugin: PluginManifest }) {
   return (
-    <main className="pb-16">
+    <main id="main-content" tabIndex={-1} className="pb-16">
       <PageHero
         kicker={loadedVibesCopy.kicker}
         title={loadedVibesCopy.title}

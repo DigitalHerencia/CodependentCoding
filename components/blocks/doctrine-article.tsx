@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import type { DoctrineDoc } from "@/types/doctrineTypes";
+import { DocsShell } from "@/components/shells/docs-shell";
 
 type DoctrineArticleProps = { doc: DoctrineDoc; sidebar: ReactNode };
 
@@ -10,11 +11,28 @@ function docHref(slug: string) {
 
 export function DoctrineArticle({ doc, sidebar }: DoctrineArticleProps) {
   const toc = doc.headings.filter((heading) => heading.depth <= 3);
+  const tableOfContents =
+    toc.length > 0 ? (
+      <nav aria-label="On this page" className="text-xs">
+        <ul className="m-0 list-none space-y-2 p-0">
+          {toc.map((heading) => (
+            <li
+              className={heading.depth === 3 ? "pl-3" : undefined}
+              key={heading.id}
+            >
+              <a
+                className="text-muted-foreground no-underline hover:text-signal-text"
+                href={`#${heading.id}`}
+              >
+                {heading.text}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    ) : null;
   return (
-    <main className="mx-auto grid max-w-7xl gap-8 px-4 py-10 lg:grid-cols-[15rem_minmax(0,1fr)_13rem]">
-      <aside className="max-h-72 overflow-y-auto border-b border-border pb-4 lg:sticky lg:top-6 lg:max-h-[calc(100vh-3rem)] lg:self-start lg:overflow-y-auto lg:border-0 lg:pb-0">
-        {sidebar}
-      </aside>
+    <DocsShell sidebar={sidebar} toc={tableOfContents}>
       <article className="site-rise min-w-0">
         <p className="m-0 text-xs tracking-[0.3em] text-signal-text uppercase">
           {doc.group}
@@ -52,31 +70,6 @@ export function DoctrineArticle({ doc, sidebar }: DoctrineArticleProps) {
           ) : null}
         </nav>
       </article>
-      {toc.length > 0 ? (
-        <nav
-          aria-label="On this page"
-          className="hidden text-xs lg:sticky lg:top-6 lg:block lg:self-start"
-        >
-          <p className="mt-0 tracking-[0.2em] text-signal-text uppercase">
-            On this page
-          </p>
-          <ul className="m-0 list-none space-y-2 p-0">
-            {toc.map((heading) => (
-              <li
-                className={heading.depth === 3 ? "pl-3" : undefined}
-                key={heading.id}
-              >
-                <a
-                  className="text-muted-foreground no-underline hover:text-signal-text"
-                  href={`#${heading.id}`}
-                >
-                  {heading.text}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </nav>
-      ) : null}
-    </main>
+    </DocsShell>
   );
 }

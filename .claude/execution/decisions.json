@@ -1101,6 +1101,19 @@
       "context": "CC-052 implements approved Plan 5.4, stacked on the local font package.",
       "decision": "Replace raster text logos with accessible currentColor SVG components and a 26,818-byte AVIF horizon with CSS gradient fallback. Share cards use the bundled image-renderer font without network font downloads. Inspect direct root and longest-chapter ImageResponse output; defer browser and GitHub/Slack previews to owner. No new CI jobs, dependencies, local build or server.",
       "refs": ["GH-304", "PR #353", "context/canon/refurbish/PLAN.md §5.4"]
+    },
+    {
+      "id": "DEC-111",
+      "date": "2026-11-02",
+      "status": "accepted",
+      "title": "Use native modal behavior for the responsive doctrine shell",
+      "context": "CC-053 shell delivery follows the implemented token/font/brand stack while appearance checks remain owner-run.",
+      "decision": "Keep shells pure presentation and browser behavior in the existing doctrine client companion. Native dialog supplies modal keyboard handling without new dependencies; use unique search IDs, close on chapter selection/desktop resize, and return focus on close. Add skip targets to existing page main landmarks rather than nesting main elements. Preserve current chapter-title search until CC-057, and defer footer RSS until a real changelog feed exists rather than publishing a broken link. No local server, build, broad tests, installs or CI additions.",
+      "refs": [
+        "GH-305",
+        "PR #354",
+        "context/canon/refurbish/PLAN.md sections 2, 3.3"
+      ]
     }
   ]
 }

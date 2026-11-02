@@ -9,7 +9,7 @@ import { faqCopy } from "@/content/faq";
 
 export function FaqList() {
   return (
-    <main className="pb-16">
+    <main id="main-content" tabIndex={-1} className="pb-16">
       <PageHero
         kicker={faqCopy.kicker}
         title={faqCopy.title}

@@ -6,6 +6,9 @@ import { SiteHeader } from "@/components/nav/site-header";
 export function SiteShell({ children }: { children: ReactNode }) {
   return (
     <div className="site-canvas">
+      <a className="skip-link" href="#main-content">
+        Skip to content
+      </a>
       <SiteHeader />
       <div className="site-content">{children}</div>
       <div className="site-horizon" aria-hidden="true">

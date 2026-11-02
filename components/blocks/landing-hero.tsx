@@ -6,7 +6,7 @@ const repositoryUrl = "https://github.com/DigitalHerencia/CodependentCoding";
 
 export function LandingHero() {
   return (
-    <main className="landing-page">
+    <main id="main-content" tabIndex={-1} className="landing-page">
       <div className="landing-crown">
         <CodependentMark className="brand-crown" />
         <CodependentWordmark />
