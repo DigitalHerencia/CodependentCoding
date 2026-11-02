@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/progress/v1",
-  "updated": "2026-11-02",
+  "updated": "2026-11-01",
   "format": "Evidence states: EXECUTED | INSPECTED | NOT_RUN | BLOCKED. Never mark an issue done without EXECUTED evidence for its Validation commands.",
   "milestones": {
     "M0": {
@@ -815,6 +815,12 @@
       "acceptance": {
         "checks": "EXECUTED: root vitest 15 files, 95 passed; CI Factory (root) green"
       }
+    },
+    "CC-076": {
+      "status": "in-progress",
+      "github_issue": 328,
+      "branch": "feat/328-template-pwa",
+      "note": "Dependency CC-075 (#327) closed via #342. Project #19 uses ToDo as Ready equivalent; advanced to In progress."
     }
   },
   "completed": [
@@ -3432,6 +3438,13 @@
       "issue": "CC-078",
       "command": "worker validation for PR #335",
       "result": "root validate 101/101; template validate exit 0 (RuleTester 72/0, unit 84 passed 1 skipped); tests/cli 78/78; TUI 11/11; compose+slice e2e tsc/eslint clean"
+    },
+    {
+      "date": "2026-11-01",
+      "state": "EXECUTED",
+      "issue": "CC-076",
+      "command": "git fetch origin --prune; git rev-parse main origin/main; gh issue view 327; gh project item-edit (Project 19, #328: ToDo then In progress)",
+      "result": "main and origin/main both 32877e1; dependency CLOSED; Project updates exit 0. Local work preserved in recovery branches and stash."
     }
   ],
   "known_findings": [

@@ -1,18 +1,19 @@
 {
   "$schema": "codependent-coding/execution/handoff/v1",
-  "updated": "2026-11-02T02:00:00Z",
+  "updated": "2026-11-02T02:16:32.170Z",
   "format": "Overwrite each session. Minimum state the next session needs to resume safely.",
-  "status": "template-conformance",
+  "status": "in-progress",
   "milestone": "M-S1",
-  "current_issue": null,
+  "current_issue": "CC-076",
   "next_issue": "CC-076",
   "queue": ["CC-076", "CC-077", "CC-046", "CC-048", "CC-049"],
-  "branch": "claude/project-thread-63a8tz",
+  "branch": "feat/328-template-pwa",
   "in_flight": [
     "Thread 'Plan the termcn TUI on the doctrine' (#280, plan https://claude.ai/artifact/D2bQyknDraP3A54tR5oMgu): steps 1-7 merged (#281-#286). Step 8 apps + settings in review; after it merges, close #280. Later ideas (not started): `hipster-stack` with no args opens the TUI; agents screen for Loaded Vibes.",
     "Thread 'Audit configs, errors and broken links' (DEC-076): security headers, terminal-app CI trigger, plugin lint, doc versions. React Compiler now on in the template (DEC-081). (e2e and template validate gaps fixed in DEC-079.)"
   ],
   "notes": [
+    "2026-11-01 sync: main reset by branch recreation to origin/main 32877e1 after preserving local commit b07089c on codex/local-main-before-sync and merged recovery codex/reconcile-local-main. Original index/worktree saved in stash named preserve local staged work before remote sync 2026-11-01; do not apply it wholesale (most staged changes are already merged). Local governance migration is preserved, not included in CC-076. GitHub issues already exist; #328 is CC-076, #329 is CC-077.",
     "2026-11-02: merged CC-047, 069, 070, 071, 072, 073, 074, 075, 078 (PRs #331-#342) and GitHub #260/#261 (#296/#297) plus #332. Remaining template: CC-076 (PWA), CC-077 (system webhook path). Site issues CC-046..068 wait on the doctrine rewrite thread. Spec issues are not on GitHub: run pnpm issues:sync -- --apply --project 19 with owner go-ahead.",
     "2026-10-31 (DEC-082..DEC-090): doctrine v1.0 locked in context/canon/; 33 issues CC-046..CC-078 added (site M-S1..M-S6, template M-T). Security-critical first: CC-047 (lockfile hides deps from Dependabot; release age) and CC-069 (runtime DB role, RLS rewrite). Issues are not yet on GitHub: run `pnpm issues:sync -- --apply --project 19`.",
     "Governance package is uncommitted in the owner's working tree; owner reviews with `git status` / `git diff`, then commits on a branch `chore/governance-package`.",
