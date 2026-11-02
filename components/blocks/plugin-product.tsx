@@ -17,10 +17,10 @@ export function PluginProduct({ plugin }: { plugin: PluginManifest }) {
         title={loadedVibesCopy.title}
         subtitle={loadedVibesCopy.subtitle}
       />
-      <p className="site-rise mx-auto max-w-2xl px-4 text-center text-sm text-foreground-muted">
+      <p className="site-rise mx-auto max-w-2xl px-4 text-center text-sm text-muted-foreground">
         {plugin.description}
       </p>
-      <p className="text-center text-xs tracking-[0.3em] text-signal uppercase">
+      <p className="text-center text-xs tracking-[0.3em] text-signal-text uppercase">
         v{plugin.version} · {loadedVibesCopy.tagline}
       </p>
 
@@ -31,7 +31,7 @@ export function PluginProduct({ plugin }: { plugin: PluginManifest }) {
             <CodeSnippet key={step.title} title={step.title} code={step.code} />
           ))}
         </div>
-        <p className="text-xs text-foreground-muted">
+        <p className="text-xs text-muted-foreground">
           {loadedVibesCopy.installNote}
         </p>
       </section>
@@ -41,15 +41,15 @@ export function PluginProduct({ plugin }: { plugin: PluginManifest }) {
         <ul className="m-0 grid list-none gap-4 p-0 sm:grid-cols-2 lg:grid-cols-3">
           {plugin.skills.map((skill, index) => (
             <li
-              className="site-rise flex flex-col border border-signal-border bg-background-strong p-5 transition-[border-color,box-shadow] hover:border-signal hover:shadow-[0_0_1.2rem_var(--signal-soft)]"
+              className="site-rise flex flex-col border border-border bg-background-strong p-5 transition-[border-color,box-shadow] hover:border-signal hover:shadow-[0_0_1.2rem_var(--signal-soft)]"
               key={skill.name}
               style={{ animationDelay: `${index * 60}ms` }}
             >
               <h3 className="m-0 text-base">/{skill.name}</h3>
-              <p className="flex-1 text-xs leading-relaxed text-foreground-muted">
+              <p className="flex-1 text-xs leading-relaxed text-muted-foreground">
                 {summary(skill.description)}
               </p>
-              <code className="text-xs text-signal">
+              <code className="text-xs text-signal-text">
                 /loaded-vibes:{skill.name}
               </code>
             </li>
@@ -61,9 +61,9 @@ export function PluginProduct({ plugin }: { plugin: PluginManifest }) {
         <h2 className="text-center text-xl">The supervisors</h2>
         <ul className="m-0 grid list-none gap-4 p-0 md:grid-cols-2">
           {[...plugin.agents, ...loadedVibesCopy.hooks].map((part) => (
-            <li className="border border-signal-border p-5" key={part.name}>
+            <li className="border border-border p-5" key={part.name}>
               <h3 className="m-0 text-sm">{part.name}</h3>
-              <p className="mb-0 text-xs leading-relaxed text-foreground-muted">
+              <p className="mb-0 text-xs leading-relaxed text-muted-foreground">
                 {summary(part.description)}
               </p>
             </li>
@@ -73,11 +73,11 @@ export function PluginProduct({ plugin }: { plugin: PluginManifest }) {
 
       <section className="mx-auto mt-12 max-w-4xl px-4">
         <h2 className="text-center text-xl">A day with Loaded Vibes</h2>
-        <ol className="m-0 list-none space-y-4 border-l border-signal-border p-0 pl-6">
+        <ol className="m-0 list-none space-y-4 border-l border-border p-0 pl-6">
           {loadedVibesCopy.day.map((step) => (
             <li className="text-xs" key={step.time}>
-              <span className="text-signal">{step.time}</span>
-              <span className="text-foreground-muted"> · {step.text}</span>
+              <span className="text-signal-text">{step.time}</span>
+              <span className="text-muted-foreground"> · {step.text}</span>
             </li>
           ))}
         </ol>

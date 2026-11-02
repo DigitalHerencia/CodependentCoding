@@ -21,7 +21,7 @@ export function CopyButton({
         setTimeout(() => setCopied(false), 1500);
       }}
       className={cn(
-        "inline-flex cursor-pointer items-center gap-2 border border-signal-border bg-transparent px-3 py-1.5 text-xs text-foreground uppercase transition-colors hover:border-signal hover:text-signal focus-visible:ring-2 focus-visible:ring-signal focus-visible:outline-none",
+        "inline-flex cursor-pointer items-center gap-2 border border-border bg-transparent px-3 py-1.5 text-xs text-foreground uppercase transition-colors hover:border-signal hover:text-signal-text focus-visible:ring-2 focus-visible:ring-signal focus-visible:outline-none",
         className,
       )}
     >

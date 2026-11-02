@@ -1,3 +1,43 @@
+/* @pairs
+text --foreground --background
+text --muted-foreground --background
+text --signal-text --background
+text --signal-strong --background
+text --success --background
+text --warning --background
+text --danger --background
+ui --border --background
+ui --signal --background
+text --foreground --background-strong
+text --muted-foreground --background-strong
+text --signal-text --background-strong
+text --signal-strong --background-strong
+text --success --background-strong
+text --warning --background-strong
+text --danger --background-strong
+ui --border --background-strong
+ui --signal --background-strong
+text --foreground --surface
+text --muted-foreground --surface
+text --signal-text --surface
+text --signal-strong --surface
+text --success --surface
+text --warning --surface
+text --danger --surface
+ui --border --surface
+ui --signal --surface
+text --foreground --surface-raised
+text --muted-foreground --surface-raised
+text --signal-text --surface-raised
+text --signal-strong --surface-raised
+text --success --surface-raised
+text --warning --surface-raised
+text --danger --surface-raised
+ui --border --surface-raised
+ui --signal --surface-raised
+text --background --signal-text
+text --background --signal-strong
+*/
 @import "tailwindcss/theme.css" layer(theme);
 @import "tailwindcss/utilities.css" layer(utilities);
 
@@ -5,13 +45,23 @@
   color-scheme: dark;
   --background: #05030b;
   --background-strong: #000000;
-  --foreground: #ffffff;
+  --foreground: #f4f1ea;
   --signal: #2f7a8d;
   --signal-soft: color-mix(in srgb, var(--signal) 28%, transparent);
-  --signal-border: color-mix(in srgb, var(--signal) 62%, transparent);
-  --surface: #090712;
-  --surface-raised: #0d0a16;
-  --foreground-muted: color-mix(in srgb, var(--foreground) 68%, transparent);
+  --surface: #0b0913;
+  --surface-raised: #120f1c;
+  --muted-foreground: #a9a7b0;
+  --signal-text: #3a96ad;
+  --signal-strong: #5bb7cf;
+  --border: #2f7a8d;
+  --hairline: color-mix(in srgb, var(--signal) 45%, var(--background));
+  --success: #4fae7a;
+  --warning: #d6a64a;
+  --danger: #e0645c;
+  --gutter: clamp(1rem, 4vw, 4rem);
+  --content-max: 90rem;
+  --section-gap: clamp(3rem, 8vw, 8rem);
+  --header-height: 5.25rem;
   --focus-ring: 0 0 0 1px var(--background-strong), 0 0 0 3px var(--signal);
   --radius-control: 0.2rem;
   --space-page: clamp(1rem, 3vw, 2rem);
@@ -30,20 +80,9 @@
   --brand-glow:
     0 0 0.45rem color-mix(in srgb, var(--signal) 70%, transparent),
     0 0 1.2rem color-mix(in srgb, var(--signal) 36%, transparent);
-
-  /* Compatibility aliases while focused HS issues replace legacy CSS. */
-  --ink: var(--foreground);
-  --muted: var(--foreground-muted);
-  --paper: var(--background);
-  --panel: var(--background);
-  --line: var(--signal-border);
-  --acid: var(--signal);
-  --violet: var(--signal);
-  --magenta: var(--signal);
-  --display: var(--type-heading);
 }
 .button {
-  border: 1px solid var(--accent);
+  border: 1px solid var(--border);
   background: transparent;
   color: inherit;
   padding: 0.5rem 0.8rem;
@@ -55,10 +94,14 @@
   --color-background: var(--background);
   --color-background-strong: var(--background-strong);
   --color-foreground: var(--foreground);
-  --color-foreground-muted: var(--foreground-muted);
+  --color-muted-foreground: var(--muted-foreground);
   --color-signal: var(--signal);
+  --color-signal-text: var(--signal-text);
+  --color-signal-strong: var(--signal-strong);
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
   --color-signal-soft: var(--signal-soft);
-  --color-signal-border: var(--signal-border);
+  --color-border: var(--border);
   --font-heading: var(--type-heading);
   --font-body: var(--type-body);
   --font-code: var(--type-code);
@@ -231,7 +274,7 @@ textarea {
 .site-footer {
   position: relative;
   z-index: 3;
-  border-top: 1px solid var(--signal-border);
+  border-top: 1px solid var(--border);
 }
 
 .heritage-wordmark img {
@@ -258,15 +301,6 @@ textarea {
   letter-spacing: 0.14em;
   text-shadow: var(--brand-glow);
   text-transform: uppercase;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    scroll-behavior: auto !important;
-    transition-duration: 0.01ms !important;
-  }
 }
 
 @media (width >= 30rem) {
@@ -323,26 +357,15 @@ textarea {
     font-size: 1.35rem;
   }
 }
-/* Public-site architecture frame. These tokens own outer geometry for every route. */
-:root {
-  --site-background: #05030b;
-  --site-foreground: #fff;
-  --site-cyan: #2f7a8d;
-  --site-muted: #98a6aa;
-  --site-gutter: clamp(1rem, 4vw, 4rem);
-  --site-content-max: 90rem;
-  --site-section-gap: clamp(3rem, 8vw, 8rem);
-  --site-header-height: 5.25rem;
-}
 
 html {
-  background: var(--site-background);
+  background: var(--background);
   color-scheme: dark;
 }
 body {
   margin: 0;
-  background: var(--site-background);
-  color: var(--site-foreground);
+  background: var(--background);
+  color: var(--foreground);
   font-family: var(--font-jetbrains-mono), monospace;
 }
 * {
@@ -358,7 +381,7 @@ textarea {
   font: inherit;
 }
 :focus-visible {
-  outline: 2px solid var(--site-cyan);
+  outline: 2px solid var(--signal);
   outline-offset: 4px;
 }
 .site-canvas {
@@ -366,12 +389,12 @@ textarea {
   display: flex;
   flex-direction: column;
   overflow: clip;
-  background: #05030b;
+  background: var(--background);
 }
 .site-content {
-  width: min(100%, calc(var(--site-content-max) + 2 * var(--site-gutter)));
+  width: min(100%, calc(var(--content-max) + 2 * var(--gutter)));
   margin-inline: auto;
-  padding: 1.5rem var(--site-gutter) clamp(2rem, 5vw, 3rem);
+  padding: 1.5rem var(--gutter) clamp(2rem, 5vw, 3rem);
   flex: 1;
   position: relative;
   z-index: 2;
@@ -397,9 +420,9 @@ textarea {
   max-width: none;
   min-height: 0;
   margin-inline: 0;
-  padding: 0.6rem var(--site-gutter);
+  padding: 0.6rem var(--gutter);
   border: 0;
-  background: #000;
+  background: var(--background-strong);
 }
 .site-header {
   position: sticky;
@@ -432,7 +455,7 @@ textarea {
   gap: clamp(1.5rem, 6vw, 4.5rem);
 }
 .site-bar .nav-link {
-  color: #b9d3dc;
+  color: var(--muted-foreground);
   text-decoration: none;
   text-transform: uppercase;
   font-family: var(--font-big-shoulders-display), "Archivo Black", sans-serif;
@@ -444,12 +467,12 @@ textarea {
 .site-bar .nav-link:hover,
 .site-bar .nav-link:focus-visible {
   transform: none;
-  color: var(--site-cyan);
-  border-bottom-color: var(--site-cyan);
+  color: var(--signal-text);
+  border-bottom-color: var(--signal);
 }
 .eyebrow {
   margin: 0 0 0.75rem;
-  color: var(--site-cyan);
+  color: var(--signal-text);
   text-transform: uppercase;
   letter-spacing: 0.16em;
   font-weight: 800;
@@ -476,8 +499,8 @@ pre {
   min-height: 2.4rem;
   padding: 0.4rem 1rem;
   border: 0;
-  background: #2f7389;
-  color: #eef6f8;
+  background: var(--signal-text);
+  color: var(--background);
   text-decoration: none;
   text-transform: uppercase;
   font-family: var(--font-jetbrains-mono), monospace;
@@ -486,7 +509,7 @@ pre {
   cursor: pointer;
 }
 .brand-button:hover {
-  background: #3a8aa2;
+  background: var(--signal-strong);
 }
 .landing-page {
   display: grid;
@@ -505,7 +528,7 @@ pre {
   margin: 0;
   font-size: clamp(1.7rem, 4.4vw, 2.7rem);
   line-height: 1.18;
-  color: #fff;
+  color: var(--foreground);
   text-shadow: none;
 }
 .landing-copy p {
@@ -514,7 +537,7 @@ pre {
   font-size: clamp(0.75rem, 1.6vw, 0.95rem);
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: #9dbac5;
+  color: var(--muted-foreground);
 }
 .landing-actions {
   display: flex;
@@ -560,8 +583,8 @@ pre {
 .loading-mark {
   width: 3rem;
   aspect-ratio: 1;
-  border: 2px solid #25434b;
-  border-top-color: var(--site-cyan);
+  border: 2px solid var(--hairline);
+  border-top-color: var(--signal);
   border-radius: 50%;
   animation: site-spin 1s linear infinite;
 }
@@ -585,15 +608,6 @@ pre {
   }
   .site-bar .nav-link {
     font-size: 0.75rem;
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    scroll-behavior: auto !important;
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
   }
 }
 
@@ -650,7 +664,7 @@ pre {
 }
 
 .doctrine-prose {
-  color: var(--foreground-muted);
+  color: var(--muted-foreground);
   font-size: 0.875rem;
   line-height: 1.75;
 }
@@ -667,7 +681,7 @@ pre {
 }
 
 .doctrine-prose a {
-  color: var(--signal);
+  color: var(--signal-text);
 }
 
 .doctrine-prose strong {
@@ -676,7 +690,7 @@ pre {
 
 .doctrine-prose :not(pre) > code {
   padding: 0.1rem 0.3rem;
-  border: 1px solid var(--signal-border);
+  border: 1px solid var(--border);
   color: var(--foreground);
   font-size: 0.8em;
 }
@@ -684,7 +698,7 @@ pre {
 .doctrine-prose pre {
   overflow-x: auto;
   padding: 1rem;
-  border: 1px solid var(--signal-border);
+  border: 1px solid var(--border);
   background: var(--background-strong);
   color: var(--foreground);
   font-size: 0.78rem;
@@ -709,13 +723,13 @@ pre {
 
 .doctrine-prose :is(th, td) {
   padding: 0.5rem 0.65rem;
-  border: 1px solid var(--signal-border);
+  border: 1px solid var(--border);
   text-align: left;
   vertical-align: top;
 }
 
 .doctrine-prose th {
-  color: var(--signal);
+  color: var(--signal-text);
   text-transform: uppercase;
 }
 
@@ -730,12 +744,22 @@ pre {
 }
 
 .site-caret {
-  color: var(--signal);
+  color: var(--signal-text);
   animation: site-caret 1s steps(1) infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .site-caret {
     animation: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root *,
+  :root *::before,
+  :root *::after {
+    scroll-behavior: auto;
+    animation: none;
+    transition: none;
   }
 }

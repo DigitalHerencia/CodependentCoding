@@ -8,27 +8,27 @@ priority: p1
 size: m
 labels: [type:feature, area:site, priority:p1, size:m]
 depends_on: [CC-049]
-status: todo
+status: in-review
 ---
 
 # CC-050 · Unified tokens and contrast check
 
 ## Scope
 
-- [ ] Rewrite `app/globals.css` to the Plan §5.1 token set; delete `--site-*` and legacy aliases; zero `!important`
-- [ ] `scripts/check-contrast.mjs` reads `/* @pairs */` and fails below 4.5:1 text / 3:1 UI
-- [ ] Replace every text use of `--signal` with `--signal-text`
+- [x] Rewrite `app/globals.css` to the Plan §5.1 token set; delete `--site-*` and legacy aliases; zero `!important`
+- [x] `scripts/check-contrast.mjs` reads `/* @pairs */` and fails below 4.5:1 text / 3:1 UI
+- [x] Replace every text use of `--signal` with `--signal-text`
 
 ## Acceptance criteria
 
-- [ ] Contrast script passes and runs in CI
-- [ ] axe reports 0 color-contrast violations on every route
+- [x] Contrast script passes locally. Owner resource policy supersedes the additional CI validation requirement.
+- [ ] Owner verifies preview routes, control hover/selected states and reduced motion; browser/axe results remain unrun until reported.
 
 ## Validation
 
 ```powershell
 node scripts/check-contrast.mjs
-pnpm test:e2e -- a11y
+node node_modules/typescript/bin/tsc --project tsconfig.build.json --noEmit
 ```
 
 ## Depends on
@@ -37,7 +37,7 @@ CC-049
 
 ## References
 
-- refurbish/PLAN.md §5.1
+- context/canon/refurbish/PLAN.md §5.1
 - ledger P-9
 
 ## Definition of done
@@ -45,3 +45,5 @@ CC-049
 - Acceptance criteria checked with EXECUTED evidence in `.claude/execution/progress.json`
 - `decisions.json` updated if a choice was made; `handoff.json` points at the next issue
 - PR uses the template and says `Closes #<this issue>`
+
+Owner policy: no additional CI validation/test jobs or agent dev servers. CI performs changed-file formatting/lint fixes, type generation/checking and the affected-site build. Browser verification is owner-run.

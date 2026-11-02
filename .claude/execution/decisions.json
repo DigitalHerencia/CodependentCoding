@@ -1074,6 +1074,15 @@
       "context": "CC-049 follows merged CC-046. Public repository files are not tenant database fetchers.",
       "decision": "Use content/{public,faq,legal,security}.ts and server-only lib/content/*.ts. Enable CC-CONTENT-001 only in the site lint profile; generated template/terminal profiles retain their existing data architecture. Close CC-067 not planned under the owner lean CI policy.",
       "refs": ["GH-301", "PR #350", "GH-319"]
+    },
+    {
+      "id": "DEC-108",
+      "date": "2026-11-02",
+      "status": "accepted",
+      "title": "Use approved public-site tokens with bounded contrast verification",
+      "context": "CC-050 references Plan 5.1, now located at context/canon/refurbish/PLAN.md. The older teal text and selected CLI control fail normal-text contrast. Owner forbids additional CI validation/test jobs and agent browser servers.",
+      "decision": "Apply the approved semantic palette, brighter signal text, canonical border/muted utilities and reduced-motion cascade without important declarations. A dependency-free local script checks explicit solid-color pairs at 4.5:1 text and 3:1 UI, failing closed on malformed declarations. Replace the superseded extra contrast CI/axe job requirements with local numeric evidence and owner-run preview verification; do not extend the CI workflow. Generated template tokens remain separate.",
+      "refs": ["GH-302", "PR #351", "context/canon/refurbish/PLAN.md §5.1"]
     }
   ]
 }
