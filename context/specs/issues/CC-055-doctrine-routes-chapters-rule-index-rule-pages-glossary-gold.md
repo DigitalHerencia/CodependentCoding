@@ -1,12 +1,12 @@
 ---
 id: CC-055
 title: "Doctrine routes: chapters, rule index, rule pages, glossary, golden slice, changelog"
-type: feat
+type: feature
 area: site
 milestone: "M-S3 · Docs platform"
 priority: p0
 size: l
-labels: [type:feat, area:site, priority:p0, size:l]
+labels: [type:feature, area:site, priority:p0, size:l]
 depends_on: [CC-054]
 status: todo
 ---

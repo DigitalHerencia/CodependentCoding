@@ -1,12 +1,12 @@
 ---
 id: CC-050
 title: "Unified tokens and contrast check"
-type: feat
+type: feature
 area: site
 milestone: "M-S2 · Design system"
 priority: p1
 size: m
-labels: [type:feat, area:site, priority:p1, size:m]
+labels: [type:feature, area:site, priority:p1, size:m]
 depends_on: [CC-049]
 status: todo
 ---

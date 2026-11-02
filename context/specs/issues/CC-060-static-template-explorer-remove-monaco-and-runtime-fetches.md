@@ -1,12 +1,12 @@
 ---
 id: CC-060
 title: "Static template explorer; remove Monaco and runtime fetches"
-type: feat
+type: feature
 area: site
 milestone: "M-S4 · Product pages"
 priority: p0
 size: l
-labels: [type:feat, area:site, priority:p0, size:l]
+labels: [type:feature, area:site, priority:p0, size:l]
 depends_on: [CC-054]
 status: todo
 ---

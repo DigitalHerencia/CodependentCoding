@@ -1,12 +1,12 @@
 ---
 id: CC-051
 title: "Self-hosted Cinzel and JetBrains Mono; drop Archivo Black and Fira Code"
-type: feat
+type: feature
 area: site
 milestone: "M-S2 · Design system"
 priority: p1
 size: s
-labels: [type:feat, area:site, priority:p1, size:s]
+labels: [type:feature, area:site, priority:p1, size:s]
 depends_on: [CC-050]
 status: todo
 ---

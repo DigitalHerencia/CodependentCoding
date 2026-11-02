@@ -37,6 +37,17 @@ const MILESTONES = {
     "new, slice, add, doctor, compose; every preset builds",
   "M5 · Loaded Vibes plugin": "Claude Code plugin: skills, hooks, agents",
   "M6 · Dogfood and v1.0.0": "Timed idea-to-MVP run; v1.0.0",
+  "M-S1 · Foundation":
+    "Site on Cache Components, supply chain, security headers, content layer",
+  "M-S2 · Design system": "Tokens, contrast check, fonts, SVG brand, shells",
+  "M-S3 · Docs platform":
+    "MDX pipeline, doctrine routes, rule sync, search, machine endpoints",
+  "M-S4 · Product pages":
+    "Static template explorer, CLI and plugin references, landing",
+  "M-S5 · Trust pages": "Terms, Privacy, Security, FAQ banner",
+  "M-S6 · PWA and polish":
+    "Site PWA, transitions, e2e and Lighthouse gates, SEO files",
+  "M-T · Template conformance": "Template obeys doctrine v1.0",
 };
 
 // ------------------------------------------------------------------ args

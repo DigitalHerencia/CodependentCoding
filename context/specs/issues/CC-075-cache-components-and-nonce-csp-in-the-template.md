@@ -1,12 +1,12 @@
 ---
 id: CC-075
 title: "Cache Components and nonce CSP in the template"
-type: feat
+type: feature
 area: template
 milestone: "M-T · Template conformance"
 priority: p0
 size: m
-labels: [type:feat, area:template, priority:p0, size:m]
+labels: [type:feature, area:template, priority:p0, size:m]
 depends_on: []
 status: done
 ---

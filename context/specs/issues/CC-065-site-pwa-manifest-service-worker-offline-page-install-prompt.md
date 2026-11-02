@@ -1,12 +1,12 @@
 ---
 id: CC-065
 title: "Site PWA: manifest, service worker, offline page, install prompt"
-type: feat
+type: feature
 area: site
 milestone: "M-S6 · PWA and polish"
 priority: p2
 size: m
-labels: [type:feat, area:site, priority:p2, size:m]
+labels: [type:feature, area:site, priority:p2, size:m]
 depends_on: [CC-055]
 status: todo
 ---

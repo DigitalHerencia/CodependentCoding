@@ -1,12 +1,12 @@
 ---
 id: CC-071
 title: "Active-organization cookie and switcher"
-type: feat
+type: feature
 area: template
 milestone: "M-T · Template conformance"
 priority: p1
 size: m
-labels: [type:feat, area:template, priority:p1, size:m]
+labels: [type:feature, area:template, priority:p1, size:m]
 depends_on: [CC-070]
 status: done
 ---

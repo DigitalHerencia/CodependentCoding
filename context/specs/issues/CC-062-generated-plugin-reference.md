@@ -1,12 +1,12 @@
 ---
 id: CC-062
 title: "Generated plugin reference"
-type: feat
+type: feature
 area: site
 milestone: "M-S4 · Product pages"
 priority: p2
 size: s
-labels: [type:feat, area:site, priority:p2, size:s]
+labels: [type:feature, area:site, priority:p2, size:s]
 depends_on: [CC-049]
 status: todo
 ---
