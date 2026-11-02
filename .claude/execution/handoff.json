@@ -1,16 +1,19 @@
 {
   "$schema": "codependent-coding/execution/handoff/v1",
-  "updated": "2026-11-02T12:43:55.400130+00:00",
+  "updated": "2026-11-02T13:35:19.313553+00:00",
   "format": "One current package; history is in progress.json, decisions.json and git.",
   "status": "in-review",
   "milestone": "M-S1",
-  "current_issue": "CC-049",
-  "next_issue": "CC-049",
-  "queue": ["CC-049", "CC-050", "CC-052", "CC-053", "CC-063"],
-  "branch": "codex/301-public-content",
+  "current_issue": "CC-048",
+  "next_issue": "CC-048",
+  "queue": ["CC-048", "CC-054"],
+  "branch": "codex/300-site-headers",
   "in_flight": [
-    "CC-049 implemented; focused checks passed. Affected-site CI and merge pending. CC-046 merged in #350, main synced and branch deleted.",
-    "Homepage PR #349 has passing CI and ready preview; owner desktop/mobile verification remains pending.",
+    "CC-048: static response policy and security.txt implemented from main; targeted regression RED then GREEN, changed-code lint/types passed; affected-site CI and preview HTTP verification pending.",
+    "CC-063 PR #349 head 177ec55: CI 41453539371 and Vercel SUCCESS; owner visual/LCP checks pending.",
+    "CC-053 draft PR #355 head 6649f52: focused checks passed; CI 41452880355 and Vercel SUCCESS. Owner keyboard/focus/320px checks pending.",
+    "CC-052 PR #354 head 8aa052e: corrected CI 41450934164 and Vercel preview SUCCESS. Owner appearance/share checks pending.",
+    "CC-050 PR #352 and CC-051 PR #353 have passing affected-site CI and Vercel previews; owner appearance checks remain pending. CC-052 is stacked on #353.",
     "CC-077 Stripe hardening remains stopped at owner direction."
   ],
   "notes": [
@@ -26,7 +29,8 @@
     "PWA browser/runtime verification is owner-run; no agent dev servers.",
     "Machine-wide environment edits require an administrator shell. User-level defaults are correct; an owner-local administrator script is prepared if all-user scope is desired.",
     "Live Clerk production setup is only needed if/when the owner requests an actual template production deployment; it does not block ordinary internal development.",
-    "Homepage PR #349 must update its new site loader/import to lib/content/ when rebased after CC-049; preserve owner visual review."
+    "CC-051 is stacked on the implemented CC-050 branch; merge #352 first, then retarget/rebase without repeating successful checks unnecessarily. Homepage #349 must preserve self-hosted fonts when rebased.",
+    "CC-048 follows the approved self-only CSP. Existing Monaco CDN behavior belongs to CC-060; the current explorer still uses @monaco-editor/react with its default external loader. Merge the self-hosted fonts (#353) and static explorer (CC-060) before enabling this policy on main."
   ],
   "do_not": [
     "Start any dev server or run full suites",

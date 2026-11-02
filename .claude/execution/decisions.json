@@ -1074,6 +1074,15 @@
       "context": "CC-049 follows merged CC-046. Public repository files are not tenant database fetchers.",
       "decision": "Use content/{public,faq,legal,security}.ts and server-only lib/content/*.ts. Enable CC-CONTENT-001 only in the site lint profile; generated template/terminal profiles retain their existing data architecture. Close CC-067 not planned under the owner lean CI policy.",
       "refs": ["GH-301", "PR #350", "GH-319"]
+    },
+    {
+      "id": "DEC-113",
+      "date": "2026-11-02",
+      "status": "accepted",
+      "title": "Deliver the approved static response policy without automatic local servers",
+      "context": "CC-048 is independent of the pending visual stack; CC-046 is merged. Current deployment lacks CSP and the disclosure endpoint.",
+      "decision": "Apply the exact approved static CSP and add HSTS/COOP to the existing catch-all. Publish static RFC 9116 disclosure at the verified Vercel production domain, using GitHub private advisory reporting. Remove implicit Playwright build/server startup; explicit existing URLs support a bounded request-only regression. Keep tests outside CI and run only this issue files. Preserve pending visual PR records; owner appearance gates remain pending.",
+      "refs": ["GH-300", "PR #350", "context/canon/refurbish/PLAN.md section 4"]
     }
   ]
 }

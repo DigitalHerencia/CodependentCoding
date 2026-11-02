@@ -8,16 +8,16 @@ priority: p0
 size: s
 labels: [type:feature, area:site, priority:p0, size:s]
 depends_on: [CC-046]
-status: todo
+status: in-review
 ---
 
 # CC-048 · Header CSP, full security headers, security.txt
 
 ## Scope
 
-- [ ] Static CSP from Plan §4 in `next.config.ts`; add HSTS, COOP
-- [ ] `app/.well-known/security.txt/route.ts` (RFC 9116)
-- [ ] `tests/e2e/site/headers.spec.ts`
+- [x] Static CSP from Plan §4 in `next.config.ts`; add HSTS, COOP
+- [x] `app/.well-known/security.txt/route.ts` (RFC 9116)
+- [x] `tests/e2e/site/headers.spec.ts`
 
 ## Acceptance criteria
 
@@ -27,8 +27,11 @@ status: todo
 ## Validation
 
 ```powershell
-pnpm build
-pnpm test:e2e -- headers
+# No automatic server or local build; use the existing deployment.
+$env:PLAYWRIGHT_BASE_URL = 'https://<existing-preview-host>'
+node node_modules/@playwright/test/cli.js test tests/e2e/site/headers.spec.ts --workers=1 --retries=0
+# Focused static regression: tests/site/securityHeaders.test.ts.
+# The affected-site build runs once in the existing CI workflow.
 ```
 
 ## Depends on

@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/progress/v1",
-  "updated": "2026-11-02T12:43:55.400130+00:00",
+  "updated": "2026-11-02T13:26:53.775951+00:00",
   "format": "Evidence states: EXECUTED | INSPECTED | NOT_RUN | BLOCKED. Never mark an issue done without EXECUTED evidence for its Validation commands.",
   "milestones": {
     "M0": {
@@ -846,15 +846,55 @@
       "commit": "b8d305a1e38d2c387fcd5c9bfab41333605171a7"
     },
     "CC-049": {
-      "status": "in-review",
+      "status": "done",
       "github": 301,
       "branch": "codex/301-public-content",
-      "note": "Public copy and four unchanged readers relocated; imports and site-only CC-CONTENT-001 aligned. Scoped regression red/green, changed-file root/plugin lint, site typecheck, doctrine consistency and exact content comparison passed. Affected-site CI pending."
+      "note": "PR #351 merged after CI run 41447122368 and Vercel preview passed; main synced, branch deleted.",
+      "pr": 351,
+      "commit": "a2788e794d03c508678e355f1bf785033ff61a01"
     },
     "CC-067": {
       "status": "cancelled",
       "github": 319,
       "note": "Closed not planned: full e2e/Lighthouse CI superseded by owner resource policy."
+    },
+    "CC-050": {
+      "status": "in-review",
+      "github": 302,
+      "branch": "codex/302-site-tokens",
+      "note": "Approved Plan 5.1 colors applied, duplicate/legacy tokens removed, public consumers aligned. Contrast check caught old teal text below 4.5:1 before correction; all 38 declared pairs pass. Changed-code lint and site TypeScript passed. CI run 41448398143 and Vercel preview passed; owner browser checks pending; no additional CI jobs.",
+      "pr": 352,
+      "commit": "a9d6775"
+    },
+    "CC-051": {
+      "status": "in-review",
+      "github": 303,
+      "branch": "codex/303-local-fonts",
+      "note": "PR #353 at 89a1cce: affected-site CI 41449209300 and Vercel preview passed. Owner font/CLS verification remains pending."
+    },
+    "CC-052": {
+      "status": "in-review",
+      "github": 304,
+      "branch": "codex/304-brand-assets",
+      "note": "Stacked on PR #353. SVG brands replace five JPEGs; 26,818-byte 1920px AVIF; root/chapter social images. Focused ESLint and build-tsconfig typecheck passed. Direct ImageResponse PNG render inspected for root and longest chapter. Affected-site CI and owner appearance/GitHub/Slack preview pending. PR #354 initial CI 41450504485 failed on forbidden nested catch-all image URL. Corrected to terminal catch-all /og/[...slug] GET route and explicit chapter OG/Twitter metadata; affected-file lint/typecheck passed. Corrected head 8aa052e: CI 41450934164 and Vercel preview SUCCESS; owner appearance/share previews still pending."
+    },
+    "CC-053": {
+      "status": "in-review",
+      "github": 305,
+      "branch": "codex/305-responsive-shells",
+      "note": "Stacked on implemented CC-052 PR #354. Responsive shell, native modal chapter drawer, skip links and release footer. Chapter-title filtering remains the current search; full palette belongs to CC-057. RSS deferred until a real doctrine changelog feed exists. Owner checks: first Tab/skip target, Escape/focus return, 320px overflow and desktop/mobile appearance. Changed-file formatting/ESLint and root build-tsconfig TypeScript passed; no local build/server/browser suite. Affected-site CI and owner preview pending. Delivered as PR #355, commit 6649f52; CI 41452880355 and Vercel SUCCESS."
+    },
+    "CC-063": {
+      "status": "in-review",
+      "github": 315,
+      "branch": "codex/315-landing",
+      "note": "PR #349 rebased on shell PR #355. Existing homepage preserved; canonical tokens, SVG brands, main landmark, public copy and content-loader classification integrated. Changed-file formatting/ESLint, root TypeScript and diff whitespace pass; CI 41453539371 and Vercel preview SUCCESS; owner visual/LCP checks NOT_RUN."
+    },
+    "CC-048": {
+      "status": "in-review",
+      "github": 300,
+      "branch": "codex/300-site-headers",
+      "note": "Approved static CSP, HSTS and COOP on catch-all responses; static security.txt with verified production canonical domain. Targeted configuration regression failed on missing headers before implementation and passed after. Both HTTP regressions failed on the current deployment (missing CSP and 404 security.txt); corrected preview verification pending. No local server/build/install/full suite. Playwright no longer starts servers or builds implicitly."
     }
   },
   "completed": [
@@ -3634,6 +3674,101 @@
       "issue": "CC-049",
       "command": "Changed-file Prettier and ESLint (root + two plugin files); tsc --project tsconfig.build.json --noEmit; node scripts/doctrine-check.mjs; exact original/moved export and loader comparison; git diff --check",
       "result": "All passed. Eight public copy exports and four loader bodies preserved exactly. Doctrine: 51 rules / 15 ESLint rules consistent. No full suite, local build, install or dev server. One affected-site CI run pending."
+    },
+    {
+      "date": "2026-11-02T12:51:23.743235+00:00",
+      "state": "EXECUTED",
+      "issue": "CC-049",
+      "command": "gh pr merge 351 --squash --delete-branch; merge verification; Project Done",
+      "result": "CI run 41447122368 and Vercel preview passed. Merged a2788e794d03c508678e355f1bf785033ff61a01; local main equals origin/main; branch removed."
+    },
+    {
+      "date": "2026-11-02T12:51:23.743235+00:00",
+      "state": "EXECUTED",
+      "issue": "CC-050",
+      "command": "node scripts/check-contrast.mjs; changed-file Prettier and ESLint; tsc --project tsconfig.build.json --noEmit",
+      "result": "Before correction: actual signal text fails at 4.19:1 on background and 4.00:1 on prior raised surface. Approved brighter text tokens: all 38 declared text/UI pairs pass. Changed-code lint and TypeScript exit 0. No local build, dev server, full suite or installs. Browser/axe checks NOT_RUN; owner-run preview check pending."
+    },
+    {
+      "date": "2026-11-02T12:59:14.590152+00:00",
+      "state": "EXECUTED",
+      "issue": "CC-050",
+      "command": "gh pr checks 352",
+      "result": "Run 41448398143: affected-site CI and Vercel preview passed; unaffected template skipped. Local branch synced at a9d6775. Owner browser verification remains pending."
+    },
+    {
+      "date": "2026-11-02T12:59:14.590152+00:00",
+      "state": "EXECUTED",
+      "issue": "CC-051",
+      "command": "Installed Next local-font loader against both WOFF2 files; changed-file Prettier and ESLint; node node_modules/typescript/bin/tsc --project tsconfig.build.json --noEmit",
+      "result": "All passed. Actual font loader emitted weight ranges 600 700 / 100 800 and fallback size-adjust 137.38% / 131.49%. Combined WOFF2 payload 66,308 bytes. Google loader removed. No build, server, full suite or dependency install. Browser CLS NOT_RUN."
+    },
+    {
+      "issue": "CC-052",
+      "state": "EXECUTED",
+      "date": "2026-11-02",
+      "evidence": "Focused ESLint and tsc --project tsconfig.build.json --noEmit passed. AVIF 1920x1097 is 26,818 bytes. Direct ImageResponse produced root PNG 51,280 bytes and longest chapter PNG 56,933 bytes; both visually inspected. No local build/server/full suite. Browser and GitHub/Slack preview NOT_RUN; affected-site CI pending."
+    },
+    {
+      "issue": "CC-052",
+      "state": "EXECUTED",
+      "command": "CI 41450504485; focused ESLint for chapter metadata and OG route; tsc --project tsconfig.build.json --noEmit",
+      "result": "CI failed: catch-all must be last URL part. Moved image endpoint to /og/[...slug] and linked chapter metadata. Focused lint and typecheck passed after fix. Corrected CI pending."
+    },
+    {
+      "date": "2026-11-02T13:20:34.303518+00:00",
+      "state": "EXECUTED",
+      "issue": "CC-052",
+      "command": "gh pr view 354 --json state,statusCheckRollup",
+      "result": "Head 8aa052e: CI 41450934164 SUCCESS, Vercel SUCCESS. No repeated local checks."
+    },
+    {
+      "issue": "CC-053",
+      "date": "2026-11-02T13:22:12.393344+00:00",
+      "state": "EXECUTED",
+      "command": "Changed-file Prettier; node node_modules/eslint/bin/eslint.js <changed TS/TSX> --max-warnings=0; node node_modules/typescript/bin/tsc --project tsconfig.build.json --noEmit; git diff --check",
+      "result": "Formatting, changed-code lint, TypeScript and diff whitespace pass. TypeScript initially caught removed lucide Github export and exact optional onClick; replaced with inline GitHub SVG and definite click handler. Only affected checks rerun. Initial pnpm formatter invocation refreshed cached dependencies, reporting zero downloads; remaining commands used installed binaries directly.",
+      "not_run": "Owner-run keyboard/focus/320px/appearance checks; local build, browser suite, full test suite."
+    },
+    {
+      "issue": "CC-053",
+      "state": "EXECUTED",
+      "command": "gh pr view 355 --json statusCheckRollup",
+      "result": "Commit 6649f52: CI 41452880355 SUCCESS; Vercel SUCCESS. Owner browser checks NOT_RUN."
+    },
+    {
+      "issue": "CC-063",
+      "state": "EXECUTED",
+      "command": "Changed-file Prettier; node node_modules/eslint/bin/eslint.js app/(public)/page.tsx components/blocks/landing-hero.tsx content/public.ts features/landing/landingFeature.tsx lib/content/landing.ts --max-warnings=0; node node_modules/typescript/bin/tsc --project tsconfig.build.json --noEmit; git diff --cached --check",
+      "result": "Focused formatting, ESLint and TypeScript passed. Rebased existing homepage on #355, moved filesystem loader to lib/content, preserved cache boundary and SVG assets. No local server/build/test suite. Owner browser/LCP checks NOT_RUN."
+    },
+    {
+      "date": "2026-11-02T13:35:19.313553+00:00",
+      "state": "EXECUTED",
+      "issue": "CC-063",
+      "command": "gh pr view 349 --json statusCheckRollup",
+      "result": "Head 177ec55: CI 41453539371 and Vercel SUCCESS. Owner visual/LCP checks remain pending."
+    },
+    {
+      "date": "2026-11-02T13:35:19.313553+00:00",
+      "state": "EXECUTED",
+      "issue": "CC-048",
+      "command": "node node_modules/vitest/vitest.mjs run tests/site/securityHeaders.test.ts --maxWorkers=1",
+      "result": "RED: missing HSTS/COOP on unchanged config. GREEN: one scoped response-policy test passes after implementation (225ms)."
+    },
+    {
+      "date": "2026-11-02T13:35:19.313553+00:00",
+      "state": "EXECUTED",
+      "issue": "CC-048",
+      "command": "PLAYWRIGHT_BASE_URL=https://codependentcoding.vercel.app; node node_modules/@playwright/test/cli.js test tests/e2e/site/headers.spec.ts --workers=1 --retries=0",
+      "result": "Baseline RED: two genuine HTTP regressions fail on missing CSP and security.txt returning 404. Only two requests; no browser or server started. Corrected preview rerun pending."
+    },
+    {
+      "date": "2026-11-02T13:35:19.313553+00:00",
+      "state": "EXECUTED",
+      "issue": "CC-048",
+      "command": "Changed-file Prettier/ESLint; node node_modules/typescript/bin/tsc --project tsconfig.build.json --noEmit",
+      "result": "Formatted six changed TypeScript files. Initial lint caught parent import in regression; corrected to owning alias, affected-file lint passed. Root build-tsconfig TypeScript passed. No local build or dependency downloads."
     }
   ],
   "known_findings": [
