@@ -20,7 +20,7 @@ export interface ConnectDatabaseOptions {
 /**
  * Wires a pasted connection string into .env.local without `--provision`:
  * creates `app_runtime` (NOBYPASSRLS) as the string's owner role, then writes
- * DATABASE_URL (app_runtime, pooled) and DIRECT_DATABASE_URL (owner, direct,
+ * DATABASE_URL (app_runtime, pooled) and DATABASE_URL_UNPOOLED (owner, direct,
  * which Prisma migrates with).
  */
 export async function connectDatabase({
@@ -35,6 +35,6 @@ export async function connectDatabase({
   await runSql(direct, appRoleSql(secret, owner));
   writeEnvLocal(appDir, {
     DATABASE_URL: withCredentials(pooled, APP_ROLE, secret),
-    DIRECT_DATABASE_URL: direct,
+    DATABASE_URL_UNPOOLED: direct,
   });
 }

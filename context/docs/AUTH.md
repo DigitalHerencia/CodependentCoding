@@ -136,7 +136,7 @@ Action:   requireTenant → assertPermission(write) → schema.safeParse(input)
 ## 6. Row-level security
 
 - Every tenant-owned table has `organizationId` and RLS **enabled and forced**.
-- Runtime connects as `app_runtime` (no `BYPASSRLS`); migrations run as `owner` via `DIRECT_DATABASE_URL`.
+- Runtime connects as `app_runtime` (no `BYPASSRLS`); migrations run as `owner` via `DATABASE_URL_UNPOOLED`.
 - `withTenantTransaction(ctx, fn)` / `withAuthenticatedRead(ctx, fn)` open an interactive transaction and run
   `select set_config('app.current_organization_id', $1, true)` before `fn`.
 - Policy template (per table, in `prisma/rls/<owner>.sql`):

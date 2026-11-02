@@ -100,7 +100,7 @@ describe("doctor", () => {
     const dir = await app(["crm"]);
     writeFileSync(
       path.join(dir, ".env.local"),
-      `DATABASE_URL="postgresql://app_runtime:x@db.example/app"\nDIRECT_DATABASE_URL="${SECRET}"\n`,
+      `DATABASE_URL="postgresql://app_runtime:x@db.example/app"\nDATABASE_URL_UNPOOLED="${SECRET}"\n`,
     );
     mkdirSync(path.join(dir, "prisma/migrations/20261024000000_init"), {
       recursive: true,
@@ -211,14 +211,14 @@ describe("doctor", () => {
       await run(
         {
           DATABASE_URL: "postgresql://owner:other@db-pooler.example/app",
-          DIRECT_DATABASE_URL: SECRET,
+          DATABASE_URL_UNPOOLED: SECRET,
         },
         SAFE_ROLE,
       ),
     ).toMatchObject({ status: "fail", detail: "owner is the owner" });
     expect(
       await run(
-        { DATABASE_URL: runtime, DIRECT_DATABASE_URL: SECRET },
+        { DATABASE_URL: runtime, DATABASE_URL_UNPOOLED: SECRET },
         { ...SAFE_ROLE, rolbypassrls: true, neon_superuser: true, owned: 3 },
       ),
     ).toMatchObject({
@@ -227,12 +227,12 @@ describe("doctor", () => {
     });
     expect(
       await run(
-        { DATABASE_URL: runtime, DIRECT_DATABASE_URL: SECRET },
+        { DATABASE_URL: runtime, DATABASE_URL_UNPOOLED: SECRET },
         { ...SAFE_ROLE, runtime: false },
       ),
     ).toMatchObject({ status: "fail", detail: "app_runtime: not app_runtime" });
     expect(
-      await run({ DATABASE_URL: runtime, DIRECT_DATABASE_URL: SECRET }, null),
+      await run({ DATABASE_URL: runtime, DATABASE_URL_UNPOOLED: SECRET }, null),
     ).toMatchObject({ status: "fail", detail: "role app_runtime not found" });
   });
 

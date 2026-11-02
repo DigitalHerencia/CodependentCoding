@@ -97,7 +97,10 @@ export async function migrate(): Promise<void> {
   }
   try {
     execFileSync("pnpm", ["exec", "prisma", "migrate", "deploy"], {
-      env: childEnv({ DATABASE_URL: ownerUrl, DIRECT_DATABASE_URL: ownerUrl }),
+      env: childEnv({
+        DATABASE_URL: ownerUrl,
+        DATABASE_URL_UNPOOLED: ownerUrl,
+      }),
       stdio: "pipe",
       shell: process.platform === "win32",
     });

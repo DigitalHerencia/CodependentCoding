@@ -7,8 +7,8 @@
  *   pnpm db:rls:check    compare the live pg_policies, RLS flags and role grants
  *                        with the source; exit 1 on drift (CI runs this)
  *
- * The check connects as the owner: DATABASE_URL_UNPOOLED, else
- * DIRECT_DATABASE_URL, else DATABASE_URL (the precedence prisma.config.ts uses).
+ * The check connects as the owner: DATABASE_URL_UNPOOLED, else DATABASE_URL
+ * (the precedence prisma.config.ts uses).
  * It changes nothing: its work runs in a transaction that is rolled back.
  */
 import { fileURLToPath } from "node:url";
@@ -34,7 +34,7 @@ if (!process.argv.includes("--check")) {
   // direct URL first, whichever of the names this app declares.
   const { baseEnv } = await import("@/lib/env/base");
   const declared = Object.keys(baseEnv.schema.shape);
-  const url = ["DATABASE_URL_UNPOOLED", "DIRECT_DATABASE_URL", "DATABASE_URL"]
+  const url = ["DATABASE_URL_UNPOOLED", "DATABASE_URL"]
     .filter((name) => declared.includes(name))
     .map((name) => baseEnv.value(name))
     .find(Boolean);

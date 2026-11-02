@@ -48,7 +48,7 @@ export interface ProvisionContext {
 }
 
 /** Runtime (app role, pooled) and migration (owner, direct) connections. */
-export const DATABASE_KEYS = ["DATABASE_URL", "DIRECT_DATABASE_URL"] as const;
+export const DATABASE_KEYS = ["DATABASE_URL", "DATABASE_URL_UNPOOLED"] as const;
 
 const GUIDANCE: Record<StepId, { install: string; login: string }> = {
   github: {
@@ -264,7 +264,7 @@ async function neon(ctx: ProvisionContext): Promise<StepOutcome> {
   await ctx.runSql(ownerDirect, appRoleSql(password));
   writeEnvLocal(ctx.appDir, {
     DATABASE_URL: withCredentials(ownerPooled, APP_ROLE, password),
-    DIRECT_DATABASE_URL: ownerDirect,
+    DATABASE_URL_UNPOOLED: ownerDirect,
   });
   return {
     step: "neon",

@@ -166,7 +166,7 @@ jobs:
     env:
       # Placeholders so Prisma, Clerk and the env schemas load; nothing is contacted.
       DATABASE_URL: postgresql://ci:ci@localhost:5432/ci
-      DIRECT_DATABASE_URL: postgresql://ci:ci@localhost:5432/ci
+      DATABASE_URL_UNPOOLED: postgresql://ci:ci@localhost:5432/ci
       NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: pk_test_ZXhhbXBsZS5jbGVyay5hY2NvdW50cy5kZXYk
       CLERK_SECRET_KEY: sk_test_placeholder
       CLERK_WEBHOOK_SIGNING_SECRET: whsec_placeholder

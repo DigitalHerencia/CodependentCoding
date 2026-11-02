@@ -463,11 +463,11 @@ export function registerNew(program: Command, cliVersion: string): void {
           });
           connected = true;
           p.log.success(
-            "Database wired: DATABASE_URL (app_runtime, pooled) and DIRECT_DATABASE_URL (owner, direct) are in .env.local.",
+            "Database wired: DATABASE_URL (app_runtime, pooled) and DATABASE_URL_UNPOOLED (owner, direct) are in .env.local.",
           );
         } catch (error) {
           p.log.warn(
-            `Could not set up the database (${(error as Error).message}). Fix the connection string and fill DATABASE_URL and DIRECT_DATABASE_URL in .env.local.`,
+            `Could not set up the database (${(error as Error).message}). Fix the connection string and fill DATABASE_URL and DATABASE_URL_UNPOOLED in .env.local.`,
           );
         }
       }

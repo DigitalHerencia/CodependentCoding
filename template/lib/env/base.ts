@@ -72,7 +72,7 @@ export function childEnv(overrides: Record<string, string>): NodeJS.ProcessEnv {
 
 export const baseEnv = defineEnv("base", {
   DATABASE_URL: required(),
-  DIRECT_DATABASE_URL: optional(),
+  DATABASE_URL_UNPOOLED: optional(),
   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: optional(),
   CLERK_SECRET_KEY: optional(),
   CLERK_WEBHOOK_SIGNING_SECRET: optional(),

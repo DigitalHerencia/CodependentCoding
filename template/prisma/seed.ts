@@ -20,7 +20,7 @@ config({ path: ".env.local", quiet: true });
 config({ quiet: true });
 
 const connectionString =
-  baseEnv.value("DIRECT_DATABASE_URL") ?? baseEnv.read().DATABASE_URL;
+  baseEnv.value("DATABASE_URL_UNPOOLED") ?? baseEnv.read().DATABASE_URL;
 
 const prisma = new PrismaClient({
   adapter: new PrismaNeon({
