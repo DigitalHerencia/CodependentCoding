@@ -6,6 +6,7 @@ import type { ReactNode } from "react";
 import { applicationProduct } from "@/content/application";
 import { DocumentShell } from "@/components/shells/document-shell";
 import { OnboardingGateFeature } from "@/features/onboarding/onboardingGateFeature";
+import { PwaInstallFeature } from "@/features/pwa/pwaInstallFeature.client";
 import { getIdentity } from "@/lib/auth/auth";
 import { redirectToSignIn } from "@/lib/auth/redirects";
 
@@ -31,6 +32,7 @@ export default async function TenantLayout({
     <DocumentShell>
       <ClerkProvider dynamic>
         <OnboardingGateFeature>{children}</OnboardingGateFeature>
+        <PwaInstallFeature />
       </ClerkProvider>
     </DocumentShell>
   );

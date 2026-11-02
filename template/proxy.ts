@@ -37,7 +37,7 @@ const matches =
   (request: NextRequest) =>
     patterns.some((pattern) => pattern.test(request.nextUrl.pathname));
 
-const staticPages = [/^\/$/, /^\/(faq|terms|privacy)\/?$/];
+const staticPages = [/^\/$/, /^\/(faq|terms|privacy|offline)\/?$/];
 const clerkPages = [/^\/sign-(in|up)(\/|$)/];
 
 const isStaticPage = matches(...staticPages);

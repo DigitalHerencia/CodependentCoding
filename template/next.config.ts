@@ -27,7 +27,24 @@ const nextConfig: NextConfig = {
     formats: ["image/avif", "image/webp"],
   },
   async headers() {
-    return [{ source: "/:path*", headers: securityHeaders }];
+    return [
+      { source: "/:path*", headers: securityHeaders },
+      {
+        source: "/sw.js",
+        headers: [
+          ...securityHeaders,
+          {
+            key: "Cache-Control",
+            value: "no-cache, no-store, must-revalidate",
+          },
+          { key: "Content-Security-Policy", value: "script-src 'self'" },
+          {
+            key: "Content-Type",
+            value: "application/javascript; charset=utf-8",
+          },
+        ],
+      },
+    ];
   },
 };
 

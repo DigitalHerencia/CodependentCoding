@@ -6,6 +6,7 @@ import type { ReactNode } from "react";
 import { applicationProduct } from "@/content/application";
 import { Wordmark } from "@/components/brand/wordmark";
 import { DocumentShell } from "@/components/shells/document-shell";
+import { PwaInstallFeature } from "@/features/pwa/pwaInstallFeature.client";
 import { getIdentity } from "@/lib/auth/auth";
 import { redirectToSignIn } from "@/lib/auth/redirects";
 
@@ -33,6 +34,7 @@ export default async function SetupLayout({
           </header>
           {children}
         </main>
+        <PwaInstallFeature />
       </ClerkProvider>
     </DocumentShell>
   );

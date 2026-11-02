@@ -1020,6 +1020,15 @@
       "context": "CC-078.",
       "decision": "components/templates/<slice>-templates.tsx; landing/FAQ/privacy/terms in public-templates.tsx, shared* in shared-templates.tsx; TUI follows the same rule; components/ui/chart.tsx stays as re-export entry.",
       "refs": ["CC-078", "PR #335"]
+    },
+    {
+      "id": "DEC-101",
+      "date": "2026-11-01",
+      "status": "accepted",
+      "title": "Core PWA cache and sign-out boundaries",
+      "context": "CC-076 (#328).",
+      "decision": "Use a hand-written worker for offline shell and immutable assets only. Pause asset caching after logout and await pending writes/cache-deletion acknowledgment before Clerk sign-out. Inject explicit account controls through the existing shell slot rather than mutating the Clerk SDK. Preserve existing local governance work separately from issue delivery.",
+      "refs": ["CC-076", "PR #344"]
     }
   ]
 }

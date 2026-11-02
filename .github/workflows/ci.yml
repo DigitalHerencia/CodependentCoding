@@ -82,7 +82,7 @@ jobs:
             echo "template=$([ -n "$(grep -E '^template/' "$list" | grep -vE '\.md$' || true)" ] && echo true || echo false)"
             echo "template_eslint=$(has '^template/eslint/')"
             echo "template_schema=$(has '^template/(prisma/|hipster\.modules\.json$)')"
-            echo "template_e2e=$(has '^template/(app|components|features|lib|hooks|tests/e2e)/|^template/(proxy\.ts|next\.config\.ts|playwright\.config\.ts|package\.json|pnpm-lock\.yaml)$')"
+            echo "template_e2e=$(has '^template/(app|components|features|lib|hooks|public|tests/e2e)/|^template/(proxy\.ts|next\.config\.ts|playwright\.config\.ts|package\.json|pnpm-lock\.yaml)$')"
             echo "template_db=$(has '^template/(prisma/|tests/rls/|lib/db/)|^template/scripts/(rls-sql|db-init|db-rls)\.mjs$')"
             echo "template_build=$(has '^template/(next\.config\.ts|package\.json|pnpm-lock\.yaml|postcss\.config\.mjs|tsconfig\.json)$')"
             echo "lockfile=$(has '^(template/)?(pnpm-lock|pnpm-workspace)\.yaml$|^scripts/check-lockfile\.mjs$')"

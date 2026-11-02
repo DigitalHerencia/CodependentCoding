@@ -3,6 +3,7 @@ import { HeroSection } from "@/components/blocks/hero-section";
 import { FAQAccordion } from "@/components/blocks/faq-section";
 import { faqCopy } from "@/content/faq";
 import Image from "next/image";
+import Link from "next/link";
 import { FeatureContentGrid } from "@/components/blocks/feature-grid";
 import { TestimonialsGrid } from "@/components/blocks/testimonials";
 import { CTASimple } from "@/components/blocks/cta-section";
@@ -90,6 +91,31 @@ export function LandingPageTemplate() {
         className="h-auto w-full bg-background"
       />
     </section>
+  );
+}
+
+export function OfflinePageTemplate() {
+  return (
+    <main className="mx-auto grid min-h-dvh max-w-2xl place-items-center px-6 py-16">
+      <section className="w-full border border-neutral-400 bg-black p-8 shadow-[8px_8px_0_0_oklch(54.6%_0.245_262.881_/_0.24)]">
+        <p className="font-mono text-xs tracking-[0.16em] text-blue-400 uppercase">
+          Offline
+        </p>
+        <h1 className="mt-3 font-(family-name:--font-display) text-4xl tracking-[0.04em] text-white uppercase">
+          You are offline
+        </h1>
+        <p className="mt-4 max-w-prose text-neutral-300">
+          Nothing in the workspace is available offline. Reconnect, then try
+          again.
+        </p>
+        <Link
+          className="mt-6 inline-flex border border-blue-500 bg-blue-600 px-4 py-2 font-mono text-sm text-white hover:bg-blue-500 focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:outline-none"
+          href="/"
+        >
+          Retry
+        </Link>
+      </section>
+    </main>
   );
 }
 

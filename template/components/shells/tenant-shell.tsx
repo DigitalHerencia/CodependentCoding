@@ -1,6 +1,4 @@
 "use client";
-
-import { UserButton } from "@clerk/nextjs";
 import {
   Brain,
   BriefcaseBusiness,
@@ -62,9 +60,11 @@ const domains: TreeNode[] = [
 
 export function TenantShell({
   children,
+  accountMenu,
   organizationSwitcher,
 }: {
   children: ReactNode;
+  accountMenu: ReactNode;
   /** Rendered above the user menu; the onboarding gate passes the organization switcher. */
   organizationSwitcher?: ReactNode;
 }) {
@@ -183,7 +183,7 @@ export function TenantShell({
           )}
           <div className="space-y-3 border-t pt-4">
             {!collapsed && organizationSwitcher}
-            <UserButton />
+            {accountMenu}
           </div>
         </aside>
       )}
@@ -217,7 +217,7 @@ export function TenantShell({
           >
             {navigation}
             {organizationSwitcher}
-            <UserButton />
+            {accountMenu}
           </div>
         )}
         <main>{children}</main>
