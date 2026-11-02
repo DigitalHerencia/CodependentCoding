@@ -95,6 +95,8 @@ URL ─► app/ (route) ─► features/ ─► components/blocks ─► compone
 
 ```text
 Static public presentation?      app/(public) page + components/blocks
+Public site copy?               content/{public,faq,legal,security}.ts
+Public repository file reader?  lib/content/<domain>.ts (server-only)
 React Hook Form?                 features/<d>/<d><Verb><Thing>Form.tsx
 Browser-only behavior?           features/<d>/<name>.client.tsx
 Capability orchestration?        features/<d>/<d><Thing>Feature.tsx
@@ -114,6 +116,8 @@ Report an unexpected error?      lib/observability/report.ts
 Constant / pure util?            lib/constants | lib/utils
 None of the above?               Stop. Do not invent a layer (CC-NAME-002).
 ```
+
+Public site content is separate from template tenant data: `content/` holds page copy and `lib/content/` reads repository files on the server. Site `lib/constants/` is reserved for URLs, versions and dates. Authenticated persisted reads in generated apps continue to use `lib/fetchers/`. CC-CONTENT-001 enforces these public-site boundaries only in the site lint profile.
 
 ## 4. Doctrine enforcement
 

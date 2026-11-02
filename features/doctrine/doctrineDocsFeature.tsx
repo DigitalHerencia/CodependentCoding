@@ -5,7 +5,7 @@ import {
   getDoctrineDoc,
   getDoctrineNav,
   getDoctrineSlugs,
-} from "@/lib/fetchers/doctrineFetchers";
+} from "@/lib/content/doctrine";
 
 export async function DoctrineDocsFeature({ slug }: { slug: string }) {
   const [doc, nav] = await Promise.all([

@@ -1065,6 +1065,15 @@
       "context": "Owner resumed issue delivery and requires lean checks. CC-046 is a dependency of the remaining site foundation work; its configuration was already preserved locally.",
       "decision": "Ship the saved configuration through an issue-linked PR and one affected-site CI build. The installed Next.js schema supports ensureStatic navigation and partialPrefetching. Replace the obsolete artificial cookies mutation/rebuild acceptance experiment with native framework enforcement. Keep homepage PR #349 separate and retain its owner browser check. Initial CI exposed uncached public filesystem reads; cache their five public page render boundaries, preserving the ban on caching features/fetchers or identity-scoped functions. A corrected CI run is justified by this concrete fix.",
       "refs": ["GH-298", "PR #349"]
+    },
+    {
+      "id": "DEC-107",
+      "date": "2026-11-02",
+      "status": "accepted",
+      "title": "Separate public site content from authenticated template reads",
+      "context": "CC-049 follows merged CC-046. Public repository files are not tenant database fetchers.",
+      "decision": "Use content/{public,faq,legal,security}.ts and server-only lib/content/*.ts. Enable CC-CONTENT-001 only in the site lint profile; generated template/terminal profiles retain their existing data architecture. Close CC-067 not planned under the owner lean CI policy.",
+      "refs": ["GH-301", "PR #350", "GH-319"]
     }
   ]
 }

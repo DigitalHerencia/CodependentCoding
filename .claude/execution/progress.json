@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/progress/v1",
-  "updated": "2026-11-02T12:35:27.264Z",
+  "updated": "2026-11-02T12:43:55.400130+00:00",
   "format": "Evidence states: EXECUTED | INSPECTED | NOT_RUN | BLOCKED. Never mark an issue done without EXECUTED evidence for its Validation commands.",
   "milestones": {
     "M0": {
@@ -838,10 +838,23 @@
       "note": "Owner-approved operational alignment completed for the existing template project and designated branch. Applied three pending migrations on production/development/active-docs-preview without resets. Root/local template and Vercel scoped connections use restricted pooled runtime plus direct migration-owner URLs; old CLI validation and merged-preview resources removed. Windows User defaults corrected; Machine writes require elevation. Internal solo-dev profile, no commercial production gate."
     },
     "CC-046": {
-      "status": "in-review",
+      "status": "done",
       "github": 298,
       "branch": "codex/298-static-site",
-      "note": "Recovered saved ff82430 configuration from current main. Installed Next.js supports the selected config and segment option. Focused lint/type check passed; affected-site CI build pending. Homepage PR #349 remains separate, with owner visual review pending."
+      "note": "PR #350 merged after corrected CI run 41445972223 passed; local main synced and issue branch deleted.",
+      "pr": 350,
+      "commit": "b8d305a1e38d2c387fcd5c9bfab41333605171a7"
+    },
+    "CC-049": {
+      "status": "in-review",
+      "github": 301,
+      "branch": "codex/301-public-content",
+      "note": "Public copy and four unchanged readers relocated; imports and site-only CC-CONTENT-001 aligned. Scoped regression red/green, changed-file root/plugin lint, site typecheck, doctrine consistency and exact content comparison passed. Affected-site CI pending."
+    },
+    "CC-067": {
+      "status": "cancelled",
+      "github": 319,
+      "note": "Closed not planned: full e2e/Lighthouse CI superseded by owner resource policy."
     }
   },
   "completed": [
@@ -890,7 +903,8 @@
     "CC-073",
     "CC-074",
     "CC-075",
-    "CC-078"
+    "CC-078",
+    "CC-046"
   ],
   "evidence": [
     {
@@ -3599,6 +3613,27 @@
       "issue": "CC-046",
       "command": "PR #350 CI run 41445442469; focused ESLint on five public content routes; tsc --project tsconfig.build.json --noEmit",
       "result": "CI failed static navigation enforcement on uncached public filesystem reads. Added route-level use cache to the five public file-backed pages; features/fetchers and tenant boundaries unchanged. Focused ESLint and TypeScript exit 0 after fix; corrected CI build pending."
+    },
+    {
+      "date": "2026-11-02T12:42:27.535932+00:00",
+      "state": "EXECUTED",
+      "issue": "CC-046",
+      "command": "gh pr merge 350 --squash --delete-branch; git sync; CI run 41445972223",
+      "result": "Corrected affected-site CI and Vercel preview passed; merged b8d305a1e38d2c387fcd5c9bfab41333605171a7, main synced, branch removed."
+    },
+    {
+      "date": "2026-11-02T12:42:27.535932+00:00",
+      "state": "EXECUTED",
+      "issue": "CC-049",
+      "command": "node --test --test-name-pattern=public-content --test-reporter=dot template/eslint/codependent-plugin.test.mjs",
+      "result": "Before enforcement: four missing-boundary regressions fail. After implementation: all nine scoped cases pass. Template default profile remains unaffected."
+    },
+    {
+      "date": "2026-11-02T12:43:55.400130+00:00",
+      "state": "EXECUTED",
+      "issue": "CC-049",
+      "command": "Changed-file Prettier and ESLint (root + two plugin files); tsc --project tsconfig.build.json --noEmit; node scripts/doctrine-check.mjs; exact original/moved export and loader comparison; git diff --check",
+      "result": "All passed. Eight public copy exports and four loader bodies preserved exactly. Doctrine: 51 rules / 15 ESLint rules consistent. No full suite, local build, install or dev server. One affected-site CI run pending."
     }
   ],
   "known_findings": [

@@ -1,4 +1,4 @@
-import { securityCopy } from "@/lib/constants/siteCopy";
+import { securityCopy } from "@/content/security";
 
 export function SecurityPanel() {
   return (

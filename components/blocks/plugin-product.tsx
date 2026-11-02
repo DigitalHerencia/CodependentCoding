@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { CodeSnippet } from "@/components/blocks/code-snippet";
 import { PageHero } from "@/components/blocks/page-hero";
-import { loadedVibesCopy } from "@/lib/constants/siteCopy";
+import { loadedVibesCopy } from "@/content/public";
 import type { PluginManifest } from "@/types/pluginTypes";
 
 // Skill descriptions end with trigger phrases for Claude; show only the "what".

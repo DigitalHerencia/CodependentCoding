@@ -41,7 +41,7 @@ export default defineConfig([
       ],
     },
   },
-  doctrine,
+  { ...doctrine, settings: { codependent: { profile: "site" } } },
   {
     name: "factory/cli-and-scripts",
     files: ["packages/**", "scripts/**", ".claude/hooks/**", "plugin/**"],

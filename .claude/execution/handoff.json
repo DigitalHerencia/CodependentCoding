@@ -1,15 +1,15 @@
 {
   "$schema": "codependent-coding/execution/handoff/v1",
-  "updated": "2026-11-02T12:35:27.264Z",
+  "updated": "2026-11-02T12:43:55.400130+00:00",
   "format": "One current package; history is in progress.json, decisions.json and git.",
   "status": "in-review",
   "milestone": "M-S1",
-  "current_issue": "CC-046",
-  "next_issue": "CC-046",
-  "queue": ["CC-046", "CC-049", "CC-050", "CC-052", "CC-053", "CC-063"],
-  "branch": "codex/298-static-site",
+  "current_issue": "CC-049",
+  "next_issue": "CC-049",
+  "queue": ["CC-049", "CC-050", "CC-052", "CC-053", "CC-063"],
+  "branch": "codex/301-public-content",
   "in_flight": [
-    "CC-046 PR #350: first CI build exposed uncached public file reads. Route cache boundaries added; focused lint/type checks passed, corrected CI build pending.",
+    "CC-049 implemented; focused checks passed. Affected-site CI and merge pending. CC-046 merged in #350, main synced and branch deleted.",
     "Homepage PR #349 has passing CI and ready preview; owner desktop/mobile verification remains pending.",
     "CC-077 Stripe hardening remains stopped at owner direction."
   ],
@@ -25,7 +25,8 @@
   "risks": [
     "PWA browser/runtime verification is owner-run; no agent dev servers.",
     "Machine-wide environment edits require an administrator shell. User-level defaults are correct; an owner-local administrator script is prepared if all-user scope is desired.",
-    "Live Clerk production setup is only needed if/when the owner requests an actual template production deployment; it does not block ordinary internal development."
+    "Live Clerk production setup is only needed if/when the owner requests an actual template production deployment; it does not block ordinary internal development.",
+    "Homepage PR #349 must update its new site loader/import to lib/content/ when rebased after CC-049; preserve owner visual review."
   ],
   "do_not": [
     "Start any dev server or run full suites",
