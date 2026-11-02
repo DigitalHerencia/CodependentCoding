@@ -1123,6 +1123,15 @@
       "context": "Existing PR #349 predates the canonical token/font/brand/shell stack.",
       "decision": "Rebase the existing homepage package onto #355 instead of duplicating its implementation. Keep current source-computed statistics and copy; move them to approved content locations, use canonical CSS tokens and inline brand SVGs, and preserve the main skip target. Owner performs browser and LCP checks; no local server, build or broad suite.",
       "refs": ["GH-315", "PR #349", "PR #355", "CC-063"]
+    },
+    {
+      "id": "DEC-114",
+      "date": "2026-11-02",
+      "status": "accepted",
+      "title": "Finish the checked site stack and retain the actual compatibility hold",
+      "context": "Owner renewed direction to finish issues and minimize spending on process and repeated checks. Five site PRs had passing focused checks, CI and previews.",
+      "decision": "Squash-merge the five site implementation PRs in order, comparing each rebased tree to its previously tested tree. Retain browser checks as explicitly unrun follow-up instead of claiming success. Keep exact-CSP PR #356 separate until the Monaco CDN dependency is removed. Continue with CC-054, the dependency for CC-060.",
+      "refs": ["PR #352", "PR #353", "PR #354", "PR #355", "PR #349", "PR #356"]
     }
   ]
 }

@@ -1,18 +1,15 @@
 {
   "$schema": "codependent-coding/execution/handoff/v1",
-  "updated": "2026-11-02T13:26:53.775951+00:00",
+  "updated": "2026-11-02T13:45:06.580462+00:00",
   "format": "One current package; history is in progress.json, decisions.json and git.",
-  "status": "in-review",
-  "milestone": "M-S4",
-  "current_issue": "CC-063",
-  "next_issue": "CC-063",
-  "queue": ["CC-063"],
-  "branch": "codex/315-landing",
+  "status": "ready",
+  "milestone": "M-S3",
+  "current_issue": "CC-054",
+  "next_issue": "CC-054",
+  "queue": ["CC-054", "CC-060", "CC-048"],
+  "branch": "main",
   "in_flight": [
-    "CC-063 PR #349 rebased on #355. Existing homepage integrated with canonical tokens, SVGs, content loaders and skip target. Focused formatting/lint/TypeScript passed; refreshed CI/preview pending; owner appearance checks remain required.",
-    "CC-053 draft PR #355 head 6649f52: focused checks passed; CI 41452880355 and Vercel SUCCESS. Owner keyboard/focus/320px checks pending.",
-    "CC-052 PR #354 head 8aa052e: corrected CI 41450934164 and Vercel preview SUCCESS. Owner appearance/share checks pending.",
-    "CC-050 PR #352 and CC-051 PR #353 have passing affected-site CI and Vercel previews; owner appearance checks remain pending. CC-052 is stacked on #353.",
+    "CC-048 PR #356: CI/Vercel and both focused preview HTTP checks pass; hold merge until CC-060 removes Monaco CDN loading. Fonts prerequisite merged.",
     "CC-077 Stripe hardening remains stopped at owner direction."
   ],
   "notes": [
@@ -22,14 +19,14 @@
     "Local and Vercel runtime/migration connections aligned. Stale validation/test/merged-preview branches removed; active development/doc-preview retained.",
     "Neon CLI context and Windows User defaults now target the owner-selected project/branch. The stale API-key override was removed with private backup; CLI authentication is working.",
     "Codex lean configuration and backups remain in place; restart Codex before unpausing to reload the reduced tool/skill catalog.",
-    "No stash remains; previous source recovery snapshots are archive tags, not work to replay."
+    "No stash remains; previous source recovery snapshots are archive tags, not work to replay.",
+    "PRs #352/#353/#354/#355/#349 merged in dependency order; issues #302/#303/#304/#305/#315 closed. No owner browser checks claimed. Use existing CI evidence for identical rebase trees; no repeat local checks."
   ],
   "risks": [
     "PWA browser/runtime verification is owner-run; no agent dev servers.",
     "Machine-wide environment edits require an administrator shell. User-level defaults are correct; an owner-local administrator script is prepared if all-user scope is desired.",
     "Live Clerk production setup is only needed if/when the owner requests an actual template production deployment; it does not block ordinary internal development.",
-    "CC-051 is stacked on the implemented CC-050 branch; merge #352 first, then retarget/rebase without repeating successful checks unnecessarily. Homepage #349 must preserve self-hosted fonts when rebased.",
-    "Merge #352, then #353, then CC-052 in dependency order. Homepage #349 must replace deleted JPEG imports with SVG components and AVIF when rebased; preserve canonical tokens and local fonts."
+    "Visual, keyboard/mobile and CLS/LCP checks remain owner-run follow-up; merged implementation is not evidence those checks passed."
   ],
   "do_not": [
     "Start any dev server or run full suites",

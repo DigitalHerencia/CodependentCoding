@@ -8,7 +8,7 @@ priority: p1
 size: m
 labels: [type:feature, area:site, priority:p1, size:m]
 depends_on: [CC-050, CC-051, CC-052]
-status: in-review
+status: done
 ---
 
 # CC-053 · Shells, header, footer, docs sidebar sheet, skip link
@@ -50,3 +50,7 @@ CC-050, CC-051, CC-052
 - Browser checks are owner-run under the resource policy; automated browser suite not run.
 - Native modal dialog supplies the responsive chapter sheet without dependency installation.
 - Existing chapter-title filter remains until CC-057 adds global search. Footer RSS awaits a real changelog feed; no dead link is published.
+
+## Delivery
+
+Merged in PR #355 at `95ee124`; issue #305 closed. Previously recorded focused checks and CI passed. Owner browser/appearance checks remain unrun follow-up; unchecked runtime criteria are not claimed as passing.

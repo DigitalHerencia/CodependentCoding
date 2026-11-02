@@ -8,7 +8,7 @@ priority: p1
 size: s
 labels: [type:feature, area:site, priority:p1, size:s]
 depends_on: [CC-050]
-status: in-review
+status: done
 ---
 
 # CC-051 · Self-hosted Cinzel and JetBrains Mono; drop Archivo Black and Fira Code
@@ -46,4 +46,8 @@ CC-050
 - `decisions.json` updated if a choice was made; `handoff.json` points at the next issue
 - PR uses the template and says `Closes #<this issue>`
 
-Owner resource policy: one affected-site CI build, no local build/Lighthouse/dev server. Installed Next local-font loader successfully reads both files and generates size-adjust fallback metrics. Owner preview CLS verification on `/` and a chapter remains pending. Implementation is stacked on PR #352 while its owner visual check is pending.
+Owner resource policy: one affected-site CI build, no local build/Lighthouse/dev server. Installed Next local-font loader successfully reads both files and generates size-adjust fallback metrics. Owner preview CLS verification on `/` and a chapter remains pending. PR #352 merged before this implementation.
+
+## Delivery
+
+Merged in PR #353 at `f464035`; issue #303 closed. Previously recorded focused checks and CI passed. Owner browser/appearance checks remain unrun follow-up; unchecked runtime criteria are not claimed as passing.

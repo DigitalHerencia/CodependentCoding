@@ -859,36 +859,42 @@
       "note": "Closed not planned: full e2e/Lighthouse CI superseded by owner resource policy."
     },
     "CC-050": {
-      "status": "in-review",
+      "status": "done",
       "github": 302,
       "branch": "codex/302-site-tokens",
-      "note": "Approved Plan 5.1 colors applied, duplicate/legacy tokens removed, public consumers aligned. Contrast check caught old teal text below 4.5:1 before correction; all 38 declared pairs pass. Changed-code lint and site TypeScript passed. CI run 41448398143 and Vercel preview passed; owner browser checks pending; no additional CI jobs.",
+      "note": "PR #352 squash-merged into main at d2a4a9b; GH #302 closed and short-lived branches removed. Previously passing CI/Vercel evidence retained; rebase file trees verified identical. Owner browser/appearance checks NOT_RUN; not claimed as passing.",
       "pr": 352,
       "commit": "a9d6775"
     },
     "CC-051": {
-      "status": "in-review",
+      "status": "done",
       "github": 303,
       "branch": "codex/303-local-fonts",
-      "note": "PR #353 at 89a1cce: affected-site CI 41449209300 and Vercel preview passed. Owner font/CLS verification remains pending."
+      "note": "PR #353 squash-merged into main at f464035; GH #303 closed and short-lived branches removed. Previously passing CI/Vercel evidence retained; rebase file trees verified identical. Owner browser/appearance checks NOT_RUN; not claimed as passing."
     },
     "CC-052": {
-      "status": "in-review",
+      "status": "done",
       "github": 304,
       "branch": "codex/304-brand-assets",
-      "note": "Stacked on PR #353. SVG brands replace five JPEGs; 26,818-byte 1920px AVIF; root/chapter social images. Focused ESLint and build-tsconfig typecheck passed. Direct ImageResponse PNG render inspected for root and longest chapter. Affected-site CI and owner appearance/GitHub/Slack preview pending. PR #354 initial CI 41450504485 failed on forbidden nested catch-all image URL. Corrected to terminal catch-all /og/[...slug] GET route and explicit chapter OG/Twitter metadata; affected-file lint/typecheck passed. Corrected head 8aa052e: CI 41450934164 and Vercel preview SUCCESS; owner appearance/share previews still pending."
+      "note": "PR #354 squash-merged into main at 4cd3c6b; GH #304 closed and short-lived branches removed. Previously passing CI/Vercel evidence retained; rebase file trees verified identical. Owner browser/appearance checks NOT_RUN; not claimed as passing."
     },
     "CC-053": {
-      "status": "in-review",
+      "status": "done",
       "github": 305,
       "branch": "codex/305-responsive-shells",
-      "note": "Stacked on implemented CC-052 PR #354. Responsive shell, native modal chapter drawer, skip links and release footer. Chapter-title filtering remains the current search; full palette belongs to CC-057. RSS deferred until a real doctrine changelog feed exists. Owner checks: first Tab/skip target, Escape/focus return, 320px overflow and desktop/mobile appearance. Changed-file formatting/ESLint and root build-tsconfig TypeScript passed; no local build/server/browser suite. Affected-site CI and owner preview pending. Delivered as PR #355, commit 6649f52; CI 41452880355 and Vercel SUCCESS."
+      "note": "PR #355 squash-merged into main at 95ee124; GH #305 closed and short-lived branches removed. Previously passing CI/Vercel evidence retained; rebase file trees verified identical. Owner browser/appearance checks NOT_RUN; not claimed as passing."
     },
     "CC-063": {
-      "status": "in-review",
+      "status": "done",
       "github": 315,
       "branch": "codex/315-landing",
-      "note": "PR #349 rebased on shell PR #355. Existing homepage preserved; canonical tokens, SVG brands, main landmark, public copy and content-loader classification integrated. Changed-file formatting/ESLint, root TypeScript and diff whitespace pass; refreshed CI/preview pending; owner visual/LCP checks NOT_RUN."
+      "note": "PR #349 squash-merged into main at 4453cc6; GH #315 closed and short-lived branches removed. Previously passing CI/Vercel evidence retained; rebase file trees verified identical. Owner browser/appearance checks NOT_RUN; not claimed as passing."
+    },
+    "CC-048": {
+      "status": "in-review",
+      "github": 300,
+      "branch": "codex/300-site-headers",
+      "note": "PR #356 fb1ab77: CI 41454679752 and Vercel SUCCESS; 2 HTTP regressions RED on production then GREEN on corrected preview (5 requests, 2.2s). Do not merge before CC-060 removes the existing Monaco CDN dependency. Fonts prerequisite now merged."
     }
   },
   "completed": [
@@ -938,7 +944,12 @@
     "CC-074",
     "CC-075",
     "CC-078",
-    "CC-046"
+    "CC-046",
+    "CC-050",
+    "CC-051",
+    "CC-052",
+    "CC-053",
+    "CC-063"
   ],
   "evidence": [
     {
@@ -3735,6 +3746,20 @@
       "state": "EXECUTED",
       "command": "Changed-file Prettier; node node_modules/eslint/bin/eslint.js app/(public)/page.tsx components/blocks/landing-hero.tsx content/public.ts features/landing/landingFeature.tsx lib/content/landing.ts --max-warnings=0; node node_modules/typescript/bin/tsc --project tsconfig.build.json --noEmit; git diff --cached --check",
       "result": "Focused formatting, ESLint and TypeScript passed. Rebased existing homepage on #355, moved filesystem loader to lib/content, preserved cache boundary and SVG assets. No local server/build/test suite. Owner browser/LCP checks NOT_RUN."
+    },
+    {
+      "date": "2026-11-02T13:45:06.580462+00:00",
+      "state": "EXECUTED",
+      "issue": "CC-050, CC-051, CC-052, CC-053, CC-063",
+      "command": "gh pr merge --squash --delete-branch; git rebase --onto origin/main <former-parent>; git diff --exit-code <previously-tested-head> HEAD; git log -5; gh issue list --state open",
+      "result": "All five PRs merged; linked issues #302/#303/#304/#305/#315 closed. Rebased file trees identical to previously passing heads. Merged local/remote issue branches removed. Three duplicate CI cancellation requests submitted; fourth already completed. No tests/builds/servers started."
+    },
+    {
+      "date": "2026-11-02T13:45:06.580462+00:00",
+      "state": "EXECUTED",
+      "issue": "CC-048",
+      "command": "PLAYWRIGHT_BASE_URL=<PR356-preview>; playwright test tests/e2e/site/headers.spec.ts --workers=1 --retries=0; gh run view 41454679752",
+      "result": "2 HTTP tests passed at fb1ab77 (5 requests, 2.2 seconds); affected CI and Vercel SUCCESS. Compatibility hold: existing Monaco CDN loader."
     }
   ],
   "known_findings": [

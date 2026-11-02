@@ -8,7 +8,7 @@ priority: p1
 size: m
 labels: [type:feature, area:site, priority:p1, size:m]
 depends_on: [CC-052, CC-053]
-status: in-review
+status: done
 ---
 
 # CC-063 · Landing rebuild
@@ -48,3 +48,7 @@ CC-052, CC-053
 - Existing PR #349 rebased on #355; no duplicate homepage implementation.
 - Canonical public copy, tokens, local fonts, SVG brands, content loaders and skip target preserved.
 - No local server, build, Lighthouse or full suite. Browser/performance acceptance remains owner-run.
+
+## Delivery
+
+Merged in PR #349 at `4453cc6`; issue #315 closed. Previously recorded focused checks and CI passed. Owner browser/appearance checks remain unrun follow-up; unchecked runtime criteria are not claimed as passing.

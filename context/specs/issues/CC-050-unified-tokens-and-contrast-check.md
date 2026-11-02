@@ -8,7 +8,7 @@ priority: p1
 size: m
 labels: [type:feature, area:site, priority:p1, size:m]
 depends_on: [CC-049]
-status: in-review
+status: done
 ---
 
 # CC-050 · Unified tokens and contrast check
@@ -47,3 +47,7 @@ CC-049
 - PR uses the template and says `Closes #<this issue>`
 
 Owner policy: no additional CI validation/test jobs or agent dev servers. CI performs changed-file formatting/lint fixes, type generation/checking and the affected-site build. Browser verification is owner-run.
+
+## Delivery
+
+Merged in PR #352 at `d2a4a9b`; issue #302 closed. Previously recorded focused checks and CI passed. Owner browser/appearance checks remain unrun follow-up; unchecked runtime criteria are not claimed as passing.
