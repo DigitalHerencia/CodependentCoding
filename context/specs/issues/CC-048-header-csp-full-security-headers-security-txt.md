@@ -1,12 +1,12 @@
 ---
 id: CC-048
 title: "Header CSP, full security headers, security.txt"
-type: feat
+type: feature
 area: site
 milestone: "M-S1 · Foundation"
 priority: p0
 size: s
-labels: [type:feat, area:site, priority:p0, size:s]
+labels: [type:feature, area:site, priority:p0, size:s]
 depends_on: [CC-046]
 status: todo
 ---

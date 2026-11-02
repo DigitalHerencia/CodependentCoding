@@ -1,12 +1,12 @@
 ---
 id: CC-058
 title: "llms.txt, raw .md routes, rules.json"
-type: feat
+type: feature
 area: site
 milestone: "M-S3 · Docs platform"
 priority: p1
 size: s
-labels: [type:feat, area:site, priority:p1, size:s]
+labels: [type:feature, area:site, priority:p1, size:s]
 depends_on: [CC-055]
 status: todo
 ---

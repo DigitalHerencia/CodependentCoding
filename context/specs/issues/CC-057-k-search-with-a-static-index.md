@@ -1,12 +1,12 @@
 ---
 id: CC-057
 title: "⌘K search with a static index"
-type: feat
+type: feature
 area: site
 milestone: "M-S3 · Docs platform"
 priority: p1
 size: m
-labels: [type:feat, area:site, priority:p1, size:m]
+labels: [type:feature, area:site, priority:p1, size:m]
 depends_on: [CC-055]
 status: todo
 ---

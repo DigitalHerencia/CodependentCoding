@@ -1,12 +1,12 @@
 ---
 id: CC-066
 title: "View Transitions, smart 404, error pages"
-type: feat
+type: feature
 area: site
 milestone: "M-S6 · PWA and polish"
 priority: p2
 size: s
-labels: [type:feat, area:site, priority:p2, size:s]
+labels: [type:feature, area:site, priority:p2, size:s]
 depends_on: [CC-055]
 status: todo
 ---

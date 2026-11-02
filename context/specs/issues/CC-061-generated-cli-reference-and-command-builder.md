@@ -1,12 +1,12 @@
 ---
 id: CC-061
 title: "Generated CLI reference and command builder"
-type: feat
+type: feature
 area: site
 milestone: "M-S4 · Product pages"
 priority: p1
 size: m
-labels: [type:feat, area:site, priority:p1, size:m]
+labels: [type:feature, area:site, priority:p1, size:m]
 depends_on: [CC-049]
 status: todo
 ---

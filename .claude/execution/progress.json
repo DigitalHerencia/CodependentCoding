@@ -817,11 +817,18 @@
       }
     },
     "CC-076": {
-      "status": "in-review",
-      "github_issue": 328,
-      "branch": "feat/328-template-pwa",
-      "note": "PR #344: implementation complete; local browser acceptance blocked by dependency installation. No merge until required evidence is available.",
-      "pr": 344
+      "status": "done",
+      "github": 328,
+      "pr": 344,
+      "merged": "f9c7264",
+      "note": "Owner merged #344. Static checks passed before merge; prior CI PWA tests timed out at worker readiness. Production public-site deployment READY is not evidence of tenant PWA behavior; owner runtime verification remains recorded as a risk."
+    },
+    "GH-345": {
+      "status": "implementation-complete",
+      "github": 345,
+      "branch": "ci/345-lean-project-validation",
+      "spec": "context/docs/tech-requirements.md#11-cicd",
+      "note": "Owner cleanup implemented: CI only format write/lint fix/type generation/type checking/affected builds; duplicate open issues absent; 77 duplicate issue cards removed from old Project #21; old board retired; config reduced with reversible backup. Publish/merge through the issue-linked PR. Neon cloud metadata blocked by expired OAuth; local DB inspection found owner login and no RLS."
     }
   },
   "completed": [
@@ -3495,15 +3502,61 @@
       "issue": "CC-076",
       "command": "Focused ESLint on changed template routes, PWA features, shell, public template, proxy, config and PWA spec; tsc --noEmit --project template/tsconfig.json; git diff --check",
       "result": "Focused ESLint exit 0 after fixing its 3 findings; final TypeScript and diff check exit 0. Browser tests remain unverified locally."
+    },
+    {
+      "date": "2026-11-01",
+      "state": "EXECUTED",
+      "issue": "GH-345",
+      "command": "git history/diff/stash audit; GitHub issue/PR list and CI run 41379747221 read before network stop",
+      "result": "Last fetched main/origin/main 32877e1. Nine doctrine issues merged: CC-047/069/070/071/072/073/074/075/078. Remaining original backlog: 22 site issues CC-046..068 excluding CC-047, plus CC-076 and CC-077. Cleanup issue #345 created; only open PR found was #344. Duplicate scan aborted, no conclusion."
+    },
+    {
+      "date": "2026-11-01",
+      "state": "EXECUTED",
+      "issue": "GH-345",
+      "command": "Compare original staged snapshot to origin/main; reconcile local b07089c metadata; archive tags and git stash drop; prune absent worktree metadata",
+      "result": "254 of 273 original staged paths already byte-identical to remote main; other paths contained older/governance differences. Restored owner type/label edits in 22 specs and milestone definitions, preserving merged statuses/code. CLAUDE remains canonical per latest owner instructions. Original full snapshot retained in archive/local-work-before-sync-20261101; reconciled snapshot in archive/reconciled-local-20261101. No stash remains. Redundant recovery branches and absent D:/CC-doctrine-rewrite worktree registration removed; doctrine branch/source retained."
+    },
+    {
+      "date": "2026-11-01",
+      "state": "EXECUTED",
+      "issue": "GH-345",
+      "command": "Local process/connection inspection; stop unused task browser helpers; two-second adapter byte sample",
+      "result": "Stopped task helpers 4200 and 12912. No pnpm/gh/git/task server processes or listener on 3100 observed. Remaining connections belonged to browser, ChatGPT, Codex and Windows services, left intact. Sample approximately 0.834 Mbps download / 0.036 Mbps upload. No DNS/proxy/adapter/firewall settings changed."
+    },
+    {
+      "date": "2026-11-01",
+      "state": "EXECUTED",
+      "issue": "GH-345",
+      "command": "Parse changed CI YAML; bash -n on its run blocks; format changed text; git diff --check (offline)",
+      "result": "Passed syntax/format/diff checks only. No test suite, install, type-generation, type-check, build, dev server, or network command was run for this cleanup."
+    },
+    {
+      "date": "2026-11-01",
+      "state": "EXECUTED",
+      "issue": "GH-345",
+      "command": "gh issue list --state all --limit 500; compare canonical Project #19 and old Project #21; delete duplicate cards; retire old board",
+      "result": "164 issues inspected, 24 open including cleanup #345. No duplicate open issue IDs/titles found; only four already-closed superseded placeholders share a title. Removed all 77 duplicate canonical cards from #21; #19 remains canonical. Initial bulk mutation partially completed before HTTP 502; queried actual state, then removed remaining 52 in small batches."
+    },
+    {
+      "date": "2026-11-01",
+      "state": "EXECUTED",
+      "issue": "GH-345",
+      "command": "Parse/edit user config.toml with backup; inspect installed tools; rebase cleanup onto origin/main; compare and remove merged PWA branch",
+      "result": "Config TOML parsed after edit: enabled plugins reduced 24 to 6; 113 unused skills disabled; custom MCP servers disabled; agent concurrency 1; valid gpt-6.1-sol default; automatic skill dependency installs disabled; app tools restricted to GitHub/Vercel/Neon. Backup at ~/.codex/backups/resource-cleanup-20261101/config.toml.before. Rebased on f9c7264 and removed local PWA branch only after identical-tree check. No stash remains."
+    },
+    {
+      "date": "2026-11-01",
+      "state": "EXECUTED",
+      "issue": "GH-345",
+      "command": "Vercel project/deployment metadata and env metadata; Clerk linked-app/config reads; read-only database metadata transaction; Neon OAuth refresh attempt",
+      "result": "Vercel codependent-coding, repo root, Next.js/Node24/main: latest production f9c7264 READY, no manual deploy triggered. Branch-specific DB env entries are integration-managed, not duplicate globals; stale preview pair references merged/deleted PWA branch, left unchanged. Clerk The Maximal Template has development instance and no production instance; default session override is null. Local template DATABASE_URL logs in as neondb_owner: 13 public tables, 0 RLS tables, no app_runtime/app_system roles. Read-only metadata only; no schema/data/role writes. Neon control-plane access and refresh token expired, so compute/branch cleanup remains unverified and owner reauthentication/target confirmation requested."
     }
   ],
   "known_findings": [
-    "Template dev script contains a personal ngrok URL (CC-014)",
-    "No real-Postgres RLS cross-tenant test (CC-016)",
-    "No ISR revalidate config in app/ despite ISR being the stated public caching strategy (CC-015)",
-    "RATE_LIMITED error code has no backing mechanism (CC-026)",
-    "Root format:check scans template/** but template deps are not installed in the root CI job, so prettier-plugin-tailwindcss errors on 'tw-animate-css' (CC-004 / prettierignore)",
-    "Root lint and typecheck clean since CC-007; root validate red only on format:check (CC-013)"
+    "PR #344 PWA worker readiness fails in CI; feature acceptance is incomplete.",
+    "Local dependencies are incompletely refreshed after registry timeouts; do not retry downloads automatically.",
+    "Remote duplicate-issue audit remains incomplete; no duplicate issues were closed."
   ],
   "blocked": []
 }

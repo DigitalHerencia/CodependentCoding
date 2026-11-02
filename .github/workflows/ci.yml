@@ -1,14 +1,14 @@
-# One workflow, scoped to what changed (tech-requirements.md §11).
-# A docs-only change runs a format check and nothing else; root and template run
-# only when their files change; e2e, the database tests and the template build run
-# only when the files they cover change. Vercel builds and deploys the site itself.
+# Owner policy: changed-file fixes, type generation/checking and affected builds only.
 name: CI
 
 on:
   pull_request:
-  push:
-    branches: [main]
   workflow_dispatch:
+    inputs:
+      base_ref:
+        description: Commit or ref to compare with HEAD
+        required: true
+        default: main
 
 concurrency:
   group: ci-${{ github.ref }}
@@ -17,154 +17,111 @@ concurrency:
 permissions:
   contents: read
 
+env:
+  BASE_REF: ${{ github.event.pull_request.base.sha || inputs.base_ref }}
+
 jobs:
   changes:
     name: What changed
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 2
     outputs:
       root: ${{ steps.scope.outputs.root }}
-      root_code: ${{ steps.scope.outputs.root_code }}
-      root_tests: ${{ steps.scope.outputs.root_tests }}
+      root_types: ${{ steps.scope.outputs.root_types }}
       site: ${{ steps.scope.outputs.site }}
       cli: ${{ steps.scope.outputs.cli }}
       tui: ${{ steps.scope.outputs.tui }}
       template: ${{ steps.scope.outputs.template }}
-      template_eslint: ${{ steps.scope.outputs.template_eslint }}
-      template_schema: ${{ steps.scope.outputs.template_schema }}
-      template_e2e: ${{ steps.scope.outputs.template_e2e }}
-      template_db: ${{ steps.scope.outputs.template_db }}
+      template_types: ${{ steps.scope.outputs.template_types }}
       template_build: ${{ steps.scope.outputs.template_build }}
-      lockfile: ${{ steps.scope.outputs.lockfile }}
     steps:
       - uses: actions/checkout@v7
         with:
           fetch-depth: 0
       - id: scope
-        env:
-          BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
-          EVENT: ${{ github.event_name }}
         shell: bash
         run: |
           set -euo pipefail
-          # Manual runs, new branches and edits to this file check everything.
-          if [ "$EVENT" = workflow_dispatch ] || [ -z "$BASE" ] || [ "$BASE" = 0000000000000000000000000000000000000000 ]; then
-            files="$(git ls-files)"
-          else
-            files="$(git diff --name-only "$BASE" "$GITHUB_SHA")"
-            if grep -qx '.github/workflows/ci.yml' <<<"$files"; then files="$(git ls-files)"; fi
-          fi
+          git diff --name-only "$BASE_REF" HEAD > "$RUNNER_TEMP/changed.txt"
           list="$RUNNER_TEMP/changed.txt"
-          printf '%s\n' "$files" > "$list"
-          echo "Changed files ($(wc -l < "$list")):"; head -n 100 "$list" | sed 's/^/  /'
-
-          has() { grep -qE "$1" "$list" && echo true || echo false; }
-          # Text and repo settings only: the format check covers them.
-          docs='(\.md$|^LICENSE$|^\.gitmessage$|^context/|^\.claude/execution/|^\.github/(ISSUE_TEMPLATE/|labels\.yml$|dependabot\.yml$))'
-
-          tests=""
-          root_config='^(package\.json|pnpm-lock\.yaml|pnpm-workspace\.yaml|vitest\.config\.ts|tsconfig\.json)$'
-          if grep -qE "$root_config" "$list"; then
-            tests="tests"
-          else
-            grep -qE '^(packages/cli/|tests/cli/|template/scripts/|template/hipster\.modules\.json$)' "$list" && tests+=" tests/cli"
-            grep -qE '^(plugin/|tests/plugin/|scripts/github/|scripts/plugin-doctrine\.mjs$|\.claude/hooks/)' "$list" && tests+=" tests/plugin"
-            grep -qE '^(scripts/(doctrine-check|check-lockfile)\.mjs$|tests/doctrine/|\.claude/contracts/|template/eslint/)' "$list" && tests+=" tests/doctrine"
-          fi
-
+          has() { if grep -qE "$1" "$list"; then echo true; else echo false; fi; }
           {
-            echo "root=$(grep -qvE '^template/' "$list" && echo true || echo false)"
-            echo "root_code=$([ -n "$(grep -vE "$docs" "$list" | grep -vE '^template/' || true)" ] && echo true || echo false)"
-            echo "root_tests=${tests# }"
-            echo "site=$(has '^(app|components|features|lib|public|context/docs|context/doctrine|tests/e2e)/|^(next\.config\.ts|playwright\.config\.ts|package\.json|pnpm-lock\.yaml)$')"
-            echo "cli=$(has '^(packages/cli/|template/scripts/|template/hipster\.modules\.json$)')"
-            echo "tui=$(has '^(packages/tui/|packages/cli/|template/eslint/|template/scripts/|pnpm-lock\.yaml$)')"
-            echo "template=$([ -n "$(grep -E '^template/' "$list" | grep -vE '\.md$' || true)" ] && echo true || echo false)"
-            echo "template_eslint=$(has '^template/eslint/')"
-            echo "template_schema=$(has '^template/(prisma/|hipster\.modules\.json$)')"
-            echo "template_e2e=$(has '^template/(app|components|features|lib|hooks|public|tests/e2e)/|^template/(proxy\.ts|next\.config\.ts|playwright\.config\.ts|package\.json|pnpm-lock\.yaml)$')"
-            echo "template_db=$(has '^template/(prisma/|tests/rls/|lib/db/)|^template/scripts/(rls-sql|db-init|db-rls)\.mjs$')"
-            echo "template_build=$(has '^template/(next\.config\.ts|package\.json|pnpm-lock\.yaml|postcss\.config\.mjs|tsconfig\.json)$')"
-            echo "lockfile=$(has '^(template/)?(pnpm-lock|pnpm-workspace)\.yaml$|^scripts/check-lockfile\.mjs$')"
-          } | tee -a "$GITHUB_OUTPUT"
-
-  # One YAML document per lockfile, or GitHub's dependency graph sees nothing.
-  # Runs before any install: the script has no dependencies.
-  lockfile:
-    name: Lockfile
-    needs: changes
-    if: needs.changes.outputs.lockfile == 'true'
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-node@v7
-        with:
-          node-version-file: .node-version
-      - run: node scripts/check-lockfile.mjs
+            echo "root=$(if grep -qvE '^template/' "$list"; then echo true; else echo false; fi)"
+            echo "root_types=$(if grep -vE '^(template/|packages/tui/)' "$list" | grep -E '\.(ts|tsx)$|^(package\.json|pnpm-lock\.yaml|tsconfig\.json)$' > /dev/null; then echo true; else echo false; fi)"
+            echo "site=$(has '^(app|components|features|lib|content|public|context/docs|context/canon|context/doctrine)/|^(next\.config\.ts|package\.json|pnpm-lock\.yaml)$')"
+            echo "cli=$(has '^packages/cli/')"
+            echo "tui=$(has '^packages/(tui|cli)/')"
+            echo "template=$(has '^template/')"
+            echo "template_types=$(has '^template/.*\.(ts|tsx|prisma)$|^template/(package\.json|pnpm-lock\.yaml|tsconfig\.json)$')"
+            echo "template_build=$(has '^template/(app|components|features|hooks|lib|types|schemas|content|public|prisma/schema)/|^template/(proxy\.ts|next\.config\.ts|package\.json|pnpm-lock\.yaml|postcss\.config\.mjs|tsconfig\.json)$')"
+          } >> "$GITHUB_OUTPUT"
 
   root:
     name: Factory (root)
     needs: changes
-    # Template scripts, manifest and eslint rules are also exercised by root tests.
-    if: needs.changes.outputs.root == 'true' || needs.changes.outputs.root_tests != ''
+    if: needs.changes.outputs.root == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v7
-      - uses: pnpm/action-setup@v6 # version from package.json packageManager
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v6
       - uses: actions/setup-node@v7
         with:
           node-version-file: .node-version
           cache: pnpm
-          cache-dependency-path: |
-            pnpm-lock.yaml
-            template/pnpm-lock.yaml
+          cache-dependency-path: pnpm-lock.yaml
       - run: pnpm install --frozen-lockfile
-      # The CLI, plugin and doctrine tests load the template's scripts and packages.
-      - if: needs.changes.outputs.root_tests != '' || needs.changes.outputs.cli == 'true'
+      - if: needs.changes.outputs.cli == 'true' || needs.changes.outputs.tui == 'true'
         run: pnpm --dir template install --frozen-lockfile
         env:
           DATABASE_URL: postgresql://ci:ci@localhost:5432/ci
-      # `!cancelled()` keeps every check reporting after one fails.
-      - run: pnpm format:check
-      - if: ${{ !cancelled() && needs.changes.outputs.root_code == 'true' }}
-        run: pnpm lint
-      - if: ${{ !cancelled() && needs.changes.outputs.root_code == 'true' }}
-        run: pnpm typecheck
-      - if: ${{ !cancelled() && needs.changes.outputs.root_code == 'true' }}
-        run: pnpm doctrine:check
-      - name: Tests for the changed areas
-        if: ${{ !cancelled() && needs.changes.outputs.root_tests != '' }}
-        run: pnpm exec vitest run ${{ needs.changes.outputs.root_tests }}
-      - name: Site link check (Playwright, HTTP only)
-        if: ${{ !cancelled() && needs.changes.outputs.site == 'true' }}
-        run: pnpm test:e2e
-      - name: Terminal app lint, typecheck, tests, build
-        if: ${{ !cancelled() && needs.changes.outputs.tui == 'true' }}
+      - name: Format changed files and fix changed code
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -t files < <(git diff --name-only --diff-filter=ACMR "$BASE_REF" HEAD | grep -vE '^template/' || true)
+          if ((${#files[@]})); then pnpm exec prettier --write --ignore-unknown "${files[@]}"; fi
+          mapfile -t code < <(printf '%s\n' "${files[@]}" | grep -vE '^packages/tui/' | grep -E '\.(mjs|cjs|js|jsx|ts|tsx|mts|cts)$' || true)
+          if ((${#code[@]})); then pnpm exec eslint --fix --max-warnings=0 "${code[@]}"; fi
+      - name: Generate types
+        if: needs.changes.outputs.root_types == 'true'
+        run: pnpm exec next typegen
+      - name: Type-check
+        if: needs.changes.outputs.root_types == 'true'
+        run: pnpm exec tsc --noEmit
+      - name: Build site
+        if: needs.changes.outputs.site == 'true'
+        run: pnpm build
+      - name: Build CLI
+        if: needs.changes.outputs.cli == 'true'
+        run: pnpm cli:build
+      - name: Fix changed terminal code
+        if: needs.changes.outputs.tui == 'true'
+        working-directory: packages/tui
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -t code < <(git diff --relative --name-only --diff-filter=ACMR "$BASE_REF" HEAD -- . | grep -E '\.(mjs|cjs|js|jsx|ts|tsx|mts|cts)$' || true)
+          if ((${#code[@]})); then pnpm exec eslint --fix --max-warnings=0 "${code[@]}"; fi
+      - name: Type-check and build terminal app
+        if: needs.changes.outputs.tui == 'true'
         working-directory: packages/tui
         run: |
-          pnpm lint
           pnpm typecheck
-          pnpm test
           pnpm build
-      - name: CLI builds and runs
-        if: ${{ !cancelled() && needs.changes.outputs.cli == 'true' }}
-        run: |
-          pnpm cli:build
-          node packages/cli/dist/cli.mjs --version
 
   template:
     name: Maximal Template
     needs: changes
     if: needs.changes.outputs.template == 'true'
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 15
     defaults:
       run:
         working-directory: template
     env:
-      # Placeholders so Prisma, Clerk and the env schemas load; nothing is contacted.
       DATABASE_URL: postgresql://ci:ci@localhost:5432/ci
       DATABASE_URL_UNPOOLED: postgresql://ci:ci@localhost:5432/ci
       NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: pk_test_ZXhhbXBsZS5jbGVyay5hY2NvdW50cy5kZXYk
@@ -172,6 +129,8 @@ jobs:
       CLERK_WEBHOOK_SIGNING_SECRET: whsec_placeholder
     steps:
       - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
       - uses: pnpm/action-setup@v6
         with:
           package_json_file: template/package.json
@@ -181,75 +140,22 @@ jobs:
           cache: pnpm
           cache-dependency-path: template/pnpm-lock.yaml
       - run: pnpm install --frozen-lockfile
-      - run: pnpm format:check
-      - if: ${{ !cancelled() }}
-        run: pnpm lint
-      - if: ${{ !cancelled() }}
-        run: pnpm typecheck
-      - name: Module manifest, ownership and env
-        if: ${{ !cancelled() }}
+      - name: Format changed files and fix changed code
+        shell: bash
         run: |
-          pnpm check:modules
-          pnpm check:ownership
-          pnpm check:env
-      - if: ${{ !cancelled() && needs.changes.outputs.template_eslint == 'true' }}
-        run: pnpm doctrine:test
-      - if: ${{ !cancelled() && needs.changes.outputs.template_schema == 'true' }}
-        run: pnpm check:schema-modules
-      # The whole unit suite takes about 3 seconds, so it is not narrowed further.
-      - if: ${{ !cancelled() }}
-        run: pnpm test
-      - name: Chromium for the CSP tests
-        if: ${{ !cancelled() && needs.changes.outputs.template_e2e == 'true' }}
-        run: pnpm exec playwright install --with-deps chromium
-      - name: E2E smoke and CSP (Playwright)
-        if: ${{ !cancelled() && needs.changes.outputs.template_e2e == 'true' }}
-        # A browser follows Clerk's development handshake to the (placeholder)
-        # Frontend API; a production-format placeholder key has none.
-        env:
-          NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: pk_live_Y2xlcmsuZXhhbXBsZS5jb20k
-          CLERK_SECRET_KEY: sk_live_placeholder
-        run: pnpm test:e2e
-      - if: ${{ !cancelled() && needs.changes.outputs.template_build == 'true' }}
-        run: pnpm build
-
-  template-db:
-    name: Template database (RLS)
-    needs: changes
-    if: needs.changes.outputs.template_db == 'true'
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    defaults:
-      run:
-        working-directory: template
-    # A throwaway Postgres inside the runner: no cloud database is created.
-    services:
-      postgres:
-        image: postgres:16
-        env:
-          POSTGRES_PASSWORD: postgres
-        ports: ["5432:5432"]
-        options: >-
-          --health-cmd pg_isready --health-interval 5s --health-timeout 5s --health-retries 10
-    env:
-      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/postgres
-      DATABASE_URL_TEST: postgresql://postgres:postgres@localhost:5432/postgres
-    steps:
-      - uses: actions/checkout@v7
-      - uses: pnpm/action-setup@v6
-        with:
-          package_json_file: template/package.json
-      - uses: actions/setup-node@v7
-        with:
-          node-version-file: .node-version
-          cache: pnpm
-          cache-dependency-path: template/pnpm-lock.yaml
-      - run: pnpm install --frozen-lockfile
-      # Migrates (roles and policies arrive only through migration history), seeds
-      # two organizations and probes every tenant table as app_runtime.
-      - run: pnpm test:rls
-      # Live pg_policies, RLS flags and role grants must equal what prisma/rls
-      # produces (CC-MIG-001); drift means a missing `pnpm db:rls` migration.
-      - name: RLS drift (pg_policies vs prisma/rls)
-        if: ${{ !cancelled() }}
-        run: pnpm db:rls:check
+          set -euo pipefail
+          mapfile -t files < <(git diff --relative --name-only --diff-filter=ACMR "$BASE_REF" HEAD -- .)
+          if ((${#files[@]})); then pnpm exec prettier --write --ignore-unknown "${files[@]}"; fi
+          mapfile -t code < <(printf '%s\n' "${files[@]}" | grep -E '\.(mjs|cjs|js|jsx|ts|tsx|mts|cts)$' || true)
+          if ((${#code[@]})); then pnpm exec eslint --fix --max-warnings=0 "${code[@]}"; fi
+      - name: Generate types
+        if: needs.changes.outputs.template_types == 'true' || needs.changes.outputs.template_build == 'true'
+        run: |
+          pnpm prisma:generate
+          pnpm exec next typegen
+      - name: Type-check
+        if: needs.changes.outputs.template_types == 'true' || needs.changes.outputs.template_build == 'true'
+        run: pnpm exec tsc --noEmit
+      - name: Build
+        if: needs.changes.outputs.template_build == 'true'
+        run: pnpm exec next build --turbopack

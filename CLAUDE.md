@@ -41,3 +41,12 @@ Update `.claude/execution/`:
 - `handoff.json` — current state, next issue, risks
 
 The Stop hook blocks once if code changed without these updates.
+
+## Owner resource limits
+
+- Never start a development server. Ask the owner to perform runtime/browser checks and report results.
+- Do not run full test suites. Run only tests tied to the changed files and real affected feature behavior.
+- A new regression test must fail against the unfixed code once, then pass with the fix; do not manufacture a failure or add filler assertions.
+- Keep local checks to the smallest affected files. Do not repeat successful checks without a relevant change, retry dependency installs, or run local builds unless the owner specifically requests it.
+- CI is limited to changed-file formatting with write, changed-code linting with fix, type generation, type checking, and affected-project builds, plus necessary setup. No tests, browser/dev servers, database jobs, or additional validation workflows.
+- Avoid duplicate PR/main CI runs, unnecessary network calls, and bulk downloads. Stop task processes when finished; preserve unrelated apps and services.

@@ -1029,6 +1029,24 @@
       "context": "CC-076 (#328).",
       "decision": "Use a hand-written worker for offline shell and immutable assets only. Pause asset caching after logout and await pending writes/cache-deletion acknowledgment before Clerk sign-out. Inject explicit account controls through the existing shell slot rather than mutating the Clerk SDK. Preserve existing local governance work separately from issue delivery.",
       "refs": ["CC-076", "PR #344"]
+    },
+    {
+      "id": "DEC-102",
+      "date": "2026-11-01",
+      "status": "accepted",
+      "title": "Owner resource limits and repository reconciliation",
+      "context": "Direct owner instructions; GH-345.",
+      "decision": "CI is only changed-file format write, changed-code lint fix, type generation, type checking and affected builds with necessary setup. No tests, dev servers, database jobs, title workflow, full-scope expansion or duplicate main push runs. Agents never start dev servers; feature regression tests target changed behavior and demonstrate failure on unfixed code before passing. Restore useful b07089c metadata while retaining current main and CLAUDE governance; original snapshots retained under archive tags, stash and redundant recovery branches removed. Stop network work pending owner continuation.",
+      "refs": ["GH-345", "PR #344", "archive/local-work-before-sync-20261101"]
+    },
+    {
+      "id": "DEC-103",
+      "date": "2026-11-01",
+      "status": "accepted",
+      "title": "Lean Codex context and cloud cleanup boundaries",
+      "context": "Owner-requested cleanup while issue goal remains paused.",
+      "decision": "Disable unused plugins/skills/MCP startup with a rollback copy; retain GitHub/Vercel/Neon capabilities and repo tooling. Retire duplicate Project #21 and keep #19 canonical. Existing root Vercel production deploy is healthy; preserve integration-managed secrets. Local template DB owner connection without RLS and missing live Clerk/Neon control-plane access are explicit owner gates, not a reason to silently provision resources or run migrations.",
+      "refs": ["GH-345", "PR #344"]
     }
   ]
 }
