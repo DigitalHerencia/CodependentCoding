@@ -4,8 +4,6 @@ import {
   doctrineDocsStaticParams,
 } from "@/features/doctrine/doctrineDocsFeature";
 
-export const dynamicParams = false;
-
 export const generateStaticParams = doctrineDocsStaticParams;
 
 export const metadata: Metadata = { title: "Doctrine · Codependent Coding™" };

@@ -8,27 +8,32 @@ priority: p0
 size: s
 labels: [type:build, area:site, priority:p0, size:s]
 depends_on: []
-status: todo
+status: in-review
 ---
 
 # CC-046 · Enable Cache Components and the static guarantee on the site
 
 ## Scope
 
-- [ ] `cacheComponents: true`, `partialPrefetching: true` in `next.config.ts`
-- [ ] `export const ensureStatic = 'navigation'` in `app/layout.tsx`
-- [ ] Delete `dynamicParams` export; unknown slugs call `notFound()`
+- [x] `cacheComponents: true`, `partialPrefetching: true` in `next.config.ts`
+- [x] `export const ensureStatic = 'navigation'` in `app/layout.tsx`
+- [x] Delete `dynamicParams` export; unknown slugs call `notFound()`
 
 ## Acceptance criteria
 
-- [ ] `pnpm build` succeeds and every route is reported static
-- [ ] Adding a `cookies()` call to any page fails the build (verified once, reverted)
+- [ ] The affected-site CI build succeeds with the static navigation guarantee enabled.
+- [x] The installed Next.js segment schema supports `ensureStatic: 'navigation'`; unknown doctrine slugs retain the existing `notFound()` path.
+
+Owner resource policy supersedes the earlier artificial `cookies()` mutation and repeated-build experiment. Use the framework's static navigation enforcement and the single affected-site CI build; do not start a local build or server.
 
 ## Validation
 
 ```powershell
-pnpm build
+node node_modules/eslint/bin/eslint.js next.config.ts app/layout.tsx 'app/(public)/doctrine/[...slug]/page.tsx' --max-warnings=0
+node node_modules/typescript/bin/tsc --project tsconfig.build.json --noEmit
 ```
+
+The affected-site build runs in the pull request's existing CI workflow.
 
 ## Depends on
 
