@@ -6,7 +6,7 @@ export function SecurityPanel() {
       <p className="m-0 text-xs tracking-[0.3em] text-signal-text uppercase">
         {securityCopy.kicker}
       </p>
-      <p className="m-0 mt-2 font-heritage text-4xl leading-none uppercase sm:text-5xl">
+      <p className="m-0 mt-2 font-heading text-4xl leading-none uppercase sm:text-5xl">
         {securityCopy.title}
       </p>
       {securityCopy.lines.map((line) => (

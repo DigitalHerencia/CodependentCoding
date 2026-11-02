@@ -1083,6 +1083,15 @@
       "context": "CC-050 references Plan 5.1, now located at context/canon/refurbish/PLAN.md. The older teal text and selected CLI control fail normal-text contrast. Owner forbids additional CI validation/test jobs and agent browser servers.",
       "decision": "Apply the approved semantic palette, brighter signal text, canonical border/muted utilities and reduced-motion cascade without important declarations. A dependency-free local script checks explicit solid-color pairs at 4.5:1 text and 3:1 UI, failing closed on malformed declarations. Replace the superseded extra contrast CI/axe job requirements with local numeric evidence and owner-run preview verification; do not extend the CI workflow. Generated template tokens remain separate.",
       "refs": ["GH-302", "PR #351", "context/canon/refurbish/PLAN.md §5.1"]
+    },
+    {
+      "id": "DEC-109",
+      "date": "2026-11-02",
+      "status": "accepted",
+      "title": "Self-host the approved two public-site font families",
+      "context": "CC-051 remained open and is a prerequisite for the shell work. CC-050 implementation and CI are complete but owner preview verification is pending. Google imports downloaded four families and used misleading variables.",
+      "decision": "Deliver CC-051 as a separate stacked PR on #352. Store the two upstream Latin variable WOFF2 files and OFL licenses in the Plan-approved public/fonts directory; use next/font/local with generated fallback metrics and accurate family variables. Defer browser CLS claims to owner evidence. No new CI jobs, local build, Lighthouse run or dependency installation.",
+      "refs": ["GH-303", "PR #352", "context/canon/refurbish/PLAN.md §5.2"]
     }
   ]
 }

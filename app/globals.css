@@ -65,18 +65,11 @@ text --background --signal-strong
   --focus-ring: 0 0 0 1px var(--background-strong), 0 0 0 3px var(--signal);
   --radius-control: 0.2rem;
   --space-page: clamp(1rem, 3vw, 2rem);
-  --type-heading:
-    "Copperplate Gothic Bold", Copperplate, var(--font-copperplate-fallback),
-    serif;
+  --type-heading: var(--font-cinzel), "Copperplate Gothic", Copperplate, serif;
   --type-body:
     var(--font-jetbrains-mono), "JetBrains Mono", ui-monospace, SFMono-Regular,
     Menlo, Monaco, Consolas, monospace;
-  --type-code:
-    var(--font-fira-code), "Fira Code", ui-monospace, SFMono-Regular, Menlo,
-    Monaco, Consolas, monospace;
-  --type-heritage:
-    var(--font-big-shoulders-display), "Big Shoulders Display", "Arial Narrow",
-    sans-serif;
+  --type-code: var(--type-body);
   --brand-glow:
     0 0 0.45rem color-mix(in srgb, var(--signal) 70%, transparent),
     0 0 1.2rem color-mix(in srgb, var(--signal) 36%, transparent);
@@ -105,7 +98,6 @@ text --background --signal-strong
   --font-heading: var(--type-heading);
   --font-body: var(--type-body);
   --font-code: var(--type-code);
-  --font-heritage: var(--type-heritage);
   --breakpoint-xs: 30rem;
   --breakpoint-sm: 40rem;
   --breakpoint-md: 48rem;
@@ -283,7 +275,7 @@ textarea {
 }
 
 .heritage-wordmark strong {
-  font-family: var(--type-heritage);
+  font-family: var(--type-heading);
   font-size: 1.1rem;
   font-weight: 700;
   letter-spacing: 0.08em;
@@ -458,7 +450,8 @@ textarea {
   color: var(--muted-foreground);
   text-decoration: none;
   text-transform: uppercase;
-  font-family: var(--font-big-shoulders-display), "Archivo Black", sans-serif;
+  font-family: var(--type-heading);
+  font-weight: 600;
   font-size: 0.82rem;
   letter-spacing: 0.04em;
   padding: 0.35rem 0;
@@ -475,21 +468,20 @@ textarea {
   color: var(--signal-text);
   text-transform: uppercase;
   letter-spacing: 0.16em;
-  font-weight: 800;
+  font-weight: 700;
 }
 h1 {
-  font-family: var(--font-big-shoulders-display), "Archivo Black", sans-serif;
+  font-family: var(--type-heading);
   text-transform: uppercase;
   line-height: 0.96;
 }
 h2,
 h3 {
-  font-family:
-    var(--font-copperplate-fallback), "Copperplate Gothic Bold", serif;
+  font-family: var(--type-heading);
 }
 code,
 pre {
-  font-family: var(--font-fira-code), monospace;
+  font-family: var(--type-code);
 }
 .brand-button {
   display: inline-flex;

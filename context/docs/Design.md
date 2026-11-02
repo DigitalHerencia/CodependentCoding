@@ -28,7 +28,7 @@ Two surfaces, two jobs:
 - Keep the current homepage composition and assets: crown hero, "When epistemologies fail the stack still governs", Digital Herencia section, desert background.
 - Remove nav links to deleted routes. Header: logo + GitHub link. CTAs: "Read the doctrine" (anchors to an on-page section) and "GitHub".
 - Site colors follow `context/canon/refurbish/PLAN.md` §5.1: canvas `#05030b`, off-white text `#f4f1ea`, surfaces `#0b0913` / `#120f1c`, muted text `#a9a7b0`. Signal `#2f7a8d` is for boundaries/glows; use `#3a96ad` for text and `#5bb7cf` for stronger text/hover. Text requires 4.5:1 and meaningful UI boundaries 3:1; decorative hairlines carry no meaning. The `/* @pairs */` block in `app/globals.css` is checked locally with `node scripts/check-contrast.mjs`.
-- Type roles: display = Cinzel (Copperplate-like), body/UI = JetBrains Mono, code = Fira Code; Big Shoulders for the Digital Herencia wordmark.
+- Type roles: display = self-hosted Cinzel 600/700; body/UI and code = self-hosted JetBrains Mono variable. Both use Latin-subset WOFF2 via `next/font/local`; source and SIL OFL licenses are in `public/fonts/`. Next generates fallback size-adjust metrics; visual layout-shift verification is owner-run.
 - Dark only.
 
 ## 3. Template design system (white-label)

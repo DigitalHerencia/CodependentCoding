@@ -8,28 +8,27 @@ priority: p1
 size: s
 labels: [type:feature, area:site, priority:p1, size:s]
 depends_on: [CC-050]
-status: todo
+status: in-review
 ---
 
 # CC-051 · Self-hosted Cinzel and JetBrains Mono; drop Archivo Black and Fira Code
 
 ## Scope
 
-- [ ] Cinzel 600/700 self-hosted via `next/font/local` with `size-adjust` fallback metrics (ledger P-10)
-- [ ] JetBrains Mono variable via `next/font/local`, Latin subset
-- [ ] Remove `Archivo_Black`, `Fira_Code`; rename variables to what they load
+- [x] Cinzel 600/700 self-hosted via `next/font/local` with `size-adjust` fallback metrics (ledger P-10)
+- [x] JetBrains Mono variable via `next/font/local`, Latin subset
+- [x] Remove `Archivo_Black`, `Fira_Code`; rename variables to what they load
 
 ## Acceptance criteria
 
-- [ ] No request to fonts.googleapis.com or fonts.gstatic.com at build or runtime
-- [ ] Font payload ≤ 120 KB total
+- [x] No request to fonts.googleapis.com or fonts.gstatic.com at build or runtime
+- [x] Font payload ≤ 120 KB total: 66,308 bytes
 - [ ] CLS 0 on `/` and a chapter page
 
 ## Validation
 
 ```powershell
-pnpm build
-lhci autorun
+node node_modules/typescript/bin/tsc --project tsconfig.build.json --noEmit
 ```
 
 ## Depends on
@@ -38,7 +37,7 @@ CC-050
 
 ## References
 
-- refurbish/PLAN.md §5.2
+- context/canon/refurbish/PLAN.md §5.2
 - ledger P-8
 
 ## Definition of done
@@ -46,3 +45,5 @@ CC-050
 - Acceptance criteria checked with EXECUTED evidence in `.claude/execution/progress.json`
 - `decisions.json` updated if a choice was made; `handoff.json` points at the next issue
 - PR uses the template and says `Closes #<this issue>`
+
+Owner resource policy: one affected-site CI build, no local build/Lighthouse/dev server. Installed Next local-font loader successfully reads both files and generates size-adjust fallback metrics. Owner preview CLS verification on `/` and a chapter remains pending. Implementation is stacked on PR #352 while its owner visual check is pending.

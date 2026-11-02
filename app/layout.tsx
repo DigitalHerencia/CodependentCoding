@@ -1,37 +1,28 @@
 import type { Metadata } from "next";
-import {
-  Archivo_Black,
-  Cinzel,
-  Fira_Code,
-  JetBrains_Mono,
-} from "next/font/google";
+import localFont from "next/font/local";
 import { SiteShell } from "@/components/shells/site-shell";
 import "./globals.css";
 
 export const ensureStatic = "navigation";
 
-const heritageDisplay = Archivo_Black({
-  weight: "400",
-  subsets: ["latin"],
-  variable: "--font-big-shoulders-display",
+const cinzel = localFont({
+  src: "../public/fonts/cinzel-latin-variable.woff2",
+  weight: "600 700",
+  style: "normal",
+  display: "swap",
+  variable: "--font-cinzel",
+  adjustFontFallback: "Times New Roman",
+  fallback: ["Copperplate Gothic", "Copperplate", "serif"],
 });
 
-// Cinzel and Fira Code are not used on the homepage, so they are not preloaded.
-const copperplateFallback = Cinzel({
-  subsets: ["latin"],
-  preload: false,
-  variable: "--font-copperplate-fallback",
-});
-
-const jetBrainsMono = JetBrains_Mono({
-  subsets: ["latin"],
+const jetBrainsMono = localFont({
+  src: "../public/fonts/jetbrains-mono-latin-variable.woff2",
+  weight: "100 800",
+  style: "normal",
+  display: "swap",
   variable: "--font-jetbrains-mono",
-});
-
-const firaCode = Fira_Code({
-  subsets: ["latin"],
-  preload: false,
-  variable: "--font-fira-code",
+  adjustFontFallback: "Arial",
+  fallback: ["ui-monospace", "SFMono-Regular", "Consolas", "monospace"],
 });
 
 export const metadata: Metadata = {
@@ -45,9 +36,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body
-        className={`${heritageDisplay.variable} ${copperplateFallback.variable} ${jetBrainsMono.variable} ${firaCode.variable}`}
-      >
+      <body className={`${cinzel.variable} ${jetBrainsMono.variable}`}>
         <SiteShell>{children}</SiteShell>
       </body>
     </html>
