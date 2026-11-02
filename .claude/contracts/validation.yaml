@@ -218,6 +218,12 @@ rules:
       enforcement: "eslint:codependent/no-cache-in-protected",
     }
   - {
+      id: CC-CONTENT-001,
+      layer: site,
+      text: "Public site copy lives in content/; repository file readers live in server-only lib/content/, never site lib/fetchers/. Constants contain URLs, versions and dates.",
+      enforcement: "eslint:codependent/public-content",
+    }
+  - {
       id: CC-PURE-001,
       layer: pure,
       text: "Constants, utils, types are dependency-free",

@@ -698,7 +698,64 @@ const noPassThrough = {
   },
 };
 
+const publicContent = {
+  meta: {
+    type: "problem",
+    docs: docs(
+      "Public site copy and repository file readers use content layers.",
+      "CC-CONTENT-001",
+    ),
+    schema: [],
+    messages: {
+      fetcher:
+        "[CC-CONTENT-001] Public repository readers belong in lib/content/, not authenticated lib/fetchers/.",
+      reader:
+        "[CC-CONTENT-001] Public file readers belong in lib/content/ and must import server-only.",
+      copy: "[CC-CONTENT-001] Public page copy belongs in content/, not lib/constants/.",
+    },
+  },
+  create(context) {
+    if (context.settings.codependent?.profile !== "site") return {};
+    const rel = relativeFile(context);
+    if (!/^(app|components|features|content|lib)\//.test(rel)) return {};
+    return {
+      Program(node) {
+        if (rel.startsWith("lib/fetchers/")) {
+          context.report({ node, messageId: "fetcher" });
+          return;
+        }
+        const imports = node.body.filter(
+          (item) => item.type === "ImportDeclaration",
+        );
+        const readsFiles = imports.some((item) =>
+          /^(node:)?fs(?:\/promises)?$/.test(item.source.value),
+        );
+        const serverOnly = imports.some(
+          (item) => item.source.value === "server-only",
+        );
+        if (readsFiles && (!rel.startsWith("lib/content/") || !serverOnly)) {
+          context.report({ node, messageId: "reader" });
+        }
+        if (
+          rel.startsWith("lib/constants/") &&
+          node.body.some(
+            (item) =>
+              item.type === "ExportNamedDeclaration" &&
+              item.declaration?.type === "VariableDeclaration" &&
+              item.declaration.declarations.some((entry) =>
+                /Copy$/.test(entry.id.name ?? ""),
+              ),
+          )
+        ) {
+          context.report({ node, messageId: "copy" });
+        }
+      },
+    };
+  },
+};
+
 export const rules = {
+  "public-content": publicContent,
   "layer-boundaries": layerBoundaries,
   "require-server-only": requireServerOnly,
   "use-server-actions": useServerActions,

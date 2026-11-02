@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { PageHero } from "@/components/blocks/page-hero";
-import { hipsterStackCopy } from "@/lib/constants/siteCopy";
+import { hipsterStackCopy } from "@/content/public";
 
 export function HipsterFrame({ children }: { children: ReactNode }) {
   return (

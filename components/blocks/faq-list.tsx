@@ -5,7 +5,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { faqCopy } from "@/lib/constants/siteCopy";
+import { faqCopy } from "@/content/faq";
 
 export function FaqList() {
   return (

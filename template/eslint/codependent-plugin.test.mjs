@@ -528,3 +528,59 @@ describe("doctrineTerminal config", () => {
     assert.equal(doctrineTerminal.settings.codependent.profile, "terminal");
   });
 });
+
+const site = { codependent: { profile: "site" } };
+tester.run("public-content", rules["public-content"], {
+  valid: [
+    {
+      filename: at("content/faq.ts"),
+      settings: site,
+      code: 'export const faqCopy = { title: "FAQ" };',
+    },
+    {
+      filename: at("lib/constants/site.ts"),
+      settings: site,
+      code: 'export const siteUrl = "https://example.com";',
+    },
+    {
+      filename: at("lib/content/doctrine.ts"),
+      settings: site,
+      code: 'import "server-only"; import { readFile } from "node:fs/promises";',
+    },
+    {
+      filename: at("scripts/read.mjs"),
+      settings: site,
+      code: 'import { readFile } from "node:fs/promises";',
+    },
+    {
+      filename: at("lib/fetchers/accountFetchers.ts"),
+      code: 'import "server-only";',
+    },
+  ],
+  invalid: [
+    {
+      filename: at("lib/fetchers/doctrineFetchers.ts"),
+      settings: site,
+      code: 'import "server-only";',
+      errors: [{ messageId: "fetcher" }],
+    },
+    {
+      filename: at("features/docs/docsFeature.tsx"),
+      settings: site,
+      code: 'import { readFile } from "node:fs/promises";',
+      errors: [{ messageId: "reader" }],
+    },
+    {
+      filename: at("lib/content/doctrine.ts"),
+      settings: site,
+      code: 'import { readFile } from "fs/promises";',
+      errors: [{ messageId: "reader" }],
+    },
+    {
+      filename: at("lib/constants/siteCopy.ts"),
+      settings: site,
+      code: 'export const faqCopy = { title: "FAQ" };',
+      errors: [{ messageId: "copy" }],
+    },
+  ],
+});

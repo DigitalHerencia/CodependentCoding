@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { PageHero } from "@/components/blocks/page-hero";
-import { maximalCopy } from "@/lib/constants/siteCopy";
+import { maximalCopy } from "@/content/public";
 
 export function MaximalFrame({ children }: { children: ReactNode }) {
   return (

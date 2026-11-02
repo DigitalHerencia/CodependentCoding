@@ -8,7 +8,7 @@ priority: p0
 size: s
 labels: [type:build, area:site, priority:p0, size:s]
 depends_on: []
-status: in-review
+status: done
 ---
 
 # CC-046 · Enable Cache Components and the static guarantee on the site
@@ -21,7 +21,7 @@ status: in-review
 
 ## Acceptance criteria
 
-- [ ] The affected-site CI build succeeds with the static navigation guarantee enabled.
+- [x] The affected-site CI build succeeds with the static navigation guarantee enabled.
 - [x] The installed Next.js segment schema supports `ensureStatic: 'navigation'`; unknown doctrine slugs retain the existing `notFound()` path.
 
 Owner resource policy supersedes the earlier artificial `cookies()` mutation and repeated-build experiment. Use the framework's static navigation enforcement and the single affected-site CI build; do not start a local build or server.
