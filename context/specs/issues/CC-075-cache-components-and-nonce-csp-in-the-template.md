@@ -8,20 +8,20 @@ priority: p0
 size: m
 labels: [type:feat, area:template, priority:p0, size:m]
 depends_on: []
-status: todo
+status: done
 ---
 
 # CC-075 · Cache Components and nonce CSP in the template
 
 ## Scope
 
-- [ ] `cacheComponents`, `partialPrefetching`; `ensureStatic` on `(public)`
-- [ ] Nonce CSP in `proxy.ts` with Clerk hosts from Clerk's CSP guide for the installed version
-- [ ] Lint rule CC-CACHE-002
+- [x] `cacheComponents`, `partialPrefetching`; `ensureStatic` on `(public)`
+- [x] Nonce CSP in `proxy.ts` with Clerk hosts from Clerk's CSP guide for the installed version
+- [x] Lint rule CC-CACHE-002
 
 ## Acceptance criteria
 
-- [ ] Tenant pages render with a nonce; no CSP violations in the browser console during e2e
+- [x] Tenant pages render with a nonce; no CSP violations in the browser console during e2e
 
 ## Validation
 
