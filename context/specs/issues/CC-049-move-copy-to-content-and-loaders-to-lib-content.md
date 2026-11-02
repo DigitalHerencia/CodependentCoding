@@ -8,7 +8,7 @@ priority: p1
 size: m
 labels: [type:refactor, area:site, priority:p1, size:m]
 depends_on: [CC-046]
-status: in-review
+status: done
 ---
 
 # CC-049 · Move copy to content/ and loaders to lib/content
@@ -45,3 +45,5 @@ CC-046
 - Acceptance criteria checked with EXECUTED evidence in `.claude/execution/progress.json`
 - `decisions.json` updated if a choice was made; `handoff.json` points at the next issue
 - PR uses the template and says `Closes #<this issue>`
+
+Merged as PR #351 at `a2788e794d03c508678e355f1bf785033ff61a01`; CI run 41447122368 and Vercel preview passed.

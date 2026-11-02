@@ -44,11 +44,11 @@ export function DoctrineSidebar({ nav }: { nav: DoctrineNavGroup[] }) {
         value={query}
         onChange={(event) => setQuery(event.target.value)}
         placeholder="Search… (Ctrl+K)"
-        className="mb-4 w-full border border-signal-border bg-background-strong px-3 py-2 text-xs text-foreground focus-visible:ring-2 focus-visible:ring-signal focus-visible:outline-none"
+        className="mb-4 w-full border border-border bg-background-strong px-3 py-2 text-xs text-foreground focus-visible:ring-2 focus-visible:ring-signal focus-visible:outline-none"
       />
       {groups.map((group) => (
         <div className="mb-5" key={group.title}>
-          <p className="m-0 mb-2 tracking-[0.2em] text-signal uppercase">
+          <p className="m-0 mb-2 tracking-[0.2em] text-signal-text uppercase">
             {group.title}
           </p>
           <ul className="m-0 list-none space-y-1 p-0">
@@ -61,10 +61,10 @@ export function DoctrineSidebar({ nav }: { nav: DoctrineNavGroup[] }) {
                     href={href as `/doctrine/${string}`}
                     aria-current={active ? "page" : undefined}
                     className={cn(
-                      "block border-l-2 py-1 pl-3 no-underline transition-colors hover:text-signal",
+                      "block border-l-2 py-1 pl-3 no-underline transition-colors hover:text-signal-text",
                       active
                         ? "border-signal text-foreground"
-                        : "border-transparent text-foreground-muted",
+                        : "border-transparent text-muted-foreground",
                     )}
                   >
                     {item.title}
@@ -76,7 +76,7 @@ export function DoctrineSidebar({ nav }: { nav: DoctrineNavGroup[] }) {
         </div>
       ))}
       {groups.length === 0 ? (
-        <p className="text-foreground-muted">
+        <p className="text-muted-foreground">
           Nothing matches. Nothing ever truly does.
         </p>
       ) : null}

@@ -10,7 +10,7 @@ export function HipsterFrame({ children }: { children: ReactNode }) {
         title={hipsterStackCopy.title}
         subtitle={hipsterStackCopy.subtitle}
       />
-      <p className="site-rise mx-auto max-w-2xl text-center text-sm text-foreground-muted">
+      <p className="site-rise mx-auto max-w-2xl text-center text-sm text-muted-foreground">
         {hipsterStackCopy.line}
       </p>
       <div className="site-rise mt-8">{children}</div>

@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/progress/v1",
-  "updated": "2026-11-02T12:43:55.400130+00:00",
+  "updated": "2026-11-02T12:51:23.743235+00:00",
   "format": "Evidence states: EXECUTED | INSPECTED | NOT_RUN | BLOCKED. Never mark an issue done without EXECUTED evidence for its Validation commands.",
   "milestones": {
     "M0": {
@@ -846,15 +846,23 @@
       "commit": "b8d305a1e38d2c387fcd5c9bfab41333605171a7"
     },
     "CC-049": {
-      "status": "in-review",
+      "status": "done",
       "github": 301,
       "branch": "codex/301-public-content",
-      "note": "Public copy and four unchanged readers relocated; imports and site-only CC-CONTENT-001 aligned. Scoped regression red/green, changed-file root/plugin lint, site typecheck, doctrine consistency and exact content comparison passed. Affected-site CI pending."
+      "note": "PR #351 merged after CI run 41447122368 and Vercel preview passed; main synced, branch deleted.",
+      "pr": 351,
+      "commit": "a2788e794d03c508678e355f1bf785033ff61a01"
     },
     "CC-067": {
       "status": "cancelled",
       "github": 319,
       "note": "Closed not planned: full e2e/Lighthouse CI superseded by owner resource policy."
+    },
+    "CC-050": {
+      "status": "in-review",
+      "github": 302,
+      "branch": "codex/302-site-tokens",
+      "note": "Approved Plan 5.1 colors applied, duplicate/legacy tokens removed, public consumers aligned. Contrast check caught old teal text below 4.5:1 before correction; all 38 declared pairs pass. Changed-code lint and site TypeScript passed. CI and owner browser checks pending; no additional CI jobs."
     }
   },
   "completed": [
@@ -3634,6 +3642,20 @@
       "issue": "CC-049",
       "command": "Changed-file Prettier and ESLint (root + two plugin files); tsc --project tsconfig.build.json --noEmit; node scripts/doctrine-check.mjs; exact original/moved export and loader comparison; git diff --check",
       "result": "All passed. Eight public copy exports and four loader bodies preserved exactly. Doctrine: 51 rules / 15 ESLint rules consistent. No full suite, local build, install or dev server. One affected-site CI run pending."
+    },
+    {
+      "date": "2026-11-02T12:51:23.743235+00:00",
+      "state": "EXECUTED",
+      "issue": "CC-049",
+      "command": "gh pr merge 351 --squash --delete-branch; merge verification; Project Done",
+      "result": "CI run 41447122368 and Vercel preview passed. Merged a2788e794d03c508678e355f1bf785033ff61a01; local main equals origin/main; branch removed."
+    },
+    {
+      "date": "2026-11-02T12:51:23.743235+00:00",
+      "state": "EXECUTED",
+      "issue": "CC-050",
+      "command": "node scripts/check-contrast.mjs; changed-file Prettier and ESLint; tsc --project tsconfig.build.json --noEmit",
+      "result": "Before correction: actual signal text fails at 4.19:1 on background and 4.00:1 on prior raised surface. Approved brighter text tokens: all 38 declared text/UI pairs pass. Changed-code lint and TypeScript exit 0. No local build, dev server, full suite or installs. Browser/axe checks NOT_RUN; owner-run preview check pending."
     }
   ],
   "known_findings": [

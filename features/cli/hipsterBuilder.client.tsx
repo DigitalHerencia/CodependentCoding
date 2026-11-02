@@ -11,7 +11,7 @@ type Values = Record<string, string | boolean>;
 const secretValue = /url|key|secret|token|password/i;
 
 const field =
-  "border-signal-border bg-background-strong text-foreground focus-visible:ring-signal w-full border px-3 py-2 text-xs focus-visible:ring-2 focus-visible:outline-none";
+  "border-border bg-background-strong text-foreground focus-visible:ring-signal w-full border px-3 py-2 text-xs focus-visible:ring-2 focus-visible:outline-none";
 
 // Single quotes work the same in PowerShell 7 and bash; '' escapes a quote.
 function quote(value: string) {
@@ -79,9 +79,9 @@ function OptionField({
   const value = values[option.flag];
   const label = (
     <span className="block">
-      <code className="text-signal">{option.flag}</code>
-      {option.required ? <span className="text-signal"> *</span> : null}
-      <span className="block text-foreground-muted">{option.description}</span>
+      <code className="text-signal-text">{option.flag}</code>
+      {option.required ? <span className="text-signal-text"> *</span> : null}
+      <span className="block text-muted-foreground">{option.description}</span>
     </span>
   );
 
@@ -105,9 +105,9 @@ function OptionField({
 
   if (secretValue.test(option.flag)) {
     return (
-      <div className="border border-dashed border-signal-border p-3 text-xs">
+      <div className="border border-dashed border-border p-3 text-xs">
         {label}
-        <span className="mt-2 block text-foreground-muted">
+        <span className="mt-2 block text-muted-foreground">
           Left out on purpose. Paste it when the CLI asks; secrets don&apos;t
           belong in your shell history.
         </span>
@@ -141,7 +141,7 @@ function OptionField({
     const multiple = option.flag === "--modules";
     const chosen = typeof value === "string" && value ? value.split(",") : [];
     return (
-      <fieldset className="m-0 border border-signal-border p-3 text-xs">
+      <fieldset className="m-0 border border-border p-3 text-xs">
         <legend className="px-1">{label}</legend>
         <div className="mt-2 flex flex-wrap gap-2">
           {manifest.modules.map((module) => {
@@ -168,7 +168,7 @@ function OptionField({
                   "cursor-pointer border px-2.5 py-1 text-xs transition-colors",
                   on
                     ? "border-signal bg-signal-soft text-foreground"
-                    : "border-signal-border bg-transparent text-foreground-muted hover:text-foreground",
+                    : "border-border bg-transparent text-muted-foreground hover:text-foreground",
                 )}
               >
                 {module.id}
@@ -177,7 +177,7 @@ function OptionField({
           })}
         </div>
         {multiple ? (
-          <span className="mt-2 block text-foreground-muted">
+          <span className="mt-2 block text-muted-foreground">
             Dependencies tick themselves. Codependency, as advertised.
           </span>
         ) : null}
@@ -199,7 +199,7 @@ function OptionField({
             type="color"
             value={hex}
             onChange={(event) => set(option.flag, event.target.value)}
-            className="h-9 w-12 cursor-pointer border border-signal-border bg-transparent p-0.5"
+            className="h-9 w-12 cursor-pointer border border-border bg-transparent p-0.5"
           />
           <input
             id={id}
@@ -239,7 +239,7 @@ export function HipsterBuilder({ manifest }: { manifest: CliManifest }) {
 
   return (
     <div className="mx-auto grid max-w-6xl gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
-      <section className="border border-signal-border p-5">
+      <section className="border border-border p-5">
         <div
           role="tablist"
           aria-label="Command"
@@ -255,15 +255,15 @@ export function HipsterBuilder({ manifest }: { manifest: CliManifest }) {
               className={cn(
                 "cursor-pointer border px-3 py-1.5 text-xs uppercase transition-colors",
                 entry.name === name
-                  ? "border-signal bg-signal text-foreground"
-                  : "border-signal-border bg-transparent text-foreground-muted hover:text-foreground",
+                  ? "border-signal bg-signal-text text-background"
+                  : "border-border bg-transparent text-muted-foreground hover:text-foreground",
               )}
             >
               {entry.name}
             </button>
           ))}
         </div>
-        <p className="mt-0 text-xs text-foreground-muted">
+        <p className="mt-0 text-xs text-muted-foreground">
           {command.description}
         </p>
         <div className="grid gap-5">
@@ -273,11 +273,11 @@ export function HipsterBuilder({ manifest }: { manifest: CliManifest }) {
               htmlFor={`arg-${argument.name}`}
               key={argument.name}
             >
-              <code className="text-signal">&lt;{argument.name}&gt;</code>
+              <code className="text-signal-text">&lt;{argument.name}&gt;</code>
               {argument.required ? (
-                <span className="text-signal"> *</span>
+                <span className="text-signal-text"> *</span>
               ) : null}
-              <span className="block text-foreground-muted">
+              <span className="block text-muted-foreground">
                 {argument.description}
               </span>
               <input
@@ -304,13 +304,13 @@ export function HipsterBuilder({ manifest }: { manifest: CliManifest }) {
       </section>
       <section className="lg:sticky lg:top-6 lg:self-start">
         <div className="border border-signal bg-background-strong shadow-[0_0_1.5rem_var(--signal-soft)]">
-          <div className="flex items-center justify-between border-b border-signal-border px-4 py-2">
+          <div className="flex items-center justify-between border-b border-border px-4 py-2">
             <span className="flex gap-1.5" aria-hidden="true">
               <span className="size-2.5 rounded-full bg-signal" />
-              <span className="size-2.5 rounded-full bg-signal-border" />
+              <span className="size-2.5 rounded-full bg-border" />
               <span className="size-2.5 rounded-full bg-signal-soft" />
             </span>
-            <span className="text-xs text-foreground-muted">
+            <span className="text-xs text-muted-foreground">
               PowerShell 7 · bash
             </span>
           </div>
@@ -318,7 +318,7 @@ export function HipsterBuilder({ manifest }: { manifest: CliManifest }) {
             className="m-0 p-5 text-sm break-all whitespace-pre-wrap"
             aria-live="polite"
           >
-            <span className="text-signal">PS&gt; </span>
+            <span className="text-signal-text">PS&gt; </span>
             <code>{output}</code>
             <span className="site-caret" aria-hidden="true">
               ▋
@@ -328,7 +328,7 @@ export function HipsterBuilder({ manifest }: { manifest: CliManifest }) {
         <div className="mt-4 flex flex-wrap gap-3">
           <CopyButton value={output} label="Copy CLI command" />
         </div>
-        <p className="text-xs text-foreground-muted">
+        <p className="text-xs text-muted-foreground">
           First time? Link the CLI once from the repo:{" "}
           <code>pnpm cli:link</code>
         </p>

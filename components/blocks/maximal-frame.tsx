@@ -10,7 +10,7 @@ export function MaximalFrame({ children }: { children: ReactNode }) {
         title={maximalCopy.title}
         subtitle={maximalCopy.subtitle}
       />
-      <p className="site-rise mx-auto max-w-2xl text-center text-sm text-foreground-muted">
+      <p className="site-rise mx-auto max-w-2xl text-center text-sm text-muted-foreground">
         {maximalCopy.line}
       </p>
       <div className="site-rise mt-8">{children}</div>

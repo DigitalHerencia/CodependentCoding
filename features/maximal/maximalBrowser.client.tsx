@@ -121,8 +121,8 @@ function TreeNode({
           className={cn(
             "flex w-full cursor-pointer items-center gap-1.5 border-0 bg-transparent py-0.5 text-left text-xs",
             node.path === active
-              ? "text-signal"
-              : "text-foreground-muted hover:text-foreground",
+              ? "text-signal-text"
+              : "text-muted-foreground hover:text-foreground",
           )}
         >
           <FileCode2 aria-hidden="true" className="size-3.5 shrink-0" />
@@ -144,7 +144,7 @@ function TreeNode({
           />
           <Folder
             aria-hidden="true"
-            className="size-3.5 shrink-0 text-signal"
+            className="size-3.5 shrink-0 text-signal-text"
           />
           {node.name}
         </summary>
@@ -209,8 +209,8 @@ export function MaximalBrowser({ files }: { files: string[] }) {
     "Configuration. Load-bearing, unfortunately.";
 
   return (
-    <div className="mx-auto grid max-w-7xl border border-signal-border md:grid-cols-[17rem_minmax(0,1fr)]">
-      <aside className="max-h-80 overflow-y-auto border-b border-signal-border p-3 md:max-h-[75vh] md:border-r md:border-b-0">
+    <div className="mx-auto grid max-w-7xl border border-border md:grid-cols-[17rem_minmax(0,1fr)]">
+      <aside className="max-h-80 overflow-y-auto border-b border-border p-3 md:max-h-[75vh] md:border-r md:border-b-0">
         <label className="sr-only" htmlFor="maximal-filter">
           Filter files
         </label>
@@ -220,7 +220,7 @@ export function MaximalBrowser({ files }: { files: string[] }) {
           value={query}
           onChange={(event) => setQuery(event.target.value)}
           placeholder={`Filter ${files.length} files…`}
-          className="mb-3 w-full border border-signal-border bg-background-strong px-3 py-2 text-xs text-foreground focus-visible:ring-2 focus-visible:ring-signal focus-visible:outline-none"
+          className="mb-3 w-full border border-border bg-background-strong px-3 py-2 text-xs text-foreground focus-visible:ring-2 focus-visible:ring-signal focus-visible:outline-none"
         />
         <ul className="m-0 list-none p-0">
           {tree.map((node) => (
@@ -235,21 +235,21 @@ export function MaximalBrowser({ files }: { files: string[] }) {
         </ul>
       </aside>
       <section className="min-w-0">
-        <header className="flex flex-wrap items-center justify-between gap-3 border-b border-signal-border px-4 py-2">
+        <header className="flex flex-wrap items-center justify-between gap-3 border-b border-border px-4 py-2">
           <code className="truncate text-xs text-foreground">
             template/{active}
           </code>
           <span className="flex gap-2">
             <CopyButton value={source} />
             <a
-              className="border border-signal-border px-3 py-1.5 text-xs text-foreground uppercase no-underline hover:border-signal"
+              className="border border-border px-3 py-1.5 text-xs text-foreground uppercase no-underline hover:border-signal"
               href={blobBase + active}
             >
               GitHub
             </a>
           </span>
         </header>
-        <p className="m-0 border-b border-signal-border px-4 py-2 text-xs text-signal">
+        <p className="m-0 border-b border-border px-4 py-2 text-xs text-signal-text">
           {layer}
         </p>
         <Editor
