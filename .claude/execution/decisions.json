@@ -930,6 +930,96 @@
       "context": "The site needs a rebuild to match the doctrine (audit S1-S17). The brand spec's Copperplate Gothic Bold is a commercial face.",
       "decision": "context/canon/refurbish/PLAN.md is the plan; issues CC-046..CC-068 (site) and CC-069..CC-078 (template) are queued in milestones M-S1..M-S6 and M-T. Display face: Cinzel self-hosted (OFL); JetBrains Mono for body and code; Fira Code and Archivo Black dropped. Legal copy final in refurbish/legal.md (effective 2026-11-01, GitHub contact). Start at CC-047.",
       "refs": ["context/canon/refurbish/PLAN.md", "ledger P-10"]
+    },
+    {
+      "id": "DEC-091",
+      "date": "2026-11-02",
+      "status": "accepted",
+      "title": "New apps don't copy template/context",
+      "context": "template/context/ (the template's own docs) clashed with app governance, so writeGovernance threw and plugin tests failed.",
+      "decision": "composeApp EXCLUDED adds context/; apps get context/ only from assets/app-governance.",
+      "refs": ["PR #332"]
+    },
+    {
+      "id": "DEC-092",
+      "date": "2026-11-02",
+      "status": "accepted",
+      "title": "pnpm supply-chain exceptions",
+      "context": "trustPolicy no-downgrade fails install on some packages.",
+      "decision": "Exact-version trustPolicyExclude lists (root: eslint-import-resolver-typescript@3.10.1, semver@6.3.1; template adds @vercel/cli-config@0.2.4, @vercel/cli-exec@1.0.1, @vercel/oidc@3.8.5, prisma@7.10.1). prisma generate runs in build, typecheck and dev. Lockfile check script has no dependencies. prisma 7.10.x lacks provenance: owner to review.",
+      "refs": ["CC-047", "PR #334"]
+    },
+    {
+      "id": "DEC-093",
+      "date": "2026-11-02",
+      "status": "accepted",
+      "title": "Runtime and system database roles",
+      "context": "CC-069 RLS rewrite.",
+      "decision": "Roles created in prisma/rls/identity.sql; app role is app_runtime (was app_user). WebhookEvent keeps an interim runtime policy until CC-077; IdempotencyRecord tenant-scoped runtime policy; _prisma_migrations owner-only, not forced; drift check rebuilds from scratch in a rolled-back transaction.",
+      "refs": ["CC-069", "PR #337"]
+    },
+    {
+      "id": "DEC-094",
+      "date": "2026-11-02",
+      "status": "accepted",
+      "title": "RBAC as a generated policies file",
+      "context": "CC-070 removes the runtime accessControl branch.",
+      "decision": "lib/authz/policies.ts is ABAC; --access rbac makes the CLI write templates/authz/policies.ts.tpl over it. lib/authz/roles.ts is browser-safe via the authz-roles lint exception. INVITATION_TTL_DAYS in lib/constants/invitations.ts; tenancy Zod-checked in lib/authz/mode.ts.",
+      "refs": ["CC-070", "PR #333"]
+    },
+    {
+      "id": "DEC-095",
+      "date": "2026-11-02",
+      "status": "accepted",
+      "title": "Organization switcher",
+      "context": "CC-071.",
+      "decision": "active-org cookie owned by lib/auth/active-organization.ts; switcher reaches TenantShell via a prop slot, hidden for single-org users; switching revalidates all pages.",
+      "refs": ["CC-071", "PR #338"]
+    },
+    {
+      "id": "DEC-096",
+      "date": "2026-11-02",
+      "status": "accepted",
+      "title": "Workflows never import actions",
+      "context": "CC-072.",
+      "decision": "CC-FLOW-003 by import path; CC-FLOW-002 checks exported workflows only. lib/actions/aiActions.ts and its 3 schemas deleted (public endpoints used only by the AI workflow; one let any caller complete a generation).",
+      "refs": ["CC-072", "PR #336"]
+    },
+    {
+      "id": "DEC-097",
+      "date": "2026-11-02",
+      "status": "accepted",
+      "title": "Single error mapper and safe reporting",
+      "context": "CC-073; Codex flagged raw messages in logs.",
+      "decision": "toActionResult is the only mapper; coded VALIDATION errors keep VALIDATION with a fixed message; toActionError unexported. reportError logs JSON to console.error with a UUID ref and an allowlist only (name, code, frames), never the message (Ch. 10 wins over ledger I-5).",
+      "refs": ["CC-073", "PR #331"]
+    },
+    {
+      "id": "DEC-098",
+      "date": "2026-11-02",
+      "status": "accepted",
+      "title": "Env reads only through lib/env",
+      "context": "CC-074.",
+      "decision": "No dotenv in lib or app; owner URL is DATABASE_URL_UNPOOLED. Dropped the dev-only .env.local DATABASE_URL override in lib/db/client.ts.",
+      "refs": ["CC-074", "PR #339"]
+    },
+    {
+      "id": "DEC-099",
+      "date": "2026-11-02",
+      "status": "accepted",
+      "title": "Cache Components and nonce CSP",
+      "context": "CC-075; a prerendered PPR shell's scripts never get a nonce.",
+      "decision": "cacheComponents + partialPrefetching on; one root layout per route group; (auth)/(setup)/(tenant) render per request with ClerkProvider dynamic; proxy.ts gives public pages the static policy and others a per-request nonce, redirects signed-out users; regex matching replaces createRouteMatcher; clerk-telemetry in connect-src; CC-CACHE-002 added. Supersedes DEC-012.",
+      "refs": ["CC-075", "PR #342", "DEC-012"]
+    },
+    {
+      "id": "DEC-100",
+      "date": "2026-11-02",
+      "status": "accepted",
+      "title": "One templates file per slice",
+      "context": "CC-078.",
+      "decision": "components/templates/<slice>-templates.tsx; landing/FAQ/privacy/terms in public-templates.tsx, shared* in shared-templates.tsx; TUI follows the same rule; components/ui/chart.tsx stays as re-export entry.",
+      "refs": ["CC-078", "PR #335"]
     }
   ]
 }

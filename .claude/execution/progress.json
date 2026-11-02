@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/progress/v1",
-  "updated": "2026-10-29",
+  "updated": "2026-11-02",
   "format": "Evidence states: EXECUTED | INSPECTED | NOT_RUN | BLOCKED. Never mark an issue done without EXECUTED evidence for its Validation commands.",
   "milestones": {
     "M0": {
@@ -713,6 +713,108 @@
       "acceptance": {
         "template": "EXECUTED: pnpm --dir template validate -> exit 0; pnpm --dir template test -> 80 passed, 1 skipped"
       }
+    },
+    "CC-047": {
+      "status": "done",
+      "branch": "build/cc-047",
+      "pr": 334,
+      "acceptance": {
+        "validation": "EXECUTED: node scripts/check-lockfile.mjs -> ok for both lockfiles (main's old template lockfile fails: 2 YAML documents); frozen installs ok; root vitest 99/99; template build+typecheck generate client, test 80 passed 1 skipped",
+        "notes": "NOT_RUN: GitHub dependency graph count (SBOM API 404 right after merge; recheck Insights)"
+      }
+    },
+    "CC-069": {
+      "status": "done",
+      "branch": "fix/cc-069",
+      "pr": 337,
+      "acceptance": {
+        "validation": "EXECUTED: local PG16 pnpm --dir template test:rls -> 17/17 (superuser owner, Neon-like owner, as app_runtime); EXPLAIN shows index scans; db:rls:check matches and exits 1 on drift; doctor runtime role pass/fail cases",
+        "notes": "EXECUTED: pnpm --dir template validate -> exit 0"
+      }
+    },
+    "CC-070": {
+      "status": "done",
+      "branch": "refactor/cc-070",
+      "pr": 333,
+      "acceptance": {
+        "validation": "EXECUTED: acceptance greps empty; pnpm --dir template validate -> exit 0 (78 tests); root vitest cli/doctrine/plugin 97 passed",
+        "notes": "EXECUTED: compose --all --tenancy single --access rbac -> typecheck, lint, RBAC policies test pass"
+      }
+    },
+    "CC-071": {
+      "status": "done",
+      "branch": "feat/cc-071",
+      "pr": 338,
+      "acceptance": {
+        "validation": "EXECUTED: tests/activeOrganization.test.ts 4 passed; pnpm --dir template validate -> exit 0 (88 tests)",
+        "notes": "NOT_RUN: real-browser switch (needs Clerk dev instance and a two-membership user)"
+      }
+    },
+    "CC-072": {
+      "status": "done",
+      "branch": "refactor/cc-072",
+      "pr": 336,
+      "acceptance": {
+        "validation": "EXECUTED: template lint 17 findings -> 0; doctrine:test 70/70; template validate, check:compose, root validate exit 0"
+      }
+    },
+    "CC-073": {
+      "status": "done",
+      "branch": "fix/cc-073-single-error-mapper",
+      "pr": 331,
+      "acceptance": {
+        "validation": "EXECUTED: pnpm --dir template validate -> exit 0 (doctrine 55/55; unit 86 passed 1 skipped); report test asserts secrets absent from logs",
+        "notes": "NOT_RUN: test:rls (no SQL change)"
+      }
+    },
+    "CC-074": {
+      "status": "done",
+      "branch": "refactor/cc-074-env-reads",
+      "pr": 339,
+      "acceptance": {
+        "validation": "EXECUTED: grep -rn dotenv template/lib template/app -> none; pnpm --dir template validate -> exit 0 (89 passed 1 skipped); root vitest tests 102 passed; CI incl. RLS green"
+      }
+    },
+    "CC-075": {
+      "status": "done",
+      "branch": "feat/cc-075",
+      "pr": 342,
+      "acceptance": {
+        "validation": "EXECUTED: e2e 7/7 under next dev and next start (nonce on 25/25 scripts at /sign-in; no CSP violations on /, /faq, /sign-in); doctrine:test 77/77; template validate, check:compose, root validate exit 0",
+        "notes": "NOT_RUN: signed-in (tenant) page render (needs real Clerk keys)"
+      }
+    },
+    "CC-078": {
+      "status": "done",
+      "branch": "refactor/cc-078",
+      "pr": 335,
+      "acceptance": {
+        "validation": "EXECUTED: root validate 101/101; template validate exit 0 (RuleTester 72/0, unit 84 passed 1 skipped); tests/cli 78/78; TUI 11/11; compose+slice e2e tsc/eslint clean"
+      }
+    },
+    "GH-261": {
+      "status": "done",
+      "pr": 296,
+      "note": "/slice branches feat/<ID>-<slug> on the default branch; /handoff offers the commit, never pushes",
+      "acceptance": {
+        "checks": "EXECUTED: root vitest 15 files, 95 passed; CI Factory (root) green"
+      }
+    },
+    "GH-260": {
+      "status": "done",
+      "pr": 297,
+      "note": "/idea question 10 proposes userId:ref(User)? for 'their own' rules",
+      "acceptance": {
+        "checks": "EXECUTED: root vitest 15 files, 95 passed; CI Factory (root) green"
+      }
+    },
+    "CLI-CONTEXT": {
+      "status": "done",
+      "pr": 332,
+      "note": "compose excludes template/context/ so writeGovernance no longer throws; fixed plugin tests",
+      "acceptance": {
+        "checks": "EXECUTED: root vitest 15 files, 95 passed; CI Factory (root) green"
+      }
     }
   },
   "completed": [
@@ -752,7 +854,16 @@
     "CC-040",
     "CC-041",
     "CC-042",
-    "CC-043"
+    "CC-043",
+    "CC-047",
+    "CC-069",
+    "CC-070",
+    "CC-071",
+    "CC-072",
+    "CC-073",
+    "CC-074",
+    "CC-075",
+    "CC-078"
   ],
   "evidence": [
     {
@@ -3258,6 +3369,69 @@
       "issue": "site-doctrine-audit",
       "command": "git grep for each removed public/ logo name; pnpm build; CI workflow_dispatch run 40815592614",
       "result": "no references outside execution records; build clean; CI all jobs green"
+    },
+    {
+      "date": "2026-11-02",
+      "state": "EXECUTED",
+      "issue": "CC-047",
+      "command": "worker validation for PR #334",
+      "result": "node scripts/check-lockfile.mjs -> ok for both lockfiles (main's old template lockfile fails: 2 YAML documents); frozen installs ok; root vitest 99/99; template build+typecheck generate client, test 80 passed 1 skipped"
+    },
+    {
+      "date": "2026-11-02",
+      "state": "EXECUTED",
+      "issue": "CC-069",
+      "command": "worker validation for PR #337",
+      "result": "local PG16 pnpm --dir template test:rls -> 17/17 (superuser owner, Neon-like owner, as app_runtime); EXPLAIN shows index scans; db:rls:check matches and exits 1 on drift; doctor runtime role pass/fail cases"
+    },
+    {
+      "date": "2026-11-02",
+      "state": "EXECUTED",
+      "issue": "CC-070",
+      "command": "worker validation for PR #333",
+      "result": "acceptance greps empty; pnpm --dir template validate -> exit 0 (78 tests); root vitest cli/doctrine/plugin 97 passed"
+    },
+    {
+      "date": "2026-11-02",
+      "state": "EXECUTED",
+      "issue": "CC-071",
+      "command": "worker validation for PR #338",
+      "result": "tests/activeOrganization.test.ts 4 passed; pnpm --dir template validate -> exit 0 (88 tests)"
+    },
+    {
+      "date": "2026-11-02",
+      "state": "EXECUTED",
+      "issue": "CC-072",
+      "command": "worker validation for PR #336",
+      "result": "template lint 17 findings -> 0; doctrine:test 70/70; template validate, check:compose, root validate exit 0"
+    },
+    {
+      "date": "2026-11-02",
+      "state": "EXECUTED",
+      "issue": "CC-073",
+      "command": "worker validation for PR #331",
+      "result": "pnpm --dir template validate -> exit 0 (doctrine 55/55; unit 86 passed 1 skipped); report test asserts secrets absent from logs"
+    },
+    {
+      "date": "2026-11-02",
+      "state": "EXECUTED",
+      "issue": "CC-074",
+      "command": "worker validation for PR #339",
+      "result": "grep -rn dotenv template/lib template/app -> none; pnpm --dir template validate -> exit 0 (89 passed 1 skipped); root vitest tests 102 passed; CI incl. RLS green"
+    },
+    {
+      "date": "2026-11-02",
+      "state": "EXECUTED",
+      "issue": "CC-075",
+      "command": "worker validation for PR #342",
+      "result": "e2e 7/7 under next dev and next start (nonce on 25/25 scripts at /sign-in; no CSP violations on /, /faq, /sign-in); doctrine:test 77/77; template validate, check:compose, root validate exit 0"
+    },
+    {
+      "date": "2026-11-02",
+      "state": "EXECUTED",
+      "issue": "CC-078",
+      "command": "worker validation for PR #335",
+      "result": "root validate 101/101; template validate exit 0 (RuleTester 72/0, unit 84 passed 1 skipped); tests/cli 78/78; TUI 11/11; compose+slice e2e tsc/eslint clean"
     }
   ],
   "known_findings": [
