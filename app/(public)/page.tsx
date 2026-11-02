@@ -1,5 +1,7 @@
-import { LandingHero } from "@/components/blocks/landing-hero";
+import { LandingFeature } from "@/features/landing/landingFeature";
 
-export default function ProductLanding() {
-  return <LandingHero />;
+export default async function ProductLanding() {
+  "use cache";
+
+  return <LandingFeature />;
 }

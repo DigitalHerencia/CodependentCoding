@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/decisions/v1",
-  "updated": "2026-11-02T13:08:40.626793+00:00",
+  "updated": "2026-11-02T13:26:53.775951+00:00",
   "format": "Append new decisions; never rewrite history. Supersede by adding a new entry and setting status=superseded + superseded_by on the old one.",
   "decisions": [
     {
@@ -1114,6 +1114,15 @@
         "PR #354",
         "context/canon/refurbish/PLAN.md sections 2, 3.3"
       ]
+    },
+    {
+      "id": "DEC-112",
+      "date": "2026-11-02",
+      "status": "accepted",
+      "title": "Preserve the homepage implementation while integrating its dependencies",
+      "context": "Existing PR #349 predates the canonical token/font/brand/shell stack.",
+      "decision": "Rebase the existing homepage package onto #355 instead of duplicating its implementation. Keep current source-computed statistics and copy; move them to approved content locations, use canonical CSS tokens and inline brand SVGs, and preserve the main skip target. Owner performs browser and LCP checks; no local server, build or broad suite.",
+      "refs": ["GH-315", "PR #349", "PR #355", "CC-063"]
     }
   ]
 }
