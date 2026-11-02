@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/progress/v1",
-  "updated": "2026-11-02T13:22:12.393344+00:00",
+  "updated": "2026-11-02T13:26:53.775951+00:00",
   "format": "Evidence states: EXECUTED | INSPECTED | NOT_RUN | BLOCKED. Never mark an issue done without EXECUTED evidence for its Validation commands.",
   "milestones": {
     "M0": {
@@ -882,7 +882,13 @@
       "status": "in-review",
       "github": 305,
       "branch": "codex/305-responsive-shells",
-      "note": "Stacked on implemented CC-052 PR #354. Responsive shell, native modal chapter drawer, skip links and release footer. Chapter-title filtering remains the current search; full palette belongs to CC-057. RSS deferred until a real doctrine changelog feed exists. Owner checks: first Tab/skip target, Escape/focus return, 320px overflow and desktop/mobile appearance. Changed-file formatting/ESLint and root build-tsconfig TypeScript passed; no local build/server/browser suite. Affected-site CI and owner preview pending."
+      "note": "Stacked on implemented CC-052 PR #354. Responsive shell, native modal chapter drawer, skip links and release footer. Chapter-title filtering remains the current search; full palette belongs to CC-057. RSS deferred until a real doctrine changelog feed exists. Owner checks: first Tab/skip target, Escape/focus return, 320px overflow and desktop/mobile appearance. Changed-file formatting/ESLint and root build-tsconfig TypeScript passed; no local build/server/browser suite. Affected-site CI and owner preview pending. Delivered as PR #355, commit 6649f52; CI 41452880355 and Vercel SUCCESS."
+    },
+    "CC-063": {
+      "status": "in-review",
+      "github": 315,
+      "branch": "codex/315-landing",
+      "note": "PR #349 rebased on shell PR #355. Existing homepage preserved; canonical tokens, SVG brands, main landmark, public copy and content-loader classification integrated. Changed-file formatting/ESLint, root TypeScript and diff whitespace pass; refreshed CI/preview pending; owner visual/LCP checks NOT_RUN."
     }
   },
   "completed": [
@@ -3717,6 +3723,18 @@
       "command": "Changed-file Prettier; node node_modules/eslint/bin/eslint.js <changed TS/TSX> --max-warnings=0; node node_modules/typescript/bin/tsc --project tsconfig.build.json --noEmit; git diff --check",
       "result": "Formatting, changed-code lint, TypeScript and diff whitespace pass. TypeScript initially caught removed lucide Github export and exact optional onClick; replaced with inline GitHub SVG and definite click handler. Only affected checks rerun. Initial pnpm formatter invocation refreshed cached dependencies, reporting zero downloads; remaining commands used installed binaries directly.",
       "not_run": "Owner-run keyboard/focus/320px/appearance checks; local build, browser suite, full test suite."
+    },
+    {
+      "issue": "CC-053",
+      "state": "EXECUTED",
+      "command": "gh pr view 355 --json statusCheckRollup",
+      "result": "Commit 6649f52: CI 41452880355 SUCCESS; Vercel SUCCESS. Owner browser checks NOT_RUN."
+    },
+    {
+      "issue": "CC-063",
+      "state": "EXECUTED",
+      "command": "Changed-file Prettier; node node_modules/eslint/bin/eslint.js app/(public)/page.tsx components/blocks/landing-hero.tsx content/public.ts features/landing/landingFeature.tsx lib/content/landing.ts --max-warnings=0; node node_modules/typescript/bin/tsc --project tsconfig.build.json --noEmit; git diff --cached --check",
+      "result": "Focused formatting, ESLint and TypeScript passed. Rebased existing homepage on #355, moved filesystem loader to lib/content, preserved cache boundary and SVG assets. No local server/build/test suite. Owner browser/LCP checks NOT_RUN."
     }
   ],
   "known_findings": [
