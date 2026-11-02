@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/progress/v1",
-  "updated": "2026-11-02T12:31:19.063Z",
+  "updated": "2026-11-02T12:35:27.264Z",
   "format": "Evidence states: EXECUTED | INSPECTED | NOT_RUN | BLOCKED. Never mark an issue done without EXECUTED evidence for its Validation commands.",
   "milestones": {
     "M0": {
@@ -3592,6 +3592,13 @@
       "issue": "CC-046",
       "command": "node node_modules/eslint/bin/eslint.js next.config.ts app/layout.tsx app/(public)/doctrine/[...slug]/page.tsx --max-warnings=0; node node_modules/typescript/bin/tsc --project tsconfig.build.json --noEmit",
       "result": "Both exit 0. Installed Next.js config/segment types inspected; unknown doctrine slugs retain notFound(). No local build, server, tests or installs."
+    },
+    {
+      "date": "2026-11-02T12:35:27.264Z",
+      "state": "EXECUTED",
+      "issue": "CC-046",
+      "command": "PR #350 CI run 41445442469; focused ESLint on five public content routes; tsc --project tsconfig.build.json --noEmit",
+      "result": "CI failed static navigation enforcement on uncached public filesystem reads. Added route-level use cache to the five public file-backed pages; features/fetchers and tenant boundaries unchanged. Focused ESLint and TypeScript exit 0 after fix; corrected CI build pending."
     }
   ],
   "known_findings": [

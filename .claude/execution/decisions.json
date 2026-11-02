@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/decisions/v1",
-  "updated": "2026-11-02T12:31:19.063Z",
+  "updated": "2026-11-02T12:35:27.264Z",
   "format": "Append new decisions; never rewrite history. Supersede by adding a new entry and setting status=superseded + superseded_by on the old one.",
   "decisions": [
     {
@@ -1063,7 +1063,7 @@
       "status": "accepted",
       "title": "Deliver the preserved static-site foundation with bounded verification",
       "context": "Owner resumed issue delivery and requires lean checks. CC-046 is a dependency of the remaining site foundation work; its configuration was already preserved locally.",
-      "decision": "Ship the saved configuration through an issue-linked PR and one affected-site CI build. The installed Next.js schema supports ensureStatic navigation and partialPrefetching. Replace the obsolete artificial cookies mutation/rebuild acceptance experiment with native framework enforcement. Keep homepage PR #349 separate and retain its owner browser check.",
+      "decision": "Ship the saved configuration through an issue-linked PR and one affected-site CI build. The installed Next.js schema supports ensureStatic navigation and partialPrefetching. Replace the obsolete artificial cookies mutation/rebuild acceptance experiment with native framework enforcement. Keep homepage PR #349 separate and retain its owner browser check. Initial CI exposed uncached public filesystem reads; cache their five public page render boundaries, preserving the ban on caching features/fetchers or identity-scoped functions. A corrected CI run is justified by this concrete fix.",
       "refs": ["GH-298", "PR #349"]
     }
   ]

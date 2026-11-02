@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/handoff/v1",
-  "updated": "2026-11-02T12:31:19.063Z",
+  "updated": "2026-11-02T12:35:27.264Z",
   "format": "One current package; history is in progress.json, decisions.json and git.",
   "status": "in-review",
   "milestone": "M-S1",
@@ -9,7 +9,7 @@
   "queue": ["CC-046", "CC-049", "CC-050", "CC-052", "CC-053", "CC-063"],
   "branch": "codex/298-static-site",
   "in_flight": [
-    "CC-046 saved configuration is implemented on codex/298-static-site; focused lint/type checks passed; PR CI build pending.",
+    "CC-046 PR #350: first CI build exposed uncached public file reads. Route cache boundaries added; focused lint/type checks passed, corrected CI build pending.",
     "Homepage PR #349 has passing CI and ready preview; owner desktop/mobile verification remains pending.",
     "CC-077 Stripe hardening remains stopped at owner direction."
   ],
@@ -28,7 +28,6 @@
     "Live Clerk production setup is only needed if/when the owner requests an actual template production deployment; it does not block ordinary internal development."
   ],
   "do_not": [
-    "Resume feature issues until the owner unpauses the goal",
     "Start any dev server or run full suites",
     "Repeat successful checks without a relevant change or initiate bulk install retries",
     "Impose enterprise/compliance/production ceremony on this internal solo-dev tool",
