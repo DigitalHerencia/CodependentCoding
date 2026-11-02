@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import { applicationProduct } from "@/content/application";
 import { DocumentShell } from "@/components/shells/document-shell";
 import { PublicShell } from "@/components/shells/public-shell";
+import { PwaInstallFeature } from "@/features/pwa/pwaInstallFeature.client";
 
 import "@/app/globals.css";
 
@@ -22,6 +23,7 @@ export default function PublicLayout({
   return (
     <DocumentShell>
       <PublicShell>{children}</PublicShell>
+      <PwaInstallFeature />
     </DocumentShell>
   );
 }

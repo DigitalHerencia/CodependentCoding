@@ -8,14 +8,14 @@ priority: p1
 size: m
 labels: [type:feat, area:template, priority:p1, size:m]
 depends_on: [CC-075]
-status: todo
+status: in-review
 ---
 
 # CC-076 · Core PWA in the template
 
 ## Scope
 
-- [ ] Manifest, `public/sw.js` per doctrine Ch. 09, offline page, install island, logout cache purge
+- [x] Manifest, `public/sw.js` per doctrine Ch. 09, offline page, install island, logout cache purge
 
 ## Acceptance criteria
 

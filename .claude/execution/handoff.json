@@ -1,8 +1,8 @@
 {
   "$schema": "codependent-coding/execution/handoff/v1",
-  "updated": "2026-11-02T02:16:32.170Z",
+  "updated": "2026-11-02T02:47:52.750Z",
   "format": "Overwrite each session. Minimum state the next session needs to resume safely.",
-  "status": "in-progress",
+  "status": "in-review",
   "milestone": "M-S1",
   "current_issue": "CC-076",
   "next_issue": "CC-076",
@@ -88,6 +88,7 @@
     "Cleanup 3 (DEC-081): Ivan keeps unused template server helpers on purpose; pipeline value workflow uses the exact weighted calculation."
   ],
   "risks": [
+    "CC-076 #328 / PR #344: browser checks blocked locally by incomplete dependency installation (React Compiler missing). Install attempts failed npm registry metadata timeouts; owner asked to stop repeated QA/install work. Feature edits ready; use normal CI evidence before merge.",
     "Owner .env.local: rename DIRECT_DATABASE_URL to DATABASE_URL_UNPOOLED; app DB role is now app_runtime (re-run db setup).",
     "prisma@7.10.x has no npm provenance; it is in trustPolicyExclude, owner to review.",
     "Not run: signed-in tenant page under the nonce CSP and the org switcher in a browser (need Clerk keys); dependency graph count after CC-047.",

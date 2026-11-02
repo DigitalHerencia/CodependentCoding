@@ -6,6 +6,7 @@ import type { ReactNode } from "react";
 import { applicationProduct } from "@/content/application";
 import { AuthShell } from "@/components/shells/auth-shell";
 import { DocumentShell } from "@/components/shells/document-shell";
+import { PwaInstallFeature } from "@/features/pwa/pwaInstallFeature.client";
 import { getIdentity } from "@/lib/auth/auth";
 import { redirectAfterAuth } from "@/lib/auth/redirects";
 
@@ -29,6 +30,7 @@ export default async function AuthLayout({
     <DocumentShell>
       <ClerkProvider dynamic>
         <AuthShell>{children}</AuthShell>
+        <PwaInstallFeature />
       </ClerkProvider>
     </DocumentShell>
   );

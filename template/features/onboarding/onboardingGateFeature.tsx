@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import type { ReactNode } from "react";
 
 import { TenantShell } from "@/components/shells/tenant-shell";
+import { PwaAccountMenu } from "@/features/pwa/pwaAccountMenu.client";
 import { OrganizationSwitcherFeature } from "@/features/settings/organizationSwitcherFeature";
 import { getOnboardingState } from "@/lib/fetchers/onboardingFetchers";
 
@@ -12,7 +13,10 @@ export async function OnboardingGateFeature({
   if (!(await getOnboardingState()).completed) redirect("/onboarding");
 
   return (
-    <TenantShell organizationSwitcher={<OrganizationSwitcherFeature />}>
+    <TenantShell
+      accountMenu={<PwaAccountMenu />}
+      organizationSwitcher={<OrganizationSwitcherFeature />}
+    >
       {children}
     </TenantShell>
   );

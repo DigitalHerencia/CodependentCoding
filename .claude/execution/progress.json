@@ -817,10 +817,11 @@
       }
     },
     "CC-076": {
-      "status": "in-progress",
+      "status": "in-review",
       "github_issue": 328,
       "branch": "feat/328-template-pwa",
-      "note": "Dependency CC-075 (#327) closed via #342. Project #19 uses ToDo as Ready equivalent; advanced to In progress."
+      "note": "PR #344: implementation complete; local browser acceptance blocked by dependency installation. No merge until required evidence is available.",
+      "pr": 344
     }
   },
   "completed": [
@@ -3445,6 +3446,55 @@
       "issue": "CC-076",
       "command": "git fetch origin --prune; git rev-parse main origin/main; gh issue view 327; gh project item-edit (Project 19, #328: ToDo then In progress)",
       "result": "main and origin/main both 32877e1; dependency CLOSED; Project updates exit 0. Local work preserved in recovery branches and stash."
+    },
+    {
+      "date": "2026-11-01",
+      "state": "EXECUTED",
+      "issue": "CC-076",
+      "command": "pnpm --dir template install --frozen-lockfile",
+      "result": "FAIL after 16m46s: ERR_PNPM_META_FETCH_FAIL / RESOLVING_NPM_RESOLVER_BODY_READ_ERROR while reading registry metadata for @next/swc-linux-x64-gnu. No supply-chain policy disabled."
+    },
+    {
+      "date": "2026-11-01",
+      "state": "EXECUTED",
+      "issue": "CC-076",
+      "command": "pnpm --dir template install --offline --frozen-lockfile",
+      "result": "FAIL: ERR_PNPM_NO_OFFLINE_META for @clerk/react. Retrying online with lower concurrency."
+    },
+    {
+      "date": "2026-11-01",
+      "state": "EXECUTED",
+      "issue": "CC-076",
+      "command": "node node_modules/next/dist/bin/next typegen; node node_modules/typescript/bin/tsc --noEmit (template)",
+      "result": "Both exit 0 using installed tool binaries."
+    },
+    {
+      "date": "2026-11-01",
+      "state": "EXECUTED",
+      "issue": "CC-076",
+      "command": "node node_modules/prisma/build/index.js generate (template, placeholder database URL)",
+      "result": "Exit 0; Prisma Client 7.10.1 generated; no migration or database operation."
+    },
+    {
+      "date": "2026-11-01",
+      "state": "EXECUTED",
+      "issue": "CC-076",
+      "command": "node node_modules/@playwright/test/cli.js test pwa (manual Next dev on 3100)",
+      "result": "FAIL before tests: installed dependencies lack babel-plugin-react-compiler; /faq readiness returned 500 and configured pnpm dev failed dependency preflight. Manual server stopped. Browser acceptance remains unverified locally."
+    },
+    {
+      "date": "2026-11-01",
+      "state": "EXECUTED",
+      "issue": "CC-076",
+      "command": "pnpm install --frozen-lockfile",
+      "result": "FAIL after 11m21s: registry metadata read timeout for @next/swc-win32-arm64-msvc. Remaining template retry stopped at owner request to keep QA proportional; no policies weakened."
+    },
+    {
+      "date": "2026-11-01",
+      "state": "EXECUTED",
+      "issue": "CC-076",
+      "command": "Focused ESLint on changed template routes, PWA features, shell, public template, proxy, config and PWA spec; tsc --noEmit --project template/tsconfig.json; git diff --check",
+      "result": "Focused ESLint exit 0 after fixing its 3 findings; final TypeScript and diff check exit 0. Browser tests remain unverified locally."
     }
   ],
   "known_findings": [
