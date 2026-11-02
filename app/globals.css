@@ -269,7 +269,7 @@ textarea {
   border-top: 1px solid var(--border);
 }
 
-.heritage-wordmark img {
+.heritage-wordmark svg {
   width: clamp(5.5rem, 12vw, 7rem);
   height: auto;
 }
@@ -428,12 +428,12 @@ textarea {
   justify-content: space-between;
   gap: 2rem;
 }
-.site-header .wordmark img {
+.site-header .wordmark svg {
   display: block;
   width: min(13.5rem, 34vw);
   height: auto;
 }
-.heritage-wordmark img {
+.heritage-wordmark svg {
   display: block;
   width: min(6.5rem, 26vw);
   height: auto;
@@ -590,7 +590,7 @@ pre {
     flex-direction: column;
     gap: 0.6rem;
   }
-  .site-header .wordmark img {
+  .site-header .wordmark svg {
     width: min(14rem, 70vw);
   }
   .site-header nav {
@@ -754,4 +754,29 @@ pre {
     animation: none;
     transition: none;
   }
+}
+
+/* Inline brand assets inherit the site's semantic signal color. */
+.codependent-wordmark,
+.heritage-wordmark,
+.landing-crown,
+.landing-heritage {
+  color: var(--signal-text);
+}
+.landing-crown svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.landing-crown .brand-crown {
+  width: 72%;
+  margin-inline: auto;
+}
+.site-horizon {
+  background: linear-gradient(
+    180deg,
+    var(--background),
+    var(--surface-1) 70%,
+    var(--background)
+  );
 }

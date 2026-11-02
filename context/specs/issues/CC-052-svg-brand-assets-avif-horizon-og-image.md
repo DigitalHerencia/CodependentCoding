@@ -8,27 +8,28 @@ priority: p1
 size: m
 labels: [type:feature, area:site, priority:p1, size:m]
 depends_on: [CC-050]
-status: todo
+status: in-review
 ---
 
 # CC-052 · SVG brand assets, AVIF horizon, OG image
 
 ## Scope
 
-- [ ] SVG components for mark, wordmark, lockup in `components/brand/`
-- [ ] Desert horizon as AVIF ≤ 60 KB with gradient fallback
-- [ ] `app/opengraph-image.tsx` and per-chapter OG images
+- [x] SVG components for mark, wordmark, lockup in `components/brand/`
+- [x] Desert horizon as AVIF ≤ 60 KB with gradient fallback
+- [x] `app/opengraph-image.tsx` and per-chapter OG images
 
 ## Acceptance criteria
 
-- [ ] No JPEG of text in `public/`
+- [x] No JPEG of text in `public/`
 - [ ] Share preview renders on GitHub and Slack
 
 ## Validation
 
-```powershell
-pnpm build
-```
+Focused ESLint and `tsc --project tsconfig.build.json --noEmit` passed.
+Direct ImageResponse root and longest-chapter PNGs rendered and were inspected.
+AVIF: 1920 × 1097, 26,818 bytes. One affected-site CI build on the PR; no local build.
+Owner desktop/mobile and GitHub/Slack share previews remain unrun.
 
 ## Depends on
 
@@ -36,7 +37,7 @@ CC-050
 
 ## References
 
-- refurbish/PLAN.md §5.4
+- context/canon/refurbish/PLAN.md §5.4
 
 ## Definition of done
 

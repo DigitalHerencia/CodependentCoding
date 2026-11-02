@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/progress/v1",
-  "updated": "2026-11-02T12:59:14.590152+00:00",
+  "updated": "2026-11-02T13:08:40.626793+00:00",
   "format": "Evidence states: EXECUTED | INSPECTED | NOT_RUN | BLOCKED. Never mark an issue done without EXECUTED evidence for its Validation commands.",
   "milestones": {
     "M0": {
@@ -870,7 +870,13 @@
       "status": "in-review",
       "github": 303,
       "branch": "codex/303-local-fonts",
-      "note": "Stacked on #352 (CC-050 implemented, owner visual review pending). Self-hosted Latin variable Cinzel and JetBrains Mono total 66,308 bytes. Installed Next local-font loader validates both files and generates fallback metrics; changed-code lint and site TypeScript passed. CI and owner CLS verification pending."
+      "note": "PR #353 at 89a1cce: affected-site CI 41449209300 and Vercel preview passed. Owner font/CLS verification remains pending."
+    },
+    "CC-052": {
+      "status": "in-review",
+      "github": 304,
+      "branch": "codex/304-brand-assets",
+      "note": "Stacked on PR #353. SVG brands replace five JPEGs; 26,818-byte 1920px AVIF; root/chapter social images. Focused ESLint and build-tsconfig typecheck passed. Direct ImageResponse PNG render inspected for root and longest chapter. Affected-site CI and owner appearance/GitHub/Slack preview pending. PR #354 initial CI 41450504485 failed on forbidden nested catch-all image URL. Corrected to terminal catch-all /og/[...slug] GET route and explicit chapter OG/Twitter metadata; affected-file lint/typecheck passed. Corrected CI pending."
     }
   },
   "completed": [
@@ -3678,6 +3684,18 @@
       "issue": "CC-051",
       "command": "Installed Next local-font loader against both WOFF2 files; changed-file Prettier and ESLint; node node_modules/typescript/bin/tsc --project tsconfig.build.json --noEmit",
       "result": "All passed. Actual font loader emitted weight ranges 600 700 / 100 800 and fallback size-adjust 137.38% / 131.49%. Combined WOFF2 payload 66,308 bytes. Google loader removed. No build, server, full suite or dependency install. Browser CLS NOT_RUN."
+    },
+    {
+      "issue": "CC-052",
+      "state": "EXECUTED",
+      "date": "2026-11-02",
+      "evidence": "Focused ESLint and tsc --project tsconfig.build.json --noEmit passed. AVIF 1920x1097 is 26,818 bytes. Direct ImageResponse produced root PNG 51,280 bytes and longest chapter PNG 56,933 bytes; both visually inspected. No local build/server/full suite. Browser and GitHub/Slack preview NOT_RUN; affected-site CI pending."
+    },
+    {
+      "issue": "CC-052",
+      "state": "EXECUTED",
+      "command": "CI 41450504485; focused ESLint for chapter metadata and OG route; tsc --project tsconfig.build.json --noEmit",
+      "result": "CI failed: catch-all must be last URL part. Moved image endpoint to /og/[...slug] and linked chapter metadata. Focused lint and typecheck passed after fix. Corrected CI pending."
     }
   ],
   "known_findings": [
