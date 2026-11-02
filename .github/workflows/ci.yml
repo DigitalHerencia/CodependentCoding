@@ -199,8 +199,16 @@ jobs:
       # The whole unit suite takes about 3 seconds, so it is not narrowed further.
       - if: ${{ !cancelled() }}
         run: pnpm test
-      - name: E2E smoke (Playwright, HTTP only)
+      - name: Chromium for the CSP tests
         if: ${{ !cancelled() && needs.changes.outputs.template_e2e == 'true' }}
+        run: pnpm exec playwright install --with-deps chromium
+      - name: E2E smoke and CSP (Playwright)
+        if: ${{ !cancelled() && needs.changes.outputs.template_e2e == 'true' }}
+        # A browser follows Clerk's development handshake to the (placeholder)
+        # Frontend API; a production-format placeholder key has none.
+        env:
+          NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: pk_live_Y2xlcmsuZXhhbXBsZS5jb20k
+          CLERK_SECRET_KEY: sk_live_placeholder
         run: pnpm test:e2e
       - if: ${{ !cancelled() && needs.changes.outputs.template_build == 'true' }}
         run: pnpm build

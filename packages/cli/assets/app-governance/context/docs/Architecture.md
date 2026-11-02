@@ -102,7 +102,7 @@ Doctrine is code. `eslint/doctrine-map.mjs` is the machine table (layers, import
 | ID               | Rule                                                                                       | Enforcement                          |
 | ---------------- | ------------------------------------------------------------------------------------------ | ------------------------------------ |
 | CC-ROUTE-001     | Routes never import DB, fetchers, actions, workflows, integrations, SDKs, or UI primitives | `codependent/layer-boundaries`       |
-| CC-ROUTE-002     | `proxy.ts` only gates routes                                                               | layer-boundaries                     |
+| CC-ROUTE-002     | `proxy.ts` only gates routes (session presence, CSP nonce)                                 | layer-boundaries                     |
 | CC-HOOK-001      | Route handlers: no Prisma, SDKs, Clerk server, presentation                                | layer-boundaries                     |
 | CC-FEAT-001      | Normal features: no DB, transactions, integrations, SDKs, UI primitives, RHF               | layer-boundaries                     |
 | CC-FEAT-002      | Forms: no DB, fetchers, workflows, integrations                                            | layer-boundaries                     |
@@ -126,6 +126,7 @@ Doctrine is code. `eslint/doctrine-map.mjs` is the machine table (layers, import
 | CC-AUTHZ-001     | Authorization never reads Clerk server state                                               | layer-boundaries                     |
 | CC-INT-001       | Integrations never persist                                                                 | layer-boundaries                     |
 | CC-CACHE-001     | Cache helpers hold semantics only                                                          | layer-boundaries                     |
+| CC-CACHE-002     | No `'use cache'` in features/fetchers or in functions given an identity/org ID             | `codependent/no-cache-in-protected`  |
 | CC-PURE-001      | Constants/utils/types are dependency-free                                                  | layer-boundaries                     |
 | CC-SCHEMA-001    | Schemas are pure (Prisma enums and `lib/authz/roles` allowed)                              | layer-boundaries                     |
 | CC-SRV-001       | Server modules import `server-only` (auto-fix; `lib/authz/roles.ts` excepted)              | `codependent/require-server-only`    |

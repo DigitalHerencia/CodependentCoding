@@ -158,6 +158,41 @@ tester.run("layer-boundaries", rules["layer-boundaries"], {
   ],
 });
 
+tester.run("no-cache-in-protected", rules["no-cache-in-protected"], {
+  valid: [
+    {
+      name: "CC-CACHE-002 public presentation may cache a value",
+      filename: at("components/nav/public-footer.tsx"),
+      code: 'async function Year() { "use cache"; return new Date().getFullYear(); }',
+    },
+    {
+      name: "CC-CACHE-002 a cached public read keyed by a slug",
+      filename: at("lib/content/kb.ts"),
+      code: 'export async function getArticle(slug) { "use cache"; return load(slug); }',
+    },
+  ],
+  invalid: [
+    {
+      name: "CC-CACHE-002 fetcher module marked 'use cache'",
+      filename: at("lib/fetchers/crmFetchers.ts"),
+      code: '"use cache";\nexport async function getContacts() { return []; }',
+      errors: [{ messageId: "layer" }],
+    },
+    {
+      name: "CC-CACHE-002 cached function inside a feature",
+      filename: at("features/crm/crmContactsFeature.tsx"),
+      code: 'export async function CrmContactsFeature() { "use cache: private"; return null; }',
+      errors: [{ messageId: "layer" }],
+    },
+    {
+      name: "CC-CACHE-002 cached function receives an organization ID",
+      filename: at("lib/content/kb.ts"),
+      code: 'export const getArticles = async ({ organizationId }) => { "use cache"; return load(organizationId); };',
+      errors: [{ messageId: "identity" }],
+    },
+  ],
+});
+
 tester.run("no-pass-through", rules["no-pass-through"], {
   valid: [
     {

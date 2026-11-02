@@ -1,3 +1,5 @@
+import { cacheLife } from "next/cache";
+
 import { PublicNavLink } from "@/components/nav/public-nav-link";
 import { publicNavigation } from "@/content/public-navigation";
 
@@ -12,6 +14,13 @@ export interface PublicFooterProps {
 
 export const defaultPublicFooterLinks = publicNavigation.footerLinks;
 
+/** The year is part of the static page; the cached value refreshes daily. */
+async function CopyrightYear() {
+  "use cache";
+  cacheLife("days");
+  return new Date().getFullYear();
+}
+
 export function PublicFooter({
   links = defaultPublicFooterLinks,
 }: PublicFooterProps) {
@@ -19,7 +28,7 @@ export function PublicFooter({
     <footer className="public-footer">
       <div className="public-footer-inner">
         <p className="public-copyright">
-          © {new Date().getFullYear()} {publicNavigation.copyright}
+          © <CopyrightYear /> {publicNavigation.copyright}
         </p>
         <nav className="public-nav" aria-label={publicNavigation.footerLabel}>
           {links.map((item) => (

@@ -13,10 +13,12 @@ import { BASE, ownerOf } from "#scripts/ownership.mjs";
 
 import {
   boundaries,
+  cacheProtectedLayers,
   categories,
   defaultExportAllowed,
   filenameConventions,
   genericNames,
+  identityParameters,
   layers,
   prismaWriteMethods,
   serverOnlyPaths,
@@ -584,6 +586,77 @@ function soleCall(fn) {
   return expression.arguments.some(doesWork) ? null : expression;
 }
 
+/** Leading directive strings of a Program or function body. */
+function bodyDirectives(body) {
+  return body?.type === "BlockStatement" || body?.type === "Program"
+    ? directives(body)
+    : [];
+}
+
+/** Parameter names, including destructured properties. */
+function parameterNames(params) {
+  const names = [];
+  const visit = (node) => {
+    if (!node) return;
+    if (node.type === "Identifier") names.push(node.name);
+    else if (node.type === "AssignmentPattern") visit(node.left);
+    else if (node.type === "RestElement") visit(node.argument);
+    else if (node.type === "ArrayPattern") node.elements.forEach(visit);
+    else if (node.type === "ObjectPattern")
+      for (const property of node.properties)
+        visit(property.type === "Property" ? property.value : property);
+  };
+  params.forEach(visit);
+  return names;
+}
+
+const noCacheInProtected = {
+  meta: {
+    type: "problem",
+    docs: docs(
+      "'use cache' never caches protected or identity-scoped data.",
+      "CC-CACHE-002",
+    ),
+    schema: [],
+    messages: {
+      layer:
+        "[CC-CACHE-002] 'use cache' is not allowed in {{layer}} code: a shared cache entry cannot say which member may see it. Cache only public content, outside features/ and lib/fetchers/.",
+      identity:
+        "[CC-CACHE-002] A cached function must not receive '{{param}}': the cache key would decide who sees whose data.",
+    },
+  },
+  create(context) {
+    const layer = layerOf(relativeFile(context));
+    const protectedLayer = cacheProtectedLayers.includes(layer);
+    const isCache = (directive) => /^use cache(:|$)/.test(directive);
+    const checkFunction = (fn) => {
+      if (!bodyDirectives(fn.body).some(isCache)) return;
+      if (protectedLayer) {
+        context.report({ node: fn, messageId: "layer", data: { layer } });
+        return;
+      }
+      const param = parameterNames(fn.params).find((name) =>
+        identityParameters.test(name),
+      );
+      if (param)
+        context.report({ node: fn, messageId: "identity", data: { param } });
+    };
+    return {
+      Program(program) {
+        if (protectedLayer && directives(program).some(isCache))
+          context.report({
+            node: program,
+            messageId: "layer",
+            data: { layer },
+          });
+      },
+      FunctionDeclaration: checkFunction,
+      FunctionExpression: checkFunction,
+      ArrowFunctionExpression: checkFunction,
+    };
+  },
+};
+
 const noPassThrough = {
   meta: {
     type: "suggestion",
@@ -639,6 +712,7 @@ export const rules = {
   "no-parent-imports": noParentImports,
   "module-boundaries": moduleBoundaries,
   "no-pass-through": noPassThrough,
+  "no-cache-in-protected": noCacheInProtected,
 };
 
 const plugin = {
