@@ -1,15 +1,16 @@
 {
   "$schema": "codependent-coding/execution/handoff/v1",
-  "updated": "2026-11-02T12:59:14.590152+00:00",
+  "updated": "2026-11-02T13:08:40.626793+00:00",
   "format": "One current package; history is in progress.json, decisions.json and git.",
   "status": "in-review",
   "milestone": "M-S2",
-  "current_issue": "CC-051",
-  "next_issue": "CC-051",
-  "queue": ["CC-051", "CC-052", "CC-053", "CC-063"],
-  "branch": "codex/303-local-fonts",
+  "current_issue": "CC-052",
+  "next_issue": "CC-052",
+  "queue": ["CC-052", "CC-053", "CC-063"],
+  "branch": "codex/304-brand-assets",
   "in_flight": [
-    "CC-051 local-font implementation stacked on PR #352: 66,308-byte payload, focused checks passed; affected-site CI and owner CLS checks pending. CC-050 PR #352 CI/preview passed; owner color/reduced-motion check pending.",
+    "CC-052 implementation complete on codex/304-brand-assets; focused lint/typecheck and direct root/chapter PNG render passed. One affected-site CI run and owner desktop/mobile/share preview remain.",
+    "CC-050 PR #352 and CC-051 PR #353 have passing affected-site CI and Vercel previews; owner appearance checks remain pending. CC-052 is stacked on #353.",
     "Homepage PR #349 has passing CI and ready preview; owner desktop/mobile verification remains pending.",
     "CC-077 Stripe hardening remains stopped at owner direction."
   ],
@@ -28,7 +29,8 @@
     "Live Clerk production setup is only needed if/when the owner requests an actual template production deployment; it does not block ordinary internal development.",
     "Homepage PR #349 must update its new site loader/import to lib/content/ when rebased after CC-049; preserve owner visual review.",
     "Homepage PR #349 also changes the stylesheet; rebase onto merged CC-050 before owner final visual approval to preserve canonical tokens.",
-    "CC-051 is stacked on the implemented CC-050 branch; merge #352 first, then retarget/rebase without repeating successful checks unnecessarily. Homepage #349 must preserve self-hosted fonts when rebased."
+    "CC-051 is stacked on the implemented CC-050 branch; merge #352 first, then retarget/rebase without repeating successful checks unnecessarily. Homepage #349 must preserve self-hosted fonts when rebased.",
+    "Merge #352, then #353, then CC-052 in dependency order. Homepage #349 must replace deleted JPEG imports with SVG components and AVIF when rebased; preserve canonical tokens and local fonts."
   ],
   "do_not": [
     "Start any dev server or run full suites",

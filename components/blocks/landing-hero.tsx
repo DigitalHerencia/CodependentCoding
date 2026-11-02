@@ -1,19 +1,16 @@
-import Image from "next/image";
+import { CodependentMark } from "@/components/brand/codependent-mark";
+import { CodependentWordmark } from "@/components/brand/codependent-wordmark";
+import { HerenciaLockup } from "@/components/brand/herencia-lockup";
 
 const repositoryUrl = "https://github.com/DigitalHerencia/CodependentCoding";
 
 export function LandingHero() {
   return (
     <main className="landing-page">
-      <Image
-        className="landing-crown"
-        src="/codependent-coding-crown.jpg"
-        alt="The Codependent Coding WebApp Architecture"
-        width={1792}
-        height={1024}
-        priority
-        sizes="(min-width: 60rem) 60rem, 100vw"
-      />
+      <div className="landing-crown">
+        <CodependentMark className="brand-crown" />
+        <CodependentWordmark />
+      </div>
       <section className="landing-copy">
         <h1>
           When epistemologies fail
@@ -34,14 +31,7 @@ export function LandingHero() {
         </div>
         <strong>Nothing to borrow. We checked.</strong>
       </section>
-      <Image
-        className="landing-heritage"
-        src="/digital-herencia-logo.jpg"
-        alt="Digital Herencia, a data cartel"
-        width={1792}
-        height={1024}
-        sizes="(min-width: 48rem) 38rem, 80vw"
-      />
+      <HerenciaLockup className="landing-heritage" />
     </main>
   );
 }

@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/decisions/v1",
-  "updated": "2026-11-02T12:35:27.264Z",
+  "updated": "2026-11-02T13:08:40.626793+00:00",
   "format": "Append new decisions; never rewrite history. Supersede by adding a new entry and setting status=superseded + superseded_by on the old one.",
   "decisions": [
     {
@@ -1092,6 +1092,15 @@
       "context": "CC-051 remained open and is a prerequisite for the shell work. CC-050 implementation and CI are complete but owner preview verification is pending. Google imports downloaded four families and used misleading variables.",
       "decision": "Deliver CC-051 as a separate stacked PR on #352. Store the two upstream Latin variable WOFF2 files and OFL licenses in the Plan-approved public/fonts directory; use next/font/local with generated fallback metrics and accurate family variables. Defer browser CLS claims to owner evidence. No new CI jobs, local build, Lighthouse run or dependency installation.",
       "refs": ["GH-303", "PR #352", "context/canon/refurbish/PLAN.md §5.2"]
+    },
+    {
+      "id": "DEC-110",
+      "date": "2026-11-02",
+      "status": "accepted",
+      "title": "Use vector brands and bounded offline social-image verification",
+      "context": "CC-052 implements approved Plan 5.4, stacked on the local font package.",
+      "decision": "Replace raster text logos with accessible currentColor SVG components and a 26,818-byte AVIF horizon with CSS gradient fallback. Share cards use the bundled image-renderer font without network font downloads. Inspect direct root and longest-chapter ImageResponse output; defer browser and GitHub/Slack previews to owner. No new CI jobs, dependencies, local build or server.",
+      "refs": ["GH-304", "PR #353", "context/canon/refurbish/PLAN.md §5.4"]
     }
   ]
 }

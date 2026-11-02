@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { HerenciaLockup } from "@/components/brand/herencia-lockup";
 import Link from "next/link";
 
 const footerLinks = [
@@ -16,13 +16,7 @@ export function SiteFooter() {
           href="/"
           aria-label="Digital Herencia"
         >
-          <Image
-            src="/digital-herencia.jpg"
-            alt="Digital Herencia, a data cartel"
-            width={1059}
-            height={465}
-            sizes="7rem"
-          />
+          <HerenciaLockup />
         </Link>
         <nav aria-label="Footer navigation">
           {footerLinks.map((link) => (

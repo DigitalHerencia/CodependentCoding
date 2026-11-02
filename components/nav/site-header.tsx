@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { CodependentWordmark } from "@/components/brand/codependent-wordmark";
 import Link from "next/link";
 
 const primaryLinks = [
@@ -17,14 +17,7 @@ export function SiteHeader() {
           href="/"
           aria-label="The Codependent Coding Web App Architecture home"
         >
-          <Image
-            src="/codependent-coding-logo.jpg"
-            alt="The Codependent Coding Web App Architecture"
-            width={1623}
-            height={293}
-            sizes="(min-width: 40rem) 13.5rem, 34vw"
-            priority
-          />
+          <CodependentWordmark />
         </Link>
         <nav aria-label="Primary navigation">
           {primaryLinks.map((link) => (
