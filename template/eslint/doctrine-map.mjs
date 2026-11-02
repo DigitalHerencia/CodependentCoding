@@ -599,6 +599,23 @@ export const terminalProfile = {
     /^components\/ui\/(menu|tabs|command-palette|multi-select|tree-select|confirm)(\.tsx?)?$/,
 };
 
+/**
+ * CC-CACHE-002: layers where 'use cache' never appears. Every feature and
+ * fetcher in the template is reachable from the signed-in groups (public pages
+ * compose blocks and templates only), so the whole layer is protected.
+ */
+export const cacheProtectedLayers = [
+  "feature",
+  "feature-form",
+  "feature-skeleton",
+  "feature-client",
+  "fetcher",
+];
+
+/** CC-CACHE-002: a cached function receiving one of these is keyed by who is asking. */
+export const identityParameters =
+  /^(identity|access|membership|membershipId|organization|organizationId|orgId|userId|clerkUserId|session|sessionId)$/;
+
 /** Path segments / basenames that signal invented layers. */
 export const genericNames =
   /(^|\/)(services?|managers?|processors?|helpers?|misc|stuff|common|handlers?)(\/|\.tsx?$)/;

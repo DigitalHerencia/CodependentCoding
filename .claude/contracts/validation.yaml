@@ -212,6 +212,12 @@ rules:
       enforcement: "eslint:codependent/layer-boundaries",
     }
   - {
+      id: CC-CACHE-002,
+      layer: any,
+      text: "No 'use cache' in features/ or lib/fetchers/, nor in a function that receives an identity, membership or organization ID",
+      enforcement: "eslint:codependent/no-cache-in-protected",
+    }
+  - {
       id: CC-PURE-001,
       layer: pure,
       text: "Constants, utils, types are dependency-free",

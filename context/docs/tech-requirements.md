@@ -114,9 +114,10 @@ Removed: `.agents/`, `packages/core`, `packages/schema`, `packages/loaded-vibes`
 
 ## 5. Next.js configuration
 
-- `typedRoutes: true`, `reactStrictMode: true`, `poweredByHeader: false`, `reactCompiler: true`.
+- `typedRoutes: true`, `reactStrictMode: true`, `poweredByHeader: false`, `reactCompiler: true`, `cacheComponents: true`, `partialPrefetching: true`, `experimental.globalNotFound: true`.
+- Each route group is its own root layout (`components/shells/document-shell.tsx` renders `<html>`). `(public)` exports `ensureStatic = "navigation"`; `(auth)`, `(setup)` and `(tenant)` export `instant = false` and `await connection()` before rendering, so the whole document renders per request and carries the CSP nonce. `<ClerkProvider dynamic>` wraps only those three.
 - Security headers via `headers()`: `X-Content-Type-Options`, `Referrer-Policy`, `X-Frame-Options: DENY`, `Permissions-Policy`.
-- `proxy.ts` runs `clerkMiddleware` for route protection only.
+- `proxy.ts` gates only: public pages skip Clerk and get the static CSP (`script-src 'self' 'unsafe-inline'`); every other path runs `clerkMiddleware`, sends signed-out visitors to `/sign-in` (UX; layouts and the data layer re-check) and gets a per-request nonce CSP with `'strict-dynamic'` and the Clerk hosts from Clerk's CSP guide.
 - Fonts: generated apps use offline-safe fonts (npm-packaged or `next/font/local`) so builds never depend on Google Fonts. The factory landing page keeps its brand fonts.
 
 ## 6. Data
@@ -129,10 +130,10 @@ Removed: `.agents/`, `packages/core`, `packages/schema`, `packages/loaded-vibes`
 
 ## 7. Caching
 
-- Public routes: static or ISR via route-segment `revalidate`.
+- Public routes: static (`ensureStatic`); cached values via `'use cache'` + `cacheLife`, never segment config (`revalidate`, `dynamic`, `fetchCache`).
 - Tenant routes: dynamic and fresh by default. Cached reads only through `lib/cache` (tags, lifetimes, invalidation).
-- Never cache authorization, membership, payment, or readiness decisions.
-- Next.js Cache Components stays off in v1 (DEC-012).
+- Never cache authorization, membership, payment, or readiness decisions. No `'use cache'` in features or fetchers (CC-CACHE-002).
+- Cache Components is on (ledger R-1; supersedes DEC-012).
 
 ## 8. Testing
 
@@ -141,7 +142,7 @@ Removed: `.agents/`, `packages/core`, `packages/schema`, `packages/loaded-vibes`
 | Doctrine    | node:test + ESLint RuleTester | Every CC rule has valid/invalid cases                                                |
 | Unit        | Vitest                        | workflows, schemas, DTO mappers, CLI composition                                     |
 | Integration | Vitest + real Postgres        | RLS cross-tenant isolation, transactions, webhook idempotency                        |
-| E2E smoke   | Playwright                    | public page, sign-in redirect, one tenant route                                      |
+| E2E smoke   | Playwright                    | public page, sign-in redirect, CSP nonce + no browser CSP violations                 |
 | Composition | Vitest (root)                 | `compose` output for blank / each preset / maximal: prisma validate, ownership, lint |
 
 ## 9. CLI technical requirements
