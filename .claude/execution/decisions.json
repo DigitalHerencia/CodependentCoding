@@ -1047,6 +1047,15 @@
       "context": "Owner-requested cleanup while issue goal remains paused.",
       "decision": "Disable unused plugins/skills/MCP startup with a rollback copy; retain GitHub/Vercel/Neon capabilities and repo tooling. Retire duplicate Project #21 and keep #19 canonical. Existing root Vercel production deploy is healthy; preserve integration-managed secrets. Local template DB owner connection without RLS and missing live Clerk/Neon control-plane access are explicit owner gates, not a reason to silently provision resources or run migrations.",
       "refs": ["GH-345", "PR #344"]
+    },
+    {
+      "id": "DEC-104",
+      "date": "2026-11-01",
+      "status": "accepted",
+      "title": "Owner-approved internal template database alignment",
+      "context": "Owner confirms the existing Neon database is for the template; test branch was CLI validation only, and explicitly approves migration/reset/branch cleanup and environment-default updates.",
+      "decision": "Use the specified existing org/project/production branch. Migrate the three pending checked-in migrations rather than reset existing test data. Use restricted pooled runtime credentials, direct migration-owner connections, system-role boundaries and existing migration history. Remove obsolete validation and merged-preview branches, retain active development/doc preview. Treat the project as a solo internal noncommercial generator; avoid enterprise ceremony and unnecessary production gates. This resolves the earlier Neon access/target gate; Windows Machine scope alone requires OS elevation.",
+      "refs": ["GH-347", "CC-069", "CC-077"]
     }
   ]
 }

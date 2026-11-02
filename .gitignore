@@ -60,3 +60,4 @@ playwright/.cache/
 
 # Plugin eval runs (claude plugin eval)
 plugin/*/evals/results/
+.neon

@@ -829,6 +829,13 @@
       "branch": "ci/345-lean-project-validation",
       "spec": "context/docs/tech-requirements.md#11-cicd",
       "note": "Owner cleanup implemented: CI only format write/lint fix/type generation/type checking/affected builds; duplicate open issues absent; 77 duplicate issue cards removed from old Project #21; old board retired; config reduced with reversible backup. Publish/merge through the issue-linked PR. Neon cloud metadata blocked by expired OAuth; local DB inspection found owner login and no RLS."
+    },
+    "GH-347": {
+      "status": "implementation-complete",
+      "github": 347,
+      "branch": "chore/347-template-neon-alignment",
+      "spec": "context/docs/AUTH.md#6-row-level-security",
+      "note": "Owner-approved operational alignment completed for the existing template project and designated branch. Applied three pending migrations on production/development/active-docs-preview without resets. Root/local template and Vercel scoped connections use restricted pooled runtime plus direct migration-owner URLs; old CLI validation and merged-preview resources removed. Windows User defaults corrected; Machine writes require elevation. Internal solo-dev profile, no commercial production gate."
     }
   },
   "completed": [
@@ -3551,12 +3558,32 @@
       "issue": "GH-345",
       "command": "Vercel project/deployment metadata and env metadata; Clerk linked-app/config reads; read-only database metadata transaction; Neon OAuth refresh attempt",
       "result": "Vercel codependent-coding, repo root, Next.js/Node24/main: latest production f9c7264 READY, no manual deploy triggered. Branch-specific DB env entries are integration-managed, not duplicate globals; stale preview pair references merged/deleted PWA branch, left unchanged. Clerk The Maximal Template has development instance and no production instance; default session override is null. Local template DATABASE_URL logs in as neondb_owner: 13 public tables, 0 RLS tables, no app_runtime/app_system roles. Read-only metadata only; no schema/data/role writes. Neon control-plane access and refresh token expired, so compute/branch cleanup remains unverified and owner reauthentication/target confirmation requested."
+    },
+    {
+      "date": "2026-11-01",
+      "state": "EXECUTED",
+      "issue": "GH-347",
+      "command": "Neon skills + installed CLI: link target; snapshot production (24h); Prisma migrate deploy on the three retained branches; remove obsolete validation/test/merged-preview branches",
+      "result": "All 10 existing migrations applied; no reset performed. Existing test login/data retained. Recovery snapshot expires automatically. Removed validation/demo-run, old test, and merged CI-preview branches. Retained production, vercel-dev, and active doctrine-preview branches."
+    },
+    {
+      "date": "2026-11-01",
+      "state": "EXECUTED",
+      "issue": "GH-347",
+      "command": "Restricted-role credential configuration; focused existing-tenant visibility queries and grants inspection; local/Vercel connection updates",
+      "result": "37 tables have enabled/forced RLS. app_runtime/app_system are non-superuser, NOBYPASSRLS, cannot create databases/roles. Existing project visibility: same tenant 1, other tenant 0, no context 0. Runtime cannot update audit records or read migration ledger; system role cannot read tenant projects and can read webhook inbox. Six retained Vercel connection entries configured; stale preview entries are absent after branch deletion. No dev server, local build, or full suite run."
+    },
+    {
+      "date": "2026-11-01",
+      "state": "EXECUTED",
+      "issue": "GH-347",
+      "command": "Correct Neon environment/default context and stale API-key override; explicit owner authorization to migrate/reset/clean branches",
+      "result": "Windows User NEON_ORG_ID/PROJECT_ID/BRANCH_ID point to the approved org/project/branch; .neon is pinned accordingly. Removed the old project-scoped API-key override after private backup; installed CLI saved-login authentication works. Machine environment registry writes were denied by Windows elevation requirements; the equivalent User defaults are configured."
     }
   ],
   "known_findings": [
-    "PR #344 PWA worker readiness fails in CI; feature acceptance is incomplete.",
-    "Local dependencies are incompletely refreshed after registry timeouts; do not retry downloads automatically.",
-    "Remote duplicate-issue audit remains incomplete; no duplicate issues were closed."
+    "PWA runtime browser verification is owner-run; prior CI timed out at worker readiness before owner merge.",
+    "System-role workflow wiring is the existing CC-077 scope; credentials/permissions are prepared, not a placeholder implementation."
   ],
   "blocked": []
 }

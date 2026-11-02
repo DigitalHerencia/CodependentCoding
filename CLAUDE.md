@@ -50,3 +50,7 @@ The Stop hook blocks once if code changed without these updates.
 - Keep local checks to the smallest affected files. Do not repeat successful checks without a relevant change, retry dependency installs, or run local builds unless the owner specifically requests it.
 - CI is limited to changed-file formatting with write, changed-code linting with fix, type generation, type checking, and affected-project builds, plus necessary setup. No tests, browser/dev servers, database jobs, or additional validation workflows.
 - Avoid duplicate PR/main CI runs, unnecessary network calls, and bulk downloads. Stop task processes when finished; preserve unrelated apps and services.
+
+## Project operating profile
+
+This is a solo internal template-generator development tool, with no external users or commercial deployment. Keep delivery lightweight: no enterprise review/compliance ceremony, speculative hardening, or production-setup gates for ordinary development. Preserve the existing feature contracts and basic credential/tenant boundaries; do only the checks needed for the actual change.
