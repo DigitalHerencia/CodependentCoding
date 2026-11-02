@@ -14,6 +14,8 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   typedRoutes: true,
+  cacheComponents: true,
+  partialPrefetching: true,
   poweredByHeader: false,
   // AGENTS.md already routes agents to CLAUDE.md; stop `next dev` rewriting it.
   agentRules: false,

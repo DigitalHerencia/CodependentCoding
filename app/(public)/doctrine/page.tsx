@@ -3,6 +3,8 @@ import { DoctrineDocsFeature } from "@/features/doctrine/doctrineDocsFeature";
 
 export const metadata: Metadata = { title: "Doctrine · Codependent Coding™" };
 
-export default function Page() {
+export default async function Page() {
+  "use cache";
+
   return <DoctrineDocsFeature slug="" />;
 }

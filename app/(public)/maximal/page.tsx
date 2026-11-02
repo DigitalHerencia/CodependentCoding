@@ -5,6 +5,8 @@ export const metadata: Metadata = {
   title: "The Maximal Template™ · Codependent Coding™",
 };
 
-export default function Page() {
+export default async function Page() {
+  "use cache";
+
   return <MaximalBrowserFeature />;
 }

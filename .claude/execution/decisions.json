@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/decisions/v1",
-  "updated": "2026-10-31",
+  "updated": "2026-11-02T12:35:27.264Z",
   "format": "Append new decisions; never rewrite history. Supersede by adding a new entry and setting status=superseded + superseded_by on the old one.",
   "decisions": [
     {
@@ -1056,6 +1056,15 @@
       "context": "Owner confirms the existing Neon database is for the template; test branch was CLI validation only, and explicitly approves migration/reset/branch cleanup and environment-default updates.",
       "decision": "Use the specified existing org/project/production branch. Migrate the three pending checked-in migrations rather than reset existing test data. Use restricted pooled runtime credentials, direct migration-owner connections, system-role boundaries and existing migration history. Remove obsolete validation and merged-preview branches, retain active development/doc preview. Treat the project as a solo internal noncommercial generator; avoid enterprise ceremony and unnecessary production gates. This resolves the earlier Neon access/target gate; Windows Machine scope alone requires OS elevation.",
       "refs": ["GH-347", "CC-069", "CC-077"]
+    },
+    {
+      "id": "DEC-106",
+      "date": "2026-11-02",
+      "status": "accepted",
+      "title": "Deliver the preserved static-site foundation with bounded verification",
+      "context": "Owner resumed issue delivery and requires lean checks. CC-046 is a dependency of the remaining site foundation work; its configuration was already preserved locally.",
+      "decision": "Ship the saved configuration through an issue-linked PR and one affected-site CI build. The installed Next.js schema supports ensureStatic navigation and partialPrefetching. Replace the obsolete artificial cookies mutation/rebuild acceptance experiment with native framework enforcement. Keep homepage PR #349 separate and retain its owner browser check. Initial CI exposed uncached public filesystem reads; cache their five public page render boundaries, preserving the ban on caching features/fetchers or identity-scoped functions. A corrected CI run is justified by this concrete fix.",
+      "refs": ["GH-298", "PR #349"]
     }
   ]
 }

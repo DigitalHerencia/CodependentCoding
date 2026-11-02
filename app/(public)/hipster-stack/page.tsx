@@ -5,6 +5,8 @@ export const metadata: Metadata = {
   title: "Hipster Stack™ · Codependent Coding™",
 };
 
-export default function Page() {
+export default async function Page() {
+  "use cache";
+
   return <HipsterBuilderFeature />;
 }

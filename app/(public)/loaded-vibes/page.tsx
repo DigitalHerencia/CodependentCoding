@@ -5,6 +5,8 @@ export const metadata: Metadata = {
   title: "Loaded Vibes™ · Codependent Coding™",
 };
 
-export default function Page() {
+export default async function Page() {
+  "use cache";
+
   return <PluginProductFeature />;
 }

@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/progress/v1",
-  "updated": "2026-11-01",
+  "updated": "2026-11-02T12:35:27.264Z",
   "format": "Evidence states: EXECUTED | INSPECTED | NOT_RUN | BLOCKED. Never mark an issue done without EXECUTED evidence for its Validation commands.",
   "milestones": {
     "M0": {
@@ -836,6 +836,12 @@
       "branch": "chore/347-template-neon-alignment",
       "spec": "context/docs/AUTH.md#6-row-level-security",
       "note": "Owner-approved operational alignment completed for the existing template project and designated branch. Applied three pending migrations on production/development/active-docs-preview without resets. Root/local template and Vercel scoped connections use restricted pooled runtime plus direct migration-owner URLs; old CLI validation and merged-preview resources removed. Windows User defaults corrected; Machine writes require elevation. Internal solo-dev profile, no commercial production gate."
+    },
+    "CC-046": {
+      "status": "in-review",
+      "github": 298,
+      "branch": "codex/298-static-site",
+      "note": "Recovered saved ff82430 configuration from current main. Installed Next.js supports the selected config and segment option. Focused lint/type check passed; affected-site CI build pending. Homepage PR #349 remains separate, with owner visual review pending."
     }
   },
   "completed": [
@@ -3579,6 +3585,20 @@
       "issue": "GH-347",
       "command": "Correct Neon environment/default context and stale API-key override; explicit owner authorization to migrate/reset/clean branches",
       "result": "Windows User NEON_ORG_ID/PROJECT_ID/BRANCH_ID point to the approved org/project/branch; .neon is pinned accordingly. Removed the old project-scoped API-key override after private backup; installed CLI saved-login authentication works. Machine environment registry writes were denied by Windows elevation requirements; the equivalent User defaults are configured."
+    },
+    {
+      "date": "2026-11-02T12:31:19.063Z",
+      "state": "EXECUTED",
+      "issue": "CC-046",
+      "command": "node node_modules/eslint/bin/eslint.js next.config.ts app/layout.tsx app/(public)/doctrine/[...slug]/page.tsx --max-warnings=0; node node_modules/typescript/bin/tsc --project tsconfig.build.json --noEmit",
+      "result": "Both exit 0. Installed Next.js config/segment types inspected; unknown doctrine slugs retain notFound(). No local build, server, tests or installs."
+    },
+    {
+      "date": "2026-11-02T12:35:27.264Z",
+      "state": "EXECUTED",
+      "issue": "CC-046",
+      "command": "PR #350 CI run 41445442469; focused ESLint on five public content routes; tsc --project tsconfig.build.json --noEmit",
+      "result": "CI failed static navigation enforcement on uncached public filesystem reads. Added route-level use cache to the five public file-backed pages; features/fetchers and tenant boundaries unchanged. Focused ESLint and TypeScript exit 0 after fix; corrected CI build pending."
     }
   ],
   "known_findings": [
