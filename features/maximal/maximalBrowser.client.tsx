@@ -2,16 +2,15 @@
 
 import Editor, { type BeforeMount } from "@monaco-editor/react";
 import { ChevronRight, FileCode2, Folder } from "lucide-react";
-import { useEffect, useMemo, useState, useSyncExternalStore } from "react";
+import { useRouter } from "next/navigation";
+import { useMemo, useState, useTransition } from "react";
 import { CopyButton } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 type Node = { name: string; path: string; children: Node[] };
 
 const repo = "DigitalHerencia/CodependentCoding";
-const rawBase = `https://raw.githubusercontent.com/${repo}/main/template/`;
 const blobBase = `https://github.com/${repo}/blob/main/template/`;
-const defaultFile = "app/layout.tsx";
 
 const layers: [RegExp, string][] = [
   [
@@ -164,35 +163,26 @@ function TreeNode({
   );
 }
 
-export function MaximalBrowser({ files }: { files: string[] }) {
-  const [chosen, setActive] = useState<string | null>(null);
+export function MaximalBrowser({
+  files,
+  active,
+  source,
+}: {
+  files: string[];
+  active: string;
+  source: string;
+}) {
+  const router = useRouter();
   const [query, setQuery] = useState("");
-  const [loaded, setLoaded] = useState({ file: "", text: "" });
-  const requested = useSyncExternalStore(
-    () => () => {},
-    () => new URLSearchParams(window.location.search).get("file"),
-    () => null,
-  );
-  const active =
-    chosen ??
-    (requested && files.includes(requested) ? requested : defaultFile);
-  const source = loaded.file === active ? loaded.text : "Loading…";
+  const [isPending, startTransition] = useTransition();
 
-  useEffect(() => {
-    let cancelled = false;
-    fetch(rawBase + active)
-      .then((response) => (response.ok ? response.text() : Promise.reject()))
-      .catch(() => "// Could not load this file. Provenance is latency.")
-      .then((text) => {
-        if (!cancelled) setLoaded({ file: active, text });
+  function selectFile(file: string) {
+    startTransition(() => {
+      router.replace(`/maximal?file=${encodeURIComponent(file)}`, {
+        scroll: false,
       });
-    const url = new URL(window.location.href);
-    url.searchParams.set("file", active);
-    window.history.replaceState(null, "", url);
-    return () => {
-      cancelled = true;
-    };
-  }, [active]);
+    });
+  }
 
   const needle = query.trim().toLowerCase();
   const tree = useMemo(
@@ -229,7 +219,7 @@ export function MaximalBrowser({ files }: { files: string[] }) {
               node={node}
               active={active}
               open={needle.length > 0}
-              onSelect={setActive}
+              onSelect={selectFile}
             />
           ))}
         </ul>
@@ -240,7 +230,7 @@ export function MaximalBrowser({ files }: { files: string[] }) {
             template/{active}
           </code>
           <span className="flex gap-2">
-            <CopyButton value={source} />
+            <CopyButton value={isPending ? "Loading�" : source} />
             <a
               className="border border-border px-3 py-1.5 text-xs text-foreground uppercase no-underline hover:border-signal"
               href={blobBase + active}
@@ -258,7 +248,7 @@ export function MaximalBrowser({ files }: { files: string[] }) {
           beforeMount={beforeMount}
           path={active}
           language={language(active)}
-          value={source}
+          value={isPending ? "Loading�" : source}
           options={{
             readOnly: true,
             minimap: { enabled: false },

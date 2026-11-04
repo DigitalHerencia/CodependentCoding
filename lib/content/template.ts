@@ -3,8 +3,7 @@ import "server-only";
 import { readdir } from "node:fs/promises";
 import path from "node:path";
 
-// Build-time list of the Maximal Template's source files. Contents load in the
-// browser from GitHub, so secrets, installs and build output are never listed.
+// List source files while excluding secrets, installs and build output.
 const skipDirs = new Set([
   "node_modules",
   ".next",
@@ -35,9 +34,25 @@ async function walk(dir: string, prefix: string): Promise<string[]> {
 }
 
 export async function getTemplateFiles() {
+  "use cache";
+
   const files = await walk(
     path.join(/* turbopackIgnore: true */ process.cwd(), "template"),
     "",
   );
   return files.sort();
+}
+
+export async function getTemplateSource(file: string) {
+  const path = file.split("/").map(encodeURIComponent).join("/");
+  try {
+    const response = await fetch(
+      `https://raw.githubusercontent.com/DigitalHerencia/CodependentCoding/main/template/${path}`,
+      { next: { revalidate: 300 } },
+    );
+    if (response.ok) return await response.text();
+  } catch {
+    // The source browser can still show its index when GitHub is unavailable.
+  }
+  return "// Could not load this file. Provenance is latency.";
 }
