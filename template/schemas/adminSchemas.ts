@@ -16,3 +16,11 @@ export const addAdminMembershipSchema = z.object({
   email: z.string().trim().email(),
   role: adminRoleSchema,
 });
+
+export const adminBulkOperationSchema = z.array(
+  z.discriminatedUnion("kind", [
+    changeAdminMembershipSchema.extend({ kind: z.literal("change-role") }),
+    updateAdminMembershipStatusSchema.extend({ kind: z.literal("suspend") }),
+    updateAdminMembershipStatusSchema.extend({ kind: z.literal("restore") }),
+  ]),
+);

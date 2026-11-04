@@ -2,6 +2,7 @@
 
 import {
   addAdminMembershipSchema,
+  adminBulkOperationSchema,
   changeAdminMembershipSchema,
   updateAdminMembershipStatusSchema,
 } from "@/schemas/adminSchemas";
@@ -12,6 +13,39 @@ import { withTenantTransaction } from "@/lib/db/tenant";
 import { updateMembershipAdministrationTx } from "@/lib/db/transactions/admin.tx";
 import { adminMembershipSelect } from "@/lib/db/selects/admin.selects";
 import { InvariantViolationError } from "@/lib/db/transactions/errors";
+import { toActionResult } from "@/lib/utils/actionResult";
+
+/** Every command commits together or none does; an administrator never changes their own membership. */
+export async function executeAdminBulkOperation(rawInput: unknown) {
+  return toActionResult(async () => {
+    const identity = await requireIdentity();
+    return withTenantTransaction(identity, async (tx, access) => {
+      assertPermission(access, "admin.membership:update");
+      const commands = adminBulkOperationSchema.parse(rawInput);
+      const results = [];
+      for (const command of commands) {
+        if (
+          command.kind !== "restore" &&
+          command.membershipId === access.membershipId
+        ) {
+          throw new InvariantViolationError(
+            "An administrator cannot change their own membership.",
+          );
+        }
+        const membership = await updateMembershipAdministrationTx(tx, {
+          organizationId: access.organizationId,
+          actorUserId: access.userId,
+          membershipId: command.membershipId,
+          ...(command.kind === "change-role"
+            ? { role: command.role }
+            : { status: command.kind === "suspend" ? "SUSPENDED" : "ACTIVE" }),
+        });
+        results.push(toAdminMembershipDTO(membership));
+      }
+      return results;
+    });
+  });
+}
 
 export async function changeAdminMembership(rawInput: unknown) {
   const input = changeAdminMembershipSchema.parse(rawInput);
