@@ -15,6 +15,12 @@ import {
   organizationOverviewSelect,
 } from "@/lib/db/selects/organization.selects";
 
+export async function canViewIntegrationStatuses() {
+  return withAuthenticatedRead(async (_tx, access) =>
+    hasPermission(access, "base.settings:update"),
+  );
+}
+
 export async function getCurrentOrganization() {
   return withAuthenticatedRead(async (tx, access) => {
     assertPermission(access, "base.organization:read");
