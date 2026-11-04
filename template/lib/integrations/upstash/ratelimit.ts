@@ -22,7 +22,9 @@ export interface RateLimitPolicy {
 }
 
 export function isRateLimitConfigured() {
-  return ratelimitEnv.configured();
+  const { UPSTASH_REDIS_REST_URL, UPSTASH_REDIS_REST_TOKEN } =
+    ratelimitEnv.read();
+  return Boolean(UPSTASH_REDIS_REST_URL && UPSTASH_REDIS_REST_TOKEN);
 }
 
 // No credentials means the optional integration is unused. Partial configuration
@@ -41,6 +43,11 @@ function limiterFor(scope: string, policy: RateLimitPolicy) {
   let limiter = limiters.get(key);
   if (!limiter) {
     const env = ratelimitEnv.read();
+    if (!env.UPSTASH_REDIS_REST_URL || !env.UPSTASH_REDIS_REST_TOKEN) {
+      throw new Error(
+        "ratelimit environment is not configured: set UPSTASH_REDIS_REST_URL, UPSTASH_REDIS_REST_TOKEN",
+      );
+    }
     redis ??= new Redis({
       url: env.UPSTASH_REDIS_REST_URL,
       token: env.UPSTASH_REDIS_REST_TOKEN,

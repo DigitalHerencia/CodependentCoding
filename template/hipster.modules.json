@@ -203,12 +203,12 @@
       "env": [
         {
           "name": "UPSTASH_REDIS_REST_URL",
-          "required": true,
+          "required": false,
           "scope": "server"
         },
         {
           "name": "UPSTASH_REDIS_REST_TOKEN",
-          "required": true,
+          "required": false,
           "scope": "server"
         }
       ]
