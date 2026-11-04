@@ -55,6 +55,7 @@ export async function enforceRateLimit(
   identifier: string,
   policy: RateLimitPolicy,
 ): Promise<void> {
-  const { success } = await limiterFor(scope, policy).limit(identifier);
+  const { success, reason } = await limiterFor(scope, policy).limit(identifier);
+  if (reason === "timeout") throw new Error("Rate limiter unavailable.");
   if (!success) throw new RateLimitedError();
 }

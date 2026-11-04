@@ -4,30 +4,6 @@ import type { Prisma } from "@/generated/prisma/client";
 
 import { aiGenerationSelect } from "@/lib/db/selects/ai.selects";
 
-export async function lockAiRateLimitTx(
-  tx: Prisma.TransactionClient,
-  lockKey: string,
-) {
-  await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${lockKey}))`;
-}
-
-export async function countRecentAiGenerationsTx(
-  tx: Prisma.TransactionClient,
-  input: {
-    organizationId: string;
-    userId: string;
-    windowStart: Date;
-  },
-) {
-  return tx.aiGeneration.count({
-    where: {
-      organizationId: input.organizationId,
-      userId: input.userId,
-      createdAt: { gte: input.windowStart },
-    },
-  });
-}
-
 /** A PENDING generation the provider call will complete or fail. */
 export async function createAiGenerationTx(
   tx: Prisma.TransactionClient,

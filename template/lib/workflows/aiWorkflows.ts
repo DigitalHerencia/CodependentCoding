@@ -5,10 +5,8 @@ import { assertPermission } from "@/lib/authz/permissions";
 import { withAuthenticatedRead, withTenantTransaction } from "@/lib/db/tenant";
 import { completeAiGenerationTx } from "@/lib/db/transactions/ai-complete-generation.tx";
 import {
-  countRecentAiGenerationsTx,
   createAiGenerationTx,
   failAiGenerationTx,
-  lockAiRateLimitTx,
 } from "@/lib/db/transactions/ai.tx";
 import { getMyAiUsage, getMyAiGenerations } from "@/lib/fetchers/aiFetchers";
 import { isHuggingFaceConfigured } from "@/lib/integrations/hugging-face/client";
@@ -36,7 +34,7 @@ export async function getAiPlaygroundConfiguration() {
   return withAuthenticatedRead(async (_tx, access) => {
     assertPermission(access, "ai.generation:read");
     return {
-      configured: isHuggingFaceConfigured(),
+      configured: isHuggingFaceConfigured() && isRateLimitConfigured(),
       model: getConfiguredHuggingFaceModel(),
     };
   });
@@ -72,49 +70,19 @@ export async function selectModelWorkflow() {
   return configuration.model;
 }
 
-class AiRateLimitError extends Error {
-  readonly code = "RATE_LIMITED";
-
-  constructor() {
-    super("AI generation rate limit exceeded.");
-    this.name = "AiRateLimitError";
-  }
-}
-
-/** 5 generations per user per minute. */
-const AI_RATE_LIMIT = { requests: 5, windowMs: 60_000 } as const;
-
-/**
- * Record (transaction) → generate (provider, outside any transaction) →
- * complete or fail (transaction). Rate limit: Upstash before the first
- * transaction when the ratelimit add-on is configured, otherwise a count of
- * recent rows under an advisory lock inside it.
- */
 export async function executeGenerationWorkflow(
   command: ExecuteAiGenerationCommand,
 ) {
   const model = await selectModelWorkflow();
   const identity = await requireIdentity();
-  const upstash = isRateLimitConfigured();
-  if (upstash) {
-    await enforceRateLimit("ai-generate", identity.clerkUserId, {
-      requests: AI_RATE_LIMIT.requests,
-      window: "60 s",
-    });
-  }
+  await enforceRateLimit("ai-generate", identity.clerkUserId, {
+    requests: 5,
+    window: "60 s",
+  });
   const generation = await withTenantTransaction(
     identity,
     async (tx, access) => {
       assertPermission(access, "ai.generation:create");
-      if (!upstash) {
-        await lockAiRateLimitTx(tx, `ai-rate-limit:${access.userId}`);
-        const recent = await countRecentAiGenerationsTx(tx, {
-          organizationId: access.organizationId,
-          userId: access.userId,
-          windowStart: new Date(Date.now() - AI_RATE_LIMIT.windowMs),
-        });
-        if (recent >= AI_RATE_LIMIT.requests) throw new AiRateLimitError();
-      }
       return createAiGenerationTx(tx, {
         organizationId: access.organizationId,
         userId: access.userId,
