@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { generateAiResponse } from "@/lib/actions/aiActions";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -32,23 +33,14 @@ export function AiPlaygroundFeatureClient({
           setPending(true);
           setError("");
           try {
-            const response = await fetch("/api/ai/generate", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ prompt }),
-            });
-            const result: unknown = await response.json();
-            if (
-              !response.ok ||
-              !result ||
-              typeof result !== "object" ||
-              !("text" in result) ||
-              typeof result.text !== "string"
-            )
-              throw new Error(
-                "Generation failed. Check provider configuration, permissions, or rate limits.",
+            const result = await generateAiResponse({ prompt });
+            if (!result.ok) {
+              setError(
+                result.error.fieldErrors?.prompt?.[0] ?? result.error.message,
               );
-            setOutput(result.text);
+              return;
+            }
+            setOutput(result.data.text);
             router.refresh();
           } catch {
             setError(

@@ -1,24 +1,11 @@
 import "server-only";
 
-import { requireIdentity } from "@/lib/auth/auth";
 import { assertPermission } from "@/lib/authz/permissions";
-import { withAuthenticatedRead, withTenantTransaction } from "@/lib/db/tenant";
-import { completeAiGenerationTx } from "@/lib/db/transactions/ai-complete-generation.tx";
-import {
-  createAiGenerationTx,
-  failAiGenerationTx,
-} from "@/lib/db/transactions/ai.tx";
+import { withAuthenticatedRead } from "@/lib/db/tenant";
 import { getMyAiUsage, getMyAiGenerations } from "@/lib/fetchers/aiFetchers";
 import { isHuggingFaceConfigured } from "@/lib/integrations/hugging-face/client";
-import {
-  generateHuggingFaceText,
-  getConfiguredHuggingFaceModel,
-} from "@/lib/integrations/hugging-face/inference";
-import {
-  enforceRateLimit,
-  isRateLimitConfigured,
-} from "@/lib/integrations/upstash/ratelimit";
-import type { AiUsageItem, ExecuteAiGenerationCommand } from "@/types/aiTypes";
+import { getConfiguredHuggingFaceModel } from "@/lib/integrations/hugging-face/inference";
+import type { AiUsageItem } from "@/types/aiTypes";
 
 export async function getAiWorkspaceWorkflow() {
   const [configuration, generations, usage] = await Promise.all([
@@ -34,7 +21,7 @@ export async function getAiPlaygroundConfiguration() {
   return withAuthenticatedRead(async (_tx, access) => {
     assertPermission(access, "ai.generation:read");
     return {
-      configured: isHuggingFaceConfigured() && isRateLimitConfigured(),
+      configured: isHuggingFaceConfigured(),
       model: getConfiguredHuggingFaceModel(),
     };
   });
@@ -60,65 +47,4 @@ export function calculateUsage(items: AiUsageItem[]) {
     }),
     { inputTokens: 0, outputTokens: 0, cost: 0, generationCount: 0 },
   );
-}
-
-export async function selectModelWorkflow() {
-  const configuration = await getAiPlaygroundConfiguration();
-  if (!configuration.configured) {
-    throw new Error("The AI provider is not configured.");
-  }
-  return configuration.model;
-}
-
-export async function executeGenerationWorkflow(
-  command: ExecuteAiGenerationCommand,
-) {
-  const model = await selectModelWorkflow();
-  const identity = await requireIdentity();
-  await enforceRateLimit("ai-generate", identity.clerkUserId, {
-    requests: 5,
-    window: "60 s",
-  });
-  const generation = await withTenantTransaction(
-    identity,
-    async (tx, access) => {
-      assertPermission(access, "ai.generation:create");
-      return createAiGenerationTx(tx, {
-        organizationId: access.organizationId,
-        userId: access.userId,
-        provider: "hugging-face",
-        model,
-        input: { prompt: command.prompt },
-      });
-    },
-  );
-  try {
-    const result = await generateHuggingFaceText({
-      prompt: command.prompt,
-      model,
-    });
-    await withTenantTransaction(identity, async (tx, access) => {
-      assertPermission(access, "ai.generation:update");
-      return completeAiGenerationTx(tx, {
-        organizationId: access.organizationId,
-        generationId: generation.id,
-        output: { text: result.generated_text },
-        inputTokens: 0,
-        outputTokens: 0,
-        cost: "0",
-      });
-    });
-    return { generationId: generation.id, text: result.generated_text, model };
-  } catch (cause) {
-    await withTenantTransaction(identity, async (tx, access) => {
-      assertPermission(access, "ai.generation:update");
-      return failAiGenerationTx(tx, {
-        organizationId: access.organizationId,
-        generationId: generation.id,
-        errorCode:
-          cause instanceof Error ? cause.message : "AI generation failed.",
-      });
-    });
-    throw cause;
-  }
 }

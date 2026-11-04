@@ -26,7 +26,3 @@ export interface AiUsageItem {
   outputTokens: number;
   cost: string;
 }
-
-export interface ExecuteAiGenerationCommand {
-  prompt: string;
-}

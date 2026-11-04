@@ -3,6 +3,7 @@ import "server-only";
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
 
+import { hasValues } from "@/lib/env/base";
 import { ratelimitEnv } from "@/lib/env/ratelimit";
 
 /** Backs the `RATE_LIMITED` error code (AUTH.md §8). */
@@ -22,6 +23,14 @@ export interface RateLimitPolicy {
 
 export function isRateLimitConfigured() {
   return ratelimitEnv.configured();
+}
+
+// No credentials means the optional integration is unused. Partial configuration
+// still invokes the limiter so invalid deployments fail closed.
+export function isRateLimitRequested() {
+  return Object.keys(ratelimitEnv.schema.shape).some((name) =>
+    hasValues([name]),
+  );
 }
 
 let redis: Redis | undefined;

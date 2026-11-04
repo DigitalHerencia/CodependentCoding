@@ -137,7 +137,7 @@ Doctrine is code. `template/eslint/doctrine-map.mjs` is the machine table (layer
 | CC-UI-001 / 002  | Primitives and hooks stay presentation/browser-side                                        | layer-boundaries                     |
 | CC-READ-001      | Fetchers: no actions, workflows, integrations, transactions                                | layer-boundaries                     |
 | CC-READ-002      | Fetchers never call Prisma write methods                                                   | `codependent/no-fetcher-writes`      |
-| CC-WRITE-001     | Actions: no integrations or SDKs                                                           | layer-boundaries                     |
+| CC-WRITE-001     | Actions may use integration adapters; no direct SDK imports                                | layer-boundaries                     |
 | CC-WRITE-002     | Actions start with `"use server"`                                                          | `codependent/use-server-actions`     |
 | CC-FLOW-001      | Workflows: no Prisma client, no SDKs                                                       | layer-boundaries                     |
 | CC-FLOW-002      | No pass-through workflows (body is a single call)                                          | `codependent/no-pass-through`        |

@@ -325,16 +325,8 @@ export const boundaries = {
   },
   action: {
     rule: "CC-WRITE-001",
-    deny: [
-      "integration",
-      "provider-sdk",
-      "feature",
-      "route",
-      "block",
-      "ui",
-      "form-state",
-    ],
-    why: "Actions are CRUD mutation boundaries; provider mechanics run through workflows.",
+    deny: ["provider-sdk", "feature", "route", "block", "ui", "form-state"],
+    why: "Actions own mutations and may use integration adapters. Provider SDKs stay inside integrations.",
   },
   workflow: {
     rule: "CC-FLOW-001",

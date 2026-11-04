@@ -130,7 +130,7 @@ rules:
   - {
       id: CC-WRITE-001,
       layer: action,
-      text: "Actions: no integrations or provider SDKs",
+      text: "Actions may use integration adapters; no direct provider SDK imports",
       enforcement: "eslint:codependent/layer-boundaries",
     }
   - {
