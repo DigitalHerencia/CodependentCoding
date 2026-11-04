@@ -2,28 +2,20 @@ import type {
   CrmContactStatus,
   CrmDealStage as PrismaCrmDealStage,
 } from "@/generated/prisma/enums";
-import type { contactSortValues } from "@/schemas/crmSchemas";
+import type { z } from "zod";
+import type {
+  contactFormSchema,
+  contactListCriteriaSchema,
+  contactSortValues,
+} from "@/schemas/crmSchemas";
 
 export type ContactStatus = CrmContactStatus;
 export type EditableContactStatus = Exclude<ContactStatus, "ARCHIVED">;
 
 export type ContactSort = (typeof contactSortValues)[number];
 
-export interface ContactListCriteria {
-  query: string;
-  status?: EditableContactStatus;
-  sort: ContactSort;
-  limit: number;
-}
-
-export interface ContactFormValues {
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone: string;
-  title: string;
-  status: EditableContactStatus;
-}
+export type ContactListCriteria = z.output<typeof contactListCriteriaSchema>;
+export type ContactFormValues = z.input<typeof contactFormSchema>;
 
 export interface CrmContactDTO {
   id: string;
