@@ -1,3 +1,5 @@
+import "server-only";
+
 import type { AiGenerationDTO, AiUsageSummaryDTO } from "@/types/aiTypes";
 import type { AiGenerationRecord } from "@/lib/db/selects/ai.selects";
 

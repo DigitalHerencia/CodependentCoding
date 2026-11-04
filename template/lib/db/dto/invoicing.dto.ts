@@ -1,3 +1,5 @@
+import "server-only";
+
 import type { ExpenseDTO, InvoiceDTO } from "@/types/invoicingTypes";
 import type {
   ExpenseRecord,

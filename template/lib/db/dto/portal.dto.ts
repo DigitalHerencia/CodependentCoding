@@ -1,3 +1,5 @@
+import "server-only";
+
 import type { PortalBillingDTO, PortalDocumentDTO } from "@/types/portalTypes";
 import type {
   PortalBillingSubscriptionRecord,

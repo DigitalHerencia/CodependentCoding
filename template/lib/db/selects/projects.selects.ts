@@ -1,3 +1,5 @@
+import "server-only";
+
 // Why: Selects: one shape per DTO, so queries never over-fetch columns.
 import type { Prisma } from "@/generated/prisma/client";
 

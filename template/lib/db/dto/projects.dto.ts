@@ -1,3 +1,5 @@
+import "server-only";
+
 // Why: DTO mappers: the only place rows become transport-safe objects (dates to ISO strings).
 import type { ProjectSummaryDTO, TaskDTO } from "@/types/projectsTypes";
 import type {

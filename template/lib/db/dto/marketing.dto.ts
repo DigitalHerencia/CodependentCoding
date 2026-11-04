@@ -1,3 +1,5 @@
+import "server-only";
+
 import type { AudienceDTO, CampaignDTO } from "@/types/marketingTypes";
 import type {
   AudienceRecord,

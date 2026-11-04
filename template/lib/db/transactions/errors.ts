@@ -1,3 +1,5 @@
+import "server-only";
+
 export class ConcurrencyConflictError extends Error {
   readonly code = "CONFLICT";
 

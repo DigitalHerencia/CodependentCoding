@@ -1,3 +1,5 @@
+import "server-only";
+
 import type { InvitationDTO, OrganizationDTO } from "@/types/commonTypes";
 import type {
   InvitationRecord,

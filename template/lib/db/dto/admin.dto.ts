@@ -1,3 +1,5 @@
+import "server-only";
+
 import type { AdminMembershipDTO, AuditEventDTO } from "@/types/adminTypes";
 import type {
   AdminMembershipRecord,
