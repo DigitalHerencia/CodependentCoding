@@ -46,7 +46,7 @@ URL ─► app/ (route) ─► features/ ─► components/blocks ─► compone
                           ├─► lib/fetchers   (reads)
                           ├─► lib/actions    (CRUD writes, "use server")
                           ├─► lib/workflows  (named application logic)
-                          │      ├─► lib/db/transactions (atomic writes)
+                          │      ├─► lib/fetchers and lib/actions
                           │      └─► lib/integrations/<provider>
                           ├─► lib/auth / lib/authz
                           └─► schemas/ · types/ · lib/cache · lib/constants · lib/utils
@@ -54,35 +54,35 @@ URL ─► app/ (route) ─► features/ ─► components/blocks ─► compone
 
 ### 3.1 Responsibility map
 
-| Concern                  | Home                                                                           | Rule                                                                        |
-| ------------------------ | ------------------------------------------------------------------------------ | --------------------------------------------------------------------------- |
-| URL / page               | `app/**/page.tsx`                                                              | Thin: Suspense + feature, or blocks for static public pages                 |
-| Provider webhook         | `app/api/<provider>/webhooks/route.ts`                                         | Raw-body verify → idempotent persistence → ack                              |
-| Capability orchestration | `features/<domain>/<domain><Thing>Feature.tsx`                                 | Server component; renders blocks                                            |
-| Browser behavior         | `features/<domain>/<name>.client.tsx`                                          | `"use client"`; UI controls + actions only                                  |
-| Form                     | `features/<domain>/<domain><Verb><Thing>Form.tsx`                              | React Hook Form + Zod + action; may use UI primitives                       |
-| Loading                  | `features/<domain>/<domain><Thing>Skeleton.tsx`                                | Mirrors real layout; `ui/skeleton` only                                     |
-| Domain presentation      | `components/templates/<slice>-templates.tsx`                                   | Pure; composed from blocks; one file per slice                              |
-| Reusable composition     | `components/blocks/<kebab>.tsx`                                                | Pure presentation                                                           |
-| Structure                | `components/nav`, `components/shells`                                          | Frames; Clerk UI widgets allowed                                            |
-| Primitive                | `components/ui/<kebab>.tsx`                                                    | shadcn/BoldKit-derived                                                      |
-| Read                     | `lib/fetchers/<domain>Fetchers.ts`                                             | `server-only`; auth → authz → scoped select → DTO                           |
-| CRUD write               | `lib/actions/<domain>Actions.ts`                                               | `"use server"`; auth → authz → Zod → write/tx → invalidate → `ActionResult` |
-| Application logic        | `lib/workflows/<domain>Workflows.ts` or `lib/workflows/<domain>/<verbNoun>.ts` | `server-only`; arranges operations; no actions, Prisma client, SDKs         |
-| Atomic write             | `lib/db/transactions/<domain>-<verb>-<noun>.tx.ts`                             | DB-only; no network                                                         |
-| DB runtime               | `lib/db/client.ts`, `rls.ts`, `tenant.ts`                                      | Prisma client, adapter, RLS context                                         |
-| Projection               | `lib/db/selects/<domain>.selects.ts`                                           | Precise selects                                                             |
-| Mapping                  | `lib/db/dto/<domain>.dto.ts`                                                   | Record → transport-safe DTO                                                 |
-| Identity                 | `lib/auth/{clerk,auth,redirects,clerk-webhooks}.ts`                            | Clerk only here                                                             |
-| Access                   | `lib/authz/{roles,permissions,resources,policies,mode,attributes?}.ts`         | App-owned RBAC/ABAC; `roles.ts` is the one browser-safe authz file          |
-| Provider                 | `lib/integrations/<provider>/<kebab>.ts`                                       | SDK only here                                                               |
-| Cache                    | `lib/cache/{tags,life,invalidate}.ts`                                          | Semantics only                                                              |
-| Module contribution      | `lib/modules/<id>.module.ts`, `registry.ts`                                    | Nav, dashboard widgets, permissions                                         |
-| Env                      | `lib/env/<owner>.ts`                                                           | Zod-validated, `server-only`                                                |
-| Error reporting          | `lib/observability/report.ts`                                                  | `server-only`; `reportError` returns the correlation `ref`                  |
-| Validation               | `schemas/<domain>Schemas.ts`                                                   | Zod; client- and server-safe                                                |
-| Shared types             | `types/<domain>Types.ts`                                                       | Compile-time contracts                                                      |
-| Schema                   | `prisma/schema/<owner>.prisma`, `prisma/rls/<owner>.sql`, `prisma/seed.ts`     | Prisma lifecycle                                                            |
+| Concern                  | Home                                                                           | Rule                                                                           |
+| ------------------------ | ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------ |
+| URL / page               | `app/**/page.tsx`                                                              | Thin: Suspense + feature, or blocks for static public pages                    |
+| Provider webhook         | `app/api/<provider>/webhooks/route.ts`                                         | Raw-body verify → idempotent persistence → ack                                 |
+| Capability orchestration | `features/<domain>/<domain><Thing>Feature.tsx`                                 | Server component; renders blocks                                               |
+| Browser behavior         | `features/<domain>/<name>.client.tsx`                                          | `"use client"`; UI controls + actions only                                     |
+| Form                     | `features/<domain>/<domain><Verb><Thing>Form.tsx`                              | React Hook Form + Zod + action; may use UI primitives                          |
+| Loading                  | `features/<domain>/<domain><Thing>Skeleton.tsx`                                | Mirrors real layout; `ui/skeleton` only                                        |
+| Domain presentation      | `components/templates/<slice>-templates.tsx`                                   | Pure; composed from blocks; one file per slice                                 |
+| Reusable composition     | `components/blocks/<kebab>.tsx`                                                | Pure presentation                                                              |
+| Structure                | `components/nav`, `components/shells`                                          | Frames; Clerk UI widgets allowed                                               |
+| Primitive                | `components/ui/<kebab>.tsx`                                                    | shadcn/BoldKit-derived                                                         |
+| Read                     | `lib/fetchers/<domain>Fetchers.ts`                                             | `server-only`; auth → authz → scoped select → DTO                              |
+| CRUD write               | `lib/actions/<domain>Actions.ts`                                               | `"use server"`; auth → authz → Zod → write/tx → invalidate → `ActionResult`    |
+| Application logic        | `lib/workflows/<domain>Workflows.ts` or `lib/workflows/<domain>/<verbNoun>.ts` | `server-only`; arranges operations; may call actions; no Prisma client or SDKs |
+| Atomic write             | `lib/db/transactions/<domain>-<verb>-<noun>.tx.ts`                             | DB-only; no network                                                            |
+| DB runtime               | `lib/db/client.ts`, `rls.ts`, `tenant.ts`                                      | Prisma client, adapter, RLS context                                            |
+| Projection               | `lib/db/selects/<domain>.selects.ts`                                           | Precise selects                                                                |
+| Mapping                  | `lib/db/dto/<domain>.dto.ts`                                                   | Record → transport-safe DTO                                                    |
+| Identity                 | `lib/auth/{clerk,auth,redirects,clerk-webhooks}.ts`                            | Clerk only here                                                                |
+| Access                   | `lib/authz/{roles,permissions,resources,policies,mode,attributes?}.ts`         | App-owned RBAC/ABAC; `roles.ts` is the one browser-safe authz file             |
+| Provider                 | `lib/integrations/<provider>/<kebab>.ts`                                       | SDK only here                                                                  |
+| Cache                    | `lib/cache/{tags,life,invalidate}.ts`                                          | Semantics only                                                                 |
+| Module contribution      | `lib/modules/<id>.module.ts`, `registry.ts`                                    | Nav, dashboard widgets, permissions                                            |
+| Env                      | `lib/env/<owner>.ts`                                                           | Zod-validated, `server-only`                                                   |
+| Error reporting          | `lib/observability/report.ts`                                                  | `server-only`; `reportError` returns the correlation `ref`                     |
+| Validation               | `schemas/<domain>Schemas.ts`                                                   | Zod; client- and server-safe                                                   |
+| Shared types             | `types/<domain>Types.ts`                                                       | Compile-time contracts                                                         |
+| Schema                   | `prisma/schema/<owner>.prisma`, `prisma/rls/<owner>.sql`, `prisma/seed.ts`     | Prisma lifecycle                                                               |
 
 ### 3.2 Exceptions (DEC-007)
 
@@ -141,7 +141,6 @@ Doctrine is code. `template/eslint/doctrine-map.mjs` is the machine table (layer
 | CC-WRITE-002     | Actions start with `"use server"`                                                          | `codependent/use-server-actions`     |
 | CC-FLOW-001      | Workflows: no Prisma client, no SDKs                                                       | layer-boundaries                     |
 | CC-FLOW-002      | No pass-through workflows (body is a single call)                                          | `codependent/no-pass-through`        |
-| CC-FLOW-003      | Workflows never import actions (`"use server"`); actions may call workflows                | layer-boundaries                     |
 | CC-TX-001        | Transactions: DB only                                                                      | layer-boundaries                     |
 | CC-TX-002        | No `fetch()` in transactions                                                               | `codependent/no-transaction-network` |
 | CC-DB-001        | `lib/db` does not reach up into app layers                                                 | layer-boundaries                     |

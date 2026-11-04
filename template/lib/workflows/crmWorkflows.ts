@@ -1,15 +1,5 @@
 import "server-only";
 
-import { requireIdentity } from "@/lib/auth/auth";
-import { authorizeOwnedOrAssignedWrite } from "@/lib/authz/policies";
-import { toCrmContactDTO } from "@/lib/db/dto/crm.dto";
-import { withTenantTransaction } from "@/lib/db/tenant";
-import {
-  findCrmContactForWriteTx,
-  qualifyCrmLeadTx,
-} from "@/lib/db/transactions/crm-qualify-lead.tx";
-import { InvariantViolationError } from "@/lib/db/transactions/errors";
-import { calculatePipelineValue } from "@/lib/workflows/crm/calculatePipelineValue";
 import {
   getClosedWonCrmValue,
   getContactById,
@@ -18,6 +8,8 @@ import {
   getCrmAccount,
   getContacts,
 } from "@/lib/fetchers/crmFetchers";
+
+import { calculatePipelineValue } from "@/lib/workflows/crm/calculatePipelineValue";
 
 export async function getCrmWorkspaceWorkflow(limit = 100) {
   const [deals, contacts] = await Promise.all([
@@ -35,30 +27,6 @@ export async function getCrmRecordWorkflow(
   if (kind === "account") return getCrmAccount(id);
   return getContactById(id);
 }
-/** Read → decide → write in one transaction: only a lead the member may edit becomes active. */
-export async function qualifyLeadWorkflow(contactId: string) {
-  const identity = await requireIdentity();
-  return withTenantTransaction(identity, async (tx, access) => {
-    const contact = await findCrmContactForWriteTx(tx, {
-      organizationId: access.organizationId,
-      contactId,
-    });
-    authorizeOwnedOrAssignedWrite(access, "crm.contact:update", {
-      kind: "crm.contact",
-      organizationId: contact.organizationId,
-      ownerMembershipId: contact.ownerMembershipId,
-    });
-    if (contact.status !== "LEAD")
-      throw new InvariantViolationError("Only a lead can be qualified.");
-    const record = await qualifyCrmLeadTx(tx, {
-      organizationId: access.organizationId,
-      actorUserId: access.userId,
-      contactId: contact.id,
-    });
-    return toCrmContactDTO(record);
-  });
-}
-
 export async function detectStalledDealWorkflow(
   dealId: string,
   now = new Date(),

@@ -339,7 +339,6 @@ export const boundaries = {
   workflow: {
     rule: "CC-FLOW-001",
     deny: [
-      "action",
       "prisma-runtime",
       "provider-sdk",
       "clerk-server",
@@ -349,13 +348,7 @@ export const boundaries = {
       "ui",
       "form-state",
     ],
-    why: "Workflows arrange fetchers, transaction helpers and integration functions; they never touch the Prisma client or provider SDKs directly.",
-    overrides: {
-      action: {
-        rule: "CC-FLOW-003",
-        why: "Every action commits its own transaction and is a public POST endpoint; open the transaction here and call transaction helpers instead.",
-      },
-    },
+    why: "Workflows arrange fetchers, actions and integration helpers; they never touch the Prisma client or provider SDKs directly.",
   },
   transaction: {
     rule: "CC-TX-001",

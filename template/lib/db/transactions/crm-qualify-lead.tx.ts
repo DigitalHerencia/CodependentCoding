@@ -30,7 +30,12 @@ export async function findCrmContactForWriteTx(
 /** LEAD → ACTIVE, audited. The status predicate makes a concurrent qualify a CONFLICT. */
 export async function qualifyCrmLeadTx(
   tx: Prisma.TransactionClient,
-  input: { organizationId: string; actorUserId: string; contactId: string },
+  input: {
+    organizationId: string;
+    actorUserId: string;
+    contactId: string;
+    ownerMembershipId: string | null;
+  },
 ) {
   const result = await tx.crmContact.updateMany({
     where: {
@@ -38,6 +43,7 @@ export async function qualifyCrmLeadTx(
       organizationId: input.organizationId,
       archivedAt: null,
       status: "LEAD",
+      ownerMembershipId: input.ownerMembershipId,
     },
     data: { status: "ACTIVE" },
   });

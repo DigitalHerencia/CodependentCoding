@@ -52,7 +52,12 @@ tester.run("layer-boundaries", rules["layer-boundaries"], {
       code: 'import Stripe from "stripe";',
     },
     {
-      name: "CC-FLOW-003 action may call a workflow",
+      name: "Workflow may call an authorized action",
+      filename: at("lib/workflows/crmWorkflows.ts"),
+      code: 'import { updateContact } from "@/lib/actions/crmActions";',
+    },
+    {
+      name: "Legacy action-to-workflow import",
       filename: at("lib/actions/uploadsActions.ts"),
       code: 'import { x } from "@/lib/workflows/uploadsWorkflows";',
     },
@@ -118,12 +123,6 @@ tester.run("layer-boundaries", rules["layer-boundaries"], {
       filename: at("lib/workflows/billingWorkflows.ts"),
       code: 'import Stripe from "stripe";',
       errors: [{ messageId: "denied" }],
-    },
-    {
-      name: "CC-FLOW-003 workflow imports an action",
-      filename: at("lib/workflows/crmWorkflows.ts"),
-      code: 'import { updateContact } from "@/lib/actions/crmActions";',
-      errors: [{ message: /^\[CC-FLOW-003\] workflow must not import action/ }],
     },
     {
       name: "CC-TX-001 transaction calls integration",

@@ -1,6 +1,7 @@
 "use server";
 
 import {
+  contactIdSchema,
   crmAccountFormSchema,
   updateCrmAccountSchema,
   archiveContactSchema,
@@ -26,9 +27,43 @@ import {
 import { withTenantTransaction } from "@/lib/db/tenant";
 import {
   ConcurrencyConflictError,
+  InvariantViolationError,
   ResourceNotFoundError,
 } from "@/lib/db/transactions/errors";
 import { updateDealStageTx } from "@/lib/db/transactions/crm-update-deal-stage.tx";
+import {
+  findCrmContactForWriteTx,
+  qualifyCrmLeadTx,
+} from "@/lib/db/transactions/crm-qualify-lead.tx";
+import { toActionResult } from "@/lib/utils/actionResult";
+
+export async function qualifyCrmLead(rawContactId: unknown) {
+  return toActionResult(async () => {
+    const identity = await requireIdentity();
+    return withTenantTransaction(identity, async (tx, access) => {
+      assertPermission(access, "crm.contact:update");
+      const contactId = contactIdSchema.parse(rawContactId);
+      const contact = await findCrmContactForWriteTx(tx, {
+        organizationId: access.organizationId,
+        contactId,
+      });
+      authorizeOwnedOrAssignedWrite(access, "crm.contact:update", {
+        kind: "crm.contact",
+        organizationId: contact.organizationId,
+        ownerMembershipId: contact.ownerMembershipId,
+      });
+      if (contact.status !== "LEAD")
+        throw new InvariantViolationError("Only a lead can be qualified.");
+      const record = await qualifyCrmLeadTx(tx, {
+        organizationId: access.organizationId,
+        actorUserId: access.userId,
+        contactId: contact.id,
+        ownerMembershipId: contact.ownerMembershipId,
+      });
+      return toCrmContactDTO(record);
+    });
+  });
+}
 
 export async function createCrmDeal(rawInput: unknown) {
   const input = createCrmDealSchema.parse(rawInput);
