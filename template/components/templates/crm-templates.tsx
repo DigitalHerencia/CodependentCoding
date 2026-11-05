@@ -1,5 +1,6 @@
 // Why: Templates: pure presentation for the crm pages, laid out from DTOs; data and slots come from features.
 import Link from "next/link";
+import { crmTemplateCopy } from "@/content/crm";
 import type {
   CrmAccountDTO,
   CrmDealSummaryDTO,
@@ -24,33 +25,33 @@ export function CrmAccountDetailTemplate({
       nav={[]}
       toolbar={
         <Link className="type-link" href={`/crm/accounts/${account.id}/edit`}>
-          Edit account
+          {crmTemplateCopy.editAccount}
         </Link>
       }
     >
       <div className="grid gap-4 lg:grid-cols-[2fr_1fr]">
-        <DashboardPanel title="Relationship notes">
+        <DashboardPanel title={crmTemplateCopy.relationshipNotes}>
           <p className="whitespace-pre-wrap">
-            {account.notes ?? "No notes yet."}
+            {account.notes ?? crmTemplateCopy.noNotes}
           </p>
         </DashboardPanel>
-        <DashboardPanel title="Company profile">
+        <DashboardPanel title={crmTemplateCopy.companyProfile}>
           <dl className="space-y-2">
-            <dt>Industry</dt>
-            <dd>{account.industry ?? "Not recorded"}</dd>
-            <dt>Website</dt>
+            <dt>{crmTemplateCopy.industry}</dt>
+            <dd>{account.industry ?? crmTemplateCopy.notRecorded}</dd>
+            <dt>{crmTemplateCopy.website}</dt>
             <dd>
               {account.website && /^https?:\/\//.test(account.website) ? (
                 <a className="type-link" href={account.website}>
                   {account.website}
                 </a>
               ) : (
-                "Not recorded"
+                crmTemplateCopy.notRecorded
               )}
             </dd>
-            <dt>Relationship</dt>
+            <dt>{crmTemplateCopy.relationship}</dt>
             <dd>{account.status}</dd>
-            <dt>Contacts / opportunities</dt>
+            <dt>{crmTemplateCopy.contactAndDealCounts}</dt>
             <dd>
               {account.contactCount} / {account.dealCount}
             </dd>
@@ -69,7 +70,11 @@ export function CrmAccountsTemplate({
   toolbar: ReactNode;
 }) {
   return (
-    <DashboardLayout title="Account relationships" nav={[]} toolbar={toolbar}>
+    <DashboardLayout
+      title={crmTemplateCopy.accounts}
+      nav={[]}
+      toolbar={toolbar}
+    >
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         {accounts.map((account) => (
           <article key={account.id} className="space-y-3 surface-card p-5">
@@ -80,19 +85,20 @@ export function CrmAccountsTemplate({
               {account.name}
             </Link>
             <p>
-              {account.industry ?? "Industry not recorded"} · {account.status}
+              {account.industry ?? crmTemplateCopy.unknownIndustry} ·{" "}
+              {account.status}
             </p>
             <p>
-              {account.contactCount} contacts · {account.dealCount}{" "}
-              opportunities
+              {account.contactCount} {crmTemplateCopy.contacts} ·{" "}
+              {account.dealCount} {crmTemplateCopy.opportunities}
             </p>
             <p className="line-clamp-3 text-muted-primary">
-              {account.notes ?? "No relationship notes."}
+              {account.notes ?? crmTemplateCopy.noRelationshipNotes}
             </p>
           </article>
         ))}
       </div>
-      {!accounts.length && <p>No matching accounts.</p>}
+      {!accounts.length && <p>{crmTemplateCopy.noAccounts}</p>}
     </DashboardLayout>
   );
 }
@@ -104,19 +110,16 @@ export function CrmAnalyticsTemplate({
 }) {
   const currencies = [...new Set(deals.map((deal) => deal.currency))];
   return (
-    <DashboardLayout title="Pipeline analysis" nav={[]}>
-      <p>
-        Analysis of the latest {deals.length} opportunities (maximum 100).
-        Values are kept separate by currency.
-      </p>
+    <DashboardLayout title={crmTemplateCopy.analytics} nav={[]}>
+      <p>{crmTemplateCopy.analyticsDescription(deals.length)}</p>
       {currencies.map((currency) => (
         <DashboardPanel key={currency} title={currency}>
           <DashboardTable
             columns={[
-              { key: "stage", label: "Sales stage" },
-              { key: "count", label: "Opportunities" },
-              { key: "value", label: "Pipeline value" },
-              { key: "weighted", label: "Probability-weighted value" },
+              { key: "stage", label: crmTemplateCopy.stage },
+              { key: "count", label: crmTemplateCopy.opportunityCount },
+              { key: "value", label: crmTemplateCopy.pipelineValue },
+              { key: "weighted", label: crmTemplateCopy.weightedValue },
             ]}
             rows={[
               "LEAD",
@@ -150,7 +153,7 @@ export function CrmAnalyticsTemplate({
           />
         </DashboardPanel>
       ))}
-      {!deals.length && <p>No opportunities available for analysis.</p>}
+      {!deals.length && <p>{crmTemplateCopy.noAnalytics}</p>}
     </DashboardLayout>
   );
 }
@@ -171,13 +174,15 @@ export function CrmContactDetailTemplate({
           className="type-link"
           href={`/crm/${lead ? "leads" : "contacts"}/${contact.id}/edit`}
         >
-          {lead ? "Qualify or edit lead" : "Edit contact"}
+          {lead ? crmTemplateCopy.editLead : crmTemplateCopy.editContact}
         </Link>
       }
     >
       <div className="grid gap-4 lg:grid-cols-[2fr_1fr]">
-        <DashboardPanel title="Contact profile">
-          <p className="text-xl">{contact.title ?? "Job title not recorded"}</p>
+        <DashboardPanel title={crmTemplateCopy.contactProfile}>
+          <p className="text-xl">
+            {contact.title ?? crmTemplateCopy.unknownTitle}
+          </p>
           <div className="mt-5 space-y-3">
             {contact.email && (
               <p>
@@ -202,20 +207,20 @@ export function CrmContactDetailTemplate({
                   {contact.account.name}
                 </Link>
               ) : (
-                "No account linked"
+                crmTemplateCopy.noAccount
               )}
             </p>
           </div>
         </DashboardPanel>
-        <DashboardPanel title="Relationship">
+        <DashboardPanel title={crmTemplateCopy.relationship}>
           <dl className="space-y-2">
-            <dt>Status</dt>
+            <dt>{crmTemplateCopy.status}</dt>
             <dd>{contact.status}</dd>
-            <dt>Relationship owner</dt>
-            <dd>{contact.owner?.displayName ?? "Unassigned"}</dd>
-            <dt>Added</dt>
+            <dt>{crmTemplateCopy.relationshipOwner}</dt>
+            <dd>{contact.owner?.displayName ?? crmTemplateCopy.unassigned}</dd>
+            <dt>{crmTemplateCopy.added}</dt>
             <dd>{contact.createdAt.slice(0, 10)}</dd>
-            <dt>Last updated</dt>
+            <dt>{crmTemplateCopy.lastUpdated}</dt>
             <dd>{contact.updatedAt.slice(0, 10)}</dd>
           </dl>
         </DashboardPanel>
@@ -235,24 +240,28 @@ export function CrmContactsTemplate({
 }) {
   return (
     <DashboardLayout
-      title={lead ? "Lead qualification" : "Contact directory"}
+      title={
+        lead
+          ? crmTemplateCopy.leadQualification
+          : crmTemplateCopy.contactDirectory
+      }
       nav={[]}
       toolbar={toolbar}
     >
       <p className="text-muted-primary">
         {lead
-          ? "Review prospective customers and qualify their relationship."
-          : "Find people, their accounts, and the best way to reach them."}{" "}
-        Showing up to 100 contacts.
+          ? crmTemplateCopy.leadDirectoryDescription
+          : crmTemplateCopy.contactDirectoryDescription}{" "}
+        {crmTemplateCopy.contactLimit}
       </p>
       <DashboardTable
         columns={[
-          { key: "person", label: "Person" },
-          { key: "role", label: "Job title" },
-          { key: "account", label: "Account" },
-          { key: "email", label: "Email" },
-          { key: "phone", label: "Phone" },
-          { key: "status", label: "Relationship" },
+          { key: "person", label: crmTemplateCopy.person },
+          { key: "role", label: crmTemplateCopy.jobTitle },
+          { key: "account", label: crmTemplateCopy.account },
+          { key: "email", label: crmTemplateCopy.email },
+          { key: "phone", label: crmTemplateCopy.phone },
+          { key: "status", label: crmTemplateCopy.relationship },
         ]}
         rows={contacts.map((contact) => ({
           id: contact.id,
@@ -265,18 +274,18 @@ export function CrmContactsTemplate({
                 {contact.account.name}
               </Link>
             ) : (
-              "Independent"
+              crmTemplateCopy.independent
             ),
             email: contact.email ? (
               <a href={`mailto:${contact.email}`}>{contact.email}</a>
             ) : (
-              "—"
+              crmTemplateCopy.emptyValue
             ),
             phone: contact.phone,
             status: contact.status,
           },
         }))}
-        emptyLabel="No matching contacts."
+        emptyLabel={crmTemplateCopy.noContacts}
       />
     </DashboardLayout>
   );
@@ -296,14 +305,11 @@ export function CrmLeadsTemplate({
 }) {
   return (
     <DashboardLayout
-      title="Lead qualification queue"
+      title={crmTemplateCopy.leadQueue}
       nav={[]}
       toolbar={toolbar}
     >
-      <p>
-        Review new relationships, reach out, and update qualified leads to
-        Active.
-      </p>
+      <p>{crmTemplateCopy.leadQueueDescription}</p>
       <div className="space-y-3">
         {contacts.map((contact) => (
           <article
@@ -317,9 +323,9 @@ export function CrmLeadsTemplate({
               >
                 {contact.firstName} {contact.lastName}
               </Link>
-              <p>{contact.title ?? "Role not recorded"}</p>
+              <p>{contact.title ?? crmTemplateCopy.unknownRole}</p>
               <p className="text-sm text-muted-primary">
-                Added {contact.createdAt.slice(0, 10)}
+                {crmTemplateCopy.added} {contact.createdAt.slice(0, 10)}
               </p>
             </div>
             <div>
@@ -328,18 +334,18 @@ export function CrmLeadsTemplate({
                   {contact.email}
                 </a>
               ) : (
-                <p>Email needed</p>
+                <p>{crmTemplateCopy.emailNeeded}</p>
               )}
-              <p>{contact.phone ?? "Phone not recorded"}</p>
-              <p>{contact.account?.name ?? "No account linked"}</p>
+              <p>{contact.phone ?? crmTemplateCopy.unknownPhone}</p>
+              <p>{contact.account?.name ?? crmTemplateCopy.noAccount}</p>
             </div>
             <Link className="type-link" href={`/crm/leads/${contact.id}/edit`}>
-              Review and qualify
+              {crmTemplateCopy.qualify}
             </Link>
           </article>
         ))}
       </div>
-      {!contacts.length && <p>No leads awaiting qualification.</p>}
+      {!contacts.length && <p>{crmTemplateCopy.noLeads}</p>}
     </DashboardLayout>
   );
 }
@@ -354,10 +360,13 @@ export function CrmPipelineTemplate({
   renderControls: (deal: CrmDealSummaryDTO) => ReactNode;
 }) {
   return (
-    <DashboardLayout title="Sales pipeline" nav={[]} toolbar={toolbar}>
+    <DashboardLayout
+      title={crmTemplateCopy.pipeline}
+      nav={[]}
+      toolbar={toolbar}
+    >
       <p className="text-muted-primary">
-        Move opportunities through qualification, proposal, negotiation, and
-        close. Showing up to 100 opportunities.
+        {crmTemplateCopy.pipelineDescription}
       </p>
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         {Object.values(CrmDealStage).map((stage) => {
@@ -384,21 +393,24 @@ export function CrmPipelineTemplate({
                       {deal.value} {deal.currency}
                     </p>
                     <dl className="text-sm">
-                      <dt>Probability</dt>
+                      <dt>{crmTemplateCopy.probability}</dt>
                       <dd>{deal.probability}%</dd>
-                      <dt>Expected close</dt>
+                      <dt>{crmTemplateCopy.expectedClose}</dt>
                       <dd>
-                        {deal.expectedCloseDate?.slice(0, 10) ?? "Unscheduled"}
+                        {deal.expectedCloseDate?.slice(0, 10) ??
+                          crmTemplateCopy.unscheduled}
                       </dd>
-                      <dt>Owner</dt>
-                      <dd>{deal.owner?.displayName ?? "Unassigned"}</dd>
+                      <dt>{crmTemplateCopy.owner}</dt>
+                      <dd>
+                        {deal.owner?.displayName ?? crmTemplateCopy.unassigned}
+                      </dd>
                     </dl>
                     {renderControls(deal)}
                   </article>
                 ))}
                 {items.length === 0 && (
                   <p className="p-3 text-muted-primary">
-                    No opportunities in this stage.
+                    {crmTemplateCopy.noDealsInStage}
                   </p>
                 )}
               </div>
