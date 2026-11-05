@@ -20,9 +20,6 @@ const nextConfig: NextConfig = {
   // the static parts of a route (doctrine Ch. 03, ledger R-1).
   cacheComponents: true,
   partialPrefetching: true,
-  // Each route group is its own root layout, so unmatched URLs need their
-  // own document (app/global-not-found.tsx).
-  experimental: { globalNotFound: true },
   poweredByHeader: false,
   images: {
     formats: ["image/avif", "image/webp"],

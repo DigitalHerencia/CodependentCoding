@@ -1,9 +1,5 @@
 import { clerkMiddleware } from "@clerk/nextjs/server";
-import {
-  NextResponse,
-  type NextFetchEvent,
-  type NextRequest,
-} from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
 
 import { DEFAULT_AUTH_REDIRECT_PATH, SIGN_IN_PATH } from "@/lib/auth/redirects";
 import { baseEnv } from "@/lib/env/base";
@@ -14,15 +10,8 @@ import { isDevelopment } from "@/lib/env/mode";
  * page is sent to sign-in here, because those pages stream (Cache Components)
  * and a redirect thrown while rendering can no longer set a 3xx status. The
  * layouts and the data layer still check (CC-ROUTE-003); this is UX, never
- * enforcement. It also chooses one of two Content Security Policies by path
- * (doctrine Ch. 10, ledger X-1).
- *
- * - (public) pages are prerendered (`ensureStatic`), so no nonce can reach
- *   them: a strict header policy with 'unsafe-inline' scripts and no
- *   third-party origin.
- * - Everything else renders per request: a fresh nonce with 'strict-dynamic'.
- *   Next.js stamps its scripts with the nonce it finds in the request's CSP
- *   header, and <ClerkProvider dynamic> reads it from `x-nonce`.
+ * enforcement. The root renders per request so Next.js and Clerk receive
+ * the script nonce.
  *
  * Clerk hosts follow Clerk's CSP guide for @clerk/nextjs 7.9
  * (clerk.com/docs/guides/secure/best-practices/csp-headers): the Frontend API
@@ -37,14 +26,13 @@ const matches =
   (request: NextRequest) =>
     patterns.some((pattern) => pattern.test(request.nextUrl.pathname));
 
-const staticPages = [/^\/$/, /^\/(faq|terms|privacy|offline)\/?$/];
+const publicPages = [/^\/$/, /^\/(faq|terms|privacy|offline)\/?$/];
 const clerkPages = [/^\/sign-(in|up)(\/|$)/];
 
-const isStaticPage = matches(...staticPages);
 const isClerkPage = matches(...clerkPages);
 /** Reachable signed out: public pages, Clerk's pages, route handlers (they answer 401 themselves). */
 const isSignedOutRoute = matches(
-  ...staticPages,
+  ...publicPages,
   ...clerkPages,
   /^\/api\//,
   /^\/__clerk\//,
@@ -74,17 +62,6 @@ const shared = [
   "worker-src 'self' blob:",
   ...(isDevelopment ? [] : ["upgrade-insecure-requests"]),
 ];
-
-export function staticPolicy(): string {
-  return [
-    ...shared,
-    // next dev needs eval for React's debugging features; production never.
-    `script-src 'self' 'unsafe-inline'${isDevelopment ? " 'unsafe-eval'" : ""}`,
-    "style-src 'self' 'unsafe-inline'",
-    "img-src 'self' data:",
-    "connect-src 'self'",
-  ].join("; ");
-}
 
 export function noncePolicy(nonce: string): string {
   const fapi = clerkFrontendApi() ?? "";
@@ -126,15 +103,7 @@ const signedInGate = clerkMiddleware(async (auth, request) => {
   return withNonceCsp(request);
 });
 
-// Public pages never run Clerk: no handshake, no session read, no Clerk JS.
-export default function proxy(request: NextRequest, event: NextFetchEvent) {
-  if (isStaticPage(request)) {
-    const response = NextResponse.next();
-    response.headers.set("Content-Security-Policy", staticPolicy());
-    return response;
-  }
-  return signedInGate(request, event);
-}
+export default signedInGate;
 
 export const config = {
   matcher: [

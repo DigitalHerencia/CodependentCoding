@@ -18,13 +18,7 @@ const codeFont = Fira_Code({
   variable: "--font-code",
 });
 
-/**
- * The <html> document every root layout renders. Each route group is its own
- * root layout so `(public)` can prerender while the signed-in groups render
- * the whole document per request (their CSP nonce must reach every script).
- * Sitewide defaults and main-content spacing belong here; shells own
- * navigation and composition.
- */
+/** The shared HTML document, fonts, and body styles. */
 export function DocumentShell({ children }: Readonly<{ children: ReactNode }>) {
   return (
     <html

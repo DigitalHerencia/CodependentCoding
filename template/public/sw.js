@@ -1,4 +1,4 @@
-const SHELL = "maximal-shell-v1";
+const SHELL = "maximal-shell-v2";
 const OFFLINE = "/offline";
 const ICON = "/icons/192.png";
 let cacheGeneration = 0;
@@ -7,7 +7,11 @@ const cacheWrites = new Set();
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
-    caches.open(SHELL).then((cache) => cache.addAll([OFFLINE, ICON])),
+    caches
+      .open(SHELL)
+      .then((cache) =>
+        cache.addAll([new Request(OFFLINE, { credentials: "omit" }), ICON]),
+      ),
   );
   self.skipWaiting();
 });

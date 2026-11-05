@@ -17,8 +17,8 @@ export const metadata: Metadata = {
   description: applicationProduct.description,
 };
 
-// Auth routes share a frame; Clerk behavior remains under lib/auth.
-export default async function AuthLayout({
+// The root provides the shared document and Clerk context.
+export default async function RootLayout({
   children,
 }: Readonly<{ children: ReactNode }>) {
   await connection();
