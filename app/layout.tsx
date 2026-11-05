@@ -8,8 +8,6 @@ import {
 import { SiteShell } from "@/components/shells/site-shell";
 import "./globals.css";
 
-export const ensureStatic = "navigation";
-
 const heritageDisplay = Archivo_Black({
   weight: "400",
   subsets: ["latin"],

@@ -1107,6 +1107,15 @@
         "app/(public)/maximal/page.tsx",
         "https://nextjs.org/docs/app/api-reference/file-conventions/route-segment-config/ensureStatic"
       ]
+    },
+    {
+      "id": "DEC-111",
+      "date": "2026-11-05",
+      "status": "accepted",
+      "title": "Remove manual static-route requirements",
+      "context": "The owner reported that the route opt-out did not resolve the build and explicitly requested removing all ensureStatic configuration.",
+      "decision": "Remove the root layout requirement and the /maximal opt-out, superseding the previous route-specific decision. Preserve all other rendering settings. Run only affected-file formatting and lint; leave builds and pushing to the owner.",
+      "refs": ["app/layout.tsx", "app/(public)/maximal/page.tsx"]
     }
   ]
 }

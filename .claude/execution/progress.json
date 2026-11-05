@@ -26,7 +26,7 @@
     ]
   },
   "$schema": "codependent-coding/execution/progress/v1",
-  "updated": "2026-11-05T08:35:47.235Z",
+  "updated": "2026-11-05T08:38:54.332Z",
   "format": "Evidence states: EXECUTED | INSPECTED | NOT_RUN | BLOCKED. Never mark an issue done without EXECUTED evidence for its Validation commands.",
   "milestones": {
     "M0": {
@@ -3691,13 +3691,11 @@
   "blocked": [],
   "maximal_static_rendering_fix": {
     "status": "ready-for-owner-build",
-    "cause": "Root ensureStatic=navigation conflicts with server searchParams on /maximal.",
-    "change": "Only /maximal exports ensureStatic=false; existing Suspense and server source selection remain.",
+    "change": "Removed both ensureStatic exports from the root layout and /maximal page at the owner explicit request. No manual ensureStatic configuration remains in application source.",
     "EXECUTED": [
-      "Affected-page Prettier --write passed",
-      "Affected-page ESLint --fix passed",
-      "pnpm typecheck passed"
+      "Affected-file Prettier --write passed",
+      "Affected-file ESLint --fix passed"
     ],
-    "NOT_RUN": ["Build, full tests, push and deployment"]
+    "NOT_RUN": ["Typecheck, tests, build, push and deployment"]
   }
 }
