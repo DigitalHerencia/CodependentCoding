@@ -129,7 +129,7 @@ components:
   shells:
     {
       path: components/shells,
-      items: [public-shell, auth-shell, tenant-shell, portal-shell],
+      items: [public-shell, auth-shell, tenant-shell],
     }
 
 compositions:

@@ -67,7 +67,7 @@ All color, radius, border, shadow, spacing, motion, and font values are CSS vari
 | Blocks           | `components/blocks`    | Generic: hero, feature grid, pricing, FAQ, CTA, stats, footer, data table, record detail, kanban, calendar, timeline, settings, empty/error/loading states |
 | Domain templates | `components/templates` | Module-owned, one per slice (`crm-templates.tsx`)                                                                                                          |
 | Nav              | `components/nav`       | public header/footer, user menu, mobile bottom nav                                                                                                         |
-| Shells           | `components/shells`    | `public-shell`, `auth-shell`, `tenant-shell`, `portal-shell`                                                                                               |
+| Shells           | `components/shells`    | `public-shell`, `auth-shell`, `tenant-shell`                                                                                               |
 
 ### 3.5 Page compositions
 

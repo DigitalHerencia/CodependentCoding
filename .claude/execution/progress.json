@@ -3870,5 +3870,16 @@
       "Tests, builds, development servers, dependency installation, migrations, deployment, PR and push."
     ],
     "delivery": "Direct local commit on main as requested."
+  },
+  "unused-portal-shell": {
+    "status": "complete-local-main",
+    "updated": "2026-11-05T20:23:14.171004+00:00",
+    "scope": "Delete unused Maximal Template PortalShell and remove its current design inventory references. Preserve historical evidence and the portal feature.",
+    "EXECUTED": [
+      "Repository reference search found only the component definition, design inventories and historical records; no code consumers."
+    ],
+    "NOT_RUN": [
+      "Checks, formatting, lint, type generation/check, tests, builds and push, as requested."
+    ]
   }
 }

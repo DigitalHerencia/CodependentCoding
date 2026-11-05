@@ -1497,6 +1497,13 @@
         "packages/maximal-template/app/(admin)/layout.tsx",
         "packages/maximal-template/components/nav"
       ]
+    },
+    {
+      "id": "DEC-117",
+      "date": "2026-11-05",
+      "status": "accepted",
+      "title": "Remove unused portal presentation shell",
+      "decision": "Owner requested deletion and local commit if PortalShell has no consumers. Repository search found none; remove the component and its current design inventories while preserving portal functionality and historical records. No checks or push."
     }
   ]
 }

@@ -45,11 +45,8 @@
   ],
   "latest_followup": {
     "status": "complete-local-main",
-    "package": "route-group-shells",
-    "owner_instruction": "Edit directly on main, commit without push; only format write, lint fix and type generation/check.",
-    "checks": "See route-group-shells in progress.json.",
-    "NOT_RUN": [
-      "Tests, builds, servers, installation, deployment, PR and push."
-    ]
+    "package": "unused-portal-shell",
+    "owner_instruction": "Delete if unused; commit with no checks, tests or push.",
+    "evidence": "No code consumers found; see progress.json."
   }
 }
