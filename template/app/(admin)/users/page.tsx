@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 
-import { AdminUsersFeature } from "@/features/admin/adminUsersFeature";
-import { AdminUsersSkeleton } from "@/features/admin/adminUsersSkeleton";
+import { AdminUsersFeature } from "@/features/admin/admin-users-feature";
+import { AdminUsersSkeleton } from "@/features/admin/admin-users-skeleton";
 
 export default async function Page() {
   return (

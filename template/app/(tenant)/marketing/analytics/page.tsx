@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 
-import { MarketingAnalyticsFeature } from "@/features/marketing/marketingAnalyticsFeature";
-import { MarketingAnalyticsSkeleton } from "@/features/marketing/marketingAnalyticsSkeleton";
+import { MarketingAnalyticsFeature } from "@/features/marketing/marketing-analytics-feature";
+import { MarketingAnalyticsSkeleton } from "@/features/marketing/marketing-analytics-skeleton";
 
 export default async function Page() {
   return (

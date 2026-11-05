@@ -6,6 +6,7 @@ import { cliRoot } from "#cli/compose/governance";
 import type { Exec } from "#cli/setup/exec";
 import {
   enumName,
+  kebab,
   type Field,
   type Names,
   pascal,
@@ -86,7 +87,8 @@ interface Manifest {
 function targets(
   names: Names,
 ): { template: string; target: string; merge: boolean }[] {
-  const { module: m, entity: e, entities: es, route, param } = names;
+  const { module: m, entity, entities: es, route, param } = names;
+  const e = kebab(entity);
   const feature = (file: string) => `features/${m}/${file}`;
   const page = `app/(tenant)/${route}`;
   return [
@@ -125,42 +127,42 @@ function targets(
     },
     {
       template: "listFeature.tsx.tpl",
-      target: feature(`${es}Feature.tsx`),
+      target: feature(`${route}-feature.tsx`),
       merge: false,
     },
     {
       template: "listFeature.client.tsx.tpl",
-      target: feature(`${es}Feature.client.tsx`),
+      target: feature(`${route}-feature.client.tsx`),
       merge: false,
     },
     {
       template: "listSkeleton.tsx.tpl",
-      target: feature(`${es}Skeleton.tsx`),
+      target: feature(`${route}-skeleton.tsx`),
       merge: false,
     },
     {
       template: "detailFeature.tsx.tpl",
-      target: feature(`${e}Feature.tsx`),
+      target: feature(`${e}-feature.tsx`),
       merge: false,
     },
     {
       template: "detailSkeleton.tsx.tpl",
-      target: feature(`${e}Skeleton.tsx`),
+      target: feature(`${e}-skeleton.tsx`),
       merge: false,
     },
     {
       template: "newForm.tsx.tpl",
-      target: feature(`${e}NewForm.tsx`),
+      target: feature(`${e}-new-form.tsx`),
       merge: false,
     },
     {
       template: "editFeature.tsx.tpl",
-      target: feature(`${e}EditFeature.tsx`),
+      target: feature(`${e}-edit-feature.tsx`),
       merge: false,
     },
     {
       template: "formSkeleton.tsx.tpl",
-      target: feature(`${e}FormSkeleton.tsx`),
+      target: feature(`${e}-form-skeleton.tsx`),
       merge: false,
     },
     {

@@ -384,27 +384,27 @@ The list below is generated; rerun `node scripts/slice-files.mjs projects --writ
 
 **Features**
 
-- `features/projects/myTasksFeature.tsx`
-- `features/projects/myTasksSkeleton.tsx`
-- `features/projects/projectEditFeature.tsx`
-- `features/projects/projectFeature.tsx`
-- `features/projects/projectFormSkeleton.tsx`
-- `features/projects/projectNewForm.tsx`
-- `features/projects/projectSkeleton.tsx`
-- `features/projects/projectsFeature.client.tsx`
-- `features/projects/projectsFeature.tsx`
-- `features/projects/projectsSkeleton.tsx`
-- `features/projects/taskEditFeature.tsx`
-- `features/projects/taskFeature.client.tsx`
-- `features/projects/taskFeature.tsx`
-- `features/projects/taskFormSkeleton.tsx`
-- `features/projects/taskNewForm.tsx`
-- `features/projects/taskSkeleton.tsx`
-- `features/projects/tasksFeature.client.tsx`
-- `features/projects/tasksFeature.tsx`
-- `features/projects/tasksSkeleton.tsx`
-- `features/projects/timelineFeature.tsx`
-- `features/projects/timelineSkeleton.tsx`
+- `features/projects/my-tasks-feature.tsx`
+- `features/projects/my-tasks-skeleton.tsx`
+- `features/projects/project-edit-feature.tsx`
+- `features/projects/project-feature.tsx`
+- `features/projects/project-form-skeleton.tsx`
+- `features/projects/project-new-form.tsx`
+- `features/projects/project-skeleton.tsx`
+- `features/projects/projects-feature.client.tsx`
+- `features/projects/projects-feature.tsx`
+- `features/projects/projects-skeleton.tsx`
+- `features/projects/task-edit-feature.tsx`
+- `features/projects/task-feature.client.tsx`
+- `features/projects/task-feature.tsx`
+- `features/projects/task-form-skeleton.tsx`
+- `features/projects/task-new-form.tsx`
+- `features/projects/task-skeleton.tsx`
+- `features/projects/tasks-feature.client.tsx`
+- `features/projects/tasks-feature.tsx`
+- `features/projects/tasks-skeleton.tsx`
+- `features/projects/timeline-feature.tsx`
+- `features/projects/timeline-skeleton.tsx`
 
 **Actions**
 

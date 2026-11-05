@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 
-import { BillingFeature } from "@/features/portal/billingFeature";
-import { BillingSkeleton } from "@/features/portal/billingSkeleton";
+import { BillingFeature } from "@/features/portal/billing-feature";
+import { BillingSkeleton } from "@/features/portal/billing-skeleton";
 
 export default async function Page() {
   return (

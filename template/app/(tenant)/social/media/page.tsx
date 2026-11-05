@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 
-import { MediaLibraryFeature } from "@/features/social/mediaLibraryFeature";
-import { MediaLibrarySkeleton } from "@/features/social/mediaLibrarySkeleton";
+import { MediaLibraryFeature } from "@/features/social/media-library-feature";
+import { MediaLibrarySkeleton } from "@/features/social/media-library-skeleton";
 
 export default async function Page() {
   return (

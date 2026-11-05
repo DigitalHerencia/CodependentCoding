@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 
-import { ExpensesFeature } from "@/features/invoicing/expensesFeature";
-import { ExpensesSkeleton } from "@/features/invoicing/expensesSkeleton";
+import { ExpensesFeature } from "@/features/invoicing/expenses-feature";
+import { ExpensesSkeleton } from "@/features/invoicing/expenses-skeleton";
 
 export default async function Page() {
   return (

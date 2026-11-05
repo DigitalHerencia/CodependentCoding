@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { HipsterBuilderFeature } from "@/features/cli/hipsterBuilderFeature";
+import { HipsterBuilderFeature } from "@/features/cli/hipster-builder-feature";
 
 export const metadata: Metadata = {
   title: "Hipster Stack™ · Codependent Coding™",

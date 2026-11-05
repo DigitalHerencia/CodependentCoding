@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 
-import { CampaignEditFeature } from "@/features/marketing/campaignEditFeature";
-import { CampaignFormSkeleton } from "@/features/marketing/campaignFormSkeleton";
+import { CampaignEditFeature } from "@/features/marketing/campaign-edit-feature";
+import { CampaignFormSkeleton } from "@/features/marketing/campaign-form-skeleton";
 
 export default async function Page({
   params,

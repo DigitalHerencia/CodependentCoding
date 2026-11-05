@@ -1,8 +1,8 @@
 // Why: Route only: resolves params and streams the project edit form.
 import { Suspense } from "react";
 
-import { ProjectEditFeature } from "@/features/projects/projectEditFeature";
-import { ProjectFormSkeleton } from "@/features/projects/projectFormSkeleton";
+import { ProjectEditFeature } from "@/features/projects/project-edit-feature";
+import { ProjectFormSkeleton } from "@/features/projects/project-form-skeleton";
 
 export default async function Page({
   params,

@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 
-import { AdminRecordDetailFeature } from "@/features/admin/adminRecordDetailFeature";
-import { AdminRecordDetailSkeleton } from "@/features/admin/adminRecordDetailSkeleton";
+import { AdminRecordDetailFeature } from "@/features/admin/admin-record-detail-feature";
+import { AdminRecordDetailSkeleton } from "@/features/admin/admin-record-detail-skeleton";
 
 export default async function Page({
   params,

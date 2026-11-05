@@ -1,8 +1,8 @@
 // Why: Route only: streams the {{entity}} list behind a skeleton.
 import { Suspense } from "react";
 
-import { {{Entities}}Feature } from "@/features/{{module}}/{{entities}}Feature";
-import { {{Entities}}Skeleton } from "@/features/{{module}}/{{entities}}Skeleton";
+import { {{Entities}}Feature } from "@/features/{{module}}/{{route}}-feature";
+import { {{Entities}}Skeleton } from "@/features/{{module}}/{{route}}-skeleton";
 
 export default async function Page() {
   return (

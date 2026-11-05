@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 
-import { CampaignFeature } from "@/features/marketing/campaignFeature";
-import { CampaignSkeleton } from "@/features/marketing/campaignSkeleton";
+import { CampaignFeature } from "@/features/marketing/campaign-feature";
+import { CampaignSkeleton } from "@/features/marketing/campaign-skeleton";
 
 export default async function Page({
   params,

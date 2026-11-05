@@ -1,8 +1,8 @@
 // Why: Route only: resolves params and streams the task edit form.
 import { Suspense } from "react";
 
-import { TaskEditFeature } from "@/features/projects/taskEditFeature";
-import { TaskFormSkeleton } from "@/features/projects/taskFormSkeleton";
+import { TaskEditFeature } from "@/features/projects/task-edit-feature";
+import { TaskFormSkeleton } from "@/features/projects/task-form-skeleton";
 
 export default async function Page({
   params,

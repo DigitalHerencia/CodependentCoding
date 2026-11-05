@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 
-import { KnowledgeBaseFeature } from "@/features/support/knowledgeBaseFeature";
-import { KnowledgeBaseSkeleton } from "@/features/support/knowledgeBaseSkeleton";
+import { KnowledgeBaseFeature } from "@/features/support/knowledge-base-feature";
+import { KnowledgeBaseSkeleton } from "@/features/support/knowledge-base-skeleton";
 
 export default async function Page() {
   return (

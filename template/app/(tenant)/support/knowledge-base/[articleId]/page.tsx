@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 
-import { KnowledgeArticleFeature } from "@/features/support/knowledgeArticleFeature";
-import { KnowledgeArticleSkeleton } from "@/features/support/knowledgeArticleSkeleton";
+import { KnowledgeArticleFeature } from "@/features/support/knowledge-article-feature";
+import { KnowledgeArticleSkeleton } from "@/features/support/knowledge-article-skeleton";
 
 export default async function Page({
   params,

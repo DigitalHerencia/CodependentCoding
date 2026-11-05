@@ -5,7 +5,7 @@ import { connection } from "next/server";
 import type { ReactNode } from "react";
 
 import { applicationProduct } from "@/content/application";
-import { PwaInstallFeature } from "@/features/pwa/pwaInstallFeature.client";
+import { PwaInstallFeature } from "@/features/pwa/pwa-install-feature.client";
 
 import "@/app/globals.css";
 

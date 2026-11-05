@@ -15,8 +15,8 @@ export const layers = [
   { id: "route-handler", match: /^app\/api\// },
   { id: "route", match: /^app\// },
   { id: "proxy", match: /^proxy\.ts$/ },
-  { id: "feature-form", match: /^features\/.+Form(\.client)?\.tsx$/ },
-  { id: "feature-skeleton", match: /^features\/.+Skeleton\.tsx$/ },
+  { id: "feature-form", match: /^features\/.+-form(\.client)?\.tsx$/ },
+  { id: "feature-skeleton", match: /^features\/.+-skeleton\.tsx$/ },
   { id: "feature-client", match: /^features\/.+\.client\.tsx$/ },
   { id: "feature", match: /^features\// },
   { id: "tooling", match: /^(eslint|scripts)\// },
@@ -516,9 +516,9 @@ export const serverOnlyPaths = [
 export const filenameConventions = [
   {
     dir: /^features\/[a-z][a-zA-Z]*\/$/,
-    file: /^([a-z][a-zA-Z0-9]*(Feature|Form|Skeleton)\.tsx|[a-z][a-zA-Z0-9]*\.client\.tsx)$/,
+    file: /^[a-z][a-z0-9]*(?:-[a-z0-9]+)*(?:-(?:feature|form|skeleton)|\.client)\.tsx$/,
     example:
-      "crmContactsFeature.tsx, crmNewContactForm.tsx, crmContactsSkeleton.tsx, crmPipelineBoard.client.tsx",
+      "crm-contacts-feature.tsx, crm-new-contact-form.tsx, crm-contacts-skeleton.tsx, crm-pipeline-board.client.tsx",
   },
   {
     // One file per slice, kebab-case like the rest of components/ (CC-078).
@@ -640,4 +640,4 @@ export const defaultExportAllowed =
 
 /** Files allowed to declare "use client" without the .client suffix. */
 export const useClientAllowed =
-  /(\.client\.tsx$)|(^features\/.+Form\.tsx$)|(^components\/)|(^hooks\/)|(^app\/(.*\/)?(error|global-error)\.tsx$)/;
+  /(\.client\.tsx$)|(^features\/.+-form\.tsx$)|(^components\/)|(^hooks\/)|(^app\/(.*\/)?(error|global-error)\.tsx$)/;

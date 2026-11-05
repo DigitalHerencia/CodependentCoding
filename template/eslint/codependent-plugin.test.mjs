@@ -33,17 +33,17 @@ tester.run("layer-boundaries", rules["layer-boundaries"], {
     },
     {
       name: "CC-FEAT-002 form may use primitives + RHF",
-      filename: at("features/crm/crmNewContactForm.tsx"),
+      filename: at("features/crm/crm-new-contact-form.tsx"),
       code: 'import { useForm } from "react-hook-form";\nimport { Input } from "@/components/ui/input";',
     },
     {
       name: "CC-FEAT-003 skeleton may use ui/skeleton",
-      filename: at("features/crm/crmContactsSkeleton.tsx"),
+      filename: at("features/crm/crm-contacts-skeleton.tsx"),
       code: 'import { Skeleton } from "@/components/ui/skeleton";',
     },
     {
       name: "CC-FEAT-004 client companion may use controls + actions",
-      filename: at("features/crm/crmContactsFeature.client.tsx"),
+      filename: at("features/crm/crm-contacts-feature.client.tsx"),
       code: 'import { Button } from "@/components/ui/button";\nimport { updateContact } from "@/lib/actions/crmActions";',
     },
     {
@@ -78,7 +78,7 @@ tester.run("layer-boundaries", rules["layer-boundaries"], {
     },
     {
       name: "CC-FEAT-004 client companion may list roles from lib/authz/roles",
-      filename: at("features/admin/adminUserDetailFeature.client.tsx"),
+      filename: at("features/admin/admin-user-detail-feature.client.tsx"),
       code: 'import { appRoles } from "@/lib/authz/roles";',
     },
     {
@@ -96,19 +96,19 @@ tester.run("layer-boundaries", rules["layer-boundaries"], {
     },
     {
       name: "CC-FEAT-001 feature imports primitive",
-      filename: at("features/crm/crmContactsFeature.tsx"),
+      filename: at("features/crm/crm-contacts-feature.tsx"),
       code: 'import { Button } from "@/components/ui/button";',
       errors: [{ messageId: "denied" }],
     },
     {
       name: "CC-FEAT-003 skeleton imports a non-skeleton primitive",
-      filename: at("features/crm/crmContactsSkeleton.tsx"),
+      filename: at("features/crm/crm-contacts-skeleton.tsx"),
       code: 'import { Card } from "@/components/ui/card";',
       errors: [{ messageId: "denied" }],
     },
     {
       name: "CC-FEAT-004 client companion reads a fetcher",
-      filename: at("features/crm/crmContactsFeature.client.tsx"),
+      filename: at("features/crm/crm-contacts-feature.client.tsx"),
       code: 'import { listContacts } from "@/lib/fetchers/crmFetchers";',
       errors: [{ messageId: "denied" }],
     },
@@ -144,13 +144,13 @@ tester.run("layer-boundaries", rules["layer-boundaries"], {
     },
     {
       name: "CC-FEAT-004 client companion must not import authz policies",
-      filename: at("features/admin/adminUserDetailFeature.client.tsx"),
+      filename: at("features/admin/admin-user-detail-feature.client.tsx"),
       code: 'import { canReadResource } from "@/lib/authz/policies";',
       errors: [{ messageId: "denied" }],
     },
     {
       name: "CC-LAYER relative import resolved",
-      filename: at("features/crm/crmContactsFeature.tsx"),
+      filename: at("features/crm/crm-contacts-feature.tsx"),
       code: 'import { prisma } from "../../lib/db/client";',
       errors: [{ messageId: "denied" }],
     },
@@ -179,7 +179,7 @@ tester.run("no-cache-in-protected", rules["no-cache-in-protected"], {
     },
     {
       name: "CC-CACHE-002 cached function inside a feature",
-      filename: at("features/crm/crmContactsFeature.tsx"),
+      filename: at("features/crm/crm-contacts-feature.tsx"),
       code: 'export async function CrmContactsFeature() { "use cache: private"; return null; }',
       errors: [{ messageId: "layer" }],
     },
@@ -285,11 +285,11 @@ tester.run("use-server-actions", rules["use-server-actions"], {
 tester.run("use-client-placement", rules["use-client-placement"], {
   valid: [
     {
-      filename: at("features/crm/crmPipelineFeature.client.tsx"),
+      filename: at("features/crm/crm-pipeline-feature.client.tsx"),
       code: '"use client";\nexport const x = 1;',
     },
     {
-      filename: at("features/crm/crmNewLeadForm.tsx"),
+      filename: at("features/crm/crm-new-lead-form.tsx"),
       code: '"use client";\nexport const x = 1;',
     },
     {
@@ -299,12 +299,12 @@ tester.run("use-client-placement", rules["use-client-placement"], {
   ],
   invalid: [
     {
-      filename: at("features/crm/crmPipelineFeature.tsx"),
+      filename: at("features/crm/crm-pipeline-feature.tsx"),
       code: '"use client";\nexport const x = 1;',
       errors: [{ messageId: "misplaced" }],
     },
     {
-      filename: at("features/crm/crmPipelineFeature.client.tsx"),
+      filename: at("features/crm/crm-pipeline-feature.client.tsx"),
       code: "export const x = 1;",
       errors: [{ messageId: "missing" }],
     },
@@ -442,8 +442,8 @@ tester.run("module-boundaries", rules["module-boundaries"], {
   valid: [
     {
       name: "CC-MOD-001 module imports a declared dependency",
-      filename: at("features/projects/projectsFeature.tsx"),
-      code: 'import { Upload } from "@/features/uploads/workspaceFileUpload.client";',
+      filename: at("features/projects/projects-feature.tsx"),
+      code: 'import { Upload } from "@/features/uploads/workspace-file-upload.client";',
     },
     {
       name: "CC-MOD-001 module imports base",
@@ -471,7 +471,7 @@ tester.run("module-boundaries", rules["module-boundaries"], {
     },
     {
       name: "CC-MOD-002 base imports a module",
-      filename: at("features/dashboard/dashboardFeature.tsx"),
+      filename: at("features/dashboard/dashboard-feature.tsx"),
       code: 'import { x } from "@/lib/fetchers/crmFetchers";',
       errors: [{ messageId: "base" }],
     },

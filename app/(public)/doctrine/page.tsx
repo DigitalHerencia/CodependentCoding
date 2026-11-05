@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { DoctrineDocsFeature } from "@/features/doctrine/doctrineDocsFeature";
+import { DoctrineDocsFeature } from "@/features/doctrine/doctrine-docs-feature";
 
 export const metadata: Metadata = { title: "Doctrine · Codependent Coding™" };
 

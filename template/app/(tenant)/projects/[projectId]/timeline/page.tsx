@@ -1,8 +1,8 @@
 // Why: Route only: resolves params and streams the project timeline.
 import { Suspense } from "react";
 
-import { TimelineFeature } from "@/features/projects/timelineFeature";
-import { TimelineSkeleton } from "@/features/projects/timelineSkeleton";
+import { TimelineFeature } from "@/features/projects/timeline-feature";
+import { TimelineSkeleton } from "@/features/projects/timeline-skeleton";
 
 export default async function Page({
   params,

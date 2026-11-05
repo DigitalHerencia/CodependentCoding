@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 
-import { DocumentsFeature } from "@/features/portal/documentsFeature";
-import { DocumentsSkeleton } from "@/features/portal/documentsSkeleton";
+import { DocumentsFeature } from "@/features/portal/documents-feature";
+import { DocumentsSkeleton } from "@/features/portal/documents-skeleton";
 
 export default async function Page() {
   return (

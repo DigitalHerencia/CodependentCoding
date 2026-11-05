@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 
-import { AdminAuditFeature } from "@/features/admin/adminAuditFeature";
-import { AdminAuditSkeleton } from "@/features/admin/adminAuditSkeleton";
+import { AdminAuditFeature } from "@/features/admin/admin-audit-feature";
+import { AdminAuditSkeleton } from "@/features/admin/admin-audit-skeleton";
 
 export default async function Page() {
   return (

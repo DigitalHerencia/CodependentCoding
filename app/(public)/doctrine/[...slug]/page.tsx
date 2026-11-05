@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import {
   DoctrineDocsFeature,
   doctrineDocsStaticParams,
-} from "@/features/doctrine/doctrineDocsFeature";
+} from "@/features/doctrine/doctrine-docs-feature";
 
 export const generateStaticParams = doctrineDocsStaticParams;
 

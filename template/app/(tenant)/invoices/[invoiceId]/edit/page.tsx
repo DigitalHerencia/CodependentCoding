@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 
-import { InvoiceEditFeature } from "@/features/invoicing/invoiceEditFeature";
-import { InvoiceFormSkeleton } from "@/features/invoicing/invoiceFormSkeleton";
+import { InvoiceEditFeature } from "@/features/invoicing/invoice-edit-feature";
+import { InvoiceFormSkeleton } from "@/features/invoicing/invoice-form-skeleton";
 
 export default async function Page({
   params,

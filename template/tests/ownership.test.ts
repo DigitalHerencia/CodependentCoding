@@ -13,7 +13,7 @@ const fixture = {
 
 test.each([
   ["lib/integrations/stripe/portal.ts", "billing", "owns"],
-  ["features/crm/crmLeadsFeature.tsx", "crm", "segment"],
+  ["features/crm/crm-leads-feature.tsx", "crm", "segment"],
   ["app/(tenant)/crm/leads/page.tsx", "crm", "segment"],
   ["lib/fetchers/crmFetchers.ts", "crm", "basename"],
   ["lib/db/selects/crm.selects.ts", "crm", "basename"],

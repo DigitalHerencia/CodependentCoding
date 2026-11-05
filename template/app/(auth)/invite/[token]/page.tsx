@@ -1,5 +1,5 @@
-import { OnboardingAccessFeature } from "@/features/onboarding/onboardingAccessFeature";
-import { InvitationAcceptForm } from "@/features/onboarding/invitationAcceptForm";
+import { OnboardingAccessFeature } from "@/features/onboarding/onboarding-access-feature";
+import { InvitationAcceptForm } from "@/features/onboarding/invitation-accept-form";
 
 export default async function Page({
   params,

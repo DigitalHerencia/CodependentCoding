@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 
-import { AudiencesFeature } from "@/features/marketing/audiencesFeature";
-import { AudiencesSkeleton } from "@/features/marketing/audiencesSkeleton";
+import { AudiencesFeature } from "@/features/marketing/audiences-feature";
+import { AudiencesSkeleton } from "@/features/marketing/audiences-skeleton";
 
 export default async function Page() {
   return (

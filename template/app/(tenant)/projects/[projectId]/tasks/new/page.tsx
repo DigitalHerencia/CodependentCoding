@@ -1,5 +1,5 @@
 // Why: Route only: renders the new-task form for one project; no data to load.
-import { TaskNewForm } from "@/features/projects/taskNewForm";
+import { TaskNewForm } from "@/features/projects/task-new-form";
 
 export default async function Page({
   params,

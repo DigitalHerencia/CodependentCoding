@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 
-import { CrmPipelineFeature } from "@/features/crm/crmPipelineFeature";
-import { CrmPipelineSkeleton } from "@/features/crm/crmPipelineSkeleton";
+import { CrmPipelineFeature } from "@/features/crm/crm-pipeline-feature";
+import { CrmPipelineSkeleton } from "@/features/crm/crm-pipeline-skeleton";
 
 export default async function Page() {
   return (

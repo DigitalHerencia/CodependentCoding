@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 
-import { CrmLeadsFeature } from "@/features/crm/crmLeadsFeature";
-import { CrmLeadsSkeleton } from "@/features/crm/crmLeadsSkeleton";
+import { CrmLeadsFeature } from "@/features/crm/crm-leads-feature";
+import { CrmLeadsSkeleton } from "@/features/crm/crm-leads-skeleton";
 
 export default async function Page() {
   return (

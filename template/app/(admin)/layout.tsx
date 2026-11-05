@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 
-import { OnboardingGateFeature } from "@/features/onboarding/onboardingGateFeature";
-import { AdminGateFeature } from "@/features/admin/adminGateFeature";
+import { OnboardingGateFeature } from "@/features/onboarding/onboarding-gate-feature";
+import { AdminGateFeature } from "@/features/admin/admin-gate-feature";
 import { getIdentity } from "@/lib/auth/auth";
 import { redirectToSignIn } from "@/lib/auth/redirects";
 

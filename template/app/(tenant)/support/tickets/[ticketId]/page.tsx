@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 
-import { TicketFeature } from "@/features/support/ticketFeature";
-import { TicketSkeleton } from "@/features/support/ticketSkeleton";
+import { TicketFeature } from "@/features/support/ticket-feature";
+import { TicketSkeleton } from "@/features/support/ticket-skeleton";
 
 export default async function Page({
   params,

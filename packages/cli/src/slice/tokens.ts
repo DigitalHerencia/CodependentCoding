@@ -2,6 +2,7 @@ import {
   enumName,
   type Field,
   fieldLabel,
+  kebab,
   type Names,
   pascal,
   relationName,
@@ -19,9 +20,6 @@ const indent = (lines: string[], spaces: number) =>
 
 const delegate = (model: string) =>
   model.charAt(0).toLowerCase() + model.slice(1);
-
-const kebab = (value: string) =>
-  value.replace(/([a-z0-9])([A-Z])/g, "$1-$2").toLowerCase();
 
 function prismaType(field: Field, names: Names): string {
   const optional = field.optional ? "?" : "";
@@ -296,6 +294,7 @@ export function sliceTokens(
 
   return {
     ...names,
+    entityPath: kebab(names.entity),
     labelLower: names.label.toLowerCase(),
     labelPluralLower: names.labelPlural.toLowerCase(),
     ModuleLabel: extra.moduleLabel,

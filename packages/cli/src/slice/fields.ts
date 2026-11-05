@@ -173,7 +173,7 @@ export function pluralize(word: string): string {
   return `${word}s`;
 }
 
-const kebab = (value: string) =>
+export const kebab = (value: string) =>
   value.replace(/([a-z0-9])([A-Z])/g, "$1-$2").toLowerCase();
 const words = (value: string) =>
   value.replace(/([a-z0-9])([A-Z])/g, "$1 $2").toLowerCase();

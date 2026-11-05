@@ -1,8 +1,8 @@
 // Why: Route only: resolves params and streams the task detail.
 import { Suspense } from "react";
 
-import { TaskFeature } from "@/features/projects/taskFeature";
-import { TaskSkeleton } from "@/features/projects/taskSkeleton";
+import { TaskFeature } from "@/features/projects/task-feature";
+import { TaskSkeleton } from "@/features/projects/task-skeleton";
 
 export default async function Page({
   params,

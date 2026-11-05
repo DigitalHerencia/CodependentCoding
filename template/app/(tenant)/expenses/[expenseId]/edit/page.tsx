@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 
-import { ExpenseEditFeature } from "@/features/invoicing/expenseEditFeature";
-import { ExpenseFormSkeleton } from "@/features/invoicing/expenseFormSkeleton";
+import { ExpenseEditFeature } from "@/features/invoicing/expense-edit-feature";
+import { ExpenseFormSkeleton } from "@/features/invoicing/expense-form-skeleton";
 
 export default async function Page({
   params,

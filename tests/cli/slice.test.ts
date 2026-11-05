@@ -209,7 +209,7 @@ describe("planSlice", () => {
       expect.arrayContaining([
         "schemas/invoicingSchemas.ts",
         "lib/actions/invoicingActions.ts",
-        "features/invoicing/invoicesFeature.client.tsx",
+        "features/invoicing/invoices-feature.client.tsx",
         "app/(tenant)/invoices/[invoiceId]/edit/page.tsx",
         "prisma/schema/invoicing.prisma",
         "prisma/rls/invoicing.sql",
@@ -232,7 +232,7 @@ describe("planSlice", () => {
     );
     expect(templates.match(/^import /gm)).toHaveLength(4);
     expect(
-      writes.get("features/invoicing/invoicesFeature.client.tsx"),
+      writes.get("features/invoicing/invoices-feature.client.tsx"),
     ).toContain('from "@/components/templates/invoicing-templates"');
     expect(writes.get("prisma/schema/identity.prisma")).toContain(
       "invoices Invoice[] // @module invoicing",

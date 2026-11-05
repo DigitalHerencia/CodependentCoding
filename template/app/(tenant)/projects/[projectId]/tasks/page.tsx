@@ -1,8 +1,8 @@
 // Why: Route only: resolves params and streams the project task board.
 import { Suspense } from "react";
 
-import { TasksFeature } from "@/features/projects/tasksFeature";
-import { TasksSkeleton } from "@/features/projects/tasksSkeleton";
+import { TasksFeature } from "@/features/projects/tasks-feature";
+import { TasksSkeleton } from "@/features/projects/tasks-skeleton";
 
 export default async function Page({
   params,

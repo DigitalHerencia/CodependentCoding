@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 
-import { CrmEditAccountFeature } from "@/features/crm/crmEditAccountFeature";
-import { CrmFormSkeleton } from "@/features/crm/crmFormSkeleton";
+import { CrmEditAccountFeature } from "@/features/crm/crm-edit-account-feature";
+import { CrmFormSkeleton } from "@/features/crm/crm-form-skeleton";
 
 export default async function Page({
   params,

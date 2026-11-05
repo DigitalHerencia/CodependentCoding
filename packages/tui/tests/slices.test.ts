@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 
 const writes = new Map([
-  ["features/invoices/invoicesFeature.tsx", ""],
+  ["features/invoices/invoices-feature.tsx", ""],
   ["stuff/helpers.ts", ""],
 ]);
 
