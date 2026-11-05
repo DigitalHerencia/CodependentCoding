@@ -10,10 +10,10 @@ compiles_to: .claude/contracts/design.yaml
 
 Two surfaces, two jobs:
 
-| Surface                                     | Character                                               | Branding                                   |
-| ------------------------------------------- | ------------------------------------------------------- | ------------------------------------------ |
-| **Factory landing page** (repo root `app/`) | Dark industrial, desert/circuit, restrained teal signal | Codependent Coding / Digital Herencia      |
-| **Generated apps** (`template/`)            | Same structural system, **white-label** tokens          | App name + one brand color chosen at `new` |
+| Surface                                           | Character                                               | Branding                                   |
+| ------------------------------------------------- | ------------------------------------------------------- | ------------------------------------------ |
+| **Factory landing page** (repo root `app/`)       | Dark industrial, desert/circuit, restrained teal signal | Codependent Coding / Digital Herencia      |
+| **Generated apps** (`packages/maximal-template/`) | Same structural system, **white-label** tokens          | App name + one brand color chosen at `new` |
 
 ## 1. Visual principles
 
@@ -35,7 +35,7 @@ Two surfaces, two jobs:
 
 ### 3.1 Token architecture
 
-All color, radius, border, shadow, spacing, motion, and font values are CSS variables in `template/app/globals.css`, bridged to Tailwind v4 via `@theme inline`. Components use semantic utilities only (`bg-background`, `text-muted-foreground`, `border-border`, `ring-ring`); raw hex or Tailwind palette colors in components are forbidden.
+All color, radius, border, shadow, spacing, motion, and font values are CSS variables in `packages/maximal-template/app/globals.css`, bridged to Tailwind v4 via `@theme inline`. Components use semantic utilities only (`bg-background`, `text-muted-foreground`, `border-border`, `ring-ring`); raw hex or Tailwind palette colors in components are forbidden.
 
 | Group    | Tokens                                                                                                              |
 | -------- | ------------------------------------------------------------------------------------------------------------------- |

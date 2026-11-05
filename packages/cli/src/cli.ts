@@ -4,7 +4,7 @@ import { readFileSync } from "node:fs";
 import { Command } from "commander";
 
 import { registerCommands } from "#cli/commands/index";
-import { resolveTemplate } from "#cli/manifest/template";
+import { resolveTemplate } from "@codependent/generator/manifest/template";
 
 // src/ (tsx) and dist/ (bundle) both sit one level below package.json.
 const pkg = JSON.parse(

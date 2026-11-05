@@ -16,7 +16,6 @@
     "dist",
     "build",
     "coverage",
-    "template",
     "packages",
     "tests",
     "scripts"

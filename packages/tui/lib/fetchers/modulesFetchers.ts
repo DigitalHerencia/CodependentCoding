@@ -4,7 +4,7 @@ import { toTemplateModuleDTO } from "@/lib/db/dto/modules.dto";
 import { moduleManifestSchema } from "@/schemas/modulesSchemas";
 import type { ModuleCatalog } from "@/types/modulesTypes";
 
-const MANIFEST = "template/hipster.modules.json";
+const MANIFEST = "packages/generator/assets/hipster.modules.json";
 
 let catalog: Promise<ModuleCatalog> | undefined;
 

@@ -68,4 +68,4 @@ body:
     attributes:
       label: Doctrine
       options:
-        - label: This changes a CC-* rule (update Architecture.md, validation.yaml, and template/eslint in the same PR)
+        - label: This changes a CC-* rule (update Architecture.md, validation.yaml, and packages/loaded-vibes/eslint in the same PR)

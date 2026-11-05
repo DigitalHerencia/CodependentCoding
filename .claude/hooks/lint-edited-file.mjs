@@ -37,8 +37,8 @@ if (
   process.exit(0);
 
 // The template is its own pnpm project with its own lint contract.
-const lintRoot = relative.startsWith("template/")
-  ? path.join(projectDir, "template")
+const lintRoot = relative.startsWith("packages/maximal-template/")
+  ? path.join(projectDir, "packages/maximal-template")
   : projectDir;
 const eslintBin = path.join(
   lintRoot,
@@ -49,11 +49,19 @@ const eslintBin = path.join(
 );
 if (!fs.existsSync(eslintBin)) process.exit(0); // dependencies not installed yet
 
+const pluginArgs =
+  lintRoot !== projectDir
+    ? [
+        "--config",
+        path.join(projectDir, "packages/loaded-vibes/eslint/app.config.mjs"),
+      ]
+    : [];
 const result = spawnSync(
   process.execPath,
-  [eslintBin, "--no-warn-ignored", "--max-warnings=0", absolute],
+  [eslintBin, ...pluginArgs, "--no-warn-ignored", "--max-warnings=0", absolute],
   {
     cwd: lintRoot,
+    env: { ...process.env, LOADED_VIBES_APP_ROOT: lintRoot },
     encoding: "utf8",
     timeout: 80_000,
   },

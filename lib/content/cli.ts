@@ -82,7 +82,9 @@ export async function getCliManifest(): Promise<CliManifest> {
   )
     .filter((command): command is CliCommand => command !== null)
     .sort((a, b) => order.indexOf(a.name) - order.indexOf(b.name));
-  const manifest = JSON.parse(await file("template/hipster.modules.json")) as {
+  const manifest = JSON.parse(
+    await file("packages/generator/assets/hipster.modules.json"),
+  ) as {
     modules: { id: string; dependsOn?: string[] }[];
     presets: Record<string, string[]>;
   };

@@ -13,22 +13,24 @@ supersedes: Codependent Coding WebApp Architecture master source (2026.08) — p
 
 ```mermaid
 flowchart LR
-  T["Maximal Template<br/>template/ (base + all modules)"]
+  T["Maximal Template<br/>packages/maximal-template (application only)"]
   M["hipster.modules.json<br/>+ naming conventions"]
   C["Hipster Stack CLI<br/>packages/cli"]
   A["Generated app<br/>(standalone)"]
-  P["Loaded Vibes plugin<br/>plugin/loaded-vibes"]
-  L["Doctrine lint<br/>template/eslint"]
+  P["Loaded Vibes plugin<br/>packages/loaded-vibes"]
+  L["Doctrine lint<br/>packages/loaded-vibes/eslint"]
 
   T --> C
   M --> C
   C -->|new / add / slice| A
   L --> T
-  L -->|copied with template| A
+  L -->|external plugin checks| A
   P -->|idea, plan, slice, check, ship| A
 ```
 
 **One sentence:** the CLI copies the Maximal Template, removes every file owned by an unselected module (ownership computed from names), and hands the result to Claude Code with the Loaded Vibes plugin, which drives it to MVP inside lint-enforced rails.
+
+The package boundaries are defined in `packages/README.md`. The generator owns the catalog/schema and initial composition; Loaded Vibes owns editing, doctrine checks and database lifecycle tooling. The Maximal Template contains application code only. Generated app tooling state lives under `.loaded-vibes/`; application runtime code uses its own module/seed registries and never reads factory metadata.
 
 ### 1.1 Why subtractive with computed ownership
 
@@ -121,7 +123,7 @@ Public site content is separate from template tenant data: `content/` holds page
 
 ## 4. Doctrine enforcement
 
-Doctrine is code. `template/eslint/doctrine-map.mjs` is the machine table (layers, import categories, boundaries, naming); `template/eslint/codependent-plugin.mjs` is the mechanics; `.claude/contracts/validation.yaml` is the contract. Every finding prints its rule ID.
+Doctrine is code. `packages/loaded-vibes/eslint/doctrine-map.mjs` is the machine table (layers, import categories, boundaries, naming); `packages/loaded-vibes/eslint/codependent-plugin.mjs` is the mechanics; `.claude/contracts/validation.yaml` is the contract. Every finding prints its rule ID.
 
 | ID               | Rule                                                                                       | Enforcement                          |
 | ---------------- | ------------------------------------------------------------------------------------------ | ------------------------------------ |
@@ -168,11 +170,11 @@ Review-only rules (not mechanizable, checked by the `reviewer` agent): actions v
 
 ### 4.1 Terminal profile (DEC-072)
 
-Apps that render in a terminal with Ink (the planned `packages/tui`) use the same layers, folders and naming, and lint with the `doctrineTerminal` config from `template/eslint/codependent-plugin.mjs`. A terminal app is one Node process with no server/browser split, so three directive rules are off: CC-SRV-001 (`server-only`), CC-WRITE-002 (`"use server"`) and CC-CLIENT-001 (`"use client"` placement). Keyboard companions (`*.client.tsx`, CC-FEAT-004) may also import the terminal controls `menu`, `tabs`, `command-palette`, `multi-select`, `tree-select` and `confirm`. Every other rule applies unchanged; web apps are not affected.
+Apps that render in a terminal with Ink (the planned `packages/tui`) use the same layers, folders and naming, and lint with the `doctrineTerminal` config from `packages/loaded-vibes/eslint/codependent-plugin.mjs`. A terminal app is one Node process with no server/browser split, so three directive rules are off: CC-SRV-001 (`server-only`), CC-WRITE-002 (`"use server"`) and CC-CLIENT-001 (`"use client"` placement). Keyboard companions (`*.client.tsx`, CC-FEAT-004) may also import the terminal controls `menu`, `tabs`, `command-palette`, `multi-select`, `tree-select` and `confirm`. Every other rule applies unchanged; web apps are not affected.
 
 ## 5. Module system
 
-### 5.1 Manifest — `template/hipster.modules.json`
+### 5.1 Manifest — `packages/generator/assets/hipster.modules.json`
 
 ```jsonc
 {
@@ -315,7 +317,7 @@ flowchart TD
 ## 7. Loaded Vibes plugin
 
 ```text
-plugin/loaded-vibes/
+packages/loaded-vibes/
 ├── .claude-plugin/plugin.json
 ├── skills/{idea,plan,slice,classify,check,ship,handoff}/SKILL.md
 ├── agents/{reviewer,verifier}.md
@@ -333,14 +335,14 @@ hipster-stack new → /idea (grill → PRD, tech, architecture, design, auth →
 
 ## 8. Governance layers
 
-| Layer       | Location                                | Audience | Authority                                    |
-| ----------- | --------------------------------------- | -------- | -------------------------------------------- |
-| Intent      | `context/docs/*.md`                     | Human    | Highest for meaning                          |
-| Contracts   | `.claude/contracts/*.yaml`              | Machine  | Compiled from intent; must not contradict it |
-| Enforcement | `template/eslint/*`, Prettier, tsconfig | Machine  | Executable form of validation.yaml           |
-| Work        | `context/specs/issues/*.md` → GitHub    | Both     | What to do next                              |
-| Execution   | `.claude/execution/*.json`              | Agent    | What happened; never architecture            |
-| Reference   | `context/doctrine/`                     | Human    | Explanatory only                             |
+| Layer       | Location                                             | Audience | Authority                                    |
+| ----------- | ---------------------------------------------------- | -------- | -------------------------------------------- |
+| Intent      | `context/docs/*.md`                                  | Human    | Highest for meaning                          |
+| Contracts   | `.claude/contracts/*.yaml`                           | Machine  | Compiled from intent; must not contradict it |
+| Enforcement | `packages/loaded-vibes/eslint/*`, Prettier, tsconfig | Machine  | Executable form of validation.yaml           |
+| Work        | `context/specs/issues/*.md` → GitHub                 | Both     | What to do next                              |
+| Execution   | `.claude/execution/*.json`                           | Agent    | What happened; never architecture            |
+| Reference   | `context/doctrine/`                                  | Human    | Explanatory only                             |
 
 Conflict rule: intent wins; fix the contract, then the enforcement, in the same PR.
 
@@ -361,7 +363,7 @@ Conflict rule: intent wins; fix the contract, then the enforcement, in the same 
 
 `projects` is the reference module that scaffolds copy (CC-027). Every file opens with a one-line `Why:` comment naming its layer's job. Reads follow AUTH.md §5.3: fetchers run in `withAuthenticatedRead`, check `projects.project:read` (or `projects.task:read`), put `organizationId` in every predicate and return `null` when a row is absent, so features call `notFound()`. Writes go through `lib/actions/projectsActions.ts`: authenticate, open the tenant transaction (RLS context set), check `projects.project:create`/`:update`, parse with the shared Zod schema, write, then invalidate the affected routes and return an `ActionResult` (AUTH.md §8). A versioned update that matches no row is `CONFLICT` when the row exists in the organization and `NOT_FOUND` otherwise.
 
-The list below is generated; rerun `node scripts/slice-files.mjs projects --write` from `template/` after adding or moving a file.
+The list below is generated; rerun `node scripts/slice-files.mjs projects --write` from `packages/maximal-template/` after adding or moving a file.
 
 <!-- slice:projects:start -->
 

@@ -10,22 +10,28 @@ import {
   defaultAccess,
   parseChoice,
   tenancies,
-} from "#cli/compose/access";
-import { parseHex } from "#cli/compose/brand";
+} from "@codependent/generator/compose/access";
+import { parseHex } from "@codependent/generator/compose/brand";
 import {
   composeApp,
   isValidAppName,
   readManifest,
   toAppName,
   type TemplateManifest,
-} from "#cli/compose/composeApp";
-import { resolveTemplate } from "#cli/manifest/template";
-import { connectDatabase } from "#cli/setup/connectDatabase";
-import { isPostgresUrl, templateSqlRunner } from "#cli/setup/database";
-import { spawnExec } from "#cli/setup/exec";
-import { setupApp } from "#cli/setup/postCompose";
-import { provision, type StepId } from "#cli/setup/provision";
-import { writeEnvFile, writeEnvLocal } from "#cli/setup/envFile";
+} from "@codependent/generator/compose/composeApp";
+import { resolveTemplate } from "@codependent/generator/manifest/template";
+import { connectDatabase } from "@codependent/generator/setup/connectDatabase";
+import {
+  isPostgresUrl,
+  templateSqlRunner,
+} from "@codependent/generator/setup/database";
+import { spawnExec } from "@codependent/generator/setup/exec";
+import { setupApp } from "@codependent/generator/setup/postCompose";
+import { provision, type StepId } from "@codependent/generator/setup/provision";
+import {
+  writeEnvFile,
+  writeEnvLocal,
+} from "@codependent/generator/setup/envFile";
 import { showBanner } from "#cli/wizard/banner";
 import { type ClerkKeys, envPlan, integrationVars } from "#cli/wizard/keys";
 import {

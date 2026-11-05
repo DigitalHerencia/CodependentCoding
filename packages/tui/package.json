@@ -36,11 +36,11 @@
     "eslint-config-prettier": "10.1.8",
     "eslint-plugin-react-hooks": "7.1.1",
     "ink-testing-library": "4.0.0",
-    "maximal-template": "link:../../template",
     "tsdown": "0.23.2",
     "tsx": "4.23.15",
     "typescript": "6.0.3",
     "typescript-eslint": "8.72.0",
-    "vitest": "4.1.12"
+    "vitest": "4.1.12",
+    "@codependent/loaded-vibes": "workspace:*"
   }
 }

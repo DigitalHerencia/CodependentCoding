@@ -13,7 +13,7 @@ export async function runTemplateChecksWorkflow(
   onProgress: (runs: CheckRun[]) => void,
 ): Promise<CheckRun[]> {
   const { root } = await getWorkspaceInfo();
-  const cwd = path.join(root, "template");
+  const cwd = path.join(root, "packages/maximal-template");
   let runs = waitingChecks();
   const update = (id: string, change: Partial<CheckRun>) => {
     runs = runs.map((run) => (run.id === id ? { ...run, ...change } : run));
@@ -21,7 +21,21 @@ export async function runTemplateChecksWorkflow(
   };
   for (const check of templateChecks) {
     update(check.id, { status: "running" });
-    const result = await runCommand("pnpm", ["run", check.script], cwd);
+    const pluginCheck = ["lint", "check:modules", "check:ownership"].includes(
+      check.script,
+    );
+    const result = pluginCheck
+      ? await runCommand(
+          process.execPath,
+          [
+            path.join(root, "packages/loaded-vibes/scripts/app.mjs"),
+            check.script,
+            "--app",
+            cwd,
+          ],
+          cwd,
+        )
+      : await runCommand("pnpm", ["run", check.script], cwd);
     update(check.id, {
       status: result.code === 0 ? "passed" : "failed",
       durationMs: result.durationMs,

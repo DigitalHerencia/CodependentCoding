@@ -3,9 +3,14 @@ import path from "node:path";
 import * as p from "@clack/prompts";
 import type { Command } from "commander";
 
-import { spawnExec } from "#cli/setup/exec";
-import { parseFields } from "#cli/slice/fields";
-import { formatPlan, ICONS, planSlice, writePlan } from "#cli/slice/sliceApp";
+import { spawnExec } from "@codependent/generator/setup/exec";
+import { parseFields } from "@codependent/loaded-vibes/slice/fields";
+import {
+  formatPlan,
+  ICONS,
+  planSlice,
+  writePlan,
+} from "@codependent/loaded-vibes/slice/sliceApp";
 
 type SliceCommandOptions = {
   module: string;

@@ -52,7 +52,7 @@ surfaces:
     fonts: offline-safe
 
 tokens:
-  location: template/app/globals.css
+  location: packages/maximal-template/app/globals.css
   bridge: "tailwind v4 @theme inline"
   raw_colors_in_components: forbidden
   groups:

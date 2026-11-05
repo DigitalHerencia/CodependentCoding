@@ -32,7 +32,7 @@
       "Bash(pnpm test:*)",
       "Bash(pnpm format:*)",
       "Bash(pnpm validate:*)",
-      "Bash(pnpm --dir template:*)",
+      "Bash(pnpm --dir packages/maximal-template:*)",
       "Bash(pnpm issues:sync)",
       "Bash(git status:*)",
       "Bash(git diff:*)",
@@ -44,8 +44,8 @@
     "deny": [
       "Read(./.env)",
       "Read(./.env.*)",
-      "Read(./template/.env)",
-      "Read(./template/.env.*)",
+      "Read(./packages/maximal-template/.env)",
+      "Read(./packages/maximal-template/.env.*)",
       "Bash(pnpm issues:sync -- --apply:*)",
       "Bash(git push --force:*)"
     ]

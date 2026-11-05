@@ -3,7 +3,7 @@ import nextVitals from "eslint-config-next/core-web-vitals";
 import nextTypeScript from "eslint-config-next/typescript";
 import prettier from "eslint-config-prettier/flat";
 
-import { doctrine } from "./template/eslint/codependent-plugin.mjs";
+import { doctrine } from "./packages/loaded-vibes/eslint/codependent-plugin.mjs";
 
 /**
  * Factory repo lint contract.

@@ -32,15 +32,36 @@
     "M0": {
       "status": "done",
       "closed": "2026-10-23",
-      "issues": ["CC-001", "CC-002", "CC-003", "CC-004", "CC-005"],
-      "prs": [207, 208, 210, 211, 212, 213],
+      "issues": [
+        "CC-001",
+        "CC-002",
+        "CC-003",
+        "CC-004",
+        "CC-005"
+      ],
+      "prs": [
+        207,
+        208,
+        210,
+        211,
+        212,
+        213
+      ],
       "note": "All M0 issues merged. Release profile run on main 851a63f: only doctrine tests and root test pass; template and root validate fail on pre-existing code owned by CC-006/007/009-013. Compose not runnable until the CLI compose command exists (M4)."
     },
     "M1": {
       "status": "done",
-      "issues": ["CC-006", "CC-007", "CC-008"],
+      "issues": [
+        "CC-006",
+        "CC-007",
+        "CC-008"
+      ],
       "closed": "2026-10-23",
-      "prs": [216, 217, 218],
+      "prs": [
+        216,
+        217,
+        218
+      ],
       "note": "All M1 issues merged. Release profile on main 86477ca: root lint, typecheck, test and build pass; root validate fails only at format:check (CC-013). Template validate/lint/typecheck/build unchanged from M0 (CC-009..013). Compose NOT_RUN until M4."
     },
     "M2": {
@@ -57,7 +78,17 @@
         "CC-017"
       ],
       "closed": "2026-10-23",
-      "prs": [220, 221, 222, 223, 224, 225, 226, 227, 228],
+      "prs": [
+        220,
+        221,
+        222,
+        223,
+        224,
+        225,
+        226,
+        227,
+        228
+      ],
       "note": "All M2 issues merged. Release profile on main bcdeba1: root validate + build pass; template validate, test (18 passed, 1 opt-in skipped), doctrine:test 44/44, build (/, /faq, /privacy, /terms static ISR 1d), test:e2e 2/2 and test:rls 10/10 (local Postgres 16) pass; CI rls job 10/10 on a Neon branch. Compose NOT_RUN until M4."
     },
     "M3": {
@@ -75,7 +106,18 @@
         "CC-027"
       ],
       "closed": "2026-10-23",
-      "prs": [230, 231, 232, 233, 235, 236, 237, 238, 239, 240],
+      "prs": [
+        230,
+        231,
+        232,
+        233,
+        235,
+        236,
+        237,
+        238,
+        239,
+        240
+      ],
       "note": "All M3 issues merged. Release profile on the CC-027 branch tip (= main after squash): template validate (format, lint 0, typecheck, check:modules, check:ownership, check:env), test 66 passed/1 skipped, doctrine:test 50/50, check:schema-modules, check:compose (6 add-ons alone + blank, CI job compose), projects composes alone and next-builds, build, test:rls 10/10 (local Postgres 16; CI rls job on Neon), root validate. CLI compose (M4) replaces scripts/compose.mjs."
     },
     "M4": {
@@ -91,21 +133,52 @@
         "CC-035"
       ],
       "closed": "2026-10-24",
-      "prs": [241, 242, 243, 244, 245, 246, 247, 248],
+      "prs": [
+        241,
+        242,
+        243,
+        244,
+        245,
+        246,
+        247,
+        248
+      ],
       "note": "All M4 issues merged. Release evidence: main push run 40126226541 on 9aa0700 green, which covers root validate + CLI build, template validate chain, compose (add-ons alone), RLS on a Neon branch and the preset matrix (blank, 9 presets, --all: compose, install, lint, typecheck, build). Deferred owner checks: CC-028 Windows global link, CC-031 real --provision."
     },
     "M5": {
       "status": "done",
-      "issues": ["CC-036", "CC-037", "CC-038", "CC-039", "CC-040", "CC-041"],
+      "issues": [
+        "CC-036",
+        "CC-037",
+        "CC-038",
+        "CC-039",
+        "CC-040",
+        "CC-041"
+      ],
       "closed": "2026-10-24",
-      "prs": [249, 250, 251, 252, 253, 254],
+      "prs": [
+        249,
+        250,
+        251,
+        252,
+        253,
+        254
+      ],
       "note": "All M5 issues merged. Release evidence: main push run 40136570161 on 3826bc1 green (root, template, compose, RLS on Neon, preset matrix blank + 9 presets + all). Deferred owner checks: CC-036 Windows plugin install, CC-040 live /ship URL (folded into CC-042's deploy)."
     },
     "M6": {
       "status": "done",
-      "issues": ["CC-042", "CC-043", "CC-044"],
+      "issues": [
+        "CC-042",
+        "CC-043",
+        "CC-044"
+      ],
       "closed": "2026-10-25",
-      "prs": [262, 263, 264],
+      "prs": [
+        262,
+        263,
+        264
+      ],
       "note": "Dogfood run (local), README + doctrine:check, v1.0.0. Dogfood follow-ups #256-#261 left open outside M6."
     }
   },
@@ -595,7 +668,15 @@
         "total": 873
       },
       "cost_usd": 2.08,
-      "friction_issues": [255, 256, 257, 258, 259, 260, 261],
+      "friction_issues": [
+        255,
+        256,
+        257,
+        258,
+        259,
+        260,
+        261
+      ],
       "acceptance": {
         "Deployed URL exists": "OUT_OF_SCOPE (DEC-060): owner decided 2026-10-25 that the job is the template, not deploying apps. Local evidence EXECUTED: validate, test (61 passed/1 skipped), build exit 0; ship-env dry run lists names only.",
         "Total time ≤ 1 working day or a written gap analysis": "EXECUTED: new to /ship dry run took 873 s (14.6 min) of agent time across 9 headless runs, $2.08; plus db:init and test:rls by hand. Gap: the deploy (provisioning + vercel deploy + smoke) is not yet timed; 7 friction issues #255-#261 (one bug: test:rls fails without crm, #255)."
@@ -3696,7 +3777,9 @@
       "Affected-file Prettier --write passed",
       "Affected-file ESLint --fix passed"
     ],
-    "NOT_RUN": ["Typecheck, tests, build, push and deployment"]
+    "NOT_RUN": [
+      "Typecheck, tests, build, push and deployment"
+    ]
   },
   "database_target_followup": {
     "status": "awaiting-owner-shell-restart-and-migrations",
@@ -3743,5 +3826,33 @@
       "Browser login using real credentials, full tests, build, dependency installation, migration or push"
     ],
     "owner_action": "Stop the dev server, clear template/.next, clear localhost service workers/site cache, restart, and open the clean /sign-in path. Change the exposed password. No credential values were included in source, test data or this record."
+  },
+  "CC-079": {
+    "status": "done-local-main",
+    "issue": 361,
+    "spec": "context/specs/issues/CC-079-separate-factory-packages.md",
+    "branch": "main",
+    "scope": "Website remains at root; Maximal Template, generator, Loaded Vibes, CLI and TUI have explicit package boundaries. Factory manifests, scripts, governance and doctrine are outside the application template. Runtime seeds use an application registry.",
+    "owner_instruction": "Stop testing, include all changes, merge directly to main, delete branch; no PR.",
+    "EXECUTED": [
+      "Package-boundary regression failed before relocation and passed after relocation.",
+      "Root, TUI and application TypeScript checks passed during implementation.",
+      "Affected generator/editor source ESLint passed during implementation; affected-file Prettier wrote 142 paths.",
+      "Composition, module addition, slice editing and provisioning tests passed during implementation; subsequent focused run confirmed doctor tests passed.",
+      "Plugin manifest, ownership, environment and doctrine checks passed during implementation.",
+      "Focused terminal app/check workflows: 3 tests passed.",
+      "Original and relocated module ownership counts match; original RLS sources and migration files are unchanged."
+    ],
+    "KNOWN_BASELINE_FINDINGS": [
+      "Existing ownership snapshot counts differ from original HEAD source counts; relocation does not change those counts.",
+      "Existing newest _rls migration snapshot differs from the original HEAD RLS source; both inputs were preserved.",
+      "Existing generated navigation.ts violates the current module filename rule; doctrine enforcement was preserved.",
+      "Existing governance TODO expectation and Windows POSIX fake-Vercel fixture failed in broader focused checks."
+    ],
+    "NOT_RUN": [
+      "Full suites, builds, migrations, deployments, final repeated checks and PR/CI. Final focused test process stopped at owner request."
+    ],
+    "updated": "2026-11-05T19:53:13.498331+00:00",
+    "delivery": "Direct local fast-forward merge to main; all working changes included at owner direction; delivery branch deleted; no PR or remote push."
   }
 }

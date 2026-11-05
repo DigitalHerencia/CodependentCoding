@@ -150,7 +150,7 @@ Acceptance: no request leaves the origin; first load ≤ 90 KB JS; every file in
 
 ### 3.7 `/loaded-vibes`
 
-Install steps (kept), then skills (`idea`, `plan`, `slice`, `classify`, `check`, `ship`, `handoff`) each with trigger, inputs, outputs, and which doctrine chapters it points to; agents (`reviewer`, `verifier`) with their tool permissions (read-only, shown); hooks with the exact events; the MVP loop diagram. All generated from `plugin/loaded-vibes/` at build.
+Install steps (kept), then skills (`idea`, `plan`, `slice`, `classify`, `check`, `ship`, `handoff`) each with trigger, inputs, outputs, and which doctrine chapters it points to; agents (`reviewer`, `verifier`) with their tool permissions (read-only, shown); hooks with the exact events; the MVP loop diagram. All generated from `packages/loaded-vibes/` at build.
 
 ### 3.8 `/faq`
 
@@ -366,6 +366,6 @@ Order of work: M-S1 → (M-S2 ∥ M-S3) → M-S4 → M-S5 → M-S6, with M-T as 
 | ------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------- |
 | Cinzel reads less "Copperplate" than the original spec | Accepted trade (ledger P-10); the display face is one `@font-face` swap if a licence is ever bought.                                            |
 | Cache Components edge cases with MDX loaders           | Loaders are pure build-time functions in `'use cache'` keyed by content hash; `ensureStatic` fails the build instead of silently going dynamic. |
-| Rule sync check blocks a docs-only edit                | The check runs only when chapters, `validation.yaml` or `template/eslint/` change.                                                              |
+| Rule sync check blocks a docs-only edit                | The check runs only when chapters, `validation.yaml` or `packages/loaded-vibes/eslint/` change.                                                 |
 | Scope creep (the site becomes the product again)       | PRD non-goals stand: no accounts, no server data, no hosted workbench. Every new page needs a decision record.                                  |
 | `'unsafe-inline'` in the static CSP draws criticism    | Documented compensating controls (no raw HTML, no user content, no third-party origins, tested); SRI upgrade issue open.                        |

@@ -1,0 +1,26 @@
+{
+  "name": "@codependent/generator",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Maximal Template composition, module metadata and initial application setup.",
+  "exports": {
+    "./compose": "./src/compose/composeApp.ts",
+    "./kit": "./src/compose/kit.ts",
+    "./manifest": "./src/manifest/template.ts",
+    "./setup": "./src/setup/postCompose.ts",
+    "./exec": "./src/setup/exec.ts",
+    "./schema": "./src/modules-schema.mjs",
+    "./ownership": "./src/ownership.mjs",
+    "./*": "./src/*.ts",
+    "./paths.mjs": "./src/paths.mjs",
+    "./compose.mjs": "./src/compose.mjs",
+    "./modules-schema.mjs": "./src/modules-schema.mjs",
+    "./ownership.mjs": "./src/ownership.mjs",
+    "./env-example.mjs": "./src/env-example.mjs"
+  },
+  "dependencies": {
+    "zod": "4.6.7",
+    "prettier": "3.9.10"
+  }
+}

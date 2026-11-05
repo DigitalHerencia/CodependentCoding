@@ -7,7 +7,7 @@ import { pathToFileURL } from "node:url";
 
 import { tuiEnv } from "@/lib/env/tui";
 
-const MARKER = "template/eslint/doctrine-map.mjs";
+const MARKER = "packages/loaded-vibes/eslint/doctrine-map.mjs";
 
 /** The checkout root: CODEPENDENT_ROOT, else the nearest folder above `start` holding the template. */
 export function workspaceRoot(start: string = process.cwd()): string {

@@ -28,7 +28,10 @@ export async function createAppWorkflow(
   onProgress: (steps: CheckRun[]) => void,
 ): Promise<NewAppOutcome> {
   const appDir = path.resolve(request.appDir);
-  const templateDir = path.join((await getWorkspaceInfo()).root, "template");
+  const templateDir = path.join(
+    (await getWorkspaceInfo()).root,
+    "packages/maximal-template",
+  );
   const { presets } = await getModuleCatalog();
   let modules = presets[request.preset] ?? [];
   let steps = waitingChecks(STEPS);

@@ -1,4 +1,4 @@
-# Label catalog — synced by scripts/github/sync-issues.mjs
+# Label catalog — synced by packages/loaded-vibes/scripts/sync-factory-issues.mjs
 # name | color | description
 - { name: "type:feature", color: "1f6feb", description: "New capability" }
 - { name: "type:bug", color: "d73a4a", description: "Something is broken" }
@@ -44,7 +44,7 @@
 - {
     name: "area:template",
     color: "2f7a8d",
-    description: "Maximal Template (template/)",
+    description: "Maximal Template (packages/maximal-template/)",
   }
 - {
     name: "area:modules",
@@ -59,7 +59,7 @@
 - {
     name: "area:plugin",
     color: "2f7a8d",
-    description: "Loaded Vibes plugin (plugin/)",
+    description: "Loaded Vibes plugin (packages/loaded-vibes/)",
   }
 - { name: "area:ci", color: "2f7a8d", description: ".github/workflows" }
 - { name: "priority:p0", color: "b60205", description: "Critical path" }

@@ -70,7 +70,7 @@ Retired vocabulary: Anthimeria, Virgule, Arrangement, Simples, Ontologies (as pr
 
 ### 7.2 Maximal Template (FR-TPL)
 
-- FR-TPL-1 Runnable standalone Next.js app at `template/` with its own `package.json` and lockfile.
+- FR-TPL-1 Runnable standalone Next.js app at `packages/maximal-template/` with its own `package.json` and lockfile.
 - FR-TPL-2 **Base** (always generated): Clerk auth, application-owned users/organizations/memberships, RBAC authz, RLS tenant transactions, shells/nav, design system, settings, onboarding, public pages (landing, FAQ, terms, privacy), error/loading conventions, Clerk webhook sync, dev-only design-system proof page.
 - FR-TPL-3 **Domain modules**: `crm`, `projects`, `support`, `marketing`, `invoicing`, `social`, `ai`, `portal`, `admin`.
 - FR-TPL-4 **Add-on modules**: `billing` (Stripe), `uploads` (Vercel Blob), `media` (Cloudinary), `email` (SendGrid), `inference` (Hugging Face), `ratelimit` (Upstash).
@@ -80,7 +80,7 @@ Retired vocabulary: Anthimeria, Virgule, Arrangement, Simples, Ontologies (as pr
 
 ### 7.3 Module system (FR-MOD)
 
-- FR-MOD-1 One build manifest: `template/hipster.modules.json` (id, kind, label, dependsOn, extra owned globs, npm deps, env vars, presets).
+- FR-MOD-1 One build manifest: `packages/generator/assets/hipster.modules.json` (id, kind, label, dependsOn, extra owned globs, npm deps, env vars, presets).
 - FR-MOD-2 File ownership is **computed** from naming conventions (Architecture §6). Every file is owned by base or exactly one module; an orphan check fails CI otherwise.
 - FR-MOD-3 Runtime contributions (nav, dashboard widgets, permissions) live in `lib/modules/<id>.module.ts`; `lib/modules/registry.ts` lists installed modules and is rewritten by the CLI.
 - FR-MOD-4 Prisma uses multi-file schema (`prisma/schema/<id>.prisma`); cross-module relation fields on base models carry a `// @module <id>` tag the CLI strips.

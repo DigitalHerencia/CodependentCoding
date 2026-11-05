@@ -4,11 +4,15 @@ import * as p from "@clack/prompts";
 import type { Command } from "commander";
 
 import { accessChoices, fromFlags } from "#cli/commands/new";
-import { parseHex } from "#cli/compose/brand";
-import { composeApp, readManifest, toAppName } from "#cli/compose/composeApp";
-import { resolveTemplate } from "#cli/manifest/template";
-import { spawnExec } from "#cli/setup/exec";
-import { setupApp } from "#cli/setup/postCompose";
+import { parseHex } from "@codependent/generator/compose/brand";
+import {
+  composeApp,
+  readManifest,
+  toAppName,
+} from "@codependent/generator/compose/composeApp";
+import { resolveTemplate } from "@codependent/generator/manifest/template";
+import { spawnExec } from "@codependent/generator/setup/exec";
+import { setupApp } from "@codependent/generator/setup/postCompose";
 
 interface ComposeOptions {
   preset?: string;

@@ -1,0 +1,809 @@
+/**
+ * eslint-plugin-codependent (local)
+ *
+ * Mechanically enforces the Codependent Coding doctrine. Every report carries
+ * the doctrine rule ID (CC-*) defined in .claude/contracts/validation.yaml.
+ * The tables live in ./doctrine-map.mjs; this file only contains mechanics.
+ */
+import { existsSync, readFileSync } from "node:fs";
+import path from "node:path";
+
+// Node subpath import (package.json "imports"); ESLint loads this file natively.
+import { manifestPath } from "@codependent/generator/paths.mjs";
+import { BASE, ownerOf } from "@codependent/generator/ownership.mjs";
+
+import {
+  boundaries,
+  cacheProtectedLayers,
+  categories,
+  defaultExportAllowed,
+  filenameConventions,
+  genericNames,
+  identityParameters,
+  layers,
+  prismaWriteMethods,
+  serverOnlyPaths,
+  terminalProfile,
+  useClientAllowed,
+} from "./doctrine-map.mjs";
+
+// ---------------------------------------------------------------- helpers ---
+
+function toPosix(value) {
+  return value.split(path.sep).join("/");
+}
+
+/** Repo-relative POSIX path of the file being linted. */
+export function relativeFile(context) {
+  const filename = context.filename ?? context.getFilename();
+  const cwd = context.cwd ?? context.getCwd();
+  return toPosix(path.relative(cwd, filename));
+}
+
+export function layerOf(rel) {
+  return layers.find((layer) => layer.match.test(rel))?.id ?? null;
+}
+
+/** Resolve an import specifier to { kind: "internal" | "package", value }. */
+export function resolveSpecifier(spec, rel) {
+  if (spec.startsWith("@/")) {
+    return { kind: "internal", value: spec.slice(2) };
+  }
+  if (spec.startsWith("./") || spec.startsWith("../")) {
+    const joined = path.posix.normalize(
+      path.posix.join(path.posix.dirname(rel), spec),
+    );
+    return { kind: "internal", value: joined };
+  }
+  return { kind: "package", value: spec };
+}
+
+export function categoriesOf(resolved, profile) {
+  const hits = [];
+  for (const [name, def] of Object.entries(categories)) {
+    const patterns = resolved.kind === "internal" ? def.internal : def.packages;
+    if (patterns?.some((pattern) => pattern.test(resolved.value)))
+      hits.push(name);
+  }
+  if (
+    profile === "terminal" &&
+    resolved.kind === "internal" &&
+    terminalProfile.controls.test(resolved.value) &&
+    !hits.includes("ui-control")
+  )
+    hits.push("ui-control");
+  return hits;
+}
+
+/** The doctrine profile set in ESLint settings: "web" (default) or "terminal". */
+function profileOf(context) {
+  return context.settings?.codependent?.profile ?? "web";
+}
+
+function isTypeOnly(node) {
+  if (node.importKind === "type" || node.exportKind === "type") return true;
+  if (node.type === "ImportDeclaration" && node.specifiers.length > 0) {
+    return node.specifiers.every((s) => s.importKind === "type");
+  }
+  return false;
+}
+
+/** Visit every static/dynamic module source in a file. */
+function onEachSource(callback) {
+  const handle = (node) => {
+    if (node.source && typeof node.source.value === "string") {
+      callback(node.source.value, node.source, node);
+    }
+  };
+  return {
+    ImportDeclaration: handle,
+    ExportNamedDeclaration: handle,
+    ExportAllDeclaration: handle,
+    ImportExpression(node) {
+      if (
+        node.source.type === "Literal" &&
+        typeof node.source.value === "string"
+      ) {
+        callback(node.source.value, node.source, node);
+      }
+    },
+  };
+}
+
+function directives(program) {
+  const found = [];
+  for (const statement of program.body) {
+    if (
+      statement.type === "ExpressionStatement" &&
+      typeof statement.directive === "string"
+    ) {
+      found.push(statement.directive);
+    } else {
+      break;
+    }
+  }
+  return found;
+}
+
+const docs = (description, id) => ({
+  description: `${id}: ${description}`,
+  url: `.claude/contracts/validation.yaml#${id}`,
+});
+
+// ------------------------------------------------------------------ rules ---
+
+const layerBoundaries = {
+  meta: {
+    type: "problem",
+    docs: docs(
+      "Layers may only import the responsibilities the doctrine allows.",
+      "CC-LAYER",
+    ),
+    schema: [],
+    messages: {
+      denied:
+        "[{{rule}}] {{layer}} must not import {{category}} ('{{spec}}'). {{why}}",
+    },
+  },
+  create(context) {
+    const rel = relativeFile(context);
+    const layer = layerOf(rel);
+    const boundary = layer ? boundaries[layer] : undefined;
+    if (!boundary) return {};
+    const deny = new Set(boundary.deny);
+    const profile = profileOf(context);
+    const except = new Set([
+      ...(boundary.except ?? []),
+      ...(boundary.profileExcept?.[profile] ?? []),
+    ]);
+    return onEachSource((spec, sourceNode, node) => {
+      const hits = categoriesOf(resolveSpecifier(spec, rel), profile);
+      if (hits.some((hit) => except.has(hit))) return;
+      const denied = hits.find((hit) => deny.has(hit));
+      if (!denied) return;
+      // Type-only imports are erased at build time and cannot leak runtime.
+      if (isTypeOnly(node)) return;
+      const reported = boundary.overrides?.[denied] ?? boundary;
+      context.report({
+        node: sourceNode,
+        messageId: "denied",
+        data: {
+          rule: reported.rule,
+          layer,
+          category: denied,
+          spec,
+          why: reported.why,
+        },
+      });
+    });
+  },
+};
+
+const requireServerOnly = {
+  meta: {
+    type: "problem",
+    fixable: "code",
+    docs: docs(
+      'Server modules must begin with import "server-only".',
+      "CC-SRV-001",
+    ),
+    schema: [],
+    messages: {
+      missing:
+        '[CC-SRV-001] {{layer}} modules must import "server-only" so they can never ship to the browser.',
+    },
+  },
+  create(context) {
+    const rel = relativeFile(context);
+    const layer = layerOf(rel);
+    if (
+      !serverOnlyPaths.some((pattern) => pattern.test(rel)) ||
+      rel.endsWith(".d.ts")
+    )
+      return {};
+    return {
+      Program(program) {
+        const has = program.body.some(
+          (s) =>
+            s.type === "ImportDeclaration" && s.source.value === "server-only",
+        );
+        if (!has) {
+          context.report({
+            node: program,
+            messageId: "missing",
+            data: { layer },
+            fix: (fixer) => {
+              const first = program.body[0];
+              return first
+                ? fixer.insertTextBefore(first, 'import "server-only";\n\n')
+                : fixer.insertTextAfterRange([0, 0], 'import "server-only";\n');
+            },
+          });
+        }
+      },
+    };
+  },
+};
+
+const useServerActions = {
+  meta: {
+    type: "problem",
+    docs: docs(
+      'Action modules must start with the "use server" directive.',
+      "CC-WRITE-002",
+    ),
+    schema: [],
+    messages: {
+      missing:
+        '[CC-WRITE-002] lib/actions modules must start with "use server".',
+    },
+  },
+  create(context) {
+    if (layerOf(relativeFile(context)) !== "action") return {};
+    return {
+      Program(program) {
+        if (!directives(program).includes("use server")) {
+          context.report({ node: program, messageId: "missing" });
+        }
+      },
+    };
+  },
+};
+
+const useClientPlacement = {
+  meta: {
+    type: "problem",
+    docs: docs(
+      '"use client" lives only in .client.tsx companions, components, hooks and error boundaries.',
+      "CC-CLIENT-001",
+    ),
+    schema: [],
+    messages: {
+      misplaced:
+        '[CC-CLIENT-001] "use client" is not allowed here. Move browser behavior into a *.client.tsx companion.',
+      missing:
+        '[CC-CLIENT-001] *.client.tsx files must start with "use client".',
+    },
+  },
+  create(context) {
+    const rel = relativeFile(context);
+    return {
+      Program(program) {
+        const isClient = directives(program).includes("use client");
+        if (isClient && !useClientAllowed.test(rel)) {
+          context.report({ node: program, messageId: "misplaced" });
+        }
+        if (!isClient && rel.endsWith(".client.tsx")) {
+          context.report({ node: program, messageId: "missing" });
+        }
+      },
+    };
+  },
+};
+
+function memberName(callee) {
+  if (callee?.type !== "MemberExpression") return null;
+  if (callee.property.type === "Identifier") return callee.property.name;
+  if (callee.property.type === "Literal") return String(callee.property.value);
+  return null;
+}
+
+const noFetcherWrites = {
+  meta: {
+    type: "problem",
+    docs: docs("Fetchers are read-only.", "CC-READ-002"),
+    schema: [],
+    messages: {
+      write:
+        "[CC-READ-002] Fetchers are read-only; '.{{method}}()' belongs in an action or transaction helper.",
+    },
+  },
+  create(context) {
+    if (layerOf(relativeFile(context)) !== "fetcher") return {};
+    const writes = new Set(prismaWriteMethods);
+    return {
+      CallExpression(node) {
+        const method = memberName(node.callee);
+        if (method && writes.has(method))
+          context.report({ node, messageId: "write", data: { method } });
+      },
+      TaggedTemplateExpression(node) {
+        const method = memberName(node.tag);
+        if (method && writes.has(method))
+          context.report({ node, messageId: "write", data: { method } });
+      },
+    };
+  },
+};
+
+const noTransactionNetwork = {
+  meta: {
+    type: "problem",
+    docs: docs("No network I/O inside transaction helpers.", "CC-TX-002"),
+    schema: [],
+    messages: {
+      network:
+        "[CC-TX-002] Network calls are forbidden inside lib/db/transactions; call providers before or after the transaction.",
+    },
+  },
+  create(context) {
+    if (layerOf(relativeFile(context)) !== "transaction") return {};
+    return {
+      CallExpression(node) {
+        if (node.callee.type === "Identifier" && node.callee.name === "fetch") {
+          context.report({ node, messageId: "network" });
+        }
+      },
+    };
+  },
+};
+
+const noRawSql = {
+  meta: {
+    type: "problem",
+    docs: docs(
+      "No unsafe raw SQL; safe raw SQL only inside lib/db.",
+      "CC-DB-002",
+    ),
+    schema: [],
+    messages: {
+      unsafe:
+        "[CC-DB-002] '{{method}}' is never allowed. Use the tagged-template form inside lib/db.",
+      outside:
+        "[CC-DB-002] Raw SQL ('{{method}}') is only allowed inside lib/db.",
+    },
+  },
+  create(context) {
+    const rel = relativeFile(context);
+    const inDb = rel.startsWith("lib/db/") || rel.startsWith("prisma/");
+    const check = (node, method) => {
+      if (!method) return;
+      if (method === "$queryRawUnsafe" || method === "$executeRawUnsafe") {
+        context.report({ node, messageId: "unsafe", data: { method } });
+      } else if (
+        !inDb &&
+        (method === "$queryRaw" || method === "$executeRaw")
+      ) {
+        context.report({ node, messageId: "outside", data: { method } });
+      }
+    };
+    return {
+      CallExpression: (node) => check(node, memberName(node.callee)),
+      TaggedTemplateExpression: (node) => check(node, memberName(node.tag)),
+    };
+  },
+};
+
+const filenameConvention = {
+  meta: {
+    type: "suggestion",
+    docs: docs(
+      "Files follow the doctrine naming convention for their directory.",
+      "CC-NAME-001",
+    ),
+    schema: [],
+    messages: {
+      name: "[CC-NAME-001] '{{file}}' does not match the naming convention for {{dir}} (e.g. {{example}}).",
+    },
+  },
+  create(context) {
+    const rel = relativeFile(context);
+    const dir = rel.slice(0, rel.lastIndexOf("/") + 1);
+    const file = rel.slice(rel.lastIndexOf("/") + 1);
+    const convention = filenameConventions.find((c) => c.dir.test(dir));
+    if (!convention || convention.file.test(file)) return {};
+    return {
+      Program(program) {
+        context.report({
+          node: program,
+          messageId: "name",
+          data: { file, dir, example: convention.example },
+        });
+      },
+    };
+  },
+};
+
+const noGenericNames = {
+  meta: {
+    type: "suggestion",
+    docs: docs(
+      "No invented layers (services, managers, helpers, misc...).",
+      "CC-NAME-002",
+    ),
+    schema: [],
+    messages: {
+      generic:
+        "[CC-NAME-002] '{{rel}}' introduces a generic layer. Name the real responsibility (fetcher, action, workflow, integration, util).",
+    },
+  },
+  create(context) {
+    const rel = relativeFile(context);
+    if (!genericNames.test(rel) || rel.startsWith("components/ui/")) return {};
+    return {
+      Program(program) {
+        context.report({ node: program, messageId: "generic", data: { rel } });
+      },
+    };
+  },
+};
+
+const noDefaultExport = {
+  meta: {
+    type: "suggestion",
+    docs: docs(
+      "Named exports only, except framework special files.",
+      "CC-STYLE-001",
+    ),
+    schema: [],
+    messages: {
+      default:
+        "[CC-STYLE-001] Use a named export. Default exports are reserved for Next.js special files and config.",
+    },
+  },
+  create(context) {
+    const rel = relativeFile(context);
+    if (defaultExportAllowed.test(rel)) return {};
+    return {
+      ExportDefaultDeclaration(node) {
+        context.report({ node, messageId: "default" });
+      },
+    };
+  },
+};
+
+const noParentImports = {
+  meta: {
+    type: "suggestion",
+    fixable: "code",
+    docs: docs(
+      "Use the @/ alias instead of parent-relative imports.",
+      "CC-STYLE-002",
+    ),
+    schema: [],
+    messages: {
+      parent:
+        "[CC-STYLE-002] Import '{{spec}}' through the @/ alias so the owning layer is visible.",
+    },
+  },
+  create(context) {
+    const rel = relativeFile(context);
+    return onEachSource((spec, sourceNode) => {
+      if (!spec.startsWith("../")) return;
+      const target = resolveSpecifier(spec, rel).value;
+      context.report({
+        node: sourceNode,
+        messageId: "parent",
+        data: { spec },
+        fix: target.startsWith("../")
+          ? null
+          : (fixer) =>
+              fixer.replaceText(sourceNode, JSON.stringify(`@/${target}`)),
+      });
+    });
+  },
+};
+
+/**
+ * hipster.modules.json for the lint root, read once per process. Null when the
+ * root has none (the factory repo lints with this plugin but has no modules).
+ */
+const manifests = new Map();
+function manifestAt(cwd) {
+  if (!manifests.has(cwd)) {
+    const file = manifestPath(cwd);
+    manifests.set(
+      cwd,
+      existsSync(file) ? JSON.parse(readFileSync(file, "utf8")) : null,
+    );
+  }
+  return manifests.get(cwd);
+}
+
+const REGISTRY = "lib/modules/registry.ts";
+
+const moduleBoundaries = {
+  meta: {
+    type: "problem",
+    docs: docs(
+      "Modules import other modules only via dependsOn; base reaches modules only through the registry.",
+      "CC-MOD-001",
+    ),
+    schema: [],
+    messages: {
+      undeclared:
+        "[CC-MOD-001] Module '{{from}}' imports '{{spec}}' owned by '{{to}}', which is not in its dependsOn (hipster.modules.json).",
+      base: "[CC-MOD-002] Base file imports '{{spec}}' owned by module '{{to}}'. Base reaches modules only through lib/modules/registry.ts.",
+    },
+  },
+  create(context) {
+    const rel = relativeFile(context);
+    const manifest = manifestAt(context.cwd ?? context.getCwd());
+    if (manifest === null) return {};
+    const from = ownerOf(rel, manifest).owner;
+    if (from === null) return {}; // ambiguous owner: CC-MOD-003 reports it
+    const deps = new Set(
+      manifest.modules.find((entry) => entry.id === from)?.dependsOn ?? [],
+    );
+    return onEachSource((spec, sourceNode) => {
+      const resolved = resolveSpecifier(spec, rel);
+      if (resolved.kind !== "internal") return;
+      const to = ownerOf(resolved.value, manifest).owner;
+      if (to === null || to === BASE || to === from) return;
+      if (from === BASE) {
+        if (rel === REGISTRY) return;
+        context.report({
+          node: sourceNode,
+          messageId: "base",
+          data: { spec, to },
+        });
+      } else if (!deps.has(to)) {
+        context.report({
+          node: sourceNode,
+          messageId: "undeclared",
+          data: { from, spec, to },
+        });
+      }
+    });
+  },
+};
+
+/** Expression nodes that do work of their own; an argument holding one is not a plain pass-along. */
+const WORK = new Set([
+  "CallExpression",
+  "NewExpression",
+  "AwaitExpression",
+  "FunctionExpression",
+  "ArrowFunctionExpression",
+  "ConditionalExpression",
+  "LogicalExpression",
+  "BinaryExpression",
+  "AssignmentExpression",
+  "TaggedTemplateExpression",
+]);
+
+function doesWork(node) {
+  if (!node || typeof node.type !== "string") return false;
+  if (WORK.has(node.type)) return true;
+  for (const [key, value] of Object.entries(node)) {
+    if (key === "parent") continue;
+    const children = Array.isArray(value) ? value : [value];
+    if (children.some((child) => child?.type && doesWork(child))) return true;
+  }
+  return false;
+}
+
+/** The call a function body consists of, when its body is that one call and nothing else. */
+function soleCall(fn) {
+  let expression = fn.body;
+  if (fn.body.type === "BlockStatement") {
+    if (fn.body.body.length !== 1) return null;
+    const [statement] = fn.body.body;
+    if (statement.type === "ReturnStatement") expression = statement.argument;
+    else if (statement.type === "ExpressionStatement")
+      expression = statement.expression;
+    else return null;
+  }
+  if (expression?.type === "AwaitExpression") expression = expression.argument;
+  if (expression?.type !== "CallExpression") return null;
+  if (doesWork(expression.callee)) return null;
+  return expression.arguments.some(doesWork) ? null : expression;
+}
+
+/** Leading directive strings of a Program or function body. */
+function bodyDirectives(body) {
+  return body?.type === "BlockStatement" || body?.type === "Program"
+    ? directives(body)
+    : [];
+}
+
+/** Parameter names, including destructured properties. */
+function parameterNames(params) {
+  const names = [];
+  const visit = (node) => {
+    if (!node) return;
+    if (node.type === "Identifier") names.push(node.name);
+    else if (node.type === "AssignmentPattern") visit(node.left);
+    else if (node.type === "RestElement") visit(node.argument);
+    else if (node.type === "ArrayPattern") node.elements.forEach(visit);
+    else if (node.type === "ObjectPattern")
+      for (const property of node.properties)
+        visit(property.type === "Property" ? property.value : property);
+  };
+  params.forEach(visit);
+  return names;
+}
+
+const noCacheInProtected = {
+  meta: {
+    type: "problem",
+    docs: docs(
+      "'use cache' never caches protected or identity-scoped data.",
+      "CC-CACHE-002",
+    ),
+    schema: [],
+    messages: {
+      layer:
+        "[CC-CACHE-002] 'use cache' is not allowed in {{layer}} code: a shared cache entry cannot say which member may see it. Cache only public content, outside features/ and lib/fetchers/.",
+      identity:
+        "[CC-CACHE-002] A cached function must not receive '{{param}}': the cache key would decide who sees whose data.",
+    },
+  },
+  create(context) {
+    const layer = layerOf(relativeFile(context));
+    const protectedLayer = cacheProtectedLayers.includes(layer);
+    const isCache = (directive) => /^use cache(:|$)/.test(directive);
+    const checkFunction = (fn) => {
+      if (!bodyDirectives(fn.body).some(isCache)) return;
+      if (protectedLayer) {
+        context.report({ node: fn, messageId: "layer", data: { layer } });
+        return;
+      }
+      const param = parameterNames(fn.params).find((name) =>
+        identityParameters.test(name),
+      );
+      if (param)
+        context.report({ node: fn, messageId: "identity", data: { param } });
+    };
+    return {
+      Program(program) {
+        if (protectedLayer && directives(program).some(isCache))
+          context.report({
+            node: program,
+            messageId: "layer",
+            data: { layer },
+          });
+      },
+      FunctionDeclaration: checkFunction,
+      FunctionExpression: checkFunction,
+      ArrowFunctionExpression: checkFunction,
+    };
+  },
+};
+
+const noPassThrough = {
+  meta: {
+    type: "suggestion",
+    docs: docs(
+      "A workflow whose body is a single call to another function must not exist.",
+      "CC-FLOW-002",
+    ),
+    schema: [],
+    messages: {
+      passThrough:
+        "[CC-FLOW-002] Workflow '{{name}}' only calls '{{callee}}'. Call it directly and delete the workflow.",
+    },
+  },
+  create(context) {
+    if (layerOf(relativeFile(context)) !== "workflow") return {};
+    const check = (name, fn) => {
+      if (!fn || !/Function/.test(fn.type)) return;
+      const call = soleCall(fn);
+      if (!call) return;
+      context.report({
+        node: fn,
+        messageId: "passThrough",
+        data: { name, callee: context.sourceCode.getText(call.callee) },
+      });
+    };
+    return {
+      ExportNamedDeclaration(node) {
+        const declaration = node.declaration;
+        if (declaration?.type === "FunctionDeclaration") {
+          check(declaration.id.name, declaration);
+        } else if (declaration?.type === "VariableDeclaration") {
+          for (const declarator of declaration.declarations) {
+            if (declarator.id.type === "Identifier")
+              check(declarator.id.name, declarator.init);
+          }
+        }
+      },
+    };
+  },
+};
+
+const publicContent = {
+  meta: {
+    type: "problem",
+    docs: docs(
+      "Public site copy and repository file readers use content layers.",
+      "CC-CONTENT-001",
+    ),
+    schema: [],
+    messages: {
+      fetcher:
+        "[CC-CONTENT-001] Public repository readers belong in lib/content/, not authenticated lib/fetchers/.",
+      reader:
+        "[CC-CONTENT-001] Public file readers belong in lib/content/ and must import server-only.",
+      copy: "[CC-CONTENT-001] Public page copy belongs in content/, not lib/constants/.",
+    },
+  },
+  create(context) {
+    if (context.settings.codependent?.profile !== "site") return {};
+    const rel = relativeFile(context);
+    if (!/^(app|components|features|content|lib)\//.test(rel)) return {};
+    return {
+      Program(node) {
+        if (rel.startsWith("lib/fetchers/")) {
+          context.report({ node, messageId: "fetcher" });
+          return;
+        }
+        const imports = node.body.filter(
+          (item) => item.type === "ImportDeclaration",
+        );
+        const readsFiles = imports.some((item) =>
+          /^(node:)?fs(?:\/promises)?$/.test(item.source.value),
+        );
+        const serverOnly = imports.some(
+          (item) => item.source.value === "server-only",
+        );
+        if (readsFiles && (!rel.startsWith("lib/content/") || !serverOnly)) {
+          context.report({ node, messageId: "reader" });
+        }
+        if (
+          rel.startsWith("lib/constants/") &&
+          node.body.some(
+            (item) =>
+              item.type === "ExportNamedDeclaration" &&
+              item.declaration?.type === "VariableDeclaration" &&
+              item.declaration.declarations.some((entry) =>
+                /Copy$/.test(entry.id.name ?? ""),
+              ),
+          )
+        ) {
+          context.report({ node, messageId: "copy" });
+        }
+      },
+    };
+  },
+};
+
+export const rules = {
+  "public-content": publicContent,
+  "layer-boundaries": layerBoundaries,
+  "require-server-only": requireServerOnly,
+  "use-server-actions": useServerActions,
+  "use-client-placement": useClientPlacement,
+  "no-fetcher-writes": noFetcherWrites,
+  "no-transaction-network": noTransactionNetwork,
+  "no-raw-sql": noRawSql,
+  "filename-convention": filenameConvention,
+  "no-generic-names": noGenericNames,
+  "no-default-export": noDefaultExport,
+  "no-parent-imports": noParentImports,
+  "module-boundaries": moduleBoundaries,
+  "no-pass-through": noPassThrough,
+  "no-cache-in-protected": noCacheInProtected,
+};
+
+const plugin = {
+  meta: { name: "eslint-plugin-codependent", version: "1.0.0" },
+  rules,
+};
+
+/** Recommended doctrine config: every rule is an error. */
+export const doctrine = {
+  name: "codependent/doctrine",
+  files: ["**/*.{ts,tsx,mts,cts,js,jsx,mjs}"],
+  plugins: { codependent: plugin },
+  rules: Object.fromEntries(
+    Object.keys(rules).map((name) => [`codependent/${name}`, "error"]),
+  ),
+};
+
+/** Terminal apps (Ink): the doctrine with the terminal profile (DEC-072). */
+export const doctrineTerminal = {
+  ...doctrine,
+  name: "codependent/doctrine-terminal",
+  settings: { codependent: { profile: "terminal" } },
+  rules: Object.fromEntries(
+    Object.entries(doctrine.rules).map(([name, level]) => [
+      name,
+      terminalProfile.off.includes(name.replace("codependent/", ""))
+        ? "off"
+        : level,
+    ]),
+  ),
+};
+
+export default plugin;

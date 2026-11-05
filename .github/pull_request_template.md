@@ -21,18 +21,18 @@ Docs / spec: <!-- context/docs/<file>.md §N or context/specs/issues/CC-NNN-*.md
 ## Evidence
 
 <!-- CI runs only the checks the changed files need. Paste anything you ran locally
-     that CI does not (e.g. pnpm --dir template test:rls against Neon). "Should pass" is not evidence. -->
+     that CI does not (e.g. pnpm --dir packages/maximal-template test:rls against Neon). "Should pass" is not evidence. -->
 
 ```text
 pnpm validate                    →
-pnpm --dir template validate     →
+pnpm --dir packages/maximal-template validate     →
 ```
 
 ## Doctrine
 
 - [ ] No new CC-* findings (`pnpm lint`)
 - [ ] No `eslint-disable` without an inline reason and a DEC entry
-- [ ] If a rule changed: Architecture.md + validation.yaml + template/eslint updated together (label `doctrine`)
+- [ ] If a rule changed: Architecture.md + validation.yaml + packages/loaded-vibes/eslint updated together (label `doctrine`)
 
 ## Security (template / generated-app changes)
 

@@ -3,10 +3,13 @@ import path from "node:path";
 import * as p from "@clack/prompts";
 import type { Command } from "commander";
 
-import { formatResults, runDoctor } from "#cli/doctor/checks";
-import { resolveTemplate } from "#cli/manifest/template";
-import { templateSqlQuery } from "#cli/setup/database";
-import { spawnExec } from "#cli/setup/exec";
+import {
+  formatResults,
+  runDoctor,
+} from "@codependent/loaded-vibes/doctor/checks";
+import { resolveTemplate } from "@codependent/generator/manifest/template";
+import { templateSqlQuery } from "@codependent/generator/setup/database";
+import { spawnExec } from "@codependent/generator/setup/exec";
 
 interface DoctorCommandOptions {
   dir: string;

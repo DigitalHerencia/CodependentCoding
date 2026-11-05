@@ -78,6 +78,8 @@
 
 </div>
 
+Factory products live under [`packages/`](packages/README.md): Maximal Template, generator, Loaded Vibes, CLI and TUI. The repository root owns the website.
+
 # THE CODEPENDENT CODING™ WEBAPP ARCHITECTURE
 
 > [!IMPORTANT]

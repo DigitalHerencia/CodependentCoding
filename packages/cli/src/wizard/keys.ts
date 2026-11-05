@@ -1,4 +1,4 @@
-import type { TemplateManifest } from "#cli/compose/composeApp";
+import type { TemplateManifest } from "@codependent/generator/compose/composeApp";
 
 /**
  * Keys the `new` wizard collects before generating (Architecture.md §6).

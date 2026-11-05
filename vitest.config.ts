@@ -11,7 +11,11 @@ export default defineConfig({
   test: {
     environment: "node",
 
-    include: ["tests/**/*.test.ts"],
+    include: [
+      "tests/**/*.test.ts",
+      "packages/generator/tests/cli/**/*.test.ts",
+      "packages/loaded-vibes/tests/**/*.test.ts",
+    ],
 
     exclude: [
       "node_modules/**",
@@ -19,7 +23,7 @@ export default defineConfig({
       "dist/**",
       "build/**",
       "coverage/**",
-      "template/**",
+      "packages/maximal-template/**",
     ],
 
     testTimeout: 15_000,

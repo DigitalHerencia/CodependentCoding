@@ -6,7 +6,7 @@ import { parse } from "yaml";
 import type { PluginManifest, PluginPart } from "@/types/pluginTypes";
 
 // Build-time reads of the Loaded Vibes plugin so the page never drifts from it.
-const pluginDir = "plugin/loaded-vibes";
+const pluginDir = "packages/loaded-vibes";
 
 async function read(file: string) {
   return readFile(

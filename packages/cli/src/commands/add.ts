@@ -5,9 +5,9 @@ import path from "node:path";
 import * as p from "@clack/prompts";
 import type { Command } from "commander";
 
-import { planAdd, writeAdd } from "#cli/compose/addModules";
-import { resolveTemplate } from "#cli/manifest/template";
-import { runOrThrow, spawnExec } from "#cli/setup/exec";
+import { planAdd, writeAdd } from "@codependent/loaded-vibes/addModules";
+import { resolveTemplate } from "@codependent/generator/manifest/template";
+import { runOrThrow, spawnExec } from "@codependent/generator/setup/exec";
 
 interface AddCommandOptions {
   dir: string;

@@ -1,5 +1,6 @@
 packages:
   - "packages/*"
+  - "!packages/maximal-template"
 
 # Supply chain (CC-047): skip versions younger than 7 days, refuse a dependency whose
 # publish trust drops, and never write the package-manager env document into the lockfile.

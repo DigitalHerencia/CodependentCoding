@@ -73,7 +73,7 @@ verifyDepsBeforeRun: error
 > **CC-DEP-003** · `now` · CI
 > CI installs with `--frozen-lockfile`.
 
-> **CC-DEP-004** · `now` · CI (`scripts/check-lockfile.mjs`)
+> **CC-DEP-004** · `now` · CI (`packages/generator/scripts/check-lockfile.mjs`)
 > `pnpm-lock.yaml` MUST be a single YAML document.
 > pnpm 12 writes a leading environment document when `packageManager` is set. GitHub's dependency graph reads only the first document, reports zero dependencies, and auto-closes Dependabot alerts. A blind dependency graph is a disabled security control.
 

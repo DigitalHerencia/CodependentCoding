@@ -1,16 +1,21 @@
 {
   "$schema": "codependent-coding/execution/handoff/v1",
-  "updated": "2026-11-05T19:14:02.762Z",
+  "updated": "2026-11-05T19:53:13.498331+00:00",
   "format": "One current package; history is in progress.json, decisions.json and git.",
-  "status": "awaiting-owner-verification",
+  "status": "complete-local-main",
   "milestone": "M-S2",
   "current_issue": null,
   "next_issue": null,
-  "queue": ["CC-050", "CC-052", "CC-053", "CC-063"],
+  "queue": [
+    "CC-050",
+    "CC-052",
+    "CC-053",
+    "CC-063"
+  ],
   "branch": "main",
-  "active_package": "original-architecture-review-remediation",
+  "active_package": "factory-package-separation",
   "source_commit": "7a480510d7acf0075fb2f99132f5100c4b2549ce",
-  "completion": "23/23 original findings addressed in source; approved static checks and limited relevant regressions passed. Stop before final/full tests, builds and push. Required source migrations and live Clerk MFA configuration remain owner verification gates. Earlier issue notes below are historical context, not the active package.",
+  "completion": "CC-079 delivered by owner-directed local merge to main with all changes included. Delivery branch deleted. No PR or remote push; no further tests, builds or database operations. See progress.json for executed evidence and preserved baseline findings.",
   "in_flight": [
     "CC-050 token consolidation implemented; focused static checks passed. Affected-site CI and owner browser contrast/reduced-motion verification pending. CC-049 merged in #351; main synced and branch deleted.",
     "Homepage PR #349 has passing CI and ready preview; owner desktop/mobile verification remains pending.",
@@ -39,21 +44,13 @@
     "Expose credentials in commands/logs/commits; owner-local backups are outside the repo"
   ],
   "latest_followup": {
-    "status": "source-fixed-browser-cache-reset-required",
-    "diagnosis": "Credential forms had the browser default GET fallback when hydration failed. Owner logs also show stale Next 16.4.3 chunks after upgrading the running app to 16.4.5.",
-    "change": "Both credential forms now have POST/query-free actions and disabled server-rendered controls until hydration. Development unregisters the template PWA worker and clears only its cache namespace. Production cache version was advanced and lookups isolated to the current cache; activation waits for cleanup before claiming clients.",
-    "EXECUTED": [
-      "Focused credential-form regression: 2 failed against the previous forms, then 2 passed after the fix",
-      "Affected-file formatting and lint passed",
-      "Template Prisma/route type generation and typecheck passed"
-    ],
-    "OWNER_REPORTED": [
-      "Dependency installation completed with pnpm 12.16.1",
-      "Both pending source migrations applied successfully"
-    ],
+    "status": "complete-local-main",
+    "issue": 361,
+    "spec": "context/specs/issues/CC-079-separate-factory-packages.md",
+    "owner_instruction": "Stop testing; no PR; merge to main with all changes; delete branch.",
+    "checks": "See CC-079 in progress.json for executed evidence and preserved baseline findings.",
     "NOT_RUN": [
-      "Browser login using real credentials, full tests, build, dependency installation, migration or push"
-    ],
-    "owner_action": "Stop the dev server, clear template/.next, clear localhost service workers/site cache, restart, and open the clean /sign-in path. Change the exposed password. No credential values were included in source, test data or this record."
+      "Additional tests, builds, database jobs, deployment and remote push."
+    ]
   }
 }

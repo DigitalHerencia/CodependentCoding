@@ -1,6 +1,6 @@
 # Codependent Coding — validation contract
 # Compiled from: context/docs/Architecture.md §4, AUTH.md, tech-requirements.md §8
-# Executable form: template/eslint/doctrine-map.mjs (+ codependent-plugin.mjs). Keep IDs in sync.
+# Executable form: packages/loaded-vibes/eslint/doctrine-map.mjs (+ codependent-plugin.mjs). Keep IDs in sync.
 schema: codependent-coding/validation/v1
 version: 1.0.0
 updated: 2026-10-28
@@ -23,7 +23,16 @@ profiles:
       when: before commit,
       run: ["pnpm format:check", "pnpm lint", "pnpm typecheck"],
     }
-  template: { when: template changes, cwd: template, run: ["pnpm validate"] }
+  template:
+    when: template changes
+    run:
+      [
+        "pnpm --dir packages/maximal-template validate",
+        "pnpm template:lint",
+        "pnpm template:modules",
+        "pnpm template:ownership",
+        "pnpm template:env",
+      ]
   root: { when: root changes, run: ["pnpm validate"] }
   compose:
     {
@@ -43,7 +52,7 @@ profiles:
           template,
           root,
           compose for blank + every preset + --all,
-          "pnpm --dir template build",
+          "pnpm --dir packages/maximal-template build",
         ],
     }
 
@@ -352,7 +361,7 @@ rules:
       enforcement: review,
     }
 
-boundaries_source: template/eslint/doctrine-map.mjs
+boundaries_source: packages/loaded-vibes/eslint/doctrine-map.mjs
 sync_check: "pnpm doctrine:check — every CC-* id in doctrine-map.mjs exists here and vice versa"
 
 structure:
@@ -393,14 +402,14 @@ structure:
       managers,
       processors,
       helpers,
-      "template/.agents",
-      "template/context",
+      "packages/loaded-vibes/assets/maximal-template/.agents",
+      "packages/loaded-vibes/assets/maximal-template/context",
     ]
 
 terminal_profile:
   # DEC-072. Terminal apps (Ink) lint with the doctrineTerminal config.
   # One Node process, no server/browser split. Everything else is unchanged.
-  config: "template/eslint/codependent-plugin.mjs#doctrineTerminal"
+  config: "packages/loaded-vibes/eslint/codependent-plugin.mjs#doctrineTerminal"
   rules_off: [CC-SRV-001, CC-WRITE-002, CC-CLIENT-001]
   extra_controls:
     rule: CC-FEAT-004

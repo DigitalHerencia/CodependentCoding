@@ -18,9 +18,9 @@ Final verification commands, when the owner is ready:
 
 ```powershell
 pnpm test
-pnpm --dir template test
+pnpm --dir packages/maximal-template test
 pnpm build
-pnpm --dir template build
+pnpm --dir packages/maximal-template build
 ```
 
 References: [TypeScript 7 compatibility setup](https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/), [Vercel package managers](https://vercel.com/docs/package-managers), [Clerk reverification](https://clerk.com/docs/guides/secure/reverification).
@@ -37,31 +37,31 @@ This is a source review, not a security penetration test or proof of deployed co
 
 ### A01 — High: the repository teaches and enforces the older call graph
 
-Evidence: `context/docs/Architecture.md:39`, `:47–49`, `:70–72`; `template/eslint/doctrine-map.mjs:339–357`; `.claude/contracts/validation.yaml:55`, `:73`, `:79`, `:91`.
+Evidence: `context/docs/Architecture.md:39`, `:47–49`, `:70–72`; `packages/loaded-vibes/eslint/doctrine-map.mjs:339–357`; `.claude/contracts/validation.yaml:55`, `:73`, `:79`, `:91`.
 
 The existing architecture permits workflows to use transaction helpers and rejects workflow imports of actions. The latest doctrine requires workflows to delegate authorized writes to actions and forbids direct workflow database access. Existing feature rules also permit direct primitive composition by client companions beyond the form exception. Consequently, passing the existing architecture enforcement would not demonstrate compliance with the user's latest rules. This is the central policy conflict behind several implementation findings below.
 
 ### A02 — High: workflows own persisted writes and database operations
 
-Evidence: `template/lib/workflows/crmWorkflows.ts:5–11` and `qualifyLeadWorkflow`; `invoicingWorkflows.ts:5–7` and `finalizeInvoiceWorkflow`; `adminWorkflows.ts:5–8`, `:27`; `aiWorkflows.ts:5–12`, `:93`; `uploadsWorkflows.ts:6`, `:38–56`.
+Evidence: `packages/maximal-packages/maximal-template/lib/workflows/crmWorkflows.ts:5–11` and `qualifyLeadWorkflow`; `invoicingWorkflows.ts:5–7` and `finalizeInvoiceWorkflow`; `adminWorkflows.ts:5–8`, `:27`; `aiWorkflows.ts:5–12`, `:93`; `uploadsWorkflows.ts:6`, `:38–56`.
 
 These workflows import database context/transaction helpers and execute or coordinate protected database writes themselves. Bulk administration is atomic, but that atomic write is owned by a workflow rather than one action. AI generation creates/completes/fails persisted records from a workflow. Uploads call `tx.asset.create` directly. These paths violate the required workflow → authorized action → transaction-helper ownership. Existing permission checks and atomic transactions are not being described as absent.
 
 ### A03 — High: some exported actions delegate their boundary contract to workflows
 
-Evidence: `template/lib/actions/uploadsActions.ts:1–7`, plus workflow imports in `portalActions.ts` and `socialActions.ts` (complete inventory below).
+Evidence: `packages/maximal-packages/maximal-template/lib/actions/uploadsActions.ts:1–7`, plus workflow imports in `portalActions.ts` and `socialActions.ts` (complete inventory below).
 
 `uploadWorkspaceAsset` only forwards FormData to a workflow. Authentication, permission checking, manual input checks and persistence happen downstream. The latest contract makes the independently callable action responsible for authentication, authorization, shared Zod parsing and a typed result. The upload path does perform downstream checks, so this finding does not assert an authentication bypass. The action/workflow direction also contributes to A01/A02; no circular dependency was established.
 
 ### A04 — Medium: boundary validation is inconsistent and often precedes authentication
 
-Evidence: `template/lib/actions/crmActions.ts:34–35`, `:99–100`, `:124–125`, `:155–156`, `:214–215`, `:257–258`, `:276–277`; `adminActions.ts`; `onboardingActions.ts:8–9`; `template/lib/fetchers/crmFetchers.ts:47`, `:86`, `:145`.
+Evidence: `packages/maximal-packages/maximal-template/lib/actions/crmActions.ts:34–35`, `:99–100`, `:124–125`, `:155–156`, `:214–215`, `:257–258`, `:276–277`; `adminActions.ts`; `onboardingActions.ts:8–9`; `packages/maximal-packages/maximal-template/lib/fetchers/crmFetchers.ts:47`, `:86`, `:145`.
 
 These actions parse before `requireIdentity`, contrary to authenticate → general permission → validate → resource authorization → execute. `getCrmDeal(dealId: string)` accepts a TypeScript string directly for a persisted lookup without a runtime Zod boundary. Upload validation is handwritten rather than shared Zod. Authorization and tenant-scoped access exist in inspected paths; no cross-tenant disclosure was demonstrated.
 
 ### A05 — Medium: action result/error handling is only partially adopted
 
-Evidence: `template/lib/utils/actionResult.ts`; mutation exports in `template/lib/actions/crmActions.ts` and `adminActions.ts`; `template/features/crm/crmNewContactForm.tsx`.
+Evidence: `packages/maximal-packages/maximal-template/lib/utils/actionResult.ts`; mutation exports in `packages/maximal-packages/maximal-template/lib/actions/crmActions.ts` and `adminActions.ts`; `template/features/crm/crmNewContactForm.tsx`.
 
 The repository already has a central safe action-result mapper, but several actions return DTOs directly and throw validation/domain errors. Their consumers fall back to generic exception handling rather than discriminated action results and RHF field errors. The specified VALIDATION/CONFLICT/FORBIDDEN/RATE_LIMITED contract is therefore not consistent across the server boundary. This is partial adoption, not absence of an error mapper.
 
@@ -85,7 +85,7 @@ Interactive feature companions render primitive inputs/buttons and presentation 
 
 ### A09 — Medium: domain presentation copy is embedded outside root content
 
-Evidence: `template/features/crm/crmNewContactForm.tsx`; `template/features/settings/memberInviteForm.tsx`; `template/components/templates/crm-templates.tsx`.
+Evidence: `template/features/crm/crmNewContactForm.tsx`; `template/features/settings/memberInviteForm.tsx`; `packages/maximal-template/components/templates/crm-templates.tsx`.
 
 Domain labels, instructions, empty/error messaging and section copy are embedded in feature/template JSX. Ordinary domain content must come from root `content/`. Public page hardcoded copy is permitted and is not included in this finding.
 
@@ -97,37 +97,37 @@ The upload operation selects `{ id, filename }` from `tx.asset.create` and retur
 
 ### A11 — Medium: internal AI mutation is implemented as an API route
 
-Evidence: `template/app/api/ai/generate/route.ts:7–13`; `template/lib/workflows/aiWorkflows.ts:93`.
+Evidence: `template/app/api/ai/generate/route.ts:7–13`; `packages/maximal-packages/maximal-template/lib/workflows/aiWorkflows.ts:93`.
 
 The route parses application input, invokes a workflow that performs internal writes and maps domain errors. The PWA reference reserves API route handlers for external webhooks and cron and specifies actions for internal application mutations. This route also puts domain orchestration at the URL boundary. Authentication occurs downstream; this is an ownership mismatch, not a claim of an unprotected endpoint.
 
 ### A12 — High: AI rate limiting deliberately falls back to database queries
 
-Evidence: `template/lib/workflows/aiWorkflows.ts:88–111`; `template/app/api/ai/generate/route.ts` RATE_LIMITED comment.
+Evidence: `packages/maximal-packages/maximal-template/lib/workflows/aiWorkflows.ts:88–111`; `template/app/api/ai/generate/route.ts` RATE_LIMITED comment.
 
 When Upstash is unconfigured, AI generation takes a database lock and counts recent generations inside a transaction. The reference explicitly requires one Upstash limiter before the transaction and forbids the database fallback. The configured Upstash path and its integration helper do exist. The mismatch is the retained alternative path and its production behavior.
 
 ### A13 — High: integration status is accessible beyond administrators
 
-Evidence: `template/lib/workflows/organizationWorkflows.ts:9–13`; `template/lib/authz/permissions.ts:19–22`; `template/features/settings/integrationsFeature.tsx`.
+Evidence: `packages/maximal-packages/maximal-template/lib/workflows/organizationWorkflows.ts:9–13`; `packages/maximal-packages/maximal-template/lib/authz/permissions.ts:19–22`; `template/features/settings/integrationsFeature.tsx`.
 
 The status workflow checks `base.settings:read`, which is granted to MEMBER and VIEWER, and is rendered in tenant settings. The reference requires administrator-only integration status. No secret values were observed in the returned status DTO; the mismatch is visibility of provider configuration/status to broader roles.
 
 ### A14 — Medium: missing integration secrets are presented as demo mode without a production distinction
 
-Evidence: `template/lib/integrations/status.ts:8–18`; `template/lib/env/base.ts` `defineEnv`; `template/scripts/check-env.mjs`.
+Evidence: `packages/maximal-packages/maximal-template/lib/integrations/status.ts:8–18`; `packages/maximal-packages/maximal-template/lib/env/base.ts` `defineEnv`; `packages/loaded-vibes/scripts/check-env.mjs`.
 
 The status function labels every missing installed-provider configuration as DEMO MODE, independent of environment. Environment validation is lazy per owner; the inspected check-env script checks schema/manifest consistency rather than requiring deployed secrets. This does not implement the reference's startup failure for installed production integrations. Individual provider calls may still fail when their environment reader runs; this finding does not assert that every provider silently succeeds or that deployed secrets are missing.
 
 ### A15 — High: the prescribed isolated administrator boundary is absent
 
-Evidence: admin routes under `template/app/(tenant)/admin/`; `template/lib/env/base.ts` baseEnv; `template/lib/db/client.ts`; `template/lib/auth/auth.ts`; `template/lib/actions/adminActions.ts`.
+Evidence: admin routes under `template/app/(tenant)/admin/`; `packages/maximal-packages/maximal-template/lib/env/base.ts` baseEnv; `packages/maximal-packages/maximal-template/lib/db/client.ts`; `packages/maximal-packages/maximal-template/lib/auth/auth.ts`; `packages/maximal-packages/maximal-template/lib/actions/adminActions.ts`.
 
 The template uses tenant admin pages, the normal identity helper and tenant database access. It does not provide the reference's separate `(admin)` group/database URL and administrator database role architecture. Inspected sensitive admin mutations use ordinary identity/permission checks without a step-up assurance requirement. Clerk dashboard MFA/session settings were not inspected, so their actual configuration remains unknown. Existing role/permission protection is not absent.
 
 ### A16 — Medium: identity/onboarding and route composition differ from the reference
 
-Evidence: `template/prisma/schema/identity.prisma:41–43`; `template/lib/actions/onboardingActions.ts`; `template/lib/db/transactions/onboarding.tx.ts`; `template/app/(setup)/`; group root layouts and `template/app/global-not-found.tsx`; `template/next.config.ts:22–25`.
+Evidence: `packages/maximal-template/prisma/schema/identity.prisma:41–43`; `packages/maximal-packages/maximal-template/lib/actions/onboardingActions.ts`; `template/lib/db/transactions/onboarding.tx.ts`; `template/app/(setup)/`; group root layouts and `template/app/global-not-found.tsx`; `packages/maximal-packages/maximal-template/next.config.ts:22–25`.
 
 The database user primary key is a generated UUID with a separate Clerk ID, instead of Clerk ID as the primary key. The inspected onboarding operation assumes an existing active tenant membership and records completion through an audit event, rather than implementing the reference's pending-user/no-role administrator approval gate and metadata flag. The route groups are `(auth)`, `(public)`, `(setup)`, `(tenant)`, without `(admin)`. Multiple group root layouts/global-not-found deliberately replace the specified shared root layout/not-found structure. These are contract differences, not assertions that Next.js cannot support the existing choices. External provisioning/approval behavior needs separate verification before claiming the full lifecycle is absent.
 
@@ -145,7 +145,7 @@ The public source browser fetches the selected source file from an effect when t
 
 ### A19 — Medium: input types and stored role lists duplicate authoritative sources
 
-Evidence: `template/types/crmTypes.ts:12`, `:19`, `:28`; `template/schemas/crmSchemas.ts`; `template/lib/authz/roles.ts`.
+Evidence: `packages/maximal-packages/maximal-template/types/crmTypes.ts:12`, `:19`, `:28`; `template/schemas/crmSchemas.ts`; `packages/maximal-packages/maximal-template/lib/authz/roles.ts`.
 
 Contact criteria/form values are handwritten interfaces alongside Zod schemas rather than schema-derived input/output types. Several non-extending contracts also use interface contrary to type-by-default. `appRoles` repeats Prisma's role strings in a runtime array; its compile-time exhaustiveness check helps detect drift, but it remains a duplicate enum list. Interfaces that actually extend contracts, such as CrmDealDTO, are not violations of the extension exception.
 
@@ -157,19 +157,19 @@ Component filenames use camelCase/PascalCase instead of kebab-case. Blocks are s
 
 ### A21 — Medium: the primitive layer includes bespoke compositions and variants
 
-Evidence: `template/components/ui/button.tsx:15–31`; `template/components/ui/data-table.tsx`.
+Evidence: `packages/maximal-template/components/ui/button.tsx:15–31`; `template/components/ui/data-table.tsx`.
 
 Button has bespoke accent/noShadow/reverse variants and an xl size beyond the locked shipped-variant contract. The data-table module owns a reusable multi-primitive TanStack composition in the primitive directory. Under the supplied layer definitions that composition belongs to blocks. This is assessed against the user's classification contract, not a claim that composing shadcn components is generally unsupported.
 
 ### A22 — Low: several server-only database modules lack their own poison import
 
-Evidence: DTO and select modules listed in the inventory, plus `template/lib/db/transactions/errors.ts`.
+Evidence: DTO and select modules listed in the inventory, plus `packages/maximal-packages/maximal-template/lib/db/transactions/errors.ts`.
 
 These files do not declare `import "server-only"`. Current type-only imports and upstream server-only callers reduce immediate risk; no actual client-bundle inclusion was established. Nevertheless, the explicit server-only protection does not independently cover every database module as required.
 
 ### A23 — Low: foundation configuration differs from the reference
 
-Evidence: both package.json files (`packageManager` and TypeScript dependency); root `next.config.ts:4–19`; template securityHeaders in `template/next.config.ts`.
+Evidence: both package.json files (`packageManager` and TypeScript dependency); root `next.config.ts:4–19`; template securityHeaders in `packages/maximal-packages/maximal-template/next.config.ts`.
 
 The repository pins pnpm 12.3.4 and TypeScript 6.0.3 while the supplied tracker specifies pnpm 10 and TypeScript 7. The root site's config does not enable reactCompiler, while the template does. The inspected security-header arrays omit an explicit HSTS header required by the tracker. These are static spec differences; this review does not validate the tracker's version assumptions, recommend dependency changes, or claim Vercel fails to supply HSTS itself.
 
@@ -177,7 +177,7 @@ The repository pins pnpm 12.3.4 and TypeScript 6.0.3 while the supplied tracker 
 
 - Inspected tenant routes use feature/Suspense composition and do not query Prisma. The route import scan found no ordinary domain persistence imports; A11 concerns the explicit API exception.
 - Templates/blocks inspected do not import fetchers, actions, database operations or workflows. Public pages may legally consume blocks directly and hardcode copy.
-- `template/lib/db/tenant.ts` and `rls.ts` establish transaction-local PostgreSQL context on the same transaction used for protected queries. No connection-context escape was established in these wrappers.
+- `packages/maximal-packages/maximal-template/lib/db/tenant.ts` and `rls.ts` establish transaction-local PostgreSQL context on the same transaction used for protected queries. No connection-context escape was established in these wrappers.
 - Selects, DTO mappers, permission/policy helpers, transaction helpers, shared Zod schemas and a safe ActionResult mapper already exist. Most findings concern incomplete adoption or ownership, not entirely missing facilities.
 - AI provider calls occur outside database transactions. Upload metadata failure attempts blob compensation. Those existing protections must not be misreported as missing.
 - Template PWA manifest, service worker, offline route and install feature exist. The inspected worker excludes personalized HTML/RSC/JSON caching and uses static asset caching. The inspected PWA account logout clears caches before sign-out.
@@ -230,30 +230,30 @@ Generated from the source inspection described above. Lists are grouped by the m
 ### Workflow database imports (16)
 
 ```text
-template/lib/workflows/adminWorkflows.ts:5: import { toAdminMembershipDTO } from "@/lib/db/dto/admin.dto";
-template/lib/workflows/adminWorkflows.ts:6: import { withTenantTransaction } from "@/lib/db/tenant";
-template/lib/workflows/adminWorkflows.ts:7: import { updateMembershipAdministrationTx } from "@/lib/db/transactions/admin.tx";
-template/lib/workflows/adminWorkflows.ts:8: import { InvariantViolationError } from "@/lib/db/transactions/errors";
-template/lib/workflows/aiWorkflows.ts:5: import { withAuthenticatedRead, withTenantTransaction } from "@/lib/db/tenant";
-template/lib/workflows/aiWorkflows.ts:6: import { completeAiGenerationTx } from "@/lib/db/transactions/ai-complete-generation.tx";
-template/lib/workflows/aiWorkflows.ts:12: } from "@/lib/db/transactions/ai.tx";
-template/lib/workflows/crmWorkflows.ts:5: import { toCrmContactDTO } from "@/lib/db/dto/crm.dto";
-template/lib/workflows/crmWorkflows.ts:6: import { withTenantTransaction } from "@/lib/db/tenant";
-template/lib/workflows/crmWorkflows.ts:10: } from "@/lib/db/transactions/crm-qualify-lead.tx";
-template/lib/workflows/crmWorkflows.ts:11: import { InvariantViolationError } from "@/lib/db/transactions/errors";
-template/lib/workflows/invoicingWorkflows.ts:5: import { toInvoiceDTO } from "@/lib/db/dto/invoicing.dto";
-template/lib/workflows/invoicingWorkflows.ts:6: import { withTenantTransaction } from "@/lib/db/tenant";
-template/lib/workflows/invoicingWorkflows.ts:7: import { finalizeInvoiceTx } from "@/lib/db/transactions/invoicing-finalize-invoice.tx";
-template/lib/workflows/organizationWorkflows.ts:4: import { withAuthenticatedRead } from "@/lib/db/tenant";
+packages/maximal-packages/maximal-template/lib/workflows/adminWorkflows.ts:5: import { toAdminMembershipDTO } from "@/lib/db/dto/admin.dto";
+packages/maximal-packages/maximal-template/lib/workflows/adminWorkflows.ts:6: import { withTenantTransaction } from "@/lib/db/tenant";
+packages/maximal-packages/maximal-template/lib/workflows/adminWorkflows.ts:7: import { updateMembershipAdministrationTx } from "@/lib/db/transactions/admin.tx";
+packages/maximal-packages/maximal-template/lib/workflows/adminWorkflows.ts:8: import { InvariantViolationError } from "@/lib/db/transactions/errors";
+packages/maximal-packages/maximal-template/lib/workflows/aiWorkflows.ts:5: import { withAuthenticatedRead, withTenantTransaction } from "@/lib/db/tenant";
+packages/maximal-packages/maximal-template/lib/workflows/aiWorkflows.ts:6: import { completeAiGenerationTx } from "@/lib/db/transactions/ai-complete-generation.tx";
+packages/maximal-packages/maximal-template/lib/workflows/aiWorkflows.ts:12: } from "@/lib/db/transactions/ai.tx";
+packages/maximal-packages/maximal-template/lib/workflows/crmWorkflows.ts:5: import { toCrmContactDTO } from "@/lib/db/dto/crm.dto";
+packages/maximal-packages/maximal-template/lib/workflows/crmWorkflows.ts:6: import { withTenantTransaction } from "@/lib/db/tenant";
+packages/maximal-packages/maximal-template/lib/workflows/crmWorkflows.ts:10: } from "@/lib/db/transactions/crm-qualify-lead.tx";
+packages/maximal-packages/maximal-template/lib/workflows/crmWorkflows.ts:11: import { InvariantViolationError } from "@/lib/db/transactions/errors";
+packages/maximal-packages/maximal-template/lib/workflows/invoicingWorkflows.ts:5: import { toInvoiceDTO } from "@/lib/db/dto/invoicing.dto";
+packages/maximal-packages/maximal-template/lib/workflows/invoicingWorkflows.ts:6: import { withTenantTransaction } from "@/lib/db/tenant";
+packages/maximal-packages/maximal-template/lib/workflows/invoicingWorkflows.ts:7: import { finalizeInvoiceTx } from "@/lib/db/transactions/invoicing-finalize-invoice.tx";
+packages/maximal-packages/maximal-template/lib/workflows/organizationWorkflows.ts:4: import { withAuthenticatedRead } from "@/lib/db/tenant";
 template/lib/workflows/uploadsWorkflows.ts:6: import { withTenantTransaction } from "@/lib/db/tenant";
 ```
 
 ### Action imports of workflows (3)
 
 ```text
-template/lib/actions/portalActions.ts:14: import { downloadWorkspaceFileWorkflow } from "@/lib/workflows/uploadsWorkflows";
-template/lib/actions/socialActions.ts:3: import { downloadWorkspaceFileWorkflow } from "@/lib/workflows/uploadsWorkflows";
-template/lib/actions/uploadsActions.ts:3: import { uploadWorkspaceAssetWorkflow } from "@/lib/workflows/uploadsWorkflows";
+packages/maximal-packages/maximal-template/lib/actions/portalActions.ts:14: import { downloadWorkspaceFileWorkflow } from "@/lib/workflows/uploadsWorkflows";
+packages/maximal-packages/maximal-template/lib/actions/socialActions.ts:3: import { downloadWorkspaceFileWorkflow } from "@/lib/workflows/uploadsWorkflows";
+packages/maximal-packages/maximal-template/lib/actions/uploadsActions.ts:3: import { uploadWorkspaceAssetWorkflow } from "@/lib/workflows/uploadsWorkflows";
 ```
 
 ### Provider imports outside designated boundary (scan matches) (2)
@@ -318,7 +318,7 @@ template/lib/db/selects/portal.selects.ts
 template/lib/db/selects/projects.selects.ts
 template/lib/db/selects/social.selects.ts
 template/lib/db/selects/support.selects.ts
-template/lib/db/transactions/errors.ts
+packages/maximal-packages/maximal-template/lib/db/transactions/errors.ts
 ```
 
 ### Component filename candidates (178)
@@ -331,7 +331,7 @@ features/doctrine/doctrineSidebar.client.tsx
 features/maximal/maximalBrowser.client.tsx
 features/maximal/maximalBrowserFeature.tsx
 features/plugin/pluginProductFeature.tsx
-template/components/ErrorBoundary.tsx
+packages/maximal-template/components/ErrorBoundary.tsx
 template/features/admin/adminAuditFeature.client.tsx
 template/features/admin/adminAuditFeature.tsx
 template/features/admin/adminAuditSkeleton.tsx

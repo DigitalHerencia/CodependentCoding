@@ -69,8 +69,16 @@
     "dist",
     "build",
     "coverage",
-    "template",
+    "packages/maximal-template",
     "packages/tui",
+    "packages/generator/tests/template",
+    "packages/generator/tests/maximal-template",
+    "packages/generator/.cache",
+    "template",
+    "packages/generator/tests/template",
+    "packages/generator/tests/maximal-template",
+    "packages/generator/.cache",
+    "template",
     ".agents"
   ]
 }

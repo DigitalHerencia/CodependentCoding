@@ -15,7 +15,7 @@ next-env.d.ts
 *.tsbuildinfo
 
 # Generated
-template/generated/
+packages/maximal-template/generated/
 
 # Test output
 playwright-report/
@@ -30,10 +30,10 @@ blob-report/
 context/doctrine/
 
 # Template is a separate pnpm project with its own format:check (it needs template deps for the tailwind plugin)
-template/
+packages/maximal-template/
 
 # Governance templates: rendered and formatted by hipster-stack new (placeholders are not valid YAML)
-packages/cli/assets/
+packages/loaded-vibes/assets/
 
 # Slice templates: {{tokens}} are not valid TS until rendered by hipster-stack slice
-packages/cli/templates/slice/
+packages/loaded-vibes/templates/slice/

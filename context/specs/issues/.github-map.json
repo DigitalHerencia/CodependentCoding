@@ -218,5 +218,10 @@
     "number": 204,
     "url": "https://github.com/DigitalHerencia/CodependentCoding/issues/204",
     "file": "CC-044-release-v1-0-0.md"
+  },
+  "CC-079": {
+    "number": 361,
+    "url": "https://github.com/DigitalHerencia/CodependentCoding/issues/361",
+    "file": "CC-079-separate-factory-packages.md"
   }
 }

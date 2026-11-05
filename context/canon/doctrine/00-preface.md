@@ -64,14 +64,14 @@ The full list is in [Appendix A — Rule index](/doctrine/rules).
 
 ## Sources of truth
 
-| Fact                  | Authority                                   | Never restated in                        |
-| --------------------- | ------------------------------------------- | ---------------------------------------- |
-| A rule's meaning      | This doctrine                               | CLAUDE.md, skills, comments              |
-| A rule's machine form | `.claude/contracts/validation.yaml`         | ESLint messages (they print the ID only) |
-| A rule's enforcement  | `template/eslint/doctrine-map.mjs` + plugin | —                                        |
-| Roles                 | Prisma `MembershipRole` enum                | constants, components, hand-typed Zod    |
-| Module ownership      | File path + `hipster.modules.json`          | any catalog                              |
-| What happened         | `.claude/execution/*.json`                  | docs                                     |
+| Fact                  | Authority                                                | Never restated in                        |
+| --------------------- | -------------------------------------------------------- | ---------------------------------------- |
+| A rule's meaning      | This doctrine                                            | CLAUDE.md, skills, comments              |
+| A rule's machine form | `.claude/contracts/validation.yaml`                      | ESLint messages (they print the ID only) |
+| A rule's enforcement  | `packages/loaded-vibes/eslint/doctrine-map.mjs` + plugin | —                                        |
+| Roles                 | Prisma `MembershipRole` enum                             | constants, components, hand-typed Zod    |
+| Module ownership      | File path + `hipster.modules.json`                       | any catalog                              |
+| What happened         | `.claude/execution/*.json`                               | docs                                     |
 
 `pnpm doctrine:check` fails when a rule ID exists in one of the first three rows and not the others.
 

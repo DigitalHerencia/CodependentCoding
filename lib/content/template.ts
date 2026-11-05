@@ -13,6 +13,7 @@ const skipDirs = new Set([
   "test-results",
   "playwright-report",
   ".git",
+  ".sandbox",
 ]);
 const skipFiles =
   /^(\.env.*|pnpm-lock\.yaml|AGENTS\.md|next-env\.d\.ts)$|\.(png|jpe?g|ico|webp|gif|woff2?|tsbuildinfo)$/;
@@ -37,7 +38,10 @@ export async function getTemplateFiles() {
   "use cache";
 
   const files = await walk(
-    path.join(/* turbopackIgnore: true */ process.cwd(), "template"),
+    path.join(
+      /* turbopackIgnore: true */ process.cwd(),
+      "packages/maximal-template",
+    ),
     "",
   );
   return files.sort();
@@ -47,7 +51,7 @@ export async function getTemplateSource(file: string) {
   const path = file.split("/").map(encodeURIComponent).join("/");
   try {
     const response = await fetch(
-      `https://raw.githubusercontent.com/DigitalHerencia/CodependentCoding/main/template/${path}`,
+      `https://raw.githubusercontent.com/DigitalHerencia/CodependentCoding/main/packages/maximal-template/${path}`,
       { next: { revalidate: 300 } },
     );
     if (response.ok) return await response.text();

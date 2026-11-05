@@ -2,26 +2,25 @@
   "name": "hipster-stack",
   "version": "0.1.0",
   "private": true,
-  "description": "Hipster Stack CLI: composes apps from the Maximal Template (local, unpublished).",
+  "description": "Hipster Stack command-line interface to the generator and Loaded Vibes editing tools.",
   "type": "module",
   "imports": {
     "#cli/*": "./src/*.ts"
   },
   "exports": {
-    "./compose": "./src/compose/composeApp.ts",
-    "./slice": "./src/slice/sliceApp.ts",
-    "./fields": "./src/slice/fields.ts",
-    "./exec": "./src/setup/exec.ts",
-    "./setup": "./src/setup/postCompose.ts",
+    "./compose": "./src/compose.ts",
+    "./slice": "./src/slice.ts",
+    "./fields": "./src/fields.ts",
+    "./exec": "./src/exec.ts",
+    "./setup": "./src/setup.ts",
     "./package.json": "./package.json"
   },
   "bin": {
     "hipster-stack": "./dist/cli.mjs"
   },
   "files": [
-    "assets",
     "dist",
-    "templates"
+    "src"
   ],
   "engines": {
     "node": "24.x"
@@ -32,7 +31,9 @@
   "dependencies": {
     "@clack/prompts": "1.8.1",
     "commander": "15.0.0",
-    "gradient-string": "3.0.0"
+    "gradient-string": "3.0.0",
+    "@codependent/generator": "workspace:*",
+    "@codependent/loaded-vibes": "workspace:*"
   },
   "devDependencies": {
     "tsdown": "0.23.2"

@@ -11,7 +11,7 @@ import { validationContractSchema } from "@/schemas/doctrineSchemas";
 import type { DoctrineSummary } from "@/types/doctrineTypes";
 
 const CONTRACT = ".claude/contracts/validation.yaml";
-const LINT_MAP = "template/eslint/doctrine-map.mjs";
+const LINT_MAP = "packages/loaded-vibes/eslint/doctrine-map.mjs";
 
 interface DoctrineMapModule {
   layers: { id: string; match: RegExp }[];

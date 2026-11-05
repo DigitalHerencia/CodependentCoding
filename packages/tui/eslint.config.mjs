@@ -3,7 +3,7 @@ import prettier from "eslint-config-prettier/flat";
 import reactHooks from "eslint-plugin-react-hooks";
 import tseslint from "typescript-eslint";
 
-import { doctrineTerminal } from "maximal-template/eslint/codependent-plugin.mjs";
+import { doctrineTerminal } from "maximal-packages/loaded-vibes/eslint/codependent-plugin.mjs";
 
 /**
  * Terminal app lint contract: the template's doctrine with the terminal

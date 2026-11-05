@@ -3,7 +3,7 @@
 # Intent docs win on conflict: fix this file in the same PR as the doc change.
 schema: codependent-coding/application/v1
 version: 1.0.0
-updated: 2026-10-22
+updated: 2026-11-05
 
 identity:
   name: Codependent Coding
@@ -18,16 +18,23 @@ components:
     name: Codependent Coding
     enforcement:
       [
-        template/eslint/doctrine-map.mjs,
-        template/eslint/codependent-plugin.mjs,
-        template/prettier.config.mjs,
-        template/tsconfig.json,
+        packages/loaded-vibes/eslint/doctrine-map.mjs,
+        packages/loaded-vibes/eslint/codependent-plugin.mjs,
+        packages/maximal-template/prettier.config.mjs,
+        packages/maximal-template/tsconfig.json,
       ]
   template:
     name: Maximal Template
-    path: template/
+    path: packages/maximal-template/
     runnable: true
     golden_module: projects
+  generator:
+    name: Maximal Template generator
+    path: packages/generator/
+    owns: [composition, module catalog, schema, initial provisioning]
+  terminal:
+    name: Codependent Coding TUI
+    path: packages/tui/
   cli:
     name: Hipster Stack
     path: packages/cli/
@@ -37,7 +44,7 @@ components:
     commands: [new, add, slice, doctor, compose]
   plugin:
     name: Loaded Vibes
-    path: plugin/loaded-vibes/
+    path: packages/loaded-vibes/
     host: claude-code
     marketplace: .claude-plugin/marketplace.json
     activates_when: hipster.json exists at repo root
@@ -117,10 +124,12 @@ repository:
     components/: landing presentation
     public/: brand assets
     packages/cli/: Hipster Stack CLI
-    template/: Maximal Template
-    plugin/loaded-vibes/: Claude Code plugin
+    packages/maximal-template/: Maximal Template
+    packages/loaded-vibes/: Claude Code plugin
     .claude-plugin/: local marketplace
-    scripts/github/: issue sync
+    packages/generator/: application generation
+    packages/tui/: terminal interface
+    packages/loaded-vibes/scripts/: editing and issue sync
     context/docs/: human intent
     context/specs/issues/: work items
     context/doctrine/: reference books (non-authoritative)
@@ -132,15 +141,14 @@ repository:
     - .agents/
     - packages/core/
     - packages/schema/
-    - packages/loaded-vibes/
     - content.zip
     - template-disposition.json
     - lib/ (root catalog code)
     - "app/{anthimeria,maximal-template,ontologies,simples,typescripture}/"
     - "context/specs/{anthimeria,generation,ontologies,simples,loaded-vibes}/"
-    - template/.agents/
-    - template/context/
-    - template/AGENTS.md
+    - packages/loaded-vibes/assets/maximal-template/.agents/
+    - packages/loaded-vibes/assets/maximal-template/context/
+    - packages/maximal-template/AGENTS.md
   workflow:
     model: github-flow
     branch_pattern: "<type>/<issue>-<slug>"
@@ -255,7 +263,7 @@ architecture:
       }
 
 modules:
-  manifest: template/hipster.modules.json
+  manifest: packages/generator/assets/hipster.modules.json
   runtime_definition: "lib/modules/<id>.module.ts"
   registry: lib/modules/registry.ts
   ownership:
@@ -331,7 +339,7 @@ cli:
     provision_optional:
       [gh repo create, neonctl project create, vercel link + env add]
   slice:
-    templates: packages/cli/templates/slice/
+    templates: packages/loaded-vibes/templates/slice/
     derived_from: projects
     field_dsl: "name:string, amount:decimal?, status:enum(a|b), dueAt:datetime?, ownerId:ref(User)"
     outputs:

@@ -1,6 +1,6 @@
 # Codependent Coding
 
-Internal software factory: Maximal Template (`template/`) + Hipster Stack CLI (`packages/cli/`) + Loaded Vibes plugin (`plugin/loaded-vibes/`) + landing page (`app/`).
+Internal software factory: Maximal Template (`packages/maximal-template/`) + generator (`packages/generator/`) + Hipster Stack CLI (`packages/cli/`) + Loaded Vibes plugin (`packages/loaded-vibes/`) + landing page (`app/`).
 
 ## Start every session
 
@@ -10,16 +10,16 @@ Internal software factory: Maximal Template (`template/`) + Hipster Stack CLI (`
 
 ## Where things are (read only what the task needs)
 
-| Need                             | Read                                                                 |
-| -------------------------------- | -------------------------------------------------------------------- |
-| What we're building / scope      | `context/docs/PRD.md`                                                |
-| Versions, scripts, layout        | `context/docs/tech-requirements.md`                                  |
-| Layers, classifier, modules, CLI | `context/docs/Architecture.md`                                       |
-| UI, tokens, a11y                 | `context/docs/Design.md`                                             |
-| Auth, tenancy, RLS, webhooks     | `context/docs/AUTH.md`                                               |
-| Machine contracts                | `.claude/contracts/{application,validation,design}.yaml`             |
-| Doctrine rule IDs (CC-*)         | `.claude/contracts/validation.yaml` → enforced in `template/eslint/` |
-| Past decisions                   | `.claude/execution/decisions.json`                                   |
+| Need                             | Read                                                                              |
+| -------------------------------- | --------------------------------------------------------------------------------- |
+| What we're building / scope      | `context/docs/PRD.md`                                                             |
+| Versions, scripts, layout        | `context/docs/tech-requirements.md`                                               |
+| Layers, classifier, modules, CLI | `context/docs/Architecture.md`                                                    |
+| UI, tokens, a11y                 | `context/docs/Design.md`                                                          |
+| Auth, tenancy, RLS, webhooks     | `context/docs/AUTH.md`                                                            |
+| Machine contracts                | `.claude/contracts/{application,validation,design}.yaml`                          |
+| Doctrine rule IDs (CC-*)         | `.claude/contracts/validation.yaml` → enforced in `packages/loaded-vibes/eslint/` |
+| Past decisions                   | `.claude/execution/decisions.json`                                                |
 
 `context/doctrine/` is background reading, not authority.
 
@@ -28,8 +28,8 @@ Internal software factory: Maximal Template (`template/`) + Hipster Stack CLI (`
 - Classify before creating a file (Architecture.md §3.3). Never invent layers or directories.
 - Lint findings print a `CC-*` ID; fix the cause, don't disable the rule.
 - Evidence only: never report a check as passing unless you ran it.
-- Doctrine changes update Architecture.md + validation.yaml + `template/eslint/` in one PR.
-- Root and template are separate pnpm projects: `pnpm <script>` vs `pnpm --dir template <script>`.
+- Doctrine changes update Architecture.md + validation.yaml + `packages/loaded-vibes/eslint/` in one PR.
+- Root and template are separate pnpm projects: `pnpm <script>` vs `pnpm --dir packages/maximal-template <script>`.
 - Owner shell is PowerShell 7; give commands in PowerShell syntax.
 
 ## Before you stop — always
