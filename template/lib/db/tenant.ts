@@ -1,5 +1,7 @@
 import "server-only";
 
+import { connection } from "next/server";
+
 import type { Prisma } from "@/generated/prisma/client";
 import type {
   AccessContext,
@@ -111,6 +113,7 @@ export async function withTenantTransaction<T>(
   identity: AuthenticatedIdentity,
   work: (tx: Prisma.TransactionClient, access: AccessContext) => Promise<T>,
 ): Promise<T> {
+  await connection();
   const preferredOrganizationId = await getActiveOrganizationPreference();
   return prisma.$transaction(
     async (tx) =>
@@ -139,6 +142,7 @@ export async function withIdentityTransaction<T>(
     user: Awaited<ReturnType<typeof resolveUser>> & { clerkUserId: string },
   ) => Promise<T>,
 ): Promise<T> {
+  await connection();
   const identity = await requireIdentity();
   return prisma.$transaction(
     async (tx) => {

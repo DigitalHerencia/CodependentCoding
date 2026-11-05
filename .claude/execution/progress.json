@@ -26,7 +26,7 @@
     ]
   },
   "$schema": "codependent-coding/execution/progress/v1",
-  "updated": "2026-11-05T08:38:54.332Z",
+  "updated": "2026-11-05T18:43:15.032Z",
   "format": "Evidence states: EXECUTED | INSPECTED | NOT_RUN | BLOCKED. Never mark an issue done without EXECUTED evidence for its Validation commands.",
   "milestones": {
     "M0": {
@@ -3697,5 +3697,19 @@
       "Affected-file ESLint --fix passed"
     ],
     "NOT_RUN": ["Typecheck, tests, build, push and deployment"]
+  },
+  "database_target_followup": {
+    "status": "awaiting-owner-shell-restart-and-migrations",
+    "diagnosis": "Inherited DATABASE_URL and DATABASE_URL_UNPOOLED override the project file and target a different application database. Read-only inspection of project .env.local confirmed the correct template foundation and ten completed source migrations; profile_onboarding and clerk_identity_primary_key remain pending.",
+    "source_fix": "Await connection() before protected tenant and identity transactions to prevent Prisma UUID generation during speculative prerendering.",
+    "EXECUTED": [
+      "Read-only schema and migration-history comparisons; no secret values printed",
+      "Affected-file formatting and lint passed",
+      "Template type generation and typecheck passed"
+    ],
+    "NOT_RUN": [
+      "Live migrations, database reset/history changes, builds, servers and push"
+    ],
+    "owner_action": "Stop the current dev server, remove the two database variables from that PowerShell process environment, run prisma migrate deploy from template/, and restart the server so project .env.local is used."
   }
 }

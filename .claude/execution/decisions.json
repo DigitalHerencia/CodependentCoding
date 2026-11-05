@@ -1116,6 +1116,19 @@
       "context": "The owner reported that the route opt-out did not resolve the build and explicitly requested removing all ensureStatic configuration.",
       "decision": "Remove the root layout requirement and the /maximal opt-out, superseding the previous route-specific decision. Preserve all other rendering settings. Run only affected-file formatting and lint; leave builds and pushing to the owner.",
       "refs": ["app/layout.tsx", "app/(public)/maximal/page.tsx"]
+    },
+    {
+      "id": "DEC-112",
+      "date": "2026-11-05",
+      "status": "accepted",
+      "title": "Defer protected transactions and correct shell database targeting",
+      "context": "Owner reported P2028/P2022 and prerender crypto errors, followed by duplicate MembershipRole during migration deploy. Read-only inspection distinguished inherited database credentials from project-local credentials.",
+      "decision": "Use connection() at tenant/identity transaction entrypoints. Preserve normal environment precedence and all database data. Do not reset, falsely baseline or migrate the unrelated inherited target. The owner must clear the two process-level database overrides before migration/development commands use the verified project-local template database.",
+      "refs": [
+        "template/lib/db/tenant.ts",
+        "template/prisma.config.ts",
+        "https://nextjs.org/docs/messages/blocking-prerender-crypto"
+      ]
     }
   ]
 }
