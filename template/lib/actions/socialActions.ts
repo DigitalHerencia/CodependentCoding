@@ -1,6 +1,6 @@
 "use server";
 import { z } from "zod";
-import { downloadWorkspaceFileWorkflow } from "@/lib/workflows/uploadsWorkflows";
+import { readPrivateBlob } from "@/lib/integrations/vercel-blob/download";
 
 import {
   approveSocialPostSchema,
@@ -52,10 +52,10 @@ function resolvePublishTime(requestedAt: Date, now = new Date()): Date {
 }
 
 export async function createSocialPost(rawInput: unknown) {
-  const input = createSocialPostSchema.parse(rawInput);
   const identity = await requireIdentity();
   return withTenantTransaction(identity, async (tx, access) => {
     assertPermission(access, "social.post:create");
+    const input = createSocialPostSchema.parse(rawInput);
     const accountIds = [
       ...new Set(input.variants.map((variant) => variant.socialAccountId)),
     ];
@@ -97,10 +97,10 @@ export async function createSocialPost(rawInput: unknown) {
 }
 
 export async function scheduleSocialPost(rawInput: unknown) {
-  const input = scheduleSocialPostSchema.parse(rawInput);
   const identity = await requireIdentity();
   return withTenantTransaction(identity, async (tx, access) => {
     assertPermission(access, "social.post:update");
+    const input = scheduleSocialPostSchema.parse(rawInput);
     const record = await scheduleSocialPostTx(tx, {
       organizationId: access.organizationId,
       postId: input.postId,
@@ -112,10 +112,10 @@ export async function scheduleSocialPost(rawInput: unknown) {
 }
 
 export async function approveSocialPost(rawInput: unknown) {
-  const input = approveSocialPostSchema.parse(rawInput);
   const identity = await requireIdentity();
   return withTenantTransaction(identity, async (tx, access) => {
     assertPermission(access, "social.post:update");
+    const input = approveSocialPostSchema.parse(rawInput);
     const record = await approveSocialPostTx(tx, {
       organizationId: access.organizationId,
       approverMembershipId: access.membershipId,
@@ -126,10 +126,10 @@ export async function approveSocialPost(rawInput: unknown) {
 }
 
 export async function downloadSocialMedia(rawInput: unknown) {
-  const assetId = z.string().uuid().parse(rawInput);
   const identity = await requireIdentity();
   const asset = await withTenantTransaction(identity, async (tx, access) => {
     assertPermission(access, "social.media:read");
+    const assetId = z.string().uuid().parse(rawInput);
     const asset = await tx.asset.findFirst({
       where: { id: assetId, organizationId: access.organizationId },
       select: {
@@ -142,11 +142,13 @@ export async function downloadSocialMedia(rawInput: unknown) {
     });
     if (!asset || asset.byteSize > 10485760n)
       throw new Error("File unavailable or too large.");
+    if (asset.storageProvider !== "vercel-blob")
+      throw new Error("Unsupported file storage provider.");
     return asset;
   });
   return {
     filename: asset.filename,
     contentType: asset.contentType,
-    base64: await downloadWorkspaceFileWorkflow(asset),
+    base64: await readPrivateBlob(asset.storageKey),
   };
 }

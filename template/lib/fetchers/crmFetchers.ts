@@ -2,6 +2,7 @@ import "server-only";
 
 import {
   contactIdSchema,
+  dealIdSchema,
   contactListCriteriaSchema,
 } from "@/schemas/crmSchemas";
 import { assertPermission } from "@/lib/authz/permissions";
@@ -44,9 +45,10 @@ export async function getCrmDeals(limit = 50) {
   });
 }
 
-export async function getCrmDeal(dealId: string) {
+export async function getCrmDeal(rawDealId: unknown) {
   return withAuthenticatedRead(async (tx, access) => {
     assertPermission(access, "crm.deal:read");
+    const dealId = dealIdSchema.parse(rawDealId);
 
     const record = await tx.crmDeal.findFirst({
       where: {
@@ -83,10 +85,9 @@ export async function getClosedWonCrmValue(periodStart: Date, periodEnd: Date) {
 }
 
 export async function getContacts(rawCriteria: unknown = {}) {
-  const criteria = contactListCriteriaSchema.parse(rawCriteria);
-
   return withAuthenticatedRead(async (tx, access) => {
     assertPermission(access, "crm.contact:read");
+    const criteria = contactListCriteriaSchema.parse(rawCriteria);
 
     const orderBy =
       criteria.sort === "updated-desc"
@@ -142,10 +143,9 @@ export async function getContacts(rawCriteria: unknown = {}) {
 }
 
 export async function getContactById(rawContactId: unknown) {
-  const contactId = contactIdSchema.parse(rawContactId);
-
   return withAuthenticatedRead(async (tx, access) => {
     assertPermission(access, "crm.contact:read");
+    const contactId = contactIdSchema.parse(rawContactId);
     const row = await tx.crmContact.findFirst({
       where: {
         id: contactId,

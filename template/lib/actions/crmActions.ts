@@ -66,10 +66,10 @@ export async function qualifyCrmLead(rawContactId: unknown) {
 }
 
 export async function createCrmDeal(rawInput: unknown) {
-  const input = createCrmDealSchema.parse(rawInput);
   const identity = await requireIdentity();
   return withTenantTransaction(identity, async (tx, access) => {
     assertPermission(access, "crm.deal:create");
+    const input = createCrmDealSchema.parse(rawInput);
     const account = await tx.crmAccount.findFirst({
       where: {
         id: input.accountId,
@@ -131,10 +131,10 @@ export async function createCrmDeal(rawInput: unknown) {
 }
 
 export async function updateCrmDealStage(rawInput: unknown) {
-  const input = updateCrmDealStageSchema.parse(rawInput);
   const identity = await requireIdentity();
   return withTenantTransaction(identity, async (tx, access) => {
     assertPermission(access, "crm.deal:update");
+    const input = updateCrmDealStageSchema.parse(rawInput);
     const record = await updateDealStageTx(tx, {
       organizationId: access.organizationId,
       dealId: input.dealId,
@@ -156,10 +156,10 @@ export async function updateCrmDealStage(rawInput: unknown) {
 }
 
 export async function createContact(rawInput: unknown) {
-  const input = createContactSchema.parse(rawInput);
   const identity = await requireIdentity();
   return withTenantTransaction(identity, async (tx, access) => {
     assertPermission(access, "crm.contact:create");
+    const input = createContactSchema.parse(rawInput);
     const record = await tx.crmContact.create({
       data: {
         organizationId: access.organizationId,
@@ -187,9 +187,9 @@ export async function createContact(rawInput: unknown) {
 }
 
 export async function updateContact(rawInput: unknown) {
-  const input = updateContactSchema.parse(rawInput);
   const identity = await requireIdentity();
   return withTenantTransaction(identity, async (tx, access) => {
+    const input = updateContactSchema.parse(rawInput);
     const existing = await tx.crmContact.findFirst({
       where: {
         id: input.contactId,
@@ -246,9 +246,9 @@ export async function updateContact(rawInput: unknown) {
 }
 
 export async function archiveContact(rawInput: unknown) {
-  const input = archiveContactSchema.parse(rawInput);
   const identity = await requireIdentity();
   return withTenantTransaction(identity, async (tx, access) => {
+    const input = archiveContactSchema.parse(rawInput);
     const existing = await tx.crmContact.findFirst({
       where: {
         id: input.contactId,
@@ -289,10 +289,10 @@ export async function archiveContact(rawInput: unknown) {
 }
 
 export async function createCrmAccount(rawInput: unknown) {
-  const input = crmAccountFormSchema.parse(rawInput);
   const identity = await requireIdentity();
   return withTenantTransaction(identity, async (tx, access) => {
     assertPermission(access, "crm.account:create");
+    const input = crmAccountFormSchema.parse(rawInput);
     const record = await tx.crmAccount.create({
       data: {
         organizationId: access.organizationId,
@@ -308,9 +308,9 @@ export async function createCrmAccount(rawInput: unknown) {
   });
 }
 export async function updateCrmAccount(rawInput: unknown) {
-  const input = updateCrmAccountSchema.parse(rawInput);
   const identity = await requireIdentity();
   return withTenantTransaction(identity, async (tx, access) => {
+    const input = updateCrmAccountSchema.parse(rawInput);
     const existing = await tx.crmAccount.findFirst({
       where: {
         id: input.accountId,

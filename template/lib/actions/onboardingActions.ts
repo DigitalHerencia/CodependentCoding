@@ -6,8 +6,8 @@ import { completeOnboardingTx } from "@/lib/db/transactions/onboarding.tx";
 import { onboardingSchema } from "@/schemas/commonSchemas";
 
 export async function completeOnboarding(rawInput: unknown) {
-  const input = onboardingSchema.parse(rawInput);
   const identity = await requireIdentity();
+  const input = onboardingSchema.parse(rawInput);
   await withTenantTransaction(identity, (tx, access) =>
     completeOnboardingTx(tx, access, input.name),
   );

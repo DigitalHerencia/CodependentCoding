@@ -14,6 +14,7 @@ export const contactStatusSchema = z
   .enum(CrmContactStatus)
   .exclude(["ARCHIVED"]);
 export const contactIdSchema = uuid;
+export const dealIdSchema = uuid;
 export const contactSortValues = [
   "name-asc",
   "name-desc",
@@ -60,7 +61,7 @@ export const createCrmDealSchema = z.object({
 });
 
 export const updateCrmDealStageSchema = z.object({
-  dealId: uuid,
+  dealId: dealIdSchema,
   stage: z.enum(CrmDealStage),
   expectedVersion: z.number().int().positive(),
 });

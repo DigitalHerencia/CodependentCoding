@@ -11,15 +11,15 @@ import { limitedToOwnRecords } from "@/lib/authz/policies";
 import { toPortalDocumentDTO } from "@/lib/db/dto/portal.dto";
 import { portalDocumentSelect } from "@/lib/db/selects/portal.selects";
 import { withTenantTransaction } from "@/lib/db/tenant";
-import { downloadWorkspaceFileWorkflow } from "@/lib/workflows/uploadsWorkflows";
+import { readPrivateBlob } from "@/lib/integrations/vercel-blob/download";
 import { sharePortalDocumentTx } from "@/lib/db/transactions/portal.tx";
 import { addPortalVersionTx } from "@/lib/db/transactions/portal-add-version.tx";
 
 export async function createPortalDocument(rawInput: unknown) {
-  const input = createPortalDocumentSchema.parse(rawInput);
   const identity = await requireIdentity();
   return withTenantTransaction(identity, async (tx, access) => {
     assertPermission(access, "portal.document:create");
+    const input = createPortalDocumentSchema.parse(rawInput);
     const record = await tx.portalDocument.create({
       data: {
         organizationId: access.organizationId,
@@ -34,10 +34,10 @@ export async function createPortalDocument(rawInput: unknown) {
 }
 
 export async function addPortalDocumentVersion(rawInput: unknown) {
-  const input = addPortalDocumentVersionSchema.parse(rawInput);
   const identity = await requireIdentity();
   return withTenantTransaction(identity, async (tx, access) => {
     assertPermission(access, "portal.document:update");
+    const input = addPortalDocumentVersionSchema.parse(rawInput);
     const record = await addPortalVersionTx(tx, {
       organizationId: access.organizationId,
       membershipId: access.membershipId,
@@ -51,10 +51,10 @@ export async function addPortalDocumentVersion(rawInput: unknown) {
 }
 
 export async function sharePortalDocument(rawInput: unknown) {
-  const input = portalDocumentCommandSchema.parse(rawInput);
   const identity = await requireIdentity();
   return withTenantTransaction(identity, async (tx, access) => {
     assertPermission(access, "portal.document:update");
+    const input = portalDocumentCommandSchema.parse(rawInput);
     return toPortalDocumentDTO(
       await sharePortalDocumentTx(tx, {
         ...input,
@@ -64,12 +64,12 @@ export async function sharePortalDocument(rawInput: unknown) {
   });
 }
 export async function downloadPortalDocument(rawInput: unknown) {
-  const { documentId } = portalDocumentCommandSchema
-    .pick({ documentId: true })
-    .parse(rawInput);
   const identity = await requireIdentity();
   const asset = await withTenantTransaction(identity, async (tx, access) => {
     assertPermission(access, "portal.document:read");
+    const { documentId } = portalDocumentCommandSchema
+      .pick({ documentId: true })
+      .parse(rawInput);
     const document = await tx.portalDocument.findFirst({
       where: {
         id: documentId,
@@ -103,6 +103,6 @@ export async function downloadPortalDocument(rawInput: unknown) {
   });
   return {
     filename: asset.filename,
-    base64: await downloadWorkspaceFileWorkflow(asset),
+    base64: await readPrivateBlob(asset.storageKey),
   };
 }
