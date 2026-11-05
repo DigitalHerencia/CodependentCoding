@@ -1,4 +1,30 @@
 {
+  "architecture_remediation": {
+    "status": "implementation-complete-awaiting-owner-verification",
+    "source_commit": "7a480510d7acf0075fb2f99132f5100c4b2549ce",
+    "branch": "main",
+    "spec": ".claude/reports/architecture-review-2026-11-03.md",
+    "original_findings": 23,
+    "source_addressed": 23,
+    "outstanding_source_findings": [],
+    "EXECUTED": [
+      "Affected-file Prettier --write and ESLint --fix: root/template passed",
+      "pnpm typecheck: passed",
+      "pnpm --dir template typecheck: passed",
+      "Focused onboarding: 2 passed; old helper regression reproduced first",
+      "Focused activeOrganization: 4 passed",
+      "Focused layer-boundaries/filename cases: passed; old import exceptions reproduced first"
+    ],
+    "NOT_RUN": [
+      "Final/full tests, builds, push, deployment and live migrations",
+      "Optional scaffold test: combined command rejected by automatic approval review; did not run"
+    ],
+    "owner_gates": [
+      "Review/apply required source migrations before runtime use against an older database",
+      "Verify Clerk administrator MFA and installed production-provider credentials",
+      "Run final verification and push personally"
+    ]
+  },
   "$schema": "codependent-coding/execution/progress/v1",
   "updated": "2026-11-02T12:51:23.743235+00:00",
   "format": "Evidence states: EXECUTED | INSPECTED | NOT_RUN | BLOCKED. Never mark an issue done without EXECUTED evidence for its Validation commands.",

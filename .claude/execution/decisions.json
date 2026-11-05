@@ -1083,6 +1083,18 @@
       "context": "CC-050 references Plan 5.1, now located at context/canon/refurbish/PLAN.md. The older teal text and selected CLI control fail normal-text contrast. Owner forbids additional CI validation/test jobs and agent browser servers.",
       "decision": "Apply the approved semantic palette, brighter signal text, canonical border/muted utilities and reduced-motion cascade without important declarations. A dependency-free local script checks explicit solid-color pairs at 4.5:1 text and 3:1 UI, failing closed on malformed declarations. Replace the superseded extra contrast CI/axe job requirements with local numeric evidence and owner-run preview verification; do not extend the CI workflow. Generated template tokens remain separate.",
       "refs": ["GH-302", "PR #351", "context/canon/refurbish/PLAN.md §5.1"]
+    },
+    {
+      "id": "DEC-109",
+      "date": "2026-11-04",
+      "status": "accepted",
+      "title": "Complete the owner-approved original architecture remediation locally",
+      "context": "The owner requested all 23 original findings be addressed on local main, with approved static checks, limited necessary regressions and no final tests/builds or push.",
+      "decision": "Implement the latest doctrine and matching generators, profile-only onboarding and administrator approval, flat admin routes with independently enforced recent MFA, and Clerk identity primary keys with an unapplied source migration. AI/Upstash remain optional. Withdraw the unsupported separate-admin-database claim. Pin native TypeScript 7.0.2 with TypeScript 6 API compatibility; retain pnpm 12.3.4 after verifying Vercel support. This supersedes the TypeScript 7 incompatibility assumption in DEC-006 without altering its history. Leave live migration/MFA and final runtime/build/deployment verification with the owner.",
+      "refs": [
+        ".claude/reports/architecture-review-2026-11-03.md",
+        "7a480510d7acf0075fb2f99132f5100c4b2549ce"
+      ]
     }
   ]
 }
