@@ -5,7 +5,7 @@ import Link from "next/link";
 import { authAppearance } from "@/content/auth";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { SignUpForm as SignUpFormPanel } from "@/components/blocks/auth-forms";
+import { AuthFormPanel } from "@/components/blocks/auth-forms";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -91,7 +91,7 @@ export function SignUpForm() {
     );
 
   return (
-    <SignUpFormPanel
+    <AuthFormPanel
       title={verifying ? "Verify your email" : "Create an account"}
       description={
         verifying
@@ -220,6 +220,6 @@ export function SignUpForm() {
           </Link>
         </p>
       </form>
-    </SignUpFormPanel>
+    </AuthFormPanel>
   );
 }

@@ -5,7 +5,7 @@ import Link from "next/link";
 import { authAppearance } from "@/content/auth";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { LoginForm } from "@/components/blocks/auth-forms";
+import { AuthFormPanel } from "@/components/blocks/auth-forms";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -136,7 +136,7 @@ export function SignInForm() {
     );
 
   return (
-    <LoginForm
+    <AuthFormPanel
       title={
         step === "password"
           ? "Welcome back"
@@ -332,6 +332,6 @@ export function SignInForm() {
           </span>
         </div>
       </form>
-    </LoginForm>
+    </AuthFormPanel>
   );
 }
