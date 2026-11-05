@@ -156,92 +156,96 @@ export async function updateCrmDealStage(rawInput: unknown) {
 }
 
 export async function createContact(rawInput: unknown) {
-  const identity = await requireIdentity();
-  return withTenantTransaction(identity, async (tx, access) => {
-    assertPermission(access, "crm.contact:create");
-    const input = createContactSchema.parse(rawInput);
-    const record = await tx.crmContact.create({
-      data: {
-        organizationId: access.organizationId,
-        ownerMembershipId: access.membershipId,
-        firstName: input.firstName,
-        lastName: input.lastName,
-        email: input.email || null,
-        phone: input.phone || null,
-        title: input.title || null,
-        status: input.status,
-      },
-      select: crmContactSelect,
+  return toActionResult(async () => {
+    const identity = await requireIdentity();
+    return withTenantTransaction(identity, async (tx, access) => {
+      assertPermission(access, "crm.contact:create");
+      const input = createContactSchema.parse(rawInput);
+      const record = await tx.crmContact.create({
+        data: {
+          organizationId: access.organizationId,
+          ownerMembershipId: access.membershipId,
+          firstName: input.firstName,
+          lastName: input.lastName,
+          email: input.email || null,
+          phone: input.phone || null,
+          title: input.title || null,
+          status: input.status,
+        },
+        select: crmContactSelect,
+      });
+      await tx.auditEvent.create({
+        data: {
+          organizationId: access.organizationId,
+          actorUserId: access.userId,
+          action: "crm.contact.created",
+          resourceType: "CrmContact",
+          resourceId: record.id,
+        },
+      });
+      return toCrmContactDTO(record);
     });
-    await tx.auditEvent.create({
-      data: {
-        organizationId: access.organizationId,
-        actorUserId: access.userId,
-        action: "crm.contact.created",
-        resourceType: "CrmContact",
-        resourceId: record.id,
-      },
-    });
-    return toCrmContactDTO(record);
   });
 }
 
 export async function updateContact(rawInput: unknown) {
-  const identity = await requireIdentity();
-  return withTenantTransaction(identity, async (tx, access) => {
-    const input = updateContactSchema.parse(rawInput);
-    const existing = await tx.crmContact.findFirst({
-      where: {
-        id: input.contactId,
-        organizationId: access.organizationId,
-        archivedAt: null,
-      },
-      select: crmContactAccessSelect,
+  return toActionResult(async () => {
+    const identity = await requireIdentity();
+    return withTenantTransaction(identity, async (tx, access) => {
+      const input = updateContactSchema.parse(rawInput);
+      const existing = await tx.crmContact.findFirst({
+        where: {
+          id: input.contactId,
+          organizationId: access.organizationId,
+          archivedAt: null,
+        },
+        select: crmContactAccessSelect,
+      });
+      if (!existing) throw new ResourceNotFoundError("CRM contact");
+      authorizeOwnedOrAssignedWrite(access, "crm.contact:update", {
+        kind: "crm.contact",
+        organizationId: existing.organizationId,
+        ownerMembershipId: existing.ownerMembershipId,
+      });
+      if (existing.updatedAt.getTime() !== input.expectedUpdatedAt.getTime())
+        throw new ConcurrencyConflictError("CRM contact");
+      const result = await tx.crmContact.updateMany({
+        where: {
+          id: existing.id,
+          organizationId: access.organizationId,
+          archivedAt: null,
+          updatedAt: input.expectedUpdatedAt,
+        },
+        data: {
+          firstName: input.firstName,
+          lastName: input.lastName,
+          email: input.email || null,
+          phone: input.phone || null,
+          title: input.title || null,
+          status: input.status,
+        },
+      });
+      if (result.count !== 1) throw new ConcurrencyConflictError("CRM contact");
+      const record = await tx.crmContact.findFirst({
+        where: {
+          id: existing.id,
+          organizationId: access.organizationId,
+          archivedAt: null,
+        },
+        select: crmContactSelect,
+      });
+      if (!record) throw new ResourceNotFoundError("CRM contact");
+      await tx.auditEvent.create({
+        data: {
+          organizationId: access.organizationId,
+          actorUserId: access.userId,
+          action: "crm.contact.updated",
+          resourceType: "CrmContact",
+          resourceId: record.id,
+        },
+      });
+      return toCrmContactDTO(record);
     });
-    if (!existing) throw new ResourceNotFoundError("CRM contact");
-    authorizeOwnedOrAssignedWrite(access, "crm.contact:update", {
-      kind: "crm.contact",
-      organizationId: existing.organizationId,
-      ownerMembershipId: existing.ownerMembershipId,
-    });
-    if (existing.updatedAt.getTime() !== input.expectedUpdatedAt.getTime())
-      throw new ConcurrencyConflictError("CRM contact");
-    const result = await tx.crmContact.updateMany({
-      where: {
-        id: existing.id,
-        organizationId: access.organizationId,
-        archivedAt: null,
-        updatedAt: input.expectedUpdatedAt,
-      },
-      data: {
-        firstName: input.firstName,
-        lastName: input.lastName,
-        email: input.email || null,
-        phone: input.phone || null,
-        title: input.title || null,
-        status: input.status,
-      },
-    });
-    if (result.count !== 1) throw new ConcurrencyConflictError("CRM contact");
-    const record = await tx.crmContact.findFirst({
-      where: {
-        id: existing.id,
-        organizationId: access.organizationId,
-        archivedAt: null,
-      },
-      select: crmContactSelect,
-    });
-    if (!record) throw new ResourceNotFoundError("CRM contact");
-    await tx.auditEvent.create({
-      data: {
-        organizationId: access.organizationId,
-        actorUserId: access.userId,
-        action: "crm.contact.updated",
-        resourceType: "CrmContact",
-        resourceId: record.id,
-      },
-    });
-    return toCrmContactDTO(record);
   });
 }
 
@@ -289,61 +293,65 @@ export async function archiveContact(rawInput: unknown) {
 }
 
 export async function createCrmAccount(rawInput: unknown) {
-  const identity = await requireIdentity();
-  return withTenantTransaction(identity, async (tx, access) => {
-    assertPermission(access, "crm.account:create");
-    const input = crmAccountFormSchema.parse(rawInput);
-    const record = await tx.crmAccount.create({
-      data: {
-        organizationId: access.organizationId,
-        ownerMembershipId: access.membershipId,
-        name: input.name,
-        website: input.website || null,
-        industry: input.industry || null,
-        notes: input.notes || null,
-      },
-      select: crmAccountSelect,
+  return toActionResult(async () => {
+    const identity = await requireIdentity();
+    return withTenantTransaction(identity, async (tx, access) => {
+      assertPermission(access, "crm.account:create");
+      const input = crmAccountFormSchema.parse(rawInput);
+      const record = await tx.crmAccount.create({
+        data: {
+          organizationId: access.organizationId,
+          ownerMembershipId: access.membershipId,
+          name: input.name,
+          website: input.website || null,
+          industry: input.industry || null,
+          notes: input.notes || null,
+        },
+        select: crmAccountSelect,
+      });
+      return toCrmAccountDTO(record);
     });
-    return toCrmAccountDTO(record);
   });
 }
 export async function updateCrmAccount(rawInput: unknown) {
-  const identity = await requireIdentity();
-  return withTenantTransaction(identity, async (tx, access) => {
-    const input = updateCrmAccountSchema.parse(rawInput);
-    const existing = await tx.crmAccount.findFirst({
-      where: {
-        id: input.accountId,
-        organizationId: access.organizationId,
-        archivedAt: null,
-      },
-      select: { organizationId: true, ownerMembershipId: true },
+  return toActionResult(async () => {
+    const identity = await requireIdentity();
+    return withTenantTransaction(identity, async (tx, access) => {
+      const input = updateCrmAccountSchema.parse(rawInput);
+      const existing = await tx.crmAccount.findFirst({
+        where: {
+          id: input.accountId,
+          organizationId: access.organizationId,
+          archivedAt: null,
+        },
+        select: { organizationId: true, ownerMembershipId: true },
+      });
+      if (!existing) throw new ResourceNotFoundError("Account");
+      authorizeOwnedOrAssignedWrite(access, "crm.account:update", {
+        kind: "crm.account",
+        ...existing,
+      });
+      const result = await tx.crmAccount.updateMany({
+        where: {
+          id: input.accountId,
+          organizationId: access.organizationId,
+          updatedAt: input.expectedUpdatedAt,
+          archivedAt: null,
+        },
+        data: {
+          name: input.name,
+          website: input.website || null,
+          industry: input.industry || null,
+          notes: input.notes || null,
+        },
+      });
+      if (result.count !== 1) throw new ConcurrencyConflictError("Account");
+      return toCrmAccountDTO(
+        await tx.crmAccount.findFirstOrThrow({
+          where: { id: input.accountId, organizationId: access.organizationId },
+          select: crmAccountSelect,
+        }),
+      );
     });
-    if (!existing) throw new ResourceNotFoundError("Account");
-    authorizeOwnedOrAssignedWrite(access, "crm.account:update", {
-      kind: "crm.account",
-      ...existing,
-    });
-    const result = await tx.crmAccount.updateMany({
-      where: {
-        id: input.accountId,
-        organizationId: access.organizationId,
-        updatedAt: input.expectedUpdatedAt,
-        archivedAt: null,
-      },
-      data: {
-        name: input.name,
-        website: input.website || null,
-        industry: input.industry || null,
-        notes: input.notes || null,
-      },
-    });
-    if (result.count !== 1) throw new ConcurrencyConflictError("Account");
-    return toCrmAccountDTO(
-      await tx.crmAccount.findFirstOrThrow({
-        where: { id: input.accountId, organizationId: access.organizationId },
-        select: crmAccountSelect,
-      }),
-    );
   });
 }

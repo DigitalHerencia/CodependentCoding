@@ -1,66 +1,101 @@
 "use client";
-import { useState, useTransition } from "react";
+
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { createInvitation } from "@/lib/actions/commonActions";
+import { useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import type { z } from "zod";
+
 import { Button } from "@/components/ui/button";
+import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { memberInviteCopy as copy } from "@/content/settings";
+import { createInvitation } from "@/lib/actions/commonActions";
 import { defaultInvitedRole, invitableRoles } from "@/lib/authz/roles";
+import { createInvitationSchema } from "@/schemas/commonSchemas";
 
 export function MemberInviteForm() {
   const router = useRouter();
-  const [pending, startTransition] = useTransition();
-  const [error, setError] = useState("");
   const [link, setLink] = useState("");
+  const {
+    control,
+    handleSubmit,
+    setError,
+    formState: { errors, isSubmitting },
+  } = useForm<
+    z.input<typeof createInvitationSchema>,
+    unknown,
+    z.output<typeof createInvitationSchema>
+  >({
+    resolver: zodResolver(createInvitationSchema),
+    defaultValues: { email: "", role: defaultInvitedRole },
+  });
+
   return (
     <form
       className="space-y-3 surface-card p-5"
-      action={(data) =>
-        startTransition(async () => {
-          setError("");
-          setLink("");
-          const result = await createInvitation({
-            email: data.get("email"),
-            role: data.get("role"),
-          });
-          if (!result.ok) {
-            setError(
-              result.error.fieldErrors?.email?.[0] ??
-                "The invitation could not be created. Inviting needs admin access.",
-            );
-            return;
+      noValidate
+      onSubmit={handleSubmit(async (values) => {
+        setLink("");
+        const result = await createInvitation(values);
+        if (!result.ok) {
+          for (const name of ["email", "role"] as const) {
+            const message = result.error.fieldErrors?.[name]?.[0];
+            if (message) setError(name, { message });
           }
-          setLink(`${window.location.origin}${result.data.path}`);
-          router.refresh();
-        })
-      }
+          setError("root", { message: result.error.message });
+          return;
+        }
+        setLink(`${window.location.origin}${result.data.path}`);
+        router.refresh();
+      })}
     >
-      <h2 className="type-heading">Invite someone</h2>
-      <p>
-        They join when they sign in with this email and open the link. The link
-        is shown once.
-      </p>
-      <Label htmlFor="invite-email">Email</Label>
-      <Input id="invite-email" name="email" type="email" required />
-      <Label htmlFor="invite-role">Role</Label>
-      <select
-        id="invite-role"
+      <h2 className="type-heading">{copy.title}</h2>
+      <p>{copy.instructions}</p>
+      <Controller
+        control={control}
+        name="email"
+        render={({ field, fieldState }) => (
+          <Field data-invalid={fieldState.invalid}>
+            <FieldLabel htmlFor="invite-email">{copy.email}</FieldLabel>
+            <Input
+              id="invite-email"
+              type="email"
+              aria-invalid={fieldState.invalid}
+              {...field}
+            />
+            <FieldError>{fieldState.error?.message}</FieldError>
+          </Field>
+        )}
+      />
+      <Controller
+        control={control}
         name="role"
-        defaultValue={defaultInvitedRole}
-        className="control-field"
-      >
-        {invitableRoles.map((role) => (
-          <option key={role}>{role}</option>
-        ))}
-      </select>
-      {error && <p role="alert">{error}</p>}
+        render={({ field, fieldState }) => (
+          <Field data-invalid={fieldState.invalid}>
+            <FieldLabel htmlFor="invite-role">{copy.role}</FieldLabel>
+            <select
+              id="invite-role"
+              className="control-field"
+              aria-invalid={fieldState.invalid}
+              {...field}
+            >
+              {invitableRoles.map((role) => (
+                <option key={role}>{role}</option>
+              ))}
+            </select>
+            <FieldError>{fieldState.error?.message}</FieldError>
+          </Field>
+        )}
+      />
+      <FieldError>{errors.root?.message}</FieldError>
       {link && (
         <p role="status">
-          Share this link: <code className="break-all">{link}</code>
+          {copy.share} <code className="break-all">{link}</code>
         </p>
       )}
-      <Button type="submit" disabled={pending}>
-        Create invitation
+      <Button type="submit" disabled={isSubmitting}>
+        {copy.submit}
       </Button>
     </form>
   );

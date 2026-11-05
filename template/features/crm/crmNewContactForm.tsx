@@ -1,12 +1,15 @@
 "use client";
-import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import type { z } from "zod";
 import { createContact, updateContact } from "@/lib/actions/crmActions";
-import type { ContactFormValues, CrmContactDTO } from "@/types/crmTypes";
+import type { CrmContactDTO } from "@/types/crmTypes";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Field, FieldError, FieldLabel } from "@/components/ui/field";
+import { contactFormSchema, contactStatusSchema } from "@/schemas/crmSchemas";
+import { contactFormCopy as copy } from "@/content/crm";
 export function CrmNewContactForm({
   contact,
   lead = false,
@@ -15,12 +18,25 @@ export function CrmNewContactForm({
   lead?: boolean;
 }) {
   const router = useRouter();
-  const [error, setError] = useState("");
+  const fields = [
+    "firstName",
+    "lastName",
+    "email",
+    "phone",
+    "title",
+    "status",
+  ] as const;
   const {
-    register,
+    control,
+    setError,
     handleSubmit,
-    formState: { isSubmitting },
-  } = useForm<ContactFormValues>({
+    formState: { errors, isSubmitting },
+  } = useForm<
+    z.input<typeof contactFormSchema>,
+    unknown,
+    z.output<typeof contactFormSchema>
+  >({
+    resolver: zodResolver(contactFormSchema),
     defaultValues: {
       firstName: contact?.firstName ?? "",
       lastName: contact?.lastName ?? "",
@@ -36,68 +52,67 @@ export function CrmNewContactForm({
   return (
     <form
       className="mx-auto max-w-3xl space-y-5 surface-card p-5"
+      noValidate
       onSubmit={handleSubmit(async (values) => {
-        setError("");
-        try {
-          const saved = contact
-            ? await updateContact({
-                ...values,
-                contactId: contact.id,
-                expectedUpdatedAt: contact.updatedAt,
-              })
-            : await createContact(values);
-          router.push(`/crm/${lead ? "leads" : "contacts"}/${saved.id}`);
-          router.refresh();
-        } catch {
-          setError(
-            "Contact could not be saved. Check the fields and your permissions. Reload if the record has changed.",
-          );
+        const result = contact
+          ? await updateContact({
+              ...values,
+              contactId: contact.id,
+              expectedUpdatedAt: contact.updatedAt,
+            })
+          : await createContact(values);
+        if (!result.ok) {
+          for (const name of fields) {
+            const message = result.error.fieldErrors?.[name]?.[0];
+            if (message) setError(name, { message });
+          }
+          setError("root", { message: result.error.message });
+          return;
         }
+        router.push(`/crm/${lead ? "leads" : "contacts"}/${result.data.id}`);
+        router.refresh();
       })}
     >
       <h1 className="type-title">
-        {contact ? "Edit" : "New"} {lead ? "lead" : "contact"}
+        {contact ? copy.edit : copy.create} {lead ? copy.lead : copy.contact}
       </h1>
       <div className="grid gap-4 sm:grid-cols-2">
-        {(["firstName", "lastName", "email", "phone", "title"] as const).map(
-          (field) => (
-            <div className="form-field" key={field}>
-              <Label htmlFor={field}>
-                {
-                  {
-                    firstName: "First name",
-                    lastName: "Last name",
-                    email: "Email",
-                    phone: "Phone",
-                    title: "Job title",
-                  }[field]
-                }
-              </Label>
-              <Input
-                id={field}
-                type={field === "email" ? "email" : "text"}
-                required={field === "firstName" || field === "lastName"}
-                {...register(field)}
-              />
-            </div>
-          ),
-        )}
-        <div className="form-field">
-          <Label htmlFor="contact-status">Relationship status</Label>
-          <select
-            id="contact-status"
-            className="control-field"
-            {...register("status")}
-          >
-            <option>LEAD</option>
-            <option>ACTIVE</option>
-            <option>INACTIVE</option>
-          </select>
-        </div>
+        {fields.map((name) => (
+          <Controller
+            key={name}
+            name={name}
+            control={control}
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid}>
+                <FieldLabel htmlFor={name}>{copy.fields[name]}</FieldLabel>
+                {name === "status" ? (
+                  <select
+                    id={name}
+                    className="control-field"
+                    aria-invalid={fieldState.invalid}
+                    {...field}
+                  >
+                    {contactStatusSchema.options.map((status) => (
+                      <option key={status}>{status}</option>
+                    ))}
+                  </select>
+                ) : (
+                  <Input
+                    id={name}
+                    type={name === "email" ? "email" : "text"}
+                    aria-invalid={fieldState.invalid}
+                    {...field}
+                  />
+                )}
+                <FieldError>{fieldState.error?.message}</FieldError>
+              </Field>
+            )}
+          />
+        ))}
       </div>
-      {error && <p role="alert">{error}</p>}
-      <Button disabled={isSubmitting} type="submit">
-        {isSubmitting ? "Saving…" : "Save contact"}
+      <FieldError>{errors.root?.message}</FieldError>
+      <Button type="submit" disabled={isSubmitting}>
+        {isSubmitting ? copy.saving : copy.save}
       </Button>
     </form>
   );

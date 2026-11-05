@@ -1,26 +1,29 @@
 "use client";
-import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import type { z } from "zod";
 import { createCrmAccount, updateCrmAccount } from "@/lib/actions/crmActions";
 import type { CrmAccountDTO } from "@/types/crmTypes";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-interface Values {
-  name: string;
-  website: string;
-  industry: string;
-  notes: string;
-}
+import { Field, FieldError, FieldLabel } from "@/components/ui/field";
+import { crmAccountFormSchema } from "@/schemas/crmSchemas";
+import { accountFormCopy as copy } from "@/content/crm";
 export function CrmNewAccountForm({ account }: { account?: CrmAccountDTO }) {
   const router = useRouter();
-  const [error, setError] = useState("");
+  const fields = ["name", "website", "industry", "notes"] as const;
   const {
-    register,
+    control,
+    setError,
     handleSubmit,
-    formState: { isSubmitting },
-  } = useForm<Values>({
+    formState: { errors, isSubmitting },
+  } = useForm<
+    z.input<typeof crmAccountFormSchema>,
+    unknown,
+    z.output<typeof crmAccountFormSchema>
+  >({
+    resolver: zodResolver(crmAccountFormSchema),
     defaultValues: {
       name: account?.name ?? "",
       website: account?.website ?? "",
@@ -31,56 +34,61 @@ export function CrmNewAccountForm({ account }: { account?: CrmAccountDTO }) {
   return (
     <form
       className="mx-auto max-w-3xl space-y-5 surface-card p-5"
+      noValidate
       onSubmit={handleSubmit(async (values) => {
-        setError("");
-        try {
-          const saved = account
-            ? await updateCrmAccount({
-                ...values,
-                accountId: account.id,
-                expectedUpdatedAt: account.updatedAt,
-              })
-            : await createCrmAccount(values);
-          router.push(`/crm/accounts/${saved.id}`);
-          router.refresh();
-        } catch {
-          setError(
-            "Account could not be saved. Check fields and access, or reload if the record has changed.",
-          );
+        const result = account
+          ? await updateCrmAccount({
+              ...values,
+              accountId: account.id,
+              expectedUpdatedAt: account.updatedAt,
+            })
+          : await createCrmAccount(values);
+        if (!result.ok) {
+          for (const name of fields) {
+            const message = result.error.fieldErrors?.[name]?.[0];
+            if (message) setError(name, { message });
+          }
+          setError("root", { message: result.error.message });
+          return;
         }
+        router.push(`/crm/accounts/${result.data.id}`);
+        router.refresh();
       })}
     >
-      <h1 className="type-title">{account ? "Edit account" : "New account"}</h1>
-      {(["name", "website", "industry"] as const).map((field) => (
-        <div className="form-field" key={field}>
-          <Label htmlFor={`account-${field}`}>
-            {
-              {
-                name: "Company name",
-                website: "Website",
-                industry: "Industry",
-              }[field]
-            }
-          </Label>
-          <Input
-            id={`account-${field}`}
-            required={field === "name"}
-            type={field === "website" ? "url" : "text"}
-            {...register(field)}
+      <h1 className="type-title">{account ? copy.edit : copy.create}</h1>
+      <div className="grid gap-4">
+        {fields.map((name) => (
+          <Controller
+            key={name}
+            name={name}
+            control={control}
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid}>
+                <FieldLabel htmlFor={name}>{copy.fields[name]}</FieldLabel>
+                {name === "notes" ? (
+                  <textarea
+                    id={name}
+                    className="control-field min-h-36"
+                    aria-invalid={fieldState.invalid}
+                    {...field}
+                  />
+                ) : (
+                  <Input
+                    id={name}
+                    type={name === "website" ? "url" : "text"}
+                    aria-invalid={fieldState.invalid}
+                    {...field}
+                  />
+                )}
+                <FieldError>{fieldState.error?.message}</FieldError>
+              </Field>
+            )}
           />
-        </div>
-      ))}
-      <div className="form-field">
-        <Label htmlFor="account-notes">Relationship notes</Label>
-        <textarea
-          id="account-notes"
-          className="control-field min-h-36"
-          {...register("notes")}
-        />
+        ))}
       </div>
-      {error && <p role="alert">{error}</p>}
+      <FieldError>{errors.root?.message}</FieldError>
       <Button type="submit" disabled={isSubmitting}>
-        {isSubmitting ? "Saving…" : "Save account"}
+        {isSubmitting ? copy.saving : copy.save}
       </Button>
     </form>
   );
