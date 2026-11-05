@@ -14,7 +14,7 @@ import { useAdminReverification } from "@/lib/auth/clerkAccount";
 import { formResultCopy } from "@/content/application";
 import { createInvitation } from "@/lib/actions/commonActions";
 import { defaultInvitedRole, invitableRoles } from "@/lib/authz/roles";
-import { createInvitationSchema } from "@/schema/commonSchemas";
+import { createInvitationSchema } from "@/schemas/commonSchemas";
 
 export function MemberInviteForm() {
   const router = useRouter();

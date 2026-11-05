@@ -9,7 +9,7 @@ import {
   createCrmDealSchema,
   updateContactSchema,
   updateCrmDealStageSchema,
-} from "@/schema/crmSchemas";
+} from "@/schemas/crmSchemas";
 import { requireIdentity } from "@/lib/auth/auth";
 import { assertPermission } from "@/lib/authz/permissions";
 import { authorizeOwnedOrAssignedWrite } from "@/lib/authz/policies";

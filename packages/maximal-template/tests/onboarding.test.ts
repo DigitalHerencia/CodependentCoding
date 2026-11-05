@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { test } from "vitest";
 import type { Prisma } from "@/generated/prisma/client";
 import { completeOnboardingTx } from "@/lib/db/transactions/onboardingTx";
-import { onboardingSchema } from "@/schema/commonSchemas";
+import { onboardingSchema } from "@/schemas/commonSchemas";
 
 test("profile onboarding stays identity-scoped before a tenant membership exists", async () => {
   const profile = {

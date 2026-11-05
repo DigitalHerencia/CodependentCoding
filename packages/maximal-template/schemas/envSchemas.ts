@@ -1,13 +1,4 @@
-import "server-only";
-
 import { z } from "zod";
-
-/**
- * Validated environment (Architecture.md §2, CC-025). Each owner declares its
- * variables in `lib/env/<owner>.ts` with `defineEnv`; the names, and which are
- * required, match that owner's `env` entries in hipster.modules.json
- * (`pnpm check:env`). Nothing outside `lib/env/` reads `process.env`.
- */
 
 /** Blank values (`KEY=""` in .env.example) count as unset. */
 const unset = (value: unknown) =>
@@ -30,12 +21,13 @@ export type OwnerEnv<Shape extends z.ZodRawShape> = {
   ): z.output<Shape[Name]> | undefined;
 };
 
-export function defineEnv<Shape extends z.ZodRawShape>(
+export function createEnvReader<Shape extends z.ZodRawShape>(
   owner: string,
   shape: Shape,
+  source: () => Record<string, string | undefined>,
 ): OwnerEnv<Shape> {
   const schema = z.object(shape);
-  const parse = () => schema.safeParse(process.env);
+  const parse = () => schema.safeParse(source());
   return {
     owner,
     schema,
@@ -51,31 +43,13 @@ export function defineEnv<Shape extends z.ZodRawShape>(
     },
     configured: () => parse().success,
     value(name) {
-      const result = z.safeParse(schema.shape[name], process.env[name]);
+      const result = z.safeParse(schema.shape[name], source()[name]);
       return result.success ? result.data : undefined;
     },
   };
 }
 
-/**
- * Whether each named variable is set, without validating an owner. Settings >
- * Integrations uses it with the names each add-on lists in its module definition.
- */
-export function hasValues(names: readonly string[]): boolean {
-  return names.every((name) => unset(process.env[name]) !== undefined);
-}
-
-/** Whether an optional integration has been partially configured. */
-export function hasAnyValue(names: readonly string[]): boolean {
-  return names.some((name) => unset(process.env[name]) !== undefined);
-}
-
-/** The current environment plus overrides, for child processes (tests, scripts). */
-export function childEnv(overrides: Record<string, string>): NodeJS.ProcessEnv {
-  return { ...process.env, ...overrides };
-}
-
-export const baseEnv = defineEnv("base", {
+export const baseEnvShape = {
   DATABASE_URL: required(),
   DATABASE_URL_UNPOOLED: optional(),
   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: optional(),
@@ -85,4 +59,4 @@ export const baseEnv = defineEnv("base", {
   DATABASE_URL_TEST_APP: optional(),
   AUTH_WEBHOOK_DB_TEST: optional(),
   BOOTSTRAP_OWNER_CLERK_USER_ID: optional(),
-});
+};

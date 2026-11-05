@@ -7,7 +7,7 @@ import {
   updateCampaignSchema,
   createCampaignSchema,
   updateCampaignStatusSchema,
-} from "@/schema/marketingSchemas";
+} from "@/schemas/marketingSchemas";
 import { requireIdentity } from "@/lib/auth/auth";
 import { assertPermission } from "@/lib/authz/permissions";
 import { toAudienceDTO, toCampaignDTO } from "@/lib/db/dtos/marketingDtos";

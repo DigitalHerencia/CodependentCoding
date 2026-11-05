@@ -10,7 +10,7 @@ import { Field, FieldLabel, FieldError } from "@/components/ui/field";
 import { formResultCopy } from "@/content/application";
 import { projectsControlCopy } from "@/content/projects";
 import { assignProjectTask } from "@/lib/actions/projectsActions";
-import { assignTaskSchema } from "@/schema/projectsSchemas";
+import { assignTaskSchema } from "@/schemas/projectsSchemas";
 import type { TaskDTO } from "@/types/projectsTypes";
 export function TaskFeatureClient({
   task,

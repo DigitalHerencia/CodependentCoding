@@ -36,7 +36,7 @@ export const layers = [
   { id: "cache", match: /^lib\/cache\// },
   { id: "registry", match: /^lib\/modules\// },
   { id: "pure", match: /^(lib\/(constants|utils)|types)\// },
-  { id: "schema", match: /^schema\// },
+  { id: "schema", match: /^schemas\// },
 ];
 
 /**
@@ -531,6 +531,7 @@ export const boundaries = {
 
 /** Modules that must start with `import "server-only"` (repo-relative path patterns). */
 export const serverOnlyPaths = [
+  /^lib\/utils\/env\.ts$/,
   /^lib\/fetchers\//,
   /^lib\/workflows\//,
   /^lib\/db\/(client|provider|tenant)\.ts$/,
@@ -601,7 +602,7 @@ export const filenameConventions = [
     example: "crmUpdateDealStageTx.ts",
   },
   {
-    dir: /^schema\/$/,
+    dir: /^schemas\/$/,
     file: /^[a-z][a-zA-Z0-9]*Schemas\.ts$/,
     example: "crmSchemas.ts",
   },

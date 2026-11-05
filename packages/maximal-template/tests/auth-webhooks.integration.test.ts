@@ -6,7 +6,7 @@ import { NextRequest } from "next/server";
 import { PrismaNeon } from "@prisma/adapter-neon";
 import { config } from "dotenv";
 import { PrismaClient } from "@/generated/prisma/client";
-import { baseEnv } from "@/lib/env/base";
+import { baseEnv } from "@/lib/utils/env";
 import {
   syncClerkUserTx,
   anonymizeClerkUserTx,

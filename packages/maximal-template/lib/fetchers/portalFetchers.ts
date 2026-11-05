@@ -1,7 +1,7 @@
 import {
   persistedReadLimitSchema,
   persistedRecordIdSchema,
-} from "@/schema/commonSchemas";
+} from "@/schemas/commonSchemas";
 import "server-only";
 
 import { assertPermission, hasPermission } from "@/lib/authz/permissions";

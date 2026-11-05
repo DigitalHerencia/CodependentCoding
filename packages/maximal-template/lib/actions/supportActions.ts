@@ -7,7 +7,7 @@ import {
   updateKnowledgeArticleSchema,
   createSupportTicketSchema,
   updateSupportTicketStatusSchema,
-} from "@/schema/supportSchemas";
+} from "@/schemas/supportSchemas";
 import { requireIdentity } from "@/lib/auth/auth";
 import { assertPermission } from "@/lib/authz/permissions";
 import { authorizeOwnedOrAssignedWrite } from "@/lib/authz/policies";

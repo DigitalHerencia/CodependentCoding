@@ -4,7 +4,7 @@ import { invoicingRemainingCopy } from "@/content/invoicing";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { z } from "zod";
 import type { FieldPath } from "react-hook-form";
-import { createInvoiceSchema } from "@/schema/invoicingSchemas";
+import { createInvoiceSchema } from "@/schemas/invoicingSchemas";
 
 import { invoicingPresentationCopy } from "@/content/invoicing";
 import { useState } from "react";

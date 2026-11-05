@@ -1,6 +1,6 @@
 import "server-only";
 
-import { inferenceEnv } from "@/lib/env/inference";
+import { huggingFaceEnv } from "@/lib/integrations/hugging-face/env";
 
 import { getHuggingFaceClient } from "./client";
 
@@ -21,7 +21,7 @@ export function generateHuggingFaceText(input: {
 
 export function getConfiguredHuggingFaceModel() {
   return (
-    inferenceEnv.value("HUGGINGFACE_TEXT_MODEL") ??
+    huggingFaceEnv.value("HUGGINGFACE_TEXT_MODEL") ??
     "HuggingFaceH4/zephyr-7b-beta"
   );
 }

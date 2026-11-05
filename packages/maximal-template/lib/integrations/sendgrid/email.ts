@@ -1,6 +1,6 @@
 import "server-only";
 
-import { emailEnv } from "@/lib/env/email";
+import { sendGridEnv } from "@/lib/integrations/sendgrid/env";
 
 import { getSendGridClient } from "./client";
 
@@ -11,7 +11,7 @@ export async function sendTransactionalEmail(input: {
   html?: string;
   organizationId: string;
 }) {
-  const from = emailEnv.read().SENDGRID_FROM_EMAIL;
+  const from = sendGridEnv.read().SENDGRID_FROM_EMAIL;
   const { organizationId, ...message } = input;
   const [response] = await getSendGridClient().send({
     ...message,

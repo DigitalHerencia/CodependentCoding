@@ -4,7 +4,7 @@ import { projectsRemainingCopy } from "@/content/projects";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { z } from "zod";
 import type { FieldPath } from "react-hook-form";
-import { createTaskSchema } from "@/schema/projectsSchemas";
+import { createTaskSchema } from "@/schemas/projectsSchemas";
 
 import { projectsPresentationCopy } from "@/content/projects";
 // Why: Client form: validates with the shared schema, calls the action, and shows its ActionResult.
@@ -12,7 +12,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
 import { createTask, updateTask } from "@/lib/actions/projectsActions";
-import { TaskPriority } from "@/schema/projectsSchemas";
+import { TaskPriority } from "@/schemas/projectsSchemas";
 import type { TaskDTO } from "@/types/projectsTypes";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";

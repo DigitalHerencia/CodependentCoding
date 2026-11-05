@@ -7,7 +7,7 @@ import type {
   contactFormSchema,
   contactListCriteriaSchema,
   contactSortValues,
-} from "@/schema/crmSchemas";
+} from "@/schemas/crmSchemas";
 
 export type ContactStatus = CrmContactStatus;
 export type EditableContactStatus = Exclude<ContactStatus, "ARCHIVED">;

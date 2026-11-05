@@ -3,11 +3,11 @@ import { manifestPath } from "@codependent/generator/paths.mjs";
 /**
  * Validated env per owner (CC-025). Fails when:
  *   - an owner's `env` entries in hipster.modules.json differ from the Zod
- *     schema in lib/env/<owner>.ts (names, required), or one exists without the other
+ *     schema in lib/utils/env.ts or lib/integrations/<provider>/env.ts (names, required), or one exists without the other
  *   - `.env.example` is not what scripts/env-example.mjs renders
- *   - code outside lib/env/** and *.config.* reads the process environment
+ *   - code outside the environment utilities and *.config.* reads the process environment
  *
- * Runs under tsx with the react-server condition because lib/env/* is
+ * Runs under tsx with the react-server condition because the environment utilities are
  * TypeScript and imports `server-only`:
  *   pnpm check:env
  */
@@ -30,16 +30,26 @@ if (!result.ok) {
 const { manifest } = result;
 const failures = [];
 
+const envFiles = {
+  base: "lib/utils/env.ts",
+  billing: "lib/integrations/stripe/env.ts",
+  email: "lib/integrations/sendgrid/env.ts",
+  inference: "lib/integrations/hugging-face/env.ts",
+  media: "lib/integrations/cloudinary/env.ts",
+  ratelimit: "lib/integrations/upstash/env.ts",
+  uploads: "lib/integrations/vercel-blob/env.ts",
+};
 const owners = [
   ["base", manifest.base.env],
   ...manifest.modules.map((entry) => [entry.id, entry.env]),
 ];
 for (const [owner, env] of owners) {
-  const file = path.join(root, "lib", "env", `${owner}.ts`);
-  if (!existsSync(file)) {
+  const relativeFile = envFiles[owner];
+  const file = relativeFile ? path.join(root, relativeFile) : undefined;
+  if (!file || !existsSync(file)) {
     if (env.length > 0)
       failures.push(
-        `${owner}: env declared but lib/env/${owner}.ts is missing`,
+        `${owner}: env declared but ${relativeFile ?? owner} is missing`,
       );
     continue;
   }
@@ -47,7 +57,9 @@ for (const [owner, env] of owners) {
     (value) => value?.owner === owner && value.schema,
   );
   if (!exported) {
-    failures.push(`lib/env/${owner}.ts: no defineEnv("${owner}", …) export`);
+    failures.push(
+      `${relativeFile ?? owner}: no defineEnv("${owner}", …) export`,
+    );
     continue;
   }
   const shape = exported.schema.shape;
@@ -56,21 +68,21 @@ for (const [owner, env] of owners) {
     const entry = declared.get(name);
     if (!entry) {
       failures.push(
-        `${owner}: ${name} is in lib/env/${owner}.ts but not in the manifest`,
+        `${owner}: ${name} is in ${relativeFile ?? owner} but not in the manifest`,
       );
       continue;
     }
     const required = !shape[name].safeParse(undefined).success;
     if (required !== entry.required) {
       failures.push(
-        `${owner}: ${name} is ${required ? "required" : "optional"} in lib/env/${owner}.ts but required: ${entry.required} in the manifest`,
+        `${owner}: ${name} is ${required ? "required" : "optional"} in ${relativeFile ?? owner} but required: ${entry.required} in the manifest`,
       );
     }
   }
   for (const name of declared.keys()) {
     if (!(name in shape))
       failures.push(
-        `${owner}: ${name} is in the manifest but not in lib/env/${owner}.ts`,
+        `${owner}: ${name} is in the manifest but not in ${relativeFile ?? owner}`,
       );
   }
 }
@@ -84,7 +96,8 @@ if (
 }
 
 const allowed = (file) =>
-  file.startsWith("lib/env/") || /(^|\/)[^/]*\.config\.[^/]+$/.test(file);
+  ["lib/utils/env.ts", "lib/constants/mode.ts"].includes(file) ||
+  /(^|\/)[^/]*\.config\.[^/]+$/.test(file);
 const code = /\.(?:[cm]?[jt]sx?)$/;
 for (const file of listFiles(root)) {
   if (!code.test(file) || allowed(file) || !existsSync(path.join(root, file)))
@@ -93,7 +106,7 @@ for (const file of listFiles(root)) {
   lines.forEach((line, index) => {
     if (/\bprocess\.env\b/.test(line))
       failures.push(
-        `${file}:${index + 1}: reads the process environment outside lib/env/`,
+        `${file}:${index + 1}: reads the process environment outside the environment utilities`,
       );
   });
 }

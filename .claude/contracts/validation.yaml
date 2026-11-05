@@ -351,7 +351,7 @@ rules:
   - {
       id: CC-SEC-006,
       layer: any,
-      text: "No secrets in NEXT_PUBLIC_*; env validated in lib/env",
+      text: "No secrets in NEXT_PUBLIC_*; env validated through lib/utils/env.ts and schemas/envSchemas.ts",
       enforcement: review,
     }
   - {

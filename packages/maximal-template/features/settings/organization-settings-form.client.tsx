@@ -10,7 +10,7 @@ import { Field, FieldLabel, FieldError } from "@/components/ui/field";
 import { formResultCopy } from "@/content/application";
 import { settingsControlCopy } from "@/content/settings";
 import { updateOrganizationSettings } from "@/lib/actions/commonActions";
-import { organizationSettingsSchema } from "@/schema/commonSchemas";
+import { organizationSettingsSchema } from "@/schemas/commonSchemas";
 import type { OrganizationDTO } from "@/types/commonTypes";
 export function ProfileFeatureClient({
   organization,

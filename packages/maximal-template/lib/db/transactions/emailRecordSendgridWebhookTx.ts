@@ -6,7 +6,7 @@ import {
   withProviderOrganizationTransaction,
   withProviderTransaction,
 } from "@/lib/db/rls";
-import type { sendGridWebhookEventsSchema } from "@/schema/integrationSchemas";
+import type { sendGridWebhookEventsSchema } from "@/schemas/integrationSchemas";
 import {
   claimWebhookEventTx,
   completeWebhookEventTx,

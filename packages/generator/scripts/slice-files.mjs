@@ -40,7 +40,7 @@ const layers = [
   ["Workflows", "lib/workflows/"],
   ["Database (DTOs, selects, transactions)", "lib/db/"],
   ["Module definition", "lib/modules/"],
-  ["Schemas", "schema/"],
+  ["Schemas", "schemas/"],
   ["Types", "types/"],
   ["Prisma (models, RLS, seed)", "prisma/"],
   ["Tests", "tests/"],

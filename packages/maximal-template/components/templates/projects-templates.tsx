@@ -8,7 +8,7 @@ import {
   DashboardLayout,
   DashboardPanel,
 } from "@/components/blocks/shared-blocks";
-import { TaskStatus } from "@/schema/projectsSchemas";
+import { TaskStatus } from "@/schemas/projectsSchemas";
 
 // lays out the my-tasks page from DTOs; no data access, no state.
 export function MyTasksTemplate({

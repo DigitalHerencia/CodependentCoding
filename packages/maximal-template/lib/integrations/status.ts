@@ -1,7 +1,7 @@
 import "server-only";
 
-import { baseEnv, hasAnyValue, hasValues } from "@/lib/env/base";
-import { isProduction } from "@/lib/env/mode";
+import { baseEnv, hasAnyValue, hasValues } from "@/lib/utils/env";
+import { isProduction } from "@/lib/constants/mode";
 import { installedModules } from "@/lib/modules/registry";
 import type { IntegrationStatus } from "@/types/integrationTypes";
 

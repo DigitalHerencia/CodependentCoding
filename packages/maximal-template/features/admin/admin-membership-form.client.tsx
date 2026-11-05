@@ -13,7 +13,7 @@ import {
 } from "@/lib/actions/adminActions";
 import { useAdminReverification } from "@/lib/auth/clerkAccount";
 import { appRoles } from "@/lib/authz/roles";
-import { changeAdminMembershipSchema } from "@/schema/adminSchemas";
+import { changeAdminMembershipSchema } from "@/schemas/adminSchemas";
 import { adminMembershipCopy, adminSessionCopy } from "@/content/admin";
 import type { AdminMembershipDTO } from "@/types/adminTypes";
 export function AdminUserDetailFeatureClient({

@@ -13,7 +13,7 @@ import { updateCampaignStatus } from "@/lib/actions/marketingActions";
 import {
   updateCampaignStatusSchema,
   CampaignStatus,
-} from "@/schema/marketingSchemas";
+} from "@/schemas/marketingSchemas";
 import type { CampaignDTO } from "@/types/marketingTypes";
 export function CampaignFeatureClient({ campaign }: { campaign: CampaignDTO }) {
   const router = useRouter();

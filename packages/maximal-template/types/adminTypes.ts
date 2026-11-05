@@ -4,7 +4,7 @@ import type {
   changeAdminMembershipSchema,
   updateAdminMembershipStatusSchema,
   adminBulkOperationSchema,
-} from "@/schema/adminSchemas";
+} from "@/schemas/adminSchemas";
 import type { AppRole } from "./accessTypes";
 
 export type AdminMembershipDTO = {

@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "vitest";
-import { audienceFormSchema } from "@/schema/marketingSchemas";
+import { audienceFormSchema } from "@/schemas/marketingSchemas";
 
 test("audience editor rejects unsupported definitions rather than overwriting them", () => {
   assert.equal(

@@ -10,7 +10,7 @@ import { AiPlaygroundTemplate } from "@/components/templates/ai-templates";
 import { Button } from "@/components/ui/button";
 import { Field, FieldLabel, FieldError } from "@/components/ui/field";
 import { generateAiResponse } from "@/lib/actions/aiActions";
-import { aiGenerationRequestSchema } from "@/schema/aiSchemas";
+import { aiGenerationRequestSchema } from "@/schemas/aiSchemas";
 import { aiPresentationCopy } from "@/content/ai";
 import { formResultCopy } from "@/content/application";
 export function AiPlaygroundFeatureClient({

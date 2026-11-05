@@ -7,7 +7,7 @@ import { ResourceNotFoundError } from "@/lib/db/transactions/errors";
 import { acceptInvitationTx } from "@/lib/db/transactions/invitationTx";
 import { toActionResult } from "@/lib/utils/actionResult";
 import { completeOnboardingTx } from "@/lib/db/transactions/onboardingTx";
-import { onboardingSchema } from "@/schema/commonSchemas";
+import { onboardingSchema } from "@/schemas/commonSchemas";
 
 export async function completeOnboarding(rawInput: unknown) {
   return toActionResult(async () => {

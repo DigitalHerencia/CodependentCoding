@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { type InvoiceDTO } from "@/types/invoicingTypes";
 import * as React from "react";
 import { Separator } from "@/components/ui/separator";
-import { isDevelopment } from "@/lib/env/mode";
+import { isDevelopment } from "@/lib/constants/mode";
 import { cn } from "@/lib/utils/cn";
 import {
   Download,

@@ -2,8 +2,8 @@ import { clerkMiddleware } from "@clerk/nextjs/server";
 import { NextResponse, type NextRequest } from "next/server";
 
 import { DEFAULT_AUTH_REDIRECT_PATH, SIGN_IN_PATH } from "@/lib/auth/redirects";
-import { baseEnv } from "@/lib/env/base";
-import { isDevelopment } from "@/lib/env/mode";
+import { baseEnv } from "@/lib/utils/env";
+import { isDevelopment } from "@/lib/constants/mode";
 
 /*
  * proxy.ts only gates (CC-ROUTE-002): a signed-out visitor to a signed-in

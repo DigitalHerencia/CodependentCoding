@@ -2,12 +2,12 @@ import "server-only";
 
 import { v2 as cloudinary } from "cloudinary";
 
-import { mediaEnv } from "@/lib/env/media";
+import { cloudinaryEnv } from "@/lib/integrations/cloudinary/env";
 
 let configured = false;
 export function getCloudinaryClient() {
   if (!configured) {
-    const env = mediaEnv.read();
+    const env = cloudinaryEnv.read();
     cloudinary.config({
       cloud_name: env.CLOUDINARY_CLOUD_NAME,
       api_key: env.CLOUDINARY_API_KEY,

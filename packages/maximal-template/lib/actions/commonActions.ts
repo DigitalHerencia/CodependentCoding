@@ -8,7 +8,7 @@ import {
   invitationIdSchema,
   organizationSettingsSchema,
   switchOrganizationSchema,
-} from "@/schema/commonSchemas";
+} from "@/schemas/commonSchemas";
 import type { ActionResult } from "@/types/actionTypes";
 import { setActiveOrganizationPreference } from "@/lib/auth/activeOrganization";
 import {

@@ -5,7 +5,7 @@ import {
   portalDocumentCommandSchema,
   addPortalDocumentVersionSchema,
   createPortalDocumentSchema,
-} from "@/schema/portalSchemas";
+} from "@/schemas/portalSchemas";
 import { requireIdentity } from "@/lib/auth/auth";
 import { assertPermission } from "@/lib/authz/permissions";
 import { limitedToOwnRecords } from "@/lib/authz/policies";

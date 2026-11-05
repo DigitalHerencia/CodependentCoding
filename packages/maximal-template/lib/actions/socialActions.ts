@@ -7,7 +7,7 @@ import {
   approveSocialPostSchema,
   createSocialPostSchema,
   scheduleSocialPostSchema,
-} from "@/schema/socialSchemas";
+} from "@/schemas/socialSchemas";
 import { requireIdentity } from "@/lib/auth/auth";
 import { assertPermission } from "@/lib/authz/permissions";
 import { toSocialPostDTO } from "@/lib/db/dtos/socialDtos";

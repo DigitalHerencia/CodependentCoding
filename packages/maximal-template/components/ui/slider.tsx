@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { isDevelopment } from "@/lib/env/mode";
+import { isDevelopment } from "@/lib/constants/mode";
 import { cn } from "@/lib/utils/cn";
 
 export interface SliderProps extends Omit<

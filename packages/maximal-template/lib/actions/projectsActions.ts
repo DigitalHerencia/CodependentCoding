@@ -13,7 +13,7 @@ import {
   assignTaskSchema,
   updateProjectSchema,
   updateTaskSchema,
-} from "@/schema/projectsSchemas";
+} from "@/schemas/projectsSchemas";
 import type { ActionResult } from "@/types/actionTypes";
 import type { ProjectSummaryDTO, TaskDTO } from "@/types/projectsTypes";
 import { toActionResult } from "@/lib/utils/actionResult";

@@ -30,7 +30,7 @@ If `context/docs/PRD.md` still has `TODO` sections, the app has no product yet: 
 - Lint findings print a `CC-*` ID; fix the cause, never disable the rule.
 - Every write: authenticate, authorize, validate with Zod, write in a tenant transaction, return `ActionResult`.
 - Every tenant table has `organizationId`, a policy in `prisma/rls/<owner>.sql`, and `pnpm test:rls` coverage.
-- Secrets live in `.env.local` only; add a variable through `.loaded-vibes/hipster.modules.json` + `lib/env/<owner>.ts`.
+- Secrets live in `.env.local` only; add a variable through `.loaded-vibes/hipster.modules.json` + `lib/utils/env.ts + lib/integrations/<provider>/env.ts`.
 - Evidence only: never report a check as passing unless you ran it.
 
 ## Checks

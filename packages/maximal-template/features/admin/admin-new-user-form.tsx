@@ -13,7 +13,7 @@ import { addAdminMembership } from "@/lib/actions/adminActions";
 import { useAdminReverification } from "@/lib/auth/clerkAccount";
 import { adminSessionCopy } from "@/content/admin";
 import { invitableRoles } from "@/lib/authz/roles";
-import { addAdminMembershipSchema } from "@/schema/adminSchemas";
+import { addAdminMembershipSchema } from "@/schemas/adminSchemas";
 
 export function AdminNewUserForm() {
   const approve = useAdminReverification(addAdminMembership);

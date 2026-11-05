@@ -7,7 +7,7 @@ import type { ClerkUserProjection } from "@/types/integrationTypes";
 import { SINGLE_ORGANIZATION_SLUG, tenancy } from "@/lib/authz/mode";
 import { setRlsContext } from "@/lib/db/rls";
 
-import { baseEnv } from "@/lib/env/base";
+import { baseEnv } from "@/lib/utils/env";
 
 function workspaceSlug(username: string | null, clerkUserId: string): string {
   const base =

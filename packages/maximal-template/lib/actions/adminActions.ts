@@ -5,7 +5,7 @@ import {
   adminBulkOperationSchema,
   changeAdminMembershipSchema,
   updateAdminMembershipStatusSchema,
-} from "@/schema/adminSchemas";
+} from "@/schemas/adminSchemas";
 import {
   requireIdentity,
   requireFreshAdminSession,

@@ -11,7 +11,7 @@ import { toUploadedAssetDTO } from "@/lib/db/dtos/uploadsDtos";
 import {
   uploadDomainSchema,
   workspaceUploadSchema,
-} from "@/schema/uploadsSchemas";
+} from "@/schemas/uploadsSchemas";
 
 export async function uploadWorkspaceAsset(formData: FormData) {
   return toActionResult(async () => {

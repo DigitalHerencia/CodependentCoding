@@ -9,7 +9,7 @@ import type { CrmContactDTO } from "@/types/crmTypes";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
-import { contactFormSchema, contactStatusSchema } from "@/schema/crmSchemas";
+import { contactFormSchema, contactStatusSchema } from "@/schemas/crmSchemas";
 import { contactFormCopy as copy } from "@/content/crm";
 export function CrmNewContactForm({
   contact,

@@ -3,7 +3,7 @@ import { test } from "vitest";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { calculateInvoiceTotals } from "@/lib/db/transactions/invoicingCreateInvoiceTx";
-import { expenseFormSchema } from "@/schema/invoicingSchemas";
+import { expenseFormSchema } from "@/schemas/invoicingSchemas";
 import { InvoicingInvoiceDetailTemplate } from "@/components/templates/invoicing-templates";
 import type { InvoiceDTO } from "@/types/invoicingTypes";
 

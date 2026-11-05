@@ -12,7 +12,7 @@ import {
 import {
   approveSocialPostSchema,
   scheduleSocialPostSchema,
-} from "@/schema/socialSchemas";
+} from "@/schemas/socialSchemas";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Field, FieldLabel, FieldError } from "@/components/ui/field";

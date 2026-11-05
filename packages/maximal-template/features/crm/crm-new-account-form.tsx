@@ -9,7 +9,7 @@ import type { CrmAccountDTO } from "@/types/crmTypes";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
-import { crmAccountFormSchema } from "@/schema/crmSchemas";
+import { crmAccountFormSchema } from "@/schemas/crmSchemas";
 import { accountFormCopy as copy } from "@/content/crm";
 export function CrmNewAccountForm({ account }: { account?: CrmAccountDTO }) {
   const router = useRouter();

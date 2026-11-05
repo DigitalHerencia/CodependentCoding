@@ -6,7 +6,7 @@ import path from "node:path";
 import { config } from "dotenv";
 import pg from "pg";
 
-import { baseEnv, childEnv } from "@/lib/env/base";
+import { baseEnv, childEnv } from "@/lib/utils/env";
 
 config({ path: ".env.local", quiet: true });
 

@@ -95,7 +95,7 @@ function targets(
     },
     {
       template: "schemas.ts.tpl",
-      target: `schema/${m}Schemas.ts`,
+      target: `schemas/${m}Schemas.ts`,
       merge: true,
     },
     { template: "types.ts.tpl", target: `types/${m}Types.ts`, merge: true },

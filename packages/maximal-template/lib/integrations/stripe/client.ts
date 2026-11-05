@@ -2,11 +2,11 @@ import "server-only";
 
 import Stripe from "stripe";
 
-import { billingEnv } from "@/lib/env/billing";
+import { stripeEnv } from "@/lib/integrations/stripe/env";
 
 let client: Stripe | undefined;
 
 export function getStripeClient() {
-  client ??= new Stripe(billingEnv.read().STRIPE_SECRET_KEY);
+  client ??= new Stripe(stripeEnv.read().STRIPE_SECRET_KEY);
   return client;
 }

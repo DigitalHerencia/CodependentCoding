@@ -9,7 +9,7 @@ import { Field, FieldLabel, FieldError } from "@/components/ui/field";
 import { formResultCopy } from "@/content/application";
 import { crmControlCopy } from "@/content/crm";
 import { updateCrmDealStage } from "@/lib/actions/crmActions";
-import { updateCrmDealStageSchema, CrmDealStage } from "@/schema/crmSchemas";
+import { updateCrmDealStageSchema, CrmDealStage } from "@/schemas/crmSchemas";
 import type { CrmDealSummaryDTO } from "@/types/crmTypes";
 export function CrmDealStageForm({ deal }: { deal: CrmDealSummaryDTO }) {
   const router = useRouter();

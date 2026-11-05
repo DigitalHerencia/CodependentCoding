@@ -3,7 +3,7 @@ import { authRemainingCopy } from "@/content/auth";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { z } from "zod";
-import { getSignInFormSchema } from "@/schema/authSchemas";
+import { getSignInFormSchema } from "@/schemas/authSchemas";
 
 import { authPresentationCopy } from "@/content/auth";
 import { SignIn, useSignIn } from "@/lib/auth/clerkAccount";

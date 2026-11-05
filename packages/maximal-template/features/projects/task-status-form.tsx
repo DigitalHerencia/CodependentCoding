@@ -10,7 +10,7 @@ import { Field, FieldLabel, FieldError } from "@/components/ui/field";
 import { formResultCopy } from "@/content/application";
 import { projectsControlCopy } from "@/content/projects";
 import { updateTaskStatus } from "@/lib/actions/projectsActions";
-import { updateTaskStatusSchema, TaskStatus } from "@/schema/projectsSchemas";
+import { updateTaskStatusSchema, TaskStatus } from "@/schemas/projectsSchemas";
 import type { TaskDTO } from "@/types/projectsTypes";
 export function TaskStatusControl({ task }: { task: TaskDTO }) {
   const router = useRouter();

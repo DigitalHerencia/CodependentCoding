@@ -1,7 +1,7 @@
 import {
   persistedReadLimitSchema,
   persistedRecordIdSchema,
-} from "@/schema/commonSchemas";
+} from "@/schemas/commonSchemas";
 // Why: Fetchers: tenant-scoped reads (RLS context set, organizationId in every predicate); null when absent.
 import "server-only";
 

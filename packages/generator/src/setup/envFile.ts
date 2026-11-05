@@ -12,7 +12,7 @@ function unquote(raw: string): string {
   return value.replace(/\s+#.*$/, "");
 }
 
-/** Reads KEY=value pairs; blank values count as unset, like lib/env. */
+/** Reads KEY=value pairs; blank values count as unset, like lib/utils/env.ts. */
 export function parseEnv(text: string): Map<string, string> {
   const values = new Map<string, string>();
   for (const line of text.split(/\r?\n/)) {

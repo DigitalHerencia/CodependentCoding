@@ -3892,5 +3892,21 @@
     "NOT_RUN": [
       "All checks, formatting, lint, type generation/check, tests, builds and push, per owner instruction."
     ]
+  },
+  "environment-layout": {
+    "status": "complete-local-main",
+    "updated": "2026-11-05T20:50:01.032754+00:00",
+    "scope": "Replace template lib/env with server-only lib/utils/env.ts and provider-local integration env.ts modules. Zod parsing is in schemas/envSchemas.ts; schema directory and affected consumers/generation/governance paths use schemas. Browser mode flags have one client-safe definition in lib/constants/mode.ts and are re-exported by server env utility. Lazy validation, required fields and credential boundaries preserved.",
+    "EXECUTED": [
+      "Affected template files: node node_modules/prettier/bin/prettier.cjs --write; passed.",
+      "Affected template files: node node_modules/eslint/bin/eslint.js --fix --max-warnings=0; passed.",
+      "Template next typegen; passed.",
+      "Template tsc --noEmit; passed.",
+      "Affected tooling/code/docs/contracts: direct Prettier write and ESLint fix; passed."
+    ],
+    "NOT_RUN": [
+      "Tests, builds, environment-governance execution, database jobs, servers, dependency installation and push."
+    ],
+    "delivery": "Direct local main commit requested by owner."
   }
 }

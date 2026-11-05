@@ -35,10 +35,10 @@ if (!process.argv.includes("--check")) {
 } else {
   config({ path: path.join(root, ".env.local"), quiet: true });
   config({ path: path.join(root, ".env"), quiet: true });
-  // lib/env is the only reader of the environment (check:env); the owner's
+  // lib/utils/env.ts is the only reader of the environment (check:env); the owner's
   // direct URL first, whichever of the names this app declares.
   const { baseEnv } = await import(
-    pathToFileURL(path.join(root, "lib/env/base.ts")).href
+    pathToFileURL(path.join(root, "lib/utils/env.ts")).href
   );
   const declared = Object.keys(baseEnv.schema.shape);
   const url = ["DATABASE_URL_UNPOOLED", "DATABASE_URL"]

@@ -6,7 +6,7 @@ import {zodResolver} from "@hookform/resolvers/zod";
 import type {z} from "zod";
 import type { {{Entity}}DTO } from "@/types/{{module}}Types";
 import {create{{Entity}},update{{Entity}}} from "@/lib/actions/{{module}}Actions";
-import {create{{Entity}}Schema} from "@/schema/{{module}}Schemas";
+import {create{{Entity}}Schema} from "@/schemas/{{module}}Schemas";
 import { {{entity}}Copy as copy } from "@/content/{{module}}";
 import {Button} from "@/components/ui/button";
 import {Input} from "@/components/ui/input";

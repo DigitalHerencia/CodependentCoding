@@ -1,7 +1,7 @@
 import "server-only";
 
-import { uploadsEnv } from "@/lib/env/uploads";
+import { vercelBlobEnv } from "@/lib/integrations/vercel-blob/env";
 
 export function getBlobToken() {
-  return uploadsEnv.read().BLOB_READ_WRITE_TOKEN;
+  return vercelBlobEnv.read().BLOB_READ_WRITE_TOKEN;
 }

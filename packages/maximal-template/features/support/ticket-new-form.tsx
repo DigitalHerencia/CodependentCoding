@@ -4,14 +4,14 @@ import { supportRemainingCopy } from "@/content/support";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { z } from "zod";
 import type { FieldPath } from "react-hook-form";
-import { createSupportTicketSchema } from "@/schema/supportSchemas";
+import { createSupportTicketSchema } from "@/schemas/supportSchemas";
 
 import { supportPresentationCopy } from "@/content/support";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
 import { createSupportTicket } from "@/lib/actions/supportActions";
-import { TicketPriority } from "@/schema/supportSchemas";
+import { TicketPriority } from "@/schemas/supportSchemas";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Field, FieldLabel, FieldError } from "@/components/ui/field";

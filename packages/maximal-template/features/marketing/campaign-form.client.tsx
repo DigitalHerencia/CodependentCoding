@@ -4,7 +4,7 @@ import { marketingRemainingCopy } from "@/content/marketing";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { z } from "zod";
 import type { FieldPath } from "react-hook-form";
-import { createCampaignSchema } from "@/schema/marketingSchemas";
+import { createCampaignSchema } from "@/schemas/marketingSchemas";
 
 import { marketingPresentationCopy } from "@/content/marketing";
 import { useState } from "react";

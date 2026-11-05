@@ -1,7 +1,7 @@
 "use server";
 import { toActionResult } from "@/lib/utils/actionResult";
 
-import { reconcileBillingProviderStateSchema } from "@/schema/billingSchemas";
+import { reconcileBillingProviderStateSchema } from "@/schemas/billingSchemas";
 import { requireIdentity } from "@/lib/auth/auth";
 import { assertPermission } from "@/lib/authz/permissions";
 import { toBillingProviderStateDTO } from "@/lib/db/dtos/billingDtos";

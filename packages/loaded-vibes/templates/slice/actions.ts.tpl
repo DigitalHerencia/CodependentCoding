@@ -4,7 +4,7 @@
 {{prismaTypeImport}}import {
   create{{Entity}}Schema,
   update{{Entity}}Schema,
-} from "@/schema/{{module}}Schemas";
+} from "@/schemas/{{module}}Schemas";
 import type { ActionResult } from "@/types/actionTypes";
 import type { {{Entity}}DTO } from "@/types/{{module}}Types";
 import { toActionResult } from "@/lib/utils/actionResult";

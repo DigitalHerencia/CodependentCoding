@@ -5,7 +5,7 @@ import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import type { Prisma } from "@/generated/prisma/client";
 import { updateTaskStatusTx } from "@/lib/db/transactions/projectsUpdateTaskStatusTx";
-import { createTaskSchema } from "@/schema/projectsSchemas";
+import { createTaskSchema } from "@/schemas/projectsSchemas";
 import { ProjectsTemplate } from "@/components/templates/projects-templates";
 
 const id = "00000000-0000-4000-8000-000000000001";

@@ -2,7 +2,7 @@
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { z } from "zod";
-import { publicEmailSchema, publicSearchSchema } from "@/schema/publicSchemas";
+import { publicEmailSchema, publicSearchSchema } from "@/schemas/publicSchemas";
 import { Field, FieldLabel, FieldError } from "@/components/ui/field";
 import { formResultCopy } from "@/content/application";
 import { sharedLibraryCopy } from "@/content/shared";

@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { z } from "zod";
-import { getSignUpFormSchema } from "@/schema/authSchemas";
+import { getSignUpFormSchema } from "@/schemas/authSchemas";
 
 import { authPresentationCopy } from "@/content/auth";
 import { SignUp, useSignUp } from "@/lib/auth/clerkAccount";

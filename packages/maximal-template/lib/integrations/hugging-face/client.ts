@@ -2,15 +2,17 @@ import "server-only";
 
 import { InferenceClient } from "@huggingface/inference";
 
-import { inferenceEnv } from "@/lib/env/inference";
+import { huggingFaceEnv } from "@/lib/integrations/hugging-face/env";
 
 let client: InferenceClient | undefined;
 
 export function isHuggingFaceConfigured() {
-  return inferenceEnv.configured();
+  return huggingFaceEnv.configured();
 }
 
 export function getHuggingFaceClient() {
-  client ??= new InferenceClient(inferenceEnv.read().HUGGINGFACE_ACCESS_TOKEN);
+  client ??= new InferenceClient(
+    huggingFaceEnv.read().HUGGINGFACE_ACCESS_TOKEN,
+  );
   return client;
 }

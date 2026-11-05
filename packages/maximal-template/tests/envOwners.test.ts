@@ -1,6 +1,7 @@
 import { afterEach, expect, test, vi } from "vitest";
 
-import { defineEnv, optional, required } from "@/lib/env/base";
+import { defineEnv } from "@/lib/utils/env";
+import { optional, required } from "@/schemas/envSchemas";
 
 afterEach(() => vi.unstubAllEnvs());
 

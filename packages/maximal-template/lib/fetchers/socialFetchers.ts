@@ -1,4 +1,4 @@
-import { persistedReadLimitSchema } from "@/schema/commonSchemas";
+import { persistedReadLimitSchema } from "@/schemas/commonSchemas";
 import "server-only";
 
 import { assertPermission } from "@/lib/authz/permissions";

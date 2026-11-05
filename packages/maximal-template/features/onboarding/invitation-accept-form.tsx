@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { z } from "zod";
 import { acceptInvitation } from "@/lib/actions/commonActions";
-import { acceptInvitationSchema } from "@/schema/commonSchemas";
+import { acceptInvitationSchema } from "@/schemas/commonSchemas";
 import { onboardingPresentationCopy } from "@/content/onboarding";
 import { formResultCopy } from "@/content/application";
 import { Button } from "@/components/ui/button";

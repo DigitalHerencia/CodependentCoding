@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Field, FieldLabel, FieldError } from "@/components/ui/field";
 import { createPortalDocument } from "@/lib/actions/portalActions";
-import { createPortalDocumentSchema } from "@/schema/portalSchemas";
+import { createPortalDocumentSchema } from "@/schemas/portalSchemas";
 import { portalPresentationCopy } from "@/content/portal";
 import { formResultCopy } from "@/content/application";
 

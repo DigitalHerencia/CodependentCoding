@@ -17,7 +17,7 @@ import {
   supportReplySchema,
   updateSupportTicketStatusSchema,
   TicketStatus,
-} from "@/schema/supportSchemas";
+} from "@/schemas/supportSchemas";
 import type { SupportTicketDTO } from "@/types/supportTypes";
 export function TicketReplyForm({ ticket }: { ticket: SupportTicketDTO }) {
   const router = useRouter();

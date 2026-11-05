@@ -45,8 +45,11 @@
   ],
   "latest_followup": {
     "status": "complete-local-main",
-    "package": "public-content-consolidation",
-    "owner_instruction": "Consolidate public content directly on main; commit, no checks, tests, PR or push.",
-    "evidence": "Source edits only; checks intentionally not run. See progress.json."
+    "package": "environment-layout",
+    "owner_instruction": "Reorganize env and schemas directly on main, commit without push; format/lint fix/typegen/check only.",
+    "evidence": "See environment-layout in progress.json.",
+    "NOT_RUN": [
+      "Tests, builds, database jobs, servers, installation and push."
+    ]
   }
 }

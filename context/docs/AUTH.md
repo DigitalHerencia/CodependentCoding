@@ -189,7 +189,7 @@ type ErrorCode =
 
 ## 9. Secrets and configuration
 
-- `lib/env/<owner>.ts` validates env with Zod at import; `server-only`.
+- `lib/utils/env.ts` and provider-local `lib/integrations/<provider>/env.ts` validate lazily using `schemas/envSchemas.ts`; environment access is `server-only`.
 - `.env.example` lists names and descriptions only; rebuilt by the CLI from base + module manifest entries.
 - Public env vars must start with `NEXT_PUBLIC_` and be declared `scope: public` in the manifest.
 - Never log tokens, secrets, raw webhook payloads, or full PII.

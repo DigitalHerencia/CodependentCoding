@@ -18,7 +18,7 @@ import {
   isRateLimitRequested,
 } from "@/lib/integrations/upstash/ratelimit";
 import { toActionResult } from "@/lib/utils/actionResult";
-import { aiGenerationRequestSchema } from "@/schema/aiSchemas";
+import { aiGenerationRequestSchema } from "@/schemas/aiSchemas";
 
 export async function generateAiResponse(rawInput: unknown) {
   return toActionResult(async () => {

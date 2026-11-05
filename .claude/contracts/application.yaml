@@ -242,7 +242,11 @@ architecture:
         path: "lib/modules/{registry,<id>.module}.ts",
         role: module runtime contributions,
       }
-    env: { path: "lib/env/<owner>.ts", role: validated configuration }
+    env:
+      {
+        path: "lib/utils/env.ts + lib/integrations/<provider>/env.ts",
+        role: validated configuration,
+      }
     schema: { path: "schemas/<d>Schemas.ts", role: runtime validation }
     types: { path: "types/<d>Types.ts", role: compile-time contracts }
     prisma:

@@ -9,7 +9,7 @@ import { Field, FieldLabel, FieldError } from "@/components/ui/field";
 import { formResultCopy } from "@/content/application";
 import { portalControlCopy } from "@/content/portal";
 import { addPortalDocumentVersion } from "@/lib/actions/portalActions";
-import { addPortalDocumentVersionSchema } from "@/schema/portalSchemas";
+import { addPortalDocumentVersionSchema } from "@/schemas/portalSchemas";
 import type { PortalDocumentDTO } from "@/types/portalTypes";
 export function DocumentFeatureClient({
   document,

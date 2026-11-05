@@ -6,7 +6,7 @@ import {
   hashInvitationToken,
 } from "@/lib/db/transactions/invitationTx";
 import { ResourceNotFoundError } from "@/lib/db/transactions/errors";
-import { acceptInvitationSchema } from "@/schema/commonSchemas";
+import { acceptInvitationSchema } from "@/schemas/commonSchemas";
 
 const invitation = {
   id: "invite-1",

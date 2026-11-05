@@ -3,7 +3,7 @@
 import * as React from "react";
 import { createPortal } from "react-dom";
 import { X } from "lucide-react";
-import { isDevelopment } from "@/lib/env/mode";
+import { isDevelopment } from "@/lib/constants/mode";
 import { cn } from "@/lib/utils/cn";
 import { Button } from "@/components/ui/button";
 

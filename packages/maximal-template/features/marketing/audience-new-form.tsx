@@ -10,7 +10,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
 import { createAudience, updateAudience } from "@/lib/actions/marketingActions";
-import { audienceFormSchema } from "@/schema/marketingSchemas";
+import { audienceFormSchema } from "@/schemas/marketingSchemas";
 import type { AudienceDTO } from "@/types/marketingTypes";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";

@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import {
   adminListCriteriaSchema,
   adminUserIdSchema,
-} from "@/schema/adminSchemas";
+} from "@/schemas/adminSchemas";
 import {
   requireFreshAdminSession,
   AdminReverificationRequiredError,

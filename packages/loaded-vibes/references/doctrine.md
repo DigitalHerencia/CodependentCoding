@@ -24,7 +24,7 @@ Identity?                        lib/auth
 Access decision?                 lib/authz
 Provider SDK?                    lib/integrations/<provider>
 Webhook HTTP lifecycle?          app/api/<provider>/webhooks/route.ts
-Runtime validation?              schema/<d>Schemas.ts
+Runtime validation?              schemas/<d>Schemas.ts
 Shared type?                     types/<d>Types.ts
 Cache tag / lifetime?            lib/cache
 Report an unexpected error?      lib/observability/report.ts
@@ -84,5 +84,5 @@ None of the above?               Stop. Do not invent a layer (CC-NAME-002).
 | CC-SEC-003     | route-handler    | Webhooks verify raw body and are idempotent                                                                                                                         | `review`                                    |
 | CC-SEC-004     | any              | No consequential decision from cache                                                                                                                                | `review`                                    |
 | CC-SEC-005     | any              | Cross-tenant access returns NOT_FOUND                                                                                                                               | `script:pnpm test:rls`                      |
-| CC-SEC-006     | any              | No secrets in NEXT_PUBLIC_*; env validated in lib/env                                                                                                               | `review`                                    |
+| CC-SEC-006     | any              | No secrets in NEXT_PUBLIC_*; env validated through lib/utils/env.ts and schemas/envSchemas.ts                                                                       | `review`                                    |
 | CC-UX-001      | route            | Dynamic tenant pages wrap features in Suspense with a feature skeleton                                                                                              | `review`                                    |

@@ -14,7 +14,7 @@ import { PrismaNeon } from "@prisma/adapter-neon";
 
 import { PrismaClient } from "@/generated/prisma/client";
 import { seedModules } from "@/prisma/seeds/registry";
-import { baseEnv } from "@/lib/env/base";
+import { baseEnv } from "@/lib/utils/env";
 import { seedAudit, seedBase, type SeedContext } from "@/prisma/seeds/base";
 
 config({ path: ".env.local", quiet: true });

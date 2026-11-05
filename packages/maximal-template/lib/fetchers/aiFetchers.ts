@@ -1,4 +1,4 @@
-import { persistedReadLimitSchema } from "@/schema/commonSchemas";
+import { persistedReadLimitSchema } from "@/schemas/commonSchemas";
 import "server-only";
 
 import { Prisma } from "@/generated/prisma/client";

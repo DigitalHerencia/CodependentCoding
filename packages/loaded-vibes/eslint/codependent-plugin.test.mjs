@@ -64,12 +64,12 @@ tester.run("layer-boundaries", rules["layer-boundaries"], {
     },
     {
       name: "CC-SCHEMA-001 schema may use Prisma enums",
-      filename: at("schema/crmSchemas.ts"),
+      filename: at("schemas/crmSchemas.ts"),
       code: 'import { DealStage } from "@/generated/prisma/enums";',
     },
     {
       name: "CC-SCHEMA-001 schema may derive role enums from lib/authz/roles",
-      filename: at("schema/adminSchemas.ts"),
+      filename: at("schemas/adminSchemas.ts"),
       code: 'import { appRoles } from "@/lib/authz/roles";',
     },
     {
@@ -153,7 +153,7 @@ tester.run("layer-boundaries", rules["layer-boundaries"], {
     },
     {
       name: "CC-SCHEMA-001 schema must not import authz decisions",
-      filename: at("schema/adminSchemas.ts"),
+      filename: at("schemas/adminSchemas.ts"),
       code: 'import { hasPermission } from "@/lib/authz/permissions";',
       errors: [{ messageId: "denied" }],
     },
@@ -439,14 +439,14 @@ tester.run("no-parent-imports", rules["no-parent-imports"], {
   valid: [
     {
       filename: at("lib/fetchers/crmFetchers.ts"),
-      code: 'import { x } from "@/schema/crmSchemas";',
+      code: 'import { x } from "@/schemas/crmSchemas";',
     },
   ],
   invalid: [
     {
       filename: at("lib/fetchers/crmFetchers.ts"),
-      code: 'import { x } from "../../schema/crmSchemas";',
-      output: 'import { x } from "@/schema/crmSchemas";',
+      code: 'import { x } from "../../schemas/crmSchemas";',
+      output: 'import { x } from "@/schemas/crmSchemas";',
       errors: [{ messageId: "parent" }],
     },
   ],

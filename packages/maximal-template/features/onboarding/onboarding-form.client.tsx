@@ -19,7 +19,7 @@ import {
   claimWorkspaceApproval,
   completeOnboarding,
 } from "@/lib/actions/onboardingActions";
-import { onboardingSchema } from "@/schema/commonSchemas";
+import { onboardingSchema } from "@/schemas/commonSchemas";
 
 export function OnboardingFeatureClient({
   displayName,

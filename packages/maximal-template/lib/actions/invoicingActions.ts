@@ -7,7 +7,7 @@ import {
   updateExpenseSchema,
   createInvoiceSchema,
   updateInvoiceStatusSchema,
-} from "@/schema/invoicingSchemas";
+} from "@/schemas/invoicingSchemas";
 import { requireIdentity } from "@/lib/auth/auth";
 import { assertPermission } from "@/lib/authz/permissions";
 import { toExpenseDTO, toInvoiceDTO } from "@/lib/db/dtos/invoicingDtos";

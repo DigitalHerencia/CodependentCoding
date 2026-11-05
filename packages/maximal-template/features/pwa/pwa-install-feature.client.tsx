@@ -1,6 +1,6 @@
 "use client";
 import { PwaInstallBlock } from "@/components/blocks/pwa-blocks";
-import { isDevelopment } from "@/lib/env/mode";
+import { isDevelopment } from "@/lib/constants/mode";
 
 import { useEffect, useRef, useState } from "react";
 

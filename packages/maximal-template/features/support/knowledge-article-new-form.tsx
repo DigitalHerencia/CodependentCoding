@@ -4,7 +4,7 @@ import { supportRemainingCopy } from "@/content/support";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { z } from "zod";
 import type { FieldPath } from "react-hook-form";
-import { knowledgeArticleFormSchema } from "@/schema/supportSchemas";
+import { knowledgeArticleFormSchema } from "@/schemas/supportSchemas";
 
 import { supportPresentationCopy } from "@/content/support";
 import { useState } from "react";

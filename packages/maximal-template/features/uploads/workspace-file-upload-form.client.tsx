@@ -7,7 +7,7 @@ import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { z } from "zod";
 import { uploadWorkspaceAsset } from "@/lib/actions/uploadsActions";
-import { workspaceUploadSchema } from "@/schema/uploadsSchemas";
+import { workspaceUploadSchema } from "@/schemas/uploadsSchemas";
 import { uploadsPresentationCopy } from "@/content/uploads";
 import { formResultCopy } from "@/content/application";
 import { Button } from "@/components/ui/button";

@@ -2,14 +2,14 @@ import {
   persistedReadLimitSchema,
   persistedDateRangeSchema,
   persistedRecordIdSchema,
-} from "@/schema/commonSchemas";
+} from "@/schemas/commonSchemas";
 import "server-only";
 
 import {
   contactIdSchema,
   dealIdSchema,
   contactListCriteriaSchema,
-} from "@/schema/crmSchemas";
+} from "@/schemas/crmSchemas";
 import { assertPermission } from "@/lib/authz/permissions";
 import {
   toCrmAccountDTO,

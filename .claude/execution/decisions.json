@@ -1511,6 +1511,13 @@
       "status": "accepted",
       "title": "Public copy is plain TypeScript data",
       "decision": "Owner requested aggregating template FAQ, terms, policy and landing copy in content/public.ts. Preserve wording and operator interpolation; move JSX presentation to the consuming public templates. Deliver directly on main without checks, tests, PR or push."
+    },
+    {
+      "id": "DEC-119",
+      "date": "2026-11-05",
+      "status": "accepted",
+      "title": "Provider-local environment configuration and plural validation directory",
+      "decision": "Use schemas for runtime validation and update slice generation, consumers and governance paths. Server-only lib/utils/env.ts owns process environment access; pure schemas/envSchemas.ts owns Zod validation. Provider environment modules live in each integration directory. Browser build-mode constants remain separately client-safe and are re-exported by the server env utility; this avoids importing server-only credential access into clients. Owner requests local main commit without push; only format, lint fix and type generation/check are allowed."
     }
   ]
 }

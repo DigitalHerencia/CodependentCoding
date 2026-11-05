@@ -10,7 +10,7 @@ import { Field, FieldLabel, FieldError } from "@/components/ui/field";
 import { formResultCopy } from "@/content/application";
 import { crmControlCopy } from "@/content/crm";
 import { createCrmDeal } from "@/lib/actions/crmActions";
-import { createCrmDealSchema } from "@/schema/crmSchemas";
+import { createCrmDealSchema } from "@/schemas/crmSchemas";
 import type { CrmAccountDTO } from "@/types/crmTypes";
 export function CrmOpportunityForm({
   accounts,

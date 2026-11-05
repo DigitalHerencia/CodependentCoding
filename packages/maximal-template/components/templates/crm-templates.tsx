@@ -14,7 +14,7 @@ import {
   DashboardTable,
 } from "@/components/blocks/shared-blocks";
 import type { ReactNode } from "react";
-import { CrmDealStage } from "@/schema/crmSchemas";
+import { CrmDealStage } from "@/schemas/crmSchemas";
 
 export function CrmAccountDetailTemplate({
   account,

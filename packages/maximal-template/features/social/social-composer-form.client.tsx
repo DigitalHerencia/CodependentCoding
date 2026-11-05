@@ -6,7 +6,7 @@ import { Controller, useForm, useWatch, type FieldPath } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { z } from "zod";
 import { createSocialPost } from "@/lib/actions/socialActions";
-import { createSocialPostSchema } from "@/schema/socialSchemas";
+import { createSocialPostSchema } from "@/schemas/socialSchemas";
 import { SocialComposeTemplate } from "@/components/templates/social-templates";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";

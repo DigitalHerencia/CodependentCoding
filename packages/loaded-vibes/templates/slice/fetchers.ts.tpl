@@ -1,7 +1,7 @@
 // Why: Fetchers: tenant-scoped reads (RLS context set, organizationId in every predicate); null when absent.
 import "server-only";
 
-import {persistedReadLimitSchema,persistedRecordIdSchema} from "@/schema/commonSchemas";
+import {persistedReadLimitSchema,persistedRecordIdSchema} from "@/schemas/commonSchemas";
 import { assertPermission } from "@/lib/authz/permissions";
 import { to{{Entity}}DTO } from "@/lib/db/dtos/{{module}}Dtos";
 import { {{entity}}Select } from "@/lib/db/selects/{{module}}Selects";

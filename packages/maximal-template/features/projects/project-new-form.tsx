@@ -4,7 +4,7 @@ import { projectsRemainingCopy } from "@/content/projects";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { z } from "zod";
 import type { FieldPath } from "react-hook-form";
-import { createProjectSchema } from "@/schema/projectsSchemas";
+import { createProjectSchema } from "@/schemas/projectsSchemas";
 
 import { projectsPresentationCopy } from "@/content/projects";
 // Why: Client form: validates with the shared schema, calls the action, and shows its ActionResult.

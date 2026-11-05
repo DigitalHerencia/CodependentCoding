@@ -51,7 +51,7 @@ URL ─► app/ (route) ─► features/ ─► components/blocks ─► compone
                           │      ├─► lib/fetchers and lib/actions
                           │      └─► lib/integrations/<provider>
                           ├─► lib/auth / lib/authz
-                          └─► schema/ · types/ · lib/cache · lib/constants · lib/utils
+                          └─► schemas/ · types/ · lib/cache · lib/constants · lib/utils
 ```
 
 ### 3.1 Responsibility map
@@ -80,9 +80,9 @@ URL ─► app/ (route) ─► features/ ─► components/blocks ─► compone
 | Provider                 | `lib/integrations/<provider>/<kebab>.ts`                                       | SDK only here                                                                  |
 | Cache                    | `lib/cache/{tags,life,invalidate}.ts`                                          | Semantics only                                                                 |
 | Module contribution      | `lib/modules/<id>Module.ts`, `registry.ts`                                     | Nav, dashboard widgets, permissions                                            |
-| Env                      | `lib/env/<owner>.ts`                                                           | Zod-validated, `server-only`                                                   |
+| Env                      | `lib/utils/env.ts + lib/integrations/<provider>/env.ts`                        | Zod-validated, `server-only`                                                   |
 | Error reporting          | `lib/observability/report.ts`                                                  | `server-only`; `reportError` returns the correlation `ref`                     |
-| Validation               | `schema/<domain>Schemas.ts`                                                    | Zod; client- and server-safe                                                   |
+| Validation               | `schemas/<domain>Schemas.ts`                                                   | Zod; client- and server-safe                                                   |
 | Shared types             | `types/<domain>Types.ts`                                                       | Compile-time contracts                                                         |
 | Schema                   | `prisma/schema/<owner>.prisma`, `prisma/rls/<owner>.sql`, `prisma/seed.ts`     | Prisma lifecycle                                                               |
 
@@ -111,7 +111,7 @@ Identity?                        lib/auth
 Access decision?                 lib/authz
 Provider SDK?                    lib/integrations/<provider>
 Webhook HTTP lifecycle?          app/api/<provider>/webhooks/route.ts
-Runtime validation?              schema/<d>Schemas.ts
+Runtime validation?              schemas/<d>Schemas.ts
 Shared type?                     types/<d>Types.ts
 Cache tag / lifetime?            lib/cache
 Report an unexpected error?      lib/observability/report.ts
@@ -433,7 +433,7 @@ The list below is generated; rerun `node scripts/slice-files.mjs projects --writ
 
 **Schemas**
 
-- `schema/projectsSchemas.ts`
+- `schemas/projectsSchemas.ts`
 
 **Types**
 
