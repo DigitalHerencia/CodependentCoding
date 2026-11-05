@@ -1,6 +1,7 @@
 import "server-only";
 
 import { assertPermission } from "@/lib/authz/permissions";
+import { isPrivilegedRole } from "@/lib/authz/roles";
 import { toAdminMembershipDTO, toAuditEventDTO } from "@/lib/db/dto/admin.dto";
 import {
   adminMembershipSelect,
@@ -12,6 +13,12 @@ import { installedModules } from "@/lib/modules/registry";
 /** Every `records` model is a tenant table, so each delegate takes this count. */
 interface TenantCounter {
   count(args: { where: { organizationId: string } }): Promise<number>;
+}
+
+export async function canAccessAdmin() {
+  return withAuthenticatedRead(async (_tx, access) =>
+    isPrivilegedRole(access.role),
+  );
 }
 
 export async function getAuditEvents(limit = 100) {
