@@ -74,7 +74,7 @@ export function SharedIntegrationsTemplate({
             <p>
               {integration.state === "CONFIGURED"
                 ? "Required configuration present"
-                : "Required configuration missing"}
+                : `Configuration missing (${integration.mode})`}
             </p>
           </article>
         ))}

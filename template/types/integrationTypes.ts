@@ -10,5 +10,5 @@ export interface IntegrationStatus {
   name: string;
   purpose: string;
   state: "CONFIGURED" | "MISSING SECRET";
-  mode: "LIVE" | "DEMO MODE";
+  mode: "LIVE" | "DEMO MODE" | "UNAVAILABLE";
 }
