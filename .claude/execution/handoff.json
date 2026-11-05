@@ -45,11 +45,8 @@
   ],
   "latest_followup": {
     "status": "complete-local-main",
-    "package": "environment-layout",
-    "owner_instruction": "Reorganize env and schemas directly on main, commit without push; format/lint fix/typegen/check only.",
-    "evidence": "See environment-layout in progress.json.",
-    "NOT_RUN": [
-      "Tests, builds, database jobs, servers, installation and push."
-    ]
+    "package": "runtime-module-status-reporting",
+    "owner_instruction": "Determine runtime ownership; relocate status and used reporter; commit on main, no push. Only format/lint fix/typegen/check.",
+    "evidence": "See runtime-module-status-reporting in progress.json."
   }
 }

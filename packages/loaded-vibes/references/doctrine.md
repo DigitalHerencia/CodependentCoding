@@ -27,7 +27,7 @@ Webhook HTTP lifecycle?          app/api/<provider>/webhooks/route.ts
 Runtime validation?              schemas/<d>Schemas.ts
 Shared type?                     types/<d>Types.ts
 Cache tag / lifetime?            lib/cache
-Report an unexpected error?      lib/observability/report.ts
+Report an unexpected error?      lib/utils/reportError.ts
 Constant / pure util?            lib/constants | lib/utils
 None of the above?               Stop. Do not invent a layer (CC-NAME-002).
 ```

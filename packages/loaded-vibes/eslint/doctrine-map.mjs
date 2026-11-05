@@ -531,14 +531,15 @@ export const boundaries = {
 
 /** Modules that must start with `import "server-only"` (repo-relative path patterns). */
 export const serverOnlyPaths = [
-  /^lib\/utils\/env\.ts$/,
+  /^lib\/utils\/(env|reportError)\.ts$/,
+  /^lib\/modules\/status\.ts$/,
   /^lib\/fetchers\//,
   /^lib\/workflows\//,
   /^lib\/db\/(client|provider|tenant)\.ts$/,
   /^lib\/db\/transactions\/(?!errors\.ts$)/,
   /^lib\/auth\/(?!clerkAccount\.ts$)/,
   /^lib\/authz\/(?!roles\.ts$)/,
-  /^lib\/integrations\/(?!status\.ts$)/,
+  /^lib\/integrations\//,
   /^lib\/cache\//,
 ];
 
@@ -546,8 +547,8 @@ export const serverOnlyPaths = [
 export const filenameConventions = [
   {
     dir: /^lib\/modules\/$/,
-    file: /^(registry|[a-z][a-zA-Z0-9]*Module)\.ts$/,
-    example: "crmModule.ts, registry.ts",
+    file: /^(registry|navigation|status|[a-z][a-zA-Z0-9]*Module)\.ts$/,
+    example: "crmModule.ts, registry.ts, navigation.ts, status.ts",
   },
   {
     dir: /^lib\/auth\/$/,

@@ -1,7 +1,7 @@
 import { unstable_rethrow } from "next/navigation";
 import { ZodError } from "zod";
 
-import { reportError } from "@/lib/observability/report";
+import { reportError } from "@/lib/utils/reportError";
 import type { ActionErrorCode, ActionResult } from "@/types/actionTypes";
 
 type CodedErrorCode = Exclude<ActionErrorCode, "INTERNAL">;

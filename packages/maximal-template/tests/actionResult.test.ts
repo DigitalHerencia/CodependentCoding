@@ -9,7 +9,7 @@ import {
   InvariantViolationError,
   ResourceNotFoundError,
 } from "@/lib/db/transactions/errors";
-import { reportError } from "@/lib/observability/report";
+import { reportError } from "@/lib/utils/reportError";
 import { toActionResult } from "@/lib/utils/actionResult";
 
 let logged: string[] = [];

@@ -1,7 +1,7 @@
 import "server-only";
 
 import { canViewIntegrationStatuses } from "@/lib/fetchers/organizationFetchers";
-import { getProviderStatuses } from "@/lib/integrations/status";
+import { getProviderStatuses } from "@/lib/modules/status";
 
 export async function getIntegrationStatuses() {
   if (!(await canViewIntegrationStatuses())) return null;

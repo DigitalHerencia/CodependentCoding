@@ -1518,6 +1518,13 @@
       "status": "accepted",
       "title": "Provider-local environment configuration and plural validation directory",
       "decision": "Use schemas for runtime validation and update slice generation, consumers and governance paths. Server-only lib/utils/env.ts owns process environment access; pure schemas/envSchemas.ts owns Zod validation. Provider environment modules live in each integration directory. Browser build-mode constants remain separately client-safe and are re-exported by the server env utility; this avoids importing server-only credential access into clients. Owner requests local main commit without push; only format, lint fix and type generation/check are allowed."
+    },
+    {
+      "id": "DEC-120",
+      "date": "2026-11-05",
+      "status": "accepted",
+      "title": "Retain application runtime module configuration and error reporting",
+      "decision": "lib/modules belongs to the generated application because navigation, dashboards, authorization and admin records consume its registry. Integration status belongs with that registry in lib/modules/status.ts. Action failures consume reportError; relocate it to server-only lib/utils/reportError.ts. Preserve behavior, sanitization and correlation IDs. Owner requests local main commit without push and only formatting, lint fix and type generation/check."
     }
   ]
 }

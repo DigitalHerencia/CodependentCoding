@@ -3908,5 +3908,18 @@
       "Tests, builds, environment-governance execution, database jobs, servers, dependency installation and push."
     ],
     "delivery": "Direct local main commit requested by owner."
+  },
+  "runtime-module-status-reporting": {
+    "status": "complete-local-main",
+    "updated": "2026-11-05T21:03:55.157469+00:00",
+    "scope": "Retain template lib/modules as application runtime metadata (navigation, dashboard, authorization and admin records); generator/plugin consume and edit this application-owned configuration. Move runtime integration status to lib/modules/status.ts. Retain action error reporter as lib/utils/reportError.ts; update consumers, docs and server-only/naming rules.",
+    "EXECUTED": [
+      "Affected template files: direct installed Prettier --write and ESLint --fix --max-warnings=0; passed.",
+      "Template next typegen and tsc --noEmit; passed.",
+      "Affected docs and doctrine map: Prettier --write; doctrine map ESLint --fix --max-warnings=0; passed."
+    ],
+    "NOT_RUN": [
+      "Tests, builds, servers, database jobs and push."
+    ]
   }
 }
