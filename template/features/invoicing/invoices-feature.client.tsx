@@ -1,7 +1,6 @@
 "use client";
-import Link from "next/link";
+import { InvoicesToolbar } from "@/components/blocks/invoicing-blocks";
 import { useState } from "react";
-import { Input } from "@/components/ui/input";
 import { InvoicingInvoicesTemplate } from "@/components/templates/invoicing-templates";
 import type { InvoiceDTO } from "@/types/invoicingTypes";
 export function InvoicesFeatureClient({
@@ -21,30 +20,13 @@ export function InvoicesFeatureClient({
             .includes(query.toLowerCase()),
       )}
       toolbar={
-        <div className="flex flex-wrap gap-3">
-          <Input
-            aria-label="Search invoices"
-            placeholder="Search invoice or customer"
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-          />
-          <select
-            className="control-field"
-            aria-label="Invoice status"
-            value={status}
-            onChange={(event) => setStatus(event.target.value)}
-          >
-            <option value="">All statuses</option>
-            {[...new Set(invoices.map((invoice) => invoice.status))].map(
-              (value) => (
-                <option key={value}>{value}</option>
-              ),
-            )}
-          </select>
-          <Link className="type-link" href="/invoices/new">
-            Draft invoice
-          </Link>
-        </div>
+        <InvoicesToolbar
+          query={query}
+          onQueryChange={setQuery}
+          status={status}
+          onStatusChange={setStatus}
+          statuses={[...new Set(invoices.map((invoice) => invoice.status))]}
+        />
       }
     />
   );

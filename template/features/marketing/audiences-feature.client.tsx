@@ -1,7 +1,6 @@
 "use client";
-import Link from "next/link";
+import { AudiencesToolbar } from "@/components/blocks/marketing-blocks";
 import { useState } from "react";
-import { Input } from "@/components/ui/input";
 import { MarketingAudiencesTemplate } from "@/components/templates/marketing-templates";
 import type { AudienceDTO } from "@/types/marketingTypes";
 export function AudiencesFeatureClient({
@@ -15,19 +14,7 @@ export function AudiencesFeatureClient({
       audiences={audiences.filter((audience) =>
         audience.name.toLowerCase().includes(query.toLowerCase()),
       )}
-      toolbar={
-        <div className="flex flex-wrap gap-3">
-          <Input
-            aria-label="Search audiences"
-            placeholder="Search audiences"
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-          />
-          <Link className="type-link" href="/marketing/audiences/new">
-            Define audience
-          </Link>
-        </div>
-      }
+      toolbar={<AudiencesToolbar query={query} onQueryChange={setQuery} />}
     />
   );
 }

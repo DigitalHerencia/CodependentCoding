@@ -94,3 +94,14 @@ export const crmTemplateCopy = {
   analyticsDescription: (count: number) =>
     `Analysis of the latest ${count} opportunities (maximum 100). Values are kept separate by currency.`,
 };
+
+export const crmBlockCopy = {
+  searchAccounts: "Search accounts",
+  searchCompanyOrIndustry: "Search company or industry",
+  newAccount: "New account",
+  searchContacts: "Search contacts",
+  searchPersonEmailOrAccount: "Search person, email or account",
+  add: "Add",
+  lead: "lead",
+  contact: "contact",
+};

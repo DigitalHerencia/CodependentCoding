@@ -1,8 +1,7 @@
 "use client";
-import Link from "next/link";
+import { InboxToolbar } from "@/components/blocks/support-blocks";
 import { useState } from "react";
 import { SupportInboxTemplate } from "@/components/templates/support-templates";
-import { Input } from "@/components/ui/input";
 import type { SupportTicketDTO } from "@/types/supportTypes";
 export function InboxFeatureClient({
   tickets,
@@ -21,30 +20,13 @@ export function InboxFeatureClient({
             .includes(query.toLowerCase()),
       )}
       toolbar={
-        <div className="flex flex-wrap gap-3">
-          <Input
-            aria-label="Search tickets"
-            placeholder="Search subject, number or requester"
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-          />
-          <select
-            className="control-field"
-            aria-label="Ticket status"
-            value={status}
-            onChange={(event) => setStatus(event.target.value)}
-          >
-            <option value="">All open statuses</option>
-            {[...new Set(tickets.map((ticket) => ticket.status))].map(
-              (value) => (
-                <option key={value}>{value}</option>
-              ),
-            )}
-          </select>
-          <Link className="type-link" href="/support/tickets/new">
-            New ticket
-          </Link>
-        </div>
+        <InboxToolbar
+          query={query}
+          onQueryChange={setQuery}
+          status={status}
+          onStatusChange={setStatus}
+          statuses={[...new Set(tickets.map((ticket) => ticket.status))]}
+        />
       }
     />
   );

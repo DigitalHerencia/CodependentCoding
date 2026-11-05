@@ -1,9 +1,8 @@
 "use client";
+import { ProjectsToolbar } from "@/components/blocks/projects-blocks";
 // Why: Client island: filters the already-authorized project list in the browser; never fetches.
-import Link from "next/link";
 import { useState } from "react";
 import { ProjectsTemplate } from "@/components/templates/projects-templates";
-import { Input } from "@/components/ui/input";
 import type { ProjectSummaryDTO } from "@/types/projectsTypes";
 export function ProjectsFeatureClient({
   projects,
@@ -22,30 +21,13 @@ export function ProjectsFeatureClient({
             .includes(query.toLowerCase()),
       )}
       toolbar={
-        <div className="flex flex-wrap gap-3">
-          <Input
-            aria-label="Search projects"
-            placeholder="Search projects"
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-          />
-          <select
-            className="control-field"
-            aria-label="Project status"
-            value={status}
-            onChange={(event) => setStatus(event.target.value)}
-          >
-            <option value="">All statuses</option>
-            {[...new Set(projects.map((project) => project.status))].map(
-              (value) => (
-                <option key={value}>{value}</option>
-              ),
-            )}
-          </select>
-          <Link className="type-link" href="/projects/new">
-            New project
-          </Link>
-        </div>
+        <ProjectsToolbar
+          query={query}
+          onQueryChange={setQuery}
+          status={status}
+          onStatusChange={setStatus}
+          statuses={[...new Set(projects.map((project) => project.status))]}
+        />
       }
     />
   );

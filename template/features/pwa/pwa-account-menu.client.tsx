@@ -1,9 +1,7 @@
 "use client";
+import { PwaAccountMenuBlock } from "@/components/blocks/pwa-blocks";
 
 import { useClerkAccount } from "@/lib/auth/clerkAccount";
-import { LogOut, UserRound } from "lucide-react";
-
-import { Button } from "@/components/ui/button";
 
 async function clearCaches(worker: ServiceWorker | null | undefined) {
   if (worker) {
@@ -31,18 +29,9 @@ export function PwaAccountMenu() {
     await signOut({ redirectUrl: "/sign-in" });
   };
   return (
-    <div className="flex items-center gap-2">
-      <Button
-        aria-label="Manage account"
-        onClick={() => openUserProfile()}
-        size="icon"
-        variant="outline"
-      >
-        <UserRound aria-hidden="true" />
-      </Button>
-      <Button onClick={safeSignOut} size="sm" variant="ghost">
-        <LogOut aria-hidden="true" /> Sign out
-      </Button>
-    </div>
+    <PwaAccountMenuBlock
+      onManageAccount={() => openUserProfile()}
+      onSignOut={safeSignOut}
+    />
   );
 }

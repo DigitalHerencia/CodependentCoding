@@ -7,3 +7,12 @@ export const memberInviteCopy = {
   share: "Share this link:",
   submit: "Create invitation",
 };
+
+export const settingsBlockCopy = {
+  organization: "Organization",
+  separator: "·",
+  noInvitations: "No pending invitations.",
+  revokeFailed: "The invitation could not be revoked.",
+  expires: "· expires",
+  revoke: "Revoke",
+};

@@ -1,11 +1,10 @@
 "use client";
-import Link from "next/link";
+import { CrmContactsToolbar } from "@/components/blocks/crm-blocks";
 import { useState } from "react";
 import {
   CrmContactsTemplate,
   CrmLeadsTemplate,
 } from "@/components/templates/crm-templates";
-import { Input } from "@/components/ui/input";
 import type { CrmContactDTO } from "@/types/crmTypes";
 export function CrmContactsFeatureClient({
   contacts,
@@ -25,20 +24,11 @@ export function CrmContactsFeatureClient({
           .includes(query.toLowerCase()),
       )}
       toolbar={
-        <div className="flex flex-wrap gap-3">
-          <Input
-            aria-label="Search contacts"
-            placeholder="Search person, email or account"
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-          />
-          <Link
-            className="type-link"
-            href={`/crm/${lead ? "leads" : "contacts"}/new`}
-          >
-            Add {lead ? "lead" : "contact"}
-          </Link>
-        </div>
+        <CrmContactsToolbar
+          query={query}
+          onQueryChange={setQuery}
+          lead={lead}
+        />
       }
     />
   );

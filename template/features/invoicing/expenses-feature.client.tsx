@@ -1,7 +1,6 @@
 "use client";
-import Link from "next/link";
+import { ExpensesToolbar } from "@/components/blocks/invoicing-blocks";
 import { useState } from "react";
-import { Input } from "@/components/ui/input";
 import { InvoicingExpensesTemplate } from "@/components/templates/invoicing-templates";
 import type { ExpenseDTO } from "@/types/invoicingTypes";
 export function ExpensesFeatureClient({
@@ -17,19 +16,7 @@ export function ExpensesFeatureClient({
           .toLowerCase()
           .includes(query.toLowerCase()),
       )}
-      toolbar={
-        <div className="flex flex-wrap gap-3">
-          <Input
-            aria-label="Search expenses"
-            placeholder="Search vendor or purpose"
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-          />
-          <Link className="type-link" href="/expenses/new">
-            Submit expense
-          </Link>
-        </div>
-      }
+      toolbar={<ExpensesToolbar query={query} onQueryChange={setQuery} />}
     />
   );
 }

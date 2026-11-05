@@ -1,6 +1,6 @@
 "use client";
+import { AdminAuditToolbar } from "@/components/blocks/admin-blocks";
 import { useState } from "react";
-import { Input } from "@/components/ui/input";
 import { AdminAuditTemplate } from "@/components/templates/admin-templates";
 import type { AuditEventDTO } from "@/types/adminTypes";
 export function AdminAuditFeatureClient({
@@ -16,14 +16,7 @@ export function AdminAuditFeatureClient({
           .toLowerCase()
           .includes(query.toLowerCase()),
       )}
-      toolbar={
-        <Input
-          aria-label="Search audit events"
-          placeholder="Search action, resource or actor"
-          value={query}
-          onChange={(event) => setQuery(event.target.value)}
-        />
-      }
+      toolbar={<AdminAuditToolbar query={query} onQueryChange={setQuery} />}
     />
   );
 }
