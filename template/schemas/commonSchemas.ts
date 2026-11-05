@@ -12,7 +12,7 @@ export const organizationSettingsSchema = z.object({
 
 export const onboardingSchema = z
   .object({
-    name: z.string().trim().min(1, "Enter a workspace name.").max(100),
+    name: z.string().trim().min(1, "Enter your display name.").max(100),
   })
   .strict();
 

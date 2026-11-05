@@ -5,8 +5,8 @@ import { z } from "zod";
 /**
  * Organization mode (AUTH.md §4.3). `hipster-stack new --tenancy` writes it;
  * change it by hand only before the app has users.
- * - "multi": a sign-up without an invitation gets its own organization.
- * - "single": one organization; the first sign-up owns it and everyone else joins by invitation.
+ * - "multi": memberships are scoped to individual workspaces.
+ * - "single": the configured bootstrap owner provisions the shared workspace.
  */
 export const tenancies = ["multi", "single"] as const;
 export type Tenancy = (typeof tenancies)[number];

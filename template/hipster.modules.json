@@ -46,6 +46,12 @@
         "description": "pnpm test:rls: app_runtime login (or a member of it); unset, the suite uses SET ROLE app_runtime"
       },
       {
+        "name": "BOOTSTRAP_OWNER_CLERK_USER_ID",
+        "required": false,
+        "scope": "server",
+        "description": "Clerk identity authorized to provision the initial workspace"
+      },
+      {
         "name": "AUTH_WEBHOOK_DB_TEST",
         "required": false,
         "scope": "server",

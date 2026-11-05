@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { appRoles } from "@/lib/authz/roles";
+import { appRoles, invitableRoles } from "@/lib/authz/roles";
 
 export const adminRoleSchema = z.enum(appRoles);
 
@@ -13,8 +13,8 @@ export const updateAdminMembershipStatusSchema = z.object({
 });
 
 export const addAdminMembershipSchema = z.object({
-  email: z.string().trim().email(),
-  role: adminRoleSchema,
+  email: z.string().trim().toLowerCase().pipe(z.email()),
+  role: z.enum(invitableRoles),
 });
 
 export const adminBulkOperationSchema = z.array(

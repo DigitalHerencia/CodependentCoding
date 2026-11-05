@@ -1,11 +1,15 @@
 import "server-only";
 
+import { randomBytes } from "node:crypto";
+
 import type {
   MembershipRole,
   MembershipStatus,
   Prisma,
 } from "@/generated/prisma/client";
 
+import { INVITATION_TTL_DAYS } from "@/lib/constants/invitations";
+import { hashInvitationToken } from "./invitation.tx";
 import { adminMembershipSelect } from "@/lib/db/selects/admin.selects";
 import { ResourceNotFoundError } from "./errors";
 
@@ -47,4 +51,48 @@ export async function updateMembershipAdministrationTx(
     },
   });
   return updated;
+}
+
+export async function approveWorkspaceAccessTx(
+  tx: Prisma.TransactionClient,
+  input: {
+    organizationId: string;
+    actorUserId: string;
+    email: string;
+    role: Exclude<MembershipRole, "OWNER">;
+  },
+) {
+  const approvalKey = `workspace-approval:${input.organizationId}:${input.email}`;
+  await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtextextended(${approvalKey}, 0))`;
+  await tx.invitation.updateMany({
+    where: {
+      organizationId: input.organizationId,
+      email: input.email,
+      requiresToken: false,
+      status: "PENDING",
+    },
+    data: { status: "REVOKED" },
+  });
+  const approval = await tx.invitation.create({
+    data: {
+      organizationId: input.organizationId,
+      email: input.email,
+      role: input.role,
+      invitedByUserId: input.actorUserId,
+      requiresToken: false,
+      tokenHash: hashInvitationToken(randomBytes(32).toString("base64url")),
+      expiresAt: new Date(Date.now() + INVITATION_TTL_DAYS * 86_400_000),
+    },
+    select: { id: true },
+  });
+  await tx.auditEvent.create({
+    data: {
+      organizationId: input.organizationId,
+      actorUserId: input.actorUserId,
+      action: "admin.membership.approved",
+      resourceType: "Invitation",
+      resourceId: approval.id,
+      metadata: { role: input.role },
+    },
+  });
 }

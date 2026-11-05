@@ -12,7 +12,7 @@ import {
 import type { ActionResult } from "@/types/actionTypes";
 import type { CreatedInvitationDTO } from "@/types/commonTypes";
 import { setActiveOrganizationPreference } from "@/lib/auth/active-organization";
-import { requireIdentity } from "@/lib/auth/auth";
+import { getVerifiedPrimaryEmail, requireIdentity } from "@/lib/auth/auth";
 import { assertPermission } from "@/lib/authz/permissions";
 import { invalidateAllPaths, invalidatePaths } from "@/lib/cache/invalidate";
 import { INVITATION_TTL_DAYS } from "@/lib/constants/invitations";
@@ -159,13 +159,17 @@ export async function acceptInvitation(
   rawInput: unknown,
 ): Promise<ActionResult<{ organizationId: string }>> {
   return toActionResult(async () => {
+    await requireIdentity();
+    const { token } = acceptInvitationSchema.parse(rawInput);
+    const email = await getVerifiedPrimaryEmail();
     const joined = await withIdentityTransaction(async (tx, user) => {
-      const { token } = acceptInvitationSchema.parse(rawInput);
-      if (!user.email) throw new ResourceNotFoundError("Invitation");
+      if (!email || email !== user.email?.toLowerCase())
+        throw new ResourceNotFoundError("Invitation");
       const invitation = await tx.invitation.findUnique({
         where: {
           tokenHash: hashInvitationToken(token),
-          email: user.email.toLowerCase(),
+          email,
+          requiresToken: true,
         },
         select: {
           id: true,

@@ -1,29 +1,26 @@
 import "server-only";
-import { cache } from "react";
-import { withAuthenticatedRead } from "@/lib/db/tenant";
-import { hasPermission } from "@/lib/authz/permissions";
 
-// The completion event is durable and scoped to the current membership.
-export const getOnboardingState = cache(async () =>
-  withAuthenticatedRead(async (tx, access) => {
-    const organization = await tx.organization.findFirstOrThrow({
-      where: { id: access.organizationId },
-      select: { name: true },
+import { cache } from "react";
+import { TenantContextError, withIdentityTransaction } from "@/lib/db/tenant";
+
+export const getOnboardingState = cache(async () => {
+  try {
+    return await withIdentityTransaction(async (tx, user) => {
+      if (!user.profileCompletedAt) {
+        return {
+          status: "profile",
+          displayName: user.displayName ?? "",
+        } as const;
+      }
+      const membership = await tx.membership.findFirst({
+        where: { userId: user.id, status: "ACTIVE" },
+        select: { id: true },
+      });
+      return { status: membership ? "active" : "pending" } as const;
     });
-    const completion = await tx.auditEvent.findFirst({
-      where: {
-        organizationId: access.organizationId,
-        actorUserId: access.userId,
-        action: "membership.onboarding.completed",
-        resourceType: "Membership",
-        resourceId: access.membershipId,
-      },
-      select: { id: true },
-    });
-    return {
-      completed: Boolean(completion),
-      workspaceName: organization.name,
-      canRename: hasPermission(access, "base.organization:update"),
-    };
-  }),
-);
+  } catch (error) {
+    if (error instanceof TenantContextError)
+      return { status: "provisioning" } as const;
+    throw error;
+  }
+});

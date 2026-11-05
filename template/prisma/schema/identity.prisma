@@ -37,6 +37,7 @@ model User {
   clerkUserId String  @unique
   email       String?
   displayName String?
+  profileCompletedAt DateTime? @db.Timestamptz(6)
   imageUrl    String?
 
   memberships             Membership[]
@@ -117,6 +118,7 @@ model Invitation {
   role            MembershipRole   @default(MEMBER)
   status          InvitationStatus @default(PENDING)
   tokenHash       String           @unique
+  requiresToken   Boolean          @default(true)
   invitedByUserId String?          @db.Uuid
   expiresAt       DateTime         @db.Timestamptz(6)
   acceptedAt      DateTime?        @db.Timestamptz(6)

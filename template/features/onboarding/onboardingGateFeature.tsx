@@ -10,7 +10,7 @@ import { getOnboardingState } from "@/lib/fetchers/onboardingFetchers";
 export async function OnboardingGateFeature({
   children,
 }: Readonly<{ children: ReactNode }>) {
-  if (!(await getOnboardingState()).completed) redirect("/onboarding");
+  if ((await getOnboardingState()).status !== "active") redirect("/onboarding");
 
   return (
     <TenantShell

@@ -7,7 +7,7 @@ import type { ClerkUserProjection } from "@/types/integrationTypes";
 import { SINGLE_ORGANIZATION_SLUG, tenancy } from "@/lib/authz/mode";
 import { setRlsContext } from "@/lib/db/rls";
 
-import { acceptInvitationTx } from "./invitation.tx";
+import { baseEnv } from "@/lib/env/base";
 
 function workspaceSlug(username: string | null, clerkUserId: string): string {
   const base =
@@ -34,34 +34,21 @@ export async function syncClerkUserTx(
     },
     update: {
       email: user.email,
-      displayName: user.displayName,
       imageUrl: user.imageUrl,
     },
     select: { id: true },
   });
+  if (baseEnv.value("BOOTSTRAP_OWNER_CLERK_USER_ID") !== user.clerkUserId)
+    return;
+
+  await setRlsContext(tx, { userId: record.id });
+
+  // Any previous membership includes suspended and revoked memberships.
   const membership = await tx.membership.findFirst({
-    where: { userId: record.id, status: "ACTIVE" },
+    where: { userId: record.id },
     select: { id: true },
   });
   if (membership) return;
-
-  // An invitation to this email wins over a new organization (RLS shows the
-  // user only invitations sent to their own email).
-  const invitation = user.email
-    ? await tx.invitation.findFirst({
-        where: {
-          email: user.email.toLowerCase(),
-          status: "PENDING",
-          expiresAt: { gt: new Date() },
-        },
-        orderBy: { createdAt: "asc" },
-        select: { id: true, organizationId: true, role: true },
-      })
-    : null;
-  if (invitation) {
-    await acceptInvitationTx(tx, invitation, record.id);
-    return;
-  }
 
   if (tenancy === "single") {
     await claimSingleOrganizationTx(tx, record.id);
@@ -93,9 +80,8 @@ async function ownOrganizationTx(
 }
 
 /**
- * Single tenancy: the first user without an invitation creates the one
- * organization and owns it. Later users without an invitation get no
- * membership until an admin invites them.
+ * Single tenancy: the configured bootstrap identity provisions the shared
+ * workspace only if it does not already exist.
  */
 async function claimSingleOrganizationTx(
   tx: Prisma.TransactionClient,

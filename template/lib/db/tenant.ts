@@ -25,17 +25,28 @@ export class TenantContextError extends Error {
 async function resolveUser(
   tx: Prisma.TransactionClient,
   identity: AuthenticatedIdentity,
-): Promise<{ id: string; email: string | null }> {
+): Promise<{
+  id: string;
+  email: string | null;
+  displayName: string | null;
+  profileCompletedAt: Date | null;
+}> {
   await setRlsContext(tx, { clerkUserId: identity.clerkUserId });
   const user = await tx.user.findUnique({
     where: { clerkUserId: identity.clerkUserId },
-    select: { id: true, email: true },
+    select: {
+      id: true,
+      email: true,
+      displayName: true,
+      profileCompletedAt: true,
+    },
   });
   if (!user) {
     throw new TenantContextError(
       "The authenticated Clerk user is not provisioned in the application database.",
     );
   }
+  await setRlsContext(tx, { userId: user.id });
   return user;
 }
 
@@ -52,6 +63,11 @@ async function resolveAccessContext(
   preferredOrganizationId: string | null,
 ): Promise<AccessContext> {
   const user = await resolveUser(tx, identity);
+  if (!user.profileCompletedAt) {
+    throw new TenantContextError(
+      "Complete onboarding before accessing the workspace.",
+    );
+  }
   const active = { userId: user.id, status: "ACTIVE" } as const;
 
   const preferred = preferredOrganizationId
@@ -120,7 +136,7 @@ export async function withAuthenticatedRead<T>(
 export async function withIdentityTransaction<T>(
   work: (
     tx: Prisma.TransactionClient,
-    user: { id: string; email: string | null; clerkUserId: string },
+    user: Awaited<ReturnType<typeof resolveUser>> & { clerkUserId: string },
   ) => Promise<T>,
 ): Promise<T> {
   const identity = await requireIdentity();

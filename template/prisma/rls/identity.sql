@@ -64,12 +64,27 @@ CREATE POLICY "membership_application_access" ON "Membership"
 FOR ALL TO app_runtime
 USING (
   "organizationId" = (SELECT NULLIF(current_setting('app.organization_id', true), '')::uuid)
-  OR "userId" IN (
-    SELECT "id" FROM "User"
-    WHERE "clerkUserId" = (SELECT NULLIF(current_setting('app.clerk_user_id', true), ''))
-  )
 )
 WITH CHECK ("organizationId" = (SELECT NULLIF(current_setting('app.organization_id', true), '')::uuid));
+
+-- An identity may read its own memberships before selecting a tenant.
+DROP POLICY IF EXISTS "membership_identity_read" ON "Membership";
+CREATE POLICY "membership_identity_read" ON "Membership"
+FOR SELECT TO app_runtime
+USING ("userId" = (SELECT NULLIF(current_setting('app.user_id', true), '')::uuid));
+
+-- Profiles can be displayed to members of the selected tenant. The identity
+-- policy remains the only policy that permits profile writes.
+DROP POLICY IF EXISTS "user_tenant_read" ON "User";
+CREATE POLICY "user_tenant_read" ON "User"
+FOR SELECT TO app_runtime
+USING (
+  EXISTS (
+    SELECT 1 FROM "Membership" AS m
+    WHERE m."userId" = "User"."id"
+      AND m."organizationId" = (SELECT NULLIF(current_setting('app.organization_id', true), '')::uuid)
+  )
+);
 
 -- An organization is visible when selected or when the user holds an active
 -- membership in it (the Membership policy above limits which rows are seen).

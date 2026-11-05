@@ -11,10 +11,12 @@ import { prisma } from "./client";
  */
 export async function setRlsContext(
   tx: Prisma.TransactionClient,
-  context: { clerkUserId?: string; organizationId?: string },
+  context: { clerkUserId?: string; organizationId?: string; userId?: string },
 ): Promise<void> {
   if (context.clerkUserId !== undefined)
     await tx.$executeRaw`SELECT set_config('app.clerk_user_id', ${context.clerkUserId}, true)`;
+  if (context.userId !== undefined)
+    await tx.$executeRaw`SELECT set_config('app.user_id', ${context.userId}, true)`;
   if (context.organizationId !== undefined)
     await tx.$executeRaw`SELECT set_config('app.organization_id', ${context.organizationId}, true)`;
 }

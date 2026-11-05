@@ -49,6 +49,13 @@ export async function requireAuthenticatedSession(): Promise<AuthenticatedSessio
   };
 }
 
+export async function getVerifiedPrimaryEmail() {
+  const email = (await currentUser())?.primaryEmailAddress;
+  return email?.verification?.status === "verified"
+    ? email.emailAddress.toLowerCase()
+    : null;
+}
+
 export async function getCurrentUser(): Promise<CurrentUserProfile | null> {
   const user = await currentUser();
   if (!user) return null;

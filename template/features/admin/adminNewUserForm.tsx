@@ -2,17 +2,17 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { z } from "zod";
-import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { addAdminMembership } from "@/lib/actions/adminActions";
-import { appRoles } from "@/lib/authz/roles";
+import { invitableRoles } from "@/lib/authz/roles";
 import { addAdminMembershipSchema } from "@/schemas/adminSchemas";
 
 export function AdminNewUserForm() {
-  const router = useRouter();
+  const [approved, setApproved] = useState(false);
   const form = useForm<z.input<typeof addAdminMembershipSchema>>({
     resolver: zodResolver(addAdminMembershipSchema),
     defaultValues: { email: "", role: "MEMBER" },
@@ -21,10 +21,11 @@ export function AdminNewUserForm() {
     <form
       className="mx-auto max-w-3xl space-y-5 surface-card p-5"
       onSubmit={form.handleSubmit(async (values) => {
+        setApproved(false);
         const result = await addAdminMembership(values);
         if (result.ok) {
-          router.push(`/admin/users/${result.data.user.id}`);
-          router.refresh();
+          form.reset();
+          setApproved(true);
           return;
         }
         for (const name of ["email", "role"] as const) {
@@ -34,8 +35,11 @@ export function AdminNewUserForm() {
         form.setError("root", { message: result.error.message });
       })}
     >
-      <h1 className="type-title">Add a registered member</h1>
-      <p>Add workspace access for an existing application user.</p>
+      <h1 className="type-title">Approve workspace access</h1>
+      <p>
+        Assign a role in this workspace. The user can claim access from their
+        waiting page using this verified email.
+      </p>
       <Controller
         name="email"
         control={form.control}
@@ -66,7 +70,7 @@ export function AdminNewUserForm() {
               className="control-field"
               aria-invalid={fieldState.invalid}
             >
-              {appRoles.map((role) => (
+              {invitableRoles.map((role) => (
                 <option key={role}>{role}</option>
               ))}
             </select>
@@ -79,8 +83,13 @@ export function AdminNewUserForm() {
       {form.formState.errors.root && (
         <FieldError>{form.formState.errors.root.message}</FieldError>
       )}
+      {approved && (
+        <p role="status">
+          Access approved. The user can check their access now.
+        </p>
+      )}
       <Button type="submit" disabled={form.formState.isSubmitting}>
-        Add member
+        Approve access
       </Button>
     </form>
   );
