@@ -4,7 +4,7 @@ import { Wordmark } from "@/components/brand/wordmark";
 import { getIdentity } from "@/lib/auth/auth";
 import { redirectToSignIn } from "@/lib/auth/redirects";
 
-export default async function SetupLayout({
+export async function OnboardingAccessFeature({
   children,
 }: Readonly<{ children: ReactNode }>) {
   if (!(await getIdentity())) redirectToSignIn();
