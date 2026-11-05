@@ -1,5 +1,6 @@
 "use client";
 import { PwaInstallBlock } from "@/components/blocks/pwa-blocks";
+import { isDevelopment } from "@/lib/env/mode";
 
 import { useEffect, useRef, useState } from "react";
 
@@ -27,6 +28,34 @@ export function PwaInstallFeature() {
 
   useEffect(() => {
     if (!("serviceWorker" in navigator)) return;
+
+    if (isDevelopment) {
+      void (async () => {
+        const registration = await navigator.serviceWorker.getRegistration("/");
+        const worker =
+          registration?.active ??
+          registration?.waiting ??
+          registration?.installing;
+        if (
+          registration?.scope === new URL("/", window.location.href).href &&
+          worker &&
+          new URL(worker.scriptURL).pathname === "/sw.js"
+        ) {
+          await registration.unregister();
+        }
+        if ("caches" in window) {
+          const keys = await caches.keys();
+          await Promise.all(
+            keys
+              .filter((key) => key.startsWith("maximal-shell-"))
+              .map((key) => caches.delete(key)),
+          );
+        }
+      })().catch(() =>
+        console.warn("Could not clear the development PWA cache."),
+      );
+      return;
+    }
 
     void navigator.serviceWorker.register("/sw.js", {
       scope: "/",

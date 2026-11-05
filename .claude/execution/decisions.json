@@ -1129,6 +1129,30 @@
         "template/prisma.config.ts",
         "https://nextjs.org/docs/messages/blocking-prerender-crypto"
       ]
+    },
+    {
+      "id": "DEC-113",
+      "date": "2026-11-05",
+      "status": "accepted",
+      "title": "Correct the unavailable Playwright release without overwriting pending upgrades",
+      "context": "The current template manifest had pre-existing uncommitted upgrades and the owner reported an unavailable transitive playwright-core release.",
+      "decision": "Restore only @playwright/test 1.64.1 after verifying matching registry releases. Preserve other pending changes. A successful dependency installation must refresh package-manager metadata before normal Prisma commands can run; do not bypass verification policies.",
+      "refs": ["template/package.json"]
+    },
+    {
+      "id": "DEC-114",
+      "date": "2026-11-05",
+      "status": "accepted",
+      "title": "Fail closed before credential-form hydration and avoid development PWA caching",
+      "context": "The owner reported credential query-string exposure alongside stale frontend chunks after a Next.js upgrade.",
+      "decision": "Use explicit POST and canonical auth actions, with credential controls disabled until hydration. Do not register a service worker in development; remove the template development worker/cache when client code loads. In production, expire the old cache version, isolate lookups to the current cache and finish cleanup before claiming clients. Preserve pending dependency/workspace/component edits. Credential values are never reproduced in records or regression tests.",
+      "refs": [
+        "template/features/auth/sign-in-form.tsx",
+        "template/features/auth/sign-up-form.tsx",
+        "template/features/pwa/pwa-install-feature.client.tsx",
+        "template/public/sw.js",
+        "template/tests/credentialForms.test.ts"
+      ]
     }
   ]
 }

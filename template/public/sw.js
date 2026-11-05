@@ -1,4 +1,4 @@
-const SHELL = "maximal-shell-v2";
+const SHELL = "maximal-shell-v3";
 const OFFLINE = "/offline";
 const ICON = "/icons/192.png";
 let cacheGeneration = 0;
@@ -22,11 +22,13 @@ self.addEventListener("activate", (event) => {
       .keys()
       .then((keys) =>
         Promise.all(
-          keys.filter((key) => key !== SHELL).map((key) => caches.delete(key)),
+          keys
+            .filter((key) => key.startsWith("maximal-shell-") && key !== SHELL)
+            .map((key) => caches.delete(key)),
         ),
-      ),
+      )
+      .then(() => self.clients.claim()),
   );
-  self.clients.claim();
 });
 
 self.addEventListener("fetch", (event) => {
@@ -41,7 +43,7 @@ self.addEventListener("fetch", (event) => {
   if (new URL(request.url).pathname.startsWith("/_next/static/")) {
     if (!cacheEnabled) return;
     event.respondWith(
-      caches.match(request).then(
+      caches.match(request, { cacheName: SHELL }).then(
         (hit) =>
           hit ??
           fetch(request).then((response) => {
@@ -69,7 +71,9 @@ self.addEventListener("fetch", (event) => {
   }
 
   if (request.mode === "navigate") {
-    event.respondWith(fetch(request).catch(() => caches.match(OFFLINE)));
+    event.respondWith(
+      fetch(request).catch(() => caches.match(OFFLINE, { cacheName: SHELL })),
+    );
   }
 });
 

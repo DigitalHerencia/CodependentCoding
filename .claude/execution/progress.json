@@ -26,7 +26,7 @@
     ]
   },
   "$schema": "codependent-coding/execution/progress/v1",
-  "updated": "2026-11-05T18:43:15.032Z",
+  "updated": "2026-11-05T19:14:02.762Z",
   "format": "Evidence states: EXECUTED | INSPECTED | NOT_RUN | BLOCKED. Never mark an issue done without EXECUTED evidence for its Validation commands.",
   "milestones": {
     "M0": {
@@ -3710,6 +3710,38 @@
     "NOT_RUN": [
       "Live migrations, database reset/history changes, builds, servers and push"
     ],
-    "owner_action": "Stop the current dev server, remove the two database variables from that PowerShell process environment, run prisma migrate deploy from template/, and restart the server so project .env.local is used."
+    "owner_action": "Stop the current dev server, remove the two database variables from that PowerShell process environment, run prisma migrate deploy from template/, and restart the server so project .env.local is used.",
+    "owner_reported_status": "Both pending migrations applied"
+  },
+  "dependency_install_followup": {
+    "status": "playwright-pin-corrected-install-required",
+    "diagnosis": "Uncommitted template dependency upgrades selected @playwright/test 1.65.0, whose required playwright-core 1.65.0 was unavailable. The package-manager version/configuration also differs from the existing installed dependency metadata.",
+    "change": "Restored only @playwright/test to the previously tested 1.64.1. Preserved all other pre-existing package upgrades and components.json edits.",
+    "EXECUTED": [
+      "Read-only registry verification: @playwright/test, playwright and playwright-core 1.64.1 are available"
+    ],
+    "NOT_RUN": [
+      "Dependency installation, tests, typecheck, migrations, build and push"
+    ],
+    "next": "Complete pnpm install in template/ before pnpm exec prisma migrate deploy. No verification or supply-chain controls were disabled.",
+    "owner_reported_status": "Installation completed"
+  },
+  "credential_hydration_followup": {
+    "status": "source-fixed-browser-cache-reset-required",
+    "diagnosis": "Credential forms had the browser default GET fallback when hydration failed. Owner logs also show stale Next 16.4.3 chunks after upgrading the running app to 16.4.5.",
+    "change": "Both credential forms now have POST/query-free actions and disabled server-rendered controls until hydration. Development unregisters the template PWA worker and clears only its cache namespace. Production cache version was advanced and lookups isolated to the current cache; activation waits for cleanup before claiming clients.",
+    "EXECUTED": [
+      "Focused credential-form regression: 2 failed against the previous forms, then 2 passed after the fix",
+      "Affected-file formatting and lint passed",
+      "Template Prisma/route type generation and typecheck passed"
+    ],
+    "OWNER_REPORTED": [
+      "Dependency installation completed with pnpm 12.16.1",
+      "Both pending source migrations applied successfully"
+    ],
+    "NOT_RUN": [
+      "Browser login using real credentials, full tests, build, dependency installation, migration or push"
+    ],
+    "owner_action": "Stop the dev server, clear template/.next, clear localhost service workers/site cache, restart, and open the clean /sign-in path. Change the exposed password. No credential values were included in source, test data or this record."
   }
 }

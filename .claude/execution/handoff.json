@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/handoff/v1",
-  "updated": "2026-11-05T18:43:15.032Z",
+  "updated": "2026-11-05T19:14:02.762Z",
   "format": "One current package; history is in progress.json, decisions.json and git.",
   "status": "awaiting-owner-verification",
   "milestone": "M-S2",
@@ -39,17 +39,21 @@
     "Expose credentials in commands/logs/commits; owner-local backups are outside the repo"
   ],
   "latest_followup": {
-    "status": "awaiting-owner-shell-restart-and-migrations",
-    "diagnosis": "Inherited DATABASE_URL and DATABASE_URL_UNPOOLED override the project file and target a different application database. Read-only inspection of project .env.local confirmed the correct template foundation and ten completed source migrations; profile_onboarding and clerk_identity_primary_key remain pending.",
-    "source_fix": "Await connection() before protected tenant and identity transactions to prevent Prisma UUID generation during speculative prerendering.",
+    "status": "source-fixed-browser-cache-reset-required",
+    "diagnosis": "Credential forms had the browser default GET fallback when hydration failed. Owner logs also show stale Next 16.4.3 chunks after upgrading the running app to 16.4.5.",
+    "change": "Both credential forms now have POST/query-free actions and disabled server-rendered controls until hydration. Development unregisters the template PWA worker and clears only its cache namespace. Production cache version was advanced and lookups isolated to the current cache; activation waits for cleanup before claiming clients.",
     "EXECUTED": [
-      "Read-only schema and migration-history comparisons; no secret values printed",
+      "Focused credential-form regression: 2 failed against the previous forms, then 2 passed after the fix",
       "Affected-file formatting and lint passed",
-      "Template type generation and typecheck passed"
+      "Template Prisma/route type generation and typecheck passed"
+    ],
+    "OWNER_REPORTED": [
+      "Dependency installation completed with pnpm 12.16.1",
+      "Both pending source migrations applied successfully"
     ],
     "NOT_RUN": [
-      "Live migrations, database reset/history changes, builds, servers and push"
+      "Browser login using real credentials, full tests, build, dependency installation, migration or push"
     ],
-    "owner_action": "Stop the current dev server, remove the two database variables from that PowerShell process environment, run prisma migrate deploy from template/, and restart the server so project .env.local is used."
+    "owner_action": "Stop the dev server, clear template/.next, clear localhost service workers/site cache, restart, and open the clean /sign-in path. Change the exposed password. No credential values were included in source, test data or this record."
   }
 }

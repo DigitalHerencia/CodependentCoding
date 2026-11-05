@@ -8,14 +8,21 @@ import { authPresentationCopy } from "@/content/auth";
 import { SignUp, useSignUp } from "@/lib/auth/clerkAccount";
 import Link from "next/link";
 import { authAppearance } from "@/content/auth";
-import { useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { AuthFormPanel } from "@/components/blocks/auth-blocks";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Field, FieldLabel, FieldError } from "@/components/ui/field";
 
+const subscribeToHydration = () => () => {};
+
 export function SignUpForm() {
+  const hasHydrated = useSyncExternalStore<boolean>(
+    subscribeToHydration,
+    () => true,
+    () => false,
+  );
   const { signUp, fetchStatus } = useSignUp();
   const [verifying, setVerifying] = useState(false);
   const [managed, setManaged] = useState(false);
@@ -31,7 +38,8 @@ export function SignUpForm() {
     defaultValues: { username: "", emailAddress: "", password: "", code: "" },
     shouldUnregister: true,
   });
-  const busy = fetchStatus === "fetching" || form.formState.isSubmitting;
+  const busy =
+    !hasHydrated || fetchStatus === "fetching" || form.formState.isSubmitting;
 
   async function check(result: { error: { message: string } | null }) {
     if (result.error) {
@@ -108,6 +116,8 @@ export function SignUpForm() {
       }
     >
       <form
+        method="post"
+        action="/sign-up"
         onSubmit={form.handleSubmit(submit)}
         className="space-y-4"
         aria-busy={busy}

@@ -9,7 +9,7 @@ import { authPresentationCopy } from "@/content/auth";
 import { SignIn, useSignIn } from "@/lib/auth/clerkAccount";
 import Link from "next/link";
 import { authAppearance } from "@/content/auth";
-import { useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { AuthFormPanel } from "@/components/blocks/auth-blocks";
 import { Button } from "@/components/ui/button";
@@ -19,7 +19,14 @@ import { Field, FieldLabel, FieldError } from "@/components/ui/field";
 type Step = "password" | "recover" | "reset-code" | "new-password" | "mfa";
 type Factor = "email_code" | "phone_code" | "totp" | "backup_code";
 
+const subscribeToHydration = () => () => {};
+
 export function SignInForm() {
+  const hasHydrated = useSyncExternalStore<boolean>(
+    subscribeToHydration,
+    () => true,
+    () => false,
+  );
   const { signIn, fetchStatus } = useSignIn();
   const [step, setStep] = useState<Step>("password");
   const [factor, setFactor] = useState<Factor>("email_code");
@@ -36,7 +43,8 @@ export function SignInForm() {
     defaultValues: { identifier: "", password: "", code: "" },
     shouldUnregister: true,
   });
-  const busy = fetchStatus === "fetching" || form.formState.isSubmitting;
+  const busy =
+    !hasHydrated || fetchStatus === "fetching" || form.formState.isSubmitting;
 
   async function check(result: { error: { message: string } | null }) {
     if (result.error) {
@@ -166,6 +174,8 @@ export function SignInForm() {
       }
     >
       <form
+        method="post"
+        action="/sign-in"
         onSubmit={form.handleSubmit(submit)}
         className="space-y-4"
         aria-busy={busy}
