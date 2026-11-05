@@ -130,7 +130,7 @@ rules:
   - {
       id: CC-WRITE-001,
       layer: action,
-      text: "Actions may use integration adapters; no direct provider SDK imports",
+      text: "Actions may use integration adapters and transaction helpers. No workflow or provider SDK imports.",
       enforcement: "eslint:codependent/layer-boundaries",
     }
   - {
@@ -148,7 +148,7 @@ rules:
   - {
       id: CC-FLOW-001,
       layer: workflow,
-      text: "Workflows: no Prisma client, provider SDKs, or presentation",
+      text: "Workflows compose fetchers, actions, and integration adapters. No database helpers, provider SDKs, or presentation.",
       enforcement: "eslint:codependent/layer-boundaries",
     }
   - {

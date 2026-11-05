@@ -7,6 +7,12 @@ import { toAiGenerationDTO, toAiUsageSummaryDTO } from "@/lib/db/dto/ai.dto";
 import { aiGenerationSelect } from "@/lib/db/selects/ai.selects";
 import { withAuthenticatedRead } from "@/lib/db/tenant";
 
+export async function assertAiReadAccess() {
+  await withAuthenticatedRead(async (_tx, access) => {
+    assertPermission(access, "ai.generation:read");
+  });
+}
+
 export async function getMyAiGenerations(limit = 50) {
   return withAuthenticatedRead(async (tx, access) => {
     assertPermission(access, "ai.generation:read");

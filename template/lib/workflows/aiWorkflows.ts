@@ -1,8 +1,10 @@
 import "server-only";
 
-import { assertPermission } from "@/lib/authz/permissions";
-import { withAuthenticatedRead } from "@/lib/db/tenant";
-import { getMyAiUsage, getMyAiGenerations } from "@/lib/fetchers/aiFetchers";
+import {
+  assertAiReadAccess,
+  getMyAiUsage,
+  getMyAiGenerations,
+} from "@/lib/fetchers/aiFetchers";
 import { isHuggingFaceConfigured } from "@/lib/integrations/hugging-face/client";
 import { getConfiguredHuggingFaceModel } from "@/lib/integrations/hugging-face/inference";
 import type { AiUsageItem } from "@/types/aiTypes";
@@ -18,13 +20,11 @@ export async function getAiWorkspaceWorkflow() {
 
 // Provider configuration is not a persisted read, so it lives here rather than in a fetcher.
 export async function getAiPlaygroundConfiguration() {
-  return withAuthenticatedRead(async (_tx, access) => {
-    assertPermission(access, "ai.generation:read");
-    return {
-      configured: isHuggingFaceConfigured(),
-      model: getConfiguredHuggingFaceModel(),
-    };
-  });
+  await assertAiReadAccess();
+  return {
+    configured: isHuggingFaceConfigured(),
+    model: getConfiguredHuggingFaceModel(),
+  };
 }
 
 const TICKS_PER_US_DOLLAR = 10_000_000_000n;

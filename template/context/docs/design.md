@@ -155,7 +155,7 @@ Do not require meaningless wrapper layers.
 
 The real sign-in/sign-up behavior lives in auth features.
 
-`components/blocks/auth-forms.tsx` provides reusable presentation and local variations.
+`components/blocks/auth-forms.tsx` provides the reusable panel and split layout.
 
 The feature may inject its own controlled form content while retaining the block's visual shell.
 

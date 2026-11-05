@@ -145,7 +145,7 @@ Blocks must not become an alternate application-service layer.
 
 Application database access, server authorization policy, provider account truth, and cross-domain business orchestration remain outside blocks.
 
-`components/blocks/auth-forms.tsx` is an intentional example: it can render a self-contained local form variation, while the real Clerk/RHF auth feature can inject controlled form content.
+`components/blocks/auth-forms.tsx` provides the visual shell for controlled form content rendered by the Clerk/RHF auth features.
 
 ### `components/templates`
 

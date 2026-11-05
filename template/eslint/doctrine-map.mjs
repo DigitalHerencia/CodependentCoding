@@ -328,12 +328,22 @@ export const boundaries = {
   },
   action: {
     rule: "CC-WRITE-001",
-    deny: ["provider-sdk", "feature", "route", "block", "ui", "form-state"],
+    deny: [
+      "workflow",
+      "provider-sdk",
+      "feature",
+      "route",
+      "block",
+      "ui",
+      "form-state",
+    ],
     why: "Actions own mutations and may use integration adapters. Provider SDKs stay inside integrations.",
   },
   workflow: {
     rule: "CC-FLOW-001",
     deny: [
+      "db-internals",
+      "transaction",
       "prisma-runtime",
       "provider-sdk",
       "clerk-server",
