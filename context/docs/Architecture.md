@@ -49,7 +49,7 @@ URL ─► app/ (route) ─► features/ ─► components/blocks ─► compone
                           │      ├─► lib/fetchers and lib/actions
                           │      └─► lib/integrations/<provider>
                           ├─► lib/auth / lib/authz
-                          └─► schemas/ · types/ · lib/cache · lib/constants · lib/utils
+                          └─► schema/ · types/ · lib/cache · lib/constants · lib/utils
 ```
 
 ### 3.1 Responsibility map
@@ -69,10 +69,10 @@ URL ─► app/ (route) ─► features/ ─► components/blocks ─► compone
 | Read                     | `lib/fetchers/<domain>Fetchers.ts`                                             | `server-only`; auth → authz → scoped select → DTO                              |
 | CRUD write               | `lib/actions/<domain>Actions.ts`                                               | `"use server"`; auth → authz → Zod → write/tx → invalidate → `ActionResult`    |
 | Application logic        | `lib/workflows/<domain>Workflows.ts` or `lib/workflows/<domain>/<verbNoun>.ts` | `server-only`; arranges operations; may call actions; no Prisma client or SDKs |
-| Atomic write             | `lib/db/transactions/<domain>-<verb>-<noun>.tx.ts`                             | DB-only; no network                                                            |
+| Atomic write             | `lib/db/transactions/<domain><Verb><Noun>Tx.ts`                                | DB-only; no network                                                            |
 | DB runtime               | `lib/db/client.ts`, `rls.ts`, `tenant.ts`                                      | Prisma client, adapter, RLS context                                            |
-| Projection               | `lib/db/selects/<domain>.selects.ts`                                           | Precise selects                                                                |
-| Mapping                  | `lib/db/dto/<domain>.dto.ts`                                                   | Record → transport-safe DTO                                                    |
+| Projection               | `lib/db/selects/<domain>Selects.ts`                                            | Precise selects                                                                |
+| Mapping                  | `lib/db/dtos/<domain>Dtos.ts`                                                  | Record → transport-safe DTO                                                    |
 | Identity                 | `lib/auth/{clerk,auth,redirects,clerk-webhooks}.ts`                            | Clerk only here                                                                |
 | Access                   | `lib/authz/{roles,permissions,resources,policies,mode,attributes?}.ts`         | App-owned RBAC/ABAC; `roles.ts` is the one browser-safe authz file             |
 | Provider                 | `lib/integrations/<provider>/<kebab>.ts`                                       | SDK only here                                                                  |
@@ -80,7 +80,7 @@ URL ─► app/ (route) ─► features/ ─► components/blocks ─► compone
 | Module contribution      | `lib/modules/<id>.module.ts`, `registry.ts`                                    | Nav, dashboard widgets, permissions                                            |
 | Env                      | `lib/env/<owner>.ts`                                                           | Zod-validated, `server-only`                                                   |
 | Error reporting          | `lib/observability/report.ts`                                                  | `server-only`; `reportError` returns the correlation `ref`                     |
-| Validation               | `schemas/<domain>Schemas.ts`                                                   | Zod; client- and server-safe                                                   |
+| Validation               | `schema/<domain>Schemas.ts`                                                    | Zod; client- and server-safe                                                   |
 | Shared types             | `types/<domain>Types.ts`                                                       | Compile-time contracts                                                         |
 | Schema                   | `prisma/schema/<owner>.prisma`, `prisma/rls/<owner>.sql`, `prisma/seed.ts`     | Prisma lifecycle                                                               |
 
@@ -103,13 +103,13 @@ Capability orchestration?        features/<d>/<d><Thing>Feature.tsx
 Persisted read?                  lib/fetchers/<d>Fetchers.ts
 Ordinary CRUD write?             lib/actions/<d>Actions.ts
 Named application logic?         lib/workflows/<d>Workflows.ts
-Multi-write atomicity?           lib/db/transactions/<d>-<verb>-<noun>.tx.ts
+Multi-write atomicity?           lib/db/transactions/<domain><Verb><Noun>Tx.ts
 Prisma select / DTO?             lib/db/selects | lib/db/dto
 Identity?                        lib/auth
 Access decision?                 lib/authz
 Provider SDK?                    lib/integrations/<provider>
 Webhook HTTP lifecycle?          app/api/<provider>/webhooks/route.ts
-Runtime validation?              schemas/<d>Schemas.ts
+Runtime validation?              schema/<d>Schemas.ts
 Shared type?                     types/<d>Types.ts
 Cache tag / lifetime?            lib/cache
 Report an unexpected error?      lib/observability/report.ts
@@ -224,7 +224,7 @@ A file belongs to module `<id>` when, in order:
 
 1. It matches a module's explicit `owns` glob; else
 2. Any path segment equals `<id>` (`features/crm/`, `app/(tenant)/crm/`, `lib/workflows/crm/`, `tests/crm/`); else
-3. The basename starts with `<id>` followed by an uppercase letter, `.` or `-` (`crmFetchers.ts`, `crm.selects.ts`, `crm.dto.ts`, `crm-update-deal-stage.tx.ts`, `crm-templates.tsx`, `crm.prisma`, `crm.sql`, `crm.module.ts`); else
+3. The basename starts with `<id>` followed by an uppercase letter, `.` or `-` (`crmFetchers.ts`, `crmSelects.ts`, `crmDtos.ts`, `crmUpdateDealStageTx.ts`, `crm-templates.tsx`, `crm.prisma`, `crm.sql`, `crm.module.ts`); else
 4. It belongs to **base**.
 
 Two modules matching the same file is an error (CC-MOD-003). Module IDs must not collide with base vocabulary (`organization`, `membership`, `onboarding`, `settings`, `dashboard`, `identity`, `auth`, `webhook`, `audit`).
@@ -420,10 +420,10 @@ The list below is generated; rerun `node scripts/slice-files.mjs projects --writ
 
 **Database (DTOs, selects, transactions)**
 
-- `lib/db/dto/projects.dto.ts`
-- `lib/db/selects/projects.selects.ts`
-- `lib/db/transactions/projects-update-task-status.tx.ts`
-- `lib/db/transactions/projects.tx.ts`
+- `lib/db/dtos/projectsDtos.ts`
+- `lib/db/selects/projectsSelects.ts`
+- `lib/db/transactions/projectsUpdateTaskStatusTx.ts`
+- `lib/db/transactions/projectsTx.ts`
 
 **Module definition**
 
@@ -431,7 +431,7 @@ The list below is generated; rerun `node scripts/slice-files.mjs projects --writ
 
 **Schemas**
 
-- `schemas/projectsSchemas.ts`
+- `schema/projectsSchemas.ts`
 
 **Types**
 

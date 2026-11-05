@@ -3,11 +3,11 @@
 import { requireIdentity } from "@/lib/auth/auth";
 import { assertPermission } from "@/lib/authz/permissions";
 import { withTenantTransaction } from "@/lib/db/tenant";
-import { completeAiGenerationTx } from "@/lib/db/transactions/ai-complete-generation.tx";
+import { completeAiGenerationTx } from "@/lib/db/transactions/aiCompleteGenerationTx";
 import {
   createAiGenerationTx,
   failAiGenerationTx,
-} from "@/lib/db/transactions/ai.tx";
+} from "@/lib/db/transactions/aiTx";
 import { isHuggingFaceConfigured } from "@/lib/integrations/hugging-face/client";
 import {
   generateHuggingFaceText,
@@ -18,7 +18,7 @@ import {
   isRateLimitRequested,
 } from "@/lib/integrations/upstash/ratelimit";
 import { toActionResult } from "@/lib/utils/actionResult";
-import { aiGenerationRequestSchema } from "@/schemas/aiSchemas";
+import { aiGenerationRequestSchema } from "@/schema/aiSchemas";
 
 export async function generateAiResponse(rawInput: unknown) {
   return toActionResult(async () => {

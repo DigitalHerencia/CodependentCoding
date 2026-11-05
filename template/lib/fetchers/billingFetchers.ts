@@ -1,8 +1,8 @@
 import "server-only";
 
 import { assertPermission } from "@/lib/authz/permissions";
-import { toBillingSubscriptionDTO } from "@/lib/db/dto/billing.dto";
-import { billingSubscriptionSelect } from "@/lib/db/selects/billing.selects";
+import { toBillingSubscriptionDTO } from "@/lib/db/dtos/billingDtos";
+import { billingSubscriptionSelect } from "@/lib/db/selects/billingSelects";
 import { withAuthenticatedRead } from "@/lib/db/tenant";
 
 export async function getBillingSubscription() {

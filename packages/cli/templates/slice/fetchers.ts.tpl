@@ -2,8 +2,8 @@
 import "server-only";
 
 import { assertPermission } from "@/lib/authz/permissions";
-import { to{{Entity}}DTO } from "@/lib/db/dto/{{module}}.dto";
-import { {{entity}}Select } from "@/lib/db/selects/{{module}}.selects";
+import { to{{Entity}}DTO } from "@/lib/db/dtos/{{module}}Dtos";
+import { {{entity}}Select } from "@/lib/db/selects/{{module}}Selects";
 import { withAuthenticatedRead } from "@/lib/db/tenant";
 
 export async function get{{Entities}}(limit = 50) {

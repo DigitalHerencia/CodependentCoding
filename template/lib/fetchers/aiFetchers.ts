@@ -3,8 +3,8 @@ import "server-only";
 import { Prisma } from "@/generated/prisma/client";
 
 import { assertPermission } from "@/lib/authz/permissions";
-import { toAiGenerationDTO, toAiUsageSummaryDTO } from "@/lib/db/dto/ai.dto";
-import { aiGenerationSelect } from "@/lib/db/selects/ai.selects";
+import { toAiGenerationDTO, toAiUsageSummaryDTO } from "@/lib/db/dtos/aiDtos";
+import { aiGenerationSelect } from "@/lib/db/selects/aiSelects";
 import { withAuthenticatedRead } from "@/lib/db/tenant";
 
 export async function assertAiReadAccess() {

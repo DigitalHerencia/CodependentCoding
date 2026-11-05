@@ -3,7 +3,7 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { updateCampaignStatus } from "@/lib/actions/marketingActions";
-import { CampaignStatus } from "@/schemas/marketingSchemas";
+import { CampaignStatus } from "@/schema/marketingSchemas";
 import type { CampaignDTO } from "@/types/marketingTypes";
 export function CampaignFeatureClient({ campaign }: { campaign: CampaignDTO }) {
   const router = useRouter();

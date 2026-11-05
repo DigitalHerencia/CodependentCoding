@@ -269,7 +269,7 @@ Clerk remains under `lib/auth`. Prisma/Neon runtime behavior remains under `lib/
 
 ## Schemas and types
 
-`schemas/` contains runtime validation contracts organized by useful responsibility.
+`schema/` contains runtime validation contracts organized by useful responsibility.
 
 `types/` contains shared TypeScript contracts, including domain, access, integration, UI, and common types.
 

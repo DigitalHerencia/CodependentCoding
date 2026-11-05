@@ -6,15 +6,15 @@ import {
   approveSocialPostSchema,
   createSocialPostSchema,
   scheduleSocialPostSchema,
-} from "@/schemas/socialSchemas";
+} from "@/schema/socialSchemas";
 import { requireIdentity } from "@/lib/auth/auth";
 import { assertPermission } from "@/lib/authz/permissions";
-import { toSocialPostDTO } from "@/lib/db/dto/social.dto";
-import { socialPostSelect } from "@/lib/db/selects/social.selects";
+import { toSocialPostDTO } from "@/lib/db/dtos/socialDtos";
+import { socialPostSelect } from "@/lib/db/selects/socialSelects";
 import { withTenantTransaction } from "@/lib/db/tenant";
 import { ResourceNotFoundError } from "@/lib/db/transactions/errors";
-import { scheduleSocialPostTx } from "@/lib/db/transactions/social-schedule-post.tx";
-import { approveSocialPostTx } from "@/lib/db/transactions/social.tx";
+import { scheduleSocialPostTx } from "@/lib/db/transactions/socialSchedulePostTx";
+import { approveSocialPostTx } from "@/lib/db/transactions/socialTx";
 
 const characterLimits = {
   LINKEDIN: 3_000,

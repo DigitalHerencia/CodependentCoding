@@ -4,14 +4,14 @@
 {{prismaTypeImport}}import {
   create{{Entity}}Schema,
   update{{Entity}}Schema,
-} from "@/schemas/{{module}}Schemas";
+} from "@/schema/{{module}}Schemas";
 import type { ActionResult } from "@/types/actionTypes";
 import type { {{Entity}}DTO } from "@/types/{{module}}Types";
 import { toActionResult } from "@/lib/utils/actionResult";
 import { requireIdentity } from "@/lib/auth/auth";
 import { assertPermission } from "@/lib/authz/permissions";
-import { to{{Entity}}DTO } from "@/lib/db/dto/{{module}}.dto";
-import { {{entity}}Select } from "@/lib/db/selects/{{module}}.selects";
+import { to{{Entity}}DTO } from "@/lib/db/dtos/{{module}}Dtos";
+import { {{entity}}Select } from "@/lib/db/selects/{{module}}Selects";
 import { withTenantTransaction } from "@/lib/db/tenant";
 import { invalidatePaths } from "@/lib/cache/invalidate";
 import { {{errorImports}} } from "@/lib/db/transactions/errors";

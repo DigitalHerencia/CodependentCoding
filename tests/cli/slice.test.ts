@@ -207,7 +207,7 @@ describe("planSlice", () => {
     expect(plan.newModule).toBe(true);
     expect(plan.created).toEqual(
       expect.arrayContaining([
-        "schemas/invoicingSchemas.ts",
+        "schema/invoicingSchemas.ts",
         "lib/actions/invoicingActions.ts",
         "features/invoicing/invoices-feature.client.tsx",
         "app/(tenant)/invoices/[invoiceId]/edit/page.tsx",

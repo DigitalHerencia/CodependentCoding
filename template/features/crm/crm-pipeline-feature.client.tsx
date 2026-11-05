@@ -6,7 +6,7 @@ import { CrmPipelineTemplate } from "@/components/templates/crm-templates";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { updateCrmDealStage } from "@/lib/actions/crmActions";
-import { CrmDealStage } from "@/schemas/crmSchemas";
+import { CrmDealStage } from "@/schema/crmSchemas";
 import type { CrmDealSummaryDTO } from "@/types/crmTypes";
 
 export function CrmPipelineFeatureClient({

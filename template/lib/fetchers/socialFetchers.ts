@@ -5,12 +5,12 @@ import {
   toMediaAssetDTO,
   toSocialAccountDTO,
   toSocialPostDTO,
-} from "@/lib/db/dto/social.dto";
+} from "@/lib/db/dtos/socialDtos";
 import {
   mediaAssetSelect,
   socialAccountSelect,
   socialPostSelect,
-} from "@/lib/db/selects/social.selects";
+} from "@/lib/db/selects/socialSelects";
 import { withAuthenticatedRead } from "@/lib/db/tenant";
 
 export async function getScheduledSocialPosts(limit = 100) {

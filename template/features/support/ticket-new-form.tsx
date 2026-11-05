@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { createSupportTicket } from "@/lib/actions/supportActions";
-import { TicketPriority } from "@/schemas/supportSchemas";
+import { TicketPriority } from "@/schema/supportSchemas";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";

@@ -10,12 +10,12 @@ import { baseEnv } from "@/lib/env/base";
 import {
   syncClerkUserTx,
   anonymizeClerkUserTx,
-} from "@/lib/db/transactions/clerk-user.tx";
+} from "@/lib/db/transactions/clerkUserTx";
 import {
   claimWebhookEventTx,
   completeWebhookEventTx,
   WebhookIdentityConflictError,
-} from "@/lib/db/transactions/webhook-event.tx";
+} from "@/lib/db/transactions/webhookEventTx";
 
 config({ path: ".env.local", quiet: true });
 

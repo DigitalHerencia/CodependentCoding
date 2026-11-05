@@ -94,16 +94,16 @@ function targets(
   return [
     {
       template: "schemas.ts.tpl",
-      target: `schemas/${m}Schemas.ts`,
+      target: `schema/${m}Schemas.ts`,
       merge: true,
     },
     { template: "types.ts.tpl", target: `types/${m}Types.ts`, merge: true },
     {
       template: "selects.ts.tpl",
-      target: `lib/db/selects/${m}.selects.ts`,
+      target: `lib/db/selects/${m}Selects.ts`,
       merge: true,
     },
-    { template: "dto.ts.tpl", target: `lib/db/dto/${m}.dto.ts`, merge: true },
+    { template: "dto.ts.tpl", target: `lib/db/dtos/${m}Dtos.ts`, merge: true },
     {
       template: "fetchers.ts.tpl",
       target: `lib/fetchers/${m}Fetchers.ts`,

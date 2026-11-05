@@ -8,7 +8,7 @@ import {
   invitationIdSchema,
   organizationSettingsSchema,
   switchOrganizationSchema,
-} from "@/schemas/commonSchemas";
+} from "@/schema/commonSchemas";
 import type { ActionResult } from "@/types/actionTypes";
 import type { CreatedInvitationDTO } from "@/types/commonTypes";
 import { setActiveOrganizationPreference } from "@/lib/auth/active-organization";
@@ -19,11 +19,11 @@ import { INVITATION_TTL_DAYS } from "@/lib/constants/invitations";
 import {
   toInvitationDTO,
   toOrganizationDTO,
-} from "@/lib/db/dto/organization.dto";
+} from "@/lib/db/dtos/organizationDtos";
 import {
   invitationSelect,
   organizationOverviewSelect,
-} from "@/lib/db/selects/organization.selects";
+} from "@/lib/db/selects/organizationSelects";
 import {
   withIdentityTransaction,
   withTenantTransaction,
@@ -32,7 +32,7 @@ import { ResourceNotFoundError } from "@/lib/db/transactions/errors";
 import {
   acceptInvitationTx,
   hashInvitationToken,
-} from "@/lib/db/transactions/invitation.tx";
+} from "@/lib/db/transactions/invitationTx";
 import { toActionResult } from "@/lib/utils/actionResult";
 
 export async function updateOrganizationSettings(rawInput: unknown) {

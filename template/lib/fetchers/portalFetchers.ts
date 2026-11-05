@@ -6,12 +6,12 @@ import {
   toPortalBillingSubscriptionDTO,
   toPortalDocumentDTO,
   toPortalInvoiceDTO,
-} from "@/lib/db/dto/portal.dto";
+} from "@/lib/db/dtos/portalDtos";
 import {
   portalBillingSelect,
   portalDocumentSelect,
   portalInvoiceSelect,
-} from "@/lib/db/selects/portal.selects";
+} from "@/lib/db/selects/portalSelects";
 import { withAuthenticatedRead } from "@/lib/db/tenant";
 
 export async function getPortalDocuments(limit = 100) {

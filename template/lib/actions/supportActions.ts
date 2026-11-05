@@ -6,21 +6,21 @@ import {
   updateKnowledgeArticleSchema,
   createSupportTicketSchema,
   updateSupportTicketStatusSchema,
-} from "@/schemas/supportSchemas";
+} from "@/schema/supportSchemas";
 import { requireIdentity } from "@/lib/auth/auth";
 import { assertPermission } from "@/lib/authz/permissions";
 import { authorizeOwnedOrAssignedWrite } from "@/lib/authz/policies";
 import {
   toKnowledgeArticleDTO,
   toSupportTicketDTO,
-} from "@/lib/db/dto/support.dto";
+} from "@/lib/db/dtos/supportDtos";
 import {
   knowledgeArticleSelect,
   supportTicketSelect,
-} from "@/lib/db/selects/support.selects";
+} from "@/lib/db/selects/supportSelects";
 import { withTenantTransaction } from "@/lib/db/tenant";
-import { updateTicketStatusTx } from "@/lib/db/transactions/support-update-ticket-status.tx";
-import { lockSupportTicketNumberTx } from "@/lib/db/transactions/support.tx";
+import { updateTicketStatusTx } from "@/lib/db/transactions/supportUpdateTicketStatusTx";
+import { lockSupportTicketNumberTx } from "@/lib/db/transactions/supportTx";
 
 export async function createSupportTicket(rawInput: unknown) {
   const input = createSupportTicketSchema.parse(rawInput);

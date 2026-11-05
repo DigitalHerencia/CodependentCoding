@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { createTask, updateTask } from "@/lib/actions/projectsActions";
-import { TaskPriority } from "@/schemas/projectsSchemas";
+import { TaskPriority } from "@/schema/projectsSchemas";
 import type { TaskDTO } from "@/types/projectsTypes";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";

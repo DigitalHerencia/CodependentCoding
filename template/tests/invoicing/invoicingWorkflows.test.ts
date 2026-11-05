@@ -2,8 +2,8 @@ import assert from "node:assert/strict";
 import { test } from "vitest";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import { calculateInvoiceTotals } from "@/lib/db/transactions/invoicing-create-invoice.tx";
-import { expenseFormSchema } from "@/schemas/invoicingSchemas";
+import { calculateInvoiceTotals } from "@/lib/db/transactions/invoicingCreateInvoiceTx";
+import { expenseFormSchema } from "@/schema/invoicingSchemas";
 import { InvoicingInvoiceDetailTemplate } from "@/components/templates/invoicing-templates";
 import type { InvoiceDTO } from "@/types/invoicingTypes";
 

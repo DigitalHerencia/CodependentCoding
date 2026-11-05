@@ -6,8 +6,8 @@ import { assertPermission } from "@/lib/authz/permissions";
 import { withTenantTransaction } from "@/lib/db/tenant";
 import { uploadBlob } from "@/lib/integrations/vercel-blob/upload";
 import { deleteBlob } from "@/lib/integrations/vercel-blob/delete";
-import { toUploadedAssetDTO } from "@/lib/db/dto/uploads.dto";
-import { uploadDomainSchema, uploadFileSchema } from "@/schemas/uploadsSchemas";
+import { toUploadedAssetDTO } from "@/lib/db/dtos/uploadsDtos";
+import { uploadDomainSchema, uploadFileSchema } from "@/schema/uploadsSchemas";
 
 export async function uploadWorkspaceAsset(formData: FormData) {
   const identity = await requireIdentity();

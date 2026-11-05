@@ -4,16 +4,16 @@ import {
   portalDocumentCommandSchema,
   addPortalDocumentVersionSchema,
   createPortalDocumentSchema,
-} from "@/schemas/portalSchemas";
+} from "@/schema/portalSchemas";
 import { requireIdentity } from "@/lib/auth/auth";
 import { assertPermission } from "@/lib/authz/permissions";
 import { limitedToOwnRecords } from "@/lib/authz/policies";
-import { toPortalDocumentDTO } from "@/lib/db/dto/portal.dto";
-import { portalDocumentSelect } from "@/lib/db/selects/portal.selects";
+import { toPortalDocumentDTO } from "@/lib/db/dtos/portalDtos";
+import { portalDocumentSelect } from "@/lib/db/selects/portalSelects";
 import { withTenantTransaction } from "@/lib/db/tenant";
 import { readPrivateBlob } from "@/lib/integrations/vercel-blob/download";
-import { sharePortalDocumentTx } from "@/lib/db/transactions/portal.tx";
-import { addPortalVersionTx } from "@/lib/db/transactions/portal-add-version.tx";
+import { sharePortalDocumentTx } from "@/lib/db/transactions/portalTx";
+import { addPortalVersionTx } from "@/lib/db/transactions/portalAddVersionTx";
 
 export async function createPortalDocument(rawInput: unknown) {
   const identity = await requireIdentity();

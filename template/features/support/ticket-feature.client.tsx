@@ -7,7 +7,7 @@ import {
   replyToSupportTicket,
   updateSupportTicketStatus,
 } from "@/lib/actions/supportActions";
-import { TicketStatus } from "@/schemas/supportSchemas";
+import { TicketStatus } from "@/schema/supportSchemas";
 import type { SupportTicketDTO } from "@/types/supportTypes";
 export function TicketFeatureClient({ ticket }: { ticket: SupportTicketDTO }) {
   const router = useRouter();

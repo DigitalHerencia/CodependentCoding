@@ -6,7 +6,7 @@ import {
   DashboardLayout,
   DashboardPanel,
 } from "@/components/blocks/dashboard-layout";
-import { TaskStatus } from "@/schemas/projectsSchemas";
+import { TaskStatus } from "@/schema/projectsSchemas";
 
 // lays out the my-tasks page from DTOs; no data access, no state.
 export function MyTasksTemplate({

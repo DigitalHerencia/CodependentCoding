@@ -5,15 +5,15 @@ import {
   adminBulkOperationSchema,
   changeAdminMembershipSchema,
   updateAdminMembershipStatusSchema,
-} from "@/schemas/adminSchemas";
+} from "@/schema/adminSchemas";
 import { requireIdentity } from "@/lib/auth/auth";
 import { assertPermission } from "@/lib/authz/permissions";
-import { toAdminMembershipDTO } from "@/lib/db/dto/admin.dto";
+import { toAdminMembershipDTO } from "@/lib/db/dtos/adminDtos";
 import { withTenantTransaction } from "@/lib/db/tenant";
 import {
   approveWorkspaceAccessTx,
   updateMembershipAdministrationTx,
-} from "@/lib/db/transactions/admin.tx";
+} from "@/lib/db/transactions/adminTx";
 import { InvariantViolationError } from "@/lib/db/transactions/errors";
 import { toActionResult } from "@/lib/utils/actionResult";
 

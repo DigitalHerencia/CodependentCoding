@@ -1,11 +1,11 @@
 import "server-only";
 
 import { assertPermission } from "@/lib/authz/permissions";
-import { toExpenseDTO, toInvoiceDTO } from "@/lib/db/dto/invoicing.dto";
+import { toExpenseDTO, toInvoiceDTO } from "@/lib/db/dtos/invoicingDtos";
 import {
   expenseSelect,
   invoiceSelect,
-} from "@/lib/db/selects/invoicing.selects";
+} from "@/lib/db/selects/invoicingSelects";
 import { withAuthenticatedRead } from "@/lib/db/tenant";
 
 export async function getInvoices(limit = 50) {

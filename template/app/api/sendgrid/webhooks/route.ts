@@ -1,5 +1,5 @@
-import { recordSendGridWebhookEventsTx } from "@/lib/db/transactions/email-record-sendgrid-webhook.tx";
-import { WebhookIdentityConflictError } from "@/lib/db/transactions/webhook-event.tx";
+import { recordSendGridWebhookEventsTx } from "@/lib/db/transactions/emailRecordSendgridWebhookTx";
+import { WebhookIdentityConflictError } from "@/lib/db/transactions/webhookEventTx";
 import { parseSendGridWebhookEvents } from "@/lib/integrations/sendgrid/webhooks";
 
 export async function POST(request: Request) {

@@ -4,9 +4,9 @@ import type { Prisma } from "@/generated/prisma/client";
 import {
   acceptInvitationTx,
   hashInvitationToken,
-} from "@/lib/db/transactions/invitation.tx";
+} from "@/lib/db/transactions/invitationTx";
 import { ResourceNotFoundError } from "@/lib/db/transactions/errors";
-import { acceptInvitationSchema } from "@/schemas/commonSchemas";
+import { acceptInvitationSchema } from "@/schema/commonSchemas";
 
 const invitation = {
   id: "invite-1",

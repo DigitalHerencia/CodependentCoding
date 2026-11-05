@@ -4,20 +4,20 @@ import {
   contactIdSchema,
   dealIdSchema,
   contactListCriteriaSchema,
-} from "@/schemas/crmSchemas";
+} from "@/schema/crmSchemas";
 import { assertPermission } from "@/lib/authz/permissions";
 import {
   toCrmAccountDTO,
   toCrmContactDTO,
   toCrmDealDTO,
   toCrmDealSummaryDTO,
-} from "@/lib/db/dto/crm.dto";
+} from "@/lib/db/dtos/crmDtos";
 import {
   crmAccountSelect,
   crmContactSelect,
   crmDealDetailSelect,
   crmDealSummarySelect,
-} from "@/lib/db/selects/crm.selects";
+} from "@/lib/db/selects/crmSelects";
 import { withAuthenticatedRead } from "@/lib/db/tenant";
 
 export async function getCrmDeals(limit = 50) {

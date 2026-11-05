@@ -68,12 +68,12 @@ tester.run("layer-boundaries", rules["layer-boundaries"], {
     },
     {
       name: "CC-SCHEMA-001 schema may use Prisma enums",
-      filename: at("schemas/crmSchemas.ts"),
+      filename: at("schema/crmSchemas.ts"),
       code: 'import { DealStage } from "@/generated/prisma/enums";',
     },
     {
       name: "CC-SCHEMA-001 schema may derive role enums from lib/authz/roles",
-      filename: at("schemas/adminSchemas.ts"),
+      filename: at("schema/adminSchemas.ts"),
       code: 'import { appRoles } from "@/lib/authz/roles";',
     },
     {
@@ -126,19 +126,19 @@ tester.run("layer-boundaries", rules["layer-boundaries"], {
     },
     {
       name: "CC-TX-001 transaction calls integration",
-      filename: at("lib/db/transactions/invoicing-create-invoice.tx.ts"),
+      filename: at("lib/db/transactions/invoicingCreateInvoiceTx.ts"),
       code: 'import { charge } from "@/lib/integrations/stripe/checkout";',
       errors: [{ messageId: "denied" }],
     },
     {
       name: "CC-INT-001 integration persists",
       filename: at("lib/integrations/stripe/webhooks.ts"),
-      code: 'import { recordEvent } from "@/lib/db/transactions/webhook-event.tx";',
+      code: 'import { recordEvent } from "@/lib/db/transactions/webhookEventTx";',
       errors: [{ messageId: "denied" }],
     },
     {
       name: "CC-SCHEMA-001 schema must not import authz decisions",
-      filename: at("schemas/adminSchemas.ts"),
+      filename: at("schema/adminSchemas.ts"),
       code: 'import { hasPermission } from "@/lib/authz/permissions";',
       errors: [{ messageId: "denied" }],
     },
@@ -330,13 +330,13 @@ tester.run("no-fetcher-writes", rules["no-fetcher-writes"], {
 tester.run("no-transaction-network", rules["no-transaction-network"], {
   valid: [
     {
-      filename: at("lib/db/transactions/invoicing-create-invoice.tx.ts"),
+      filename: at("lib/db/transactions/invoicingCreateInvoiceTx.ts"),
       code: "tx.invoice.create({});",
     },
   ],
   invalid: [
     {
-      filename: at("lib/db/transactions/invoicing-create-invoice.tx.ts"),
+      filename: at("lib/db/transactions/invoicingCreateInvoiceTx.ts"),
       code: 'fetch("https://api.example.com");',
       errors: [{ messageId: "network" }],
     },
@@ -368,7 +368,7 @@ tester.run("filename-convention", rules["filename-convention"], {
   valid: [
     { filename: at("lib/fetchers/crmFetchers.ts"), code: "" },
     {
-      filename: at("lib/db/transactions/crm-update-deal-stage.tx.ts"),
+      filename: at("lib/db/transactions/crmUpdateDealStageTx.ts"),
       code: "",
     },
     { filename: at("components/blocks/hero-section.tsx"), code: "" },
@@ -424,14 +424,14 @@ tester.run("no-parent-imports", rules["no-parent-imports"], {
   valid: [
     {
       filename: at("lib/fetchers/crmFetchers.ts"),
-      code: 'import { x } from "@/schemas/crmSchemas";',
+      code: 'import { x } from "@/schema/crmSchemas";',
     },
   ],
   invalid: [
     {
       filename: at("lib/fetchers/crmFetchers.ts"),
-      code: 'import { x } from "../../schemas/crmSchemas";',
-      output: 'import { x } from "@/schemas/crmSchemas";',
+      code: 'import { x } from "../../schema/crmSchemas";',
+      output: 'import { x } from "@/schema/crmSchemas";',
       errors: [{ messageId: "parent" }],
     },
   ],

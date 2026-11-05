@@ -4,9 +4,9 @@ import { revalidatePath } from "next/cache";
 import { getVerifiedPrimaryEmail, requireIdentity } from "@/lib/auth/auth";
 import { withIdentityTransaction } from "@/lib/db/tenant";
 import { ResourceNotFoundError } from "@/lib/db/transactions/errors";
-import { acceptInvitationTx } from "@/lib/db/transactions/invitation.tx";
+import { acceptInvitationTx } from "@/lib/db/transactions/invitationTx";
 import { toActionResult } from "@/lib/utils/actionResult";
-import { onboardingSchema } from "@/schemas/commonSchemas";
+import { onboardingSchema } from "@/schema/commonSchemas";
 
 export async function completeOnboarding(rawInput: unknown) {
   return toActionResult(async () => {

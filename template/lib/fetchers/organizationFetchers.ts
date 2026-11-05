@@ -9,11 +9,11 @@ import { withAuthenticatedRead } from "@/lib/db/tenant";
 import {
   toInvitationDTO,
   toOrganizationDTO,
-} from "@/lib/db/dto/organization.dto";
+} from "@/lib/db/dtos/organizationDtos";
 import {
   invitationSelect,
   organizationOverviewSelect,
-} from "@/lib/db/selects/organization.selects";
+} from "@/lib/db/selects/organizationSelects";
 
 export async function canViewIntegrationStatuses() {
   return withAuthenticatedRead(async (_tx, access) =>

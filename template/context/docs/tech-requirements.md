@@ -151,7 +151,7 @@ Do not invent a second repository/service architecture unless the owner explicit
 Runtime validation contracts live under:
 
 ```text
-schemas/
+schema/
 ```
 
 Shared TypeScript contracts live under:

@@ -2,7 +2,7 @@ import "server-only";
 
 import { EventWebhook } from "@sendgrid/eventwebhook";
 import { emailEnv } from "@/lib/env/email";
-import { sendGridWebhookEventsSchema } from "@/schemas/integrationSchemas";
+import { sendGridWebhookEventsSchema } from "@/schema/integrationSchemas";
 
 export function verifySendGridWebhook(
   payload: string,

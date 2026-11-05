@@ -5,11 +5,11 @@ import { limitedToOwnRecords } from "@/lib/authz/policies";
 import {
   toKnowledgeArticleDTO,
   toSupportTicketDTO,
-} from "@/lib/db/dto/support.dto";
+} from "@/lib/db/dtos/supportDtos";
 import {
   knowledgeArticleSelect,
   supportTicketSelect,
-} from "@/lib/db/selects/support.selects";
+} from "@/lib/db/selects/supportSelects";
 import { withAuthenticatedRead } from "@/lib/db/tenant";
 
 export async function getSupportInbox(limit = 100) {

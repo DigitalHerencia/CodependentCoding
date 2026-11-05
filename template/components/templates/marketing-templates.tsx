@@ -6,7 +6,7 @@ import {
   DashboardPanel,
 } from "@/components/blocks/dashboard-layout";
 import Link from "next/link";
-import { audienceFormSchema } from "@/schemas/marketingSchemas";
+import { audienceFormSchema } from "@/schema/marketingSchemas";
 import type { ReactNode } from "react";
 
 export function MarketingAnalyticsTemplate({

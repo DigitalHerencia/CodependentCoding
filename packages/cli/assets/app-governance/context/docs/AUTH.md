@@ -38,7 +38,7 @@ untrusted input → runtime-validated (Zod) → authenticated (Clerk) → member
 
 - `proxy.ts` uses `clerkMiddleware` to protect `(tenant)`, `(setup)` and `/api` (except webhooks). It only gates; it never reads the database.
 - Development: Clerk keyless mode until keys are set; `doctor` warns when keys are missing.
-- Clerk webhook (`app/api/clerk/webhooks/route.ts`): verify → idempotency check → `user.created|updated|deleted` sync through `lib/db/transactions/clerk-user.tx.ts` → `200`.
+- Clerk webhook (`app/api/clerk/webhooks/route.ts`): verify → idempotency check → `user.created|updated|deleted` sync through `lib/db/transactions/clerkUserTx.ts` → `200`.
 
 ## 4. Tenancy model (application-owned)
 
@@ -80,12 +80,12 @@ enum MembershipStatus { active invited suspended }
 
 ### 4.2 Onboarding
 
-`(setup)/onboarding` → form → `createOrganization` action → `onboarding.tx.ts` creates Organization + owner Membership atomically → sets `active-org` → redirect `/dashboard`.
+`(setup)/onboarding` → form → `createOrganization` action → `onboardingTx.ts` creates Organization + owner Membership atomically → sets `active-org` → redirect `/dashboard`.
 
 ### 4.3 Invitations and tenancy mode
 
 - An owner or admin (`base.membership:create`) invites an email with a role (`admin`, `member` or `viewer`). The action returns a one-time link `/invite/<token>`; only the token's SHA-256 is stored in `Invitation.tokenHash`. Invitations expire after `INVITATION_TTL_DAYS` (`lib/constants/invitations.ts`) and can be revoked (`base.membership:delete`).
-- Accepting (`invitation.tx.ts`) is one idempotent transaction: it sets the invitation's organization as RLS context, flips `pending → accepted`, creates the membership or reactivates a suspended one (an active membership keeps its role), and writes an audit event. The Clerk `user.created` webhook accepts a pending invitation to the user's email before anything else.
+- Accepting (`invitationTx.ts`) is one idempotent transaction: it sets the invitation's organization as RLS context, flips `pending → accepted`, creates the membership or reactivates a suspended one (an active membership keeps its role), and writes an audit event. The Clerk `user.created` webhook accepts a pending invitation to the user's email before anything else.
 - RLS on `Invitation`: rows of the selected organization, plus invitations sent to the signed-in user's own email (read only). Writes stay inside the organization.
 - `tenancy` in `lib/authz/mode.ts` (set by `hipster-stack new --tenancy`, Zod-validated when the module loads) is `multi` (each new user without an invitation gets their own organization) or `single` (the first user creates the one organization, slug `main`, and owns it; everyone else joins by invitation).
 

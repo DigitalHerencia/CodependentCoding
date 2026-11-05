@@ -13,25 +13,25 @@ import {
   assignTaskSchema,
   updateProjectSchema,
   updateTaskSchema,
-} from "@/schemas/projectsSchemas";
+} from "@/schema/projectsSchemas";
 import type { ActionResult } from "@/types/actionTypes";
 import type { ProjectSummaryDTO, TaskDTO } from "@/types/projectsTypes";
 import { toActionResult } from "@/lib/utils/actionResult";
 import { requireIdentity } from "@/lib/auth/auth";
 import { assertPermission } from "@/lib/authz/permissions";
-import { toProjectSummaryDTO, toTaskDTO } from "@/lib/db/dto/projects.dto";
+import { toProjectSummaryDTO, toTaskDTO } from "@/lib/db/dtos/projectsDtos";
 import {
   projectSummarySelect,
   taskSelect,
-} from "@/lib/db/selects/projects.selects";
+} from "@/lib/db/selects/projectsSelects";
 import { withTenantTransaction } from "@/lib/db/tenant";
 import { invalidatePaths } from "@/lib/cache/invalidate";
 import {
   ResourceNotFoundError,
   staleOrMissing,
 } from "@/lib/db/transactions/errors";
-import { assignTaskTx } from "@/lib/db/transactions/projects.tx";
-import { updateTaskStatusTx } from "@/lib/db/transactions/projects-update-task-status.tx";
+import { assignTaskTx } from "@/lib/db/transactions/projectsTx";
+import { updateTaskStatusTx } from "@/lib/db/transactions/projectsUpdateTaskStatusTx";
 
 export async function createProject(
   rawInput: unknown,

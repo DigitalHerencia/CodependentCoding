@@ -2,11 +2,11 @@
 import "server-only";
 
 import { assertPermission } from "@/lib/authz/permissions";
-import { toProjectSummaryDTO, toTaskDTO } from "@/lib/db/dto/projects.dto";
+import { toProjectSummaryDTO, toTaskDTO } from "@/lib/db/dtos/projectsDtos";
 import {
   projectSummarySelect,
   taskSelect,
-} from "@/lib/db/selects/projects.selects";
+} from "@/lib/db/selects/projectsSelects";
 import { withAuthenticatedRead } from "@/lib/db/tenant";
 
 export async function getProjects(limit = 50) {

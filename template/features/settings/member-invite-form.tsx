@@ -12,7 +12,7 @@ import { Input } from "@/components/ui/input";
 import { memberInviteCopy as copy } from "@/content/settings";
 import { createInvitation } from "@/lib/actions/commonActions";
 import { defaultInvitedRole, invitableRoles } from "@/lib/authz/roles";
-import { createInvitationSchema } from "@/schemas/commonSchemas";
+import { createInvitationSchema } from "@/schema/commonSchemas";
 
 export function MemberInviteForm() {
   const router = useRouter();

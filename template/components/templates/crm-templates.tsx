@@ -12,7 +12,7 @@ import {
   DashboardTable,
 } from "@/components/blocks/dashboard-layout";
 import type { ReactNode } from "react";
-import { CrmDealStage } from "@/schemas/crmSchemas";
+import { CrmDealStage } from "@/schema/crmSchemas";
 
 export function CrmAccountDetailTemplate({
   account,

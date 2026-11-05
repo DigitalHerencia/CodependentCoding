@@ -9,7 +9,7 @@ import {
   ProjectTasksTemplate,
   MyTasksTemplate,
 } from "@/components/templates/projects-templates";
-import { TaskStatus } from "@/schemas/projectsSchemas";
+import { TaskStatus } from "@/schema/projectsSchemas";
 import { updateTaskStatus } from "@/lib/actions/projectsActions";
 import type { TaskDTO } from "@/types/projectsTypes";
 export function TaskStatusControl({ task }: { task: TaskDTO }) {

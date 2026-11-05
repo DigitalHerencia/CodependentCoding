@@ -3,8 +3,8 @@ import { test } from "vitest";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import type { Prisma } from "@/generated/prisma/client";
-import { updateDealStageTx } from "@/lib/db/transactions/crm-update-deal-stage.tx";
-import { createContactSchema, createCrmDealSchema } from "@/schemas/crmSchemas";
+import { updateDealStageTx } from "@/lib/db/transactions/crmUpdateDealStageTx";
+import { createContactSchema, createCrmDealSchema } from "@/schema/crmSchemas";
 import { CrmPipelineTemplate } from "@/components/templates/crm-templates";
 
 const id = "00000000-0000-4000-8000-000000000001";

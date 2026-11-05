@@ -9,7 +9,7 @@ import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { addAdminMembership } from "@/lib/actions/adminActions";
 import { invitableRoles } from "@/lib/authz/roles";
-import { addAdminMembershipSchema } from "@/schemas/adminSchemas";
+import { addAdminMembershipSchema } from "@/schema/adminSchemas";
 
 export function AdminNewUserForm() {
   const [approved, setApproved] = useState(false);

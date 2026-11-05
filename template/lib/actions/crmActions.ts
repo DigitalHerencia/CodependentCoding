@@ -9,7 +9,7 @@ import {
   createCrmDealSchema,
   updateContactSchema,
   updateCrmDealStageSchema,
-} from "@/schemas/crmSchemas";
+} from "@/schema/crmSchemas";
 import { requireIdentity } from "@/lib/auth/auth";
 import { assertPermission } from "@/lib/authz/permissions";
 import { authorizeOwnedOrAssignedWrite } from "@/lib/authz/policies";
@@ -17,24 +17,24 @@ import {
   toCrmAccountDTO,
   toCrmContactDTO,
   toCrmDealDTO,
-} from "@/lib/db/dto/crm.dto";
+} from "@/lib/db/dtos/crmDtos";
 import {
   crmAccountSelect,
   crmContactAccessSelect,
   crmContactSelect,
   crmDealDetailSelect,
-} from "@/lib/db/selects/crm.selects";
+} from "@/lib/db/selects/crmSelects";
 import { withTenantTransaction } from "@/lib/db/tenant";
 import {
   ConcurrencyConflictError,
   InvariantViolationError,
   ResourceNotFoundError,
 } from "@/lib/db/transactions/errors";
-import { updateDealStageTx } from "@/lib/db/transactions/crm-update-deal-stage.tx";
+import { updateDealStageTx } from "@/lib/db/transactions/crmUpdateDealStageTx";
 import {
   findCrmContactForWriteTx,
   qualifyCrmLeadTx,
-} from "@/lib/db/transactions/crm-qualify-lead.tx";
+} from "@/lib/db/transactions/crmQualifyLeadTx";
 import { toActionResult } from "@/lib/utils/actionResult";
 
 export async function qualifyCrmLead(rawContactId: unknown) {

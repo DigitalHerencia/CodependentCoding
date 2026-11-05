@@ -9,14 +9,14 @@ import { baseEnv } from "@/lib/env/base";
 import {
   anonymizeClerkUserTx,
   syncClerkUserTx,
-} from "@/lib/db/transactions/clerk-user.tx";
+} from "@/lib/db/transactions/clerkUserTx";
 import {
   claimWebhookEventTx,
   completeWebhookEventTx,
   failWebhookEventTx,
-} from "@/lib/db/transactions/webhook-event.tx";
+} from "@/lib/db/transactions/webhookEventTx";
 
-export { WebhookIdentityConflictError } from "@/lib/db/transactions/webhook-event.tx";
+export { WebhookIdentityConflictError } from "@/lib/db/transactions/webhookEventTx";
 
 export async function verifyClerkWebhook(request: NextRequest) {
   const signingSecret = baseEnv.read().CLERK_WEBHOOK_SIGNING_SECRET;

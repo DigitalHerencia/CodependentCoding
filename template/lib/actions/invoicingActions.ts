@@ -6,24 +6,24 @@ import {
   updateExpenseSchema,
   createInvoiceSchema,
   updateInvoiceStatusSchema,
-} from "@/schemas/invoicingSchemas";
+} from "@/schema/invoicingSchemas";
 import { requireIdentity } from "@/lib/auth/auth";
 import { assertPermission } from "@/lib/authz/permissions";
-import { toExpenseDTO, toInvoiceDTO } from "@/lib/db/dto/invoicing.dto";
+import { toExpenseDTO, toInvoiceDTO } from "@/lib/db/dtos/invoicingDtos";
 import { withTenantTransaction } from "@/lib/db/tenant";
 import {
   calculateInvoiceTotals,
   createInvoiceTx,
-} from "@/lib/db/transactions/invoicing-create-invoice.tx";
+} from "@/lib/db/transactions/invoicingCreateInvoiceTx";
 import {
   expenseSelect,
   invoiceSelect,
-} from "@/lib/db/selects/invoicing.selects";
+} from "@/lib/db/selects/invoicingSelects";
 import {
   approveInvoiceTx,
   submitExpenseTx,
-} from "@/lib/db/transactions/invoicing.tx";
-import { updateInvoiceStatusTx } from "@/lib/db/transactions/invoicing-update-invoice-status.tx";
+} from "@/lib/db/transactions/invoicingTx";
+import { updateInvoiceStatusTx } from "@/lib/db/transactions/invoicingUpdateInvoiceStatusTx";
 
 export async function createInvoice(rawInput: unknown) {
   const identity = await requireIdentity();

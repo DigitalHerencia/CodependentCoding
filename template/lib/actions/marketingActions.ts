@@ -6,14 +6,14 @@ import {
   updateCampaignSchema,
   createCampaignSchema,
   updateCampaignStatusSchema,
-} from "@/schemas/marketingSchemas";
+} from "@/schema/marketingSchemas";
 import { requireIdentity } from "@/lib/auth/auth";
 import { assertPermission } from "@/lib/authz/permissions";
-import { toAudienceDTO, toCampaignDTO } from "@/lib/db/dto/marketing.dto";
+import { toAudienceDTO, toCampaignDTO } from "@/lib/db/dtos/marketingDtos";
 import {
   audienceSelect,
   campaignSelect,
-} from "@/lib/db/selects/marketing.selects";
+} from "@/lib/db/selects/marketingSelects";
 import { withTenantTransaction } from "@/lib/db/tenant";
 import { ConcurrencyConflictError } from "@/lib/db/transactions/errors";
 

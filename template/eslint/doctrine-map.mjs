@@ -35,7 +35,7 @@ export const layers = [
   { id: "cache", match: /^lib\/cache\// },
   { id: "registry", match: /^lib\/modules\// },
   { id: "pure", match: /^(lib\/(constants|utils)|types)\// },
-  { id: "schema", match: /^schemas\// },
+  { id: "schema", match: /^schema\// },
 ];
 
 /**
@@ -548,21 +548,21 @@ export const filenameConventions = [
   },
   {
     dir: /^lib\/db\/selects\/$/,
-    file: /^[a-z][a-zA-Z0-9]*\.selects\.ts$/,
-    example: "crm.selects.ts",
+    file: /^[a-z][a-zA-Z0-9]*Selects\.ts$/,
+    example: "crmSelects.ts",
   },
   {
-    dir: /^lib\/db\/dto\/$/,
-    file: /^[a-z][a-zA-Z0-9]*\.dto\.ts$/,
-    example: "crm.dto.ts",
+    dir: /^lib\/db\/dtos\/$/,
+    file: /^[a-z][a-zA-Z0-9]*Dtos\.ts$/,
+    example: "crmDtos.ts",
   },
   {
     dir: /^lib\/db\/transactions\/$/,
-    file: /^([a-z0-9]+(-[a-z0-9]+)*\.tx|errors)\.ts$/,
-    example: "crm-update-deal-stage.tx.ts",
+    file: /^([a-z][a-zA-Z0-9]*Tx|errors)\.ts$/,
+    example: "crmUpdateDealStageTx.ts",
   },
   {
-    dir: /^schemas\/$/,
+    dir: /^schema\/$/,
     file: /^[a-z][a-zA-Z0-9]*Schemas\.ts$/,
     example: "crmSchemas.ts",
   },

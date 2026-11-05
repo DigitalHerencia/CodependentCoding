@@ -2,11 +2,11 @@ import "server-only";
 
 import { assertPermission } from "@/lib/authz/permissions";
 import { isPrivilegedRole } from "@/lib/authz/roles";
-import { toAdminMembershipDTO, toAuditEventDTO } from "@/lib/db/dto/admin.dto";
+import { toAdminMembershipDTO, toAuditEventDTO } from "@/lib/db/dtos/adminDtos";
 import {
   adminMembershipSelect,
   auditEventSelect,
-} from "@/lib/db/selects/admin.selects";
+} from "@/lib/db/selects/adminSelects";
 import { withAuthenticatedRead } from "@/lib/db/tenant";
 import { installedModules } from "@/lib/modules/registry";
 
