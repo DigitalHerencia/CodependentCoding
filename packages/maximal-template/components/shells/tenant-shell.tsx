@@ -1,62 +1,19 @@
 "use client";
-import {
-  Brain,
-  BriefcaseBusiness,
-  Building2,
-  CreditCard,
-  FolderKanban,
-  Headphones,
-  LayoutDashboard,
-  Megaphone,
-  PanelLeftClose,
-  PanelLeftOpen,
-  Settings,
-  Users,
-  X,
-  Menu,
-} from "lucide-react";
+import { LayoutDashboard, PanelLeftClose, PanelLeftOpen } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useRef, useState, type ReactNode } from "react";
 import { Wordmark } from "@/components/brand/wordmark";
 import { Button } from "@/components/ui/button";
-import { TreeView, type TreeNode } from "@/components/ui/tree-view";
+import {
+  TenantNavLinks,
+  tenantDomains as domains,
+} from "@/components/nav/tenant-nav-links";
+import { TenantHeader } from "@/components/nav/tenant-header";
+import { TenantFooter } from "@/components/nav/tenant-footer";
+import { TenantMobileBottomNav } from "@/components/nav/tenant-mobile-bottom-nav";
 import { applicationDesign } from "@/content/application";
-import { moduleNavigation, settingsNavigation } from "@/lib/modules/navigation";
 import { cn } from "@/lib/utils/cn";
-import type { ModuleIcon, ModuleNavLink } from "@/types/moduleTypes";
-
-const icons: Record<ModuleIcon, ReactNode> = {
-  brain: <Brain className="size-4" />,
-  briefcase: <BriefcaseBusiness className="size-4" />,
-  building: <Building2 className="size-4" />,
-  "credit-card": <CreditCard className="size-4" />,
-  "folder-kanban": <FolderKanban className="size-4" />,
-  headphones: <Headphones className="size-4" />,
-  megaphone: <Megaphone className="size-4" />,
-  users: <Users className="size-4" />,
-};
-
-const route = ({ label, href }: ModuleNavLink): TreeNode => ({
-  id: href,
-  label,
-  href,
-});
-
-const domains: TreeNode[] = [
-  ...moduleNavigation().map(({ id, label, icon, links }) => ({
-    id,
-    label,
-    icon: icons[icon],
-    children: links.map(route),
-  })),
-  {
-    id: "settings",
-    label: "Settings",
-    icon: <Settings className="size-4" />,
-    children: settingsNavigation().map(route),
-  },
-];
 
 export function TenantShell({
   children,
@@ -65,7 +22,7 @@ export function TenantShell({
 }: {
   children: ReactNode;
   accountMenu: ReactNode;
-  /** Rendered above the user menu; the onboarding gate passes the organization switcher. */
+  /** Rendered above the user menu; the route layout passes the organization switcher. */
   organizationSwitcher?: ReactNode;
 }) {
   const pathname = usePathname();
@@ -86,34 +43,13 @@ export function TenantShell({
   );
   const sidebar = applicationDesign.navigation === "sidebar";
   const navigation = (
-    <nav
-      aria-label="Domain navigation"
-      className="min-h-0 flex-1 overflow-y-auto"
-      onClick={(event) => {
-        if ((event.target as HTMLElement).closest("a")) setMobileOpen(false);
-      }}
-    >
-      <Link
-        href="/dashboard"
-        aria-current={pathname === "/dashboard" ? "page" : undefined}
-        className={cn(
-          "mb-3 navigation-item",
-          pathname === "/dashboard" && "navigation-active",
-        )}
-      >
-        <LayoutDashboard className="size-4" />
-        Dashboard
-      </Link>
-      <p className="px-3 pb-2 eyebrow text-muted-primary">Domains</p>
-      <TreeView
-        aria-label="Domains and routes"
-        data={domains}
-        expandedIds={expandedIds}
-        onExpandedChange={setExpandedIds}
-        selectedIds={activeRoute ? [activeRoute.id] : []}
-        className="border-0 p-0 shadow-none"
-      />
-    </nav>
+    <TenantNavLinks
+      pathname={pathname}
+      expandedIds={expandedIds}
+      setExpandedIds={setExpandedIds}
+      activeRoute={activeRoute}
+      onNavigate={() => setMobileOpen(false)}
+    />
   );
   return (
     <div
@@ -124,7 +60,7 @@ export function TenantShell({
         }
       }}
       className={cn(
-        "tenant-shell min-h-dvh",
+        "tenant-shell min-h-dvh pb-[calc(3.5rem+env(safe-area-inset-bottom))] md:pb-0",
         sidebar &&
           (collapsed
             ? "md:grid md:grid-cols-[4.5rem_minmax(0,1fr)]"
@@ -188,25 +124,12 @@ export function TenantShell({
         </aside>
       )}
       <div className="min-w-0">
-        <header
-          className={cn(
-            "sticky top-0 z-40 flex min-h-16 items-center justify-between gap-2 border-b bg-background px-4 py-3",
-            sidebar && "md:hidden",
-          )}
-        >
-          <Wordmark compact />
-          <Button
-            ref={menuButtonRef}
-            variant="ghost"
-            size="icon"
-            aria-label={mobileOpen ? "Close navigation" : "Open navigation"}
-            aria-expanded={mobileOpen}
-            aria-controls="mobile-navigation"
-            onClick={() => setMobileOpen(!mobileOpen)}
-          >
-            {mobileOpen ? <X /> : <Menu />}
-          </Button>
-        </header>
+        <TenantHeader
+          sidebar={sidebar}
+          mobileOpen={mobileOpen}
+          setMobileOpen={setMobileOpen}
+          menuButtonRef={menuButtonRef}
+        />
         {mobileOpen && (
           <div
             id="mobile-navigation"
@@ -221,6 +144,8 @@ export function TenantShell({
           </div>
         )}
         <main>{children}</main>
+        <TenantFooter />
+        <TenantMobileBottomNav />
       </div>
     </div>
   );

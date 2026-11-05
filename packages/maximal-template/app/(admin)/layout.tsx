@@ -1,3 +1,5 @@
+import { AdminShell } from "@/components/shells/admin-shell";
+import { PwaAccountMenu } from "@/features/pwa/pwa-account-menu.client";
 import type { ReactNode } from "react";
 
 import { OnboardingGateFeature } from "@/features/onboarding/onboarding-gate-feature";
@@ -13,7 +15,9 @@ export default async function AdminLayout({
 
   return (
     <OnboardingGateFeature>
-      <AdminGateFeature>{children}</AdminGateFeature>
+      <AdminGateFeature>
+        <AdminShell accountMenu={<PwaAccountMenu />}>{children}</AdminShell>
+      </AdminGateFeature>
     </OnboardingGateFeature>
   );
 }

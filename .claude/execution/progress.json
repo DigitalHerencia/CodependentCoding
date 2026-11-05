@@ -3854,5 +3854,21 @@
     ],
     "updated": "2026-11-05T19:53:13.498331+00:00",
     "delivery": "Direct local fast-forward merge to main; all working changes included at owner direction; delivery branch deleted; no PR or remote push."
+  },
+  "route-group-shells": {
+    "status": "complete-local-main",
+    "updated": "2026-11-05T20:19:23.330509+00:00",
+    "scope": "Owner-directed group navigation, shells, layouts and loading/error boundaries in maximal-template. Existing plural components/shells convention retained. Home route moved into public group without URL changes. Root document/global error/not-found unchanged.",
+    "EXECUTED": [
+      "Affected TSX files: node node_modules/prettier/bin/prettier.cjs --write; passed.",
+      "Affected TSX files: node node_modules/eslint/bin/eslint.js --fix --max-warnings=0; passed.",
+      "next typegen; passed.",
+      "tsc --noEmit; passed."
+    ],
+    "tooling_note": "pnpm exec blocked by stale workspace install metadata; direct installed tools used without installation. Windows cmd shims rejected route-group parentheses for formatting/lint; direct Node entrypoints passed.",
+    "NOT_RUN": [
+      "Tests, builds, development servers, dependency installation, migrations, deployment, PR and push."
+    ],
+    "delivery": "Direct local commit on main as requested."
   }
 }

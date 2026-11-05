@@ -1,5 +1,5 @@
 import { PageLoadingState } from "@/components/blocks/shared-blocks";
 
 export default function Loading() {
-  return <PageLoadingState />;
+  return <PageLoadingState label="Loading auth content" />;
 }

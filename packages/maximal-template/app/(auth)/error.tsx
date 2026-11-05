@@ -9,7 +9,7 @@ export default function RouteError({
     <GenericErrorPage
       actions={[
         { label: "Try again", onClick: reset },
-        { label: "Go home", href: "/", variant: "outline" },
+        { label: "Return to auth", href: "/sign-in", variant: "outline" },
       ]}
       className="min-h-[60vh]"
       title="Something went wrong"

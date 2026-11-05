@@ -798,21 +798,24 @@ export function FormLoadingState({
   );
 }
 
-export function PageLoadingState() {
+export function PageLoadingState({
+  label = sharedLibraryCopy.loadingPage,
+}: {
+  label?: string;
+}) {
   return (
-    <div
-      aria-label={sharedLibraryCopy.loadingPage}
-      role="status"
-      className="space-y-6 p-4 md:p-6"
-    >
-      <div className="h-10 w-64 animate-pulse bg-muted" />
+    <div aria-label={label} role="status" className="space-y-6 p-4 md:p-6">
+      <div className="h-10 w-64 bg-muted motion-safe:animate-pulse" />
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {Array.from({ length: 4 }, (_, index) => (
-          <div key={index} className="h-24 animate-pulse bg-muted" />
+          <div
+            key={index}
+            className="h-24 bg-muted motion-safe:animate-pulse"
+          />
         ))}
       </div>
-      <div className="h-80 animate-pulse bg-muted" />
-      <span className="sr-only">{sharedLibraryCopy.loadingPage}</span>
+      <div className="h-80 bg-muted motion-safe:animate-pulse" />
+      <span className="sr-only">{label}</span>
     </div>
   );
 }

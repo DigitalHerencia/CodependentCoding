@@ -1,3 +1,6 @@
+import { TenantShell } from "@/components/shells/tenant-shell";
+import { PwaAccountMenu } from "@/features/pwa/pwa-account-menu.client";
+import { OrganizationSwitcherFeature } from "@/features/settings/organization-switcher-feature";
 import type { ReactNode } from "react";
 
 import { OnboardingGateFeature } from "@/features/onboarding/onboarding-gate-feature";
@@ -10,5 +13,14 @@ export default async function TenantLayout({
   const identity = await getIdentity();
   if (!identity) redirectToSignIn();
 
-  return <OnboardingGateFeature>{children}</OnboardingGateFeature>;
+  return (
+    <OnboardingGateFeature>
+      <TenantShell
+        accountMenu={<PwaAccountMenu />}
+        organizationSwitcher={<OrganizationSwitcherFeature />}
+      >
+        {children}
+      </TenantShell>
+    </OnboardingGateFeature>
+  );
 }

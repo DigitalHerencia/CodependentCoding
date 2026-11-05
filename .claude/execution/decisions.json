@@ -1485,6 +1485,18 @@
         "https://github.com/DigitalHerencia/CodependentCoding/issues/361",
         "packages/README.md"
       ]
+    },
+    {
+      "id": "DEC-116",
+      "date": "2026-11-05",
+      "status": "accepted",
+      "title": "Route layouts own group shells and navigation",
+      "decision": "Owner requested direct local main delivery without push. Keep components/shells convention; onboarding gate checks onboarding only. Tenant/admin layouts own separate shells inside existing access gates. Reuse shared navigation primitives and keep root document/global boundaries unchanged. Home belongs to public group to share its shell and boundaries.",
+      "refs": [
+        "packages/maximal-template/app/(tenant)/layout.tsx",
+        "packages/maximal-template/app/(admin)/layout.tsx",
+        "packages/maximal-template/components/nav"
+      ]
     }
   ]
 }

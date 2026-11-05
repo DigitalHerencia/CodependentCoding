@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/handoff/v1",
-  "updated": "2026-11-05T19:53:13.498331+00:00",
+  "updated": "2026-11-05T20:19:23.330509+00:00",
   "format": "One current package; history is in progress.json, decisions.json and git.",
   "status": "complete-local-main",
   "milestone": "M-S2",
@@ -45,12 +45,11 @@
   ],
   "latest_followup": {
     "status": "complete-local-main",
-    "issue": 361,
-    "spec": "context/specs/issues/CC-079-separate-factory-packages.md",
-    "owner_instruction": "Stop testing; no PR; merge to main with all changes; delete branch.",
-    "checks": "See CC-079 in progress.json for executed evidence and preserved baseline findings.",
+    "package": "route-group-shells",
+    "owner_instruction": "Edit directly on main, commit without push; only format write, lint fix and type generation/check.",
+    "checks": "See route-group-shells in progress.json.",
     "NOT_RUN": [
-      "Additional tests, builds, database jobs, deployment and remote push."
+      "Tests, builds, servers, installation, deployment, PR and push."
     ]
   }
 }
