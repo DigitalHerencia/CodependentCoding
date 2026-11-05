@@ -1,6 +1,6 @@
 "use client";
 
-import { useClerk } from "@clerk/nextjs";
+import { useClerkAccount } from "@/lib/auth/clerkAccount";
 import { LogOut, UserRound } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -22,7 +22,7 @@ async function clearCaches(worker: ServiceWorker | null | undefined) {
 }
 
 export function PwaAccountMenu() {
-  const { openUserProfile, signOut } = useClerk();
+  const { openUserProfile, signOut } = useClerkAccount();
   const safeSignOut = async () => {
     const registration = await navigator.serviceWorker?.getRegistration();
     await clearCaches(
