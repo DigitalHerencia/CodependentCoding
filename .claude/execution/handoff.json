@@ -45,8 +45,8 @@
   ],
   "latest_followup": {
     "status": "complete-local-main",
-    "package": "unused-portal-shell",
-    "owner_instruction": "Delete if unused; commit with no checks, tests or push.",
-    "evidence": "No code consumers found; see progress.json."
+    "package": "public-content-consolidation",
+    "owner_instruction": "Consolidate public content directly on main; commit, no checks, tests, PR or push.",
+    "evidence": "Source edits only; checks intentionally not run. See progress.json."
   }
 }

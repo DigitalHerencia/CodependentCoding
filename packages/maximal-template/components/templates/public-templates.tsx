@@ -1,16 +1,19 @@
 // Why: Templates: pure presentation for the public marketing and legal pages, composed from blocks and content/.
 import { HeroSection } from "@/components/blocks/public-blocks";
 import { FAQAccordion } from "@/components/blocks/public-blocks.client";
-import { faqCopy } from "@/content/faq";
 import Image from "next/image";
 import Link from "next/link";
 import { FeatureContentGrid } from "@/components/blocks/public-blocks";
 import { TestimonialsGrid } from "@/components/blocks/public-blocks.client";
 import { CTASimple } from "@/components/blocks/public-blocks.client";
-import { landingCopy, pipelineCards } from "@/content/landing";
 import { LegalDocumentSection } from "@/components/blocks/public-blocks";
-import { privacyCopy } from "@/content/privacy";
-import { termsCopy } from "@/content/terms";
+import {
+  faqCopy,
+  landingCopy,
+  pipelineCards,
+  privacyCopy,
+  termsCopy,
+} from "@/content/public";
 
 export function FAQPageTemplate() {
   return (
@@ -27,7 +30,13 @@ export function FAQPageTemplate() {
         titleHighlight={faqCopy.titleHighlight}
         className="mt-8"
       />
-      <FAQAccordion items={faqCopy.items} className="mb-20" />
+      <FAQAccordion
+        items={faqCopy.items.map((item) => ({
+          ...item,
+          answer: <span className="whitespace-pre-line">{item.answer}</span>,
+        }))}
+        className="mb-20"
+      />
       <Image
         src="/separator.png"
         alt={faqCopy.separatorAlt}
@@ -52,7 +61,18 @@ export function LandingPageTemplate() {
       <HeroSection.Centered
         title={landingCopy.title}
         titleHighlight={landingCopy.titleHighlight}
-        description={landingCopy.description}
+        description={
+          <>
+            <p>
+              <strong>
+                <em>{landingCopy.description.tagline}</em>
+              </strong>
+            </p>
+            <p className="whitespace-pre-line">
+              {landingCopy.description.lines.join("\n")}
+            </p>
+          </>
+        }
         className="y-space-8 mt-12 mb-12 bg-background text-foreground"
         primaryAction={landingCopy.primaryAction}
         secondaryAction={landingCopy.secondaryAction}
@@ -67,18 +87,25 @@ export function LandingPageTemplate() {
       <FeatureContentGrid
         id="features"
         title={landingCopy.pipelineTitle}
-        items={pipelineCards}
+        items={pipelineCards.map((item) => ({
+          ...item,
+          content: <p>{item.content}</p>,
+        }))}
         className="scroll-mt-20 bg-background py-16 text-foreground md:py-24"
       />
       <TestimonialsGrid
         title={landingCopy.testimonialsTitle}
         className="border-y border-foreground/20 bg-primary/10 py-16 text-foreground md:py-24"
         cardClassName="bg-background text-foreground [&_svg]:text-foreground"
-        testimonials={landingCopy.testimonials}
+        testimonials={[...landingCopy.testimonials]}
       />
       <CTASimple
-        title={landingCopy.ctaTitle}
-        description={landingCopy.ctaDescription}
+        title={
+          <span className="whitespace-pre-line">{landingCopy.ctaTitle}</span>
+        }
+        description={
+          <span className="whitespace-pre-line">{landingCopy.ctaDescription}</span>
+        }
         className="bg-background py-38 text-foreground"
         primaryAction={landingCopy.primaryAction}
         secondaryAction={landingCopy.secondaryAction}
@@ -134,7 +161,14 @@ export function PrivacyPageTemplate() {
         titleHighlight={privacyCopy.titleHighlight}
         className="mt-8"
       />
-      <LegalDocumentSection {...privacyCopy} />
+      <LegalDocumentSection
+        {...privacyCopy}
+        introduction={<p>{privacyCopy.introduction}</p>}
+        sections={privacyCopy.sections.map((section) => ({
+          ...section,
+          content: <p>{section.content}</p>,
+        }))}
+      />
       <Image
         src="/separator.png"
         alt={privacyCopy.separatorAlt}
@@ -161,7 +195,14 @@ export function TermsPageTemplate() {
         titleHighlight={termsCopy.titleHighlight}
         className="mt-8"
       />
-      <LegalDocumentSection {...termsCopy} />
+      <LegalDocumentSection
+        {...termsCopy}
+        introduction={<p>{termsCopy.introduction}</p>}
+        sections={termsCopy.sections.map((section) => ({
+          ...section,
+          content: <p>{section.content}</p>,
+        }))}
+      />
       <Image
         src="/separator.png"
         alt={termsCopy.separatorAlt}

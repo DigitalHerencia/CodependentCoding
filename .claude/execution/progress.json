@@ -3881,5 +3881,16 @@
     "NOT_RUN": [
       "Checks, formatting, lint, type generation/check, tests, builds and push, as requested."
     ]
+  },
+  "public-content-consolidation": {
+    "status": "complete-local-main",
+    "updated": "2026-11-05T20:30:30.344943+00:00",
+    "scope": "Consolidate FAQ, terms, privacy policy and landing JSX content into plain data in maximal-template/content/public.ts. Preserve copy and render presentation in the consuming templates.",
+    "EXECUTED": [
+      "Inspected source content and its public-template consumers; updated imports and rendering."
+    ],
+    "NOT_RUN": [
+      "All checks, formatting, lint, type generation/check, tests, builds and push, per owner instruction."
+    ]
   }
 }

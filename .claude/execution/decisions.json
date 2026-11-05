@@ -1504,6 +1504,13 @@
       "status": "accepted",
       "title": "Remove unused portal presentation shell",
       "decision": "Owner requested deletion and local commit if PortalShell has no consumers. Repository search found none; remove the component and its current design inventories while preserving portal functionality and historical records. No checks or push."
+    },
+    {
+      "id": "DEC-118",
+      "date": "2026-11-05",
+      "status": "accepted",
+      "title": "Public copy is plain TypeScript data",
+      "decision": "Owner requested aggregating template FAQ, terms, policy and landing copy in content/public.ts. Preserve wording and operator interpolation; move JSX presentation to the consuming public templates. Deliver directly on main without checks, tests, PR or push."
     }
   ]
 }
