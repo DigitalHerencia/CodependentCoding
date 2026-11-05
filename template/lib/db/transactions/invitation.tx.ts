@@ -16,7 +16,7 @@ export function hashInvitationToken(token: string): string {
 
 /**
  * Accepts a pending invitation for `userId`: marks it ACCEPTED and creates the
- * membership, or reactivates a suspended one. An active membership keeps its
+ * membership. Inactive memberships require administrator action. An active membership keeps its
  * role. Idempotent: accepting again returns the same membership.
  */
 export async function acceptInvitationTx(
@@ -39,18 +39,16 @@ export async function acceptInvitationTx(
       return { membershipId: existing.id, organizationId };
     throw new ResourceNotFoundError("Invitation");
   }
-  const membership = existing
-    ? existing.status === "ACTIVE"
-      ? existing
-      : await tx.membership.update({
-          where: { id: existing.id },
-          data: { status: "ACTIVE", role: invitation.role },
-          select: { id: true },
-        })
-    : await tx.membership.create({
-        data: { organizationId, userId, role: invitation.role },
-        select: { id: true },
-      });
+  if (existing && existing.status !== "ACTIVE")
+    throw new ResourceNotFoundError("Invitation");
+
+  const membership =
+    existing ??
+    (await tx.membership.create({
+      data: { organizationId, userId, role: invitation.role },
+      select: { id: true },
+    }));
+
   await tx.auditEvent.create({
     data: {
       organizationId,

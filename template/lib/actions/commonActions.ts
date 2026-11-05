@@ -159,10 +159,14 @@ export async function acceptInvitation(
   rawInput: unknown,
 ): Promise<ActionResult<{ organizationId: string }>> {
   return toActionResult(async () => {
-    const { token } = acceptInvitationSchema.parse(rawInput);
     const joined = await withIdentityTransaction(async (tx, user) => {
+      const { token } = acceptInvitationSchema.parse(rawInput);
+      if (!user.email) throw new ResourceNotFoundError("Invitation");
       const invitation = await tx.invitation.findUnique({
-        where: { tokenHash: hashInvitationToken(token) },
+        where: {
+          tokenHash: hashInvitationToken(token),
+          email: user.email.toLowerCase(),
+        },
         select: {
           id: true,
           organizationId: true,
