@@ -1525,6 +1525,13 @@
       "status": "accepted",
       "title": "Retain application runtime module configuration and error reporting",
       "decision": "lib/modules belongs to the generated application because navigation, dashboards, authorization and admin records consume its registry. Integration status belongs with that registry in lib/modules/status.ts. Action failures consume reportError; relocate it to server-only lib/utils/reportError.ts. Preserve behavior, sanitization and correlation IDs. Owner requests local main commit without push and only formatting, lint fix and type generation/check."
+    },
+    {
+      "id": "DEC-121",
+      "date": "2026-11-05",
+      "status": "accepted",
+      "title": "Consolidate used CRM pipeline calculation",
+      "decision": "Keep CRM business logic in existing crmWorkflows.ts; move fixed-point parsing/formatting to existing money.ts with an explicit scale. Preserve arithmetic and update consumers while removing the nested workflows/crm directory. Owner requires local main commit with only formatting, lint fix and type generation/check; no tests, builds or push."
     }
   ]
 }

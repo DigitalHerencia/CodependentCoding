@@ -45,8 +45,8 @@
   ],
   "latest_followup": {
     "status": "complete-local-main",
-    "package": "runtime-module-status-reporting",
-    "owner_instruction": "Determine runtime ownership; relocate status and used reporter; commit on main, no push. Only format/lint fix/typegen/check.",
-    "evidence": "See runtime-module-status-reporting in progress.json."
+    "package": "crm-pipeline-consolidation",
+    "owner_instruction": "Consolidate needed pipeline logic, remove workflows/crm; commit on main without push. Only format/lint fix/typegen/check.",
+    "evidence": "See crm-pipeline-consolidation in progress.json."
   }
 }

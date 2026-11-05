@@ -3921,5 +3921,18 @@
     "NOT_RUN": [
       "Tests, builds, servers, database jobs and push."
     ]
+  },
+  "crm-pipeline-consolidation": {
+    "status": "complete-local-main",
+    "updated": "2026-11-05T21:15:21.548796+00:00",
+    "scope": "Pipeline calculation is used, not duplicated. Move decimal conversion helpers into lib/utils/money.ts and CRM calculation into existing crmWorkflows.ts. Remove workflows/crm directory and update existing test import without running tests. Preserve six-place exact bigint weighting and lost-deal exclusion.",
+    "EXECUTED": [
+      "Affected money utility, CRM workflow and test import: Prettier --write; passed.",
+      "Affected files: ESLint --fix --max-warnings=0; passed.",
+      "Template next typegen and tsc --noEmit; passed."
+    ],
+    "NOT_RUN": [
+      "Tests, builds, servers, database jobs and push."
+    ]
   }
 }

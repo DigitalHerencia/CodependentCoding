@@ -126,7 +126,7 @@ test("CRM pipeline renders opportunity stages and value without a generic table 
 
 test("pipeline value weights open deals by probability with exact decimals and skips lost deals", async () => {
   const { calculatePipelineValue } =
-    await import("@/lib/workflows/crm/calculatePipelineValue");
+    await import("@/lib/workflows/crmWorkflows");
   assert.equal(
     calculatePipelineValue([
       { value: "1000.0000", probability: 50, stage: "PROPOSAL" },

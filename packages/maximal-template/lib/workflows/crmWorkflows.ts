@@ -9,7 +9,11 @@ import {
   getContacts,
 } from "@/lib/fetchers/crmFetchers";
 
-import { calculatePipelineValue } from "@/lib/workflows/crm/calculatePipelineValue";
+import { decimalToUnits, unitsToDecimal } from "@/lib/utils/money";
+import type { CrmDealSummaryDTO } from "@/types/crmTypes";
+
+// Decimal(19, 4) deal values weighted by whole percentages need six places.
+const PIPELINE_SCALE = 6;
 
 export async function getCrmWorkspaceWorkflow(limit = 100) {
   const [deals, contacts] = await Promise.all([
@@ -58,4 +62,22 @@ export async function calculateSalesVelocityWorkflow(
     (periodEnd.getTime() - periodStart.getTime()) / 86_400_000,
   );
   return (Number(closedWonValue) / days).toFixed(4);
+}
+
+export function calculatePipelineValue(
+  deals: ReadonlyArray<
+    Pick<CrmDealSummaryDTO, "value" | "probability" | "stage">
+  >,
+) {
+  const total = deals.reduce(
+    (sum, deal) =>
+      deal.stage === "LOST"
+        ? sum
+        : sum +
+          (decimalToUnits(deal.value, PIPELINE_SCALE) *
+            BigInt(deal.probability)) /
+            100n,
+    0n,
+  );
+  return unitsToDecimal(total, PIPELINE_SCALE);
 }
