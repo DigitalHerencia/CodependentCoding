@@ -35,6 +35,6 @@
     "gradient-string": "3.0.0"
   },
   "devDependencies": {
-    "tsdown": "0.23.2"
+    "tsdown": "0.23.3"
   }
 }
