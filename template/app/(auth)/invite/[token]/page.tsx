@@ -1,3 +1,4 @@
+import { OnboardingAccessFeature } from "@/features/onboarding/onboardingAccessFeature";
 import { InvitationAcceptForm } from "@/features/onboarding/invitationAcceptForm";
 
 export default async function Page({
@@ -5,5 +6,9 @@ export default async function Page({
 }: {
   params: Promise<{ token: string }>;
 }) {
-  return <InvitationAcceptForm token={(await params).token} />;
+  return (
+    <OnboardingAccessFeature>
+      <InvitationAcceptForm token={(await params).token} />
+    </OnboardingAccessFeature>
+  );
 }
