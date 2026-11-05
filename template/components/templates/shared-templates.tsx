@@ -1,3 +1,5 @@
+import { sharedRemainingCopy } from "@/content/shared";
+import { sharedPresentationCopy } from "@/content/shared";
 // Why: Templates: pure presentation for the base pages every app has (dashboard, members, integrations, onboarding, profile).
 import Link from "next/link";
 import type { OrganizationDTO } from "@/types/commonTypes";
@@ -6,10 +8,10 @@ import {
   DashboardLayout,
   DashboardPanel,
   DashboardTable,
-} from "@/components/blocks/dashboard-layout";
+} from "@/components/blocks/shared-blocks";
 import type { IntegrationStatus } from "@/types/integrationTypes";
 import type { ReactNode } from "react";
-import { OnboardingFlow } from "@/components/blocks/onboarding-flow";
+import { AuthFormPanel } from "@/components/blocks/auth-blocks";
 
 export function SharedDashboardTemplate({
   organization,
@@ -21,7 +23,7 @@ export function SharedDashboardTemplate({
   return (
     <DashboardLayout title={organization.name} nav={[]}>
       <div className="grid gap-5 lg:grid-cols-[2fr_1fr]">
-        <DashboardPanel title="Workspaces">
+        <DashboardPanel title={sharedPresentationCopy.workspaces}>
           <nav className="grid gap-3 sm:grid-cols-2">
             {workspaces.map((item) => (
               <Link
@@ -35,15 +37,21 @@ export function SharedDashboardTemplate({
             ))}
           </nav>
         </DashboardPanel>
-        <DashboardPanel title="Your workspace">
-          <p>{organization.memberCount} members</p>
-          <p className="mt-3">Time zone: {organization.timezone}</p>
+        <DashboardPanel title={sharedPresentationCopy.yourWorkspace}>
+          <p>
+            {organization.memberCount}
+            {sharedPresentationCopy.members}
+          </p>
+          <p className="mt-3">
+            {sharedPresentationCopy.timeZone}
+            {organization.timezone}
+          </p>
           <nav className="mt-6 flex flex-col gap-4">
             <Link className="type-link" href="/settings/profile">
-              Workspace preferences
+              {sharedPresentationCopy.workspacePreferences}
             </Link>
             <Link className="type-link" href="/settings/integrations">
-              Integration configuration
+              {sharedPresentationCopy.integrationConfiguration}
             </Link>
           </nav>
         </DashboardPanel>
@@ -58,10 +66,14 @@ export function SharedIntegrationsTemplate({
   integrations: IntegrationStatus[];
 }) {
   return (
-    <DashboardLayout title="Integration configuration" nav={[]}>
+    <DashboardLayout
+      title={sharedPresentationCopy.integrationConfiguration}
+      nav={[]}
+    >
       <p>
-        Configuration presence only. These checks do not contact providers or
-        verify connectivity.
+        {
+          sharedPresentationCopy.configurationPresenceOnlyTheseChecksDoNotContactProviders
+        }
       </p>
       <div className="grid gap-4 md:grid-cols-2">
         {integrations.map((integration) => (
@@ -73,8 +85,8 @@ export function SharedIntegrationsTemplate({
             <p>{integration.purpose}</p>
             <p>
               {integration.state === "CONFIGURED"
-                ? "Required configuration present"
-                : `Configuration missing (${integration.mode})`}
+                ? sharedPresentationCopy.requiredConfigurationPresent
+                : sharedRemainingCopy.configurationMissing(integration.mode)}
             </p>
           </article>
         ))}
@@ -89,12 +101,12 @@ export function SharedMembersTemplate({
   members: { id: string; name: string; role: string; status: string }[];
 }) {
   return (
-    <DashboardLayout title="Workspace directory" nav={[]}>
+    <DashboardLayout title={sharedPresentationCopy.workspaceDirectory} nav={[]}>
       <DashboardTable
         columns={[
-          { key: "name", label: "Member" },
-          { key: "role", label: "Role" },
-          { key: "status", label: "Access" },
+          { key: "name", label: sharedPresentationCopy.member },
+          { key: "role", label: sharedPresentationCopy.role },
+          { key: "status", label: sharedPresentationCopy.access },
         ]}
         rows={members.map((member) => ({
           id: member.id,
@@ -109,21 +121,19 @@ export function SharedMembersTemplate({
   );
 }
 
-const nav = [
-  { label: "Workspace", active: true },
-  { label: "Goals" },
-  { label: "Complete" },
-] as const;
-
 export function SharedOnboardingTemplate({
-  clientIsland,
+  title,
+  description,
+  children,
 }: {
-  clientIsland?: ReactNode;
+  title: string;
+  description: string;
+  children?: ReactNode;
 }) {
   return (
-    <DashboardLayout nav={nav} title="Onboarding">
-      {clientIsland ?? <OnboardingFlow.WorkspaceSetup />}
-    </DashboardLayout>
+    <AuthFormPanel title={title} description={description}>
+      {children}
+    </AuthFormPanel>
   );
 }
 
@@ -135,14 +145,19 @@ export function SharedProfileSettingsTemplate({
   children: ReactNode;
 }) {
   return (
-    <DashboardLayout title="Workspace settings" nav={[]}>
+    <DashboardLayout title={sharedPresentationCopy.workspaceSettings} nav={[]}>
       <div className="grid gap-5 lg:grid-cols-[1fr_2fr]">
-        <DashboardPanel title="Workspace">
+        <DashboardPanel title={sharedPresentationCopy.workspace}>
           <h2 className="type-title">{organization.name}</h2>
           <p className="mt-3">{organization.slug}</p>
-          <p>{organization.memberCount} members</p>
+          <p>
+            {organization.memberCount}
+            {sharedPresentationCopy.members}
+          </p>
         </DashboardPanel>
-        <DashboardPanel title="Regional preferences">{children}</DashboardPanel>
+        <DashboardPanel title={sharedPresentationCopy.regionalPreferences}>
+          {children}
+        </DashboardPanel>
       </div>
     </DashboardLayout>
   );

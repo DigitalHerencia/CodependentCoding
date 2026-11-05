@@ -1,3 +1,5 @@
+import { supportRemainingCopy } from "@/content/support";
+import { supportPresentationCopy } from "@/content/support";
 // Why: Templates: pure presentation for the support pages, laid out from DTOs; data and slots come from features.
 import type {
   SupportTicketDTO,
@@ -7,7 +9,7 @@ import {
   DashboardLayout,
   DashboardPanel,
   DashboardTable,
-} from "@/components/blocks/dashboard-layout";
+} from "@/components/blocks/shared-blocks";
 import Link from "next/link";
 import type { ReactNode } from "react";
 
@@ -17,18 +19,25 @@ export function SupportAnalyticsTemplate({
   tickets: SupportTicketDTO[];
 }) {
   return (
-    <DashboardLayout title="Support queue analysis" nav={[]}>
+    <DashboardLayout
+      title={supportPresentationCopy.supportQueueAnalysis}
+      nav={[]}
+    >
       <p>
-        Current non-closed queue, limited to {tickets.length} loaded tickets.
-        This is a queue snapshot, not historical response-time reporting.
+        {supportPresentationCopy.currentNonClosedQueueLimitedTo}
+        {tickets.length}
+        {supportPresentationCopy.loadedTicketsThisIsAQueueSnapshotNotHistorical}
       </p>
-      <DashboardPanel title="Workload by priority">
+      <DashboardPanel title={supportPresentationCopy.workloadByPriority}>
         <DashboardTable
           columns={[
-            { key: "priority", label: "Priority" },
-            { key: "count", label: "Tickets" },
-            { key: "unassigned", label: "Unassigned" },
-            { key: "waiting", label: "Waiting on customer" },
+            { key: "priority", label: supportPresentationCopy.priority },
+            { key: "count", label: supportPresentationCopy.tickets },
+            { key: "unassigned", label: supportPresentationCopy.unassigned },
+            {
+              key: "waiting",
+              label: supportPresentationCopy.waitingOnCustomer,
+            },
           ]}
           rows={["LOW", "NORMAL", "HIGH", "URGENT"].map((priority) => {
             const group = tickets.filter(
@@ -60,9 +69,15 @@ export function SupportInboxTemplate({
   toolbar: ReactNode;
 }) {
   return (
-    <DashboardLayout title="Support inbox" nav={[]} toolbar={toolbar}>
+    <DashboardLayout
+      title={supportPresentationCopy.supportInbox}
+      nav={[]}
+      toolbar={toolbar}
+    >
       <p className="text-muted-primary">
-        Open conversations ordered by priority. Showing up to 100 tickets.
+        {
+          supportPresentationCopy.openConversationsOrderedByPriorityShowingUpTo100
+        }
       </p>
       <div className="divide-y divide-border border border-border">
         {tickets.map((ticket) => (
@@ -72,7 +87,10 @@ export function SupportInboxTemplate({
             className="grid gap-3 p-4 hover:bg-primary/10 md:grid-cols-[8rem_1fr_14rem]"
           >
             <div>
-              <p className="type-label">#{ticket.number}</p>
+              <p className="type-label">
+                {supportPresentationCopy.numberPrefix}
+                {ticket.number}
+              </p>
               <p>{ticket.priority}</p>
             </div>
             <div>
@@ -80,25 +98,30 @@ export function SupportInboxTemplate({
               <p className="mt-1 text-muted-primary">
                 {ticket.requester?.displayName ??
                   ticket.requester?.email ??
-                  "Requester"}{" "}
-                · {ticket.messageCount} messages
+                  supportPresentationCopy.requester}{" "}
+                {supportPresentationCopy.separator}
+                {ticket.messageCount}
+                {supportPresentationCopy.messages}
               </p>
             </div>
             <div>
               <p>{ticket.status.replaceAll("_", " ")}</p>
               <p className="text-sm">
-                {ticket.assignee?.displayName ?? "Unassigned"}
+                {ticket.assignee?.displayName ??
+                  supportPresentationCopy.unassigned}
               </p>
               <p className="text-sm">
-                Response due:{" "}
+                {supportPresentationCopy.responseDue}{" "}
                 {ticket.firstResponseDueAt?.slice(0, 16).replace("T", " ") ??
-                  "Not set"}
+                  supportPresentationCopy.notSet}
               </p>
             </div>
           </Link>
         ))}
       </div>
-      {!tickets.length && <p>No matching open tickets.</p>}
+      {!tickets.length && (
+        <p>{supportPresentationCopy.noMatchingOpenTickets}</p>
+      )}
     </DashboardLayout>
   );
 }
@@ -111,16 +134,19 @@ export function SupportKnowledgeArticleTemplate({
   return (
     <article className="mx-auto max-w-4xl space-y-6 p-5">
       <Link className="type-link" href="/support/knowledge-base">
-        Knowledge base
+        {supportPresentationCopy.knowledgeBase}
       </Link>
       <header className="space-y-3 border-b border-border pb-5">
         <h1 className="type-title">{article.title}</h1>
-        <p>Updated {article.updatedAt.slice(0, 10)}</p>
+        <p>
+          {supportPresentationCopy.updated}
+          {article.updatedAt.slice(0, 10)}
+        </p>
         <Link
           className="type-link"
           href={`/support/knowledge-base/${article.id}/edit`}
         >
-          Edit article
+          {supportPresentationCopy.editArticle}
         </Link>
       </header>
       <div className="reading-copy whitespace-pre-wrap">{article.body}</div>
@@ -136,7 +162,11 @@ export function SupportKnowledgeBaseTemplate({
   toolbar: ReactNode;
 }) {
   return (
-    <DashboardLayout title="Knowledge base" nav={[]} toolbar={toolbar}>
+    <DashboardLayout
+      title={supportPresentationCopy.knowledgeBase}
+      nav={[]}
+      toolbar={toolbar}
+    >
       <div className="grid gap-4 md:grid-cols-2">
         {articles.map((article) => (
           <article key={article.id} className="space-y-3 surface-card p-5">
@@ -149,11 +179,14 @@ export function SupportKnowledgeBaseTemplate({
             <p className="line-clamp-3 whitespace-pre-wrap text-muted-primary">
               {article.body}
             </p>
-            <p className="text-xs">Updated {article.updatedAt.slice(0, 10)}</p>
+            <p className="text-xs">
+              {supportPresentationCopy.updated}
+              {article.updatedAt.slice(0, 10)}
+            </p>
           </article>
         ))}
       </div>
-      {!articles.length && <p>No matching articles.</p>}
+      {!articles.length && <p>{supportPresentationCopy.noMatchingArticles}</p>}
     </DashboardLayout>
   );
 }
@@ -174,11 +207,14 @@ export function SupportTicketTemplate({
   children: ReactNode;
 }) {
   return (
-    <DashboardLayout title={`#${ticket.number} · ${ticket.subject}`} nav={[]}>
+    <DashboardLayout
+      title={supportRemainingCopy.ticketTitle(ticket.number, ticket.subject)}
+      nav={[]}
+    >
       <div className="grid gap-4 lg:grid-cols-[2fr_1fr]">
-        <DashboardPanel title="Conversation">
+        <DashboardPanel title={supportPresentationCopy.conversation}>
           <p className="border-b border-border pb-5 whitespace-pre-wrap">
-            {ticket.description ?? "No opening description."}
+            {ticket.description ?? supportPresentationCopy.noOpeningDescription}
           </p>
           <ol className="space-y-4 py-5">
             {messages.map((message) => (
@@ -196,22 +232,25 @@ export function SupportTicketTemplate({
           </ol>
           {children}
         </DashboardPanel>
-        <DashboardPanel title="Triage">
+        <DashboardPanel title={supportPresentationCopy.triage}>
           <dl className="space-y-2">
-            <dt>Requester</dt>
+            <dt>{supportPresentationCopy.requester}</dt>
             <dd>
               {ticket.requester?.displayName ??
                 ticket.requester?.email ??
-                "Unknown"}
+                supportPresentationCopy.unknown}
             </dd>
-            <dt>Assignee</dt>
-            <dd>{ticket.assignee?.displayName ?? "Unassigned"}</dd>
-            <dt>Priority</dt>
+            <dt>{supportPresentationCopy.assignee}</dt>
+            <dd>
+              {ticket.assignee?.displayName ??
+                supportPresentationCopy.unassigned}
+            </dd>
+            <dt>{supportPresentationCopy.priority}</dt>
             <dd>{ticket.priority}</dd>
-            <dt>Status</dt>
+            <dt>{supportPresentationCopy.status}</dt>
             <dd>{ticket.status}</dd>
-            <dt>Resolution due</dt>
-            <dd>{ticket.resolutionDueAt ?? "Not set"}</dd>
+            <dt>{supportPresentationCopy.resolutionDue}</dt>
+            <dd>{ticket.resolutionDueAt ?? supportPresentationCopy.notSet}</dd>
           </dl>
         </DashboardPanel>
       </div>

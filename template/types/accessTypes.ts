@@ -7,27 +7,27 @@ export type AppRole = (typeof appRoles)[number];
 export type Permission = ModulePermission;
 
 /** Clerk establishes user identity only. Application tenancy is resolved locally. */
-export interface AuthenticatedIdentity {
+export type AuthenticatedIdentity = {
   clerkUserId: string;
-}
+};
 
-export interface AuthenticatedSession {
+export type AuthenticatedSession = {
   clerkUserId: string;
   clerkSessionId: string;
-}
+};
 
-export interface CurrentSessionContext {
+export type CurrentSessionContext = {
   isAuthenticated: boolean;
   clerkUserId: string | null;
   clerkSessionId: string | null;
-}
+};
 
-export interface CurrentUserProfile {
+export type CurrentUserProfile = {
   clerkUserId: string;
   displayName: string | null;
   primaryEmailAddress: string | null;
   imageUrl: string;
-}
+};
 
 export interface AccessContext extends AuthenticatedIdentity {
   userId: string;
@@ -39,11 +39,11 @@ export interface AccessContext extends AuthenticatedIdentity {
 /** A base resource (`base.organization`) or one a module declares in `permissions.resources`. */
 export type ResourceKind = `${string}.${string}`;
 
-export interface ResourceAccessDescriptor {
+export type ResourceAccessDescriptor = {
   kind: ResourceKind;
   organizationId: string;
   ownerMembershipId?: string | null;
   assigneeMembershipId?: string | null;
   requesterUserId?: string | null;
   clientVisible?: boolean;
-}
+};

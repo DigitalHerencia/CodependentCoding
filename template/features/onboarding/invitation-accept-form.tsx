@@ -1,35 +1,50 @@
 "use client";
-import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import type { z } from "zod";
 import { acceptInvitation } from "@/lib/actions/commonActions";
+import { acceptInvitationSchema } from "@/schema/commonSchemas";
+import { onboardingPresentationCopy } from "@/content/onboarding";
+import { formResultCopy } from "@/content/application";
 import { Button } from "@/components/ui/button";
-
+import { FieldError } from "@/components/ui/field";
 export function InvitationAcceptForm({ token }: { token: string }) {
   const router = useRouter();
-  const [pending, startTransition] = useTransition();
-  const [error, setError] = useState("");
+  const form = useForm<z.input<typeof acceptInvitationSchema>>({
+    resolver: zodResolver(acceptInvitationSchema),
+    defaultValues: { token },
+  });
   return (
     <form
       className="mx-auto max-w-lg space-y-4 surface-card p-5"
-      action={() =>
-        startTransition(async () => {
-          const result = await acceptInvitation({ token });
+      onSubmit={form.handleSubmit(async (values) => {
+        try {
+          const result = await acceptInvitation(values);
           if (!result.ok) {
-            setError(
-              "This invitation is not valid for your account. It may have expired, been revoked, or been sent to a different email.",
-            );
+            form.setError("root", {
+              message:
+                onboardingPresentationCopy.thisInvitationIsNotValidForYourAccountIt,
+            });
             return;
           }
           router.push("/dashboard");
           router.refresh();
-        })
-      }
+        } catch {
+          form.setError("root", { message: formResultCopy.failed });
+        }
+      })}
+      noValidate
     >
-      <h1 className="type-title">Join the workspace</h1>
-      <p>You were invited to a workspace. Accept to join it.</p>
-      {error && <p role="alert">{error}</p>}
-      <Button type="submit" disabled={pending}>
-        Accept invitation
+      <h1 className="type-title">
+        {onboardingPresentationCopy.joinTheWorkspace}
+      </h1>
+      <p>{onboardingPresentationCopy.youWereInvitedToAWorkspaceAcceptToJoin}</p>
+      {form.formState.errors.root && (
+        <FieldError>{form.formState.errors.root.message}</FieldError>
+      )}
+      <Button type="submit" disabled={form.formState.isSubmitting}>
+        {onboardingPresentationCopy.acceptInvitation}
       </Button>
     </form>
   );

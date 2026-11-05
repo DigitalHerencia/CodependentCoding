@@ -1,3 +1,4 @@
+import { persistedReadLimitSchema } from "@/schema/commonSchemas";
 import "server-only";
 
 import { Prisma } from "@/generated/prisma/client";
@@ -13,9 +14,10 @@ export async function assertAiReadAccess() {
   });
 }
 
-export async function getMyAiGenerations(limit = 50) {
+export async function getMyAiGenerations(rawLimit: unknown = 50) {
   return withAuthenticatedRead(async (tx, access) => {
     assertPermission(access, "ai.generation:read");
+    const limit = persistedReadLimitSchema.parse(rawLimit);
 
     const rows = await tx.aiGeneration.findMany({
       where: {

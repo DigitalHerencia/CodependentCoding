@@ -1,4 +1,5 @@
 "use client";
+import { socialPresentationCopy } from "@/content/social";
 import { MediaAssetControlsBlock } from "@/components/blocks/social-blocks";
 import { useState, useTransition } from "react";
 import { downloadSocialMedia } from "@/lib/actions/socialActions";
@@ -20,7 +21,12 @@ export function MediaAssetControls({ asset }: { asset: MediaAssetDTO }) {
       onOpen={() =>
         startTransition(async () => {
           try {
-            const file = await downloadSocialMedia(asset.id);
+            const result = await downloadSocialMedia(asset.id);
+            if (!result.ok) {
+              setMessage(result.error.message);
+              return;
+            }
+            const file = result.data;
             if (canPreview) {
               setPreview(`data:${asset.contentType};base64,${file.base64}`);
             } else {
@@ -40,7 +46,7 @@ export function MediaAssetControls({ asset }: { asset: MediaAssetDTO }) {
             }
           } catch {
             setMessage(
-              "File unavailable. Check storage configuration or download size (maximum 10 MB).",
+              socialPresentationCopy.fileUnavailableCheckStorageConfigurationOrDownloadSizeMaximum,
             );
           }
         })

@@ -1,4 +1,5 @@
 "use client";
+import { portalPresentationCopy } from "@/content/portal";
 import { PortalDocumentControlsBlock } from "@/components/blocks/portal-blocks";
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
@@ -26,9 +27,14 @@ export function PortalDocumentControls({
       onDownload={() =>
         startTransition(async () => {
           try {
-            const file = await downloadPortalDocument({
+            const result = await downloadPortalDocument({
               documentId: document.id,
             });
+            if (!result.ok) {
+              setMessage(result.error.message);
+              return;
+            }
+            const file = result.data;
             const bytes = Uint8Array.from(atob(file.base64), (character) =>
               character.charCodeAt(0),
             );
@@ -41,7 +47,7 @@ export function PortalDocumentControls({
             setTimeout(() => URL.revokeObjectURL(url), 1000);
           } catch {
             setMessage(
-              "Download failed. Check file availability, storage configuration, and permissions. Downloads are limited to 10 MB.",
+              portalPresentationCopy.downloadFailedCheckFileAvailabilityStorageConfigurationAndPermissions,
             );
           }
         })
@@ -49,15 +55,23 @@ export function PortalDocumentControls({
       onShare={() =>
         startTransition(async () => {
           try {
-            await sharePortalDocument({
-              documentId: document.id,
-              expectedVersion: document.version,
-            });
-            setMessage("Document shared with workspace clients.");
+            {
+              const result = await sharePortalDocument({
+                documentId: document.id,
+                expectedVersion: document.version,
+              });
+              if (!result.ok) {
+                setMessage(result.error.message);
+                return;
+              }
+            }
+            setMessage(
+              portalPresentationCopy.documentSharedWithWorkspaceClients,
+            );
             router.refresh();
           } catch {
             setMessage(
-              "Document could not be shared. Check access or reload the latest version.",
+              portalPresentationCopy.documentCouldNotBeSharedCheckAccessOrReload,
             );
           }
         })

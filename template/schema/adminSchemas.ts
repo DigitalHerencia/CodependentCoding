@@ -24,3 +24,9 @@ export const adminBulkOperationSchema = z.array(
     updateAdminMembershipStatusSchema.extend({ kind: z.literal("restore") }),
   ]),
 );
+
+export const adminListCriteriaSchema = z.object({
+  page: z.coerce.number().int().min(1).max(1000000).default(1),
+  query: z.string().trim().max(200).default(""),
+});
+export const adminUserIdSchema = z.string().trim().min(1).max(200);

@@ -1,13 +1,13 @@
 import type { SubscriptionStatus } from "@/generated/prisma/enums";
 
-export interface BillingSubscriptionDTO {
+export type BillingSubscriptionDTO = {
   planKey: string;
   status: string;
   currentPeriodEnd: string | null;
   cancelAtPeriodEnd: boolean;
-}
+};
 
-export interface BillingProviderStateDTO {
+export type BillingProviderStateDTO = {
   id: string;
   organizationId: string;
   provider: string;
@@ -19,9 +19,9 @@ export interface BillingProviderStateDTO {
   cancelAtPeriodEnd: boolean;
   createdAt: string;
   updatedAt: string;
-}
+};
 
-export interface ReconcileBillingProviderStateCommand {
+export type ReconcileBillingProviderStateCommand = {
   provider: string;
   providerCustomerId?: string | null;
   providerSubscriptionId?: string | null;
@@ -29,4 +29,4 @@ export interface ReconcileBillingProviderStateCommand {
   status: SubscriptionStatus;
   currentPeriodEnd?: Date | null;
   cancelAtPeriodEnd: boolean;
-}
+};

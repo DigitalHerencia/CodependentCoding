@@ -1,5 +1,5 @@
 "use client";
-import { GenericErrorPage } from "@/components/blocks/error-pages";
+import { GenericErrorPage } from "@/components/blocks/shared-blocks.client";
 
 // Route-group errors need a client boundary; recovery presentation remains a block.
 export default function RouteError({

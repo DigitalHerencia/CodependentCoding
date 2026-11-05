@@ -1,8 +1,9 @@
+import { projectsPresentationCopy } from "@/content/projects";
 // Why: Server feature: loads the project workspace and picks the upcoming open work.
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ProjectDetailTemplate } from "@/components/templates/projects-templates";
-import { DashboardPanel } from "@/components/blocks/dashboard-layout";
+import { DashboardPanel } from "@/components/blocks/shared-blocks";
 import { getProjectWorkspaceWorkflow } from "@/lib/workflows/projectsWorkflows";
 export async function ProjectFeature({ projectId }: { projectId: string }) {
   const workspace = await getProjectWorkspaceWorkflow(projectId);
@@ -15,7 +16,7 @@ export async function ProjectFeature({ projectId }: { projectId: string }) {
     );
   return (
     <ProjectDetailTemplate project={project} tasks={tasks}>
-      <DashboardPanel title="Upcoming work">
+      <DashboardPanel title={projectsPresentationCopy.upcomingWork}>
         <ol className="space-y-3">
           {open.slice(0, 8).map((task) => (
             <li
@@ -29,12 +30,17 @@ export async function ProjectFeature({ projectId }: { projectId: string }) {
                 {task.title}
               </Link>
               <span>
-                {task.dueAt?.slice(0, 10) ?? "Unscheduled"} · {task.status}
+                {task.dueAt?.slice(0, 10) ??
+                  projectsPresentationCopy.unscheduled}
+                {projectsPresentationCopy.separator}
+                {task.status}
               </span>
             </li>
           ))}
         </ol>
-        {!open.length && <p>No open tasks in the loaded project work.</p>}
+        {!open.length && (
+          <p>{projectsPresentationCopy.noOpenTasksInTheLoadedProjectWork}</p>
+        )}
       </DashboardPanel>
     </ProjectDetailTemplate>
   );

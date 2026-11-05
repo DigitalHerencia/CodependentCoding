@@ -64,7 +64,7 @@ Before rendering a tenant surface it:
 Therefore:
 
 ```text
-tenant access = authenticated identity + completed onboarding
+tenant access = authenticated identity + completed profile + ACTIVE administrator-assigned membership
 ```
 
 The old rule that signed-out visitors can browse tenant recipe surfaces is superseded.
@@ -73,7 +73,7 @@ Do not make tenant routes anonymous merely to create a public demo.
 
 ## Onboarding
 
-Onboarding is a real setup boundary under `app/(setup)/onboarding`.
+Onboarding is a profile/review boundary under `app/(auth)/onboarding`.
 
 It is part of tenant admission rather than an optional public showcase.
 
@@ -92,11 +92,11 @@ The current sign-in and sign-up features use Clerk client APIs and React Hook Fo
 They may compose both:
 
 ```text
-components/blocks/auth-forms.tsx
+components/blocks/auth-blocks.tsx
 components/ui/*
 ```
 
-The auth block provides reusable presentation and local/demo behavior. The feature owns the real Clerk flow and RHF-controlled application behavior.
+The auth block provides pure reusable presentation. The feature owns the real Clerk flow and RHF-controlled application behavior.
 
 Do not move Clerk workflow state into generic presentation components.
 
@@ -209,3 +209,5 @@ The following are implementation invariants unless the owner explicitly changes 
 - UI visibility is never treated as proof of permission;
 - RLS claims require database-level evidence;
 - live provider or destructive database changes require explicit owner authorization.
+
+Administrator reads require both authentication factors within ten minutes. Sensitive admin writes and role-granting invitations require both within five minutes, independently of the layout. Clerk IDs are User primary keys; deleted identities are retained, anonymized and suspended. Onboarding never assigns roles, permissions, organizations or teams.

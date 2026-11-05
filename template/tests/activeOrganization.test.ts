@@ -4,20 +4,20 @@
 import assert from "node:assert/strict";
 import { beforeEach, test, vi } from "vitest";
 
-import { ACTIVE_ORGANIZATION_COOKIE } from "@/lib/auth/active-organization";
+import { ACTIVE_ORGANIZATION_COOKIE } from "@/lib/auth/activeOrganization";
 
 const orgA = "00000000-0000-4000-8000-00000000000a";
 const orgB = "00000000-0000-4000-8000-00000000000b";
 const orgC = "00000000-0000-4000-8000-00000000000c";
 
-interface Membership {
+type Membership = {
   id: string;
   userId: string;
   organizationId: string;
   role: string;
   status: string;
   createdAt: number;
-}
+};
 
 const state = vi.hoisted(() => ({
   jar: new Map<string, { value: string; options: unknown }>(),
@@ -38,7 +38,7 @@ vi.mock("next/headers", () => ({
 }));
 
 vi.mock("@/lib/auth/auth", () => ({
-  requireIdentity: async () => ({ clerkUserId: "clerk_1" }),
+  requireIdentity: async () => ({ clerkUserId: "user_1" }),
 }));
 
 vi.mock("@/lib/cache/invalidate", () => ({
@@ -56,7 +56,12 @@ const matches = (row: Membership, where: Record<string, unknown>) =>
 const tx = {
   $executeRaw: async () => 1,
   user: {
-    findUnique: async () => ({ id: "user_1", email: "a@example.com" }),
+    findUnique: async () => ({
+      id: "user_1",
+      email: "a@example.com",
+      displayName: "Alice",
+      profileCompletedAt: new Date("2026-01-01T00:00:00Z"),
+    }),
   },
   membership: {
     findFirst: async ({ where }: { where: Record<string, unknown> }) => {

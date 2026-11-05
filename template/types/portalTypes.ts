@@ -1,6 +1,6 @@
 import type { ApprovalStatus } from "@/generated/prisma/enums";
 
-export interface PortalDocumentDTO {
+export type PortalDocumentDTO = {
   id: string;
   title: string;
   description: string | null;
@@ -18,8 +18,8 @@ export interface PortalDocumentDTO {
   } | null;
   createdAt: string;
   updatedAt: string;
-}
-export interface PortalBillingDTO {
+};
+export type PortalBillingDTO = {
   subscription: {
     planKey: string;
     status: string;
@@ -35,8 +35,8 @@ export interface PortalBillingDTO {
     currency: string;
     dueAt: string | null;
   }>;
-}
+};
 
-export interface PortalApprovalDecision {
+export type PortalApprovalDecision = {
   status: ApprovalStatus;
-}
+};

@@ -1,9 +1,8 @@
 "use client";
 // Why: Client island: filters the already-authorized {{entity}} list in the browser; never fetches.
-import Link from "next/link";
 import { useState } from "react";
 import { {{Module}}{{Entities}}Template } from "@/components/templates/{{module}}-templates";
-import { Input } from "@/components/ui/input";
+import { {{Module}}{{Entities}}Toolbar } from "@/components/blocks/{{module}}-blocks";
 import type { {{Entity}}DTO } from "@/types/{{module}}Types";
 export function {{Entities}}FeatureClient({
   {{entities}},
@@ -17,19 +16,7 @@ export function {{Entities}}FeatureClient({
       {{entities}}={{{entities}}.filter(({{entity}}) =>
         `{{searchText}}`.toLowerCase().includes(needle),
       )}
-      toolbar={
-        <div className="flex flex-wrap gap-3">
-          <Input
-            aria-label="Search {{labelPluralLower}}"
-            placeholder="Search {{labelPluralLower}}"
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-          />
-          <Link className="type-link" href="/{{route}}/new">
-            New {{labelLower}}
-          </Link>
-        </div>
-      }
+      toolbar={<{{Module}}{{Entities}}Toolbar query={query} onQueryChange={setQuery} />}
     />
   );
 }

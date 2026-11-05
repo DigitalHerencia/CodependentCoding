@@ -10,9 +10,13 @@ import {
   switchOrganizationSchema,
 } from "@/schema/commonSchemas";
 import type { ActionResult } from "@/types/actionTypes";
-import type { CreatedInvitationDTO } from "@/types/commonTypes";
-import { setActiveOrganizationPreference } from "@/lib/auth/active-organization";
-import { getVerifiedPrimaryEmail, requireIdentity } from "@/lib/auth/auth";
+import { setActiveOrganizationPreference } from "@/lib/auth/activeOrganization";
+import {
+  getVerifiedPrimaryEmail,
+  requireIdentity,
+  requireFreshAdminSession,
+  toReverifiedActionResult,
+} from "@/lib/auth/auth";
 import { assertPermission } from "@/lib/authz/permissions";
 import { invalidateAllPaths, invalidatePaths } from "@/lib/cache/invalidate";
 import { INVITATION_TTL_DAYS } from "@/lib/constants/invitations";
@@ -36,51 +40,52 @@ import {
 import { toActionResult } from "@/lib/utils/actionResult";
 
 export async function updateOrganizationSettings(rawInput: unknown) {
-  const input = organizationSettingsSchema.parse(rawInput);
-  const identity = await requireIdentity();
-  return withTenantTransaction(identity, async (tx, access) => {
-    assertPermission(access, "base.settings:update");
-    await tx.organizationSettings.upsert({
-      where: { organizationId: access.organizationId },
-      update: {
-        timezone: input.timezone,
-        locale: input.locale,
-        defaultCurrency: input.defaultCurrency,
-      },
-      create: {
-        organizationId: access.organizationId,
-        timezone: input.timezone,
-        locale: input.locale,
-        defaultCurrency: input.defaultCurrency,
-      },
+  return toActionResult(async () => {
+    const identity = await requireIdentity();
+    return withTenantTransaction(identity, async (tx, access) => {
+      assertPermission(access, "base.settings:update");
+      const input = organizationSettingsSchema.parse(rawInput);
+      await tx.organizationSettings.upsert({
+        where: { organizationId: access.organizationId },
+        update: {
+          timezone: input.timezone,
+          locale: input.locale,
+          defaultCurrency: input.defaultCurrency,
+        },
+        create: {
+          organizationId: access.organizationId,
+          timezone: input.timezone,
+          locale: input.locale,
+          defaultCurrency: input.defaultCurrency,
+        },
+      });
+      await tx.auditEvent.create({
+        data: {
+          organizationId: access.organizationId,
+          actorUserId: access.userId,
+          action: "organization.settings.updated",
+          resourceType: "Organization",
+          resourceId: access.organizationId,
+        },
+      });
+      const record = await tx.organization.findFirstOrThrow({
+        where: { id: access.organizationId },
+        select: organizationOverviewSelect,
+      });
+      return toOrganizationDTO(record);
     });
-    await tx.auditEvent.create({
-      data: {
-        organizationId: access.organizationId,
-        actorUserId: access.userId,
-        action: "organization.settings.updated",
-        resourceType: "Organization",
-        resourceId: access.organizationId,
-      },
-    });
-    const record = await tx.organization.findFirstOrThrow({
-      where: { id: access.organizationId },
-      select: organizationOverviewSelect,
-    });
-    return toOrganizationDTO(record);
   });
 }
 
 /** Invites an email with a role; returns the one-time link path to share. */
-export async function createInvitation(
-  rawInput: unknown,
-): Promise<ActionResult<CreatedInvitationDTO>> {
-  return toActionResult(async () => {
+export async function createInvitation(rawInput: unknown) {
+  return toReverifiedActionResult(async () => {
     const identity = await requireIdentity();
     const created = await withTenantTransaction(
       identity,
       async (tx, access) => {
         assertPermission(access, "base.membership:create");
+        await requireFreshAdminSession(5);
         const input = createInvitationSchema.parse(rawInput);
         const token = randomBytes(32).toString("base64url");
         const record = await tx.invitation.create({
@@ -206,13 +211,14 @@ export async function switchOrganization(
   rawInput: unknown,
 ): Promise<ActionResult<{ organizationId: string }>> {
   return toActionResult(async () => {
-    const { organizationId } = switchOrganizationSchema.parse(rawInput);
-    await withIdentityTransaction(async (tx, user) => {
+    const organizationId = await withIdentityTransaction(async (tx, user) => {
+      const { organizationId } = switchOrganizationSchema.parse(rawInput);
       const membership = await tx.membership.findFirst({
         where: { userId: user.id, organizationId, status: "ACTIVE" },
         select: { id: true },
       });
       if (!membership) throw new ResourceNotFoundError("Organization");
+      return organizationId;
     });
     await setActiveOrganizationPreference(organizationId);
     invalidateAllPaths();

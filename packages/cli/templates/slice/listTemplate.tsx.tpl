@@ -1,8 +1,9 @@
 // Why: Templates: pure presentation for the {{module}} pages, laid out from DTOs; data and slots come from features.
+import { {{entity}}Copy as copy } from "@/content/{{module}}";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import type { {{Entity}}DTO } from "@/types/{{module}}Types";
-import { DashboardLayout } from "@/components/blocks/dashboard-layout";
+import { DashboardLayout } from "@/components/blocks/shared-blocks";
 
 export function {{Module}}{{Entities}}Template({
   {{entities}},
@@ -12,7 +13,7 @@ export function {{Module}}{{Entities}}Template({
   toolbar: ReactNode;
 }) {
   return (
-    <DashboardLayout title="{{labelPlural}}" nav={[]} toolbar={toolbar}>
+    <DashboardLayout title={copy.title} nav={[]} toolbar={toolbar}>
       <ul className="grid gap-4 lg:grid-cols-2">
         {{{entities}}.map(({{entity}}) => (
           <li key={{{entity}}.id} className="space-y-3 surface-card p-5">
@@ -26,14 +27,14 @@ export function {{Module}}{{Entities}}Template({
 {{summaryRows}}
             </dl>
             <Link className="type-link" href={`/{{route}}/${{{entity}}.id}/edit`}>
-              Edit {{labelLower}}
+              {copy.edit}
             </Link>
           </li>
         ))}
       </ul>
       {{{entities}}.length === 0 && (
         <p className="surface-inset p-6">
-          No matching {{labelPluralLower}}. Create one to get started.
+          {copy.emptyList}
         </p>
       )}
     </DashboardLayout>

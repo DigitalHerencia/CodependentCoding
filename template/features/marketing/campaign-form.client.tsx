@@ -1,12 +1,20 @@
 "use client";
+import { marketingRemainingCopy } from "@/content/marketing";
+
+import { zodResolver } from "@hookform/resolvers/zod";
+import type { z } from "zod";
+import type { FieldPath } from "react-hook-form";
+import { createCampaignSchema } from "@/schema/marketingSchemas";
+
+import { marketingPresentationCopy } from "@/content/marketing";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { createCampaign, updateCampaign } from "@/lib/actions/marketingActions";
 import type { CampaignDTO, AudienceDTO } from "@/types/marketingTypes";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Field, FieldLabel, FieldError } from "@/components/ui/field";
 export function CampaignForm({
   campaign,
   audiences,
@@ -17,15 +25,16 @@ export function CampaignForm({
   const router = useRouter();
   const [error, setError] = useState("");
   const {
-    register,
+    setError: setFieldError,
+    control,
     handleSubmit,
     formState: { isSubmitting },
-  } = useForm<{
-    name: string;
-    description: string;
-    audienceId: string;
-    scheduledAt: string;
-  }>({
+  } = useForm<
+    z.input<typeof createCampaignSchema>,
+    unknown,
+    z.output<typeof createCampaignSchema>
+  >({
+    resolver: zodResolver(createCampaignSchema),
     defaultValues: {
       name: campaign?.name ?? "",
       description: campaign?.description ?? "",
@@ -42,7 +51,7 @@ export function CampaignForm({
           const input = {
             ...values,
             audienceId: values.audienceId || null,
-            scheduledAt: values.scheduledAt ? `${values.scheduledAt}Z` : null,
+            scheduledAt: values.scheduledAt ?? null,
           };
           const saved = campaign
             ? await updateCampaign({
@@ -51,56 +60,130 @@ export function CampaignForm({
                 expectedVersion: campaign.version,
               })
             : await createCampaign(input);
-          router.push(`/marketing/campaigns/${saved.id}`);
+          if (!saved.ok) {
+            for (const [name, messages] of Object.entries(
+              saved.error.fieldErrors ?? {},
+            ))
+              setFieldError(
+                name as FieldPath<z.input<typeof createCampaignSchema>>,
+                { message: messages[0] ?? saved.error.message },
+              );
+            setError(saved.error.message);
+            return;
+          }
+          router.push(`/marketing/campaigns/${saved.data.id}`);
           router.refresh();
         } catch {
           setError(
-            "Campaign could not be saved. Check access, audience, or reload the current campaign. Only draft, scheduled or paused campaigns can be edited.",
+            marketingPresentationCopy.campaignCouldNotBeSavedCheckAccessAudienceOr,
           );
         }
       })}
+      noValidate
     >
       <h1 className="type-title">
-        {campaign ? "Edit campaign" : "Plan a campaign"}
+        {campaign
+          ? marketingPresentationCopy.editCampaign
+          : marketingPresentationCopy.planACampaign}
       </h1>
-      <div className="form-field">
-        <Label htmlFor="campaign-name">Campaign name</Label>
-        <Input id="campaign-name" required {...register("name")} />
-      </div>
-      <div className="form-field">
-        <Label htmlFor="campaign-brief">Campaign brief</Label>
-        <textarea
-          id="campaign-brief"
-          className="control-field min-h-40"
-          {...register("description")}
-        />
-      </div>
-      <div className="form-field">
-        <Label htmlFor="campaign-audience">Target audience</Label>
-        <select
-          id="campaign-audience"
-          className="control-field"
-          {...register("audienceId")}
-        >
-          <option value="">No audience selected</option>
-          {audiences.map((audience) => (
-            <option key={audience.id} value={audience.id}>
-              {audience.name}
-            </option>
-          ))}
-        </select>
-      </div>
-      <div className="form-field">
-        <Label htmlFor="campaign-date">Planned start (UTC)</Label>
-        <Input
-          id="campaign-date"
-          type="datetime-local"
-          {...register("scheduledAt")}
-        />
-      </div>
+      <Controller
+        name={"name"}
+        control={control}
+        render={({ field: controllerField, fieldState }) => (
+          <Field data-invalid={fieldState.invalid}>
+            <FieldLabel htmlFor="campaign-name">
+              {marketingRemainingCopy.campaignName}
+            </FieldLabel>
+            <Input
+              id="campaign-name"
+              required
+              {...controllerField}
+              value={String(controllerField.value ?? "")}
+              aria-invalid={fieldState.invalid}
+            />
+            {fieldState.error && (
+              <FieldError>{fieldState.error.message}</FieldError>
+            )}
+          </Field>
+        )}
+      />
+      <Controller
+        name={"description"}
+        control={control}
+        render={({ field: controllerField, fieldState }) => (
+          <Field data-invalid={fieldState.invalid}>
+            <FieldLabel htmlFor="campaign-brief">
+              {marketingRemainingCopy.campaignBrief}
+            </FieldLabel>
+            <textarea
+              id="campaign-brief"
+              className="control-field min-h-40"
+              {...controllerField}
+              value={String(controllerField.value ?? "")}
+              aria-invalid={fieldState.invalid}
+            />
+            {fieldState.error && (
+              <FieldError>{fieldState.error.message}</FieldError>
+            )}
+          </Field>
+        )}
+      />
+      <Controller
+        name={"audienceId"}
+        control={control}
+        render={({ field: controllerField, fieldState }) => (
+          <Field data-invalid={fieldState.invalid}>
+            <FieldLabel htmlFor="campaign-audience">
+              {marketingRemainingCopy.targetAudience}
+            </FieldLabel>
+            <select
+              id="campaign-audience"
+              className="control-field"
+              {...controllerField}
+              value={String(controllerField.value ?? "")}
+              aria-invalid={fieldState.invalid}
+            >
+              <option value="">
+                {marketingRemainingCopy.noAudienceSelected}
+              </option>
+              {audiences.map((audience) => (
+                <option key={audience.id} value={audience.id}>
+                  {audience.name}
+                </option>
+              ))}
+            </select>
+            {fieldState.error && (
+              <FieldError>{fieldState.error.message}</FieldError>
+            )}
+          </Field>
+        )}
+      />
+      <Controller
+        name={"scheduledAt"}
+        control={control}
+        render={({ field: controllerField, fieldState }) => (
+          <Field data-invalid={fieldState.invalid}>
+            <FieldLabel htmlFor="campaign-date">
+              {marketingRemainingCopy.plannedStartUTC}
+            </FieldLabel>
+            <Input
+              id="campaign-date"
+              type="datetime-local"
+              {...controllerField}
+              value={String(controllerField.value ?? "")}
+              aria-invalid={fieldState.invalid}
+            />
+            {fieldState.error && (
+              <FieldError>{fieldState.error.message}</FieldError>
+            )}
+          </Field>
+        )}
+      />
       {error && <p role="alert">{error}</p>}
       <Button type="submit" disabled={isSubmitting}>
-        {isSubmitting ? "Saving…" : "Save campaign"}
+        {isSubmitting
+          ? marketingPresentationCopy.saving
+          : marketingPresentationCopy.saveCampaign}
       </Button>
     </form>
   );

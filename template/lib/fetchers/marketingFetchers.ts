@@ -1,3 +1,7 @@
+import {
+  persistedReadLimitSchema,
+  persistedRecordIdSchema,
+} from "@/schema/commonSchemas";
 import "server-only";
 
 import { assertPermission } from "@/lib/authz/permissions";
@@ -8,9 +12,10 @@ import {
 } from "@/lib/db/selects/marketingSelects";
 import { withAuthenticatedRead } from "@/lib/db/tenant";
 
-export async function getCampaigns(limit = 50) {
+export async function getCampaigns(rawLimit: unknown = 50) {
   return withAuthenticatedRead(async (tx, access) => {
     assertPermission(access, "marketing.campaign:read");
+    const limit = persistedReadLimitSchema.parse(rawLimit);
 
     const rows = await tx.campaign.findMany({
       where: {
@@ -27,9 +32,10 @@ export async function getCampaigns(limit = 50) {
   });
 }
 
-export async function getAudiences(limit = 100) {
+export async function getAudiences(rawLimit: unknown = 100) {
   return withAuthenticatedRead(async (tx, access) => {
     assertPermission(access, "marketing.audience:read");
+    const limit = persistedReadLimitSchema.parse(rawLimit);
     const rows = await tx.audience.findMany({
       where: { organizationId: access.organizationId },
       orderBy: { updatedAt: "desc" },
@@ -40,9 +46,10 @@ export async function getAudiences(limit = 100) {
   });
 }
 
-export async function getCampaign(campaignId: string) {
+export async function getCampaign(rawCampaignId: unknown) {
   return withAuthenticatedRead(async (tx, access) => {
     assertPermission(access, "marketing.campaign:read");
+    const campaignId = persistedRecordIdSchema.parse(rawCampaignId);
     const row = await tx.campaign.findFirst({
       where: { id: campaignId, organizationId: access.organizationId },
       select: campaignSelect,
@@ -50,9 +57,10 @@ export async function getCampaign(campaignId: string) {
     return row ? toCampaignDTO(row) : null;
   });
 }
-export async function getAudience(audienceId: string) {
+export async function getAudience(rawAudienceId: unknown) {
   return withAuthenticatedRead(async (tx, access) => {
     assertPermission(access, "marketing.audience:read");
+    const audienceId = persistedRecordIdSchema.parse(rawAudienceId);
     const row = await tx.audience.findFirst({
       where: { id: audienceId, organizationId: access.organizationId },
       select: audienceSelect,
@@ -61,9 +69,10 @@ export async function getAudience(audienceId: string) {
   });
 }
 
-export async function getCampaignSteps(campaignId: string) {
+export async function getCampaignSteps(rawCampaignId: unknown) {
   return withAuthenticatedRead(async (tx, access) => {
     assertPermission(access, "marketing.campaign:read");
+    const campaignId = persistedRecordIdSchema.parse(rawCampaignId);
     const rows = await tx.campaignStep.findMany({
       where: { organizationId: access.organizationId, campaignId },
       orderBy: { position: "asc" },

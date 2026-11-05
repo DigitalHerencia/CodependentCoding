@@ -10,3 +10,8 @@ export const uploadFileSchema = z
   .file({ error: uploadSizeMessage })
   .min(1, { error: uploadSizeMessage })
   .max(750000, { error: uploadSizeMessage });
+
+export const workspaceUploadSchema = z.object({
+  domain: uploadDomainSchema,
+  file: uploadFileSchema.nullable().pipe(uploadFileSchema),
+});

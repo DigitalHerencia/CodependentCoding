@@ -1,6 +1,6 @@
 import "server-only";
 
-import { hasValues } from "@/lib/env/base";
+import { baseEnv, hasAnyValue, hasValues } from "@/lib/env/base";
 import { isProduction } from "@/lib/env/mode";
 import { installedModules } from "@/lib/modules/registry";
 import type { IntegrationStatus } from "@/types/integrationTypes";
@@ -20,4 +20,29 @@ export function getProviderStatuses(): IntegrationStatus[] {
       },
     ];
   });
+}
+
+/** Optional integrations may be absent, but selected production integrations must be complete. */
+export function validateProductionIntegrations() {
+  if (!isProduction) return;
+  baseEnv.read();
+  const incomplete = installedModules.flatMap(({ id, integration }) => {
+    if (!integration) return [];
+    if (
+      ["inference", "ratelimit"].includes(id) &&
+      !hasAnyValue(integration.env)
+    )
+      return [];
+    return hasValues(integration.env) ? [] : [integration];
+  });
+  const authKeys = ["NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY", "CLERK_SECRET_KEY"];
+  const missing = incomplete.flatMap(({ env }) =>
+    env.filter((name) => !hasValues([name])),
+  );
+  missing.push(...authKeys.filter((name) => !hasValues([name])));
+  if (missing.length)
+    throw new Error(
+      "Production configuration is incomplete. Set: " +
+        [...new Set(missing)].join(", "),
+    );
 }

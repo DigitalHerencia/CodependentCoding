@@ -1,4 +1,4 @@
-export interface AiGenerationDTO {
+export type AiGenerationDTO = {
   id: string;
   provider: string;
   model: string;
@@ -10,19 +10,19 @@ export interface AiGenerationDTO {
   startedAt: string | null;
   completedAt: string | null;
   createdAt: string;
-}
-export interface AiUsageSummaryDTO {
+};
+export type AiUsageSummaryDTO = {
   inputTokens: number;
   outputTokens: number;
   cost: string;
   generationCount: number;
-}
+};
 export interface AiGenerationHistoryDTO extends AiGenerationDTO {
   prompt: string | null;
   response: string | null;
 }
-export interface AiUsageItem {
+export type AiUsageItem = {
   inputTokens: number;
   outputTokens: number;
   cost: string;
-}
+};

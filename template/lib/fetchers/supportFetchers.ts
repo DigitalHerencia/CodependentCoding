@@ -1,3 +1,7 @@
+import {
+  persistedReadLimitSchema,
+  persistedRecordIdSchema,
+} from "@/schema/commonSchemas";
 import "server-only";
 
 import { assertPermission } from "@/lib/authz/permissions";
@@ -12,9 +16,10 @@ import {
 } from "@/lib/db/selects/supportSelects";
 import { withAuthenticatedRead } from "@/lib/db/tenant";
 
-export async function getSupportInbox(limit = 100) {
+export async function getSupportInbox(rawLimit: unknown = 100) {
   return withAuthenticatedRead(async (tx, access) => {
     assertPermission(access, "support.ticket:read");
+    const limit = persistedReadLimitSchema.parse(rawLimit);
 
     const rows = await tx.supportTicket.findMany({
       where: {
@@ -42,9 +47,10 @@ export async function getSupportInbox(limit = 100) {
   });
 }
 
-export async function getSupportTicket(ticketId: string) {
+export async function getSupportTicket(rawTicketId: unknown) {
   return withAuthenticatedRead(async (tx, access) => {
     assertPermission(access, "support.ticket:read");
+    const ticketId = persistedRecordIdSchema.parse(rawTicketId);
 
     const record = await tx.supportTicket.findFirst({
       where: {
@@ -61,9 +67,10 @@ export async function getSupportTicket(ticketId: string) {
   });
 }
 
-export async function getKnowledgeArticles(limit = 100) {
+export async function getKnowledgeArticles(rawLimit: unknown = 100) {
   return withAuthenticatedRead(async (tx, access) => {
     assertPermission(access, "support.article:read");
+    const limit = persistedReadLimitSchema.parse(rawLimit);
     const rows = await tx.knowledgeArticle.findMany({
       where: { organizationId: access.organizationId, status: "PUBLISHED" },
       orderBy: { updatedAt: "desc" },
@@ -74,9 +81,10 @@ export async function getKnowledgeArticles(limit = 100) {
   });
 }
 
-export async function getSupportMessages(ticketId: string) {
+export async function getSupportMessages(rawTicketId: unknown) {
   return withAuthenticatedRead(async (tx, access) => {
     assertPermission(access, "support.ticket:read");
+    const ticketId = persistedRecordIdSchema.parse(rawTicketId);
     const ticket = await tx.supportTicket.findFirst({
       where: {
         id: ticketId,
@@ -110,9 +118,10 @@ export async function getSupportMessages(ticketId: string) {
   });
 }
 
-export async function getKnowledgeArticle(articleId: string) {
+export async function getKnowledgeArticle(rawArticleId: unknown) {
   return withAuthenticatedRead(async (tx, access) => {
     assertPermission(access, "support.article:read");
+    const articleId = persistedRecordIdSchema.parse(rawArticleId);
     const row = await tx.knowledgeArticle.findFirst({
       where: {
         id: articleId,

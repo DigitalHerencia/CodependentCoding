@@ -84,7 +84,7 @@ test.skipIf(baseEnv.value("AUTH_WEBHOOK_DB_TEST") !== "1")(
             await syncClerkUserTx(tx, projection);
             await syncClerkUserTx(tx, projection);
             const user = await tx.user.findUniqueOrThrow({
-              where: { clerkUserId },
+              where: { id: clerkUserId },
               select: { id: true },
             });
             assert.equal(
@@ -100,7 +100,7 @@ test.skipIf(baseEnv.value("AUTH_WEBHOOK_DB_TEST") !== "1")(
             await anonymizeClerkUserTx(tx, clerkUserId);
             await anonymizeClerkUserTx(tx, clerkUserId);
             const deleted = await tx.user.findUniqueOrThrow({
-              where: { clerkUserId },
+              where: { id: clerkUserId },
             });
             assert.equal(deleted.displayName, "Deleted user");
             assert.equal(deleted.email, null);

@@ -14,10 +14,19 @@ const taxRate = z
 
 export const createInvoiceSchema = z.object({
   customerName: z.string().trim().min(1).max(200),
-  customerEmail: z.string().email().nullable().optional(),
+  customerEmail: z
+    .union([z.string().email(), z.literal("").transform(() => null)])
+    .nullable()
+    .optional(),
   currency: currency.default("USD"),
-  issuedAt: z.coerce.date().nullable().optional(),
-  dueAt: z.coerce.date().nullable().optional(),
+  issuedAt: z.preprocess(
+    (value) => (value === "" ? null : value),
+    z.coerce.date().nullable().optional(),
+  ),
+  dueAt: z.preprocess(
+    (value) => (value === "" ? null : value),
+    z.coerce.date().nullable().optional(),
+  ),
   lines: z
     .array(
       z.object({

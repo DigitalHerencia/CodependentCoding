@@ -36,3 +36,12 @@ export const switchOrganizationSchema = z
 export const acceptInvitationSchema = z
   .object({ token: z.string().min(32).max(128) })
   .strict();
+
+export const persistedRecordIdSchema = z.uuid();
+export const persistedReadLimitSchema = z.number().int().min(1).max(250);
+export const persistedDateRangeSchema = z
+  .object({ periodStart: z.coerce.date(), periodEnd: z.coerce.date() })
+  .refine((value) => value.periodStart <= value.periodEnd, {
+    message: "Period end must follow its start.",
+    path: ["periodEnd"],
+  });

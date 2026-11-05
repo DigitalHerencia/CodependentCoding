@@ -1,5 +1,7 @@
 "use client";
+import { portalPresentationCopy } from "@/content/portal";
 import { portalBlockCopy } from "@/content/portal";
+import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 import type { PortalDocumentDTO } from "@/types/portalTypes";
@@ -35,5 +37,22 @@ export function PortalDocumentControlsBlock({
         )}
       <p role="status">{message}</p>
     </div>
+  );
+}
+
+export function PortalDocumentsToolbar({
+  query,
+  onQueryChange,
+}: {
+  query: string;
+  onQueryChange: (query: string) => void;
+}) {
+  return (
+    <Input
+      aria-label={portalPresentationCopy.searchDocuments}
+      placeholder={portalPresentationCopy.searchDocumentOrFilename}
+      value={query}
+      onChange={(event) => onQueryChange(event.target.value)}
+    />
   );
 }

@@ -1,14 +1,14 @@
-export interface ClerkUserProjection {
+export type ClerkUserProjection = {
   clerkUserId: string;
   email: string | null;
   displayName: string | null;
   imageUrl: string | null;
   username: string | null;
-}
+};
 
-export interface IntegrationStatus {
+export type IntegrationStatus = {
   name: string;
   purpose: string;
   state: "CONFIGURED" | "MISSING SECRET";
   mode: "LIVE" | "DEMO MODE" | "UNAVAILABLE";
-}
+};

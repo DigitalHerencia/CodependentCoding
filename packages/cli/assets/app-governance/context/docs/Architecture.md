@@ -1,161 +1,37 @@
----
-title: {{appName}} — Architecture
-doc: architecture
-status: active
-updated: {{createdAt}}
-compiles_to: .claude/contracts/application.yaml (architecture), .claude/contracts/validation.yaml
----
-
 # {{appName}} — Architecture
 
-Sections 2 to 5 are the Codependent Coding doctrine, shipped with the app and enforced by `pnpm lint` (`eslint/`). Change them only with a decision record and the matching lint change. Sections 1 and 6 belong to this app.
+The approved application contract is route → feature → template → blocks → ui. The two deliberate exceptions are static public pages and self-contained form features. UI primitives retain their shadcn names and shipped variants.
 
-## 1. System map
+## Application topology
 
-<!-- Fill from the PRD: the domains, who uses each, and the outside systems they talk to. -->
+app/layout.tsx owns the document, metadata, fonts and ClerkProvider. app/page.tsx owns the landing page. The four route groups are (public), (auth), (tenant) and (admin). The auth group includes sign-in, sign-up, profile onboarding and invitation acceptance. There is no setup group. Administrator pages sit directly inside (admin); rewrites retain /admin/users, /admin/audit and /admin/records URLs. Shells, navigation, brand and chart folders stay flat.
 
-TODO
+Routes own URL params, searchParams, Suspense and framework boundaries. They render features without querying Prisma or coordinating business operations. Static public pages can consume blocks/templates directly and hardcode copy.
 
-## 2. Governing sentence
+## Presentation
 
-> Routes own URL and HTTP boundaries. Features orchestrate application capabilities. Components render. Fetchers read persisted data. Actions own ordinary CRUD mutation boundaries. Schemas validate runtime input. Workflows constitute reusable application logic from server operations and helpers. Transactions preserve atomic database invariants. Authentication establishes identity. Authorization decides access. Integrations own provider mechanics. Webhooks own provider HTTP request lifecycles.
+- components/ui: shadcn primitives.
+- components/blocks: aggregated slice-first primitive compositions, with props, slots and presentation-only state.
+- components/templates: pure arrangements of blocks with prepared data and callbacks.
+- features: server-first application orchestration; client behavior stays in the smallest useful companion.
+- features/_/_-form.tsx or *-form.client.tsx: React Hook Form, shared Zod resolver, Controller/Field rendering and direct action submission. Forms receive DTO initial values and map typed server errors with setError.
 
-## 3. Template layer model
+Ordinary domain copy lives in root content/. Public copy may remain in public presentation. Component filenames are kebab-case; library, schema and type filenames are slice-first camelCase. Named exports are preferred. The roughly 400-line threshold prompts review; it is not a hard cap. Blocks aggregate by slice, separating client-only variants when necessary. Optional preview form examples live in features rather than presentation blocks; the actual profile onboarding flow never asks for an organization, role or team.
 
-```text
-URL ─► app/ (route) ─► features/ ─► components/blocks ─► components/ui
-                          │
-                          ├─► lib/fetchers   (reads)
-                          ├─► lib/actions    (CRUD writes, "use server")
-                          ├─► lib/workflows  (named application logic)
-                          │      ├─► lib/db/transactions (atomic writes)
-                          │      └─► lib/integrations/<provider>
-                          ├─► lib/auth / lib/authz
-                          └─► schema/ · types/ · lib/cache · lib/constants · lib/utils
-```
+## Server flow
 
-### 3.1 Responsibility map
+Route → server feature → workflow → authorized fetchers/actions → database context/transaction helpers → Prisma/Neon.
 
-| Concern                  | Home                                                                           | Rule                                                                        |
-| ------------------------ | ------------------------------------------------------------------------------ | --------------------------------------------------------------------------- |
-| URL / page               | `app/**/page.tsx`                                                              | Thin: Suspense + feature, or blocks for static public pages                 |
-| Provider webhook         | `app/api/<provider>/webhooks/route.ts`                                         | Raw-body verify → idempotent persistence → ack                              |
-| Capability orchestration | `features/<domain>/<domain><Thing>Feature.tsx`                                 | Server component; renders blocks                                            |
-| Browser behavior         | `features/<domain>/<name>.client.tsx`                                          | `"use client"`; UI controls + actions only                                  |
-| Form                     | `features/<domain>/<domain><Verb><Thing>Form.tsx`                              | React Hook Form + Zod + action; may use UI primitives                       |
-| Loading                  | `features/<domain>/<domain><Thing>Skeleton.tsx`                                | Mirrors real layout; `ui/skeleton` only                                     |
-| Domain presentation      | `components/templates/<slice>-templates.tsx`                                   | Pure; composed from blocks; one file per slice                              |
-| Reusable composition     | `components/blocks/<kebab>.tsx`                                                | Pure presentation                                                           |
-| Structure                | `components/nav`, `components/shells`                                          | Frames; Clerk UI widgets allowed                                            |
-| Primitive                | `components/ui/<kebab>.tsx`                                                    | shadcn/BoldKit-derived                                                      |
-| Read                     | `lib/fetchers/<domain>Fetchers.ts`                                             | `server-only`; auth → authz → scoped select → DTO                           |
-| CRUD write               | `lib/actions/<domain>Actions.ts`                                               | `"use server"`; auth → authz → Zod → write/tx → invalidate → `ActionResult` |
-| Application logic        | `lib/workflows/<domain>Workflows.ts` or `lib/workflows/<domain>/<verbNoun>.ts` | `server-only`; arranges operations; no actions, Prisma client, SDKs        |
-| Atomic write             | `lib/db/transactions/<domain><Verb><Noun>Tx.ts`                             | DB-only; no network                                                         |
-| DB runtime               | `lib/db/client.ts`, `rls.ts`, `tenant.ts`                                      | Prisma client, adapter, RLS context                                         |
-| Projection               | `lib/db/selects/<domain>Selects.ts`                                           | Precise selects                                                             |
-| Mapping                  | `lib/db/dtos/<domain>Dtos.ts`                                                   | Record → transport-safe DTO                                                 |
-| Identity                 | `lib/auth/{clerk,auth,redirects,clerk-webhooks}.ts`                            | Clerk only here                                                             |
-| Access                   | `lib/authz/{roles,permissions,resources,policies,mode,attributes?}.ts`         | App-owned RBAC/ABAC; `roles.ts` is the one browser-safe authz file          |
-| Provider                 | `lib/integrations/<provider>/<kebab>.ts`                                       | SDK only here                                                               |
-| Cache                    | `lib/cache/{tags,life,invalidate}.ts`                                          | Semantics only                                                              |
-| Module contribution      | `lib/modules/<id>.module.ts`, `registry.ts`                                    | Nav, dashboard widgets, permissions                                         |
-| Env                      | `lib/env/<owner>.ts`                                                           | Zod-validated, `server-only`                                                |
-| Validation               | `schema/<domain>Schemas.ts`                                                   | Zod; client- and server-safe                                                |
-| Shared types             | `types/<domain>Types.ts`                                                       | Compile-time contracts                                                      |
-| Schema                   | `prisma/schema/<owner>.prisma`, `prisma/rls/<owner>.sql`, `prisma/seed.ts`     | Prisma lifecycle                                                            |
+Workflows are server-only orchestrators without a use-server directive. They compose fetchers, actions, integration helpers, calculations, caching and utilities; they never import the database layer or client components. Do not add pass-through workflows. An atomic multi-step write belongs to one action and transaction helper.
 
-### 3.2 Exceptions
+Authentication and general permission checks precede Zod parsing; resource-specific ownership checks follow validated identifiers. Every exported action is independently protected and returns a typed safe result. Fetchers own persisted reads and return DTO-mapped output. Selects limit retrieval; DTOs define outbound release. Prisma-generated types own stored enums, Zod owns runtime inputs, and shared types describe remaining contracts. Type aliases are the default; interfaces are reserved for extension.
 
-1. Static public pages compose blocks directly (no feature).
-2. Form features compose UI primitives directly and may declare `"use client"`.
-3. Skeletons may import `components/ui/skeleton`.
-4. `.client.tsx` companions may import interactive UI controls (button, input, label, select, checkbox, switch, textarea, toggle, date/time pickers, etc.).
+Database wrappers establish identity and tenant RLS settings on the same transaction/connection as protected queries. No unrestricted Prisma client reaches domain features or workflows. Provider SDK mechanics remain inside lib/integrations, with Clerk identity/UI adapters under lib/auth. External network operations stay outside database transactions. Idempotency and reconciliation handle provider/database coordination.
 
-### 3.3 Classifier (use before creating a file)
+## Identity and administration
 
-```text
-Static public presentation?      app/(public) page + components/blocks
-React Hook Form?                 features/<d>/<d><Verb><Thing>Form.tsx
-Browser-only behavior?           features/<d>/<name>.client.tsx
-Capability orchestration?        features/<d>/<d><Thing>Feature.tsx
-Persisted read?                  lib/fetchers/<d>Fetchers.ts
-Ordinary CRUD write?             lib/actions/<d>Actions.ts
-Named application logic?         lib/workflows/<d>Workflows.ts
-Multi-write atomicity?           lib/db/transactions/<domain><Verb><Noun>Tx.ts
-Prisma select / DTO?             lib/db/selects | lib/db/dto
-Identity?                        lib/auth
-Access decision?                 lib/authz
-Provider SDK?                    lib/integrations/<provider>
-Webhook HTTP lifecycle?          app/api/<provider>/webhooks/route.ts
-Runtime validation?              schema/<d>Schemas.ts
-Shared type?                     types/<d>Types.ts
-Cache tag / lifetime?            lib/cache
-Constant / pure util?            lib/constants | lib/utils
-None of the above?               Stop. Do not invent a layer (CC-NAME-002).
-```
+User.id is the Clerk string ID. Organization and Membership IDs remain UUIDs. Profile completion is identity-scoped before membership approval. New users stay in the waiting area until an administrator grants an active membership and role. The database wrapper independently enforces both profile completion and active membership.
 
-## 4. Doctrine enforcement
+The admin layout is a UX gate. Every fetcher/action still enforces permissions and fresh MFA. Reads require both factors within ten minutes; sensitive writes require both within five minutes. Missing enrollment cannot bypass this requirement. List queries validate search/page inputs and paginate in SQL. Membership changes are soft status changes with atomic append-only audit events. WebhookEvent remains separate from AuditEvent. Live RLS, Clerk settings and migrations require owner verification; source checks do not establish deployed security.
 
-Doctrine is code. `eslint/doctrine-map.mjs` is the machine table (layers, import categories, boundaries, naming); `eslint/codependent-plugin.mjs` is the mechanics; `.claude/contracts/validation.yaml` is the contract. Every finding prints its rule ID.
-
-| ID               | Rule                                                                                       | Enforcement                          |
-| ---------------- | ------------------------------------------------------------------------------------------ | ------------------------------------ |
-| CC-ROUTE-001     | Routes never import DB, fetchers, actions, workflows, integrations, SDKs, or UI primitives | `codependent/layer-boundaries`       |
-| CC-ROUTE-002     | `proxy.ts` only gates routes (session presence, CSP nonce)                                 | layer-boundaries                     |
-| CC-HOOK-001      | Route handlers: no Prisma, SDKs, Clerk server, presentation                                | layer-boundaries                     |
-| CC-FEAT-001      | Normal features: no DB, transactions, integrations, SDKs, UI primitives, RHF               | layer-boundaries                     |
-| CC-FEAT-002      | Forms: no DB, fetchers, workflows, integrations                                            | layer-boundaries                     |
-| CC-FEAT-003      | Skeletons: `ui/skeleton` + blocks only                                                     | layer-boundaries                     |
-| CC-FEAT-004      | Client companions: controls + actions (+ `lib/authz/roles`); no server reads               | layer-boundaries                     |
-| CC-BLOCK-001     | Blocks/templates are pure presentation                                                     | layer-boundaries                     |
-| CC-BLOCK-002     | Nav/shells pure presentation (+ Clerk UI)                                                  | layer-boundaries                     |
-| CC-UI-001 / CC-UI-002 | Primitives and hooks stay presentation/browser-side                                        | layer-boundaries                     |
-| CC-READ-001      | Fetchers: no actions, workflows, integrations, transactions                                | layer-boundaries                     |
-| CC-READ-002      | Fetchers never call Prisma write methods                                                   | `codependent/no-fetcher-writes`      |
-| CC-WRITE-001     | Actions: no integrations or SDKs                                                           | layer-boundaries                     |
-| CC-WRITE-002     | Actions start with `"use server"`                                                          | `codependent/use-server-actions`     |
-| CC-FLOW-001      | Workflows: no Prisma client, no SDKs                                                       | layer-boundaries                     |
-| CC-FLOW-002      | No pass-through workflows (body is a single call)                                          | `codependent/no-pass-through`        |
-| CC-FLOW-003      | Workflows never import actions (`"use server"`); actions may call workflows                | layer-boundaries                     |
-| CC-TX-001        | Transactions: DB only                                                                      | layer-boundaries                     |
-| CC-TX-002        | No `fetch()` in transactions                                                               | `codependent/no-transaction-network` |
-| CC-DB-001        | `lib/db` does not reach up into app layers                                                 | layer-boundaries                     |
-| CC-DB-002        | No unsafe raw SQL; tagged raw SQL only in `lib/db`                                         | `codependent/no-raw-sql`             |
-| CC-AUTH-001      | Authentication never decides access                                                        | layer-boundaries                     |
-| CC-AUTHZ-001     | Authorization never reads Clerk server state                                               | layer-boundaries                     |
-| CC-INT-001       | Integrations never persist                                                                 | layer-boundaries                     |
-| CC-CACHE-001     | Cache helpers hold semantics only                                                          | layer-boundaries                     |
-| CC-CACHE-002     | No `'use cache'` in features/fetchers or in functions given an identity/org ID             | `codependent/no-cache-in-protected`  |
-| CC-PURE-001      | Constants/utils/types are dependency-free                                                  | layer-boundaries                     |
-| CC-SCHEMA-001    | Schemas are pure (Prisma enums and `lib/authz/roles` allowed)                              | layer-boundaries                     |
-| CC-SRV-001       | Server modules import `server-only` (auto-fix; `lib/authz/roles.ts` excepted)              | `codependent/require-server-only`    |
-| CC-CLIENT-001    | `"use client"` placement                                                                   | `codependent/use-client-placement`   |
-| CC-NAME-001      | Directory naming conventions                                                               | `codependent/filename-convention`    |
-| CC-NAME-002      | No `services/`, `managers/`, `helpers/`...                                                 | `codependent/no-generic-names`       |
-| CC-STYLE-001     | Named exports only (framework files excepted)                                              | `codependent/no-default-export`      |
-| CC-STYLE-002     | `@/` alias, no parent-relative imports (auto-fix)                                          | `codependent/no-parent-imports`      |
-| CC-MOD-001       | A module imports another module only if declared in `dependsOn`                            | `codependent/module-boundaries`      |
-| CC-MOD-002       | Base never imports module-owned files (registry excepted)                                  | `codependent/module-boundaries`      |
-| CC-MOD-003       | Every file has exactly one owner                                                           | `pnpm check:ownership`               |
-| CC-FMT-001 / CC-FMT-002 | Prettier formatting; Tailwind class order                                                  | Prettier + plugin                    |
-| CC-TS-001        | `strict`, `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`                         | tsconfig                             |
-
-Review-only rules (not mechanizable, checked in review): actions validate with Zod before writing; tenant scope lives in the query predicate; consequential decisions never read stale cache; webhooks reconcile current provider truth.
-
-## 5. Module system
-
-- `hipster.modules.json` lists the installed modules ({{modules}}): id, kind (`domain` or `addon`), `dependsOn`, `owns` globs, provider `packages`, and `env`. `pnpm check:modules` validates it.
-- Every file has exactly one owner, computed from its path (`pnpm check:ownership`, CC-MOD-003): an explicit `owns` glob, else a directory segment equal to a module id, else a basename that starts with the id, else base.
-- A module imports only base, itself and its `dependsOn` (CC-MOD-001). Base reaches modules only through `lib/modules/registry.ts` (CC-MOD-002), which `hipster-stack` generates.
-- Prisma models live in `prisma/schema/<owner>.prisma`; a relation field that points at another module carries `// @module <id>`. RLS lives in `prisma/rls/<owner>.sql`.
-- Env is declared per owner in the manifest and read through `lib/env/<owner>.ts` (`pnpm check:env`).
-- New domain slices come from `hipster-stack slice <entity> --module <id> --fields "<dsl>"`, derived from the golden `projects` slice.
-
-## 6. App-specific architecture
-
-<!-- Fill as the app grows. Each new domain gets a row; each deviation from sections 2 to 5 gets a decision in .claude/execution/decisions.json. -->
-
-| Domain (module id) | Entities | Routes | Notes |
-| ------------------ | -------- | ------ | ----- |
-| TODO               | TODO     | TODO   | TODO  |
+AI and rate limiting are optional. Missing optional inference/limiter configuration leaves those capabilities unused; partial configuration fails closed. Other installed production provider modules must have complete configuration at startup. Production never presents missing configuration as demo mode.

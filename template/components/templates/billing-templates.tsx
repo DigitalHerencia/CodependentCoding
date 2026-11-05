@@ -1,9 +1,10 @@
+import { billingPresentationCopy } from "@/content/billing";
 // Why: Templates: pure presentation for the billing pages, laid out from DTOs; data and slots come from features.
 import type { BillingSubscriptionDTO } from "@/types/billingTypes";
 import {
   DashboardLayout,
   DashboardPanel,
-} from "@/components/blocks/dashboard-layout";
+} from "@/components/blocks/shared-blocks";
 
 export function BillingSettingsTemplate({
   subscription,
@@ -11,27 +12,30 @@ export function BillingSettingsTemplate({
   subscription: BillingSubscriptionDTO | null;
 }) {
   return (
-    <DashboardLayout title="Billing" nav={[]}>
-      <DashboardPanel title="Subscription">
+    <DashboardLayout title={billingPresentationCopy.billing} nav={[]}>
+      <DashboardPanel title={billingPresentationCopy.subscription}>
         {subscription ? (
           <dl className="grid gap-3 sm:grid-cols-2">
-            <dt>Plan</dt>
+            <dt>{billingPresentationCopy.plan}</dt>
             <dd>{subscription.planKey}</dd>
-            <dt>Status</dt>
+            <dt>{billingPresentationCopy.status}</dt>
             <dd>{subscription.status}</dd>
-            <dt>Current period ends</dt>
+            <dt>{billingPresentationCopy.currentPeriodEnds}</dt>
             <dd>
-              {subscription.currentPeriodEnd?.slice(0, 10) ?? "Not recorded"}
+              {subscription.currentPeriodEnd?.slice(0, 10) ??
+                billingPresentationCopy.notRecorded}
             </dd>
-            <dt>Renewal</dt>
+            <dt>{billingPresentationCopy.renewal}</dt>
             <dd>
               {subscription.cancelAtPeriodEnd
-                ? "Cancels at period end"
-                : "Continues"}
+                ? billingPresentationCopy.cancelsAtPeriodEnd
+                : billingPresentationCopy.continues}
             </dd>
           </dl>
         ) : (
-          <p>No subscription is recorded for this workspace.</p>
+          <p>
+            {billingPresentationCopy.noSubscriptionIsRecordedForThisWorkspace}
+          </p>
         )}
       </DashboardPanel>
     </DashboardLayout>

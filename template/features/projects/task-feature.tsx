@@ -2,9 +2,9 @@
 import { notFound } from "next/navigation";
 import { ProjectTaskDetailTemplate } from "@/components/templates/projects-templates";
 import { getProjectTask } from "@/lib/fetchers/projectsFetchers";
-import { TaskFeatureClient } from "./task-feature.client";
+import { TaskFeatureClient } from "./task-assignment-form.client";
 import { getOrganizationMembers } from "@/lib/fetchers/organizationFetchers";
-import { TaskStatusControl } from "./tasks-feature.client";
+import { TaskStatusControl } from "./task-status-form";
 export async function TaskFeature({
   projectId,
   taskId,

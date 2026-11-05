@@ -108,7 +108,7 @@ describe("planAdd", () => {
     expect(plan.added).toEqual(["crm"]);
     expect(plan.created).toEqual(
       expect.arrayContaining([
-        "lib/modules/crm.module.ts",
+        "lib/modules/crmModule.ts",
         "prisma/schema/crm.prisma",
         "prisma/rls/crm.sql",
         "tests/crm/crmWorkflows.test.ts",
@@ -163,7 +163,7 @@ describe("planAdd", () => {
 
   test("refuses, listing conflicts, before writing anything", async () => {
     const dir = await app([]);
-    const owned = path.join(dir, "lib/modules/crm.module.ts");
+    const owned = path.join(dir, "lib/modules/crmModule.ts");
     writeFileSync(owned, "export const mine = 1;\n");
     const registry = readApp(dir, "lib/modules/registry.ts");
     await expect(

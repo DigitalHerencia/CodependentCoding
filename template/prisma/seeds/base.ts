@@ -7,8 +7,8 @@
 import type { Prisma } from "@/generated/prisma/client";
 
 export const seedIds = {
-  ownerUser: "00000000-0000-4000-8000-000000000001",
-  agentUser: "00000000-0000-4000-8000-000000000002",
+  ownerUser: "user_seed_owner",
+  agentUser: "user_seed_agent",
   organization: "00000000-0000-4000-8000-000000000010",
   ownerMembership: "00000000-0000-4000-8000-000000000011",
   agentMembership: "00000000-0000-4000-8000-000000000012",
@@ -21,14 +21,14 @@ const clerk = {
   agentUser: "user_seed_agent",
 } as const;
 
-export interface SeedContext {
+export type SeedContext = {
   tx: Prisma.TransactionClient;
   owner: { id: string };
   agent: { id: string };
   organization: { id: string };
   ownerMembership: { id: string };
   agentMembership: { id: string };
-}
+};
 
 async function setConfig(
   tx: Prisma.TransactionClient,
@@ -50,15 +50,15 @@ export async function seedBase(
       id: seedIds.ownerUser,
     },
     update: {
-      clerkUserId: clerk.ownerUser,
       email: "owner@example.test",
       displayName: "Maximal Owner",
+      profileCompletedAt: new Date("2026-01-01T00:00:00Z"),
     },
     create: {
       id: seedIds.ownerUser,
-      clerkUserId: clerk.ownerUser,
       email: "owner@example.test",
       displayName: "Maximal Owner",
+      profileCompletedAt: new Date("2026-01-01T00:00:00Z"),
     },
   });
 
@@ -69,15 +69,15 @@ export async function seedBase(
       id: seedIds.agentUser,
     },
     update: {
-      clerkUserId: clerk.agentUser,
       email: "agent@example.test",
       displayName: "Maximal Agent",
+      profileCompletedAt: new Date("2026-01-01T00:00:00Z"),
     },
     create: {
       id: seedIds.agentUser,
-      clerkUserId: clerk.agentUser,
       email: "agent@example.test",
       displayName: "Maximal Agent",
+      profileCompletedAt: new Date("2026-01-01T00:00:00Z"),
     },
   });
 

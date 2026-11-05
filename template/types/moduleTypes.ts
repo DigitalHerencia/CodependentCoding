@@ -22,25 +22,25 @@ export type ModuleIcon =
   | "megaphone"
   | "users";
 
-export interface ModuleNavLink {
+export type ModuleNavLink = {
   label: string;
   href: Route;
-}
+};
 
-export interface ModuleNav {
+export type ModuleNav = {
   label: string;
   icon: ModuleIcon;
   links: readonly ModuleNavLink[];
-}
+};
 
-export interface ModuleDashboardEntry {
+export type ModuleDashboardEntry = {
   id: string;
   title: string;
   description: string;
   href: Route;
-}
+};
 
-export interface ModulePermissions {
+export type ModulePermissions = {
   /** `<module>.<resource>`; each gets every action. Policies check `ResourceAccessDescriptor.kind` against them. */
   resources: readonly `${string}.${string}`[];
   /**
@@ -50,23 +50,23 @@ export interface ModulePermissions {
   grants: Partial<
     Record<AppRole, readonly (PermissionAction | ModulePermission)[]>
   >;
-}
+};
 
 /** A provider an add-on wraps; Settings > Integrations reports it configured when every `env` name is set. */
-export interface ModuleIntegration {
+export type ModuleIntegration = {
   name: string;
   purpose: string;
   env: readonly string[];
-}
+};
 
 /** A tenant table the admin record summary counts; `model` is its Prisma client delegate (e.g. "crmContact"). */
-export interface ModuleRecordCount {
+export type ModuleRecordCount = {
   label: string;
   model: Uncapitalize<Prisma.ModelName>;
-}
+};
 
 /** Runtime contributions of one module (Architecture.md §5.4). Build-time facts live in hipster.modules.json. */
-export interface ModuleDefinition {
+export type ModuleDefinition = {
   id: string;
   nav?: ModuleNav;
   /** Links added to the base Settings group. */
@@ -75,4 +75,4 @@ export interface ModuleDefinition {
   permissions?: ModulePermissions;
   integration?: ModuleIntegration;
   records?: readonly ModuleRecordCount[];
-}
+};

@@ -1,4 +1,4 @@
-import { PageLoadingState } from "@/components/blocks/loading-states";
+import { PageLoadingState } from "@/components/blocks/shared-blocks";
 
 export default function Loading() {
   return <PageLoadingState />;

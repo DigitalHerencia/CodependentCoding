@@ -147,7 +147,7 @@ Templates are a first-class part of the current design system and are used acros
 
 Features provide the application behavior and data needed by templates, blocks, and controls.
 
-A feature may import a template, a block, or a UI primitive directly when that is how the implemented surface is structured.
+Features render templates/blocks with prepared data. Only self-contained form features and skeleton primitives may import UI primitives directly.
 
 Do not require meaningless wrapper layers.
 
@@ -155,7 +155,7 @@ Do not require meaningless wrapper layers.
 
 The real sign-in/sign-up behavior lives in auth features.
 
-`components/blocks/auth-forms.tsx` provides the reusable panel and split layout.
+`components/blocks/auth-blocks.tsx` provides the reusable panel and split layout.
 
 The feature may inject its own controlled form content while retaining the block's visual shell.
 

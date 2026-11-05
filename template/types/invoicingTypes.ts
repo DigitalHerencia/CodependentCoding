@@ -1,4 +1,4 @@
-export interface InvoiceLineDTO {
+export type InvoiceLineDTO = {
   id: string;
   position: number;
   description: string;
@@ -8,8 +8,8 @@ export interface InvoiceLineDTO {
   lineSubtotal: string;
   lineTax: string;
   lineTotal: string;
-}
-export interface InvoiceDTO {
+};
+export type InvoiceDTO = {
   id: string;
   number: number;
   customerName: string;
@@ -31,8 +31,8 @@ export interface InvoiceDTO {
   lines: InvoiceLineDTO[];
   createdAt: string;
   updatedAt: string;
-}
-export interface ExpenseDTO {
+};
+export type ExpenseDTO = {
   updatedAt: string;
   id: string;
   vendor: string;
@@ -42,9 +42,9 @@ export interface ExpenseDTO {
   incurredAt: string;
   status: string;
   submitter: string | null;
-}
+};
 
-export interface FinalizeInvoiceCommand {
+export type FinalizeInvoiceCommand = {
   invoiceId: string;
   expectedVersion: number;
-}
+};

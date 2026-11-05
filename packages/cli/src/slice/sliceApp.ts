@@ -46,7 +46,7 @@ export const ICONS = [
   "users",
 ] as const;
 
-export interface SliceOptions {
+export type SliceOptions = {
   appDir: string;
   entity: string;
   moduleId: string;
@@ -55,9 +55,9 @@ export interface SliceOptions {
   /** New modules only: nav group label and icon. */
   moduleLabel?: string | undefined;
   icon?: string | undefined;
-}
+};
 
-export interface SlicePlan {
+export type SlicePlan = {
   names: Names;
   newModule: boolean;
   created: string[];
@@ -66,9 +66,9 @@ export interface SlicePlan {
   skipped: string[];
   dependsOn: string[];
   writes: Map<string, string>;
-}
+};
 
-interface ManifestEntry {
+type ManifestEntry = {
   id: string;
   kind: "domain" | "addon";
   label: string;
@@ -76,12 +76,12 @@ interface ManifestEntry {
   dependsOn?: string[];
   owns?: string[];
   [key: string]: unknown;
-}
+};
 
-interface Manifest {
+type Manifest = {
   modules: ManifestEntry[];
   [key: string]: unknown;
-}
+};
 
 /** Template → app path; `merge` files are appended to when they exist. */
 function targets(
@@ -92,6 +92,12 @@ function targets(
   const feature = (file: string) => `features/${m}/${file}`;
   const page = `app/(tenant)/${route}`;
   return [
+    { template: "content.ts.tpl", target: `content/${m}.ts`, merge: true },
+    {
+      template: "blocks.tsx.tpl",
+      target: `components/blocks/${m}-blocks.tsx`,
+      merge: true,
+    },
     {
       template: "schemas.ts.tpl",
       target: `schema/${m}Schemas.ts`,
@@ -360,7 +366,7 @@ export async function planSlice(options: SliceOptions): Promise<SlicePlan> {
   );
 
   // Module definition, manifest and registry.
-  const moduleFile = `lib/modules/${moduleId}.module.ts`;
+  const moduleFile = `lib/modules/${moduleId}Module.ts`;
   const currentModule = read(appDir, moduleFile);
   if (existingModule && currentModule !== null) {
     const extended = extendModule(

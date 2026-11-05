@@ -8,13 +8,13 @@ export type ActionErrorCode =
   | "RATE_LIMITED"
   | "INTERNAL";
 
-export interface ActionError {
+export type ActionError = {
   code: ActionErrorCode;
   message: string;
   fieldErrors?: Record<string, string[]>;
   /** Correlation ID of the server-side error report; set on INTERNAL only. */
   ref?: string;
-}
+};
 
 export type ActionResult<T> =
   { ok: true; data: T } | { ok: false; error: ActionError };

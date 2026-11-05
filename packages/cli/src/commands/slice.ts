@@ -7,7 +7,7 @@ import { spawnExec } from "#cli/setup/exec";
 import { parseFields } from "#cli/slice/fields";
 import { formatPlan, ICONS, planSlice, writePlan } from "#cli/slice/sliceApp";
 
-interface SliceCommandOptions {
+type SliceCommandOptions = {
   module: string;
   fields: string;
   plural?: string;
@@ -15,7 +15,7 @@ interface SliceCommandOptions {
   icon?: string;
   dir: string;
   dryRun?: boolean;
-}
+};
 
 export function registerSlice(program: Command): void {
   program
@@ -68,7 +68,7 @@ export function registerSlice(program: Command): void {
       const failures = formatPlan(appDir, plan, spawnExec);
       for (const entry of plan.skipped) {
         p.log.warn(
-          `Add by hand in lib/modules/${options.module}.module.ts: ${entry}`,
+          `Add by hand in lib/modules/${options.module}Module.ts: ${entry}`,
         );
       }
       if (failures.length > 0) {

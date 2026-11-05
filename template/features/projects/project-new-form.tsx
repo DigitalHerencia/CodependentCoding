@@ -1,28 +1,36 @@
 "use client";
+import { projectsRemainingCopy } from "@/content/projects";
+
+import { zodResolver } from "@hookform/resolvers/zod";
+import type { z } from "zod";
+import type { FieldPath } from "react-hook-form";
+import { createProjectSchema } from "@/schema/projectsSchemas";
+
+import { projectsPresentationCopy } from "@/content/projects";
 // Why: Client form: validates with the shared schema, calls the action, and shows its ActionResult.
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import type { ProjectSummaryDTO } from "@/types/projectsTypes";
 import { createProject, updateProject } from "@/lib/actions/projectsActions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Field, FieldLabel, FieldError } from "@/components/ui/field";
 
-interface FormValues {
-  name: string;
-  description: string;
-  startsAt: string;
-  dueAt: string;
-}
 export function ProjectNewForm({ project }: { project?: ProjectSummaryDTO }) {
   const router = useRouter();
   const [error, setError] = useState("");
   const {
-    register,
+    setError: setFieldError,
+    control,
     handleSubmit,
     formState: { isSubmitting },
-  } = useForm<FormValues>({
+  } = useForm<
+    z.input<typeof createProjectSchema>,
+    unknown,
+    z.output<typeof createProjectSchema>
+  >({
+    resolver: zodResolver(createProjectSchema),
     defaultValues: {
       name: project?.name ?? "",
       description: project?.description ?? "",
@@ -48,6 +56,13 @@ export function ProjectNewForm({ project }: { project?: ProjectSummaryDTO }) {
             })
           : await createProject(input);
         if (!result.ok) {
+          for (const [name, messages] of Object.entries(
+            result.error.fieldErrors ?? {},
+          ))
+            setFieldError(
+              name as FieldPath<z.input<typeof createProjectSchema>>,
+              { message: messages[0] ?? result.error.message },
+            );
           setError(
             result.error.code === "CONFLICT"
               ? "This project changed since you opened it. Reload, then edit again."
@@ -57,41 +72,108 @@ export function ProjectNewForm({ project }: { project?: ProjectSummaryDTO }) {
         }
         router.push(`/projects/${result.data.id}`);
       })}
+      noValidate
     >
       <h1 className="type-title">
-        {project ? "Edit project" : "Plan a project"}
+        {project
+          ? projectsPresentationCopy.editProject
+          : projectsPresentationCopy.planAProject}
       </h1>
-      <div className="form-field">
-        <Label htmlFor="project-name">Project name</Label>
-        <Input
-          id="project-name"
-          required
-          maxLength={200}
-          {...register("name")}
-        />
-      </div>
-      <div className="form-field">
-        <Label htmlFor="project-description">Project brief</Label>
-        <textarea
-          id="project-description"
-          className="control-field min-h-36"
-          maxLength={10000}
-          {...register("description")}
-        />
-      </div>
+      <Controller
+        name={"name"}
+        control={control}
+        render={({ field: controllerField, fieldState }) => (
+          <Field data-invalid={fieldState.invalid}>
+            <FieldLabel htmlFor="project-name">
+              {projectsRemainingCopy.projectName}
+            </FieldLabel>
+            <Input
+              id="project-name"
+              required
+              maxLength={200}
+              {...controllerField}
+              value={String(controllerField.value ?? "")}
+              aria-invalid={fieldState.invalid}
+            />
+            {fieldState.error && (
+              <FieldError>{fieldState.error.message}</FieldError>
+            )}
+          </Field>
+        )}
+      />
+      <Controller
+        name={"description"}
+        control={control}
+        render={({ field: controllerField, fieldState }) => (
+          <Field data-invalid={fieldState.invalid}>
+            <FieldLabel htmlFor="project-description">
+              {projectsRemainingCopy.projectBrief}
+            </FieldLabel>
+            <textarea
+              id="project-description"
+              className="control-field min-h-36"
+              maxLength={10000}
+              {...controllerField}
+              value={String(controllerField.value ?? "")}
+              aria-invalid={fieldState.invalid}
+            />
+            {fieldState.error && (
+              <FieldError>{fieldState.error.message}</FieldError>
+            )}
+          </Field>
+        )}
+      />
       <div className="grid gap-4 sm:grid-cols-2">
-        <div className="form-field">
-          <Label htmlFor="project-start">Starts on</Label>
-          <Input id="project-start" type="date" {...register("startsAt")} />
-        </div>
-        <div className="form-field">
-          <Label htmlFor="project-due">Due on</Label>
-          <Input id="project-due" type="date" {...register("dueAt")} />
-        </div>
+        <Controller
+          name={"startsAt"}
+          control={control}
+          render={({ field: controllerField, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor="project-start">
+                {projectsRemainingCopy.startsOn}
+              </FieldLabel>
+              <Input
+                id="project-start"
+                type="date"
+                {...controllerField}
+                value={String(controllerField.value ?? "")}
+                aria-invalid={fieldState.invalid}
+              />
+              {fieldState.error && (
+                <FieldError>{fieldState.error.message}</FieldError>
+              )}
+            </Field>
+          )}
+        />
+        <Controller
+          name={"dueAt"}
+          control={control}
+          render={({ field: controllerField, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor="project-due">
+                {projectsRemainingCopy.dueOn}
+              </FieldLabel>
+              <Input
+                id="project-due"
+                type="date"
+                {...controllerField}
+                value={String(controllerField.value ?? "")}
+                aria-invalid={fieldState.invalid}
+              />
+              {fieldState.error && (
+                <FieldError>{fieldState.error.message}</FieldError>
+              )}
+            </Field>
+          )}
+        />
       </div>
       {error && <p role="alert">{error}</p>}
       <Button type="submit" disabled={isSubmitting}>
-        {isSubmitting ? "Saving…" : project ? "Save project" : "Create project"}
+        {isSubmitting
+          ? projectsPresentationCopy.saving
+          : project
+            ? projectsPresentationCopy.saveProject
+            : projectsPresentationCopy.createProject}
       </Button>
     </form>
   );

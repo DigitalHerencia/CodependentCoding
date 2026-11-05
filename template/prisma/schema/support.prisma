@@ -23,7 +23,7 @@ enum KnowledgeArticleStatus {
 model SupportTicket {
   id                   String  @id @default(uuid()) @db.Uuid
   organizationId       String  @db.Uuid
-  requesterUserId      String? @db.Uuid
+  requesterUserId      String?
   assignedMembershipId String? @db.Uuid
 
   number      Int

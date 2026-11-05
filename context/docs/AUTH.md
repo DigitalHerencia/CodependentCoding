@@ -22,37 +22,37 @@ Applies to the template and every generated app. The factory itself (landing pag
 ## 2. Trust progression
 
 ```text
-untrusted input → runtime-validated (Zod) → authenticated (Clerk) → member of active org
-→ permission granted (RBAC) → policy satisfied (ABAC/ownership) → tenant-scoped query
+authenticated (Clerk) → active tenant context → general permission granted (RBAC)
+→ runtime-validated input (Zod) → resource/tenant policy satisfied (ABAC) → tenant-scoped query
 → RLS-contained write → committed → DTO (transport-safe)
 ```
 
 ## 3. Authentication — `lib/auth/`
 
-| File                | Responsibility                                                                                         |
-| ------------------- | ------------------------------------------------------------------------------------------------------ |
-| `clerk.ts`          | Clerk backend client instance                                                                          |
-| `auth.ts`           | `requireIdentity()` → `{ clerkUserId, user }` (local User, created on demand); `getOptionalIdentity()` |
-| `redirects.ts`      | Sign-in/up/after-auth redirect targets                                                                 |
-| `clerk-webhooks.ts` | `verifyClerkWebhook(request)` using Clerk's webhook verification on the raw body                       |
+| File                | Responsibility                                                                            |
+| ------------------- | ----------------------------------------------------------------------------------------- |
+| `clerk.ts`          | Clerk backend client instance                                                             |
+| `auth.ts`           | `requireIdentity()` → `{ clerkUserId }`; verified Clerk identity, without database access |
+| `redirects.ts`      | Sign-in/up/after-auth redirect targets                                                    |
+| `clerk-webhooks.ts` | `verifyClerkWebhook(request)` using Clerk's webhook verification on the raw body          |
 
-- `proxy.ts` uses `clerkMiddleware` to protect `(tenant)`, `(setup)` and `/api` (except webhooks). It only gates; it never reads the database.
+- `proxy.ts` uses `clerkMiddleware` to protect tenant/admin paths and `/api` (except webhooks). It only gates; it never reads the database.
 - Development: Clerk keyless mode until keys are set; `doctor` warns when keys are missing.
-- Clerk webhook (`app/api/clerk/webhooks/route.ts`): verify → idempotency check → `user.created|updated|deleted` sync through `lib/db/transactions/clerk-user.tx.ts` → `200`.
+- Clerk webhook (`app/api/clerk/webhooks/route.ts`): verify → idempotency check → `user.created|updated|deleted` sync through `lib/db/transactions/clerkUserTx.ts` → `200`.
 
 ## 4. Tenancy model (application-owned)
 
 ```prisma
 model User {
-  id          String   @id @default(cuid())
-  clerkUserId String   @unique
-  email       String
-  name        String?
+  id          String   @id // Clerk user ID
+  email       String?
+  displayName String?
+  profileCompletedAt DateTime?
   memberships Membership[]
 }
 
 model Organization {
-  id          String   @id @default(cuid())
+  id          String   @id @default(uuid()) @db.Uuid
   name        String
   slug        String   @unique
   memberships Membership[]
@@ -60,23 +60,23 @@ model Organization {
 }
 
 model Membership {
-  id             String           @id @default(cuid())
+  id             String           @id @default(uuid()) @db.Uuid
   userId         String
   organizationId String
-  role           MembershipRole   @default(member)
-  status         MembershipStatus @default(active)
+  role           MembershipRole   @default(MEMBER)
+  status         MembershipStatus @default(ACTIVE)
   @@unique([userId, organizationId])
 }
 
-enum MembershipRole   { owner admin member viewer }
-enum MembershipStatus { active invited suspended }
+enum MembershipRole   { OWNER ADMIN MEMBER VIEWER }
+enum MembershipStatus { ACTIVE INVITED SUSPENDED REVOKED }
 ```
 
 ### 4.1 Active organization
 
 - Stored in an httpOnly, `Secure`, `SameSite=Lax` cookie `active-org` holding the organization ID.
 - **Every request re-validates** it against an active Membership. Invalid or missing → fall back to the user's first active membership → none → redirect `/onboarding`.
-- Switching orgs is a server action (`switchOrganization`) that validates membership before setting the cookie. The cookie is read and written only in `lib/auth/active-organization.ts`; the tenant shell shows the switcher to users with two or more organizations.
+- Switching orgs is a server action (`switchOrganization`) that validates membership before setting the cookie. The cookie is read and written only in `lib/auth/activeOrganization.ts`; the tenant shell shows the switcher to users with two or more organizations.
 
 ### 4.2 Onboarding
 
@@ -104,7 +104,7 @@ enum MembershipStatus { active invited suspended }
 
 Every fetcher and action runs both checks in order: the role check (may this role do this action on this kind of resource?), then the record check (is this record in the caller's organization, and may this caller touch it?). `owner` and `admin` hold every permission. `member` is staff. `viewer` is for people outside the staff, such as clients: policies limit them to records shared with them (`clientVisible`) or their own (owner, assignee, requester).
 
-Role names are listed once, in `lib/authz/roles.ts`, the one `lib/authz` file without `server-only`: client companions and schemas may import it for role pickers and enums; every other `lib/authz` file stays server-only (CC-SRV-001, CC-FEAT-004, CC-SCHEMA-001). Other enum **values** shown in the UI live in `lib/constants` or `types/`.
+Stored role values come from the Prisma-generated MembershipRole enum, consumed by `lib/authz/roles.ts`, the one `lib/authz` file without `server-only`: client companions and schemas may import it for role pickers and enums; every other `lib/authz` file stays server-only (CC-SRV-001, CC-FEAT-004, CC-SCHEMA-001). Other stored enum values also come from Prisma; Zod owns runtime input contracts.
 
 ### 5.1 Tenant context
 
@@ -207,3 +207,13 @@ type ErrorCode =
 - [ ] No provider calls inside transactions.
 - [ ] Cross-tenant IDs yield `NOT_FOUND`.
 - [ ] RLS policies exist for every new tenant table; `test:rls` covers it.
+
+## Administrator and onboarding boundaries
+
+The four route groups are (auth), (public), (tenant), and (admin). app/layout.tsx owns the document, metadata, fonts and ClerkProvider; app/page.tsx owns the public landing page. Group layouts compose their flat shells. Onboarding is inside (auth): a profile/review stepper saves only the display name, then shows the approval waiting area. An ACTIVE membership with an administrator-assigned role is required before any tenant read or write. Users never choose roles, permissions, organizations or teams during onboarding.
+
+Admin pages live directly beneath (admin); rewrites preserve /admin URLs. The layout is a UX gate, with independently authorized fetchers/actions as the security boundary. Administrator reads require both authentication factors within ten minutes; sensitive writes and role-granting invitations require both within five minutes. Missing MFA never falls back to password-only authorization. Expired reads return to the verification route; Clerk reverification handles action challenges. Enabling MFA methods in Clerk remains an owner configuration step.
+
+Membership administration uses soft suspension/restoration and atomic audit events with the affected identity and previous/next values. Clerk deletion anonymizes the retained user and suspends memberships. WebhookEvent remains a separate delivery ledger. Admin list reads apply validated search and bounded pagination in SQL, and detail reads retrieve only the requested identity. Tenant identity/RLS context remains on the protected transaction connection; no additional admin database URL is required by the supplied reference.
+
+User IDs and their relationships use Clerk string identifiers. Organizations and memberships retain UUID identifiers. Source migration 20261104010000_clerk_identity_primary_key converts existing UUID relationships without discarding rows; it must be reviewed and applied by the owner before running this source against an older database.

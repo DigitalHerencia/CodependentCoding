@@ -18,3 +18,8 @@ export const applicationOperator = {
 export const applicationDesign = {
   navigation: "sidebar",
 } as const;
+
+export const formResultCopy = {
+  saved: "Changes saved.",
+  failed: "The request could not be completed. Try again.",
+} as const;

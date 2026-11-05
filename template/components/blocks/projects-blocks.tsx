@@ -1,4 +1,5 @@
 "use client";
+import { projectsPresentationCopy } from "@/content/projects";
 import { projectsBlockCopy } from "@/content/projects";
 import Link from "next/link";
 import { Input } from "@/components/ui/input";
@@ -37,6 +38,35 @@ export function ProjectsToolbar({
       <Link className="type-link" href="/projects/new">
         {projectsBlockCopy.newProject}
       </Link>
+    </div>
+  );
+}
+
+export function ProjectTasksToolbar({
+  query,
+  onQueryChange,
+  projectId,
+}: {
+  query: string;
+  onQueryChange: (query: string) => void;
+  projectId?: string | undefined;
+}) {
+  return (
+    <div className="flex flex-wrap gap-3">
+      <Input
+        aria-label={projectsPresentationCopy.searchTasks}
+        placeholder={projectsPresentationCopy.searchTaskOrAssignee}
+        value={query}
+        onChange={(event) => onQueryChange(event.target.value)}
+      />
+      {projectId && (
+        <Link
+          className="type-link"
+          href={"/projects/" + projectId + "/tasks/new"}
+        >
+          {projectsPresentationCopy.newTask}
+        </Link>
+      )}
     </div>
   );
 }

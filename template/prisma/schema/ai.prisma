@@ -9,7 +9,7 @@ enum AiGenerationStatus {
 model AiGeneration {
   id             String @id @default(uuid()) @db.Uuid
   organizationId String @db.Uuid
-  userId         String @db.Uuid
+  userId         String
 
   provider String
   model    String
@@ -42,7 +42,7 @@ model AiGeneration {
 model AiUsageLedger {
   id             String @id @default(uuid()) @db.Uuid
   organizationId String @db.Uuid
-  userId         String @db.Uuid
+  userId         String
   generationId   String @unique @db.Uuid
 
   provider     String

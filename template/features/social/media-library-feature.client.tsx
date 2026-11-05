@@ -1,6 +1,6 @@
 "use client";
 import { MediaLibraryToolbar } from "@/components/blocks/social-blocks";
-import { WorkspaceFileUpload } from "@/features/uploads/workspace-file-upload.client";
+import { WorkspaceFileUpload } from "@/features/uploads/workspace-file-upload-form.client";
 import { useState } from "react";
 import { SocialMediaTemplate } from "@/components/templates/social-templates";
 import type { MediaAssetDTO } from "@/types/socialTypes";

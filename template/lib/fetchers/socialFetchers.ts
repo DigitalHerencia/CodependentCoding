@@ -1,3 +1,4 @@
+import { persistedReadLimitSchema } from "@/schema/commonSchemas";
 import "server-only";
 
 import { assertPermission } from "@/lib/authz/permissions";
@@ -13,9 +14,10 @@ import {
 } from "@/lib/db/selects/socialSelects";
 import { withAuthenticatedRead } from "@/lib/db/tenant";
 
-export async function getScheduledSocialPosts(limit = 100) {
+export async function getScheduledSocialPosts(rawLimit: unknown = 100) {
   return withAuthenticatedRead(async (tx, access) => {
     assertPermission(access, "social.post:read");
+    const limit = persistedReadLimitSchema.parse(rawLimit);
 
     const rows = await tx.socialPost.findMany({
       where: {
@@ -45,9 +47,10 @@ export async function getSocialAccounts() {
   });
 }
 
-export async function getMediaAssets(limit = 100) {
+export async function getMediaAssets(rawLimit: unknown = 100) {
   return withAuthenticatedRead(async (tx, access) => {
     assertPermission(access, "social.media:read");
+    const limit = persistedReadLimitSchema.parse(rawLimit);
     const rows = await tx.asset.findMany({
       where: { organizationId: access.organizationId },
       orderBy: { createdAt: "desc" },
@@ -58,9 +61,10 @@ export async function getMediaAssets(limit = 100) {
   });
 }
 
-export async function getSocialPosts(limit = 100) {
+export async function getSocialPosts(rawLimit: unknown = 100) {
   return withAuthenticatedRead(async (tx, access) => {
     assertPermission(access, "social.post:read");
+    const limit = persistedReadLimitSchema.parse(rawLimit);
     const rows = await tx.socialPost.findMany({
       where: { organizationId: access.organizationId },
       orderBy: [{ scheduledAt: "asc" }, { createdAt: "desc" }],

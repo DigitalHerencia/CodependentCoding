@@ -1,3 +1,4 @@
+import { socialPresentationCopy } from "@/content/social";
 // Why: Templates: pure presentation for the social pages, laid out from DTOs; data and slots come from features.
 import Link from "next/link";
 import type { ReactNode } from "react";
@@ -5,7 +6,7 @@ import type { SocialPostDTO, MediaAssetDTO } from "@/types/socialTypes";
 import {
   DashboardLayout,
   DashboardPanel,
-} from "@/components/blocks/dashboard-layout";
+} from "@/components/blocks/shared-blocks";
 
 export function SocialCalendarTemplate({
   posts,
@@ -19,14 +20,20 @@ export function SocialCalendarTemplate({
   const dates = [
     ...new Set(
       posts.map(
-        (post) => post.scheduledAt?.slice(0, 10) ?? "Unscheduled drafts",
+        (post) =>
+          post.scheduledAt?.slice(0, 10) ??
+          socialPresentationCopy.unscheduledDrafts,
       ),
     ),
   ].sort();
   return (
-    <DashboardLayout title="Publishing calendar" nav={[]} toolbar={toolbar}>
+    <DashboardLayout
+      title={socialPresentationCopy.publishingCalendar}
+      nav={[]}
+      toolbar={toolbar}
+    >
       <Link className="type-link" href="/social/compose">
-        Compose post
+        {socialPresentationCopy.composePost}
       </Link>
       <div className="space-y-5">
         {dates.map((date) => (
@@ -35,8 +42,8 @@ export function SocialCalendarTemplate({
               {posts
                 .filter(
                   (post) =>
-                    (post.scheduledAt?.slice(0, 10) ?? "Unscheduled drafts") ===
-                    date,
+                    (post.scheduledAt?.slice(0, 10) ??
+                      socialPresentationCopy.unscheduledDrafts) === date,
                 )
                 .map((post) => (
                   <article
@@ -44,18 +51,23 @@ export function SocialCalendarTemplate({
                     className="space-y-3 surface-inset p-4"
                   >
                     <h3 className="type-label">
-                      {post.title ?? "Untitled post"}
+                      {post.title ?? socialPresentationCopy.untitledPost}
                     </h3>
                     <p className="whitespace-pre-wrap">{post.content}</p>
                     <p>
-                      {post.status} ·{" "}
-                      {post.scheduledAt?.slice(11, 16) ?? "No time set"} UTC
+                      {post.status}
+                      {socialPresentationCopy.separator2}{" "}
+                      {post.scheduledAt?.slice(11, 16) ??
+                        socialPresentationCopy.noTimeSet}
+                      {socialPresentationCopy.uTC}
                     </p>
                     <ul>
                       {post.variants.map((variant) => (
                         <li key={variant.id}>
-                          {variant.accountDisplayName} · {variant.provider} ·{" "}
-                          {variant.status}
+                          {variant.accountDisplayName}
+                          {socialPresentationCopy.separator}
+                          {variant.provider}
+                          {socialPresentationCopy.separator2} {variant.status}
                         </li>
                       ))}
                     </ul>
@@ -66,7 +78,7 @@ export function SocialCalendarTemplate({
           </DashboardPanel>
         ))}
       </div>
-      {!posts.length && <p>No posts in this view.</p>}
+      {!posts.length && <p>{socialPresentationCopy.noPostsInThisView}</p>}
     </DashboardLayout>
   );
 }
@@ -80,11 +92,13 @@ export function SocialComposeTemplate({
 }) {
   return (
     <section className="space-y-5 p-5">
-      <h1 className="type-title">Compose a social post</h1>
+      <h1 className="type-title">
+        {socialPresentationCopy.composeASocialPost}
+      </h1>
       <div className="grid gap-5 lg:grid-cols-[3fr_2fr]">
         <section className="surface-card p-5">{children}</section>
         <aside className="space-y-4 surface-inset p-5">
-          <h2 className="type-label">Post preview</h2>
+          <h2 className="type-label">{socialPresentationCopy.postPreview}</h2>
           {preview}
         </aside>
       </div>
@@ -104,7 +118,11 @@ export function SocialMediaTemplate({
   renderControls: (asset: MediaAssetDTO) => ReactNode;
 }) {
   return (
-    <DashboardLayout title="Media library" nav={[]} toolbar={toolbar}>
+    <DashboardLayout
+      title={socialPresentationCopy.mediaLibrary}
+      nav={[]}
+      toolbar={toolbar}
+    >
       {children}
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {assets.map((asset) => (
@@ -113,15 +131,19 @@ export function SocialMediaTemplate({
               {asset.contentType}
             </div>
             <h2 className="type-label break-all">{asset.filename}</h2>
-            <p className="mt-3 text-sm">{asset.byteSize} bytes</p>
+            <p className="mt-3 text-sm">
+              {asset.byteSize}
+              {socialPresentationCopy.bytes}
+            </p>
             <p className="text-sm text-muted-primary">
-              Added {asset.createdAt.slice(0, 10)}
+              {socialPresentationCopy.added}
+              {asset.createdAt.slice(0, 10)}
             </p>
             {renderControls(asset)}
           </article>
         ))}
       </div>
-      {!assets.length && <p>No matching media assets.</p>}
+      {!assets.length && <p>{socialPresentationCopy.noMatchingMediaAssets}</p>}
     </DashboardLayout>
   );
 }

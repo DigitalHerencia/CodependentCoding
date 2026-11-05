@@ -1,11 +1,22 @@
 import { z } from "zod";
-import { CampaignStatus } from "@/generated/prisma/enums";
+import { CampaignStatus, AudienceStatus } from "@/generated/prisma/enums";
 
 export const createCampaignSchema = z.object({
-  audienceId: z.string().uuid().nullable().optional(),
+  audienceId: z
+    .union([z.string().uuid(), z.literal("").transform(() => null)])
+    .nullable()
+    .optional(),
   name: z.string().trim().min(1).max(200),
   description: z.string().max(10_000).nullable().optional(),
-  scheduledAt: z.coerce.date().nullable().optional(),
+  scheduledAt: z.preprocess(
+    (value) =>
+      value === ""
+        ? null
+        : typeof value === "string" && /^\d{4}-\d\d-\d\dT\d\d:\d\d$/.test(value)
+          ? value + "Z"
+          : value,
+    z.coerce.date().nullable().optional(),
+  ),
 });
 
 export const updateCampaignStatusSchema = z.object({
@@ -21,7 +32,7 @@ export const updateCampaignSchema = createCampaignSchema.extend({
 
 export const audienceFormSchema = z.object({
   name: z.string().trim().min(1).max(200),
-  status: z.enum(["DRAFT", "ACTIVE", "ARCHIVED"]),
+  status: z.enum(AudienceStatus),
   definition: z.object({
     operator: z.literal("and"),
     rules: z

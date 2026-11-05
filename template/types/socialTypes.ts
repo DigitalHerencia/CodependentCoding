@@ -1,4 +1,4 @@
-export interface SocialPostDTO {
+export type SocialPostDTO = {
   id: string;
   title: string | null;
   content: string;
@@ -21,16 +21,16 @@ export interface SocialPostDTO {
   }>;
   createdAt: string;
   updatedAt: string;
-}
-export interface SocialAccountDTO {
+};
+export type SocialAccountDTO = {
   id: string;
   provider: string;
   displayName: string;
-}
-export interface MediaAssetDTO {
+};
+export type MediaAssetDTO = {
   id: string;
   filename: string;
   contentType: string;
   byteSize: string;
   createdAt: string;
-}
+};

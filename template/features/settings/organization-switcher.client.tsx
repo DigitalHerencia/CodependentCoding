@@ -1,4 +1,5 @@
 "use client";
+import { settingsPresentationCopy } from "@/content/settings";
 import { OrganizationSwitcherBlock } from "@/components/blocks/settings-blocks";
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
@@ -24,7 +25,7 @@ export function OrganizationSwitcherClient({
           setError("");
           const result = await switchOrganization({ organizationId });
           if (!result.ok) {
-            setError("That organization could not be opened.");
+            setError(settingsPresentationCopy.thatOrganizationCouldNotBeOpened);
             return;
           }
           router.refresh();

@@ -1,10 +1,11 @@
+import { portalPresentationCopy } from "@/content/portal";
 // Why: Templates: pure presentation for the portal pages, laid out from DTOs; data and slots come from features.
 import type { PortalBillingDTO, PortalDocumentDTO } from "@/types/portalTypes";
 import {
   DashboardLayout,
   DashboardPanel,
   DashboardTable,
-} from "@/components/blocks/dashboard-layout";
+} from "@/components/blocks/shared-blocks";
 import Link from "next/link";
 import type { ReactNode } from "react";
 
@@ -14,38 +15,40 @@ export function PortalBillingTemplate({
   billing: PortalBillingDTO;
 }) {
   return (
-    <DashboardLayout title="Billing overview" nav={[]}>
-      <DashboardPanel title="Subscription">
+    <DashboardLayout title={portalPresentationCopy.billingOverview} nav={[]}>
+      <DashboardPanel title={portalPresentationCopy.subscription}>
         {billing.subscription ? (
           <dl className="grid gap-3 sm:grid-cols-2">
-            <dt>Plan</dt>
+            <dt>{portalPresentationCopy.plan}</dt>
             <dd>{billing.subscription.planKey}</dd>
-            <dt>Status</dt>
+            <dt>{portalPresentationCopy.status}</dt>
             <dd>{billing.subscription.status}</dd>
-            <dt>Current period ends</dt>
+            <dt>{portalPresentationCopy.currentPeriodEnds}</dt>
             <dd>
               {billing.subscription.currentPeriodEnd?.slice(0, 10) ??
-                "Not recorded"}
+                portalPresentationCopy.notRecorded}
             </dd>
-            <dt>Renewal</dt>
+            <dt>{portalPresentationCopy.renewal}</dt>
             <dd>
               {billing.subscription.cancelAtPeriodEnd
-                ? "Cancels at period end"
-                : "Continues"}
+                ? portalPresentationCopy.cancelsAtPeriodEnd
+                : portalPresentationCopy.continues}
             </dd>
           </dl>
         ) : (
-          <p>No subscription is recorded for this workspace.</p>
+          <p>
+            {portalPresentationCopy.noSubscriptionIsRecordedForThisWorkspace}
+          </p>
         )}
       </DashboardPanel>
-      <DashboardPanel title="Recent invoices">
+      <DashboardPanel title={portalPresentationCopy.recentInvoices}>
         <DashboardTable
           columns={[
-            { key: "number", label: "Invoice" },
-            { key: "customer", label: "Customer" },
-            { key: "amount", label: "Amount" },
-            { key: "status", label: "Status" },
-            { key: "due", label: "Due" },
+            { key: "number", label: portalPresentationCopy.invoice },
+            { key: "customer", label: portalPresentationCopy.customer },
+            { key: "amount", label: portalPresentationCopy.amount },
+            { key: "status", label: portalPresentationCopy.status },
+            { key: "due", label: portalPresentationCopy.due },
           ]}
           rows={billing.invoices.map((invoice) => ({
             id: invoice.id,
@@ -73,34 +76,48 @@ export function PortalDocumentDetailTemplate({
   return (
     <DashboardLayout title={document.title} nav={[]}>
       <Link className="type-link" href="/portal/documents">
-        Document vault
+        {portalPresentationCopy.documentVault}
       </Link>
       <div className="grid gap-4 lg:grid-cols-[2fr_1fr]">
-        <DashboardPanel title="Document">
+        <DashboardPanel title={portalPresentationCopy.document}>
           <p className="whitespace-pre-wrap">
-            {document.description ?? "No description."}
+            {document.description ?? portalPresentationCopy.noDescription}
           </p>
           {document.latestVersion ? (
             <dl className="mt-6 space-y-2">
-              <dt>Current file</dt>
+              <dt>{portalPresentationCopy.currentFile}</dt>
               <dd>{document.latestVersion.filename}</dd>
-              <dt>Format</dt>
+              <dt>{portalPresentationCopy.format}</dt>
               <dd>{document.latestVersion.contentType}</dd>
-              <dt>Size</dt>
-              <dd>{document.latestVersion.byteSize} bytes</dd>
-              <dt>Added</dt>
+              <dt>{portalPresentationCopy.size}</dt>
+              <dd>
+                {document.latestVersion.byteSize}
+                {portalPresentationCopy.bytes}
+              </dd>
+              <dt>{portalPresentationCopy.added}</dt>
               <dd>{document.latestVersion.createdAt.slice(0, 10)}</dd>
             </dl>
           ) : (
             <p className="mt-5">
-              This document does not have a file version yet.
+              {portalPresentationCopy.thisDocumentDoesNotHaveAFileVersionYet}
             </p>
           )}
         </DashboardPanel>
-        <DashboardPanel title="Version and review">
-          <p>Version {document.currentVersionNumber}</p>
-          <p>Status: {document.status}</p>
-          <p>Client visible: {document.clientVisible ? "Yes" : "No"}</p>
+        <DashboardPanel title={portalPresentationCopy.versionAndReview}>
+          <p>
+            {portalPresentationCopy.version}
+            {document.currentVersionNumber}
+          </p>
+          <p>
+            {portalPresentationCopy.status2}
+            {document.status}
+          </p>
+          <p>
+            {portalPresentationCopy.clientVisible}
+            {document.clientVisible
+              ? portalPresentationCopy.yes
+              : portalPresentationCopy.no}
+          </p>
           {children}
         </DashboardPanel>
       </div>
@@ -118,13 +135,18 @@ export function PortalDocumentsTemplate({
   children?: ReactNode;
 }) {
   return (
-    <DashboardLayout title="Document vault" nav={[]} toolbar={toolbar}>
+    <DashboardLayout
+      title={portalPresentationCopy.documentVault}
+      nav={[]}
+      toolbar={toolbar}
+    >
       {children}
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         {documents.map((document) => (
           <article key={document.id} className="space-y-3 surface-card p-5">
             <p className="type-caption">
-              {document.latestVersion?.contentType ?? "Document folder"}
+              {document.latestVersion?.contentType ??
+                portalPresentationCopy.documentFolder}
             </p>
             <Link
               className="type-title hover:underline"
@@ -136,15 +158,19 @@ export function PortalDocumentsTemplate({
               {document.description}
             </p>
             <p>
-              Version {document.currentVersionNumber} · {document.status}
+              {portalPresentationCopy.version}
+              {document.currentVersionNumber}
+              {portalPresentationCopy.separator}
+              {document.status}
             </p>
             <p className="text-sm">
-              {document.latestVersion?.filename ?? "No file version yet"}
+              {document.latestVersion?.filename ??
+                portalPresentationCopy.noFileVersionYet}
             </p>
           </article>
         ))}
       </div>
-      {!documents.length && <p>No matching documents.</p>}
+      {!documents.length && <p>{portalPresentationCopy.noMatchingDocuments}</p>}
     </DashboardLayout>
   );
 }
@@ -155,9 +181,9 @@ export function PortalHomeTemplate({
   documents: PortalDocumentDTO[];
 }) {
   return (
-    <DashboardLayout title="Client workspace" nav={[]}>
+    <DashboardLayout title={portalPresentationCopy.clientWorkspace} nav={[]}>
       <div className="grid gap-5 lg:grid-cols-[2fr_1fr]">
-        <DashboardPanel title="Recent documents">
+        <DashboardPanel title={portalPresentationCopy.recentDocuments}>
           <ul className="space-y-4">
             {documents.slice(0, 8).map((document) => (
               <li
@@ -171,23 +197,28 @@ export function PortalHomeTemplate({
                   {document.title}
                 </Link>
                 <span>
-                  Version {document.currentVersionNumber} · {document.status}
+                  {portalPresentationCopy.version}
+                  {document.currentVersionNumber}
+                  {portalPresentationCopy.separator}
+                  {document.status}
                 </span>
               </li>
             ))}
           </ul>
-          {!documents.length && <p>No documents have been shared with you.</p>}
+          {!documents.length && (
+            <p>{portalPresentationCopy.noDocumentsHaveBeenSharedWithYou}</p>
+          )}
         </DashboardPanel>
-        <DashboardPanel title="Workspace services">
+        <DashboardPanel title={portalPresentationCopy.workspaceServices}>
           <nav className="flex flex-col gap-4">
             <Link className="type-link" href="/portal/documents">
-              Browse document vault
+              {portalPresentationCopy.browseDocumentVault}
             </Link>
             <Link className="type-link" href="/portal/billing">
-              Billing overview
+              {portalPresentationCopy.billingOverview}
             </Link>
             <Link className="type-link" href="/support/tickets/new">
-              Request support
+              {portalPresentationCopy.requestSupport}
             </Link>
           </nav>
         </DashboardPanel>

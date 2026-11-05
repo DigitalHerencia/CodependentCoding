@@ -17,7 +17,7 @@ export const required = () => z.preprocess(unset, z.string().trim().min(1));
 export const optional = () =>
   z.preprocess(unset, z.string().trim().min(1).optional());
 
-export interface OwnerEnv<Shape extends z.ZodRawShape> {
+export type OwnerEnv<Shape extends z.ZodRawShape> = {
   owner: string;
   schema: z.ZodObject<Shape>;
   /** Parsed values; throws once, naming every missing or invalid variable. */
@@ -28,7 +28,7 @@ export interface OwnerEnv<Shape extends z.ZodRawShape> {
   value<Name extends keyof Shape & string>(
     name: Name,
   ): z.output<Shape[Name]> | undefined;
-}
+};
 
 export function defineEnv<Shape extends z.ZodRawShape>(
   owner: string,
@@ -63,6 +63,11 @@ export function defineEnv<Shape extends z.ZodRawShape>(
  */
 export function hasValues(names: readonly string[]): boolean {
   return names.every((name) => unset(process.env[name]) !== undefined);
+}
+
+/** Whether an optional integration has been partially configured. */
+export function hasAnyValue(names: readonly string[]): boolean {
+  return names.some((name) => unset(process.env[name]) !== undefined);
 }
 
 /** The current environment plus overrides, for child processes (tests, scripts). */

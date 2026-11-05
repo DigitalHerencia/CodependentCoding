@@ -150,8 +150,11 @@ const layerBoundaries = {
     const boundary = layer ? boundaries[layer] : undefined;
     if (!boundary) return {};
     const deny = new Set(boundary.deny);
-    const except = new Set(boundary.except ?? []);
     const profile = profileOf(context);
+    const except = new Set([
+      ...(boundary.except ?? []),
+      ...(boundary.profileExcept?.[profile] ?? []),
+    ]);
     return onEachSource((spec, sourceNode, node) => {
       const hits = categoriesOf(resolveSpecifier(spec, rel), profile);
       if (hits.some((hit) => except.has(hit))) return;

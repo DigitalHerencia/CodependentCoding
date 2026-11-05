@@ -52,8 +52,8 @@ ALTER TABLE "User" FORCE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "user_identity_isolation" ON "User";
 CREATE POLICY "user_identity_isolation" ON "User"
 FOR ALL TO app_runtime
-USING ("clerkUserId" = (SELECT NULLIF(current_setting('app.clerk_user_id', true), '')))
-WITH CHECK ("clerkUserId" = (SELECT NULLIF(current_setting('app.clerk_user_id', true), '')));
+USING ("id" = (SELECT NULLIF(current_setting('app.clerk_user_id', true), '')))
+WITH CHECK ("id" = (SELECT NULLIF(current_setting('app.clerk_user_id', true), '')));
 
 -- Membership resolves from the authenticated Clerk user before an organization
 -- is selected; afterwards app.organization_id is the tenant boundary.
@@ -71,7 +71,7 @@ WITH CHECK ("organizationId" = (SELECT NULLIF(current_setting('app.organization_
 DROP POLICY IF EXISTS "membership_identity_read" ON "Membership";
 CREATE POLICY "membership_identity_read" ON "Membership"
 FOR SELECT TO app_runtime
-USING ("userId" = (SELECT NULLIF(current_setting('app.user_id', true), '')::uuid));
+USING ("userId" = (SELECT NULLIF(current_setting('app.user_id', true), '')));
 
 -- Profiles can be displayed to members of the selected tenant. The identity
 -- policy remains the only policy that permits profile writes.
@@ -116,7 +116,7 @@ USING (
   "organizationId" = (SELECT NULLIF(current_setting('app.organization_id', true), '')::uuid)
   OR lower("email") IN (
     SELECT lower("email") FROM "User"
-    WHERE "clerkUserId" = (SELECT NULLIF(current_setting('app.clerk_user_id', true), ''))
+    WHERE "id" = (SELECT NULLIF(current_setting('app.clerk_user_id', true), ''))
   )
 )
 WITH CHECK ("organizationId" = (SELECT NULLIF(current_setting('app.organization_id', true), '')::uuid));

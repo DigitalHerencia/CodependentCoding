@@ -6,16 +6,14 @@ import { withIdentityTransaction } from "@/lib/db/tenant";
 import { ResourceNotFoundError } from "@/lib/db/transactions/errors";
 import { acceptInvitationTx } from "@/lib/db/transactions/invitationTx";
 import { toActionResult } from "@/lib/utils/actionResult";
+import { completeOnboardingTx } from "@/lib/db/transactions/onboardingTx";
 import { onboardingSchema } from "@/schema/commonSchemas";
 
 export async function completeOnboarding(rawInput: unknown) {
   return toActionResult(async () => {
     await withIdentityTransaction(async (tx, user) => {
       const { name } = onboardingSchema.parse(rawInput);
-      await tx.user.updateMany({
-        where: { id: user.id, profileCompletedAt: null },
-        data: { displayName: name, profileCompletedAt: new Date() },
-      });
+      await completeOnboardingTx(tx, user.id, name);
     });
     revalidatePath("/", "layout");
   });

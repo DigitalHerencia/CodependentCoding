@@ -24,26 +24,27 @@ compiles_to: .claude/contracts/application.yaml, .claude/contracts/validation.ya
 
 Exact versions only (no `^`/`~`). Upgrades are explicit issues.
 
-| Package                                        | Version        | Notes                                                  |
-| ---------------------------------------------- | -------------- | ------------------------------------------------------ |
-| typescript                                     | 6.0.3          | TS 7 is unsupported by typescript-eslint 8.x (DEC-006) |
-| eslint                                         | 9.39.5         | Proven with eslint-config-next 16.4.3                  |
-| eslint-config-next                             | 16.4.3         |                                                        |
-| eslint-config-prettier                         | 10.1.8         | Always last in flat config                             |
-| prettier                                       | 3.9.10         |                                                        |
-| prettier-plugin-tailwindcss                    | 0.8.1          | Class sorting (CC-FMT-002)                             |
-| next                                           | 16.4.3         | App Router, Turbopack, typed routes, React Compiler    |
-| react / react-dom                              | 19.3.1         |                                                        |
-| tailwindcss / @tailwindcss/postcss             | 4.3.3          |                                                        |
-| prisma / @prisma/client / @prisma/adapter-neon | 7.10.1         | Multi-file schema                                      |
-| @neondatabase/serverless                       | 1.2.0          |                                                        |
-| @clerk/nextjs                                  | 7.9.20         |                                                        |
-| zod                                            | 4.6.7          |                                                        |
-| react-hook-form / @hookform/resolvers          | 7.91.0 / 5.9.2 | All forms                                              |
-| vitest                                         | 4.1.12         |                                                        |
-| @playwright/test                               | 1.64.1         |                                                        |
-| stripe                                         | 22.6.2         | `billing` module                                       |
-| commander / @clack/prompts                     | 15.0.0 / 1.8.1 | CLI only                                               |
+| Package                                        | Version        | Notes                                                            |
+| ---------------------------------------------- | -------------- | ---------------------------------------------------------------- |
+| @typescript/native (npm:typescript)            | 7.0.2          | Native TypeScript 7 type checking                                |
+| typescript (npm:@typescript/typescript6)       | 6.0.2          | Programmatic API compatibility for Next.js and typescript-eslint |
+| eslint                                         | 9.39.5         | Proven with eslint-config-next 16.4.3                            |
+| eslint-config-next                             | 16.4.3         |                                                                  |
+| eslint-config-prettier                         | 10.1.8         | Always last in flat config                                       |
+| prettier                                       | 3.9.10         |                                                                  |
+| prettier-plugin-tailwindcss                    | 0.8.1          | Class sorting (CC-FMT-002)                                       |
+| next                                           | 16.4.3         | App Router, Turbopack, typed routes, React Compiler              |
+| react / react-dom                              | 19.3.1         |                                                                  |
+| tailwindcss / @tailwindcss/postcss             | 4.3.3          |                                                                  |
+| prisma / @prisma/client / @prisma/adapter-neon | 7.10.1         | Multi-file schema                                                |
+| @neondatabase/serverless                       | 1.2.0          |                                                                  |
+| @clerk/nextjs                                  | 7.9.20         |                                                                  |
+| zod                                            | 4.6.7          |                                                                  |
+| react-hook-form / @hookform/resolvers          | 7.91.0 / 5.9.2 | All forms                                                        |
+| vitest                                         | 4.1.12         |                                                                  |
+| @playwright/test                               | 1.64.1         |                                                                  |
+| stripe                                         | 22.6.2         | `billing` module                                                 |
+| commander / @clack/prompts                     | 15.0.0 / 1.8.1 | CLI only                                                         |
 
 ## 3. Repository layout
 
@@ -187,3 +188,5 @@ Removed: `.agents/`, `packages/core`, `packages/schema`, `packages/loaded-vibes`
 - Generated app first build ≤ 3 min on CI; `new` without provisioning ≤ 2 min excluding install.
 - Landing page Lighthouse ≥ 95 performance/accessibility.
 - `pnpm lint` on template ≤ 60 s locally.
+
+Vercel documentation was checked on 2026-11-05 and lists pnpm 12 support. The existing exact pnpm@12.3.4 pin is retained; the tracker's prohibition pending platform support is satisfied. TypeScript 7 and its TypeScript 6 API alias follow Microsoft's documented side-by-side configuration. Both applications enable React Compiler and declare explicit HSTS.

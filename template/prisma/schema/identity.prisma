@@ -33,8 +33,7 @@ enum IdempotencyState {
 }
 
 model User {
-  id          String  @id @default(uuid()) @db.Uuid
-  clerkUserId String  @unique
+  id          String  @id
   email       String?
   displayName String?
   profileCompletedAt DateTime? @db.Timestamptz(6)
@@ -119,7 +118,7 @@ model Invitation {
   status          InvitationStatus @default(PENDING)
   tokenHash       String           @unique
   requiresToken   Boolean          @default(true)
-  invitedByUserId String?          @db.Uuid
+  invitedByUserId String?
   expiresAt       DateTime         @db.Timestamptz(6)
   acceptedAt      DateTime?        @db.Timestamptz(6)
 
@@ -135,7 +134,7 @@ model Invitation {
 model Membership {
   id             String           @id @default(uuid()) @db.Uuid
   organizationId String           @db.Uuid
-  userId         String           @db.Uuid
+  userId         String
   role           MembershipRole   @default(MEMBER)
   status         MembershipStatus @default(ACTIVE)
 
@@ -193,7 +192,7 @@ model OrganizationSettings {
 model AuditEvent {
   id             String  @id @default(uuid()) @db.Uuid
   organizationId String  @db.Uuid
-  actorUserId    String? @db.Uuid
+  actorUserId    String?
 
   action       String
   resourceType String

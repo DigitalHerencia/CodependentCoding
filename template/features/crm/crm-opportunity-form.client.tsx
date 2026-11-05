@@ -1,10 +1,16 @@
 "use client";
-import { useState, useTransition } from "react";
+import { useState, useId } from "react";
 import { useRouter } from "next/navigation";
-import { createCrmDeal } from "@/lib/actions/crmActions";
+import { Controller, useForm, type FieldPath } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import type { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Field, FieldLabel, FieldError } from "@/components/ui/field";
+import { formResultCopy } from "@/content/application";
+import { crmControlCopy } from "@/content/crm";
+import { createCrmDeal } from "@/lib/actions/crmActions";
+import { createCrmDealSchema } from "@/schema/crmSchemas";
 import type { CrmAccountDTO } from "@/types/crmTypes";
 export function CrmOpportunityForm({
   accounts,
@@ -12,100 +18,200 @@ export function CrmOpportunityForm({
   accounts: CrmAccountDTO[];
 }) {
   const router = useRouter();
-  const [pending, startTransition] = useTransition();
+  const id = useId();
   const [message, setMessage] = useState("");
+  const form = useForm<
+    z.input<typeof createCrmDealSchema>,
+    unknown,
+    z.output<typeof createCrmDealSchema>
+  >({
+    resolver: zodResolver(createCrmDealSchema),
+    defaultValues: {
+      name: "",
+      accountId: "",
+      value: "0",
+      currency: "USD",
+      probability: 0,
+      expectedCloseDate: "",
+    },
+  });
   return (
-    <details className="mx-4 my-3 surface-card p-4">
-      <summary className="cursor-pointer type-label">
-        Create opportunity
-      </summary>
+    <details className="surface-card p-4">
+      <summary>{crmControlCopy.createOpportunity}</summary>
       <form
-        className="mt-4 grid gap-4 sm:grid-cols-2"
-        action={(data) =>
-          startTransition(async () => {
-            try {
-              await createCrmDeal({
-                name: data.get("name"),
-                accountId: data.get("accountId"),
-                value: data.get("value"),
-                currency: data.get("currency"),
-                probability: Number(data.get("probability")),
-                expectedCloseDate: data.get("close") || null,
-              });
-              setMessage("Opportunity created in Lead.");
-              router.refresh();
-            } catch {
-              setMessage(
-                "Opportunity could not be saved. Check amounts, account, and permissions.",
-              );
+        className="space-y-4"
+        onSubmit={form.handleSubmit(async (values) => {
+          setMessage("");
+          try {
+            const result = await createCrmDeal(values);
+            if (!result.ok) {
+              for (const [name, messages] of Object.entries(
+                result.error.fieldErrors ?? {},
+              ))
+                form.setError(
+                  name as FieldPath<z.input<typeof createCrmDealSchema>>,
+                  { message: messages[0] ?? result.error.message },
+                );
+              form.setError("root", { message: result.error.message });
+              return;
             }
-          })
-        }
+            setMessage(formResultCopy.saved);
+            router.refresh();
+          } catch {
+            form.setError("root", { message: formResultCopy.failed });
+          }
+        })}
+        noValidate
       >
-        <div className="form-field">
-          <Label htmlFor="deal-name">Opportunity name</Label>
-          <Input id="deal-name" name="name" required maxLength={200} />
-        </div>
-        <div className="form-field">
-          <Label htmlFor="deal-account">Account</Label>
-          <select
-            id="deal-account"
-            name="accountId"
-            className="control-field"
-            required
-          >
-            <option value="">Choose account</option>
-            {accounts.map((account) => (
-              <option key={account.id} value={account.id}>
-                {account.name}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div className="form-field">
-          <Label htmlFor="deal-value">Opportunity value</Label>
-          <Input
-            id="deal-value"
-            name="value"
-            inputMode="decimal"
-            required
-            defaultValue="0"
-          />
-        </div>
-        <div className="form-field">
-          <Label htmlFor="deal-currency">Currency</Label>
-          <Input
-            id="deal-currency"
-            name="currency"
-            required
-            minLength={3}
-            maxLength={3}
-            defaultValue="USD"
-          />
-        </div>
-        <div className="form-field">
-          <Label htmlFor="deal-probability">Probability (%)</Label>
-          <Input
-            id="deal-probability"
-            name="probability"
-            type="number"
-            required
-            min={0}
-            max={100}
-            defaultValue={0}
-          />
-        </div>
-        <div className="form-field">
-          <Label htmlFor="deal-close">Expected close</Label>
-          <Input id="deal-close" name="close" type="date" />
-        </div>
-        <Button disabled={pending || !accounts.length} type="submit">
-          Create opportunity
+        <h2 className="type-title">{crmControlCopy.createOpportunity}</h2>
+        <Controller
+          name="name"
+          control={form.control}
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor={id + "-name"}>
+                {crmControlCopy.opportunityName}
+              </FieldLabel>
+              <Input
+                {...field}
+                value={String(field.value ?? "")}
+                id={id + "-name"}
+                type="text"
+                aria-invalid={fieldState.invalid}
+              />
+              {fieldState.error && (
+                <FieldError>{fieldState.error.message}</FieldError>
+              )}
+            </Field>
+          )}
+        />
+        <Controller
+          name="accountId"
+          control={form.control}
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor={id + "-accountId"}>
+                {crmControlCopy.account}
+              </FieldLabel>
+              <select
+                {...field}
+                value={String(field.value ?? "")}
+                id={id + "-accountId"}
+                className="control-field"
+                aria-invalid={fieldState.invalid}
+              >
+                <option value="">{crmControlCopy.chooseAccount}</option>
+                {accounts.map((account) => (
+                  <option key={account.id} value={account.id}>
+                    {account.name}
+                  </option>
+                ))}
+              </select>
+              {fieldState.error && (
+                <FieldError>{fieldState.error.message}</FieldError>
+              )}
+            </Field>
+          )}
+        />
+        <Controller
+          name="value"
+          control={form.control}
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor={id + "-value"}>
+                {crmControlCopy.opportunityValue}
+              </FieldLabel>
+              <Input
+                {...field}
+                value={String(field.value ?? "")}
+                id={id + "-value"}
+                type="text"
+                aria-invalid={fieldState.invalid}
+                inputMode="decimal"
+              />
+              {fieldState.error && (
+                <FieldError>{fieldState.error.message}</FieldError>
+              )}
+            </Field>
+          )}
+        />
+        <Controller
+          name="currency"
+          control={form.control}
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor={id + "-currency"}>
+                {crmControlCopy.currency}
+              </FieldLabel>
+              <Input
+                {...field}
+                value={String(field.value ?? "")}
+                id={id + "-currency"}
+                type="text"
+                aria-invalid={fieldState.invalid}
+              />
+              {fieldState.error && (
+                <FieldError>{fieldState.error.message}</FieldError>
+              )}
+            </Field>
+          )}
+        />
+        <Controller
+          name="probability"
+          control={form.control}
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor={id + "-probability"}>
+                {crmControlCopy.probability}
+              </FieldLabel>
+              <Input
+                {...field}
+                value={String(field.value ?? "")}
+                id={id + "-probability"}
+                type="number"
+                aria-invalid={fieldState.invalid}
+                min={0}
+                max={100}
+                onChange={(event) => field.onChange(Number(event.target.value))}
+              />
+              {fieldState.error && (
+                <FieldError>{fieldState.error.message}</FieldError>
+              )}
+            </Field>
+          )}
+        />
+        <Controller
+          name="expectedCloseDate"
+          control={form.control}
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor={id + "-expectedCloseDate"}>
+                {crmControlCopy.expectedClose}
+              </FieldLabel>
+              <Input
+                {...field}
+                value={String(field.value ?? "")}
+                id={id + "-expectedCloseDate"}
+                type="date"
+                aria-invalid={fieldState.invalid}
+              />
+              {fieldState.error && (
+                <FieldError>{fieldState.error.message}</FieldError>
+              )}
+            </Field>
+          )}
+        />
+
+        {form.formState.errors.root && (
+          <FieldError>{form.formState.errors.root.message}</FieldError>
+        )}
+        <Button
+          type="submit"
+          disabled={form.formState.isSubmitting || !accounts.length}
+        >
+          {crmControlCopy.createOpportunity}
         </Button>
         <p role="status">{message}</p>
-        {!accounts.length && (
-          <p>Create an account before adding an opportunity.</p>
-        )}
       </form>
     </details>
   );

@@ -1,21 +1,23 @@
 "use client";
+import { projectsRemainingCopy } from "@/content/projects";
+
+import { zodResolver } from "@hookform/resolvers/zod";
+import type { z } from "zod";
+import type { FieldPath } from "react-hook-form";
+import { createTaskSchema } from "@/schema/projectsSchemas";
+
+import { projectsPresentationCopy } from "@/content/projects";
 // Why: Client form: validates with the shared schema, calls the action, and shows its ActionResult.
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { createTask, updateTask } from "@/lib/actions/projectsActions";
 import { TaskPriority } from "@/schema/projectsSchemas";
 import type { TaskDTO } from "@/types/projectsTypes";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Field, FieldLabel, FieldError } from "@/components/ui/field";
 
-interface FormValues {
-  title: string;
-  description: string;
-  priority: string;
-  dueAt: string;
-}
 export function TaskNewForm({
   projectId,
   task,
@@ -26,11 +28,18 @@ export function TaskNewForm({
   const router = useRouter();
   const [error, setError] = useState("");
   const {
-    register,
+    setError: setFieldError,
+    control,
     handleSubmit,
     formState: { isSubmitting },
-  } = useForm<FormValues>({
+  } = useForm<
+    z.input<typeof createTaskSchema>,
+    unknown,
+    z.output<typeof createTaskSchema>
+  >({
+    resolver: zodResolver(createTaskSchema),
     defaultValues: {
+      projectId,
       title: task?.title ?? "",
       description: task?.description ?? "",
       priority: task?.priority ?? "MEDIUM",
@@ -51,6 +60,12 @@ export function TaskNewForm({
             })
           : await createTask(input);
         if (!result.ok) {
+          for (const [name, messages] of Object.entries(
+            result.error.fieldErrors ?? {},
+          ))
+            setFieldError(name as FieldPath<z.input<typeof createTaskSchema>>, {
+              message: messages[0] ?? result.error.message,
+            });
           setError(
             result.error.code === "CONFLICT"
               ? "This task changed since you opened it. Reload, then edit again."
@@ -60,49 +75,112 @@ export function TaskNewForm({
         }
         router.push(`/projects/${projectId}/tasks/${result.data.id}`);
       })}
+      noValidate
     >
-      <h1 className="type-title">{task ? "Edit task" : "Plan a task"}</h1>
-      <div className="form-field">
-        <Label htmlFor="task-title">Task title</Label>
-        <Input
-          id="task-title"
-          required
-          maxLength={300}
-          {...register("title")}
-        />
-      </div>
-      <div className="form-field">
-        <Label htmlFor="task-description">
-          Description and acceptance criteria
-        </Label>
-        <textarea
-          id="task-description"
-          className="control-field min-h-36"
-          maxLength={20000}
-          {...register("description")}
-        />
-      </div>
+      <h1 className="type-title">
+        {task
+          ? projectsPresentationCopy.editTask
+          : projectsPresentationCopy.planATask}
+      </h1>
+      <Controller
+        name={"title"}
+        control={control}
+        render={({ field: controllerField, fieldState }) => (
+          <Field data-invalid={fieldState.invalid}>
+            <FieldLabel htmlFor="task-title">
+              {projectsRemainingCopy.taskTitle}
+            </FieldLabel>
+            <Input
+              id="task-title"
+              required
+              maxLength={300}
+              {...controllerField}
+              value={String(controllerField.value ?? "")}
+              aria-invalid={fieldState.invalid}
+            />
+            {fieldState.error && (
+              <FieldError>{fieldState.error.message}</FieldError>
+            )}
+          </Field>
+        )}
+      />
+      <Controller
+        name={"description"}
+        control={control}
+        render={({ field: controllerField, fieldState }) => (
+          <Field data-invalid={fieldState.invalid}>
+            <FieldLabel htmlFor="task-description">
+              {projectsRemainingCopy.descriptionAndAcceptanceCriteria}
+            </FieldLabel>
+            <textarea
+              id="task-description"
+              className="control-field min-h-36"
+              maxLength={20000}
+              {...controllerField}
+              value={String(controllerField.value ?? "")}
+              aria-invalid={fieldState.invalid}
+            />
+            {fieldState.error && (
+              <FieldError>{fieldState.error.message}</FieldError>
+            )}
+          </Field>
+        )}
+      />
       <div className="grid gap-4 sm:grid-cols-2">
-        <div className="form-field">
-          <Label htmlFor="task-priority">Priority</Label>
-          <select
-            id="task-priority"
-            className="control-field"
-            {...register("priority")}
-          >
-            {Object.values(TaskPriority).map((priority) => (
-              <option key={priority}>{priority}</option>
-            ))}
-          </select>
-        </div>
-        <div className="form-field">
-          <Label htmlFor="task-due">Due on</Label>
-          <Input id="task-due" type="date" {...register("dueAt")} />
-        </div>
+        <Controller
+          name={"priority"}
+          control={control}
+          render={({ field: controllerField, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor="task-priority">
+                {projectsRemainingCopy.priority}
+              </FieldLabel>
+              <select
+                id="task-priority"
+                className="control-field"
+                {...controllerField}
+                value={String(controllerField.value ?? "")}
+                aria-invalid={fieldState.invalid}
+              >
+                {Object.values(TaskPriority).map((priority) => (
+                  <option key={priority}>{priority}</option>
+                ))}
+              </select>
+              {fieldState.error && (
+                <FieldError>{fieldState.error.message}</FieldError>
+              )}
+            </Field>
+          )}
+        />
+        <Controller
+          name={"dueAt"}
+          control={control}
+          render={({ field: controllerField, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor="task-due">
+                {projectsRemainingCopy.dueOn}
+              </FieldLabel>
+              <Input
+                id="task-due"
+                type="date"
+                {...controllerField}
+                value={String(controllerField.value ?? "")}
+                aria-invalid={fieldState.invalid}
+              />
+              {fieldState.error && (
+                <FieldError>{fieldState.error.message}</FieldError>
+              )}
+            </Field>
+          )}
+        />
       </div>
       {error && <p role="alert">{error}</p>}
       <Button type="submit" disabled={isSubmitting}>
-        {isSubmitting ? "Saving…" : task ? "Save task" : "Create task"}
+        {isSubmitting
+          ? projectsPresentationCopy.saving
+          : task
+            ? projectsPresentationCopy.saveTask
+            : projectsPresentationCopy.createTask}
       </Button>
     </form>
   );

@@ -1,3 +1,8 @@
+import {
+  persistedReadLimitSchema,
+  persistedDateRangeSchema,
+  persistedRecordIdSchema,
+} from "@/schema/commonSchemas";
 import "server-only";
 
 import {
@@ -20,9 +25,10 @@ import {
 } from "@/lib/db/selects/crmSelects";
 import { withAuthenticatedRead } from "@/lib/db/tenant";
 
-export async function getCrmDeals(limit = 50) {
+export async function getCrmDeals(rawLimit: unknown = 50) {
   return withAuthenticatedRead(async (tx, access) => {
     assertPermission(access, "crm.deal:read");
+    const limit = persistedReadLimitSchema.parse(rawLimit);
 
     const rows = await tx.crmDeal.findMany({
       where: {
@@ -63,9 +69,16 @@ export async function getCrmDeal(rawDealId: unknown) {
   });
 }
 
-export async function getClosedWonCrmValue(periodStart: Date, periodEnd: Date) {
+export async function getClosedWonCrmValue(
+  rawPeriodStart: unknown,
+  rawPeriodEnd: unknown,
+) {
   return withAuthenticatedRead(async (tx, access) => {
     assertPermission(access, "crm.deal:read");
+    const { periodStart, periodEnd } = persistedDateRangeSchema.parse({
+      periodStart: rawPeriodStart,
+      periodEnd: rawPeriodEnd,
+    });
 
     const result = await tx.crmDeal.aggregate({
       where: {
@@ -158,9 +171,10 @@ export async function getContactById(rawContactId: unknown) {
   });
 }
 
-export async function getCrmAccount(accountId: string) {
+export async function getCrmAccount(rawAccountId: unknown) {
   return withAuthenticatedRead(async (tx, access) => {
     assertPermission(access, "crm.account:read");
+    const accountId = persistedRecordIdSchema.parse(rawAccountId);
     const row = await tx.crmAccount.findFirst({
       where: {
         id: accountId,
@@ -173,9 +187,10 @@ export async function getCrmAccount(accountId: string) {
   });
 }
 
-export async function getCrmAccounts(limit = 100) {
+export async function getCrmAccounts(rawLimit: unknown = 100) {
   return withAuthenticatedRead(async (tx, access) => {
     assertPermission(access, "crm.account:read");
+    const limit = persistedReadLimitSchema.parse(rawLimit);
     const rows = await tx.crmAccount.findMany({
       where: { organizationId: access.organizationId, archivedAt: null },
       orderBy: { name: "asc" },

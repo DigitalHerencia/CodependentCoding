@@ -4,7 +4,7 @@ import {
   processClerkWebhook,
   verifyClerkWebhook,
   WebhookIdentityConflictError,
-} from "@/lib/auth/clerk-webhooks";
+} from "@/lib/auth/clerkWebhooks";
 
 export async function POST(request: NextRequest) {
   const payload = await request.clone().text();

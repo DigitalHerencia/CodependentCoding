@@ -1,8 +1,10 @@
+import { SharedOnboardingTemplate } from "@/components/templates/shared-templates";
+import { onboardingPresentationCopy } from "@/content/onboarding";
 import { redirect } from "next/navigation";
 import {
   OnboardingFeatureClient,
   WorkspaceApprovalCheck,
-} from "@/features/onboarding/onboarding-feature.client";
+} from "@/features/onboarding/onboarding-form.client";
 import { getOnboardingState } from "@/lib/fetchers/onboardingFetchers";
 
 export async function OnboardingFeature() {
@@ -13,18 +15,19 @@ export async function OnboardingFeature() {
   }
 
   return (
-    <section className="mx-auto max-w-lg space-y-3">
-      <h1 className="text-2xl font-semibold">
-        {state.status === "provisioning"
-          ? "Preparing your account"
-          : "Waiting for approval"}
-      </h1>
-      <p className="text-muted-foreground">
-        {state.status === "provisioning"
-          ? "Refresh this page in a moment to continue."
-          : "Your profile is complete. A workspace administrator must grant you access. Check your access after the administrator approves it."}
-      </p>
+    <SharedOnboardingTemplate
+      title={
+        state.status === "provisioning"
+          ? onboardingPresentationCopy.preparingYourAccount
+          : onboardingPresentationCopy.waitingForApproval
+      }
+      description={
+        state.status === "provisioning"
+          ? onboardingPresentationCopy.refreshThisPageInAMomentToContinue
+          : onboardingPresentationCopy.yourProfileIsCompleteAWorkspaceAdministratorMustGrant
+      }
+    >
       {state.status === "pending" && <WorkspaceApprovalCheck />}
-    </section>
+    </SharedOnboardingTemplate>
   );
 }

@@ -213,7 +213,7 @@ describe("planSlice", () => {
         "app/(tenant)/invoices/[invoiceId]/edit/page.tsx",
         "prisma/schema/invoicing.prisma",
         "prisma/rls/invoicing.sql",
-        "lib/modules/invoicing.module.ts",
+        "lib/modules/invoicingModule.ts",
         "tests/invoicing/invoicesActions.test.ts",
         "components/templates/invoicing-templates.tsx",
       ]),
@@ -230,7 +230,7 @@ describe("planSlice", () => {
     expect(templates).toContain(
       "export function InvoicingInvoiceDetailTemplate(",
     );
-    expect(templates.match(/^import /gm)).toHaveLength(4);
+    expect(templates.match(/^import /gm)).toHaveLength(5);
     expect(
       writes.get("features/invoicing/invoices-feature.client.tsx"),
     ).toContain('from "@/components/templates/invoicing-templates"');
@@ -255,7 +255,7 @@ describe("planSlice", () => {
       owns: ["app/(tenant)/invoices/**"],
     });
     expect(writes.get("lib/modules/registry.ts")).toContain(
-      'import { invoicingModule } from "@/lib/modules/invoicing.module";',
+      'import { invoicingModule } from "@/lib/modules/invoicingModule";',
     );
     for (const [file, text] of writes) {
       expect(text, file).not.toMatch(/\{\{\w+\}\}/);
@@ -277,7 +277,7 @@ describe("planSlice", () => {
       expect.arrayContaining([
         "lib/actions/crmActions.ts",
         "prisma/schema/crm.prisma",
-        "lib/modules/crm.module.ts",
+        "lib/modules/crmModule.ts",
         "components/templates/crm-templates.tsx",
       ]),
     );

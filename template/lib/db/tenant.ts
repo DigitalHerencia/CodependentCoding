@@ -7,7 +7,7 @@ import type {
   AuthenticatedIdentity,
 } from "@/types/accessTypes";
 
-import { getActiveOrganizationPreference } from "@/lib/auth/active-organization";
+import { getActiveOrganizationPreference } from "@/lib/auth/activeOrganization";
 import { requireIdentity } from "@/lib/auth/auth";
 import { prisma } from "@/lib/db/client";
 import { setRlsContext } from "@/lib/db/rls";
@@ -33,7 +33,7 @@ async function resolveUser(
 }> {
   await setRlsContext(tx, { clerkUserId: identity.clerkUserId });
   const user = await tx.user.findUnique({
-    where: { clerkUserId: identity.clerkUserId },
+    where: { id: identity.clerkUserId },
     select: {
       id: true,
       email: true,

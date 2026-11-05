@@ -42,8 +42,8 @@ tester.run("layer-boundaries", rules["layer-boundaries"], {
       code: 'import { Skeleton } from "@/components/ui/skeleton";',
     },
     {
-      name: "CC-FEAT-004 client companion may use controls + actions",
-      filename: at("features/crm/crm-contacts-feature.client.tsx"),
+      name: "CC-FEAT-002 form companion may use controls + actions",
+      filename: at("features/crm/crm-contact-form.client.tsx"),
       code: 'import { Button } from "@/components/ui/button";\nimport { updateContact } from "@/lib/actions/crmActions";',
     },
     {
@@ -56,11 +56,7 @@ tester.run("layer-boundaries", rules["layer-boundaries"], {
       filename: at("lib/workflows/crmWorkflows.ts"),
       code: 'import { updateContact } from "@/lib/actions/crmActions";',
     },
-    {
-      name: "Legacy action-to-workflow import",
-      filename: at("lib/actions/uploadsActions.ts"),
-      code: 'import { x } from "@/lib/workflows/uploadsWorkflows";',
-    },
+
     {
       name: "CC-FLOW-001 workflow uses integration helper",
       filename: at("lib/workflows/aiWorkflows.ts"),
@@ -81,13 +77,32 @@ tester.run("layer-boundaries", rules["layer-boundaries"], {
       filename: at("features/admin/admin-user-detail-feature.client.tsx"),
       code: 'import { appRoles } from "@/lib/authz/roles";',
     },
-    {
-      name: "CC-BLOCK-002 nav may render Clerk widgets",
-      filename: at("components/nav/user-menu.tsx"),
-      code: 'import { UserButton } from "@clerk/nextjs";',
-    },
   ],
   invalid: [
+    {
+      name: "CC-WRITE-001 actions cannot delegate to workflows",
+      filename: at("lib/actions/uploadsActions.ts"),
+      code: 'import {x} from "@/lib/workflows/uploadsWorkflows";',
+      errors: [{ messageId: "denied" }],
+    },
+    {
+      name: "CC-FEAT-004 non-form client cannot compose primitives",
+      filename: at("features/crm/crm-contacts-feature.client.tsx"),
+      code: 'import {Button} from "@/components/ui/button";',
+      errors: [{ messageId: "denied" }],
+    },
+    {
+      name: "CC-BLOCK-001 template cannot import primitives",
+      filename: at("components/templates/crm-templates.tsx"),
+      code: 'import {Input} from "@/components/ui/input";',
+      errors: [{ messageId: "denied" }],
+    },
+    {
+      name: "CC-BLOCK-002 nav cannot render provider widgets",
+      filename: at("components/nav/user-menu.tsx"),
+      code: 'import {UserButton} from "@clerk/nextjs";',
+      errors: [{ messageId: "denied" }],
+    },
     {
       name: "CC-ROUTE-001 page reads the database",
       filename: at("app/(tenant)/crm/page.tsx"),
@@ -443,7 +458,7 @@ tester.run("module-boundaries", rules["module-boundaries"], {
     {
       name: "CC-MOD-001 module imports a declared dependency",
       filename: at("features/projects/projects-feature.tsx"),
-      code: 'import { Upload } from "@/features/uploads/workspace-file-upload.client";',
+      code: 'import { Upload } from "@/features/uploads/workspace-file-upload-form.client";',
     },
     {
       name: "CC-MOD-001 module imports base",
@@ -453,7 +468,7 @@ tester.run("module-boundaries", rules["module-boundaries"], {
     {
       name: "CC-MOD-002 the registry imports modules",
       filename: at("lib/modules/registry.ts"),
-      code: 'import { crmModule } from "@/lib/modules/crm.module";',
+      code: 'import { crmModule } from "@/lib/modules/crmModule";',
     },
   ],
   invalid: [

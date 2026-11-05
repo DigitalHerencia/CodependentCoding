@@ -1,7 +1,15 @@
 "use client";
+import { supportRemainingCopy } from "@/content/support";
+
+import { zodResolver } from "@hookform/resolvers/zod";
+import type { z } from "zod";
+import type { FieldPath } from "react-hook-form";
+import { knowledgeArticleFormSchema } from "@/schema/supportSchemas";
+
+import { supportPresentationCopy } from "@/content/support";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import {
   createKnowledgeArticle,
   updateKnowledgeArticle,
@@ -9,7 +17,7 @@ import {
 import type { KnowledgeArticleDTO } from "@/types/supportTypes";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Field, FieldLabel, FieldError } from "@/components/ui/field";
 export function KnowledgeArticleNewForm({
   article,
 }: {
@@ -18,10 +26,16 @@ export function KnowledgeArticleNewForm({
   const router = useRouter();
   const [error, setError] = useState("");
   const {
-    register,
+    setError: setFieldError,
+    control,
     handleSubmit,
     formState: { isSubmitting },
-  } = useForm<{ title: string; slug: string; body: string }>({
+  } = useForm<
+    z.input<typeof knowledgeArticleFormSchema>,
+    unknown,
+    z.output<typeof knowledgeArticleFormSchema>
+  >({
+    resolver: zodResolver(knowledgeArticleFormSchema),
     defaultValues: {
       title: article?.title ?? "",
       slug: article?.slug ?? "",
@@ -41,53 +55,110 @@ export function KnowledgeArticleNewForm({
                 expectedUpdatedAt: article.updatedAt,
               })
             : await createKnowledgeArticle(values);
-          router.push(`/support/knowledge-base/${saved.id}`);
+          if (!saved.ok) {
+            for (const [name, messages] of Object.entries(
+              saved.error.fieldErrors ?? {},
+            ))
+              setFieldError(
+                name as FieldPath<z.input<typeof knowledgeArticleFormSchema>>,
+                { message: messages[0] ?? saved.error.message },
+              );
+            setError(saved.error.message);
+            return;
+          }
+          router.push(`/support/knowledge-base/${saved.data.id}`);
           router.refresh();
         } catch {
           setError(
-            "Article could not be saved. Check the unique slug, permissions, or reload if the article changed.",
+            supportPresentationCopy.articleCouldNotBeSavedCheckTheUniqueSlug,
           );
         }
       })}
+      noValidate
     >
       <h1 className="type-title">
-        {article ? "Edit article" : "Write a knowledge article"}
+        {article
+          ? supportPresentationCopy.editArticle
+          : supportPresentationCopy.writeAKnowledgeArticle}
       </h1>
-      <div className="form-field">
-        <Label htmlFor="article-title">Title</Label>
-        <Input
-          id="article-title"
-          required
-          maxLength={300}
-          {...register("title")}
-        />
-      </div>
-      <div className="form-field">
-        <Label htmlFor="article-slug">Slug</Label>
-        <Input
-          id="article-slug"
-          required
-          pattern="[a-z0-9]+(-[a-z0-9]+)*"
-          {...register("slug")}
-        />
-      </div>
-      <div className="form-field">
-        <Label htmlFor="article-body">Article</Label>
-        <textarea
-          id="article-body"
-          className="control-field min-h-96"
-          required
-          {...register("body")}
-        />
-      </div>
-      <p>Articles are available to this workspace’s knowledge-base readers.</p>
+      <Controller
+        name={"title"}
+        control={control}
+        render={({ field: controllerField, fieldState }) => (
+          <Field data-invalid={fieldState.invalid}>
+            <FieldLabel htmlFor="article-title">
+              {supportRemainingCopy.title}
+            </FieldLabel>
+            <Input
+              id="article-title"
+              required
+              maxLength={300}
+              {...controllerField}
+              value={String(controllerField.value ?? "")}
+              aria-invalid={fieldState.invalid}
+            />
+            {fieldState.error && (
+              <FieldError>{fieldState.error.message}</FieldError>
+            )}
+          </Field>
+        )}
+      />
+      <Controller
+        name={"slug"}
+        control={control}
+        render={({ field: controllerField, fieldState }) => (
+          <Field data-invalid={fieldState.invalid}>
+            <FieldLabel htmlFor="article-slug">
+              {supportRemainingCopy.slug}
+            </FieldLabel>
+            <Input
+              id="article-slug"
+              required
+              pattern="[a-z0-9]+(-[a-z0-9]+)*"
+              {...controllerField}
+              value={String(controllerField.value ?? "")}
+              aria-invalid={fieldState.invalid}
+            />
+            {fieldState.error && (
+              <FieldError>{fieldState.error.message}</FieldError>
+            )}
+          </Field>
+        )}
+      />
+      <Controller
+        name={"body"}
+        control={control}
+        render={({ field: controllerField, fieldState }) => (
+          <Field data-invalid={fieldState.invalid}>
+            <FieldLabel htmlFor="article-body">
+              {supportRemainingCopy.article}
+            </FieldLabel>
+            <textarea
+              id="article-body"
+              className="control-field min-h-96"
+              required
+              {...controllerField}
+              value={String(controllerField.value ?? "")}
+              aria-invalid={fieldState.invalid}
+            />
+            {fieldState.error && (
+              <FieldError>{fieldState.error.message}</FieldError>
+            )}
+          </Field>
+        )}
+      />
+      <p>
+        {
+          supportPresentationCopy.articlesAreAvailableToThisWorkspaceSKnowledgeBase
+        }
+      </p>
       {error && <p role="alert">{error}</p>}
       <Button type="submit" disabled={isSubmitting}>
         {isSubmitting
-          ? "Saving…"
+          ? supportPresentationCopy.saving
           : article
-            ? "Save article"
-            : "Publish article"}
+            ? supportPresentationCopy.saveArticle
+            : supportPresentationCopy.publishArticle}
       </Button>
     </form>
   );

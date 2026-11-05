@@ -57,7 +57,10 @@ export const createCrmDealSchema = z.object({
   value: money.default("0"),
   currency: currency.default("USD"),
   probability: z.number().int().min(0).max(100).default(0),
-  expectedCloseDate: z.coerce.date().nullable().optional(),
+  expectedCloseDate: z.preprocess(
+    (value) => (value === "" ? null : value),
+    z.coerce.date().nullable().optional(),
+  ),
 });
 
 export const updateCrmDealStageSchema = z.object({

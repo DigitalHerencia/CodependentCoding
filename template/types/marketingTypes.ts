@@ -1,8 +1,9 @@
-export interface CampaignDTO {
+import type { CampaignStatus, AudienceStatus } from "@/generated/prisma/enums";
+export type CampaignDTO = {
   id: string;
   name: string;
   description: string | null;
-  status: string;
+  status: CampaignStatus;
   scheduledAt: string | null;
   startedAt: string | null;
   completedAt: string | null;
@@ -11,12 +12,12 @@ export interface CampaignDTO {
   stepCount: number;
   createdAt: string;
   updatedAt: string;
-}
-export interface AudienceDTO {
+};
+export type AudienceDTO = {
   definition: unknown;
   id: string;
   name: string;
-  status: string;
+  status: AudienceStatus;
   createdAt: string;
   updatedAt: string;
-}
+};

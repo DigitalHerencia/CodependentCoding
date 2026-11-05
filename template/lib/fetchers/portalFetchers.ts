@@ -1,3 +1,7 @@
+import {
+  persistedReadLimitSchema,
+  persistedRecordIdSchema,
+} from "@/schema/commonSchemas";
 import "server-only";
 
 import { assertPermission, hasPermission } from "@/lib/authz/permissions";
@@ -14,9 +18,10 @@ import {
 } from "@/lib/db/selects/portalSelects";
 import { withAuthenticatedRead } from "@/lib/db/tenant";
 
-export async function getPortalDocuments(limit = 100) {
+export async function getPortalDocuments(rawLimit: unknown = 100) {
   return withAuthenticatedRead(async (tx, access) => {
     assertPermission(access, "portal.document:read");
+    const limit = persistedReadLimitSchema.parse(rawLimit);
 
     const clientOnly = limitedToOwnRecords(access);
 
@@ -85,9 +90,10 @@ export async function getPortalAssets() {
   });
 }
 
-export async function getPortalDocument(documentId: string) {
+export async function getPortalDocument(rawDocumentId: unknown) {
   return withAuthenticatedRead(async (tx, access) => {
     assertPermission(access, "portal.document:read");
+    const documentId = persistedRecordIdSchema.parse(rawDocumentId);
     const row = await tx.portalDocument.findFirst({
       where: {
         id: documentId,

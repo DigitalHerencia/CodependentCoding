@@ -1,21 +1,19 @@
 "use client";
 
-import { SignUp, useSignUp } from "@clerk/nextjs";
+import { zodResolver } from "@hookform/resolvers/zod";
+import type { z } from "zod";
+import { getSignUpFormSchema } from "@/schema/authSchemas";
+
+import { authPresentationCopy } from "@/content/auth";
+import { SignUp, useSignUp } from "@/lib/auth/clerkAccount";
 import Link from "next/link";
 import { authAppearance } from "@/content/auth";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { AuthFormPanel } from "@/components/blocks/auth-forms";
+import { Controller, useForm } from "react-hook-form";
+import { AuthFormPanel } from "@/components/blocks/auth-blocks";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-
-type Fields = {
-  username: string;
-  emailAddress: string;
-  password: string;
-  code: string;
-};
+import { Field, FieldLabel, FieldError } from "@/components/ui/field";
 
 export function SignUpForm() {
   const { signUp, fetchStatus } = useSignUp();
@@ -23,7 +21,13 @@ export function SignUpForm() {
   const [managed, setManaged] = useState(false);
   const [message, setMessage] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const form = useForm<Fields>({
+  const schema = getSignUpFormSchema(verifying);
+  const form = useForm<
+    z.input<typeof schema>,
+    unknown,
+    z.output<typeof schema>
+  >({
+    resolver: zodResolver(schema),
     defaultValues: { username: "", emailAddress: "", password: "", code: "" },
     shouldUnregister: true,
   });
@@ -63,7 +67,7 @@ export function SignUpForm() {
     }
   }
 
-  async function submit(values: Fields) {
+  async function submit(values: z.output<typeof schema>) {
     setMessage("");
     try {
       const result = verifying
@@ -75,7 +79,7 @@ export function SignUpForm() {
           });
       if (await check(result)) await advance();
     } catch {
-      setMessage("Unable to connect. Please try again.");
+      setMessage(authPresentationCopy.unableToConnectPleaseTryAgain);
     }
   }
 
@@ -92,80 +96,136 @@ export function SignUpForm() {
 
   return (
     <AuthFormPanel
-      title={verifying ? "Verify your email" : "Create an account"}
+      title={
+        verifying
+          ? authPresentationCopy.verifyYourEmail
+          : authPresentationCopy.createAnAccount
+      }
       description={
         verifying
-          ? "Enter the code sent to your email address."
-          : "Set up your account."
+          ? authPresentationCopy.enterTheCodeSentToYourEmailAddress
+          : authPresentationCopy.setUpYourAccount
       }
     >
       <form
         onSubmit={form.handleSubmit(submit)}
         className="space-y-4"
         aria-busy={busy}
+        noValidate
       >
         <fieldset disabled={busy} className="space-y-4 disabled:opacity-70">
           {!verifying ? (
             <>
-              <div className="form-field">
-                <Label htmlFor="signup-username" className="text-left">
-                  Username
-                </Label>
-                <Input
-                  id="signup-username"
-                  autoComplete="username"
-                  required
-                  {...form.register("username", { required: true })}
-                />
-              </div>
-              <div className="form-field">
-                <Label htmlFor="signup-email" className="text-left">
-                  Email
-                </Label>
-                <Input
-                  id="signup-email"
-                  type="email"
-                  autoComplete="email"
-                  required
-                  {...form.register("emailAddress", { required: true })}
-                />
-              </div>
-              <div className="form-field">
-                <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
-                  <Label htmlFor="signup-password" className="text-left">
-                    Password
-                  </Label>
-                  <Button
-                    type="button"
-                    variant="link"
-                    size="sm"
-                    className="h-auto min-h-8 px-0 py-1"
-                    aria-pressed={showPassword}
-                    onClick={() => setShowPassword(!showPassword)}
-                  >
-                    {showPassword ? "Hide password" : "Show password"}
-                  </Button>
-                </div>
-                <Input
-                  id="signup-password"
-                  type={showPassword ? "text" : "password"}
-                  autoComplete="new-password"
-                  required
-                  {...form.register("password", { required: true })}
-                />
-              </div>
+              <Controller
+                name={"username"}
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel htmlFor="signup-username" className="text-left">
+                      {authPresentationCopy.username}
+                    </FieldLabel>
+                    <Input
+                      id="signup-username"
+                      autoComplete="username"
+                      required
+                      {...field}
+                      value={field.value ?? ""}
+                      aria-invalid={fieldState.invalid}
+                    />
+                    {fieldState.error && (
+                      <FieldError>{fieldState.error.message}</FieldError>
+                    )}
+                  </Field>
+                )}
+              />
+              <Controller
+                name={"emailAddress"}
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel htmlFor="signup-email" className="text-left">
+                      {authPresentationCopy.email}
+                    </FieldLabel>
+                    <Input
+                      id="signup-email"
+                      type="email"
+                      autoComplete="email"
+                      required
+                      {...field}
+                      value={field.value ?? ""}
+                      aria-invalid={fieldState.invalid}
+                    />
+                    {fieldState.error && (
+                      <FieldError>{fieldState.error.message}</FieldError>
+                    )}
+                  </Field>
+                )}
+              />
+              <Controller
+                name={"password"}
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid}>
+                    <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
+                      <FieldLabel
+                        htmlFor="signup-password"
+                        className="text-left"
+                      >
+                        {authPresentationCopy.password}
+                      </FieldLabel>
+                      <Button
+                        type="button"
+                        variant="link"
+                        size="sm"
+                        className="h-auto min-h-8 px-0 py-1"
+                        aria-pressed={showPassword}
+                        onClick={() => setShowPassword(!showPassword)}
+                      >
+                        {showPassword
+                          ? authPresentationCopy.hidePassword
+                          : authPresentationCopy.showPassword}
+                      </Button>
+                    </div>
+                    <Input
+                      id="signup-password"
+                      type={showPassword ? "text" : "password"}
+                      autoComplete="new-password"
+                      required
+                      {...field}
+                      value={field.value ?? ""}
+                      aria-invalid={fieldState.invalid}
+                    />
+                    {fieldState.error && (
+                      <FieldError>{fieldState.error.message}</FieldError>
+                    )}
+                  </Field>
+                )}
+              />
             </>
           ) : (
-            <div className="form-field">
-              <Label htmlFor="signup-code">Verification code</Label>
-              <Input
-                id="signup-code"
-                autoComplete="one-time-code"
-                inputMode="numeric"
-                required
-                {...form.register("code", { required: true })}
-              />
-            </div>
+            <Controller
+              name={"code"}
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor="signup-code">
+                    {authPresentationCopy.verificationCode}
+                  </FieldLabel>
+                  <Input
+                    id="signup-code"
+                    autoComplete="one-time-code"
+                    inputMode="numeric"
+                    required
+                    {...field}
+                    value={field.value ?? ""}
+                    aria-invalid={fieldState.invalid}
+                  />
+                  {fieldState.error && (
+                    <FieldError>{fieldState.error.message}</FieldError>
+                  )}
+                </Field>
+              )}
+            />
           )}
           {message && (
             <p role="alert" className="text-left text-sm leading-relaxed">
@@ -174,10 +234,10 @@ export function SignUpForm() {
           )}
           <Button type="submit" className="w-full">
             {busy
-              ? "Please wait…"
+              ? authPresentationCopy.pleaseWait
               : verifying
-                ? "Verify email"
-                : "Create account"}
+                ? authPresentationCopy.verifyEmail
+                : authPresentationCopy.createAccount}
           </Button>
           {verifying && (
             <div className="flex flex-wrap gap-2">
@@ -188,13 +248,15 @@ export function SignUpForm() {
                   setMessage("");
                   try {
                     if (await check(await signUp.verifications.sendEmailCode()))
-                      setMessage("A new code has been sent.");
+                      setMessage(authPresentationCopy.aNewCodeHasBeenSent);
                   } catch {
-                    setMessage("Unable to send a code. Please try again.");
+                    setMessage(
+                      authPresentationCopy.unableToSendACodePleaseTryAgain,
+                    );
                   }
                 }}
               >
-                Resend code
+                {authPresentationCopy.resendCode}
               </Button>
               <Button
                 type="button"
@@ -206,7 +268,7 @@ export function SignUpForm() {
                   setVerifying(false);
                 }}
               >
-                Change account details
+                {authPresentationCopy.changeAccountDetails}
               </Button>
             </div>
           )}
@@ -214,9 +276,9 @@ export function SignUpForm() {
         {/* Smart CAPTCHA stays mounted and may display a challenge when Clerk requires one. */}
         <div id="clerk-captcha" />
         <p className="border-t border-foreground/30 pt-4 text-sm">
-          Already have an account?{" "}
+          {authPresentationCopy.alreadyHaveAnAccount}{" "}
           <Link href="/sign-in" className="type-link">
-            Sign in
+            {authPresentationCopy.signIn}
           </Link>
         </p>
       </form>

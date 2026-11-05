@@ -1,16 +1,21 @@
 "use client";
+import { authRemainingCopy } from "@/content/auth";
 
-import { SignIn, useSignIn } from "@clerk/nextjs";
+import { zodResolver } from "@hookform/resolvers/zod";
+import type { z } from "zod";
+import { getSignInFormSchema } from "@/schema/authSchemas";
+
+import { authPresentationCopy } from "@/content/auth";
+import { SignIn, useSignIn } from "@/lib/auth/clerkAccount";
 import Link from "next/link";
 import { authAppearance } from "@/content/auth";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { AuthFormPanel } from "@/components/blocks/auth-forms";
+import { Controller, useForm } from "react-hook-form";
+import { AuthFormPanel } from "@/components/blocks/auth-blocks";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Field, FieldLabel, FieldError } from "@/components/ui/field";
 
-type Fields = { identifier: string; password: string; code: string };
 type Step = "password" | "recover" | "reset-code" | "new-password" | "mfa";
 type Factor = "email_code" | "phone_code" | "totp" | "backup_code";
 
@@ -21,7 +26,13 @@ export function SignInForm() {
   const [message, setMessage] = useState("");
   const [managed, setManaged] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const form = useForm<Fields>({
+  const schema = getSignInFormSchema(step);
+  const form = useForm<
+    z.input<typeof schema>,
+    unknown,
+    z.output<typeof schema>
+  >({
+    resolver: zodResolver(schema),
     defaultValues: { identifier: "", password: "", code: "" },
     shouldUnregister: true,
   });
@@ -78,7 +89,7 @@ export function SignInForm() {
     }
   }
 
-  async function submit(values: Fields) {
+  async function submit(values: z.output<typeof schema>) {
     setMessage("");
     try {
       if (step === "recover") {
@@ -120,7 +131,7 @@ export function SignInForm() {
                   : await signIn.mfa.verifyEmailCode({ code: values.code });
       if (await check(result)) await advance();
     } catch {
-      setMessage("Unable to connect. Please try again.");
+      setMessage(authPresentationCopy.unableToConnectPleaseTryAgain);
     }
   }
 
@@ -139,81 +150,123 @@ export function SignInForm() {
     <AuthFormPanel
       title={
         step === "password"
-          ? "Welcome back"
+          ? authPresentationCopy.welcomeBack
           : step === "mfa"
-            ? "Verify your identity"
-            : "Reset your password"
+            ? authPresentationCopy.verifyYourIdentity
+            : authPresentationCopy.resetYourPassword
       }
       description={
         step === "password"
-          ? "Enter your username and password to continue."
+          ? authPresentationCopy.enterYourUsernameAndPasswordToContinue
           : step === "recover"
-            ? "Enter your username to receive a recovery code at your verified email."
+            ? authPresentationCopy.enterYourUsernameToReceiveARecoveryCodeAt
             : step === "new-password"
-              ? "Choose a new password."
-              : "Enter your verification code to continue."
+              ? authPresentationCopy.chooseANewPassword
+              : authPresentationCopy.enterYourVerificationCodeToContinue
       }
     >
       <form
         onSubmit={form.handleSubmit(submit)}
         className="space-y-4"
         aria-busy={busy}
+        noValidate
       >
         <fieldset disabled={busy} className="space-y-4 disabled:opacity-70">
           {(step === "password" || step === "recover") && (
-            <div className="form-field">
-              <Label htmlFor="signin-username">Username</Label>
-              <Input
-                id="signin-username"
-                autoComplete="username"
-                required
-                {...form.register("identifier", { required: true })}
-              />
-            </div>
+            <Controller
+              name={"identifier"}
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor="signin-username">
+                    {authPresentationCopy.username}
+                  </FieldLabel>
+                  <Input
+                    id="signin-username"
+                    autoComplete="username"
+                    required
+                    {...field}
+                    value={field.value ?? ""}
+                    aria-invalid={fieldState.invalid}
+                  />
+                  {fieldState.error && (
+                    <FieldError>{fieldState.error.message}</FieldError>
+                  )}
+                </Field>
+              )}
+            />
           )}
           {(step === "password" || step === "new-password") && (
-            <div className="form-field">
-              <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
-                <Label htmlFor="signin-password">
-                  {step === "new-password" ? "New password" : "Password"}
-                </Label>
-                <Button
-                  type="button"
-                  variant="link"
-                  size="sm"
-                  className="h-auto min-h-8 px-0 py-1"
-                  aria-pressed={showPassword}
-                  onClick={() => setShowPassword(!showPassword)}
-                >
-                  {showPassword ? "Hide password" : "Show password"}
-                </Button>
-              </div>
-              <Input
-                id="signin-password"
-                type={showPassword ? "text" : "password"}
-                autoComplete={
-                  step === "new-password" ? "new-password" : "current-password"
-                }
-                required
-                {...form.register("password", { required: true })}
-              />
-            </div>
+            <Controller
+              name={"password"}
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
+                    <FieldLabel htmlFor="signin-password">
+                      {step === "new-password"
+                        ? authPresentationCopy.newPassword
+                        : authPresentationCopy.password}
+                    </FieldLabel>
+                    <Button
+                      type="button"
+                      variant="link"
+                      size="sm"
+                      className="h-auto min-h-8 px-0 py-1"
+                      aria-pressed={showPassword}
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      {showPassword
+                        ? authPresentationCopy.hidePassword
+                        : authPresentationCopy.showPassword}
+                    </Button>
+                  </div>
+                  <Input
+                    id="signin-password"
+                    type={showPassword ? "text" : "password"}
+                    autoComplete={
+                      step === "new-password"
+                        ? "new-password"
+                        : "current-password"
+                    }
+                    required
+                    {...field}
+                    value={field.value ?? ""}
+                    aria-invalid={fieldState.invalid}
+                  />
+                  {fieldState.error && (
+                    <FieldError>{fieldState.error.message}</FieldError>
+                  )}
+                </Field>
+              )}
+            />
           )}
           {(step === "reset-code" || step === "mfa") && (
-            <div className="form-field">
-              <Label htmlFor="signin-code">
-                {factor === "backup_code" && step === "mfa"
-                  ? "Backup code"
-                  : "Verification code"}
-              </Label>
-              <Input
-                id="signin-code"
-                autoComplete="one-time-code"
-                inputMode={factor === "backup_code" ? "text" : "numeric"}
-                required
-                {...form.register("code", { required: true })}
-              />
-            </div>
+            <Controller
+              name={"code"}
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor="signin-code">
+                    {factor === "backup_code" && step === "mfa"
+                      ? authPresentationCopy.backupCode
+                      : authPresentationCopy.verificationCode}
+                  </FieldLabel>
+                  <Input
+                    id="signin-code"
+                    autoComplete="one-time-code"
+                    inputMode={factor === "backup_code" ? "text" : "numeric"}
+                    required
+                    {...field}
+                    value={field.value ?? ""}
+                    aria-invalid={fieldState.invalid}
+                  />
+                  {fieldState.error && (
+                    <FieldError>{fieldState.error.message}</FieldError>
+                  )}
+                </Field>
+              )}
+            />
           )}
           {message && (
             <p role="alert" className="text-sm leading-relaxed">
@@ -222,12 +275,12 @@ export function SignInForm() {
           )}
           <Button type="submit" className="w-full">
             {busy
-              ? "Please wait…"
+              ? authPresentationCopy.pleaseWait
               : step === "password"
-                ? "Sign in"
+                ? authPresentationCopy.signIn
                 : step === "recover"
-                  ? "Send recovery code"
-                  : "Continue"}
+                  ? authPresentationCopy.sendRecoveryCode
+                  : authPresentationCopy.continue}
           </Button>
           {(step === "reset-code" ||
             (step === "mfa" &&
@@ -243,11 +296,13 @@ export function SignInForm() {
                     await check(await signIn.resetPasswordEmailCode.sendCode());
                   else await sendFactor(factor);
                 } catch {
-                  setMessage("Unable to send a code. Please try again.");
+                  setMessage(
+                    authPresentationCopy.unableToSendACodePleaseTryAgain,
+                  );
                 }
               }}
             >
-              Resend code
+              {authPresentationCopy.resendCode}
             </Button>
           )}
           {step === "mfa" && (
@@ -274,7 +329,7 @@ export function SignInForm() {
                         await sendFactor(strategy as Factor);
                       } catch {
                         setMessage(
-                          "Unable to switch verification methods. Please try again.",
+                          authPresentationCopy.unableToSwitchVerificationMethodsPleaseTryAgain,
                         );
                       }
                     }}
@@ -282,10 +337,10 @@ export function SignInForm() {
                     {
                       (
                         {
-                          totp: "Authenticator app",
-                          email_code: "Email code",
-                          phone_code: "SMS code",
-                          backup_code: "Backup code",
+                          totp: authRemainingCopy.authenticatorApp,
+                          email_code: authRemainingCopy.emailCode,
+                          phone_code: authRemainingCopy.sMSCode,
+                          backup_code: authRemainingCopy.backupCode,
                         } as Record<string, string>
                       )[strategy]
                     }
@@ -305,7 +360,7 @@ export function SignInForm() {
                 setStep("password");
               }}
             >
-              Back to sign in
+              {authPresentationCopy.backToSignIn}
             </Button>
           )}
         </fieldset>
@@ -321,13 +376,13 @@ export function SignInForm() {
                 setStep("recover");
               }}
             >
-              Forgot password?
+              {authPresentationCopy.forgotPassword}
             </Button>
           )}
           <span>
-            New here?{" "}
+            {authPresentationCopy.newHere}{" "}
             <Link href="/sign-up" className="type-link">
-              Create an account
+              {authPresentationCopy.createAnAccount}
             </Link>
           </span>
         </div>

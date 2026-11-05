@@ -1,3 +1,4 @@
+import { settingsPresentationCopy } from "@/content/settings";
 import {
   getOrganizationMembers,
   getPendingInvitations,
@@ -17,7 +18,7 @@ export async function MembersFeature() {
       {pending.canInvite && (
         <section aria-labelledby="invitations-heading" className="space-y-3">
           <h2 className="type-heading" id="invitations-heading">
-            Pending invitations
+            {settingsPresentationCopy.pendingInvitations}
           </h2>
           <InvitationsFeatureClient invitations={pending.invitations} />
           <MemberInviteForm />

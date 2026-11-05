@@ -1,22 +1,46 @@
 "use client";
-import { AdminUsersToolbar } from "@/components/blocks/admin-blocks";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import {
+  AdminUsersToolbar,
+  AdminPagination,
+} from "@/components/blocks/admin-blocks";
 import { AdminUsersTemplate } from "@/components/templates/admin-templates";
 import type { AdminMembershipDTO } from "@/types/adminTypes";
 export function AdminUsersFeatureClient({
-  memberships,
+  page,
 }: {
-  memberships: AdminMembershipDTO[];
+  page: {
+    items: AdminMembershipDTO[];
+    query: string;
+    page: number;
+    hasMore: boolean;
+  };
 }) {
-  const [query, setQuery] = useState("");
+  const router = useRouter();
+  const [query, setQuery] = useState(page.query);
   return (
-    <AdminUsersTemplate
-      memberships={memberships.filter((membership) =>
-        `${membership.user.displayName ?? ""} ${membership.user.email ?? ""} ${membership.role}`
-          .toLowerCase()
-          .includes(query.toLowerCase()),
-      )}
-      toolbar={<AdminUsersToolbar query={query} onQueryChange={setQuery} />}
-    />
+    <>
+      <AdminUsersTemplate
+        memberships={page.items}
+        toolbar={
+          <AdminUsersToolbar
+            query={query}
+            onQueryChange={setQuery}
+            onSearch={() =>
+              router.push(
+                "/admin/users?" + new URLSearchParams({ query }).toString(),
+              )
+            }
+          />
+        }
+      />
+      <AdminPagination
+        path="/admin/users"
+        page={page.page}
+        query={page.query}
+        hasMore={page.hasMore}
+      />
+    </>
   );
 }

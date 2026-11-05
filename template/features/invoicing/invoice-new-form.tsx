@@ -1,34 +1,35 @@
 "use client";
+import { invoicingRemainingCopy } from "@/content/invoicing";
+
+import { zodResolver } from "@hookform/resolvers/zod";
+import type { z } from "zod";
+import type { FieldPath } from "react-hook-form";
+import { createInvoiceSchema } from "@/schema/invoicingSchemas";
+
+import { invoicingPresentationCopy } from "@/content/invoicing";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useForm, useFieldArray } from "react-hook-form";
+import { Controller, useForm, useFieldArray } from "react-hook-form";
 import { createInvoice, updateInvoice } from "@/lib/actions/invoicingActions";
 import type { InvoiceDTO } from "@/types/invoicingTypes";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-interface Values {
-  customerName: string;
-  customerEmail: string;
-  currency: string;
-  issuedAt: string;
-  dueAt: string;
-  lines: {
-    description: string;
-    quantity: string;
-    unitPrice: string;
-    taxRate: string;
-  }[];
-}
+import { Field, FieldLabel, FieldError } from "@/components/ui/field";
+
 export function InvoiceNewForm({ invoice }: { invoice?: InvoiceDTO }) {
   const router = useRouter();
   const [error, setError] = useState("");
   const {
-    register,
+    setError: setFieldError,
     handleSubmit,
     control,
     formState: { isSubmitting },
-  } = useForm<Values>({
+  } = useForm<
+    z.input<typeof createInvoiceSchema>,
+    unknown,
+    z.output<typeof createInvoiceSchema>
+  >({
+    resolver: zodResolver(createInvoiceSchema),
     defaultValues: {
       customerName: invoice?.customerName ?? "",
       customerEmail: invoice?.customerEmail ?? "",
@@ -66,17 +67,31 @@ export function InvoiceNewForm({ invoice }: { invoice?: InvoiceDTO }) {
                 expectedVersion: invoice.version,
               })
             : await createInvoice(input);
-          router.push(`/invoices/${saved.id}`);
+          if (!saved.ok) {
+            for (const [name, messages] of Object.entries(
+              saved.error.fieldErrors ?? {},
+            ))
+              setFieldError(
+                name as FieldPath<z.input<typeof createInvoiceSchema>>,
+                { message: messages[0] ?? saved.error.message },
+              );
+            setError(saved.error.message);
+            return;
+          }
+          router.push(`/invoices/${saved.data.id}`);
           router.refresh();
         } catch {
           setError(
-            "Invoice could not be saved. Check line amounts, permissions, or reload the current draft.",
+            invoicingPresentationCopy.invoiceCouldNotBeSavedCheckLineAmountsPermissions,
           );
         }
       })}
+      noValidate
     >
       <h1 className="type-title">
-        {invoice ? `Edit invoice #${invoice.number}` : "Draft an invoice"}
+        {invoice
+          ? invoicingRemainingCopy.editInvoice(invoice.number)
+          : invoicingPresentationCopy.draftAnInvoice}
       </h1>
       <div className="grid gap-4 sm:grid-cols-2">
         {(
@@ -88,35 +103,49 @@ export function InvoiceNewForm({ invoice }: { invoice?: InvoiceDTO }) {
             "dueAt",
           ] as const
         ).map((field) => (
-          <div className="form-field" key={field}>
-            <Label htmlFor={`invoice-${field}`}>
-              {
-                {
-                  customerName: "Customer name",
-                  customerEmail: "Customer email",
-                  currency: "Currency (ISO code)",
-                  issuedAt: "Issue date",
-                  dueAt: "Due date",
-                }[field]
-              }
-            </Label>
-            <Input
-              id={`invoice-${field}`}
-              required={field === "customerName" || field === "currency"}
-              type={
-                field.endsWith("At")
-                  ? "date"
-                  : field === "customerEmail"
-                    ? "email"
-                    : "text"
-              }
-              {...register(field)}
-            />
-          </div>
+          <Controller
+            key={field}
+            name={field}
+            control={control}
+            render={({ field: controllerField, fieldState }) => (
+              <Field data-invalid={fieldState.invalid}>
+                <FieldLabel htmlFor={`invoice-${field}`}>
+                  {
+                    {
+                      customerName: invoicingRemainingCopy.customerName,
+                      customerEmail: invoicingRemainingCopy.customerEmail,
+                      currency: invoicingRemainingCopy.currencyISOCode,
+                      issuedAt: invoicingRemainingCopy.issueDate,
+                      dueAt: invoicingRemainingCopy.dueDate,
+                    }[field]
+                  }
+                </FieldLabel>
+                <Input
+                  id={`invoice-${field}`}
+                  required={field === "customerName" || field === "currency"}
+                  type={
+                    field.endsWith("At")
+                      ? "date"
+                      : field === "customerEmail"
+                        ? "email"
+                        : "text"
+                  }
+                  {...controllerField}
+                  value={String(controllerField.value ?? "")}
+                  aria-invalid={fieldState.invalid}
+                />
+                {fieldState.error && (
+                  <FieldError>{fieldState.error.message}</FieldError>
+                )}
+              </Field>
+            )}
+          />
         ))}
       </div>
       <fieldset className="space-y-3">
-        <legend className="type-label">Line items</legend>
+        <legend className="type-label">
+          {invoicingPresentationCopy.lineItems}
+        </legend>
         {fields.map((field, index) => (
           <div
             key={field.id}
@@ -124,24 +153,36 @@ export function InvoiceNewForm({ invoice }: { invoice?: InvoiceDTO }) {
           >
             {(["description", "quantity", "unitPrice", "taxRate"] as const).map(
               (key) => (
-                <div className="form-field" key={key}>
-                  <Label htmlFor={`line-${index}-${key}`}>
-                    {
-                      {
-                        description: "Description",
-                        quantity: "Quantity",
-                        unitPrice: "Unit price",
-                        taxRate: "Tax rate (0–1)",
-                      }[key]
-                    }
-                  </Label>
-                  <Input
-                    id={`line-${index}-${key}`}
-                    required
-                    inputMode={key === "description" ? "text" : "decimal"}
-                    {...register(`lines.${index}.${key}`)}
-                  />
-                </div>
+                <Controller
+                  key={key}
+                  name={`lines.${index}.${key}`}
+                  control={control}
+                  render={({ field: controllerField, fieldState }) => (
+                    <Field data-invalid={fieldState.invalid}>
+                      <FieldLabel htmlFor={`line-${index}-${key}`}>
+                        {
+                          {
+                            description: invoicingRemainingCopy.description,
+                            quantity: invoicingRemainingCopy.quantity,
+                            unitPrice: invoicingRemainingCopy.unitPrice,
+                            taxRate: invoicingRemainingCopy.taxRate01,
+                          }[key]
+                        }
+                      </FieldLabel>
+                      <Input
+                        id={`line-${index}-${key}`}
+                        required
+                        inputMode={key === "description" ? "text" : "decimal"}
+                        {...controllerField}
+                        value={String(controllerField.value ?? "")}
+                        aria-invalid={fieldState.invalid}
+                      />
+                      {fieldState.error && (
+                        <FieldError>{fieldState.error.message}</FieldError>
+                      )}
+                    </Field>
+                  )}
+                />
               ),
             )}
             <Button
@@ -150,7 +191,8 @@ export function InvoiceNewForm({ invoice }: { invoice?: InvoiceDTO }) {
               disabled={fields.length === 1}
               onClick={() => remove(index)}
             >
-              Remove line {index + 1}
+              {invoicingPresentationCopy.removeLine}
+              {index + 1}
             </Button>
           </div>
         ))}
@@ -167,15 +209,19 @@ export function InvoiceNewForm({ invoice }: { invoice?: InvoiceDTO }) {
             })
           }
         >
-          Add line
+          {invoicingPresentationCopy.addLine}
         </Button>
       </fieldset>
       {locked && (
-        <p role="alert">Only unapproved draft invoices can be edited.</p>
+        <p role="alert">
+          {invoicingPresentationCopy.onlyUnapprovedDraftInvoicesCanBeEdited}
+        </p>
       )}
       {error && <p role="alert">{error}</p>}
       <Button disabled={isSubmitting || locked} type="submit">
-        {isSubmitting ? "Saving…" : "Save draft invoice"}
+        {isSubmitting
+          ? invoicingPresentationCopy.saving
+          : invoicingPresentationCopy.saveDraftInvoice}
       </Button>
     </form>
   );

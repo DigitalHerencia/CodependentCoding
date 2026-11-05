@@ -16,7 +16,13 @@ export const createSocialPostSchema = z.object({
 
 export const scheduleSocialPostSchema = z.object({
   postId: z.string().uuid(),
-  scheduledAt: z.coerce.date(),
+  scheduledAt: z.preprocess(
+    (value) =>
+      typeof value === "string" && /^\d{4}-\d\d-\d\dT\d\d:\d\d$/.test(value)
+        ? value + "Z"
+        : value,
+    z.coerce.date(),
+  ),
   expectedVersion: z.number().int().positive(),
 });
 

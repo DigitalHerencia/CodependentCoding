@@ -104,4 +104,34 @@ export const crmBlockCopy = {
   add: "Add",
   lead: "lead",
   contact: "contact",
-};
+} as const;
+
+export const crmPresentationCopy = {
+  leads: "leads",
+  contacts: "contacts",
+
+  searchOpportunitiesAndAccounts: "Search opportunities and accounts",
+  searchOpportunitiesOrAccounts: "Search opportunities or accounts",
+
+  divisionSeparator: " / ",
+  separator: " ·",
+  sentenceSeparator: "%",
+} as const;
+
+export const crmControlCopy = {
+  chooseAccount: "Choose account",
+  opportunityName: "Opportunity name",
+  account: "Account",
+  opportunityValue: "Opportunity value",
+  currency: "Currency",
+  probability: "Probability (%)",
+  expectedClose: "Expected close",
+  createOpportunity: "Create opportunity",
+  opportunityStage: "Opportunity stage",
+  moveOpportunity: "Move opportunity",
+} as const;
+
+export const crmRemainingCopy = {
+  personName: (value0: unknown, value1: unknown) => `${value0} ${value1}`,
+  nameAndDetail: (value0: unknown, value1: unknown) => `${value0} · ${value1}`,
+} as const;

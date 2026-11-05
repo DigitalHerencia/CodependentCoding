@@ -10,12 +10,15 @@ import { Button } from "@/components/ui/button";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { memberInviteCopy as copy } from "@/content/settings";
+import { useAdminReverification } from "@/lib/auth/clerkAccount";
+import { formResultCopy } from "@/content/application";
 import { createInvitation } from "@/lib/actions/commonActions";
 import { defaultInvitedRole, invitableRoles } from "@/lib/authz/roles";
 import { createInvitationSchema } from "@/schema/commonSchemas";
 
 export function MemberInviteForm() {
   const router = useRouter();
+  const invite = useAdminReverification(createInvitation);
   const [link, setLink] = useState("");
   const {
     control,
@@ -37,13 +40,21 @@ export function MemberInviteForm() {
       noValidate
       onSubmit={handleSubmit(async (values) => {
         setLink("");
-        const result = await createInvitation(values);
+        let result;
+        try {
+          result = await invite(values);
+        } catch {
+          setError("root", { message: formResultCopy.failed });
+          return;
+        }
         if (!result.ok) {
           for (const name of ["email", "role"] as const) {
             const message = result.error.fieldErrors?.[name]?.[0];
             if (message) setError(name, { message });
           }
-          setError("root", { message: result.error.message });
+          setError("root", {
+            message: result.error.message,
+          });
           return;
         }
         setLink(`${window.location.origin}${result.data.path}`);

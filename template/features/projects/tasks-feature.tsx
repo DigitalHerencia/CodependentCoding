@@ -1,3 +1,4 @@
+import { projectsRemainingCopy } from "@/content/projects";
 // Why: Server feature: loads the project workspace (null means 404) for the task board.
 import { notFound } from "next/navigation";
 import { TasksFeatureClient } from "./tasks-feature.client";
@@ -10,7 +11,7 @@ export async function TasksFeature({ projectId }: { projectId: string }) {
     <TasksFeatureClient
       tasks={tasks}
       projectId={projectId}
-      title={`${project.name} · Task board`}
+      title={projectsRemainingCopy.taskBoardTitle(project.name)}
     />
   );
 }

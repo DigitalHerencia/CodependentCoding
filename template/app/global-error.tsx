@@ -1,5 +1,5 @@
 "use client";
-import { GenericErrorPage } from "@/components/blocks/error-pages";
+import { GenericErrorPage } from "@/components/blocks/shared-blocks.client";
 
 // Fatal route errors require a client boundary; recovery presentation remains a block.
 export default function GlobalError({

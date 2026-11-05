@@ -88,19 +88,19 @@ rules:
   - {
       id: CC-FEAT-004,
       layer: feature-client,
-      text: "Client companions: interactive UI controls + actions; no server reads or authz (lib/authz/roles allowed)",
+      text: "Non-form client companions: blocks/templates + actions; no UI primitives, RHF, server reads or authorization policy (role enum and Clerk account adapters allowed)",
       enforcement: "eslint:codependent/layer-boundaries",
     }
   - {
       id: CC-BLOCK-001,
       layer: block,
-      text: "Blocks and templates are pure presentation",
+      text: "Blocks compose primitives; templates arrange blocks; both are pure presentation",
       enforcement: "eslint:codependent/layer-boundaries",
     }
   - {
       id: CC-BLOCK-002,
       layer: nav,
-      text: "Nav and shells are pure presentation; Clerk UI widgets allowed",
+      text: "Nav and shells are pure presentation; provider widgets live in auth feature adapters",
       enforcement: "eslint:codependent/layer-boundaries",
     }
   - {

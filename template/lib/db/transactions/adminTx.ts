@@ -28,7 +28,7 @@ export async function updateMembershipAdministrationTx(
       id: input.membershipId,
       organizationId: input.organizationId,
     },
-    select: { id: true },
+    select: { id: true, userId: true, role: true, status: true },
   });
   if (!membership) throw new ResourceNotFoundError("Membership");
 
@@ -47,7 +47,12 @@ export async function updateMembershipAdministrationTx(
       action: "admin.membership.updated",
       resourceType: "Membership",
       resourceId: updated.id,
-      metadata: { role: updated.role, status: updated.status },
+      metadata: {
+        source: "server-action",
+        affectedUserId: membership.userId,
+        previous: { role: membership.role, status: membership.status },
+        next: { role: updated.role, status: updated.status },
+      },
     },
   });
   return updated;
@@ -92,7 +97,7 @@ export async function approveWorkspaceAccessTx(
       action: "admin.membership.approved",
       resourceType: "Invitation",
       resourceId: approval.id,
-      metadata: { role: input.role },
+      metadata: { role: input.role, source: "server-action" },
     },
   });
 }

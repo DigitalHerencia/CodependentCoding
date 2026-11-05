@@ -1,4 +1,4 @@
-import { CampaignFeatureClient } from "./campaign-feature.client";
+import { CampaignFeatureClient } from "./campaign-status-form.client";
 import { notFound } from "next/navigation";
 import {
   getCampaign,

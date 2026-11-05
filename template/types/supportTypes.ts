@@ -1,10 +1,11 @@
-export interface SupportTicketDTO {
+import type { TicketStatus, TicketPriority } from "@/generated/prisma/enums";
+export type SupportTicketDTO = {
   id: string;
   number: number;
   subject: string;
   description: string | null;
-  status: string;
-  priority: string;
+  status: TicketStatus;
+  priority: TicketPriority;
   firstResponseDueAt: string | null;
   resolutionDueAt: string | null;
   resolvedAt: string | null;
@@ -19,8 +20,8 @@ export interface SupportTicketDTO {
   messageCount: number;
   createdAt: string;
   updatedAt: string;
-}
-export interface KnowledgeArticleDTO {
+};
+export type KnowledgeArticleDTO = {
   id: string;
   slug: string;
   title: string;
@@ -28,4 +29,4 @@ export interface KnowledgeArticleDTO {
   status: string;
   publishedAt: string | null;
   updatedAt: string;
-}
+};

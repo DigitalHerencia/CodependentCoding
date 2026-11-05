@@ -1,4 +1,6 @@
 "use client";
+import { crmPresentationCopy } from "@/content/crm";
+
 import { crmBlockCopy } from "@/content/crm";
 import Link from "next/link";
 import { Input } from "@/components/ui/input";
@@ -42,11 +44,28 @@ export function CrmContactsToolbar({
       />
       <Link
         className="type-link"
-        href={`/crm/${lead ? "leads" : "contacts"}/new`}
+        href={`/crm/${lead ? crmPresentationCopy.leads : crmPresentationCopy.contacts}/new`}
       >
         {crmBlockCopy.add}
         {lead ? crmBlockCopy.lead : crmBlockCopy.contact}
       </Link>
     </div>
+  );
+}
+
+export function CrmPipelineToolbar({
+  query,
+  onQueryChange,
+}: {
+  query: string;
+  onQueryChange: (query: string) => void;
+}) {
+  return (
+    <Input
+      aria-label={crmPresentationCopy.searchOpportunitiesAndAccounts}
+      placeholder={crmPresentationCopy.searchOpportunitiesOrAccounts}
+      value={query}
+      onChange={(event) => onQueryChange(event.target.value)}
+    />
   );
 }

@@ -7,8 +7,14 @@ const uuid = z.string().uuid();
 const projectFields = z.object({
   name: z.string().trim().min(1).max(200),
   description: z.string().max(10_000).nullable().optional(),
-  startsAt: z.coerce.date().nullable().optional(),
-  dueAt: z.coerce.date().nullable().optional(),
+  startsAt: z.preprocess(
+    (value) => (value === "" ? null : value),
+    z.coerce.date().nullable().optional(),
+  ),
+  dueAt: z.preprocess(
+    (value) => (value === "" ? null : value),
+    z.coerce.date().nullable().optional(),
+  ),
 });
 
 const datesInOrder = (input: {
@@ -33,7 +39,10 @@ export const createTaskSchema = z.object({
   title: z.string().trim().min(1).max(300),
   description: z.string().max(20_000).nullable().optional(),
   priority: z.enum(TaskPriority).default("MEDIUM"),
-  dueAt: z.coerce.date().nullable().optional(),
+  dueAt: z.preprocess(
+    (value) => (value === "" ? null : value),
+    z.coerce.date().nullable().optional(),
+  ),
 });
 
 export const updateTaskStatusSchema = z.object({
@@ -61,7 +70,9 @@ export const updateTaskSchema = createTaskSchema
 
 export const assignTaskSchema = z.object({
   taskId: uuid,
-  assigneeMembershipId: uuid.nullable(),
+  assigneeMembershipId: z
+    .union([uuid, z.literal("").transform(() => null)])
+    .nullable(),
   expectedVersion: z.number().int().positive(),
 });
 

@@ -1,5 +1,7 @@
 "use client";
+import { adminRemainingCopy } from "@/content/admin";
 
+import { adminPresentationCopy } from "@/content/admin";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { z } from "zod";
 import { useState } from "react";
@@ -8,10 +10,13 @@ import { Button } from "@/components/ui/button";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { addAdminMembership } from "@/lib/actions/adminActions";
+import { useAdminReverification } from "@/lib/auth/clerkAccount";
+import { adminSessionCopy } from "@/content/admin";
 import { invitableRoles } from "@/lib/authz/roles";
 import { addAdminMembershipSchema } from "@/schema/adminSchemas";
 
 export function AdminNewUserForm() {
+  const approve = useAdminReverification(addAdminMembership);
   const [approved, setApproved] = useState(false);
   const form = useForm<z.input<typeof addAdminMembershipSchema>>({
     resolver: zodResolver(addAdminMembershipSchema),
@@ -22,7 +27,13 @@ export function AdminNewUserForm() {
       className="mx-auto max-w-3xl space-y-5 surface-card p-5"
       onSubmit={form.handleSubmit(async (values) => {
         setApproved(false);
-        const result = await addAdminMembership(values);
+        let result;
+        try {
+          result = await approve(values);
+        } catch {
+          form.setError("root", { message: adminSessionCopy.cancelled });
+          return;
+        }
         if (result.ok) {
           form.reset();
           setApproved(true);
@@ -34,18 +45,20 @@ export function AdminNewUserForm() {
         }
         form.setError("root", { message: result.error.message });
       })}
+      noValidate
     >
-      <h1 className="type-title">Approve workspace access</h1>
-      <p>
-        Assign a role in this workspace. The user can claim access from their
-        waiting page using this verified email.
-      </p>
+      <h1 className="type-title">
+        {adminPresentationCopy.approveWorkspaceAccess}
+      </h1>
+      <p>{adminPresentationCopy.assignARoleInThisWorkspaceTheUserCan}</p>
       <Controller
         name="email"
         control={form.control}
         render={({ field, fieldState }) => (
           <Field data-invalid={fieldState.invalid}>
-            <FieldLabel htmlFor="member-email">Registered email</FieldLabel>
+            <FieldLabel htmlFor="member-email">
+              {adminRemainingCopy.registeredEmail}
+            </FieldLabel>
             <Input
               {...field}
               id="member-email"
@@ -63,7 +76,9 @@ export function AdminNewUserForm() {
         control={form.control}
         render={({ field, fieldState }) => (
           <Field data-invalid={fieldState.invalid}>
-            <FieldLabel htmlFor="new-member-role">Application role</FieldLabel>
+            <FieldLabel htmlFor="new-member-role">
+              {adminRemainingCopy.applicationRole}
+            </FieldLabel>
             <select
               {...field}
               id="new-member-role"
@@ -85,11 +100,11 @@ export function AdminNewUserForm() {
       )}
       {approved && (
         <p role="status">
-          Access approved. The user can check their access now.
+          {adminPresentationCopy.accessApprovedTheUserCanCheckTheirAccessNow}
         </p>
       )}
       <Button type="submit" disabled={form.formState.isSubmitting}>
-        Approve access
+        {adminPresentationCopy.approveAccess}
       </Button>
     </form>
   );

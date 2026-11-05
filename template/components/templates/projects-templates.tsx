@@ -1,3 +1,5 @@
+import { projectsRemainingCopy } from "@/content/projects";
+import { projectsPresentationCopy } from "@/content/projects";
 // Why: Templates: pure presentation for the projects pages, laid out from DTOs; data and slots come from features.
 import Link from "next/link";
 import type { ReactNode } from "react";
@@ -5,7 +7,7 @@ import type { TaskDTO, ProjectSummaryDTO } from "@/types/projectsTypes";
 import {
   DashboardLayout,
   DashboardPanel,
-} from "@/components/blocks/dashboard-layout";
+} from "@/components/blocks/shared-blocks";
 import { TaskStatus } from "@/schema/projectsSchemas";
 
 // lays out the my-tasks page from DTOs; no data access, no state.
@@ -23,7 +25,10 @@ export function MyTasksTemplate({
   return (
     <DashboardLayout title={title} nav={[]} toolbar={toolbar}>
       {["URGENT", "HIGH", "MEDIUM", "LOW"].map((priority) => (
-        <DashboardPanel key={priority} title={`${priority} priority`}>
+        <DashboardPanel
+          key={priority}
+          title={projectsRemainingCopy.priorityLabel(priority)}
+        >
           <ul className="space-y-3">
             {tasks
               .filter((task) => task.priority === priority)
@@ -40,8 +45,10 @@ export function MyTasksTemplate({
                       {task.title}
                     </Link>
                     <p className="mt-2">
-                      Due {task.dueAt?.slice(0, 10) ?? "date not set"} ·{" "}
-                      {task.status}
+                      {projectsPresentationCopy.due}
+                      {task.dueAt?.slice(0, 10) ??
+                        projectsPresentationCopy.dateNotSet}
+                      {projectsPresentationCopy.separator2} {task.status}
                     </p>
                   </div>
                   {renderControls(task)}
@@ -49,7 +56,7 @@ export function MyTasksTemplate({
               ))}
           </ul>
           {!tasks.some((task) => task.priority === priority) && (
-            <p>No open tasks at this priority.</p>
+            <p>{projectsPresentationCopy.noOpenTasksAtThisPriority}</p>
           )}
         </DashboardPanel>
       ))}
@@ -73,47 +80,54 @@ export function ProjectDetailTemplate({
       nav={[]}
       toolbar={
         <Link className="type-link" href={`/projects/${project.id}/edit`}>
-          Edit project
+          {projectsPresentationCopy.editProject}
         </Link>
       }
     >
       <div className="grid gap-4 lg:grid-cols-[2fr_1fr]">
-        <DashboardPanel title="Project brief">
+        <DashboardPanel title={projectsPresentationCopy.projectBrief}>
           <p className="whitespace-pre-wrap">
-            {project.description ?? "No brief has been written."}
+            {project.description ??
+              projectsPresentationCopy.noBriefHasBeenWritten}
           </p>
           <nav className="mt-6 flex flex-wrap gap-4">
             <Link className="type-link" href={`/projects/${project.id}/tasks`}>
-              Task board
+              {projectsPresentationCopy.taskBoard}
             </Link>
             <Link
               className="type-link"
               href={`/projects/${project.id}/timeline`}
             >
-              Delivery timeline
+              {projectsPresentationCopy.deliveryTimeline}
             </Link>
             <Link
               className="type-link"
               href={`/projects/${project.id}/tasks/new`}
             >
-              Add task
+              {projectsPresentationCopy.addTask}
             </Link>
           </nav>
         </DashboardPanel>
-        <DashboardPanel title="Delivery">
+        <DashboardPanel title={projectsPresentationCopy.delivery}>
           <dl className="space-y-2">
-            <dt>Status</dt>
+            <dt>{projectsPresentationCopy.status}</dt>
             <dd>{project.status}</dd>
-            <dt>Start / due</dt>
+            <dt>{projectsPresentationCopy.startDue}</dt>
             <dd>
-              {project.startsAt?.slice(0, 10) ?? "Unscheduled"} /{" "}
-              {project.dueAt?.slice(0, 10) ?? "Unscheduled"}
+              {project.startsAt?.slice(0, 10) ??
+                projectsPresentationCopy.unscheduled}
+              {projectsPresentationCopy.divisionSeparator}{" "}
+              {project.dueAt?.slice(0, 10) ??
+                projectsPresentationCopy.unscheduled}
             </dd>
-            <dt>Remaining work</dt>
+            <dt>{projectsPresentationCopy.remainingWork}</dt>
             <dd>
-              {project.openTaskCount} open of {project.taskCount} tasks
+              {project.openTaskCount}
+              {projectsPresentationCopy.openOf}
+              {project.taskCount}
+              {projectsPresentationCopy.tasks}
             </dd>
-            <dt>Blocked in loaded tasks</dt>
+            <dt>{projectsPresentationCopy.blockedInLoadedTasks}</dt>
             <dd>{tasks.filter((task) => task.status === "BLOCKED").length}</dd>
           </dl>
         </DashboardPanel>
@@ -140,29 +154,39 @@ export function ProjectTaskDetailTemplate({
           className="type-link"
           href={`/projects/${task.projectId}/tasks/${task.id}/edit`}
         >
-          Edit task
+          {projectsPresentationCopy.editTask}
         </Link>
       }
     >
       <Link className="type-link" href={`/projects/${task.projectId}/tasks`}>
-        Back to task board
+        {projectsPresentationCopy.backToTaskBoard}
       </Link>
       <div className="grid gap-4 lg:grid-cols-[2fr_1fr]">
-        <DashboardPanel title="Brief and acceptance criteria">
+        <DashboardPanel
+          title={projectsPresentationCopy.briefAndAcceptanceCriteria}
+        >
           <p className="whitespace-pre-wrap">
-            {task.description ?? "No description provided."}
+            {task.description ?? projectsPresentationCopy.noDescriptionProvided}
           </p>
         </DashboardPanel>
-        <DashboardPanel title="Task delivery">
+        <DashboardPanel title={projectsPresentationCopy.taskDelivery}>
           <dl className="space-y-2">
-            <dt>Priority</dt>
+            <dt>{projectsPresentationCopy.priority}</dt>
             <dd>{task.priority}</dd>
-            <dt>Assigned to</dt>
-            <dd>{task.assignee?.displayName ?? "Unassigned"}</dd>
-            <dt>Due date</dt>
-            <dd>{task.dueAt?.slice(0, 10) ?? "Unscheduled"}</dd>
-            <dt>Completed</dt>
-            <dd>{task.completedAt?.slice(0, 10) ?? "Not completed"}</dd>
+            <dt>{projectsPresentationCopy.assignedTo}</dt>
+            <dd>
+              {task.assignee?.displayName ??
+                projectsPresentationCopy.unassigned}
+            </dd>
+            <dt>{projectsPresentationCopy.dueDate}</dt>
+            <dd>
+              {task.dueAt?.slice(0, 10) ?? projectsPresentationCopy.unscheduled}
+            </dd>
+            <dt>{projectsPresentationCopy.completed}</dt>
+            <dd>
+              {task.completedAt?.slice(0, 10) ??
+                projectsPresentationCopy.notCompleted}
+            </dd>
           </dl>
           <div className="mt-4">{children}</div>
         </DashboardPanel>
@@ -186,14 +210,16 @@ export function ProjectTasksTemplate({
   return (
     <DashboardLayout title={title} nav={[]} toolbar={toolbar}>
       <p className="text-muted-primary">
-        Showing up to 100 tasks. Open a task to review its brief or edit its
-        schedule.
+        {projectsPresentationCopy.showingUpTo100TasksOpenATaskTo}
       </p>
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         {Object.values(TaskStatus).map((status) => (
           <DashboardPanel
             key={status}
-            title={`${status.replaceAll("_", " ")} · ${tasks.filter((task) => task.status === status).length}`}
+            title={projectsRemainingCopy.statusAndCount(
+              status.replaceAll("_", " "),
+              tasks.filter((task) => task.status === status).length,
+            )}
           >
             <div className="space-y-3">
               {tasks
@@ -209,16 +235,24 @@ export function ProjectTasksTemplate({
                     >
                       {task.title}
                     </Link>
-                    <p>{task.priority} priority</p>
+                    <p>
+                      {task.priority}
+                      {projectsPresentationCopy.priority2}
+                    </p>
                     <p className="text-sm text-muted-primary">
-                      {task.assignee?.displayName ?? "Unassigned"} ·{" "}
-                      {task.dueAt?.slice(0, 10) ?? "No due date"}
+                      {task.assignee?.displayName ??
+                        projectsPresentationCopy.unassigned}
+                      {projectsPresentationCopy.separator2}{" "}
+                      {task.dueAt?.slice(0, 10) ??
+                        projectsPresentationCopy.noDueDate}
                     </p>
                     {renderControls(task)}
                   </article>
                 ))}
               {!tasks.some((task) => task.status === status) && (
-                <p className="p-3 text-muted-primary">No tasks.</p>
+                <p className="p-3 text-muted-primary">
+                  {projectsPresentationCopy.noTasks}
+                </p>
               )}
             </div>
           </DashboardPanel>
@@ -237,9 +271,13 @@ export function ProjectsTemplate({
   toolbar: ReactNode;
 }) {
   return (
-    <DashboardLayout title="Project portfolio" nav={[]} toolbar={toolbar}>
+    <DashboardLayout
+      title={projectsPresentationCopy.projectPortfolio}
+      nav={[]}
+      toolbar={toolbar}
+    >
       <p className="text-muted-primary">
-        Delivery status and remaining work across up to 100 projects.
+        {projectsPresentationCopy.deliveryStatusAndRemainingWorkAcrossUpTo100}
       </p>
       <div className="grid gap-4 lg:grid-cols-2">
         {projects.map((project) => (
@@ -254,12 +292,14 @@ export function ProjectsTemplate({
               <span>{project.status.replaceAll("_", " ")}</span>
             </header>
             <p className="whitespace-pre-wrap text-muted-primary">
-              {project.description ?? "No project brief yet."}
+              {project.description ??
+                projectsPresentationCopy.noProjectBriefYet}
             </p>
             <div>
               <label htmlFor={`progress-${project.id}`}>
-                {project.taskCount - project.openTaskCount} of{" "}
-                {project.taskCount} tasks closed
+                {project.taskCount - project.openTaskCount}
+                {projectsPresentationCopy.of} {project.taskCount}
+                {projectsPresentationCopy.tasksClosed}
               </label>
               <progress
                 id={`progress-${project.id}`}
@@ -269,27 +309,31 @@ export function ProjectsTemplate({
               />
             </div>
             <p>
-              Start: {project.startsAt?.slice(0, 10) ?? "Unscheduled"} · Due:{" "}
-              {project.dueAt?.slice(0, 10) ?? "Unscheduled"}
+              {projectsPresentationCopy.start}
+              {project.startsAt?.slice(0, 10) ??
+                projectsPresentationCopy.unscheduled}
+              {projectsPresentationCopy.due2}{" "}
+              {project.dueAt?.slice(0, 10) ??
+                projectsPresentationCopy.unscheduled}
             </p>
             <nav
               className="flex flex-wrap gap-4"
-              aria-label={`${project.name} views`}
+              aria-label={projectsRemainingCopy.viewCount(project.name)}
             >
               <Link
                 className="type-link"
                 href={`/projects/${project.id}/tasks`}
               >
-                Task board
+                {projectsPresentationCopy.taskBoard}
               </Link>
               <Link
                 className="type-link"
                 href={`/projects/${project.id}/timeline`}
               >
-                Timeline
+                {projectsPresentationCopy.timeline}
               </Link>
               <Link className="type-link" href={`/projects/${project.id}/edit`}>
-                Edit project
+                {projectsPresentationCopy.editProject}
               </Link>
             </nav>
           </article>
@@ -297,7 +341,7 @@ export function ProjectsTemplate({
       </div>
       {projects.length === 0 && (
         <p className="surface-inset p-6">
-          No matching projects. Create a project to plan your first delivery.
+          {projectsPresentationCopy.noMatchingProjectsCreateAProjectToPlanYour}
         </p>
       )}
     </DashboardLayout>
@@ -319,17 +363,19 @@ export function ProjectTimelineTemplate({
   ].sort();
   return (
     <DashboardLayout
-      title={`${project.name} · Timeline`}
+      title={projectsRemainingCopy.viewCount(project.name)}
       nav={[]}
       toolbar={
         <Link className="type-link" href={`/projects/${project.id}/tasks/new`}>
-          Schedule a task
+          {projectsPresentationCopy.scheduleATask}
         </Link>
       }
     >
       <p>
-        Project window: {project.startsAt?.slice(0, 10) ?? "No start date"} →{" "}
-        {project.dueAt?.slice(0, 10) ?? "No deadline"}
+        {projectsPresentationCopy.projectWindow}
+        {project.startsAt?.slice(0, 10) ?? projectsPresentationCopy.noStartDate}
+        {projectsPresentationCopy.sentenceSeparator}{" "}
+        {project.dueAt?.slice(0, 10) ?? projectsPresentationCopy.noDeadline}
       </p>
       <ol className="space-y-4 border-l-4 border-primary pl-5">
         {dates.map((date) => (
@@ -350,7 +396,9 @@ export function ProjectTimelineTemplate({
                         {task.title}
                       </Link>
                       <span>
-                        {task.status} · {task.priority}
+                        {task.status}
+                        {projectsPresentationCopy.separator}
+                        {task.priority}
                       </span>
                     </li>
                   ))}
@@ -359,8 +407,10 @@ export function ProjectTimelineTemplate({
           </li>
         ))}
       </ol>
-      {dates.length === 0 && <p>No tasks have scheduled deadlines.</p>}
-      <DashboardPanel title="Unscheduled work">
+      {dates.length === 0 && (
+        <p>{projectsPresentationCopy.noTasksHaveScheduledDeadlines}</p>
+      )}
+      <DashboardPanel title={projectsPresentationCopy.unscheduledWork}>
         <ul className="space-y-3">
           {tasks
             .filter((task) => !task.dueAt)
@@ -370,7 +420,8 @@ export function ProjectTimelineTemplate({
                   className="type-link"
                   href={`/projects/${project.id}/tasks/${task.id}/edit`}
                 >
-                  {task.title} · Set a deadline
+                  {task.title}
+                  {projectsPresentationCopy.setADeadline}
                 </Link>
               </li>
             ))}

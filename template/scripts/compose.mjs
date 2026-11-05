@@ -55,7 +55,7 @@ export function renderRegistry(ids) {
     'import type { ModuleDefinition } from "@/types/moduleTypes";',
     ...(ids.length > 0 ? [""] : []),
     ...ids.map(
-      (id) => `import { ${camel(id)} } from "@/lib/modules/${id}.module";`,
+      (id) => `import { ${camel(id)} } from "@/lib/modules/${camel(id)}";`,
     ),
     "",
     ids.length > 0

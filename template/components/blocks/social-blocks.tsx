@@ -1,4 +1,5 @@
 "use client";
+import { socialPresentationCopy } from "@/content/social";
 import { socialBlockCopy } from "@/content/social";
 import { Input } from "@/components/ui/input";
 export function MediaLibraryToolbar({
@@ -58,5 +59,22 @@ export function MediaAssetControlsBlock({
       </Button>
       <p role="status">{message}</p>
     </div>
+  );
+}
+
+export function SocialCalendarToolbar({
+  query,
+  onQueryChange,
+}: {
+  query: string;
+  onQueryChange: (query: string) => void;
+}) {
+  return (
+    <Input
+      aria-label={socialPresentationCopy.searchPosts}
+      placeholder={socialPresentationCopy.searchPosts}
+      value={query}
+      onChange={(event) => onQueryChange(event.target.value)}
+    />
   );
 }

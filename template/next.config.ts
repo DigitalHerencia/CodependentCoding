@@ -30,6 +30,7 @@ const nextConfig: NextConfig = {
       { source: "/admin/users/:path*", destination: "/users/:path*" },
       { source: "/admin/records/:path*", destination: "/records/:path*" },
       { source: "/admin/audit", destination: "/audit" },
+      { source: "/admin/verification", destination: "/verification" },
     ];
   },
   async headers() {

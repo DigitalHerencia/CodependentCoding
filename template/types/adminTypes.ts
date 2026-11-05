@@ -1,17 +1,24 @@
+import type { MembershipStatus } from "@/generated/prisma/enums";
+import type { z } from "zod";
+import type {
+  changeAdminMembershipSchema,
+  updateAdminMembershipStatusSchema,
+  adminBulkOperationSchema,
+} from "@/schema/adminSchemas";
 import type { AppRole } from "./accessTypes";
 
-export interface AdminMembershipDTO {
+export type AdminMembershipDTO = {
   id: string;
-  role: string;
-  status: string;
+  role: AppRole;
+  status: MembershipStatus;
   user: { id: string; displayName: string | null; email: string | null };
   createdAt: string;
-}
-export interface AdminRecordSummaryDTO {
+};
+export type AdminRecordSummaryDTO = {
   resource: string;
   count: number;
-}
-export interface AuditEventDTO {
+};
+export type AuditEventDTO = {
   id: string;
   action: string;
   resourceType: string;
@@ -23,33 +30,25 @@ export interface AuditEventDTO {
     email: string | null;
   } | null;
   createdAt: string;
-}
+};
 export type AuditRisk = "routine" | "sensitive" | "high-risk";
 
-export interface DisplayAuditEventDTO {
+export type DisplayAuditEventDTO = {
   id: string;
   action: string;
   resource: string;
   timestamp: string;
   risk: AuditRisk;
-}
+};
 
 export type AdminRole = AppRole;
 
-export interface ChangeAdminMembershipCommand {
-  membershipId: string;
-  role: AdminRole;
-}
+export type ChangeAdminMembershipCommand = z.input<
+  typeof changeAdminMembershipSchema
+>;
 
-export interface UpdateAdminMembershipStatusCommand {
-  membershipId: string;
-}
+export type UpdateAdminMembershipStatusCommand = z.input<
+  typeof updateAdminMembershipStatusSchema
+>;
 
-export type AdminBulkOperation =
-  | { kind: "suspend"; membershipId: string }
-  | { kind: "restore"; membershipId: string }
-  | {
-      kind: "change-role";
-      membershipId: string;
-      role: AdminRole;
-    };
+export type AdminBulkOperation = z.input<typeof adminBulkOperationSchema>;

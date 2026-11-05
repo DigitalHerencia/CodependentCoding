@@ -1,4 +1,5 @@
 "use server";
+import { toActionResult } from "@/lib/utils/actionResult";
 
 import {
   supportReplySchema,
@@ -23,136 +24,148 @@ import { updateTicketStatusTx } from "@/lib/db/transactions/supportUpdateTicketS
 import { lockSupportTicketNumberTx } from "@/lib/db/transactions/supportTx";
 
 export async function createSupportTicket(rawInput: unknown) {
-  const input = createSupportTicketSchema.parse(rawInput);
-  const identity = await requireIdentity();
-  return withTenantTransaction(identity, async (tx, access) => {
-    assertPermission(access, "support.ticket:create");
-    await lockSupportTicketNumberTx(tx, access.organizationId);
-    const latest = await tx.supportTicket.aggregate({
-      where: { organizationId: access.organizationId },
-      _max: { number: true },
+  return toActionResult(async () => {
+    const identity = await requireIdentity();
+    return withTenantTransaction(identity, async (tx, access) => {
+      assertPermission(access, "support.ticket:create");
+      const input = createSupportTicketSchema.parse(rawInput);
+      await lockSupportTicketNumberTx(tx, access.organizationId);
+      const latest = await tx.supportTicket.aggregate({
+        where: { organizationId: access.organizationId },
+        _max: { number: true },
+      });
+      const record = await tx.supportTicket.create({
+        data: {
+          organizationId: access.organizationId,
+          requesterUserId: access.userId,
+          number: (latest._max.number ?? 0) + 1,
+          subject: input.subject,
+          description: input.description ?? null,
+          priority: input.priority,
+        },
+        select: supportTicketSelect,
+      });
+      return toSupportTicketDTO(record);
     });
-    const record = await tx.supportTicket.create({
-      data: {
-        organizationId: access.organizationId,
-        requesterUserId: access.userId,
-        number: (latest._max.number ?? 0) + 1,
-        subject: input.subject,
-        description: input.description ?? null,
-        priority: input.priority,
-      },
-      select: supportTicketSelect,
-    });
-    return toSupportTicketDTO(record);
   });
 }
 
 export async function updateSupportTicketStatus(rawInput: unknown) {
-  const input = updateSupportTicketStatusSchema.parse(rawInput);
-  const identity = await requireIdentity();
-  return withTenantTransaction(identity, async (tx, access) => {
-    const target = await tx.supportTicket.findFirst({
-      where: { id: input.ticketId, organizationId: access.organizationId },
-      select: {
-        organizationId: true,
-        requesterUserId: true,
-        assignedMembershipId: true,
-      },
-    });
-    if (!target) throw new Error("Support ticket was not found.");
+  return toActionResult(async () => {
+    const identity = await requireIdentity();
+    return withTenantTransaction(identity, async (tx, access) => {
+      assertPermission(access, "support.ticket:update");
+      const input = updateSupportTicketStatusSchema.parse(rawInput);
+      const target = await tx.supportTicket.findFirst({
+        where: { id: input.ticketId, organizationId: access.organizationId },
+        select: {
+          organizationId: true,
+          requesterUserId: true,
+          assignedMembershipId: true,
+        },
+      });
+      if (!target) throw new Error("Support ticket was not found.");
 
-    authorizeOwnedOrAssignedWrite(access, "support.ticket:update", {
-      kind: "support.ticket",
-      organizationId: target.organizationId,
-      requesterUserId: target.requesterUserId,
-      assigneeMembershipId: target.assignedMembershipId,
-    });
+      authorizeOwnedOrAssignedWrite(access, "support.ticket:update", {
+        kind: "support.ticket",
+        organizationId: target.organizationId,
+        requesterUserId: target.requesterUserId,
+        assigneeMembershipId: target.assignedMembershipId,
+      });
 
-    const record = await updateTicketStatusTx(tx, {
-      organizationId: access.organizationId,
-      ticketId: input.ticketId,
-      status: input.status,
-      expectedVersion: input.expectedVersion,
+      const record = await updateTicketStatusTx(tx, {
+        organizationId: access.organizationId,
+        ticketId: input.ticketId,
+        status: input.status,
+        expectedVersion: input.expectedVersion,
+      });
+      return toSupportTicketDTO(record);
     });
-    return toSupportTicketDTO(record);
   });
 }
 
 export async function replyToSupportTicket(rawInput: unknown) {
-  const input = supportReplySchema.parse(rawInput);
-  const identity = await requireIdentity();
-  return withTenantTransaction(identity, async (tx, access) => {
-    const target = await tx.supportTicket.findFirst({
-      where: { id: input.ticketId, organizationId: access.organizationId },
-      select: {
-        organizationId: true,
-        requesterUserId: true,
-        assignedMembershipId: true,
-      },
+  return toActionResult(async () => {
+    const identity = await requireIdentity();
+    return withTenantTransaction(identity, async (tx, access) => {
+      assertPermission(access, "support.ticket:update");
+      const input = supportReplySchema.parse(rawInput);
+      const target = await tx.supportTicket.findFirst({
+        where: { id: input.ticketId, organizationId: access.organizationId },
+        select: {
+          organizationId: true,
+          requesterUserId: true,
+          assignedMembershipId: true,
+        },
+      });
+      if (!target) throw new Error("Ticket not found.");
+      authorizeOwnedOrAssignedWrite(access, "support.ticket:update", {
+        kind: "support.ticket",
+        organizationId: target.organizationId,
+        requesterUserId: target.requesterUserId,
+        assigneeMembershipId: target.assignedMembershipId,
+      });
+      const author = await tx.user.findUniqueOrThrow({
+        where: { id: access.userId },
+        select: { displayName: true },
+      });
+      await tx.supportMessage.create({
+        data: {
+          organizationId: access.organizationId,
+          ticketId: input.ticketId,
+          authorMembershipId: access.membershipId,
+          authorLabel: author.displayName ?? "Team member",
+          body: input.body,
+          isInternal: false,
+        },
+      });
+      return { saved: true };
     });
-    if (!target) throw new Error("Ticket not found.");
-    authorizeOwnedOrAssignedWrite(access, "support.ticket:update", {
-      kind: "support.ticket",
-      organizationId: target.organizationId,
-      requesterUserId: target.requesterUserId,
-      assigneeMembershipId: target.assignedMembershipId,
-    });
-    const author = await tx.user.findUniqueOrThrow({
-      where: { id: access.userId },
-      select: { displayName: true },
-    });
-    await tx.supportMessage.create({
-      data: {
-        organizationId: access.organizationId,
-        ticketId: input.ticketId,
-        authorMembershipId: access.membershipId,
-        authorLabel: author.displayName ?? "Team member",
-        body: input.body,
-        isInternal: false,
-      },
-    });
-    return { saved: true };
   });
 }
 export async function createKnowledgeArticle(rawInput: unknown) {
-  const input = knowledgeArticleFormSchema.parse(rawInput);
-  const identity = await requireIdentity();
-  return withTenantTransaction(identity, async (tx, access) => {
-    assertPermission(access, "support.article:create");
-    return toKnowledgeArticleDTO(
-      await tx.knowledgeArticle.create({
-        data: {
-          ...input,
-          organizationId: access.organizationId,
-          authorMembershipId: access.membershipId,
-          status: "PUBLISHED",
-          publishedAt: new Date(),
-        },
-        select: knowledgeArticleSelect,
-      }),
-    );
+  return toActionResult(async () => {
+    const identity = await requireIdentity();
+    return withTenantTransaction(identity, async (tx, access) => {
+      assertPermission(access, "support.article:create");
+      const input = knowledgeArticleFormSchema.parse(rawInput);
+      return toKnowledgeArticleDTO(
+        await tx.knowledgeArticle.create({
+          data: {
+            ...input,
+            organizationId: access.organizationId,
+            authorMembershipId: access.membershipId,
+            status: "PUBLISHED",
+            publishedAt: new Date(),
+          },
+          select: knowledgeArticleSelect,
+        }),
+      );
+    });
   });
 }
 export async function updateKnowledgeArticle(rawInput: unknown) {
-  const input = updateKnowledgeArticleSchema.parse(rawInput);
-  const identity = await requireIdentity();
-  return withTenantTransaction(identity, async (tx, access) => {
-    assertPermission(access, "support.article:update");
-    const result = await tx.knowledgeArticle.updateMany({
-      where: {
-        id: input.articleId,
-        organizationId: access.organizationId,
-        updatedAt: input.expectedUpdatedAt,
-      },
-      data: { title: input.title, slug: input.slug, body: input.body },
+  return toActionResult(async () => {
+    const identity = await requireIdentity();
+    return withTenantTransaction(identity, async (tx, access) => {
+      assertPermission(access, "support.article:update");
+      const input = updateKnowledgeArticleSchema.parse(rawInput);
+      const result = await tx.knowledgeArticle.updateMany({
+        where: {
+          id: input.articleId,
+          organizationId: access.organizationId,
+          updatedAt: input.expectedUpdatedAt,
+        },
+        data: { title: input.title, slug: input.slug, body: input.body },
+      });
+      if (result.count !== 1)
+        throw new Error("Article changed. Reload before editing.");
+      return toKnowledgeArticleDTO(
+        await tx.knowledgeArticle.findFirstOrThrow({
+          where: { id: input.articleId, organizationId: access.organizationId },
+          select: knowledgeArticleSelect,
+        }),
+      );
     });
-    if (result.count !== 1)
-      throw new Error("Article changed. Reload before editing.");
-    return toKnowledgeArticleDTO(
-      await tx.knowledgeArticle.findFirstOrThrow({
-        where: { id: input.articleId, organizationId: access.organizationId },
-        select: knowledgeArticleSelect,
-      }),
-    );
   });
 }

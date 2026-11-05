@@ -1,10 +1,12 @@
+import { marketingRemainingCopy } from "@/content/marketing";
+import { marketingPresentationCopy } from "@/content/marketing";
 // Why: Templates: pure presentation for the marketing pages, laid out from DTOs; data and slots come from features.
 import type { CampaignDTO, AudienceDTO } from "@/types/marketingTypes";
 import {
   DashboardLayout,
   DashboardTable,
   DashboardPanel,
-} from "@/components/blocks/dashboard-layout";
+} from "@/components/blocks/shared-blocks";
 import Link from "next/link";
 import { audienceFormSchema } from "@/schema/marketingSchemas";
 import type { ReactNode } from "react";
@@ -15,18 +17,24 @@ export function MarketingAnalyticsTemplate({
   campaigns: CampaignDTO[];
 }) {
   return (
-    <DashboardLayout title="Campaign operations" nav={[]}>
+    <DashboardLayout
+      title={marketingPresentationCopy.campaignOperations}
+      nav={[]}
+    >
       <p>
-        Lifecycle snapshot of {campaigns.length} loaded campaigns. Delivery and
-        engagement rates require recorded provider events.
+        {marketingPresentationCopy.lifecycleSnapshotOf}
+        {campaigns.length}
+        {
+          marketingPresentationCopy.loadedCampaignsDeliveryAndEngagementRatesRequireRecordedProvider
+        }
       </p>
       <DashboardTable
         columns={[
-          { key: "name", label: "Campaign" },
-          { key: "audience", label: "Audience" },
-          { key: "status", label: "Lifecycle" },
-          { key: "scheduled", label: "Scheduled" },
-          { key: "steps", label: "Steps" },
+          { key: "name", label: marketingPresentationCopy.campaign },
+          { key: "audience", label: marketingPresentationCopy.audience },
+          { key: "status", label: marketingPresentationCopy.lifecycle },
+          { key: "scheduled", label: marketingPresentationCopy.scheduled },
+          { key: "steps", label: marketingPresentationCopy.steps },
         ]}
         rows={campaigns.map((campaign) => ({
           id: campaign.id,
@@ -59,17 +67,22 @@ export function MarketingAudienceDetailTemplate({
           className="type-link"
           href={`/marketing/audiences/${audience.id}/edit`}
         >
-          Edit segment
+          {marketingPresentationCopy.editSegment}
         </Link>
       }
     >
-      <DashboardPanel title="Membership rule">
+      <DashboardPanel title={marketingPresentationCopy.membershipRule}>
         <p>
           {parsed.success && parsed.data.definition.rules[0]
-            ? `Include contacts whose relationship is ${parsed.data.definition.rules[0].value}.`
-            : "This audience has custom rules that the current editor cannot modify."}
+            ? marketingRemainingCopy.relationshipRule(
+                parsed.data.definition.rules[0].value,
+              )
+            : marketingPresentationCopy.thisAudienceHasCustomRulesThatTheCurrentEditor}
         </p>
-        <p className="mt-4">Audience status: {audience.status}</p>
+        <p className="mt-4">
+          {marketingPresentationCopy.audienceStatus2}
+          {audience.status}
+        </p>
       </DashboardPanel>
     </DashboardLayout>
   );
@@ -83,7 +96,11 @@ export function MarketingAudiencesTemplate({
   toolbar: ReactNode;
 }) {
   return (
-    <DashboardLayout title="Audience segments" nav={[]} toolbar={toolbar}>
+    <DashboardLayout
+      title={marketingPresentationCopy.audienceSegments}
+      nav={[]}
+      toolbar={toolbar}
+    >
       <div className="grid gap-4 md:grid-cols-2">
         {audiences.map((audience) => {
           const parsed = audienceFormSchema.safeParse(audience);
@@ -97,22 +114,24 @@ export function MarketingAudiencesTemplate({
               </Link>
               <p>{audience.status}</p>
               <p>
-                Contact relationship:{" "}
+                {marketingPresentationCopy.contactRelationship}{" "}
                 {parsed.success && parsed.data.definition.rules[0]
                   ? parsed.data.definition.rules[0].value
-                  : "Custom rules"}
+                  : marketingPresentationCopy.customRules}
               </p>
               <Link
                 className="type-link"
                 href={`/marketing/audiences/${audience.id}/edit`}
               >
-                Edit segment
+                {marketingPresentationCopy.editSegment}
               </Link>
             </article>
           );
         })}
       </div>
-      {!audiences.length && <p>No matching audiences.</p>}
+      {!audiences.length && (
+        <p>{marketingPresentationCopy.noMatchingAudiences}</p>
+      )}
     </DashboardLayout>
   );
 }
@@ -140,17 +159,17 @@ export function MarketingCampaignDetailTemplate({
           className="type-link"
           href={`/marketing/campaigns/${campaign.id}/edit`}
         >
-          Edit plan
+          {marketingPresentationCopy.editPlan}
         </Link>
       }
     >
       <div className="grid gap-4 lg:grid-cols-[2fr_1fr]">
-        <DashboardPanel title="Campaign brief">
+        <DashboardPanel title={marketingPresentationCopy.campaignBrief}>
           <p className="whitespace-pre-wrap">
-            {campaign.description ?? "No brief recorded."}
+            {campaign.description ?? marketingPresentationCopy.noBriefRecorded}
           </p>
         </DashboardPanel>
-        <DashboardPanel title="Target and schedule">
+        <DashboardPanel title={marketingPresentationCopy.targetAndSchedule}>
           <p>
             {campaign.audience ? (
               <Link
@@ -163,26 +182,45 @@ export function MarketingCampaignDetailTemplate({
               "No audience selected"
             )}
           </p>
-          <p className="mt-3">Status: {campaign.status}</p>
-          <p>Scheduled: {campaign.scheduledAt ?? "Not scheduled"}</p>
-          <p>Started: {campaign.startedAt ?? "Not started"}</p>
-          <p>Completed: {campaign.completedAt ?? "Not completed"}</p>
+          <p className="mt-3">
+            {marketingPresentationCopy.status}
+            {campaign.status}
+          </p>
+          <p>
+            {marketingPresentationCopy.scheduled2}
+            {campaign.scheduledAt ?? marketingPresentationCopy.notScheduled}
+          </p>
+          <p>
+            {marketingPresentationCopy.started}
+            {campaign.startedAt ?? marketingPresentationCopy.notStarted}
+          </p>
+          <p>
+            {marketingPresentationCopy.completed}
+            {campaign.completedAt ?? marketingPresentationCopy.notCompleted}
+          </p>
         </DashboardPanel>
       </div>
-      <DashboardPanel title="Workflow">
+      <DashboardPanel title={marketingPresentationCopy.workflow}>
         <ol className="space-y-3 border-l-4 border-primary pl-4">
           {steps.map((step) => (
             <li className="surface-inset p-4" key={step.id}>
               <p className="type-label">
-                {step.position}. {step.type}
+                {step.position}
+                {marketingPresentationCopy.sentenceSeparator}
+                {step.type}
               </p>
               {step.templateKey && (
-                <p className="mt-2">Template: {step.templateKey}</p>
+                <p className="mt-2">
+                  {marketingPresentationCopy.template}
+                  {step.templateKey}
+                </p>
               )}
             </li>
           ))}
         </ol>
-        {!steps.length && <p>No workflow steps are configured.</p>}
+        {!steps.length && (
+          <p>{marketingPresentationCopy.noWorkflowStepsAreConfigured}</p>
+        )}
         {children}
       </DashboardPanel>
     </DashboardLayout>
@@ -197,7 +235,11 @@ export function MarketingCampaignsTemplate({
   toolbar: ReactNode;
 }) {
   return (
-    <DashboardLayout title="Campaign planner" nav={[]} toolbar={toolbar}>
+    <DashboardLayout
+      title={marketingPresentationCopy.campaignPlanner}
+      nav={[]}
+      toolbar={toolbar}
+    >
       <div className="space-y-4">
         {[
           "DRAFT",
@@ -211,7 +253,10 @@ export function MarketingCampaignsTemplate({
             (campaign) => campaign.status === status,
           );
           return (
-            <DashboardPanel key={status} title={`${status} · ${group.length}`}>
+            <DashboardPanel
+              key={status}
+              title={marketingRemainingCopy.nameAndStatus(status, group.length)}
+            >
               <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
                 {group.map((campaign) => (
                   <article
@@ -225,19 +270,29 @@ export function MarketingCampaignsTemplate({
                       {campaign.name}
                     </Link>
                     <p className="line-clamp-2 text-muted-primary">
-                      {campaign.description ?? "No campaign brief."}
+                      {campaign.description ??
+                        marketingPresentationCopy.noCampaignBrief}
                     </p>
-                    <p>Audience: {campaign.audience?.name ?? "Not selected"}</p>
                     <p>
-                      Planned:{" "}
-                      {campaign.scheduledAt?.slice(0, 16).replace("T", " ") ??
-                        "Unscheduled"}
+                      {marketingPresentationCopy.audience2}
+                      {campaign.audience?.name ??
+                        marketingPresentationCopy.notSelected}
                     </p>
-                    <p>{campaign.stepCount} workflow steps</p>
+                    <p>
+                      {marketingPresentationCopy.planned}{" "}
+                      {campaign.scheduledAt?.slice(0, 16).replace("T", " ") ??
+                        marketingPresentationCopy.unscheduled}
+                    </p>
+                    <p>
+                      {campaign.stepCount}
+                      {marketingPresentationCopy.workflowSteps}
+                    </p>
                   </article>
                 ))}
               </div>
-              {!group.length && <p>No campaigns in this phase.</p>}
+              {!group.length && (
+                <p>{marketingPresentationCopy.noCampaignsInThisPhase}</p>
+              )}
             </DashboardPanel>
           );
         })}

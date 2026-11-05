@@ -1,3 +1,5 @@
+import { crmRemainingCopy } from "@/content/crm";
+import { crmPresentationCopy } from "@/content/crm";
 // Why: Templates: pure presentation for the crm pages, laid out from DTOs; data and slots come from features.
 import Link from "next/link";
 import { crmTemplateCopy } from "@/content/crm";
@@ -10,7 +12,7 @@ import {
   DashboardLayout,
   DashboardPanel,
   DashboardTable,
-} from "@/components/blocks/dashboard-layout";
+} from "@/components/blocks/shared-blocks";
 import type { ReactNode } from "react";
 import { CrmDealStage } from "@/schema/crmSchemas";
 
@@ -53,7 +55,9 @@ export function CrmAccountDetailTemplate({
             <dd>{account.status}</dd>
             <dt>{crmTemplateCopy.contactAndDealCounts}</dt>
             <dd>
-              {account.contactCount} / {account.dealCount}
+              {account.contactCount}
+              {crmPresentationCopy.divisionSeparator}
+              {account.dealCount}
             </dd>
           </dl>
         </DashboardPanel>
@@ -85,12 +89,13 @@ export function CrmAccountsTemplate({
               {account.name}
             </Link>
             <p>
-              {account.industry ?? crmTemplateCopy.unknownIndustry} ·{" "}
-              {account.status}
+              {account.industry ?? crmTemplateCopy.unknownIndustry}
+              {crmPresentationCopy.separator} {account.status}
             </p>
             <p>
-              {account.contactCount} {crmTemplateCopy.contacts} ·{" "}
-              {account.dealCount} {crmTemplateCopy.opportunities}
+              {account.contactCount} {crmTemplateCopy.contacts}
+              {crmPresentationCopy.separator} {account.dealCount}{" "}
+              {crmTemplateCopy.opportunities}
             </p>
             <p className="line-clamp-3 text-muted-primary">
               {account.notes ?? crmTemplateCopy.noRelationshipNotes}
@@ -167,12 +172,12 @@ export function CrmContactDetailTemplate({
 }) {
   return (
     <DashboardLayout
-      title={`${contact.firstName} ${contact.lastName}`}
+      title={crmRemainingCopy.personName(contact.firstName, contact.lastName)}
       nav={[]}
       toolbar={
         <Link
           className="type-link"
-          href={`/crm/${lead ? "leads" : "contacts"}/${contact.id}/edit`}
+          href={`/crm/${lead ? crmPresentationCopy.leads : crmPresentationCopy.contacts}/${contact.id}/edit`}
         >
           {lead ? crmTemplateCopy.editLead : crmTemplateCopy.editContact}
         </Link>
@@ -265,7 +270,7 @@ export function CrmContactsTemplate({
         ]}
         rows={contacts.map((contact) => ({
           id: contact.id,
-          href: `/crm/${lead ? "leads" : "contacts"}/${contact.id}`,
+          href: `/crm/${lead ? crmPresentationCopy.leads : crmPresentationCopy.contacts}/${contact.id}`,
           cells: {
             person: `${contact.firstName} ${contact.lastName}`,
             role: contact.title,
@@ -374,7 +379,10 @@ export function CrmPipelineTemplate({
           return (
             <DashboardPanel
               key={stage}
-              title={`${stage.replaceAll("_", " ")} · ${items.length}`}
+              title={crmRemainingCopy.nameAndDetail(
+                stage.replaceAll("_", " "),
+                items.length,
+              )}
             >
               <div className="space-y-3">
                 {items.map((deal) => (
@@ -394,7 +402,10 @@ export function CrmPipelineTemplate({
                     </p>
                     <dl className="text-sm">
                       <dt>{crmTemplateCopy.probability}</dt>
-                      <dd>{deal.probability}%</dd>
+                      <dd>
+                        {deal.probability}
+                        {crmPresentationCopy.sentenceSeparator}
+                      </dd>
                       <dt>{crmTemplateCopy.expectedClose}</dt>
                       <dd>
                         {deal.expectedCloseDate?.slice(0, 10) ??

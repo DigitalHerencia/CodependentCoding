@@ -12,8 +12,8 @@ export default async function AdminLayout({
   if (!identity) redirectToSignIn();
 
   return (
-    <AdminGateFeature>
-      <OnboardingGateFeature>{children}</OnboardingGateFeature>
-    </AdminGateFeature>
+    <OnboardingGateFeature>
+      <AdminGateFeature>{children}</AdminGateFeature>
+    </OnboardingGateFeature>
   );
 }

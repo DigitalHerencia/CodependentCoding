@@ -21,7 +21,8 @@ export const layers = [
   { id: "feature", match: /^features\// },
   { id: "tooling", match: /^(eslint|scripts)\// },
   { id: "nav", match: /^components\/(nav|shells)\// },
-  { id: "block", match: /^components\/(blocks|brand|templates)\// },
+  { id: "template", match: /^components\/templates\// },
+  { id: "block", match: /^components\/(blocks|brand)\// },
   { id: "ui", match: /^components\/(ui|chart)\// },
   { id: "hook", match: /^hooks\// },
   { id: "fetcher", match: /^lib\/fetchers\// },
@@ -68,6 +69,7 @@ export const categories = {
   cache: { internal: [/^lib\/cache\//] },
   feature: { internal: [/^features\//] },
   route: { internal: [/^app\//] },
+  template: { internal: [/^components\/templates\//] },
   block: { internal: [/^components\/(blocks|shells|brand|templates|nav)\//] },
   ui: { internal: [/^components\/(ui|chart)\//] },
   "ui-skeleton": { internal: [/^components\/ui\/skeleton/] },
@@ -165,7 +167,7 @@ export const boundaries = {
       "ui",
       "form-state",
     ],
-    why: "Features orchestrate fetchers/actions/workflows and render blocks. UI primitives are reserved for Form features, Skeletons and .client companions.",
+    why: "Features orchestrate fetchers/actions/workflows and render blocks. UI primitives are reserved for form features and skeleton primitives.",
   },
   "feature-form": {
     rule: "CC-FEAT-002",
@@ -205,6 +207,7 @@ export const boundaries = {
     rule: "CC-FEAT-004",
     deny: [
       "ui",
+      "form-state",
       "prisma-runtime",
       "db-internals",
       "transaction",
@@ -219,8 +222,9 @@ export const boundaries = {
       "server-only",
       "cache",
     ],
-    except: ["ui-control", "ui-skeleton", "authz-roles", "clerk-account"],
-    why: "Client companions hold browser state only: interactive UI controls and server actions, never server reads.",
+    except: ["authz-roles", "clerk-account"],
+    profileExcept: { terminal: ["ui-control"] },
+    why: "Non-form client companions coordinate browser behavior and actions through blocks/templates; primitive controls and RHF belong in form islands.",
   },
   nav: {
     rule: "CC-BLOCK-002",
@@ -245,9 +249,34 @@ export const boundaries = {
     ],
     why: "Navigation and shells are reusable structural presentation.",
   },
+  template: {
+    rule: "CC-BLOCK-001",
+    deny: [
+      "ui",
+      "prisma-runtime",
+      "db-internals",
+      "transaction",
+      "fetcher",
+      "action",
+      "workflow",
+      "auth",
+      "authz",
+      "integration",
+      "provider-sdk",
+      "clerk-server",
+      "clerk-ui",
+      "server-only",
+      "feature",
+      "route",
+      "form-state",
+      "cache",
+    ],
+    why: "Templates arrange blocks; primitives are composed inside blocks.",
+  },
   block: {
     rule: "CC-BLOCK-001",
     deny: [
+      "template",
       "prisma-runtime",
       "db-internals",
       "transaction",
@@ -515,6 +544,16 @@ export const serverOnlyPaths = [
 /** Filename conventions: directory pattern -> allowed basename pattern. */
 export const filenameConventions = [
   {
+    dir: /^lib\/modules\/$/,
+    file: /^(registry|[a-z][a-zA-Z0-9]*Module)\.ts$/,
+    example: "crmModule.ts, registry.ts",
+  },
+  {
+    dir: /^lib\/auth\/$/,
+    file: /^[a-z][a-zA-Z0-9]*\.ts$/,
+    example: "activeOrganization.ts",
+  },
+  {
     dir: /^features\/[a-z][a-zA-Z]*\/$/,
     file: /^[a-z][a-z0-9]*(?:-[a-z0-9]+)*(?:-(?:feature|form|skeleton)|\.client)\.tsx$/,
     example:
@@ -573,8 +612,8 @@ export const filenameConventions = [
   },
   {
     dir: /^components\/.+\/$/,
-    file: /^([a-z0-9]+(-[a-z0-9]+)*|index)\.tsx?$/,
-    example: "hero-section.tsx",
+    file: /^([a-z0-9]+(-[a-z0-9]+)*|index)(\.client)?\.tsx?$/,
+    example: "public-blocks.tsx, public-blocks.client.tsx",
   },
   {
     dir: /^lib\/integrations\/[a-z0-9-]+\/$/,

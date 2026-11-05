@@ -1,4 +1,5 @@
 "use client";
+import { invoicingPresentationCopy } from "@/content/invoicing";
 import { InvoiceControlsBlock } from "@/components/blocks/invoicing-blocks";
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
@@ -24,13 +25,24 @@ export function InvoiceFeatureClient({ invoice }: { invoice: InvoiceDTO }) {
               invoiceId: invoice.id,
               expectedVersion: invoice.version,
             };
-            if (invoice.approvedAt) await issueApprovedInvoice(command);
-            else await approveInvoice(command);
-            setMessage("Invoice updated.");
+            if (invoice.approvedAt) {
+              const result = await issueApprovedInvoice(command);
+              if (!result.ok) {
+                setMessage(result.error.message);
+                return;
+              }
+            } else {
+              const result = await approveInvoice(command);
+              if (!result.ok) {
+                setMessage(result.error.message);
+                return;
+              }
+            }
+            setMessage(invoicingPresentationCopy.invoiceUpdated);
             router.refresh();
           } catch {
             setMessage(
-              "Invoice could not be updated. Check permissions and reload the current version.",
+              invoicingPresentationCopy.invoiceCouldNotBeUpdatedCheckPermissionsAndReload,
             );
           }
         })

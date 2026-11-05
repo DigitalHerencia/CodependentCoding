@@ -9,11 +9,11 @@ import {
 } from "#cli/slice/fields";
 
 /** What the slice needs to know about a ref(Model) target. */
-export interface RefTarget {
+export type RefTarget = {
   model: string;
   /** Tenant table: checked by id + organizationId. */
   tenant: boolean;
-}
+};
 
 const indent = (lines: string[], spaces: number) =>
   lines.map((line) => `${" ".repeat(spaces)}${line}`).join("\n");
@@ -40,7 +40,9 @@ function prismaType(field: Field, names: Names): string {
         ? `${enumName(names, field)}?`
         : `${enumName(names, field)} @default(${field.values[0]})`;
     case "ref":
-      return `String${optional} @db.Uuid`;
+      return field.model === "User"
+        ? `String${optional}`
+        : `String${optional} @db.Uuid`;
   }
 }
 
@@ -52,18 +54,23 @@ function zod(field: Field, names: Names): string {
     text: field.optional
       ? "z.string().max(10_000)"
       : "z.string().trim().min(1).max(10_000)",
-    int: "z.number().int()",
+    int: 'z.preprocess(value=>value === ""?undefined:value,z.coerce.number().int())',
     decimal:
       'z.string().trim().regex(/^-?\\d+(\\.\\d{1,2})?$/, "Enter a number.")',
     boolean: "z.boolean()",
     datetime: "z.coerce.date()",
     enum: `z.enum(${enumName(names, field)})`,
-    ref: "z.string().uuid()",
+    ref:
+      field.model === "User"
+        ? "z.string().min(1).max(200)"
+        : "z.string().uuid()",
   }[field.type];
-  return field.optional ? `${base}.nullable().optional()` : base;
+  return field.optional
+    ? `z.preprocess(value=>value === ""?null:value,${base}.nullable().optional())`
+    : base;
 }
 
-function tsType(field: Field): string {
+function tsType(field: Field, names: Names): string {
   const base = {
     string: "string",
     text: "string",
@@ -71,7 +78,7 @@ function tsType(field: Field): string {
     decimal: "string",
     boolean: "boolean",
     datetime: "string",
-    enum: "string",
+    enum: enumName(names, field),
     ref: "string",
   }[field.type];
   return field.optional ? `${base} | null` : base;
@@ -95,18 +102,18 @@ function dtoValue(field: Field): string {
 /** How a DTO value is shown in templates. */
 function display(field: Field, owner: string): string {
   const value = `${owner}.${field.name}`;
-  if (field.type === "boolean") return `{${value} ? "Yes" : "No"}`;
+  if (field.type === "boolean") return `{${value} ? copy.yes : copy.no}`;
   if (field.type === "datetime") {
     return field.optional
-      ? `{${value}?.slice(0, 16).replace("T", " ") ?? "—"}`
+      ? `{${value}?.slice(0, 16).replace("T", " ") ?? copy.empty}`
       : `{${value}.slice(0, 16).replace("T", " ")}`;
   }
   if (field.type === "enum") {
     return field.optional
-      ? `{${value}?.replaceAll("_", " ") ?? "—"}`
+      ? `{${value}?.replaceAll("_", " ") ?? copy.empty}`
       : `{${value}.replaceAll("_", " ")}`;
   }
-  return field.optional ? `{${value} ?? "—"}` : `{${value}}`;
+  return field.optional ? `{${value} ?? copy.empty}` : `{${value}}`;
 }
 
 function formDefault(field: Field, names: Names): string {
@@ -139,57 +146,73 @@ function formToInput(field: Field): string {
 }
 
 function formInput(field: Field, names: Names): string[] {
-  const id = `${kebab(names.entity)}-${kebab(field.name)}`;
-  const label = fieldLabel(field);
-  const register = `{...register("${field.name}")}`;
-  const required = field.optional ? "" : " required";
-  if (field.type === "boolean") {
-    return [
-      '<div className="flex items-center gap-2">',
-      `  <input id="${id}" type="checkbox" ${register} />`,
-      `  <Label htmlFor="${id}">${label}</Label>`,
-      "</div>",
-    ];
-  }
-  const control = (() => {
-    switch (field.type) {
-      case "text":
-        return [
-          `<textarea id="${id}" className="control-field min-h-36"${required} maxLength={10000} ${register} />`,
-        ];
-      case "int":
-        return [
-          `<Input id="${id}" type="number" step={1}${required} ${register} />`,
-        ];
-      case "decimal":
-        return [
-          `<Input id="${id}" type="number" step="0.01" inputMode="decimal"${required} ${register} />`,
-        ];
-      case "datetime":
-        return [
-          `<Input id="${id}" type="datetime-local"${required} ${register} />`,
-        ];
-      case "enum":
-        return [
-          `<select id="${id}" className="control-field"${required} ${register}>`,
-          ...(field.optional ? ['  <option value="">None</option>'] : []),
-          ...field.values.map(
-            (value) =>
-              `  <option value="${value}">${pascal(value.toLowerCase().replaceAll("_", " "))}</option>`,
-          ),
-          "</select>",
-        ];
-      case "ref":
-        return [`<Input id="${id}" placeholder="ID"${required} ${register} />`];
-      default:
-        return [`<Input id="${id}"${required} maxLength={200} ${register} />`];
-    }
-  })();
+  const id = kebab(names.entity) + "-" + kebab(field.name);
+  const key = JSON.stringify(field.name);
+  const bind =
+    field.type === "boolean"
+      ? "name={field.name} ref={field.ref} onBlur={field.onBlur} checked={Boolean(field.value)} onChange={event=>field.onChange(event.target.checked)}"
+      : '{...field} value={String(field.value??"")}';
+  let control: string;
+  if (field.type === "boolean")
+    control =
+      '<input id="' +
+      id +
+      '" type="checkbox" ' +
+      bind +
+      " aria-invalid={fieldState.invalid}/>";
+  else if (field.type === "enum")
+    control =
+      '<select id="' +
+      id +
+      '" className="control-field" ' +
+      bind +
+      " aria-invalid={fieldState.invalid}>" +
+      (field.optional ? '<option value="">{copy.none}</option>' : "") +
+      field.values
+        .map(
+          (value) =>
+            '<option value="' +
+            value +
+            '">{copy.values[' +
+            key +
+            "][" +
+            JSON.stringify(value) +
+            "]}</option>",
+        )
+        .join("") +
+      "</select>";
+  else if (field.type === "text")
+    control =
+      '<textarea id="' +
+      id +
+      '" className="control-field min-h-36" ' +
+      bind +
+      " aria-invalid={fieldState.invalid}/>";
+  else
+    control =
+      '<Input id="' +
+      id +
+      '" type="' +
+      (field.type === "datetime"
+        ? "datetime-local"
+        : field.type === "int" || field.type === "decimal"
+          ? "number"
+          : "text") +
+      '" ' +
+      (field.type === "int"
+        ? "step={1} "
+        : field.type === "decimal"
+          ? 'step="0.01" '
+          : "") +
+      bind +
+      " aria-invalid={fieldState.invalid}/>";
   return [
-    '<div className="form-field">',
-    `  <Label htmlFor="${id}">${label}</Label>`,
-    ...control.map((line) => `  ${line}`),
-    "</div>",
+    "<Controller name={" +
+      key +
+      "} control={control} render={({field,fieldState})=><Field data-invalid={fieldState.invalid}>",
+    '<FieldLabel htmlFor="' + id + '">{copy.fields[' + key + "]}</FieldLabel>",
+    control,
+    "{fieldState.error&&<FieldError>{fieldState.error.message}</FieldError>}</Field>}/>",
   ];
 }
 
@@ -325,6 +348,9 @@ export function sliceTokens(
       }),
       2,
     ),
+    enumTypeImport: enums.length
+      ? `import type { ${enums.map((field) => enumName(names, field)).join(", ")} } from "@/generated/prisma/enums";\n`
+      : "",
     enumImport:
       enums.length > 0
         ? `import { ${enums.map((field) => enumName(names, field)).join(", ")} } from "@/generated/prisma/enums";\n`
@@ -334,7 +360,7 @@ export function sliceTokens(
       2,
     ),
     dtoFields: indent(
-      fields.map((field) => `${field.name}: ${tsType(field)};`),
+      fields.map((field) => `${field.name}: ${tsType(field, names)};`),
       2,
     ),
     selectFields: indent(
@@ -366,9 +392,9 @@ export function sliceTokens(
     refMocks: checks.mocks,
     titleExpr: titleField
       ? titleField.optional
-        ? `${names.entity}.${titleField.name} ?? "Untitled ${names.label.toLowerCase()}"`
+        ? `${names.entity}.${titleField.name} ?? copy.untitled`
         : `${names.entity}.${titleField.name}`
-      : `\`${names.label} \${${names.entity}.id.slice(0, 8)}\``,
+      : `copy.title + " " + ${names.entity}.id.slice(0, 8)`,
     searchText:
       searchable.length > 0
         ? searchable
@@ -381,7 +407,7 @@ export function sliceTokens(
         : `\${${names.entity}.id}`,
     summaryRows: indent(
       summary.flatMap((field) => [
-        `<dt>${fieldLabel(field)}</dt>`,
+        `<dt>{copy.fields[${JSON.stringify(field.name)}]}</dt>`,
         `<dd>${display(field, names.entity)}</dd>`,
       ]),
       14,
@@ -392,6 +418,45 @@ export function sliceTokens(
         `<dd>${display(field, names.entity)}</dd>`,
       ]),
       10,
+    ),
+    entityCopy: JSON.stringify(
+      {
+        title: names.labelPlural,
+        create: "New " + names.label.toLowerCase(),
+        edit: "Edit " + names.label.toLowerCase(),
+        save: "Save " + names.label.toLowerCase(),
+        saving: "Saving…",
+        search: "Search " + names.labelPlural.toLowerCase(),
+        emptyList:
+          "No matching " +
+          names.labelPlural.toLowerCase() +
+          ". Create one to get started.",
+        failed: "The request could not be completed. Try again.",
+        none: "None",
+        yes: "Yes",
+        no: "No",
+        empty: "—",
+        details: "Details",
+        updated: "Updated",
+        all: "All " + names.labelPlural.toLowerCase(),
+        untitled: "Untitled " + names.label.toLowerCase(),
+        fields: Object.fromEntries(
+          fields.map((field) => [field.name, fieldLabel(field)]),
+        ),
+        values: Object.fromEntries(
+          enums.map((field) => [
+            field.name,
+            Object.fromEntries(
+              field.values.map((value) => [
+                value,
+                pascal(value.toLowerCase().replaceAll("_", " ")),
+              ]),
+            ),
+          ]),
+        ),
+      },
+      null,
+      2,
     ),
     formValueTypes: indent(
       fields.map(

@@ -18,40 +18,40 @@ export const SYSTEM_TABLES = ["IdempotencyRecord", "WebhookEvent"] as const;
 export const RUNTIME_ROLE = "app_runtime";
 export const SYSTEM_ROLE = "app_system";
 
-export interface Column {
+export type Column = {
   name: string;
   udt: string;
   dataType: string;
   nullable: boolean;
   hasDefault: boolean;
   maxLength: number | null;
-}
+};
 
-export interface ForeignKey {
+export type ForeignKey = {
   column: string;
   references: string;
-}
+};
 
-export interface TableInfo {
+export type TableInfo = {
   name: string;
   columns: Column[];
   foreignKeys: ForeignKey[];
-}
+};
 
-export interface OrgSeed {
+export type OrgSeed = {
   organizationId: string;
   userId: string;
   clerkUserId: string;
   rows: Map<string, string[]>;
-}
+};
 
-export interface Catalog {
+export type Catalog = {
   tables: Map<string, TableInfo>;
   tenantTables: TableInfo[];
   nullableOrgTables: string[];
   enums: Map<string, string>;
   rls: Map<string, { enabled: boolean; forced: boolean; policies: number }>;
-}
+};
 
 function requiredUrl(): string {
   const url = baseEnv.value("DATABASE_URL_TEST");
@@ -363,8 +363,9 @@ export async function insertRow(
 export async function setTenantContext(db: pg.Client, org: OrgSeed) {
   await db.query(
     `SELECT set_config('app.organization_id', $1, true),
-            set_config('app.clerk_user_id', $2, true)`,
-    [org.organizationId, org.clerkUserId],
+            set_config('app.clerk_user_id', $2, true),
+            set_config('app.user_id', $3, true)`,
+    [org.organizationId, org.clerkUserId, org.userId],
   );
 }
 
@@ -372,7 +373,7 @@ export function newOrg(): OrgSeed {
   const run = randomUUID().slice(0, 8);
   return {
     organizationId: randomUUID(),
-    userId: randomUUID(),
+    userId: `user_rls_${run}`,
     clerkUserId: `user_rls_${run}`,
     rows: new Map(),
   };
@@ -390,7 +391,7 @@ export async function seedOrg(
     await setLocalRole(owner);
     await setTenantContext(owner, org);
     for (const [name, base] of [
-      ["User", { id: org.userId, clerkUserId: org.clerkUserId }],
+      ["User", { id: org.userId }],
       ["Organization", { id: org.organizationId }],
     ] as const) {
       const table = catalog.tables.get(name);

@@ -1,70 +1,44 @@
 import assert from "node:assert/strict";
 import { test } from "vitest";
 import type { Prisma } from "@/generated/prisma/client";
-import type { AccessContext } from "@/types/accessTypes";
 import { completeOnboardingTx } from "@/lib/db/transactions/onboardingTx";
 import { onboardingSchema } from "@/schema/commonSchemas";
 
-const access: AccessContext = {
-  clerkUserId: "clerk-test",
-  userId: "user-test",
-  membershipId: "member-test",
-  organizationId: "org-test",
-  role: "MEMBER",
-};
-function fixture(completed = false) {
-  const writes: unknown[] = [];
+test("profile onboarding stays identity-scoped before a tenant membership exists", async () => {
+  const profile = {
+    id: "user_pending",
+    name: null as string | null,
+    completedAt: null as Date | null,
+  };
   const tx = {
-    $queryRaw: async () => [],
-    auditEvent: {
-      findFirst: async ({ where }: { where: Record<string, string> }) => {
-        assert.equal(where.organizationId, access.organizationId);
-        assert.equal(where.resourceId, access.membershipId);
-        assert.equal(where.actorUserId, access.userId);
-        return completed ? { id: "event" } : null;
-      },
-      create: async (args: unknown) => {
-        writes.push(args);
-      },
-    },
-    organization: {
-      findFirstOrThrow: async () => ({ name: "Existing" }),
-      update: async (args: unknown) => {
-        writes.push(args);
+    user: {
+      updateMany: async ({
+        where,
+        data,
+      }: {
+        where: { id: string; profileCompletedAt: null };
+        data: { displayName: string; profileCompletedAt: Date };
+      }) => {
+        assert.equal(where.id, profile.id);
+        assert.equal(where.profileCompletedAt, null);
+        if (profile.completedAt) return { count: 0 };
+        profile.name = data.displayName;
+        profile.completedAt = data.profileCompletedAt;
+        return { count: 1 };
       },
     },
   } as unknown as Prisma.TransactionClient;
-  return { tx, writes };
-}
-test("members cannot rename an organization during onboarding", async () => {
-  const { tx, writes } = fixture();
-  await assert.rejects(
-    completeOnboardingTx(tx, access, "Unauthorized rename"),
-    /base\.organization:update/,
-  );
-  assert.equal(writes.length, 0);
+  await completeOnboardingTx(tx, profile.id, "Ada");
+  await completeOnboardingTx(tx, profile.id, "Unexpected overwrite");
+  assert.equal(profile.name, "Ada");
+  assert.ok(profile.completedAt instanceof Date);
 });
-test("members can confirm their existing workspace without elevated rights", async () => {
-  const { tx, writes } = fixture();
-  await completeOnboardingTx(tx, access, "Existing");
-  assert.equal(writes.length, 1);
-});
-test("owners can rename and record completion", async () => {
-  const { tx, writes } = fixture();
-  await completeOnboardingTx(tx, { ...access, role: "OWNER" }, "New name");
-  assert.equal(writes.length, 2);
-});
-test("repeated completion does not rename the workspace or duplicate the event", async () => {
-  const { tx, writes } = fixture(true);
-  await completeOnboardingTx(tx, access, "Different");
-  assert.equal(writes.length, 0);
-});
-test("onboarding rejects empty names and client supplied tenant identifiers", () => {
+test("onboarding rejects empty names and client supplied authorization fields", () => {
   assert.equal(onboardingSchema.safeParse({ name: "   " }).success, false);
-  assert.equal(
-    onboardingSchema.safeParse({ name: "Valid", organizationId: "other" })
-      .success,
-    false,
-  );
+  for (const field of ["organizationId", "role", "permissions"])
+    assert.equal(
+      onboardingSchema.safeParse({ name: "Valid", [field]: "other" }).success,
+      false,
+    );
   assert.equal(onboardingSchema.parse({ name: "  Valid  " }).name, "Valid");
 });

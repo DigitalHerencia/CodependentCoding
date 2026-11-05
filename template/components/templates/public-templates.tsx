@@ -1,14 +1,14 @@
 // Why: Templates: pure presentation for the public marketing and legal pages, composed from blocks and content/.
-import { HeroSection } from "@/components/blocks/hero-section";
-import { FAQAccordion } from "@/components/blocks/faq-section";
+import { HeroSection } from "@/components/blocks/public-blocks";
+import { FAQAccordion } from "@/components/blocks/public-blocks.client";
 import { faqCopy } from "@/content/faq";
 import Image from "next/image";
 import Link from "next/link";
-import { FeatureContentGrid } from "@/components/blocks/feature-grid";
-import { TestimonialsGrid } from "@/components/blocks/testimonials";
-import { CTASimple } from "@/components/blocks/cta-section";
+import { FeatureContentGrid } from "@/components/blocks/public-blocks";
+import { TestimonialsGrid } from "@/components/blocks/public-blocks.client";
+import { CTASimple } from "@/components/blocks/public-blocks.client";
 import { landingCopy, pipelineCards } from "@/content/landing";
-import { LegalDocumentSection } from "@/components/blocks/legal-document-section";
+import { LegalDocumentSection } from "@/components/blocks/public-blocks";
 import { privacyCopy } from "@/content/privacy";
 import { termsCopy } from "@/content/terms";
 

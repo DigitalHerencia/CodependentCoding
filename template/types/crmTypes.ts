@@ -17,7 +17,7 @@ export type ContactSort = (typeof contactSortValues)[number];
 export type ContactListCriteria = z.output<typeof contactListCriteriaSchema>;
 export type ContactFormValues = z.input<typeof contactFormSchema>;
 
-export interface CrmContactDTO {
+export type CrmContactDTO = {
   id: string;
   firstName: string;
   lastName: string;
@@ -29,12 +29,12 @@ export interface CrmContactDTO {
   owner: { membershipId: string; displayName: string | null } | null;
   createdAt: string;
   updatedAt: string;
-}
+};
 
-export interface CrmDealSummaryDTO {
+export type CrmDealSummaryDTO = {
   id: string;
   name: string;
-  stage: string;
+  stage: PrismaCrmDealStage;
   value: string;
   currency: string;
   probability: number;
@@ -42,7 +42,7 @@ export interface CrmDealSummaryDTO {
   version: number;
   account: { id: string; name: string };
   owner: { id: string; displayName: string | null } | null;
-}
+};
 
 export interface CrmDealDTO extends CrmDealSummaryDTO {
   primaryContact: {
@@ -56,7 +56,7 @@ export interface CrmDealDTO extends CrmDealSummaryDTO {
   updatedAt: string;
 }
 
-export interface CrmAccountDTO {
+export type CrmAccountDTO = {
   id: string;
   name: string;
   website: string | null;
@@ -67,6 +67,6 @@ export interface CrmAccountDTO {
   dealCount: number;
   createdAt: string;
   updatedAt: string;
-}
+};
 
 export type CrmDealStage = PrismaCrmDealStage;
