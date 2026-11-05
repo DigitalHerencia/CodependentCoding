@@ -24,18 +24,12 @@ export function AdminUserDetailFeatureClient({
         className="space-y-3"
         action={(data) =>
           startTransition(async () => {
-            try {
-              await changeAdminMembership({
-                membershipId: membership.id,
-                role: data.get("role"),
-              });
-              setMessage("Role updated.");
-              router.refresh();
-            } catch {
-              setMessage(
-                "Role could not be changed. Check permissions; changing your own role is prohibited.",
-              );
-            }
+            const result = await changeAdminMembership({
+              membershipId: membership.id,
+              role: data.get("role"),
+            });
+            setMessage(result.ok ? "Role updated." : result.error.message);
+            if (result.ok) router.refresh();
           })
         }
       >
@@ -59,18 +53,15 @@ export function AdminUserDetailFeatureClient({
         disabled={pending}
         onClick={() =>
           startTransition(async () => {
-            try {
-              if (membership.status === "SUSPENDED")
-                await restoreAdminMembership({ membershipId: membership.id });
-              else
-                await suspendAdminMembership({ membershipId: membership.id });
-              setMessage("Membership access updated.");
-              router.refresh();
-            } catch {
-              setMessage(
-                "Access could not be updated. Check permissions; suspending your own membership is prohibited.",
-              );
-            }
+            const updateAccess =
+              membership.status === "SUSPENDED"
+                ? restoreAdminMembership
+                : suspendAdminMembership;
+            const result = await updateAccess({ membershipId: membership.id });
+            setMessage(
+              result.ok ? "Membership access updated." : result.error.message,
+            );
+            if (result.ok) router.refresh();
           })
         }
       >

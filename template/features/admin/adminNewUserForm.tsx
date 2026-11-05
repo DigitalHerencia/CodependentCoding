@@ -1,52 +1,85 @@
 "use client";
-import { useState, useTransition } from "react";
+
+import { zodResolver } from "@hookform/resolvers/zod";
+import type { z } from "zod";
 import { useRouter } from "next/navigation";
+import { Controller, useForm } from "react-hook-form";
+import { Button } from "@/components/ui/button";
+import { Field, FieldError, FieldLabel } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
 import { addAdminMembership } from "@/lib/actions/adminActions";
 import { appRoles } from "@/lib/authz/roles";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { addAdminMembershipSchema } from "@/schemas/adminSchemas";
+
 export function AdminNewUserForm() {
   const router = useRouter();
-  const [pending, startTransition] = useTransition();
-  const [error, setError] = useState("");
+  const form = useForm<z.input<typeof addAdminMembershipSchema>>({
+    resolver: zodResolver(addAdminMembershipSchema),
+    defaultValues: { email: "", role: "MEMBER" },
+  });
   return (
     <form
       className="mx-auto max-w-3xl space-y-5 surface-card p-5"
-      action={(data) =>
-        startTransition(async () => {
-          try {
-            const membership = await addAdminMembership({
-              email: data.get("email"),
-              role: data.get("role"),
-            });
-            router.push(`/admin/users/${membership.user.id}`);
-            router.refresh();
-          } catch {
-            setError(
-              "Member could not be added. They must already be registered and not already belong to this workspace; administrative access is required.",
-            );
-          }
-        })
-      }
+      onSubmit={form.handleSubmit(async (values) => {
+        const result = await addAdminMembership(values);
+        if (result.ok) {
+          router.push(`/admin/users/${result.data.user.id}`);
+          router.refresh();
+          return;
+        }
+        for (const name of ["email", "role"] as const) {
+          const message = result.error.fieldErrors?.[name]?.[0];
+          if (message) form.setError(name, { message });
+        }
+        form.setError("root", { message: result.error.message });
+      })}
     >
       <h1 className="type-title">Add a registered member</h1>
       <p>Add workspace access for an existing application user.</p>
-      <Label htmlFor="member-email">Registered email</Label>
-      <Input id="member-email" name="email" type="email" required />
-      <Label htmlFor="new-member-role">Application role</Label>
-      <select
-        id="new-member-role"
+      <Controller
+        name="email"
+        control={form.control}
+        render={({ field, fieldState }) => (
+          <Field data-invalid={fieldState.invalid}>
+            <FieldLabel htmlFor="member-email">Registered email</FieldLabel>
+            <Input
+              {...field}
+              id="member-email"
+              type="email"
+              aria-invalid={fieldState.invalid}
+            />
+            {fieldState.error && (
+              <FieldError>{fieldState.error.message}</FieldError>
+            )}
+          </Field>
+        )}
+      />
+      <Controller
         name="role"
-        defaultValue="MEMBER"
-        className="control-field"
-      >
-        {appRoles.map((role) => (
-          <option key={role}>{role}</option>
-        ))}
-      </select>
-      {error && <p role="alert">{error}</p>}
-      <Button type="submit" disabled={pending}>
+        control={form.control}
+        render={({ field, fieldState }) => (
+          <Field data-invalid={fieldState.invalid}>
+            <FieldLabel htmlFor="new-member-role">Application role</FieldLabel>
+            <select
+              {...field}
+              id="new-member-role"
+              className="control-field"
+              aria-invalid={fieldState.invalid}
+            >
+              {appRoles.map((role) => (
+                <option key={role}>{role}</option>
+              ))}
+            </select>
+            {fieldState.error && (
+              <FieldError>{fieldState.error.message}</FieldError>
+            )}
+          </Field>
+        )}
+      />
+      {form.formState.errors.root && (
+        <FieldError>{form.formState.errors.root.message}</FieldError>
+      )}
+      <Button type="submit" disabled={form.formState.isSubmitting}>
         Add member
       </Button>
     </form>
