@@ -115,6 +115,7 @@
     },
     {
       "id": "admin",
+      "owns": ["app/(admin)/**"],
       "kind": "domain",
       "label": "Admin",
       "description": "Users, records, audit log"

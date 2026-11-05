@@ -27,6 +27,14 @@ const nextConfig: NextConfig = {
   images: {
     formats: ["image/avif", "image/webp"],
   },
+  // The admin route group owns the pages, while existing admin URLs keep their prefix.
+  async rewrites() {
+    return [
+      { source: "/admin/users/:path*", destination: "/users/:path*" },
+      { source: "/admin/records/:path*", destination: "/records/:path*" },
+      { source: "/admin/audit", destination: "/audit" },
+    ];
+  },
   async headers() {
     return [
       { source: "/:path*", headers: securityHeaders },

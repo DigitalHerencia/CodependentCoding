@@ -32,9 +32,9 @@ export default async function AdminLayout({
   return (
     <DocumentShell>
       <ClerkProvider dynamic>
-        <OnboardingGateFeature>
-          <AdminGateFeature>{children}</AdminGateFeature>
-        </OnboardingGateFeature>
+        <AdminGateFeature>
+          <OnboardingGateFeature>{children}</OnboardingGateFeature>
+        </AdminGateFeature>
         <PwaInstallFeature />
       </ClerkProvider>
     </DocumentShell>
