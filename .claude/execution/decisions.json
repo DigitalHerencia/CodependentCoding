@@ -1095,6 +1095,18 @@
         ".claude/reports/architecture-review-2026-11-03.md",
         "7a480510d7acf0075fb2f99132f5100c4b2549ce"
       ]
+    },
+    {
+      "id": "DEC-110",
+      "date": "2026-11-05",
+      "status": "accepted",
+      "title": "Allow request-specific source selection on the maximal route",
+      "context": "Owner reported Vercel prerender failure because server searchParams conflicts with root ensureStatic=navigation.",
+      "decision": "Set ensureStatic=false only on /maximal, preserving the static policy elsewhere and server-side source selection behind Suspense. Formatting, affected-page lint and root typecheck passed. Build and push remain owner-run.",
+      "refs": [
+        "app/(public)/maximal/page.tsx",
+        "https://nextjs.org/docs/app/api-reference/file-conventions/route-segment-config/ensureStatic"
+      ]
     }
   ]
 }

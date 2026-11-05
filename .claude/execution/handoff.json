@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/handoff/v1",
-  "updated": "2026-11-02T12:51:23.743235+00:00",
+  "updated": "2026-11-05T08:35:47.235Z",
   "format": "One current package; history is in progress.json, decisions.json and git.",
   "status": "awaiting-owner-verification",
   "milestone": "M-S2",
@@ -37,5 +37,16 @@
     "Repeat successful checks without a relevant change or initiate bulk install retries",
     "Impose enterprise/compliance/production ceremony on this internal solo-dev tool",
     "Expose credentials in commands/logs/commits; owner-local backups are outside the repo"
-  ]
+  ],
+  "latest_followup": {
+    "status": "ready-for-owner-build",
+    "cause": "Root ensureStatic=navigation conflicts with server searchParams on /maximal.",
+    "change": "Only /maximal exports ensureStatic=false; existing Suspense and server source selection remain.",
+    "EXECUTED": [
+      "Affected-page Prettier --write passed",
+      "Affected-page ESLint --fix passed",
+      "pnpm typecheck passed"
+    ],
+    "NOT_RUN": ["Build, full tests, push and deployment"]
+  }
 }
