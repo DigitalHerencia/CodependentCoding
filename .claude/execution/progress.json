@@ -3964,5 +3964,25 @@
     "loading_boundary_evidence": "66 affected loading/skeleton/template files: Prettier --write and ESLint --fix --max-warnings=0 passed; tsc --noEmit passed. Final shared-template import consolidation formatted and linted successfully. Loading/error boundaries use templates without duplicating root document boundaries.",
     "verification": "Checks executed against the implementation source included with this record. No database schema/policy or dependency-lock changes.",
     "delivery": "Owner-directed local commit on main; no remote publication."
+  },
+  "template-build-publication": {
+    "status": "build-passed",
+    "updated": "2026-11-06T00:52:23.100031+00:00",
+    "source_commit": "233817d9ae44714b39ff6d95a537ba1ea1a391c1",
+    "owner_instruction": "Build the template and push only after success; then clean safe machine/network temporary state and stop task processes.",
+    "scope": "Fix client TenantShell importing cached server PublicFooter by passing TenantFooter as a server-rendered layout slot. No auth, tenancy, schema or dependency version changes.",
+    "EXECUTED": [
+      "pnpm build initially blocked by absent template dependencies / stale install metadata.",
+      "Restored 699 packages from local cache, zero package downloads. pnpm install --frozen-lockfile succeeded with existing standalone workspace supply-chain policy and exact-version exceptions. Earlier --ignore-workspace setup was rejected because it bypassed those configured exceptions; no security policy was weakened.",
+      "First production build failed because cached server footer entered the tenant client bundle. Fixed server layout -> footer ReactNode slot.",
+      "Affected layout/shell: Prettier --write and ESLint --fix --max-warnings=0 passed.",
+      "pnpm build in packages/maximal-template passed: Prisma 7.10.1 client generation, Next 16.4.5 Turbopack compile, TypeScript and generation of 88 pages completed.",
+      "git fetch origin confirmed main ahead by seven commits with no upstream divergence.",
+      "Removed only pnpm temporary package-manager lockfile document; application dependency document is byte-identical to HEAD, consistent with existing lockfile policy."
+    ],
+    "NOT_RUN": [
+      "Tests, migrations, development servers and manual browser verification."
+    ],
+    "delivery": "Owner-authorized origin/main push follows this build-fix commit."
   }
 }

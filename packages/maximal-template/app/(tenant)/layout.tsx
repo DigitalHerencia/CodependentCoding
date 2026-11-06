@@ -1,3 +1,4 @@
+import { TenantFooter } from "@/components/nav/tenant-footer";
 import { TenantShell } from "@/components/shells/tenant-shell";
 import { PwaAccountMenu } from "@/features/pwa/pwa-account-menu.client";
 import { OrganizationSwitcherFeature } from "@/features/settings/organization-switcher-feature";
@@ -17,6 +18,7 @@ export default async function TenantLayout({
     <OnboardingGateFeature>
       <TenantShell
         accountMenu={<PwaAccountMenu />}
+        footer={<TenantFooter />}
         organizationSwitcher={<OrganizationSwitcherFeature />}
       >
         {children}

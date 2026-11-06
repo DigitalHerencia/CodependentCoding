@@ -1,7 +1,6 @@
 "use client";
 
 import { Wordmark } from "@/components/brand/wordmark";
-import { TenantFooter } from "@/components/nav/tenant-footer";
 import { TenantHeader } from "@/components/nav/tenant-header";
 import { TenantMobileBottomNav } from "@/components/nav/tenant-mobile-bottom-nav";
 import {
@@ -19,10 +18,12 @@ import { useRef, useState, type ReactNode } from "react";
 export function TenantShell({
   children,
   accountMenu,
+  footer,
   organizationSwitcher,
 }: {
   children: ReactNode;
   accountMenu: ReactNode;
+  footer: ReactNode;
   /** Rendered above the user menu; the route layout passes the organization switcher. */
   organizationSwitcher?: ReactNode;
 }) {
@@ -145,7 +146,7 @@ export function TenantShell({
           </div>
         )}
         <main>{children}</main>
-        <TenantFooter />
+        {footer}
         <TenantMobileBottomNav />
       </div>
     </div>

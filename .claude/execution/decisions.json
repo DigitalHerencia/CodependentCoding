@@ -1546,6 +1546,13 @@
         "packages/maximal-template/components/blocks",
         "https://ui.shadcn.com/docs/typeset"
       ]
+    },
+    {
+      "id": "DEC-123",
+      "date": "2026-11-05",
+      "status": "accepted",
+      "title": "Keep cached tenant footer outside the client shell bundle",
+      "decision": "The owner explicitly authorized a production template build and pushing main after success, superseding the earlier no-build/no-push restriction. The build exposed an inline use-cache server footer imported by the client tenant shell. Render the footer in the server layout and pass it as a ReactNode slot, preserving caching and UI. Existing dependency versions, supply-chain policy, auth and RLS remain unchanged. Build passed before publication."
     }
   ]
 }
