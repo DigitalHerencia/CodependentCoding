@@ -1,5 +1,7 @@
-import { getMediaAssets } from "@/lib/fetchers/socialFetchers";
+import { loadMediaLibraryWorkflow } from "@/lib/workflows/socialWorkflows";
 import { MediaLibraryFeatureClient } from "./media-library-feature.client";
+
 export async function MediaLibraryFeature() {
-  return <MediaLibraryFeatureClient assets={await getMediaAssets()} />;
+  const { assets } = await loadMediaLibraryWorkflow();
+  return <MediaLibraryFeatureClient assets={assets} />;
 }

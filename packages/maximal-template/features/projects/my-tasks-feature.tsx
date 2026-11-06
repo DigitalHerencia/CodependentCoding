@@ -1,12 +1,15 @@
 import { projectsPresentationCopy } from "@/content/projects";
-// Why: Server feature: loads the member's tasks and hands them to the shared task list island.
+import { loadMyTasksWorkflow } from "@/lib/workflows/projectsWorkflows";
 import { TasksFeatureClient } from "./tasks-feature.client";
-import { getMyTasks } from "@/lib/fetchers/projectsFetchers";
+
+// Why: Server feature: loads the member's tasks and hands them to the shared task list island.
+
 export async function MyTasksFeature() {
+  const { tasks } = await loadMyTasksWorkflow();
   return (
     <TasksFeatureClient
       personal
-      tasks={await getMyTasks()}
+      tasks={tasks}
       title={projectsPresentationCopy.myOpenTasks}
     />
   );

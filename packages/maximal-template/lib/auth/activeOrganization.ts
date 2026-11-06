@@ -1,12 +1,10 @@
 import "server-only";
 
 import { cookies } from "next/headers";
-import { z } from "zod";
+import { organizationIdSchema } from "@/schemas/accessSchemas";
 
 /** httpOnly cookie holding the organization the user last chose (AUTH.md §4.1). */
 export const ACTIVE_ORGANIZATION_COOKIE = "active-org";
-
-const organizationId = z.uuid();
 
 /**
  * The organization the user prefers. A preference, not authority: the
@@ -16,7 +14,7 @@ const organizationId = z.uuid();
 export async function getActiveOrganizationPreference(): Promise<
   string | null
 > {
-  const parsed = organizationId.safeParse(
+  const parsed = organizationIdSchema.safeParse(
     (await cookies()).get(ACTIVE_ORGANIZATION_COOKIE)?.value,
   );
   return parsed.success ? parsed.data : null;
@@ -26,11 +24,15 @@ export async function getActiveOrganizationPreference(): Promise<
 export async function setActiveOrganizationPreference(
   id: string,
 ): Promise<void> {
-  (await cookies()).set(ACTIVE_ORGANIZATION_COOKIE, organizationId.parse(id), {
-    httpOnly: true,
-    secure: true,
-    sameSite: "lax",
-    path: "/",
-    maxAge: 60 * 60 * 24 * 365,
-  });
+  (await cookies()).set(
+    ACTIVE_ORGANIZATION_COOKIE,
+    organizationIdSchema.parse(id),
+    {
+      httpOnly: true,
+      secure: true,
+      sameSite: "lax",
+      path: "/",
+      maxAge: 60 * 60 * 24 * 365,
+    },
+  );
 }

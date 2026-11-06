@@ -1,12 +1,12 @@
 "use client";
 
-import * as React from "react";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/components/ui/utils";
 import useEmblaCarousel, {
   type UseEmblaCarouselType,
 } from "embla-carousel-react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
-import { cn } from "@/lib/utils/cn";
-import { Button } from "@/components/ui/button";
+import * as React from "react";
 
 type CarouselApi = UseEmblaCarouselType[1];
 type UseCarouselParameters = Parameters<typeof useEmblaCarousel>;
@@ -306,12 +306,12 @@ const CarouselDots = React.forwardRef<
 CarouselDots.displayName = "CarouselDots";
 
 export {
-  type CarouselApi,
   Carousel,
   CarouselContent,
-  CarouselItem,
-  CarouselPrevious,
-  CarouselNext,
   CarouselDots,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
   useCarousel,
+  type CarouselApi,
 };

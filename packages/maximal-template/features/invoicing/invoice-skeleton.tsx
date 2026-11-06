@@ -1,5 +1,5 @@
-import { WorkspaceLoadingState } from "@/components/blocks/shared-blocks";
+import { WorkspaceLoadingTemplate } from "@/components/templates/shared-templates";
 
 export function InvoiceSkeleton() {
-  return <WorkspaceLoadingState route="/invoices/[invoiceId]" />;
+  return <WorkspaceLoadingTemplate route="/invoices/[invoiceId]" />;
 }

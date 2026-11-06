@@ -1,15 +1,15 @@
 "use client";
 
-import * as React from "react";
-import { Download, Image as ImageIcon, FileText, Maximize } from "lucide-react";
-import { cn } from "@/lib/utils/cn";
 import { Button } from "@/components/ui/button";
 import {
   downloadCSV,
   exportPNG,
   exportSVG,
   toggleFullscreen,
-} from "@/lib/utils/chartExport";
+} from "@/components/ui/chart-export";
+import { cn } from "@/components/ui/utils";
+import { Download, FileText, Image as ImageIcon, Maximize } from "lucide-react";
+import * as React from "react";
 
 export interface ChartToolbarProps extends React.HTMLAttributes<HTMLDivElement> {
   /** Rows fed to the chart — enables the CSV export button when provided. */

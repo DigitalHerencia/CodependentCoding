@@ -1,5 +1,7 @@
-import { getExpenses } from "@/lib/fetchers/invoicingFetchers";
+import { loadExpensesWorkflow } from "@/lib/workflows/invoicingWorkflows";
 import { ExpensesFeatureClient } from "./expenses-feature.client";
+
 export async function ExpensesFeature() {
-  return <ExpensesFeatureClient expenses={await getExpenses()} />;
+  const { expenses } = await loadExpensesWorkflow();
+  return <ExpensesFeatureClient expenses={expenses} />;
 }

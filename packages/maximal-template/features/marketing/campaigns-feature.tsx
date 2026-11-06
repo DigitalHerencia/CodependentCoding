@@ -1,5 +1,7 @@
-import { getCampaigns } from "@/lib/fetchers/marketingFetchers";
+import { loadCampaignsWorkflow } from "@/lib/workflows/marketingWorkflows";
 import { CampaignsFeatureClient } from "./campaigns-feature.client";
+
 export async function CampaignsFeature() {
-  return <CampaignsFeatureClient campaigns={await getCampaigns(100)} />;
+  const { campaigns } = await loadCampaignsWorkflow();
+  return <CampaignsFeatureClient campaigns={campaigns} />;
 }

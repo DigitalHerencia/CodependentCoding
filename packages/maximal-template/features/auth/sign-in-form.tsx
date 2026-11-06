@@ -1,20 +1,25 @@
 "use client";
-import { authRemainingCopy } from "@/content/auth";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import type { z } from "zod";
-import { getSignInFormSchema } from "@/schemas/authSchemas";
-
-import { authPresentationCopy } from "@/content/auth";
+import { AuthFormPanel } from "@/components/blocks/auth-blocks";
+import {
+  AuthFormButtonBlock as Button,
+  AuthFormFieldBlock as Field,
+  AuthFormFieldErrorBlock as FieldError,
+  AuthFormFieldLabelBlock as FieldLabel,
+  AuthFormInputBlock as Input,
+} from "@/components/blocks/auth-form-blocks";
+import {
+  authAppearance,
+  authPresentationCopy,
+  authRemainingCopy,
+} from "@/content/auth";
 import { SignIn, useSignIn } from "@/lib/auth/clerkAccount";
+import { getSignInFormSchema } from "@/schemas/authSchemas";
+import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
-import { authAppearance } from "@/content/auth";
 import { useState, useSyncExternalStore } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { AuthFormPanel } from "@/components/blocks/auth-blocks";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Field, FieldLabel, FieldError } from "@/components/ui/field";
+import type { z } from "zod";
 
 type Step = "password" | "recover" | "reset-code" | "new-password" | "mfa";
 type Factor = "email_code" | "phone_code" | "totp" | "backup_code";

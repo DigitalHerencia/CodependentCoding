@@ -1,5 +1,7 @@
-import { getSupportInbox } from "@/lib/fetchers/supportFetchers";
+import { loadInboxWorkflow } from "@/lib/workflows/supportWorkflows";
 import { InboxFeatureClient } from "./inbox-feature.client";
+
 export async function InboxFeature() {
-  return <InboxFeatureClient tickets={await getSupportInbox()} />;
+  const { tickets } = await loadInboxWorkflow();
+  return <InboxFeatureClient tickets={tickets} />;
 }

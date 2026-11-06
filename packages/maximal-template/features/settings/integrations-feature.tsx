@@ -1,8 +1,7 @@
-import { notFound } from "next/navigation";
-import { getIntegrationStatuses } from "@/lib/workflows/organizationWorkflows";
 import { SharedIntegrationsTemplate } from "@/components/templates/shared-templates";
+import { loadIntegrationsWorkflow } from "@/lib/workflows/settingsWorkflows";
+
 export async function IntegrationsFeature() {
-  const integrations = await getIntegrationStatuses();
-  if (!integrations) notFound();
+  const { integrations } = await loadIntegrationsWorkflow();
   return <SharedIntegrationsTemplate integrations={integrations} />;
 }

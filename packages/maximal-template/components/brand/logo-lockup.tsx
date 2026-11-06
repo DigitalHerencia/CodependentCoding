@@ -1,6 +1,6 @@
-import Image from "next/image";
-import { cn } from "@/lib/utils/cn";
+import { cn } from "@/components/ui/utils";
 import { applicationProduct } from "@/content/application";
+import Image from "next/image";
 
 export function LogoLockup({
   className,

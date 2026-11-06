@@ -1,14 +1,11 @@
-import { notFound } from "next/navigation";
-import { getAdminRecordSummary } from "@/lib/fetchers/adminFetchers";
 import { AdminRecordDetailTemplate } from "@/components/templates/admin-templates";
+import { loadAdminRecordDetailWorkflow } from "@/lib/workflows/adminWorkflows";
+
 export async function AdminRecordDetailFeature({
   recordId,
 }: {
   recordId: string;
 }) {
-  const record = (await getAdminRecordSummary()).find(
-    (item) => item.resource === recordId,
-  );
-  if (!record) notFound();
+  const { record } = await loadAdminRecordDetailWorkflow({ recordId });
   return <AdminRecordDetailTemplate record={record} />;
 }

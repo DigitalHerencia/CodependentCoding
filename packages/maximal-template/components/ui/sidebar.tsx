@@ -1,9 +1,5 @@
 "use client";
 
-import * as React from "react";
-import { cva, type VariantProps } from "class-variance-authority";
-import { PanelLeft } from "lucide-react";
-import { cn } from "@/lib/utils/cn";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import {
@@ -11,6 +7,10 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { cn } from "@/components/ui/utils";
+import { cva, type VariantProps } from "class-variance-authority";
+import { PanelLeft } from "lucide-react";
+import * as React from "react";
 
 const SIDEBAR_COOKIE_NAME = "sidebar:state";
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7; // 7 days
@@ -428,17 +428,17 @@ SidebarInset.displayName = "SidebarInset";
 
 export {
   Sidebar,
-  SidebarProvider,
-  SidebarHeader,
   SidebarContent,
   SidebarFooter,
   SidebarGroup,
   SidebarGroupLabel,
+  SidebarHeader,
+  SidebarInset,
   SidebarItem,
+  sidebarItemVariants,
+  SidebarProvider,
   SidebarSeparator,
   SidebarToggle,
-  SidebarInset,
-  useSidebar,
   sidebarVariants,
-  sidebarItemVariants,
+  useSidebar,
 };

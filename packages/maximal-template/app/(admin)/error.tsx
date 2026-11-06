@@ -1,12 +1,12 @@
 "use client";
-import { GenericErrorPage } from "@/components/blocks/shared-blocks.client";
+import { GenericErrorTemplate } from "@/components/templates/shared-templates";
 
 // Route-group errors need a client boundary; recovery presentation remains a block.
 export default function RouteError({
   reset,
 }: Readonly<{ error: Error & { digest?: string }; reset: () => void }>) {
   return (
-    <GenericErrorPage
+    <GenericErrorTemplate
       actions={[
         { label: "Try again", onClick: reset },
         { label: "Return to admin", href: "/admin/users", variant: "outline" },

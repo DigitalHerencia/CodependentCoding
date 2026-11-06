@@ -1,6 +1,13 @@
+import {
+  getAudience,
+  getAudiences,
+  getCampaign,
+  getCampaigns,
+  getCampaignSteps,
+} from "@/lib/fetchers/marketingFetchers";
+import { describeAudienceWorkflow } from "@/lib/workflows/marketingClientWorkflows";
+import { notFound } from "next/navigation";
 import "server-only";
-
-import { getAudiences, getCampaigns } from "@/lib/fetchers/marketingFetchers";
 
 export async function getMarketingWorkspaceWorkflow(limit = 50) {
   const [campaigns, audiences] = await Promise.all([
@@ -25,4 +32,66 @@ export async function getMarketingRecordWorkflow(
   const records =
     kind === "campaign" ? workspace.campaigns : workspace.audiences;
   return records.find((record) => record.id === id) ?? null;
+}
+
+export async function loadAudienceEditWorkflow({
+  audienceId,
+}: {
+  audienceId: string;
+}) {
+  const audience = await getAudience(audienceId);
+  if (!audience) notFound();
+  return { audience };
+}
+
+export async function loadAudienceWorkflow({
+  audienceId,
+}: {
+  audienceId: string;
+}) {
+  const audience = await getAudience(audienceId);
+  if (!audience) notFound();
+  return { audience: describeAudienceWorkflow(audience) };
+}
+
+export async function loadAudiencesWorkflow() {
+  const audiences = await getAudiences();
+  return { audiences };
+}
+
+export async function loadCampaignEditWorkflow({
+  campaignId,
+}: {
+  campaignId: string;
+}) {
+  const campaign = await getCampaign(campaignId);
+  if (!campaign) notFound();
+  const audiences = await getAudiences();
+  return { campaign, audiences };
+}
+
+export async function loadCampaignWorkflow({
+  campaignId,
+}: {
+  campaignId: string;
+}) {
+  const campaign = await getCampaign(campaignId);
+  if (!campaign) notFound();
+  const steps = await getCampaignSteps(campaignId);
+  return { campaign, steps };
+}
+
+export async function loadCampaignNewWorkflow() {
+  const audiences = await getAudiences();
+  return { audiences };
+}
+
+export async function loadCampaignsWorkflow() {
+  const campaigns = await getCampaigns(100);
+  return { campaigns };
+}
+
+export async function loadMarketingAnalyticsWorkflow() {
+  const campaigns = await getCampaigns(100);
+  return { campaigns };
 }

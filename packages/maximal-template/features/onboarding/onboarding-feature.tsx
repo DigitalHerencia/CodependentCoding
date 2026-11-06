@@ -1,19 +1,15 @@
 import { SharedOnboardingTemplate } from "@/components/templates/shared-templates";
 import { onboardingPresentationCopy } from "@/content/onboarding";
-import { redirect } from "next/navigation";
 import {
-  OnboardingFeatureClient,
+  NewOnboardingProfileForm,
   WorkspaceApprovalCheck,
-} from "@/features/onboarding/onboarding-form.client";
-import { getOnboardingState } from "@/lib/fetchers/onboardingFetchers";
+} from "@/features/onboarding/newOnboardingProfileForm";
+import { loadOnboardingWorkflow } from "@/lib/workflows/onboardingWorkflows";
 
 export async function OnboardingFeature() {
-  const state = await getOnboardingState();
-  if (state.status === "active") redirect("/dashboard");
-  if (state.status === "profile") {
-    return <OnboardingFeatureClient displayName={state.displayName} />;
-  }
-
+  const { state } = await loadOnboardingWorkflow();
+  if (state.status === "profile")
+    return <NewOnboardingProfileForm displayName={state.displayName} />;
   return (
     <SharedOnboardingTemplate
       title={

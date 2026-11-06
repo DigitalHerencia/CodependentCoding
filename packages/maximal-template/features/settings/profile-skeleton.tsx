@@ -1,5 +1,5 @@
-import { WorkspaceLoadingState } from "@/components/blocks/shared-blocks";
+import { WorkspaceLoadingTemplate } from "@/components/templates/shared-templates";
 
 export function ProfileSkeleton() {
-  return <WorkspaceLoadingState route="/settings/profile" />;
+  return <WorkspaceLoadingTemplate route="/settings/profile" />;
 }

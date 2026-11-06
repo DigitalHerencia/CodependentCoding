@@ -1,5 +1,5 @@
-import { WorkspaceLoadingState } from "@/components/blocks/shared-blocks";
+import { WorkspaceLoadingTemplate } from "@/components/templates/shared-templates";
 
 export function AdminAuditSkeleton() {
-  return <WorkspaceLoadingState route="/admin/audit" />;
+  return <WorkspaceLoadingTemplate route="/admin/audit" />;
 }

@@ -1,20 +1,20 @@
 "use client";
 
-import * as React from "react";
-import { cva, type VariantProps } from "class-variance-authority";
-import { cn } from "@/lib/utils/cn";
 import { Progress } from "@/components/ui/progress";
 import { Spinner } from "@/components/ui/spinner";
+import { cn } from "@/components/ui/utils";
+import { cva, type VariantProps } from "class-variance-authority";
 import {
+  File,
+  FileAudio,
+  FileCode,
+  FileText,
+  FileVideo,
+  Image as ImageIcon,
   Upload,
   X,
-  File,
-  Image as ImageIcon,
-  FileText,
-  FileCode,
-  FileAudio,
-  FileVideo,
 } from "lucide-react";
+import * as React from "react";
 
 // Types
 export interface FileRejection {
@@ -469,4 +469,4 @@ function renderFileIcon(mimeType: string) {
   return <File className={className} />;
 }
 
-export { Dropzone, FileList, dropzoneVariants };
+export { Dropzone, dropzoneVariants, FileList };

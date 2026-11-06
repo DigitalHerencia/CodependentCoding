@@ -1,5 +1,5 @@
-import { WorkspaceLoadingState } from "@/components/blocks/shared-blocks";
+import { WorkspaceLoadingTemplate } from "@/components/templates/shared-templates";
 
 export function DocumentsSkeleton() {
-  return <WorkspaceLoadingState route="/portal/documents" />;
+  return <WorkspaceLoadingTemplate route="/portal/documents" />;
 }

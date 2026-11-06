@@ -1,21 +1,23 @@
 "use client";
-import { useForm, Controller } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import type { z } from "zod";
-import { publicEmailSchema } from "@/schemas/publicSchemas";
-import { Field, FieldLabel, FieldError } from "@/components/ui/field";
-import { formResultCopy } from "@/content/application";
-import * as React from "react";
-
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { cn } from "@/lib/utils/cn";
-import { safeHref } from "@/lib/utils/strings";
-import { ArrowRight, Mail } from "lucide-react";
-
-import { Separator } from "@/components/ui/separator";
 
 import { type FooterColumn } from "@/components/blocks/public-blocks.client";
+import {
+  PublicFormButtonBlock as Button,
+  PublicFormFieldBlock as Field,
+  PublicFormFieldErrorBlock as FieldError,
+  PublicFormFieldLabelBlock as FieldLabel,
+  PublicFormInputBlock as Input,
+  PublicFormSeparatorBlock as Separator,
+} from "@/components/blocks/public-form-blocks";
+import { cn, safeHref } from "@/components/ui/utils";
+import { formResultCopy } from "@/content/application";
+import { publicUiCopy } from "@/content/public";
+import { publicEmailSchema } from "@/schemas/publicSchemas";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { ArrowRight, Mail } from "lucide-react";
+import * as React from "react";
+import { Controller, useForm } from "react-hook-form";
+import type { z } from "zod";
 
 // ============================================================================
 // CTA VARIANT 3: Newsletter
@@ -32,8 +34,8 @@ export type CTANewsletterProps = {
 export function CTANewsletter({
   title,
   description,
-  placeholder = "Enter your email",
-  buttonLabel = "Subscribe",
+  placeholder = publicUiCopy.enterYourEmail,
+  buttonLabel = publicUiCopy.subscribe,
   onSubmit,
   className,
 }: CTANewsletterProps) {
@@ -78,7 +80,7 @@ export function CTANewsletter({
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
                 <FieldLabel htmlFor={id} className="sr-only">
-                  Email
+                  {publicUiCopy.email}
                 </FieldLabel>
                 <Input
                   {...field}
@@ -110,7 +112,7 @@ export function CTANewsletter({
         </form>
 
         <p className="text-xs text-muted-foreground">
-          No spam. Unsubscribe anytime.
+          {publicUiCopy.noSpamUnsubscribeAnytime}
         </p>
       </div>
     </section>
@@ -179,7 +181,7 @@ export function FooterWithNewsletter({
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
                     <FieldLabel htmlFor={id} className="sr-only">
-                      Email
+                      {publicUiCopy.email}
                     </FieldLabel>
                     <Input
                       {...field}
@@ -187,7 +189,7 @@ export function FooterWithNewsletter({
                       aria-invalid={fieldState.invalid}
 
                       type="email"
-                      placeholder="Enter your email"
+                      placeholder={publicUiCopy.enterYourEmail}
                       required
                     />
                     {fieldState.error && (
@@ -198,7 +200,7 @@ export function FooterWithNewsletter({
               />
               <Button
                 type="submit"
-                aria-label="Subscribe"
+                aria-label={publicUiCopy.subscribe}
                 disabled={form.formState.isSubmitting || !onNewsletterSubmit}
               >
                 <Mail className="h-4 w-4" />

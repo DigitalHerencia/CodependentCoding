@@ -1,5 +1,5 @@
-import { FormLoadingState } from "@/components/blocks/shared-blocks";
+import { FormLoadingTemplate } from "@/components/templates/shared-templates";
 
 export function CampaignFormSkeleton() {
-  return <FormLoadingState fields={5} />;
+  return <FormLoadingTemplate fields={5} />;
 }

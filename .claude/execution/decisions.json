@@ -1532,6 +1532,20 @@
       "status": "accepted",
       "title": "Consolidate used CRM pipeline calculation",
       "decision": "Keep CRM business logic in existing crmWorkflows.ts; move fixed-point parsing/formatting to existing money.ts with an explicit scale. Preserve arithmetic and update consumers while removing the nested workflows/crm directory. Owner requires local main commit with only formatting, lint fix and type generation/check; no tests, builds or push."
+    },
+    {
+      "id": "DEC-122",
+      "date": "2026-11-05",
+      "status": "accepted",
+      "title": "Mirror template presentation and business composition",
+      "decision": "Owner approved page -> feature -> template -> blocks -> primitives alongside feature -> named domain workflow -> fetchers/actions -> DB wrappers/helpers -> Prisma/RLS. Keep client-safe workflows distinct from server-only workflows; browser commands invoke existing independently secured Server Actions. RHF forms and static public routes remain explicit exceptions. Domain webhook workflows verify provider requests before server-only persistence actions and retain dedicated WebhookEvent records. Keep optional provider ownership intact. Presentation consumes prepared views and erased props, never runtime schemas or lib code. Update documentation without adding enforcement. Deliver directly on main with only formatting, lint fix and type generation/check, then commit without push.",
+      "refs": [
+        "context/docs/Architecture.md",
+        "packages/maximal-template/lib/workflows",
+        "packages/maximal-template/components/templates",
+        "packages/maximal-template/components/blocks",
+        "https://ui.shadcn.com/docs/typeset"
+      ]
     }
   ]
 }

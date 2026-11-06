@@ -56,48 +56,93 @@ URL ─► app/ (route) ─► features/ ─► components/blocks ─► compone
 
 ### 3.1 Responsibility map
 
-| Concern                  | Home                                                                           | Rule                                                                           |
-| ------------------------ | ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------ |
-| URL / page               | `app/**/page.tsx`                                                              | Thin: Suspense + feature, or blocks for static public pages                    |
-| Provider webhook         | `app/api/<provider>/webhooks/route.ts`                                         | Raw-body verify → idempotent persistence → ack                                 |
-| Capability orchestration | `features/<domain>/<domain><Thing>Feature.tsx`                                 | Server component; renders blocks                                               |
-| Browser behavior         | `features/<domain>/<name>.client.tsx`                                          | `"use client"`; UI controls + actions only                                     |
-| Form                     | `features/<domain>/<domain><Verb><Thing>Form.tsx`                              | React Hook Form + Zod + action; may use UI primitives                          |
-| Loading                  | `features/<domain>/<domain><Thing>Skeleton.tsx`                                | Mirrors real layout; `ui/skeleton` only                                        |
-| Domain presentation      | `components/templates/<slice>-templates.tsx`                                   | Pure; composed from blocks; one file per slice                                 |
-| Reusable composition     | `components/blocks/<kebab>.tsx`                                                | Pure presentation                                                              |
-| Structure                | `components/nav`, `components/shells`                                          | Frames; Clerk UI widgets allowed                                               |
-| Primitive                | `components/ui/<kebab>.tsx`                                                    | shadcn/BoldKit-derived                                                         |
-| Read                     | `lib/fetchers/<domain>Fetchers.ts`                                             | `server-only`; auth → authz → scoped select → DTO                              |
-| CRUD write               | `lib/actions/<domain>Actions.ts`                                               | `"use server"`; auth → authz → Zod → write/tx → invalidate → `ActionResult`    |
-| Application logic        | `lib/workflows/<domain>Workflows.ts` or `lib/workflows/<domain>/<verbNoun>.ts` | `server-only`; arranges operations; may call actions; no Prisma client or SDKs |
-| Atomic write             | `lib/db/transactions/<domain><Verb><Noun>Tx.ts`                                | DB-only; no network                                                            |
-| DB runtime               | `lib/db/client.ts`, `rls.ts`, `tenant.ts`                                      | Prisma client, adapter, RLS context                                            |
-| Projection               | `lib/db/selects/<domain>Selects.ts`                                            | Precise selects                                                                |
-| Mapping                  | `lib/db/dtos/<domain>Dtos.ts`                                                  | Record → transport-safe DTO                                                    |
-| Identity                 | `lib/auth/{clerk,auth,redirects,clerk-webhooks}.ts`                            | Clerk only here                                                                |
-| Access                   | `lib/authz/{roles,permissions,resources,policies,mode,attributes?}.ts`         | App-owned RBAC/ABAC; `roles.ts` is the one browser-safe authz file             |
-| Provider                 | `lib/integrations/<provider>/<kebab>.ts`                                       | SDK only here                                                                  |
-| Cache                    | `lib/cache/{tags,life,invalidate}.ts`                                          | Semantics only                                                                 |
-| Module contribution      | `lib/modules/<id>Module.ts`, `registry.ts`                                     | Nav, dashboard widgets, permissions                                            |
-| Env                      | `lib/utils/env.ts + lib/integrations/<provider>/env.ts`                        | Zod-validated, `server-only`                                                   |
-| Error reporting          | `lib/utils/reportError.ts`                                                     | `server-only`; `reportError` returns the correlation `ref`                     |
-| Validation               | `schemas/<domain>Schemas.ts`                                                   | Zod; client- and server-safe                                                   |
-| Shared types             | `types/<domain>Types.ts`                                                       | Compile-time contracts                                                         |
-| Schema                   | `prisma/schema/<owner>.prisma`, `prisma/rls/<owner>.sql`, `prisma/seed.ts`     | Prisma lifecycle                                                               |
+| Concern                  | Home                                                                       | Rule                                                                           |
+| ------------------------ | -------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| URL / page               | `app/**/page.tsx`                                                          | Thin: Suspense + feature, or blocks for static public pages                    |
+| Provider webhook         | `app/api/<provider>/webhooks/route.ts`                                     | Raw-body verify → idempotent persistence → ack                                 |
+| Capability orchestration | `features/<domain>/<domain><Thing>Feature.tsx`                             | Server component; pairs a workflow with a page template                        |
+| Browser behavior         | `features/<domain>/<name>.client.tsx`                                      | `"use client"`; UI controls + actions only                                     |
+| Form                     | `features/<domain>/<domain><Verb><Thing>Form.tsx`                          | React Hook Form + Zod + action; composes domain form blocks                    |
+| Loading                  | `features/<domain>/<domain><Thing>Skeleton.tsx`                            | Mirrors real layout; `ui/skeleton` only                                        |
+| Domain presentation      | `components/templates/<slice>-templates.tsx`                               | Pure; composed from blocks; one file per slice                                 |
+| Reusable composition     | `components/blocks/<kebab>.tsx`                                            | Pure presentation                                                              |
+| Structure                | `components/nav`, `components/shells`                                      | Frames; Clerk UI widgets allowed                                               |
+| Primitive                | `components/ui/<kebab>.tsx`                                                | shadcn/BoldKit-derived                                                         |
+| Read                     | `lib/fetchers/<domain>Fetchers.ts`                                         | `server-only`; auth → authz → scoped select → DTO                              |
+| CRUD write               | `lib/actions/<domain>Actions.ts`                                           | `"use server"`; auth → authz → Zod → write/tx → invalidate → `ActionResult`    |
+| Application logic        | `lib/workflows/<domain>{,Client}Workflows.ts`                              | `server-only`; arranges operations; may call actions; no Prisma client or SDKs |
+| Atomic write             | `lib/db/transactions/<domain><Verb><Noun>Tx.ts`                            | DB-only; no network                                                            |
+| DB runtime               | `lib/db/client.ts`, `rls.ts`, `tenant.ts`                                  | Prisma client, adapter, RLS context                                            |
+| Projection               | `lib/db/selects/<domain>Selects.ts`                                        | Precise selects                                                                |
+| Mapping                  | `lib/db/dtos/<domain>Dtos.ts`                                              | Record → transport-safe DTO                                                    |
+| Identity                 | `lib/auth/{clerk,auth,redirects,clerk-webhooks}.ts`                        | Clerk only here                                                                |
+| Access                   | `lib/authz/{roles,permissions,resources,policies,mode,attributes?}.ts`     | App-owned RBAC/ABAC; `roles.ts` is the one browser-safe authz file             |
+| Provider                 | `lib/integrations/<provider>/<kebab>.ts`                                   | SDK only here                                                                  |
+| Cache                    | `lib/cache/{tags,life,invalidate}.ts`                                      | Semantics only                                                                 |
+| Module contribution      | `lib/modules/<id>Module.ts`, `registry.ts`                                 | Nav, dashboard widgets, permissions                                            |
+| Env                      | `lib/utils/env.ts + lib/integrations/<provider>/env.ts`                    | Zod-validated, `server-only`                                                   |
+| Error reporting          | `lib/utils/reportError.ts`                                                 | `server-only`; `reportError` returns the correlation `ref`                     |
+| Validation               | `schemas/<domain>Schemas.ts`                                               | Zod; client- and server-safe                                                   |
+| Shared types             | `types/<domain>Types.ts`                                                   | Compile-time contracts                                                         |
+| Schema                   | `prisma/schema/<owner>.prisma`, `prisma/rls/<owner>.sql`, `prisma/seed.ts` | Prisma lifecycle                                                               |
 
-### 3.2 Exceptions (DEC-007)
+### 3.2 Mirrored composition and exceptions
 
-1. Static public pages compose blocks directly (no feature).
-2. Form features compose UI primitives directly and may declare `"use client"`.
-3. Skeletons may import `components/ui/skeleton`.
-4. `.client.tsx` companions may import interactive UI controls (button, input, label, select, checkbox, switch, textarea, toggle, date/time pickers, etc.).
+Application pages follow two parallel composition paths:
+
+```text
+page -> feature -> page template -> domain blocks -> ui/chart primitives
+              -> domain workflow -> fetchers/actions -> DB wrappers/helpers -> Prisma/Neon
+```
+
+A page owns URL parameters and a Suspense boundary with its route skeleton.
+Its server feature calls one named page workflow and composes one page template.
+An interactive page uses one corresponding client companion; that companion
+renders the interactive template and calls its client-safe workflow. The server
+feature passes prepared data into it. Form components are separate exceptions,
+not additional orchestration islands.
+
+Workflows are named exports aggregated by domain in `lib/workflows/`. Server
+workflows assemble reads, mutations and provider operations. Client-safe
+`<domain>ClientWorkflows.ts` modules prepare interactive view data, coordinate
+browser behavior, and invoke existing Server Actions. They never access server
+credentials, Prisma or server-only modules. Exporting a client workflow does not
+make it a new HTTP mutation endpoint.
+
+Fetchers and actions are the application persistence boundaries. They use the
+DB wrappers to establish trusted identity/membership and transaction-local RLS,
+then apply operation and record authorization through `lib/authz`. Selects, DTO
+mapping and transaction helpers execute within those boundaries. Provider
+webhooks use provider transaction wrappers after signature verification rather
+than inventing a Clerk user session. Atomic multi-write invariants stay in one
+transaction helper; a workflow composing separate actions is not one transaction.
+
+Templates compose page-frame, toolbar and domain-content blocks. Blocks own
+presentation markup and primitives; they do not import runtime schemas or `lib`
+logic. Erased TypeScript props describe the prepared data and event callbacks.
+UI-only class/link helpers live alongside primitives in `components/ui/utils.ts`.
+Business calculations, filtering, grouping and schema interpretation are prepared
+by workflows. Content copy stays in domain `content/*.ts` files. Typography uses
+the owned official shadcn Typeset stylesheet and semantic tokens from globals.css.
+
+Exceptions:
+
+1. Static public pages import page templates directly, without a feature/workflow.
+2. Self-contained RHF forms live in their domain feature directory under
+   `new<Domain>Form.tsx` or `edit<Domain>Form.tsx`. They use Controller, the shared
+   Zod resolver, domain form blocks, and direct secured Server Action submission.
+3. Skeletons are loading presentation composed through loading templates and blocks.
+4. Auth/onboarding gates and nav/shell/brand structures retain their specialized
+   responsibilities. Auth implementation stays in `lib/auth` and `lib/authz`.
+5. Webhook HTTP routes invoke server workflows. Those workflows verify the
+   provider payload and call server-only persistence actions. Delivery identity,
+   replay state and failures use WebhookEvent, separately from admin AuditLog.
 
 ### 3.3 Classifier (use before creating a file)
 
 ```text
-Static public presentation?      app/(public) page + components/blocks
-Public site copy?               content/{public,faq,legal,security}.ts
+Static public presentation?      app/(public) page + components/templates
+Public site copy?               content/public.ts
 Public repository file reader?  lib/content/<domain>.ts (server-only)
 React Hook Form?                 features/<d>/<d><Verb><Thing>Form.tsx
 Browser-only behavior?           features/<d>/<name>.client.tsx

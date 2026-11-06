@@ -43,3 +43,18 @@ export function unitsToDecimal(units: bigint, scale: number): string {
     .replace(/0+$/, "");
   return `${sign}${abs / unit}${fraction ? `.${fraction}` : ""}`;
 }
+
+/** Round fixed-point units to a display precision without converting through Number. */
+export function formatFixedUnits(
+  units: bigint,
+  scale: number,
+  digits: number,
+): string {
+  const negative = units < 0n;
+  const magnitude = negative ? -units : units;
+  const divisor = 10n ** BigInt(scale - digits);
+  const rounded = (magnitude + divisor / 2n) / divisor;
+  const unit = 10n ** BigInt(digits);
+  const sign = negative && rounded !== 0n ? "-" : "";
+  return `${sign}${rounded / unit}${digits ? `.${(rounded % unit).toString().padStart(digits, "0")}` : ""}`;
+}

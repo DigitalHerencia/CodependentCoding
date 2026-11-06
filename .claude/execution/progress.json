@@ -3934,5 +3934,35 @@
     "NOT_RUN": [
       "Tests, builds, servers, database jobs and push."
     ]
+  },
+  "mirrored-template-architecture": {
+    "status": "complete-local-main",
+    "updated": "2026-11-06T00:33:03.257397+00:00",
+    "source_commit": "cdc27d273ecebda7d4744f23a5f674cff184fca7",
+    "owner_instruction": "Implement mirrored template presentation/business composition directly on main. Commit without branch, PR or push. Only format write, lint fix, type generation/check; no tests/builds/servers.",
+    "scope": [
+      "Page features use named domain loading workflows; interactive companions use client-safe view/command workflows. Fetchers/actions retain secured persistence and DB-wrapper boundaries.",
+      "Templates compose page frames, toolbars and domain content blocks. Blocks/templates have no lib or runtime-schema imports. UI-only utilities are colocated with primitives.",
+      "RHF forms use domain form-block APIs backed by shared implementations, native shadcn controls, and new/edit domain filenames. Removed three unconsumed non-RHF preview form libraries.",
+      "Moved aggregation, grouping, schema interpretation and file-download coordination out of presentation. CRM analytics uses exact decimal sums; pipeline no longer loads unused contacts.",
+      "Webhook routes delegate to domain workflows and server-only persistence actions. Existing WebhookEvent replay/failure records remain separate from AuditLog. Provider files retain removable module ownership.",
+      "Added official shadcn Typeset stylesheet with semantic typography variables; mapped remaining static UI labels into domain content and corrected escaped-entity text. Added a Card inset variant and reused primitives for surfaces and native controls.",
+      "Moved remaining auth/action UUID/tenancy schemas into schemas. Preserved configuredTenancy generator replacement and existing authentication/authorization/RLS/concurrency semantics. Hardened CSV exports against formula strings.",
+      "Updated architecture documentation and application path contract; no new enforcement rules."
+    ],
+    "EXECUTED": [
+      "Template: node node_modules/prettier/bin/prettier.cjs --write on 324 affected TS/TSX/CSS files; exit 0. Subsequent seven schema/auth/workflow files and four copy/type files were formatted after their final edits; exit 0.",
+      "Template: node node_modules/eslint/bin/eslint.js --fix --max-warnings=0 on 322 affected code files; exit 0. Subsequent seven schema/auth/workflow files and four copy/type files passed the same lint command after their final edits.",
+      "Template: next typegen through installed next.cmd; exit 0, route types generated.",
+      "Template: tsc --noEmit through installed tsc.cmd after final source edits; exit 0.",
+      "Root: node node_modules/prettier/bin/prettier.cjs --write context/docs/Architecture.md .claude/contracts/application.yaml; exit 0.",
+      "Source dependency review confirmed presentation has no lib/runtime-schema imports, ordinary features have no direct fetcher/action imports, and webhook routes have no direct provider/transaction imports. This was source inspection, not behavioral verification."
+    ],
+    "NOT_RUN": [
+      "Tests, builds, browser/runtime validation, database jobs/migrations, dependency installation, generation/composition execution, enforcement workflows, PR/CI and push."
+    ],
+    "loading_boundary_evidence": "66 affected loading/skeleton/template files: Prettier --write and ESLint --fix --max-warnings=0 passed; tsc --noEmit passed. Final shared-template import consolidation formatted and linted successfully. Loading/error boundaries use templates without duplicating root document boundaries.",
+    "verification": "Checks executed against the implementation source included with this record. No database schema/policy or dependency-lock changes.",
+    "delivery": "Owner-directed local commit on main; no remote publication."
   }
 }

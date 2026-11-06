@@ -1,9 +1,9 @@
 "use client";
 
-import * as React from "react";
+import { cn } from "@/components/ui/utils";
 import { cva, type VariantProps } from "class-variance-authority";
-import { cn } from "@/lib/utils/cn";
 import { Check } from "lucide-react";
+import * as React from "react";
 
 // Context
 interface StepperContextValue {
@@ -381,12 +381,12 @@ StepperActions.displayName = "StepperActions";
 
 export {
   Stepper,
-  StepperList,
-  StepperItem,
-  StepperTrigger,
-  StepperSeparator,
-  StepperContent,
   StepperActions,
+  StepperContent,
+  StepperItem,
+  StepperList,
+  StepperSeparator,
+  StepperTrigger,
   stepVariants,
   useStepperContext,
 };

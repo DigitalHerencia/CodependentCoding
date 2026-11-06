@@ -1,12 +1,11 @@
-import { notFound } from "next/navigation";
-import { getCrmAccount } from "@/lib/fetchers/crmFetchers";
 import { CrmAccountDetailTemplate } from "@/components/templates/crm-templates";
+import { loadCrmAccountDetailWorkflow } from "@/lib/workflows/crmWorkflows";
+
 export async function CrmAccountDetailFeature({
   accountId,
 }: {
   accountId: string;
 }) {
-  const account = await getCrmAccount(accountId);
-  if (!account) notFound();
+  const { account } = await loadCrmAccountDetailWorkflow({ accountId });
   return <CrmAccountDetailTemplate account={account} />;
 }

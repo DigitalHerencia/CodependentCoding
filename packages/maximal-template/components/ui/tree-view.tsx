@@ -1,12 +1,12 @@
 "use client";
 
-import * as React from "react";
-import Link from "next/link";
-import type { Route } from "next";
-import { ChevronRight, Folder, File } from "lucide-react";
-import { cn } from "@/lib/utils/cn";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Collapsible, CollapsibleContent } from "@/components/ui/collapsible";
+import { cn } from "@/components/ui/utils";
+import { ChevronRight, File, Folder } from "lucide-react";
+import type { Route } from "next";
+import Link from "next/link";
+import * as React from "react";
 
 export interface TreeNode {
   id: string;

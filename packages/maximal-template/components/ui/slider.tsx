@@ -1,8 +1,7 @@
 "use client";
 
+import { cn } from "@/components/ui/utils";
 import * as React from "react";
-import { isDevelopment } from "@/lib/constants/mode";
-import { cn } from "@/lib/utils/cn";
 
 export interface SliderProps extends Omit<
   React.HTMLAttributes<HTMLDivElement>,
@@ -69,15 +68,13 @@ const Slider = React.forwardRef<HTMLDivElement, SliderProps>(
     const wasControlled = React.useRef(isControlled);
     React.useEffect(() => {
       if (wasControlled.current !== isControlled) {
-        if (isDevelopment) {
-          console.warn(
-            "[Slider] Component is changing from " +
-              (wasControlled.current ? "controlled" : "uncontrolled") +
-              " to " +
-              (isControlled ? "controlled" : "uncontrolled") +
-              ". This is not supported.",
-          );
-        }
+        console.warn(
+          "[Slider] Component is changing from " +
+            (wasControlled.current ? "controlled" : "uncontrolled") +
+            " to " +
+            (isControlled ? "controlled" : "uncontrolled") +
+            ". This is not supported.",
+        );
         wasControlled.current = isControlled;
       }
     }, [isControlled]);

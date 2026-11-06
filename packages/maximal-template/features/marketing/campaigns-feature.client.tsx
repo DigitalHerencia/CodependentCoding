@@ -1,8 +1,10 @@
 "use client";
-import { CampaignsToolbar } from "@/components/blocks/marketing-blocks";
-import { useState } from "react";
+
 import { MarketingCampaignsTemplate } from "@/components/templates/marketing-templates";
+import { selectCampaignsWorkflow } from "@/lib/workflows/marketingClientWorkflows";
 import type { CampaignDTO } from "@/types/marketingTypes";
+import { useState } from "react";
+
 export function CampaignsFeatureClient({
   campaigns,
 }: {
@@ -11,12 +13,8 @@ export function CampaignsFeatureClient({
   const [query, setQuery] = useState("");
   return (
     <MarketingCampaignsTemplate
-      campaigns={campaigns.filter((campaign) =>
-        `${campaign.name} ${campaign.audience?.name ?? ""}`
-          .toLowerCase()
-          .includes(query.toLowerCase()),
-      )}
-      toolbar={<CampaignsToolbar query={query} onQueryChange={setQuery} />}
+      {...selectCampaignsWorkflow(campaigns, query)}
+      toolbarProps={{ query: query, onQueryChange: setQuery }}
     />
   );
 }

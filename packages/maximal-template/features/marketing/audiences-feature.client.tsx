@@ -1,8 +1,10 @@
 "use client";
-import { AudiencesToolbar } from "@/components/blocks/marketing-blocks";
-import { useState } from "react";
+
 import { MarketingAudiencesTemplate } from "@/components/templates/marketing-templates";
+import { selectAudiencesWorkflow } from "@/lib/workflows/marketingClientWorkflows";
 import type { AudienceDTO } from "@/types/marketingTypes";
+import { useState } from "react";
+
 export function AudiencesFeatureClient({
   audiences,
 }: {
@@ -11,10 +13,8 @@ export function AudiencesFeatureClient({
   const [query, setQuery] = useState("");
   return (
     <MarketingAudiencesTemplate
-      audiences={audiences.filter((audience) =>
-        audience.name.toLowerCase().includes(query.toLowerCase()),
-      )}
-      toolbar={<AudiencesToolbar query={query} onQueryChange={setQuery} />}
+      audiences={selectAudiencesWorkflow(audiences, query)}
+      toolbarProps={{ query: query, onQueryChange: setQuery }}
     />
   );
 }

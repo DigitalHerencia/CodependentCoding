@@ -1,18 +1,14 @@
-import { getAdminSessionState } from "@/lib/auth/auth";
-import { AdminVerificationForm } from "./admin-verification-form";
-import { notFound } from "next/navigation";
+import { guardAdminWorkflow } from "@/lib/workflows/adminWorkflows";
 import type { ReactNode } from "react";
-
-import { canAccessAdmin } from "@/lib/fetchers/adminFetchers";
+import { AdminVerificationFeatureClient } from "./admin-verification-feature.client";
 
 export async function AdminGateFeature({
   children,
 }: Readonly<{ children: ReactNode }>) {
-  if (!(await canAccessAdmin())) notFound();
-  const state = await getAdminSessionState();
+  const state = await guardAdminWorkflow();
   if (state !== "verified")
     return (
-      <AdminVerificationForm
+      <AdminVerificationFeatureClient
         needsEnrollment={state === "enrollment-required"}
       />
     );

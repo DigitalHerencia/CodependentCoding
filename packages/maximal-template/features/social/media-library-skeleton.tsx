@@ -1,5 +1,5 @@
-import { WorkspaceLoadingState } from "@/components/blocks/shared-blocks";
+import { WorkspaceLoadingTemplate } from "@/components/templates/shared-templates";
 
 export function MediaLibrarySkeleton() {
-  return <WorkspaceLoadingState route="/social/media" />;
+  return <WorkspaceLoadingTemplate route="/social/media" />;
 }

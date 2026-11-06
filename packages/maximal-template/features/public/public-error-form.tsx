@@ -1,20 +1,22 @@
 "use client";
-import { useForm, Controller } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import type { z } from "zod";
-import { publicEmailSchema, publicSearchSchema } from "@/schemas/publicSchemas";
-import { Field, FieldLabel, FieldError } from "@/components/ui/field";
+
+import {
+  PublicFormButtonBlock as Button,
+  PublicFormFieldBlock as Field,
+  PublicFormFieldErrorBlock as FieldError,
+  PublicFormFieldLabelBlock as FieldLabel,
+  PublicFormInputBlock as Input,
+} from "@/components/blocks/public-form-blocks";
+import { cn, safeHref } from "@/components/ui/utils";
 import { formResultCopy } from "@/content/application";
+import { publicUiCopy } from "@/content/public";
 import { sharedLibraryCopy } from "@/content/shared";
+import { publicEmailSchema, publicSearchSchema } from "@/schemas/publicSchemas";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { ArrowLeft, Clock, FileQuestion, Home, Search } from "lucide-react";
 import * as React from "react";
-
-import { Search, Home, ArrowLeft, FileQuestion, Clock } from "lucide-react";
-import { Button } from "@/components/ui/button";
-
-import { Input } from "@/components/ui/input";
-
-import { cn } from "@/lib/utils/cn";
-import { safeHref } from "@/lib/utils/strings";
+import { Controller, useForm } from "react-hook-form";
+import type { z } from "zod";
 
 // ============================================================================
 // ERROR PAGE VARIANT 1: 404 Not Found
@@ -88,7 +90,7 @@ export function NotFoundPage({
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
                   <FieldLabel htmlFor={id} className="sr-only">
-                    Search
+                    {publicUiCopy.search}
                   </FieldLabel>
                   <Input
                     {...field}
@@ -246,7 +248,7 @@ export function ComingSoonPage({
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
                   <FieldLabel htmlFor={id} className="sr-only">
-                    Email
+                    {publicUiCopy.email}
                   </FieldLabel>
                   <Input
                     {...field}

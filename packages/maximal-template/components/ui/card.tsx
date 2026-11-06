@@ -1,15 +1,22 @@
+import { cn } from "@/components/ui/utils";
+import { cva, type VariantProps } from "class-variance-authority";
 import * as React from "react";
-import { cn } from "@/lib/utils/cn";
+
+const cardVariants = cva("bk-interactive", {
+  variants: { variant: { default: "surface-card", inset: "surface-inset" } },
+  defaultVariants: { variant: "default" },
+});
 
 const Card = React.forwardRef<
   HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement> & { interactive?: boolean }
->(({ className, interactive, role = "article", ...props }, ref) => (
+  React.HTMLAttributes<HTMLDivElement> &
+    VariantProps<typeof cardVariants> & { interactive?: boolean }
+>(({ className, interactive, variant, role = "article", ...props }, ref) => (
   <div
     ref={ref}
     role={role}
     className={cn(
-      "bk-interactive surface-card",
+      cardVariants({ variant }),
       interactive &&
         "cursor-pointer hover:translate-x-[4px] hover:translate-y-[4px] hover:shadow-none active:translate-x-[4px] active:translate-y-[4px] active:shadow-none",
       className,
@@ -69,9 +76,9 @@ CardFooter.displayName = "CardFooter";
 
 export {
   Card,
-  CardHeader,
-  CardFooter,
-  CardTitle,
-  CardDescription,
   CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
 };

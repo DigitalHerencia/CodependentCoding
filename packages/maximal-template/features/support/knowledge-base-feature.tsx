@@ -1,5 +1,7 @@
-import { getKnowledgeArticles } from "@/lib/fetchers/supportFetchers";
+import { loadKnowledgeBaseWorkflow } from "@/lib/workflows/supportWorkflows";
 import { KnowledgeBaseFeatureClient } from "./knowledge-base-feature.client";
+
 export async function KnowledgeBaseFeature() {
-  return <KnowledgeBaseFeatureClient articles={await getKnowledgeArticles()} />;
+  const { articles } = await loadKnowledgeBaseWorkflow();
+  return <KnowledgeBaseFeatureClient articles={articles} />;
 }

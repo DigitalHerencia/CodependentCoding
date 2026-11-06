@@ -1,27 +1,68 @@
 "use client";
-import { MediaLibraryToolbar } from "@/components/blocks/social-blocks";
-import { WorkspaceFileUpload } from "@/features/uploads/workspace-file-upload-form.client";
-import { useState } from "react";
-import { SocialMediaTemplate } from "@/components/templates/social-templates";
-import type { MediaAssetDTO } from "@/types/socialTypes";
-import { MediaAssetControls } from "./media-asset-controls.client";
+
+import {
+  MediaAssetControlsTemplate,
+  SocialMediaTemplate,
+} from "@/components/templates/social-templates";
+import { socialPresentationCopy } from "@/content/social";
+import { NewWorkspaceFileForm } from "@/features/uploads/newWorkspaceFileForm";
+import { selectMediaLibraryWorkflow } from "@/lib/workflows/socialClientWorkflows";
+import type { MediaAssetDTO, MediaAssetView } from "@/types/socialTypes";
+import { useState, useTransition } from "react";
+
 export function MediaLibraryFeatureClient({
   assets,
 }: {
   assets: MediaAssetDTO[];
 }) {
   const [query, setQuery] = useState("");
+  const view = selectMediaLibraryWorkflow(assets, query);
   return (
     <SocialMediaTemplate
-      renderControls={(asset) => <MediaAssetControls asset={asset} />}
-      assets={assets.filter((asset) =>
-        `${asset.filename} ${asset.contentType}`
-          .toLowerCase()
-          .includes(query.toLowerCase()),
+      renderControls={(asset) => (
+        <MediaAssetControls asset={asset} openAsset={view.openAsset} />
       )}
-      toolbar={<MediaLibraryToolbar query={query} onQueryChange={setQuery} />}
+      assets={view.assets}
+      toolbarProps={{ query: query, onQueryChange: setQuery }}
     >
-      <WorkspaceFileUpload domain="social" />
+      <NewWorkspaceFileForm domain="social" />
     </SocialMediaTemplate>
+  );
+}
+
+function MediaAssetControls({
+  asset,
+  openAsset,
+}: {
+  asset: MediaAssetView;
+  openAsset: ReturnType<typeof selectMediaLibraryWorkflow>["openAsset"];
+}) {
+  const [preview, setPreview] = useState("");
+  const [pending, startTransition] = useTransition();
+  const [message, setMessage] = useState("");
+  return (
+    <MediaAssetControlsTemplate
+      asset={asset}
+      preview={preview}
+      pending={pending}
+      message={message}
+      canPreview={asset.canPreview}
+      onOpen={() =>
+        startTransition(async () => {
+          try {
+            const result = await openAsset(asset);
+            if (!result.ok) {
+              setMessage(result.error.message);
+              return;
+            }
+            if (result.data.preview) setPreview(result.data.preview);
+          } catch {
+            setMessage(
+              socialPresentationCopy.fileUnavailableCheckStorageConfigurationOrDownloadSizeMaximum,
+            );
+          }
+        })
+      }
+    />
   );
 }

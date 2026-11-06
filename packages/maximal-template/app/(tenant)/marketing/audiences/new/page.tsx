@@ -1,5 +1,5 @@
-import { AudienceNewForm } from "@/features/marketing/audience-new-form";
+import { NewAudienceForm } from "@/features/marketing/newAudienceForm";
 
 export default async function Page() {
-  return <AudienceNewForm />;
+  return <NewAudienceForm />;
 }

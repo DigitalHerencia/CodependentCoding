@@ -1,14 +1,15 @@
 "use client";
-import { projectsRemainingCopy } from "@/content/projects";
 
-import { useState } from "react";
 import {
-  ProjectTasksTemplate,
   MyTasksTemplate,
+  ProjectTasksTemplate,
 } from "@/components/templates/projects-templates";
-import { ProjectTasksToolbar } from "@/components/blocks/projects-blocks";
-import { TaskStatusControl } from "./task-status-form";
+import { projectsRemainingCopy } from "@/content/projects";
+import { selectTasksWorkflow } from "@/lib/workflows/projectsClientWorkflows";
 import type { TaskDTO } from "@/types/projectsTypes";
+import { useState } from "react";
+import { EditTaskStatusForm } from "./editTaskStatusForm";
+
 export function TasksFeatureClient({
   tasks,
   projectId,
@@ -25,20 +26,14 @@ export function TasksFeatureClient({
   return (
     <Template
       title={title}
-      tasks={tasks.filter((task) =>
-        `${task.title} ${task.assignee?.displayName ?? ""}`
-          .toLowerCase()
-          .includes(query.toLowerCase()),
-      )}
-      toolbar={
-        <ProjectTasksToolbar
-          query={query}
-          onQueryChange={setQuery}
-          projectId={projectId}
-        />
-      }
+      {...selectTasksWorkflow(tasks, query)}
+      toolbarProps={{
+        query: query,
+        onQueryChange: setQuery,
+        projectId: projectId,
+      }}
       renderControls={(task) => (
-        <TaskStatusControl key={`${task.id}-${task.version}`} task={task} />
+        <EditTaskStatusForm key={`${task.id}-${task.version}`} task={task} />
       )}
     />
   );

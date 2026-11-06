@@ -1,11 +1,12 @@
-import { getCurrentOrganization } from "@/lib/fetchers/organizationFetchers";
 import { SharedProfileSettingsTemplate } from "@/components/templates/shared-templates";
-import { ProfileFeatureClient } from "./organization-settings-form.client";
+import { loadProfileWorkflow } from "@/lib/workflows/settingsWorkflows";
+import { EditOrganizationSettingsForm } from "./editOrganizationSettingsForm";
+
 export async function ProfileFeature() {
-  const organization = await getCurrentOrganization();
+  const { organization } = await loadProfileWorkflow();
   return (
     <SharedProfileSettingsTemplate organization={organization}>
-      <ProfileFeatureClient organization={organization} />
+      <EditOrganizationSettingsForm organization={organization} />
     </SharedProfileSettingsTemplate>
   );
 }

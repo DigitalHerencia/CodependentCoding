@@ -1,8 +1,7 @@
-import { notFound } from "next/navigation";
-import { getAudience } from "@/lib/fetchers/marketingFetchers";
 import { MarketingAudienceDetailTemplate } from "@/components/templates/marketing-templates";
+import { loadAudienceWorkflow } from "@/lib/workflows/marketingWorkflows";
+
 export async function AudienceFeature({ audienceId }: { audienceId: string }) {
-  const audience = await getAudience(audienceId);
-  if (!audience) notFound();
+  const { audience } = await loadAudienceWorkflow({ audienceId });
   return <MarketingAudienceDetailTemplate audience={audience} />;
 }

@@ -1,5 +1,5 @@
-import { KnowledgeArticleNewForm } from "@/features/support/knowledge-article-new-form";
+import { NewKnowledgeArticleForm } from "@/features/support/newKnowledgeArticleForm";
 
 export default async function Page() {
-  return <KnowledgeArticleNewForm />;
+  return <NewKnowledgeArticleForm />;
 }

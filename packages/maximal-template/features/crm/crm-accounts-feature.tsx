@@ -1,5 +1,7 @@
-import { getCrmAccounts } from "@/lib/fetchers/crmFetchers";
+import { loadCrmAccountsWorkflow } from "@/lib/workflows/crmWorkflows";
 import { CrmAccountsFeatureClient } from "./crm-accounts-feature.client";
+
 export async function CrmAccountsFeature() {
-  return <CrmAccountsFeatureClient accounts={await getCrmAccounts()} />;
+  const { accounts } = await loadCrmAccountsWorkflow();
+  return <CrmAccountsFeatureClient accounts={accounts} />;
 }

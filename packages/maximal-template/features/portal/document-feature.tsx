@@ -1,26 +1,22 @@
-import { notFound } from "next/navigation";
-import {
-  getPortalAssets,
-  getPortalDocument,
-  getPortalWriteAccess,
-} from "@/lib/fetchers/portalFetchers";
 import { PortalDocumentDetailTemplate } from "@/components/templates/portal-templates";
-import { PortalDocumentControls } from "./portal-document-controls.client";
-import { WorkspaceFileUpload } from "@/features/uploads/workspace-file-upload-form.client";
-import { DocumentFeatureClient } from "./document-version-form.client";
+import { NewWorkspaceFileForm } from "@/features/uploads/newWorkspaceFileForm";
+import { loadDocumentWorkflow } from "@/lib/workflows/portalWorkflows";
+import { DocumentFeatureClient } from "./document-feature.client";
+import { NewDocumentVersionForm } from "./newDocumentVersionForm";
+
 export async function DocumentFeature({ documentId }: { documentId: string }) {
-  const document = await getPortalDocument(documentId);
-  if (!document) notFound();
-  const canWrite = await getPortalWriteAccess();
+  const { document, canWrite, assets } = await loadDocumentWorkflow({
+    documentId,
+  });
   return (
     <PortalDocumentDetailTemplate document={document}>
-      <PortalDocumentControls document={document} canWrite={canWrite} />
-      {canWrite && <WorkspaceFileUpload domain="portal" />}
+      <DocumentFeatureClient document={document} canWrite={canWrite} />
+      {canWrite && <NewWorkspaceFileForm domain="portal" />}
       {canWrite && (
-        <DocumentFeatureClient
+        <NewDocumentVersionForm
           key={document.version}
           document={document}
-          assets={await getPortalAssets()}
+          assets={assets}
         />
       )}
     </PortalDocumentDetailTemplate>

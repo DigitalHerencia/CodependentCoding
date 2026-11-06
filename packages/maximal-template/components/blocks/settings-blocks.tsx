@@ -1,11 +1,18 @@
 "use client";
-import { settingsLibraryCopy } from "@/content/settings";
 
-import { settingsBlockCopy } from "@/content/settings";
-import { NativeSelect } from "@/components/ui/native-select";
-
-import type { OrganizationSwitcherDTO } from "@/types/commonTypes";
+import { Button } from "@/components/ui/button";
+import {
+  NativeSelect,
+  NativeSelectOption,
+} from "@/components/ui/native-select";
+import { settingsBlockCopy, settingsLibraryCopy } from "@/content/settings";
+import type {
+  InvitationDTO,
+  OrganizationSwitcherDTO,
+} from "@/types/commonTypes";
+import type * as React from "react";
 import type { ChangeEvent } from "react";
+
 export function OrganizationSwitcherBlock({
   activeOrganizationId,
   organizations,
@@ -32,18 +39,15 @@ export function OrganizationSwitcherBlock({
         onChange={onOrganizationChange}
       >
         {organizations.map((organization) => (
-          <option key={organization.id} value={organization.id}>
+          <NativeSelectOption key={organization.id} value={organization.id}>
             {organization.name}
-          </option>
+          </NativeSelectOption>
         ))}
       </NativeSelect>
       {error && <p role="alert">{error}</p>}
     </div>
   );
 }
-import { Button } from "@/components/ui/button";
-
-import type { InvitationDTO } from "@/types/commonTypes";
 
 export function InvitationsBlock({
   invitations,
@@ -86,7 +90,6 @@ export function InvitationsBlock({
   );
 }
 
-import type * as React from "react";
 export function SettingsSurface({
   title,
   description,

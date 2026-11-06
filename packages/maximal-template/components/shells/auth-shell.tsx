@@ -1,13 +1,13 @@
 "use client";
 
-import type { ReactNode } from "react";
-import { usePathname } from "next/navigation";
 import { LogoLockup } from "@/components/brand/logo-lockup";
-import { AuthMobileBottomNav } from "@/components/nav/auth-mobile-bottom-nav";
-import { AuthHeader } from "@/components/nav/auth-header";
 import { AuthFooter } from "@/components/nav/auth-footer";
+import { AuthHeader } from "@/components/nav/auth-header";
+import { AuthMobileBottomNav } from "@/components/nav/auth-mobile-bottom-nav";
+import { cn } from "@/components/ui/utils";
 import { authContent } from "@/content/auth";
-import { cn } from "@/lib/utils/cn";
+import { usePathname } from "next/navigation";
+import type { ReactNode } from "react";
 
 type AuthShellProps = {
   children: ReactNode;

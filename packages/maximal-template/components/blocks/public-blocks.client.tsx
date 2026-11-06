@@ -1,28 +1,28 @@
 "use client";
-import * as React from "react";
-import Image from "next/image";
-import { Button } from "@/components/ui/button";
 
-import { cn } from "@/lib/utils/cn";
-import { safeHref } from "@/lib/utils/strings";
-import {
-  ArrowRight,
-  Sparkles,
-  Zap,
-  HelpCircle,
-  MessageCircle,
-  Quote,
-  Star,
-} from "lucide-react";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Separator } from "@/components/ui/separator";
-import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { cn, safeHref } from "@/components/ui/utils";
+import { publicUiCopy } from "@/content/public";
+import {
+  ArrowRight,
+  HelpCircle,
+  MessageCircle,
+  Quote,
+  Sparkles,
+  Star,
+  Zap,
+} from "lucide-react";
+import Image from "next/image";
+import * as React from "react";
 
 // ============================================================================
 // CTA VARIANT 1: Simple Centered
@@ -334,8 +334,10 @@ export function CTABanner({
           </Button>
         )}
         {dismissible && (
-          <button
-            aria-label="Dismiss"
+          <Button
+            variant="ghost"
+            type="button"
+            aria-label={publicUiCopy.dismiss}
             onClick={() => {
               setIsVisible(false);
               onDismiss?.();
@@ -343,7 +345,7 @@ export function CTABanner({
             className="absolute right-4 text-current opacity-70 hover:opacity-100"
           >
             ×
-          </button>
+          </Button>
         )}
       </div>
     </div>
@@ -1144,7 +1146,9 @@ export function TestimonialsGrid({
 
                 <div className="min-h-24">
                   <p className="text-lg leading-8 font-medium">
-                    &ldquo;{testimonial.quote}&rdquo;
+                    {publicUiCopy.openingQuote}
+                    {testimonial.quote}
+                    {publicUiCopy.closingQuote}
                   </p>
                 </div>
 
@@ -1185,7 +1189,9 @@ export function TestimonialsSingle({
         <Quote className="mx-auto h-16 w-16 text-primary" />
 
         <blockquote className="text-2xl leading-relaxed font-bold md:text-3xl lg:text-4xl">
-          &ldquo;{testimonial.quote}&rdquo;
+          {publicUiCopy.openingQuote}
+          {testimonial.quote}
+          {publicUiCopy.closingQuote}
         </blockquote>
 
         <div className="flex flex-col items-center gap-4">
@@ -1263,7 +1269,9 @@ export function TestimonialsMasonry({
                       </div>
                     )}
                     <p className="leading-relaxed font-medium">
-                      &ldquo;{testimonial.quote}&rdquo;
+                      {publicUiCopy.openingQuote}
+                      {testimonial.quote}
+                      {publicUiCopy.closingQuote}
                     </p>
 
                     <div className="flex items-center gap-3">
@@ -1340,7 +1348,9 @@ export function TestimonialsWithAvatars({
           <Quote className="mx-auto mb-6 h-10 w-10 text-primary" />
 
           <blockquote className="mb-6 text-xl leading-relaxed font-medium md:text-2xl">
-            &ldquo;{activeTestimonial.quote}&rdquo;
+            {publicUiCopy.openingQuote}
+            {activeTestimonial.quote}
+            {publicUiCopy.closingQuote}
           </blockquote>
 
           <div>
@@ -1354,7 +1364,9 @@ export function TestimonialsWithAvatars({
 
         <div className="flex justify-center gap-2">
           {testimonials.map((testimonial, index) => (
-            <button
+            <Button
+              variant="ghost"
+              type="button"
               key={`avatar-${testimonial.author}`}
               aria-label={`View testimonial from ${testimonial.author}`}
               aria-pressed={index === activeIndex}
@@ -1378,7 +1390,7 @@ export function TestimonialsWithAvatars({
                   {testimonial.author.charAt(0)}
                 </AvatarFallback>
               </Avatar>
-            </button>
+            </Button>
           ))}
         </div>
       </div>

@@ -1,12 +1,11 @@
-import { notFound } from "next/navigation";
-import { getContactById } from "@/lib/fetchers/crmFetchers";
 import { CrmContactDetailTemplate } from "@/components/templates/crm-templates";
+import { loadCrmContactDetailWorkflow } from "@/lib/workflows/crmWorkflows";
+
 export async function CrmContactDetailFeature({
   contactId,
 }: {
   contactId: string;
 }) {
-  const contact = await getContactById(contactId);
-  if (!contact) notFound();
+  const { contact } = await loadCrmContactDetailWorkflow({ contactId });
   return <CrmContactDetailTemplate contact={contact} />;
 }

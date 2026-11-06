@@ -1,19 +1,20 @@
 "use client";
-import { LayoutDashboard, PanelLeftClose, PanelLeftOpen } from "lucide-react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useRef, useState, type ReactNode } from "react";
+
 import { Wordmark } from "@/components/brand/wordmark";
-import { Button } from "@/components/ui/button";
+import { TenantFooter } from "@/components/nav/tenant-footer";
+import { TenantHeader } from "@/components/nav/tenant-header";
+import { TenantMobileBottomNav } from "@/components/nav/tenant-mobile-bottom-nav";
 import {
   TenantNavLinks,
   tenantDomains as domains,
 } from "@/components/nav/tenant-nav-links";
-import { TenantHeader } from "@/components/nav/tenant-header";
-import { TenantFooter } from "@/components/nav/tenant-footer";
-import { TenantMobileBottomNav } from "@/components/nav/tenant-mobile-bottom-nav";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/components/ui/utils";
 import { applicationDesign } from "@/content/application";
-import { cn } from "@/lib/utils/cn";
+import { LayoutDashboard, PanelLeftClose, PanelLeftOpen } from "lucide-react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useRef, useState, type ReactNode } from "react";
 
 export function TenantShell({
   children,

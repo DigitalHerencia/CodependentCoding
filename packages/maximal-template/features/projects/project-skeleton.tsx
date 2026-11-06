@@ -1,6 +1,6 @@
 // Why: Skeleton: matches the project overview layout.
-import { WorkspaceLoadingState } from "@/components/blocks/shared-blocks";
+import { WorkspaceLoadingTemplate } from "@/components/templates/shared-templates";
 
 export function ProjectSkeleton() {
-  return <WorkspaceLoadingState route="/projects/[projectId]" />;
+  return <WorkspaceLoadingTemplate route="/projects/[projectId]" />;
 }

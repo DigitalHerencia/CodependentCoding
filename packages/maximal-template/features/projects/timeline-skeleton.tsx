@@ -1,6 +1,6 @@
 // Why: Skeleton: matches the timeline layout.
-import { WorkspaceLoadingState } from "@/components/blocks/shared-blocks";
+import { WorkspaceLoadingTemplate } from "@/components/templates/shared-templates";
 
 export function TimelineSkeleton() {
-  return <WorkspaceLoadingState route="/projects/[projectId]/timeline" />;
+  return <WorkspaceLoadingTemplate route="/projects/[projectId]/timeline" />;
 }

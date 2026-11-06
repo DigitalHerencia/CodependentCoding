@@ -1,7 +1,13 @@
 "use client";
+
+import { Input } from "@/components/ui/input";
+import {
+  NativeSelect,
+  NativeSelectOption,
+} from "@/components/ui/native-select";
 import { supportBlockCopy } from "@/content/support";
 import Link from "next/link";
-import { Input } from "@/components/ui/input";
+
 export function InboxToolbar({
   query,
   onQueryChange,
@@ -23,17 +29,19 @@ export function InboxToolbar({
         value={query}
         onChange={(event) => onQueryChange(event.target.value)}
       />
-      <select
+      <NativeSelect
         className="control-field"
         aria-label={supportBlockCopy.ticketStatus}
         value={status}
         onChange={(event) => onStatusChange(event.target.value)}
       >
-        <option value="">{supportBlockCopy.allOpenStatuses}</option>
+        <NativeSelectOption value="">
+          {supportBlockCopy.allOpenStatuses}
+        </NativeSelectOption>
         {statuses.map((value) => (
-          <option key={value}>{value}</option>
+          <NativeSelectOption key={value}>{value}</NativeSelectOption>
         ))}
-      </select>
+      </NativeSelect>
       <Link className="type-link" href="/support/tickets/new">
         {supportBlockCopy.newTicket}
       </Link>

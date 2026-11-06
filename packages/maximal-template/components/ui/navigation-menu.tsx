@@ -1,8 +1,8 @@
-import * as React from "react";
+import { cn } from "@/components/ui/utils";
 import * as NavigationMenuPrimitive from "@radix-ui/react-navigation-menu";
 import { cva } from "class-variance-authority";
 import { ChevronDown } from "lucide-react";
-import { cn } from "@/lib/utils/cn";
+import * as React from "react";
 
 // Note: this menu renders dropdown content directly under each item (no Radix
 // "viewport"). The viewport sizes itself from a measured CSS variable, which is
@@ -109,12 +109,12 @@ NavigationMenuIndicator.displayName =
   NavigationMenuPrimitive.Indicator.displayName;
 
 export {
-  navigationMenuTriggerStyle,
   NavigationMenu,
-  NavigationMenuList,
-  NavigationMenuItem,
   NavigationMenuContent,
-  NavigationMenuTrigger,
-  NavigationMenuLink,
   NavigationMenuIndicator,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+  navigationMenuTriggerStyle,
 };

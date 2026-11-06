@@ -49,7 +49,7 @@ export const sharedLibraryCopy = {
   weReCurrentlyPerformingScheduledMaintenanceToImproveYour:
     "We're currently performing scheduled maintenance to improve your experience.",
   estimatedTime: "Estimated time: ",
-  whatWeAposReWorkingOn: "What we&apos;re working on:",
+  whatWeAposReWorkingOn: "What we're working on:",
   separator: "✓",
   checkStatusPage: "Check Status Page",
   youReOffline: "You're Offline",
@@ -58,8 +58,7 @@ export const sharedLibraryCopy = {
   thingsToTry: "Things to try:",
   checkYourWiFiConnection: "• Check your Wi-Fi connection",
   restartYourRouter: "• Restart your router",
-  tryDisablingVPNIfYouAposReUsingOne:
-    "• Try disabling VPN if you&apos;re using one",
+  tryDisablingVPNIfYouAposReUsingOne: "• Try disabling VPN if you're using one",
   label403: "403",
   youDonTHavePermissionToAccessThisPage:
     "You don't have permission to access this page. Please contact your administrator if you believe this is an error.",
@@ -74,7 +73,7 @@ export const sharedLibraryCopy = {
   enterYourEmail: "Enter your email",
   notifyMe: "Notify Me",
   thanksWeAposLlNotifyYouWhenWeLaunch:
-    "Thanks! We&apos;ll notify you when we launch.",
+    "Thanks! We'll notify you when we launch.",
   somethingWentWrong: "Something went wrong",
   anUnexpectedErrorOccurredPleaseTryAgainLater:
     "An unexpected error occurred. Please try again later.",

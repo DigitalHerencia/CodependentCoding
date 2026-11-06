@@ -1,14 +1,17 @@
-import { sharedRemainingCopy } from "@/content/shared";
-import { sharedLibraryCopy } from "@/content/shared";
-import Link from "next/link";
-import { type ReactNode } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { cn } from "@/lib/utils/cn";
-import { type IntegrationStatus } from "@/types/integrationTypes";
+import {
+  NativeSelect,
+  NativeSelectOption,
+} from "@/components/ui/native-select";
 import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/components/ui/utils";
+import { sharedLibraryCopy, sharedRemainingCopy } from "@/content/shared";
+import { type IntegrationStatus } from "@/types/integrationTypes";
+import Link from "next/link";
+import { type ReactNode } from "react";
 
 export type PageHeaderAction = {
   label: string;
@@ -150,29 +153,41 @@ export function DataTableToolbarBlock({
         value={query}
         onChange={(event) => onQueryChange(event.target.value)}
       />
-      <select
+      <NativeSelect
         aria-label={sharedLibraryCopy.filterByStatus}
         className="h-11 border-3 border-input bg-background px-3 text-sm font-bold uppercase focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
         value={status}
         onChange={(event) => onStatusChange(event.target.value)}
       >
-        <option value="all">{sharedLibraryCopy.allStatuses}</option>
-        <option value="LEAD">{sharedLibraryCopy.lead}</option>
-        <option value="ACTIVE">{sharedLibraryCopy.active}</option>
-        <option value="INACTIVE">{sharedLibraryCopy.inactive}</option>
-      </select>
-      <select
+        <NativeSelectOption value="all">
+          {sharedLibraryCopy.allStatuses}
+        </NativeSelectOption>
+        <NativeSelectOption value="LEAD">
+          {sharedLibraryCopy.lead}
+        </NativeSelectOption>
+        <NativeSelectOption value="ACTIVE">
+          {sharedLibraryCopy.active}
+        </NativeSelectOption>
+        <NativeSelectOption value="INACTIVE">
+          {sharedLibraryCopy.inactive}
+        </NativeSelectOption>
+      </NativeSelect>
+      <NativeSelect
         aria-label={sharedLibraryCopy.sortContacts}
         className="h-11 border-3 border-input bg-background px-3 text-sm font-bold uppercase focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
         value={sort}
         onChange={(event) => onSortChange(event.target.value)}
       >
-        <option value="name-asc">{sharedLibraryCopy.nameAZ}</option>
-        <option value="name-desc">{sharedLibraryCopy.nameZA}</option>
-        <option value="updated-desc">
+        <NativeSelectOption value="name-asc">
+          {sharedLibraryCopy.nameAZ}
+        </NativeSelectOption>
+        <NativeSelectOption value="name-desc">
+          {sharedLibraryCopy.nameZA}
+        </NativeSelectOption>
+        <NativeSelectOption value="updated-desc">
           {sharedLibraryCopy.recentlyUpdated}
-        </option>
-      </select>
+        </NativeSelectOption>
+      </NativeSelect>
       <p className="text-xs font-black tracking-wider text-muted-foreground uppercase">
         {resultCount}
         {sharedLibraryCopy.records}
@@ -527,7 +542,7 @@ export function DashboardLayout({
 }: DashboardLayoutProps) {
   return (
     <section className={cn("dashboard-layout w-full bg-background", className)}>
-      <div className="min-w-0 bg-background">
+      <div className="typeset typeset-app min-w-0 bg-background">
         <header className="dashboard-header grid min-h-14 gap-3 border-b border-foreground/30 px-4 py-4 md:flex md:justify-between">
           <h1 className="type-title text-foreground">{title}</h1>
           {toolbar}
@@ -556,7 +571,7 @@ export function DashboardLayout({
 
 export function DashboardStatCard({ label, value, trend }: DashboardStat) {
   return (
-    <article className="surface-card p-4">
+    <Card className="p-4">
       <p className="type-caption tracking-wider text-muted-primary uppercase">
         {label}
       </p>
@@ -566,7 +581,7 @@ export function DashboardStatCard({ label, value, trend }: DashboardStat) {
       {trend ? (
         <p className="mt-1 type-caption text-muted-primary">{trend}</p>
       ) : null}
-    </article>
+    </Card>
   );
 }
 
@@ -704,9 +719,10 @@ export function DashboardRailList({
   return (
     <div className="space-y-2">
       {items.map((item) => (
-        <article
+        <Card
+          variant="inset"
           key={`${item.label}-${item.value ?? ""}`}
-          className="surface-inset p-3"
+          className="p-3"
         >
           <p className="type-label text-foreground">{item.label}</p>
           {item.value ? (
@@ -715,7 +731,7 @@ export function DashboardRailList({
           {item.meta ? (
             <p className="mt-1 type-caption text-muted-primary">{item.meta}</p>
           ) : null}
-        </article>
+        </Card>
       ))}
     </div>
   );

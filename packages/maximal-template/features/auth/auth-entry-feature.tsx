@@ -1,11 +1,9 @@
+import { guardAuthEntryWorkflow } from "@/lib/workflows/authWorkflows";
 import type { ReactNode } from "react";
-
-import { getIdentity } from "@/lib/auth/auth";
-import { redirectAfterAuth } from "@/lib/auth/redirects";
 
 export async function AuthEntryFeature({
   children,
 }: Readonly<{ children: ReactNode }>) {
-  if (await getIdentity()) redirectAfterAuth();
+  await guardAuthEntryWorkflow();
   return children;
 }

@@ -1,5 +1,5 @@
-import { AdminNewUserForm } from "@/features/admin/admin-new-user-form";
+import { NewAdminUserForm } from "@/features/admin/newAdminUserForm";
 
 export default async function Page() {
-  return <AdminNewUserForm />;
+  return <NewAdminUserForm />;
 }

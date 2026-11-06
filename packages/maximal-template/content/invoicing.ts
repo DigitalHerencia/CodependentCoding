@@ -129,3 +129,8 @@ export const invoicingRemainingCopy = {
   unitPrice: "Unit price",
   taxRate01: "Tax rate (0–1)",
 } as const;
+
+// Copy for the domain's reusable presentation components.
+export const invoicingUiCopy = {
+  noMatchingInvoices: "No matching invoices.",
+} as const;

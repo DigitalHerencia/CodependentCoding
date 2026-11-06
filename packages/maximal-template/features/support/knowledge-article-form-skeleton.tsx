@@ -1,5 +1,5 @@
-import { FormLoadingState } from "@/components/blocks/shared-blocks";
+import { FormLoadingTemplate } from "@/components/templates/shared-templates";
 
 export function KnowledgeArticleFormSkeleton() {
-  return <FormLoadingState fields={3} width="4xl" />;
+  return <FormLoadingTemplate fields={3} width="4xl" />;
 }

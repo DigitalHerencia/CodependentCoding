@@ -1,12 +1,11 @@
 "use client";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import {
-  AdminUsersToolbar,
-  AdminPagination,
-} from "@/components/blocks/admin-blocks";
+
 import { AdminUsersTemplate } from "@/components/templates/admin-templates";
+import { getAdminUsersNavigationWorkflow } from "@/lib/workflows/adminClientWorkflows";
 import type { AdminMembershipDTO } from "@/types/adminTypes";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+
 export function AdminUsersFeatureClient({
   page,
 }: {
@@ -22,24 +21,18 @@ export function AdminUsersFeatureClient({
   return (
     <>
       <AdminUsersTemplate
+        pagination={{
+          path: "/admin/users",
+          page: page.page,
+          query: page.query,
+          hasMore: page.hasMore,
+        }}
         memberships={page.items}
-        toolbar={
-          <AdminUsersToolbar
-            query={query}
-            onQueryChange={setQuery}
-            onSearch={() =>
-              router.push(
-                "/admin/users?" + new URLSearchParams({ query }).toString(),
-              )
-            }
-          />
-        }
-      />
-      <AdminPagination
-        path="/admin/users"
-        page={page.page}
-        query={page.query}
-        hasMore={page.hasMore}
+        toolbarProps={{
+          query: query,
+          onQueryChange: setQuery,
+          onSearch: () => router.push(getAdminUsersNavigationWorkflow(query)),
+        }}
       />
     </>
   );

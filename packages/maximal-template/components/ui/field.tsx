@@ -1,6 +1,6 @@
-import * as React from "react";
-import { cn } from "@/lib/utils/cn";
 import { Label } from "@/components/ui/label";
+import { cn } from "@/components/ui/utils";
+import * as React from "react";
 
 /** A vertical stack of related fields. */
 const FieldGroup = React.forwardRef<
@@ -65,4 +65,4 @@ const FieldError = React.forwardRef<
 });
 FieldError.displayName = "FieldError";
 
-export { Field, FieldGroup, FieldLabel, FieldDescription, FieldError };
+export { Field, FieldDescription, FieldError, FieldGroup, FieldLabel };

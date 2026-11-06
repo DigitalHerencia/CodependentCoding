@@ -1,6 +1,6 @@
 // Why: Skeleton: matches the task board layout.
-import { WorkspaceLoadingState } from "@/components/blocks/shared-blocks";
+import { WorkspaceLoadingTemplate } from "@/components/templates/shared-templates";
 
 export function TasksSkeleton() {
-  return <WorkspaceLoadingState route="/projects/[projectId]/tasks" />;
+  return <WorkspaceLoadingTemplate route="/projects/[projectId]/tasks" />;
 }

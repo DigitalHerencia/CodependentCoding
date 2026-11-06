@@ -1,106 +1,56 @@
-import { adminPresentationCopy } from "@/content/admin";
-// Why: Templates: pure presentation for the admin pages, laid out from DTOs; data and slots come from features.
-import type { ReactNode } from "react";
-import type {
-  AuditEventDTO,
-  AdminRecordSummaryDTO,
-  AdminMembershipDTO,
-} from "@/types/adminTypes";
+import { AdminVerificationBlock } from "@/components/blocks/admin-blocks";
 import {
-  DashboardLayout,
-  DashboardPanel,
-  DashboardTable,
-} from "@/components/blocks/shared-blocks";
-import Link from "next/link";
+  AdminAuditContentBlock,
+  AdminAuditToolbarBlock,
+  AdminRecordDetailContentBlock,
+  AdminRecordsContentBlock,
+  AdminUserDetailContentBlock,
+  AdminUsersContentBlock,
+  AdminUsersToolbarBlock,
+} from "@/components/blocks/admin-page-blocks";
+import { DashboardLayout } from "@/components/blocks/shared-blocks";
+import { adminPresentationCopy } from "@/content/admin";
+import type { ComponentProps } from "react";
 
-export function AdminAuditTemplate({
-  events,
-  toolbar,
-}: {
-  events: AuditEventDTO[];
-  toolbar: ReactNode;
-}) {
+export function AdminAuditTemplate(
+  props: ComponentProps<typeof AdminAuditContentBlock>,
+) {
   return (
     <DashboardLayout
       title={adminPresentationCopy.auditTrail}
       nav={[]}
-      toolbar={toolbar}
+      toolbar={<AdminAuditToolbarBlock {...props} />}
     >
-      <ol className="space-y-3 border-l-4 border-primary pl-5">
-        {events.map((event) => (
-          <li key={event.id} className="surface-card p-4">
-            <p className="type-label">{event.action}</p>
-            <p className="mt-2">
-              {event.actor?.displayName ?? adminPresentationCopy.system}
-              {adminPresentationCopy.separator}
-              {event.resourceType}
-            </p>
-            <time className="text-sm text-muted-primary">
-              {event.createdAt}
-            </time>
-            <p className="mt-2 text-xs break-all">
-              {adminPresentationCopy.resource}
-              {event.resourceId ?? adminPresentationCopy.emptyValue}
-            </p>
-          </li>
-        ))}
-      </ol>
-      {!events.length && <p>{adminPresentationCopy.noMatchingAuditEvents}</p>}
+      <AdminAuditContentBlock {...props} />
     </DashboardLayout>
   );
 }
-
-export function AdminRecordDetailTemplate({
-  record,
-}: {
-  record: AdminRecordSummaryDTO;
-}) {
+export function AdminRecordDetailTemplate(
+  props: ComponentProps<typeof AdminRecordDetailContentBlock>,
+) {
+  const { record } = props;
   return (
     <DashboardLayout title={record.resource} nav={[]}>
-      <DashboardPanel title={adminPresentationCopy.tenantInventory}>
-        <p className="text-3xl">{record.count}</p>
-        <p className="mt-3">
-          {adminPresentationCopy.persistedRecordsInTheActiveWorkspace}
-        </p>
-      </DashboardPanel>
+      <AdminRecordDetailContentBlock {...props} />
     </DashboardLayout>
   );
 }
-
-export function AdminRecordsTemplate({
-  records,
-}: {
-  records: AdminRecordSummaryDTO[];
-}) {
+export function AdminRecordsTemplate(
+  props: ComponentProps<typeof AdminRecordsContentBlock>,
+) {
   return (
     <DashboardLayout
       title={adminPresentationCopy.workspaceRecordInventory}
       nav={[]}
     >
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-        {records.map((record) => (
-          <Link
-            className="space-y-3 surface-card p-5 hover:bg-primary/10"
-            key={record.resource}
-            href={`/admin/records/${encodeURIComponent(record.resource)}`}
-          >
-            <h2 className="type-label">{record.resource}</h2>
-            <p className="text-3xl">{record.count}</p>
-            <p className="text-sm">{adminPresentationCopy.inspectResource}</p>
-          </Link>
-        ))}
-      </div>
+      <AdminRecordsContentBlock {...props} />
     </DashboardLayout>
   );
 }
-
-export function AdminUserDetailTemplate({
-  membership,
-  children,
-}: {
-  membership: AdminMembershipDTO;
-  children: ReactNode;
-}) {
+export function AdminUserDetailTemplate(
+  props: ComponentProps<typeof AdminUserDetailContentBlock>,
+) {
+  const { membership } = props;
   return (
     <DashboardLayout
       title={
@@ -110,62 +60,26 @@ export function AdminUserDetailTemplate({
       }
       nav={[]}
     >
-      <div className="grid gap-4 lg:grid-cols-2">
-        <DashboardPanel title={adminPresentationCopy.identity}>
-          <p>{membership.user.email}</p>
-          <p className="mt-4">
-            {adminPresentationCopy.joined}
-            {membership.createdAt.slice(0, 10)}
-          </p>
-          <p>
-            {adminPresentationCopy.access}
-            {membership.status}
-          </p>
-        </DashboardPanel>
-        <DashboardPanel title={adminPresentationCopy.accessManagement}>
-          {children}
-        </DashboardPanel>
-      </div>
+      <AdminUserDetailContentBlock {...props} />
     </DashboardLayout>
   );
 }
-
-export function AdminUsersTemplate({
-  memberships,
-  toolbar,
-}: {
-  memberships: AdminMembershipDTO[];
-  toolbar: ReactNode;
-}) {
+export function AdminUsersTemplate(
+  props: ComponentProps<typeof AdminUsersContentBlock>,
+) {
   return (
     <DashboardLayout
       title={adminPresentationCopy.memberAdministration}
       nav={[]}
-      toolbar={toolbar}
+      toolbar={<AdminUsersToolbarBlock {...props} />}
     >
-      <DashboardTable
-        columns={[
-          { key: "person", label: adminPresentationCopy.member },
-          { key: "email", label: adminPresentationCopy.email },
-          { key: "role", label: adminPresentationCopy.applicationRole },
-          { key: "status", label: adminPresentationCopy.accessStatus },
-          { key: "joined", label: adminPresentationCopy.joined2 },
-        ]}
-        rows={memberships.map((membership) => ({
-          id: membership.id,
-          href: `/admin/users/${membership.user.id}`,
-          cells: {
-            person:
-              membership.user.displayName ??
-              membership.user.email ??
-              adminPresentationCopy.unnamedUser,
-            email: membership.user.email,
-            role: membership.role,
-            status: membership.status,
-            joined: membership.createdAt.slice(0, 10),
-          },
-        }))}
-      />
+      <AdminUsersContentBlock {...props} />
     </DashboardLayout>
   );
+}
+
+export function AdminVerificationTemplate(
+  props: ComponentProps<typeof AdminVerificationBlock>,
+) {
+  return <AdminVerificationBlock {...props} />;
 }

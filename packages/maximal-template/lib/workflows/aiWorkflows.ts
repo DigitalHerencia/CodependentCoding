@@ -1,13 +1,12 @@
-import "server-only";
-
 import {
   assertAiReadAccess,
-  getMyAiUsage,
   getMyAiGenerations,
+  getMyAiUsage,
 } from "@/lib/fetchers/aiFetchers";
 import { isHuggingFaceConfigured } from "@/lib/integrations/hugging-face/client";
 import { getConfiguredHuggingFaceModel } from "@/lib/integrations/hugging-face/inference";
-import type { AiUsageItem } from "@/types/aiTypes";
+import { type AiUsageItem } from "@/types/aiTypes";
+import "server-only";
 
 export async function getAiWorkspaceWorkflow() {
   const [configuration, generations, usage] = await Promise.all([
@@ -47,4 +46,19 @@ export function calculateUsage(items: AiUsageItem[]) {
     }),
     { inputTokens: 0, outputTokens: 0, cost: 0, generationCount: 0 },
   );
+}
+
+export async function loadAiGenerationWorkflow() {
+  const generations = await getMyAiGenerations();
+  return { generations };
+}
+
+export async function loadAiPlaygroundWorkflow() {
+  const configuration = await getAiPlaygroundConfiguration();
+  return { configuration };
+}
+
+export async function loadAiUsageWorkflow() {
+  const usage = await getMyAiUsage();
+  return { usage };
 }

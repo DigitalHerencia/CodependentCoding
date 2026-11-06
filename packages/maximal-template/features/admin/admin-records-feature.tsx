@@ -1,5 +1,7 @@
-import { getAdminRecordSummary } from "@/lib/fetchers/adminFetchers";
 import { AdminRecordsTemplate } from "@/components/templates/admin-templates";
+import { loadAdminRecordsWorkflow } from "@/lib/workflows/adminWorkflows";
+
 export async function AdminRecordsFeature() {
-  return <AdminRecordsTemplate records={await getAdminRecordSummary()} />;
+  const { records } = await loadAdminRecordsWorkflow();
+  return <AdminRecordsTemplate records={records} />;
 }

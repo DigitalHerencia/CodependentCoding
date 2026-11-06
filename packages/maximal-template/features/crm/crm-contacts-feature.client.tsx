@@ -1,11 +1,13 @@
 "use client";
-import { CrmContactsToolbar } from "@/components/blocks/crm-blocks";
-import { useState } from "react";
+
 import {
   CrmContactsTemplate,
   CrmLeadsTemplate,
 } from "@/components/templates/crm-templates";
+import { selectCrmContactsWorkflow } from "@/lib/workflows/crmClientWorkflows";
 import type { CrmContactDTO } from "@/types/crmTypes";
+import { useState } from "react";
+
 export function CrmContactsFeatureClient({
   contacts,
   lead = false,
@@ -18,18 +20,8 @@ export function CrmContactsFeatureClient({
   return (
     <Template
       lead={lead}
-      contacts={contacts.filter((contact) =>
-        `${contact.firstName} ${contact.lastName} ${contact.email ?? ""} ${contact.account?.name ?? ""}`
-          .toLowerCase()
-          .includes(query.toLowerCase()),
-      )}
-      toolbar={
-        <CrmContactsToolbar
-          query={query}
-          onQueryChange={setQuery}
-          lead={lead}
-        />
-      }
+      contacts={selectCrmContactsWorkflow(contacts, query)}
+      toolbarProps={{ query: query, onQueryChange: setQuery, lead: lead }}
     />
   );
 }

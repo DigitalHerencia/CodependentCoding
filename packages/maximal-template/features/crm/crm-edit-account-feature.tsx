@@ -1,12 +1,11 @@
-import { notFound } from "next/navigation";
-import { getCrmAccount } from "@/lib/fetchers/crmFetchers";
-import { CrmNewAccountForm } from "./crm-new-account-form";
+import { loadCrmEditAccountWorkflow } from "@/lib/workflows/crmWorkflows";
+import { NewCrmAccountForm } from "./newCrmAccountForm";
+
 export async function CrmEditAccountFeature({
   accountId,
 }: {
   accountId: string;
 }) {
-  const account = await getCrmAccount(accountId);
-  if (!account) notFound();
-  return <CrmNewAccountForm account={account} />;
+  const { account } = await loadCrmEditAccountWorkflow({ accountId });
+  return <NewCrmAccountForm account={account} />;
 }

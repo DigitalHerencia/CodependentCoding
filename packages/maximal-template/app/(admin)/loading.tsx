@@ -1,5 +1,5 @@
-import { PageLoadingState } from "@/components/blocks/shared-blocks";
+import { PageLoadingTemplate } from "@/components/templates/shared-templates";
 
 export default function Loading() {
-  return <PageLoadingState label="Loading admin content" />;
+  return <PageLoadingTemplate label="Loading admin content" />;
 }

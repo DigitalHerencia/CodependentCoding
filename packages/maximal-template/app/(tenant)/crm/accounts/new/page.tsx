@@ -1,5 +1,5 @@
-import { CrmNewAccountForm } from "@/features/crm/crm-new-account-form";
+import { NewCrmAccountForm } from "@/features/crm/newCrmAccountForm";
 
 export default async function Page() {
-  return <CrmNewAccountForm />;
+  return <NewCrmAccountForm />;
 }

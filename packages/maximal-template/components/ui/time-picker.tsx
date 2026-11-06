@@ -1,8 +1,5 @@
 "use client";
 
-import * as React from "react";
-import { cn } from "@/lib/utils/cn";
-import { Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Popover,
@@ -10,6 +7,9 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { cn } from "@/components/ui/utils";
+import { Clock } from "lucide-react";
+import * as React from "react";
 
 export interface TimePickerProps {
   value?: Date;

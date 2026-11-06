@@ -1,9 +1,12 @@
 "use client";
-import { ProjectsToolbar } from "@/components/blocks/projects-blocks";
-// Why: Client island: filters the already-authorized project list in the browser; never fetches.
-import { useState } from "react";
+
 import { ProjectsTemplate } from "@/components/templates/projects-templates";
+import { selectProjectsWorkflow } from "@/lib/workflows/projectsClientWorkflows";
 import type { ProjectSummaryDTO } from "@/types/projectsTypes";
+import { useState } from "react";
+
+// Why: Client island: filters the already-authorized project list in the browser; never fetches.
+
 export function ProjectsFeatureClient({
   projects,
 }: {
@@ -13,22 +16,14 @@ export function ProjectsFeatureClient({
   const [status, setStatus] = useState("");
   return (
     <ProjectsTemplate
-      projects={projects.filter(
-        (project) =>
-          (!status || project.status === status) &&
-          `${project.name} ${project.description ?? ""}`
-            .toLowerCase()
-            .includes(query.toLowerCase()),
-      )}
-      toolbar={
-        <ProjectsToolbar
-          query={query}
-          onQueryChange={setQuery}
-          status={status}
-          onStatusChange={setStatus}
-          statuses={[...new Set(projects.map((project) => project.status))]}
-        />
-      }
+      projects={selectProjectsWorkflow(projects, query, status)}
+      toolbarProps={{
+        query: query,
+        onQueryChange: setQuery,
+        status: status,
+        onStatusChange: setStatus,
+        statuses: [...new Set(projects.map((project) => project.status))],
+      }}
     />
   );
 }

@@ -1,5 +1,5 @@
-import { WorkspaceLoadingState } from "@/components/blocks/shared-blocks";
+import { WorkspaceLoadingTemplate } from "@/components/templates/shared-templates";
 
 export function CrmAnalyticsSkeleton() {
-  return <WorkspaceLoadingState route="/crm/analytics" />;
+  return <WorkspaceLoadingTemplate route="/crm/analytics" />;
 }

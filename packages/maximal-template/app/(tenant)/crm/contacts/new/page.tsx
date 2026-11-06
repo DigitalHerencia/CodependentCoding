@@ -1,5 +1,5 @@
-import { CrmNewContactForm } from "@/features/crm/crm-new-contact-form";
+import { NewCrmContactForm } from "@/features/crm/newCrmContactForm";
 
 export default async function Page() {
-  return <CrmNewContactForm />;
+  return <NewCrmContactForm />;
 }

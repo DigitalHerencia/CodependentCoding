@@ -1,3 +1,4 @@
+import type { tenancies } from "@/schemas/accessSchemas";
 import type { appRoles } from "@/lib/authz/roles";
 import type { ModulePermission } from "@/types/moduleTypes";
 
@@ -47,3 +48,5 @@ export type ResourceAccessDescriptor = {
   requesterUserId?: string | null;
   clientVisible?: boolean;
 };
+
+export type Tenancy = (typeof tenancies)[number];

@@ -1,6 +1,9 @@
-// Why: Server feature: loads the portfolio once and hands it to the filtering island.
+import { loadProjectsWorkflow } from "@/lib/workflows/projectsWorkflows";
 import { ProjectsFeatureClient } from "./projects-feature.client";
-import { getProjects } from "@/lib/fetchers/projectsFetchers";
+
+// Why: Server feature: loads the portfolio once and hands it to the filtering island.
+
 export async function ProjectsFeature() {
-  return <ProjectsFeatureClient projects={await getProjects(100)} />;
+  const { projects } = await loadProjectsWorkflow();
+  return <ProjectsFeatureClient projects={projects} />;
 }

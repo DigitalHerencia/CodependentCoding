@@ -182,7 +182,7 @@ architecture:
       { path: "features/<d>/<name>.client.tsx", role: browser behavior }
     feature-form:
       {
-        path: "features/<d>/<d><Verb><Thing>Form.tsx",
+        path: "features/<d>/{new,edit}<Domain>Form.tsx",
         role: React Hook Form + Zod + action,
       }
     feature-skeleton:
@@ -204,7 +204,7 @@ architecture:
     action: { path: "lib/actions/<d>Actions.ts", role: CRUD mutation boundary }
     workflow:
       {
-        path: "lib/workflows/<d>Workflows.ts | lib/workflows/<d>/<verbNoun>.ts",
+        path: "lib/workflows/<d>{,Client}Workflows.ts",
         role: named application logic,
       }
     transaction:

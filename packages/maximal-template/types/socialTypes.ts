@@ -34,3 +34,5 @@ export type MediaAssetDTO = {
   byteSize: string;
   createdAt: string;
 };
+
+export type MediaAssetView = MediaAssetDTO & { canPreview: boolean };

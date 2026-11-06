@@ -1,11 +1,12 @@
-import { getCurrentOrganization } from "@/lib/fetchers/organizationFetchers";
-import { installedModules } from "@/lib/modules/registry";
 import { SharedDashboardTemplate } from "@/components/templates/shared-templates";
+import { loadDashboardWorkflow } from "@/lib/workflows/dashboardWorkflows";
+
 export async function DashboardFeature() {
+  const { organization, workspaces } = await loadDashboardWorkflow();
   return (
     <SharedDashboardTemplate
-      organization={await getCurrentOrganization()}
-      workspaces={installedModules.flatMap(({ dashboard }) => dashboard ?? [])}
+      organization={organization}
+      workspaces={workspaces}
     />
   );
 }

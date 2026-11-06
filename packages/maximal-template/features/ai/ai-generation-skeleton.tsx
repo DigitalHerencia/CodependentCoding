@@ -1,5 +1,5 @@
-import { WorkspaceLoadingState } from "@/components/blocks/shared-blocks";
+import { WorkspaceLoadingTemplate } from "@/components/templates/shared-templates";
 
 export function AiGenerationSkeleton() {
-  return <WorkspaceLoadingState route="/ai" />;
+  return <WorkspaceLoadingTemplate route="/ai" />;
 }

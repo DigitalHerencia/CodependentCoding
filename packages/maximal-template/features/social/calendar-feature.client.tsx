@@ -1,21 +1,22 @@
 "use client";
-import { useState } from "react";
+
 import { SocialCalendarTemplate } from "@/components/templates/social-templates";
-import { SocialCalendarToolbar } from "@/components/blocks/social-blocks";
-import { SchedulePost } from "./social-post-form";
+import { selectCalendarWorkflow } from "@/lib/workflows/socialClientWorkflows";
 import type { SocialPostDTO } from "@/types/socialTypes";
+import { useState } from "react";
+import { EditSocialPostScheduleForm } from "./editSocialPostScheduleForm";
+
 export function CalendarFeatureClient({ posts }: { posts: SocialPostDTO[] }) {
   const [query, setQuery] = useState("");
   return (
     <SocialCalendarTemplate
-      posts={posts.filter((post) =>
-        ((post.title ?? "") + " " + post.content)
-          .toLowerCase()
-          .includes(query.toLowerCase()),
-      )}
-      toolbar={<SocialCalendarToolbar query={query} onQueryChange={setQuery} />}
+      {...selectCalendarWorkflow(posts, query)}
+      toolbarProps={{ query: query, onQueryChange: setQuery }}
       renderControls={(post) => (
-        <SchedulePost key={post.id + "-" + post.version} post={post} />
+        <EditSocialPostScheduleForm
+          key={post.id + "-" + post.version}
+          post={post}
+        />
       )}
     />
   );

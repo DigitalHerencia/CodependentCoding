@@ -30,3 +30,5 @@ export const approveSocialPostSchema = z.object({
   postId: z.string().uuid(),
   expectedVersion: z.number().int().positive(),
 });
+
+export const socialAssetIdSchema = z.uuid();

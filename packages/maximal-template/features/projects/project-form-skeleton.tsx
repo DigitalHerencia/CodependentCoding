@@ -1,6 +1,6 @@
 // Why: Skeleton: placeholder for the project form while its data streams.
-import { FormLoadingState } from "@/components/blocks/shared-blocks";
+import { FormLoadingTemplate } from "@/components/templates/shared-templates";
 
 export function ProjectFormSkeleton() {
-  return <FormLoadingState fields={4} />;
+  return <FormLoadingTemplate fields={4} />;
 }

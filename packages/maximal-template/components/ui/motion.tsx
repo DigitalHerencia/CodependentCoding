@@ -1,5 +1,20 @@
 "use client";
 
+import {
+  observeReveal,
+  prefersReducedMotion,
+  staggerChildren,
+  startViewTransition,
+  triggerAnimation,
+} from "@/components/ui/motion-core";
+import { cn } from "@/components/ui/utils";
+import type {
+  PageTransition,
+  RevealOptions,
+  StaggerOptions,
+} from "@/types/uiTypes";
+import * as React from "react";
+
 /**
  * BoldKit Motion — React adapter (L3).
  *
@@ -10,20 +25,6 @@
  * Requires `motion.css` (L2 recipes) to be loaded. If you're using
  * BoldKit's globals.css, the recipes are already included.
  */
-import * as React from "react";
-import { cn } from "@/lib/utils/cn";
-import {
-  observeReveal,
-  staggerChildren,
-  triggerAnimation,
-  startViewTransition,
-  prefersReducedMotion,
-} from "@/lib/utils/motionCore";
-import type {
-  PageTransition,
-  RevealOptions,
-  StaggerOptions,
-} from "@/types/uiTypes";
 
 // ──────────────────────────────────────────────────────────────────
 // <Reveal> — scroll-triggered entrance

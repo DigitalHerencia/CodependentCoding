@@ -1,5 +1,7 @@
-import { getSocialAccounts } from "@/lib/fetchers/socialFetchers";
-import { ComposerFeatureClient } from "./social-composer-form.client";
+import { loadComposerWorkflow } from "@/lib/workflows/socialWorkflows";
+import { NewSocialPostForm } from "./newSocialPostForm";
+
 export async function ComposerFeature() {
-  return <ComposerFeatureClient accounts={await getSocialAccounts()} />;
+  const { accounts } = await loadComposerWorkflow();
+  return <NewSocialPostForm accounts={accounts} />;
 }

@@ -1,5 +1,7 @@
+import { loadCrmContactsWorkflow } from "@/lib/workflows/crmWorkflows";
 import { CrmContactsFeatureClient } from "./crm-contacts-feature.client";
-import { getContacts } from "@/lib/fetchers/crmFetchers";
+
 export async function CrmContactsFeature() {
-  return <CrmContactsFeatureClient contacts={await getContacts()} />;
+  const { contacts } = await loadCrmContactsWorkflow();
+  return <CrmContactsFeatureClient contacts={contacts} />;
 }

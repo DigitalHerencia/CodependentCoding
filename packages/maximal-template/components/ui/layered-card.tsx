@@ -1,6 +1,6 @@
-import * as React from "react";
+import { cn } from "@/components/ui/utils";
 import { cva, type VariantProps } from "class-variance-authority";
-import { cn } from "@/lib/utils/cn";
+import * as React from "react";
 
 const layeredCardVariants = cva("relative", {
   variants: {
@@ -201,10 +201,10 @@ LayeredCardFooter.displayName = "LayeredCardFooter";
 
 export {
   LayeredCard,
+  LayeredCardContent,
+  LayeredCardDescription,
+  LayeredCardFooter,
   LayeredCardHeader,
   LayeredCardTitle,
-  LayeredCardDescription,
-  LayeredCardContent,
-  LayeredCardFooter,
   layeredCardVariants,
 };

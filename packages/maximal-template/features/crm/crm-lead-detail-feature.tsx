@@ -1,8 +1,7 @@
-import { notFound } from "next/navigation";
-import { getContactById } from "@/lib/fetchers/crmFetchers";
 import { CrmLeadDetailTemplate } from "@/components/templates/crm-templates";
+import { loadCrmLeadDetailWorkflow } from "@/lib/workflows/crmWorkflows";
+
 export async function CrmLeadDetailFeature({ leadId }: { leadId: string }) {
-  const contact = await getContactById(leadId);
-  if (!contact) notFound();
+  const { contact } = await loadCrmLeadDetailWorkflow({ leadId });
   return <CrmLeadDetailTemplate contact={contact} />;
 }

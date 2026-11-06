@@ -1,12 +1,11 @@
-import { notFound } from "next/navigation";
-import { getContactById } from "@/lib/fetchers/crmFetchers";
-import { CrmNewContactForm } from "./crm-new-contact-form";
+import { loadCrmEditContactWorkflow } from "@/lib/workflows/crmWorkflows";
+import { NewCrmContactForm } from "./newCrmContactForm";
+
 export async function CrmEditContactFeature({
   contactId,
 }: {
   contactId: string;
 }) {
-  const contact = await getContactById(contactId);
-  if (!contact) notFound();
-  return <CrmNewContactForm contact={contact} />;
+  const { contact } = await loadCrmEditContactWorkflow({ contactId });
+  return <NewCrmContactForm contact={contact} />;
 }

@@ -1,12 +1,11 @@
-import { notFound } from "next/navigation";
-import { getAudience } from "@/lib/fetchers/marketingFetchers";
-import { AudienceNewForm } from "./audience-new-form";
+import { loadAudienceEditWorkflow } from "@/lib/workflows/marketingWorkflows";
+import { NewAudienceForm } from "./newAudienceForm";
+
 export async function AudienceEditFeature({
   audienceId,
 }: {
   audienceId: string;
 }) {
-  const audience = await getAudience(audienceId);
-  if (!audience) notFound();
-  return <AudienceNewForm audience={audience} />;
+  const { audience } = await loadAudienceEditWorkflow({ audienceId });
+  return <NewAudienceForm audience={audience} />;
 }

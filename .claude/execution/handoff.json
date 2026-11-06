@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/handoff/v1",
-  "updated": "2026-11-05T20:19:23.330509+00:00",
+  "updated": "2026-11-06T00:33:03.257397+00:00",
   "format": "One current package; history is in progress.json, decisions.json and git.",
   "status": "complete-local-main",
   "milestone": "M-S2",
@@ -13,9 +13,9 @@
     "CC-063"
   ],
   "branch": "main",
-  "active_package": "factory-package-separation",
-  "source_commit": "7a480510d7acf0075fb2f99132f5100c4b2549ce",
-  "completion": "CC-079 delivered by owner-directed local merge to main with all changes included. Delivery branch deleted. No PR or remote push; no further tests, builds or database operations. See progress.json for executed evidence and preserved baseline findings.",
+  "active_package": null,
+  "source_commit": "cdc27d273ecebda7d4744f23a5f674cff184fca7",
+  "completion": "Owner-directed mirrored template architecture completed locally on main. Allowed static checks passed; no tests, builds, PR or push. See progress.json.",
   "in_flight": [
     "CC-050 token consolidation implemented; focused static checks passed. Affected-site CI and owner browser contrast/reduced-motion verification pending. CC-049 merged in #351; main synced and branch deleted.",
     "Homepage PR #349 has passing CI and ready preview; owner desktop/mobile verification remains pending.",
@@ -45,8 +45,11 @@
   ],
   "latest_followup": {
     "status": "complete-local-main",
-    "package": "crm-pipeline-consolidation",
-    "owner_instruction": "Consolidate needed pipeline logic, remove workflows/crm; commit on main without push. Only format/lint fix/typegen/check.",
-    "evidence": "See crm-pipeline-consolidation in progress.json."
+    "package": "mirrored-template-architecture",
+    "owner_instruction": "Implement the approved mirrored call graphs; main only, commit without PR/push; format/lint fix/typegen/check only.",
+    "evidence": "See mirrored-template-architecture in progress.json and DEC-122.",
+    "NOT_RUN": [
+      "Tests, builds, browser/runtime verification, database jobs, dependency installation, generator execution, enforcement workflows and push."
+    ]
   }
 }

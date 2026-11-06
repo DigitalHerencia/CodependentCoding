@@ -1,5 +1,5 @@
-import { WorkspaceLoadingState } from "@/components/blocks/shared-blocks";
+import { WorkspaceLoadingTemplate } from "@/components/templates/shared-templates";
 
 export function ExpenseSkeleton() {
-  return <WorkspaceLoadingState route="/expenses/[expenseId]" />;
+  return <WorkspaceLoadingTemplate route="/expenses/[expenseId]" />;
 }

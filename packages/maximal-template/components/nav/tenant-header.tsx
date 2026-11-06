@@ -1,9 +1,11 @@
 "use client";
-import { Menu, X } from "lucide-react";
-import type { Ref } from "react";
+
 import { Wordmark } from "@/components/brand/wordmark";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils/cn";
+import { cn } from "@/components/ui/utils";
+import { Menu, X } from "lucide-react";
+import type { Ref } from "react";
+
 export function TenantHeader({
   sidebar,
   mobileOpen,

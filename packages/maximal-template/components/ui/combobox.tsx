@@ -1,11 +1,3 @@
-import * as React from "react";
-import { ChevronsUpDown, X } from "lucide-react";
-import { cn } from "@/lib/utils/cn";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import {
   Command,
   CommandEmpty,
@@ -15,6 +7,14 @@ import {
   CommandList,
   CommandSeparator,
 } from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { cn } from "@/components/ui/utils";
+import { ChevronsUpDown, X } from "lucide-react";
+import * as React from "react";
 
 const Combobox = Popover;
 
@@ -129,13 +129,13 @@ ComboboxContent.displayName = "ComboboxContent";
 
 export {
   Combobox,
-  ComboboxTrigger,
-  ComboboxMultiTrigger,
   ComboboxContent,
-  CommandInput as ComboboxInput,
-  CommandList as ComboboxList,
   CommandEmpty as ComboboxEmpty,
   CommandGroup as ComboboxGroup,
+  CommandInput as ComboboxInput,
   CommandItem as ComboboxItem,
+  CommandList as ComboboxList,
+  ComboboxMultiTrigger,
   CommandSeparator as ComboboxSeparator,
+  ComboboxTrigger,
 };

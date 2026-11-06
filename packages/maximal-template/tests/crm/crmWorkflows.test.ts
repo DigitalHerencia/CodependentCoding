@@ -1,11 +1,12 @@
-import assert from "node:assert/strict";
-import { test } from "vitest";
-import { createElement } from "react";
-import { renderToStaticMarkup } from "react-dom/server";
+import { CrmPipelineTemplate } from "@/components/templates/crm-templates";
 import type { Prisma } from "@/generated/prisma/client";
 import { updateDealStageTx } from "@/lib/db/transactions/crmUpdateDealStageTx";
+import { selectCrmPipelineWorkflow } from "@/lib/workflows/crmClientWorkflows";
 import { createContactSchema, createCrmDealSchema } from "@/schemas/crmSchemas";
-import { CrmPipelineTemplate } from "@/components/templates/crm-templates";
+import assert from "node:assert/strict";
+import { createElement } from "react";
+import { renderToStaticMarkup } from "react-dom/server";
+import { test } from "vitest";
 
 const id = "00000000-0000-4000-8000-000000000001";
 
@@ -99,20 +100,23 @@ test("pipeline stage changes retain tenant and version predicates", async () => 
 test("CRM pipeline renders opportunity stages and value without a generic table or fake trend", () => {
   const html = renderToStaticMarkup(
     createElement(CrmPipelineTemplate, {
-      deals: [
-        {
-          id,
-          name: "Annual renewal",
-          stage: "PROPOSAL",
-          value: "1250.00",
-          currency: "EUR",
-          probability: 70,
-          expectedCloseDate: "2026-10-01",
-          version: 1,
-          account: { id, name: "Acme" },
-          owner: null,
-        },
-      ],
+      ...selectCrmPipelineWorkflow(
+        [
+          {
+            id,
+            name: "Annual renewal",
+            stage: "PROPOSAL",
+            value: "1250.00",
+            currency: "EUR",
+            probability: 70,
+            expectedCloseDate: "2026-10-01",
+            version: 1,
+            account: { id, name: "Acme" },
+            owner: null,
+          },
+        ],
+        "",
+      ),
       toolbar: null,
       renderControls: () => null,
     }),

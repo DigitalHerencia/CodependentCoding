@@ -1,20 +1,20 @@
 "use client";
+
+import { InvoiceControlsTemplate } from "@/components/templates/invoicing-templates";
 import { invoicingPresentationCopy } from "@/content/invoicing";
-import { InvoiceControlsBlock } from "@/components/blocks/invoicing-blocks";
-import { useState, useTransition } from "react";
-import { useRouter } from "next/navigation";
-import {
-  approveInvoice,
-  issueApprovedInvoice,
-} from "@/lib/actions/invoicingActions";
+import { getInvoiceCommandsWorkflow } from "@/lib/workflows/invoicingClientWorkflows";
 import type { InvoiceDTO } from "@/types/invoicingTypes";
+import { useRouter } from "next/navigation";
+import { useState, useTransition } from "react";
+
 export function InvoiceFeatureClient({ invoice }: { invoice: InvoiceDTO }) {
+  const { canUpdate, updateInvoice } = getInvoiceCommandsWorkflow(invoice);
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [message, setMessage] = useState("");
-  if (invoice.status !== "DRAFT") return null;
+  if (!canUpdate) return null;
   return (
-    <InvoiceControlsBlock
+    <InvoiceControlsTemplate
       invoice={invoice}
       pending={pending}
       message={message}
@@ -25,18 +25,10 @@ export function InvoiceFeatureClient({ invoice }: { invoice: InvoiceDTO }) {
               invoiceId: invoice.id,
               expectedVersion: invoice.version,
             };
-            if (invoice.approvedAt) {
-              const result = await issueApprovedInvoice(command);
-              if (!result.ok) {
-                setMessage(result.error.message);
-                return;
-              }
-            } else {
-              const result = await approveInvoice(command);
-              if (!result.ok) {
-                setMessage(result.error.message);
-                return;
-              }
+            const result = await updateInvoice(command);
+            if (!result.ok) {
+              setMessage(result.error.message);
+              return;
             }
             setMessage(invoicingPresentationCopy.invoiceUpdated);
             router.refresh();

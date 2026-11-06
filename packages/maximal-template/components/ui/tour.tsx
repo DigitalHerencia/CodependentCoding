@@ -1,11 +1,10 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
+import { cn } from "@/components/ui/utils";
+import { X } from "lucide-react";
 import * as React from "react";
 import { createPortal } from "react-dom";
-import { X } from "lucide-react";
-import { isDevelopment } from "@/lib/constants/mode";
-import { cn } from "@/lib/utils/cn";
-import { Button } from "@/components/ui/button";
 
 export interface TourStep {
   target: string | HTMLElement | React.RefObject<HTMLElement>;
@@ -345,11 +344,7 @@ const Tour = React.forwardRef<HTMLDivElement, TourProps>(
           });
         } else {
           // Target not found — fall back to center placement
-          if (isDevelopment) {
-            console.warn(
-              `[Tour] Step target "${currentStepData.target}" not found in DOM`,
-            );
-          }
+          console.warn("[Tour] Step target was not found in the document.");
           setTargetRect(null);
         }
       };

@@ -1,8 +1,7 @@
 "use client";
 
+import { cn } from "@/components/ui/utils";
 import * as React from "react";
-import { isDevelopment } from "@/lib/constants/mode";
-import { cn } from "@/lib/utils/cn";
 import { ChartEmpty } from "./empty";
 
 export interface SankeyNode {
@@ -100,14 +99,11 @@ function computeLayout(
     }
   }
 
-  // Warn about nodes dropped due to cycles (nodes not reachable from any source)
-  if (typeof process !== "undefined" && isDevelopment) {
-    const droppedNodes = nodes.filter((n) => !depth.has(n.id));
-    if (droppedNodes.length > 0) {
-      console.warn(
-        `[SankeyChart] ${droppedNodes.length} node(s) were dropped because they are part of a cycle or unreachable from source nodes: ${droppedNodes.map((n) => n.id).join(", ")}`,
-      );
-    }
+  const droppedNodes = nodes.filter((node) => !depth.has(node.id));
+  if (droppedNodes.length > 0) {
+    console.warn(
+      "[SankeyChart] Nodes were dropped because they are cyclic or unreachable.",
+    );
   }
 
   // Guard against an empty depth map (e.g. a fully-cyclic graph with no source

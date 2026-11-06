@@ -1,5 +1,7 @@
-import { getPortalDocuments } from "@/lib/fetchers/portalFetchers";
 import { PortalHomeTemplate } from "@/components/templates/portal-templates";
+import { loadPortalWorkflow } from "@/lib/workflows/portalWorkflows";
+
 export async function PortalFeature() {
-  return <PortalHomeTemplate documents={await getPortalDocuments()} />;
+  const { documents } = await loadPortalWorkflow();
+  return <PortalHomeTemplate documents={documents} />;
 }

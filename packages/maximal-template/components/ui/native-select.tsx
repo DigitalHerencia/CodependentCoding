@@ -1,6 +1,6 @@
-import * as React from "react";
+import { cn } from "@/components/ui/utils";
 import { ChevronDown } from "lucide-react";
-import { cn } from "@/lib/utils/cn";
+import * as React from "react";
 
 /**
  * A styled wrapper around the native <select> element — lightweight and
@@ -26,4 +26,8 @@ const NativeSelect = React.forwardRef<
 ));
 NativeSelect.displayName = "NativeSelect";
 
-export { NativeSelect };
+function NativeSelectOption(props: React.ComponentProps<"option">) {
+  return <option {...props} />;
+}
+
+export { NativeSelect, NativeSelectOption };

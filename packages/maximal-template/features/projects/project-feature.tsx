@@ -1,47 +1,9 @@
-import { projectsPresentationCopy } from "@/content/projects";
-// Why: Server feature: loads the project workspace and picks the upcoming open work.
-import { notFound } from "next/navigation";
-import Link from "next/link";
 import { ProjectDetailTemplate } from "@/components/templates/projects-templates";
-import { DashboardPanel } from "@/components/blocks/shared-blocks";
-import { getProjectWorkspaceWorkflow } from "@/lib/workflows/projectsWorkflows";
+import { loadProjectWorkflow } from "@/lib/workflows/projectsWorkflows";
+
+// Why: Server feature: loads the project workspace and picks the upcoming open work.
+
 export async function ProjectFeature({ projectId }: { projectId: string }) {
-  const workspace = await getProjectWorkspaceWorkflow(projectId);
-  if (!workspace) notFound();
-  const { project, tasks } = workspace;
-  const open = tasks
-    .filter((task) => !["DONE", "CANCELED"].includes(task.status))
-    .sort((left, right) =>
-      (left.dueAt ?? "9999").localeCompare(right.dueAt ?? "9999"),
-    );
-  return (
-    <ProjectDetailTemplate project={project} tasks={tasks}>
-      <DashboardPanel title={projectsPresentationCopy.upcomingWork}>
-        <ol className="space-y-3">
-          {open.slice(0, 8).map((task) => (
-            <li
-              key={task.id}
-              className="flex flex-wrap justify-between gap-3 border-b border-border py-3"
-            >
-              <Link
-                className="type-link"
-                href={`/projects/${projectId}/tasks/${task.id}`}
-              >
-                {task.title}
-              </Link>
-              <span>
-                {task.dueAt?.slice(0, 10) ??
-                  projectsPresentationCopy.unscheduled}
-                {projectsPresentationCopy.separator}
-                {task.status}
-              </span>
-            </li>
-          ))}
-        </ol>
-        {!open.length && (
-          <p>{projectsPresentationCopy.noOpenTasksInTheLoadedProjectWork}</p>
-        )}
-      </DashboardPanel>
-    </ProjectDetailTemplate>
-  );
+  const view = await loadProjectWorkflow({ projectId });
+  return <ProjectDetailTemplate {...view} />;
 }

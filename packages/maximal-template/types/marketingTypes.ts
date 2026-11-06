@@ -1,4 +1,5 @@
-import type { CampaignStatus, AudienceStatus } from "@/generated/prisma/enums";
+import type { AudienceStatus, CampaignStatus } from "@/generated/prisma/enums";
+
 export type CampaignDTO = {
   id: string;
   name: string;
@@ -20,4 +21,9 @@ export type AudienceDTO = {
   status: AudienceStatus;
   createdAt: string;
   updatedAt: string;
+};
+
+export type AudienceView = AudienceDTO & {
+  relationshipLabel: string;
+  ruleDescription: string;
 };

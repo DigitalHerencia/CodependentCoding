@@ -1,25 +1,29 @@
 "use client";
-import { invoicingRemainingCopy } from "@/content/invoicing";
 
-import { invoicingLibraryCopy } from "@/content/invoicing";
-
-import { invoicingBlockCopy } from "@/content/invoicing";
-import Link from "next/link";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { type InvoiceDTO } from "@/types/invoicingTypes";
-import * as React from "react";
-import { Separator } from "@/components/ui/separator";
-import { isDevelopment } from "@/lib/constants/mode";
-import { cn } from "@/lib/utils/cn";
+import { Input } from "@/components/ui/input";
 import {
-  Download,
-  Printer,
-  Mail,
+  NativeSelect,
+  NativeSelectOption,
+} from "@/components/ui/native-select";
+import { Separator } from "@/components/ui/separator";
+import { cn } from "@/components/ui/utils";
+import {
+  invoicingBlockCopy,
+  invoicingLibraryCopy,
+  invoicingRemainingCopy,
+} from "@/content/invoicing";
+import { type InvoiceDTO } from "@/types/invoicingTypes";
+import {
+  AlertCircle,
   Check,
   Clock,
-  AlertCircle,
+  Download,
+  Mail,
+  Printer,
 } from "lucide-react";
+import Link from "next/link";
+import * as React from "react";
 
 export function ExpensesToolbar({
   query,
@@ -64,17 +68,19 @@ export function InvoicesToolbar({
         value={query}
         onChange={(event) => onQueryChange(event.target.value)}
       />
-      <select
+      <NativeSelect
         className="control-field"
         aria-label={invoicingBlockCopy.invoiceStatus}
         value={status}
         onChange={(event) => onStatusChange(event.target.value)}
       >
-        <option value="">{invoicingBlockCopy.allStatuses}</option>
+        <NativeSelectOption value="">
+          {invoicingBlockCopy.allStatuses}
+        </NativeSelectOption>
         {statuses.map((value) => (
-          <option key={value}>{value}</option>
+          <NativeSelectOption key={value}>{value}</NativeSelectOption>
         ))}
-      </select>
+      </NativeSelect>
       <Link className="type-link" href="/invoices/new">
         {invoicingBlockCopy.draftInvoice}
       </Link>
@@ -117,7 +123,7 @@ export type InvoiceItem = {
   description: string;
   quantity: number;
   unitPrice: number;
-  total?: number;
+  total: number;
 };
 
 export type InvoiceAddress = {
@@ -174,26 +180,6 @@ export function Invoice({
   onSendEmail,
   className,
 }: InvoiceProps) {
-  const computedSubtotal = data.items.reduce(
-    (sum, item) => sum + (item.total ?? item.quantity * item.unitPrice),
-    0,
-  );
-  const computedTotal =
-    computedSubtotal + (data.tax?.amount ?? 0) - (data.discount?.amount ?? 0);
-
-  if (isDevelopment) {
-    if (Math.abs(computedSubtotal - data.subtotal) > 0.01) {
-      console.warn(
-        `[Invoice] subtotal mismatch: passed ${data.subtotal.toFixed(2)}, computed ${computedSubtotal.toFixed(2)}`,
-      );
-    }
-    if (Math.abs(computedTotal - data.total) > 0.01) {
-      console.warn(
-        `[Invoice] total mismatch: passed ${data.total.toFixed(2)}, computed ${computedTotal.toFixed(2)}`,
-      );
-    }
-  }
-
   const statusConfig = {
     paid: { bg: "bg-success", text: "text-success-foreground", icon: Check },
     pending: { bg: "bg-warning", text: "text-warning-foreground", icon: Clock },
@@ -325,9 +311,7 @@ export function Invoice({
                     </td>
                     <td className="py-4 text-right font-mono font-bold">
                       {invoicingLibraryCopy.separator}
-                      {(item.total || item.quantity * item.unitPrice).toFixed(
-                        2,
-                      )}
+                      {item.total.toFixed(2)}
                     </td>
                   </tr>
                 ))}

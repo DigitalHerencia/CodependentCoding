@@ -1,8 +1,10 @@
 "use client";
-import { KnowledgeBaseToolbar } from "@/components/blocks/support-blocks";
-import { useState } from "react";
+
 import { SupportKnowledgeBaseTemplate } from "@/components/templates/support-templates";
+import { selectKnowledgeBaseWorkflow } from "@/lib/workflows/supportClientWorkflows";
 import type { KnowledgeArticleDTO } from "@/types/supportTypes";
+import { useState } from "react";
+
 export function KnowledgeBaseFeatureClient({
   articles,
 }: {
@@ -11,12 +13,8 @@ export function KnowledgeBaseFeatureClient({
   const [query, setQuery] = useState("");
   return (
     <SupportKnowledgeBaseTemplate
-      articles={articles.filter((article) =>
-        `${article.title} ${article.body}`
-          .toLowerCase()
-          .includes(query.toLowerCase()),
-      )}
-      toolbar={<KnowledgeBaseToolbar query={query} onQueryChange={setQuery} />}
+      articles={selectKnowledgeBaseWorkflow(articles, query)}
+      toolbarProps={{ query: query, onQueryChange: setQuery }}
     />
   );
 }

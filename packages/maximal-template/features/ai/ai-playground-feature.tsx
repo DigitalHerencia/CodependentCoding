@@ -1,9 +1,7 @@
-import { getAiPlaygroundConfiguration } from "@/lib/workflows/aiWorkflows";
-import { AiPlaygroundFeatureClient } from "./ai-playground-form.client";
+import { loadAiPlaygroundWorkflow } from "@/lib/workflows/aiWorkflows";
+import { NewAiGenerationForm } from "./newAiGenerationForm";
+
 export async function AiPlaygroundFeature() {
-  return (
-    <AiPlaygroundFeatureClient
-      configuration={await getAiPlaygroundConfiguration()}
-    />
-  );
+  const { configuration } = await loadAiPlaygroundWorkflow();
+  return <NewAiGenerationForm configuration={configuration} />;
 }

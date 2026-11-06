@@ -1,5 +1,5 @@
+import { cn } from "@/components/ui/utils";
 import * as React from "react";
-import { cn } from "@/lib/utils/cn";
 
 /**
  * A bordered container that joins an input with leading/trailing addons
@@ -56,4 +56,4 @@ const InputGroupAddon = React.forwardRef<HTMLDivElement, InputGroupAddonProps>(
 );
 InputGroupAddon.displayName = "InputGroupAddon";
 
-export { InputGroup, InputGroupInput, InputGroupAddon };
+export { InputGroup, InputGroupAddon, InputGroupInput };

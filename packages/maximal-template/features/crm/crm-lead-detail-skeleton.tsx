@@ -1,5 +1,5 @@
-import { WorkspaceLoadingState } from "@/components/blocks/shared-blocks";
+import { WorkspaceLoadingTemplate } from "@/components/templates/shared-templates";
 
 export function CrmLeadDetailSkeleton() {
-  return <WorkspaceLoadingState route="/crm/leads/[leadId]" />;
+  return <WorkspaceLoadingTemplate route="/crm/leads/[leadId]" />;
 }

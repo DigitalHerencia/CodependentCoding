@@ -1,6 +1,6 @@
 "use server";
 import { toActionResult } from "@/lib/utils/actionResult";
-import { z } from "zod";
+import { socialAssetIdSchema } from "@/schemas/socialSchemas";
 import { readPrivateBlob } from "@/lib/integrations/vercel-blob/download";
 
 import {
@@ -137,7 +137,7 @@ export async function downloadSocialMedia(rawInput: unknown) {
     const identity = await requireIdentity();
     const asset = await withTenantTransaction(identity, async (tx, access) => {
       assertPermission(access, "social.media:read");
-      const assetId = z.string().uuid().parse(rawInput);
+      const assetId = socialAssetIdSchema.parse(rawInput);
       const asset = await tx.asset.findFirst({
         where: { id: assetId, organizationId: access.organizationId },
         select: {

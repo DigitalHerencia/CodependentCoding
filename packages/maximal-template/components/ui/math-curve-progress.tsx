@@ -1,11 +1,11 @@
 "use client";
 
-import * as React from "react";
-import { cva, type VariantProps } from "class-variance-authority";
-import { cn } from "@/lib/utils/cn";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
-import { buildPath, getPoint, getAngle } from "@/lib/utils/mathCurves";
+import { buildPath, getAngle, getPoint } from "@/components/ui/math-curves";
+import { cn } from "@/components/ui/utils";
 import type { ProgressCurveKey } from "@/types/uiTypes";
+import { cva, type VariantProps } from "class-variance-authority";
+import * as React from "react";
 
 const mathCurveProgressVariants = cva("", {
   variants: {

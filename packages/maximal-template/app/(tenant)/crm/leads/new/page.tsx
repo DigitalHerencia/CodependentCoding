@@ -1,5 +1,5 @@
-import { CrmNewLeadForm } from "@/features/crm/crm-new-lead-form";
+import { NewCrmLeadForm } from "@/features/crm/newCrmLeadForm";
 
 export default async function Page() {
-  return <CrmNewLeadForm />;
+  return <NewCrmLeadForm />;
 }

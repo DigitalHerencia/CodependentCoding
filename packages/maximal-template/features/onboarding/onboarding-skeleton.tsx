@@ -1,5 +1,5 @@
-import { WorkspaceLoadingState } from "@/components/blocks/shared-blocks";
+import { WorkspaceLoadingTemplate } from "@/components/templates/shared-templates";
 
 export function OnboardingSkeleton() {
-  return <WorkspaceLoadingState route="/onboarding" />;
+  return <WorkspaceLoadingTemplate route="/onboarding" />;
 }

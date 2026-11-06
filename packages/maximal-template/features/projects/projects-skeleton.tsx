@@ -1,6 +1,6 @@
 // Why: Skeleton: matches the portfolio layout.
-import { WorkspaceLoadingState } from "@/components/blocks/shared-blocks";
+import { WorkspaceLoadingTemplate } from "@/components/templates/shared-templates";
 
 export function ProjectsSkeleton() {
-  return <WorkspaceLoadingState route="/projects" />;
+  return <WorkspaceLoadingTemplate route="/projects" />;
 }

@@ -1,12 +1,13 @@
-import { notFound } from "next/navigation";
-import { getCampaign, getAudiences } from "@/lib/fetchers/marketingFetchers";
-import { CampaignForm } from "./campaign-form.client";
+import { loadCampaignEditWorkflow } from "@/lib/workflows/marketingWorkflows";
+import { NewCampaignForm } from "./newCampaignForm";
+
 export async function CampaignEditFeature({
   campaignId,
 }: {
   campaignId: string;
 }) {
-  const campaign = await getCampaign(campaignId);
-  if (!campaign) notFound();
-  return <CampaignForm campaign={campaign} audiences={await getAudiences()} />;
+  const { campaign, audiences } = await loadCampaignEditWorkflow({
+    campaignId,
+  });
+  return <NewCampaignForm campaign={campaign} audiences={audiences} />;
 }

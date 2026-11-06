@@ -1,13 +1,12 @@
-import { CrmOpportunityForm } from "./crm-opportunity-form.client";
-import { getCrmAccounts } from "@/lib/fetchers/crmFetchers";
+import { loadCrmPipelineWorkflow } from "@/lib/workflows/crmWorkflows";
 import { CrmPipelineFeatureClient } from "./crm-pipeline-feature.client";
-import { getCrmWorkspaceWorkflow } from "@/lib/workflows/crmWorkflows";
+import { NewCrmOpportunityForm } from "./newCrmOpportunityForm";
 
 export async function CrmPipelineFeature() {
-  const { deals } = await getCrmWorkspaceWorkflow();
+  const { deals, accounts } = await loadCrmPipelineWorkflow();
   return (
     <>
-      <CrmOpportunityForm accounts={await getCrmAccounts()} />
+      <NewCrmOpportunityForm accounts={accounts} />
       <CrmPipelineFeatureClient deals={deals} />
     </>
   );

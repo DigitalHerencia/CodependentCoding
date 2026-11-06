@@ -1,17 +1,17 @@
 "use client";
 
-import * as React from "react";
-import { cva, type VariantProps } from "class-variance-authority";
-import { cn } from "@/lib/utils/cn";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import {
   buildPath,
-  getPoint,
   getAngle,
-  getDetailScale,
   getCurvePulseDuration,
-} from "@/lib/utils/mathCurves";
+  getDetailScale,
+  getPoint,
+} from "@/components/ui/math-curves";
+import { cn } from "@/components/ui/utils";
 import type { LoaderCurveKey } from "@/types/uiTypes";
+import { cva, type VariantProps } from "class-variance-authority";
+import * as React from "react";
 
 const mathCurveLoaderVariants = cva("", {
   variants: {

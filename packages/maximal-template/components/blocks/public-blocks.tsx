@@ -1,20 +1,5 @@
-import * as React from "react";
-import { type ReactNode } from "react";
-import { cn } from "@/lib/utils/cn";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import {
-  Check,
-  X,
-  ArrowRight,
-  Play,
-  Star,
-  Zap,
-  TrendingUp,
-  TrendingDown,
-  Minus,
-  XIcon,
-  Mail,
-} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -23,10 +8,25 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { safeHref } from "@/lib/utils/strings";
-import Image from "next/image";
 import { Marquee } from "@/components/ui/marquee";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { cn, safeHref } from "@/components/ui/utils";
+import { publicUiCopy } from "@/content/public";
+import {
+  ArrowRight,
+  Check,
+  Mail,
+  Minus,
+  Play,
+  Star,
+  TrendingDown,
+  TrendingUp,
+  X,
+  XIcon,
+  Zap,
+} from "lucide-react";
+import Image from "next/image";
+import * as React from "react";
+import { type ReactNode } from "react";
 
 export type BentoItem = {
   title: string;
@@ -141,7 +141,7 @@ const tagVariant: Record<
 };
 
 export function ChangelogSection({
-  title = "Changelog",
+  title = publicUiCopy.changelog,
   subtitle,
   entries,
   className,
@@ -213,12 +213,12 @@ function Cell({ value }: { value: string | boolean }) {
     return value ? (
       <span className="inline-flex size-6 items-center justify-center border-2 border-foreground bg-success">
         <Check className="size-3.5 text-success-foreground" />
-        <span className="sr-only">Included</span>
+        <span className="sr-only">{publicUiCopy.included}</span>
       </span>
     ) : (
       <span className="inline-flex size-6 items-center justify-center border-2 border-foreground bg-muted">
         <X className="size-3.5 text-muted-foreground" />
-        <span className="sr-only">Not included</span>
+        <span className="sr-only">{publicUiCopy.notIncluded}</span>
       </span>
     );
   }
@@ -227,7 +227,7 @@ function Cell({ value }: { value: string | boolean }) {
 }
 
 export function ComparisonTable({
-  title = "Compare plans",
+  title = publicUiCopy.comparePlans,
   subtitle,
   columns,
   rows,
@@ -265,7 +265,7 @@ export function ComparisonTable({
                   scope="col"
                   className="w-32 px-5 py-3 text-left text-lg font-black tracking-wider uppercase"
                 >
-                  Metric
+                  {publicUiCopy.metric}
                 </th>
 
                 {columns.map((column, index) => (
@@ -337,8 +337,8 @@ export type ContactWithCardsProps = {
 };
 
 export function ContactWithCards({
-  title = "Get in touch",
-  description = "Choose your preferred way to reach us.",
+  title = publicUiCopy.getInTouch,
+  description = publicUiCopy.chooseYourPreferredWayToReachUs,
   contactMethods,
   className,
 }: ContactWithCardsProps) {
@@ -1235,7 +1235,7 @@ export function HeroWithVideo({
           <div className="overflow-hidden border-3 border-foreground shadow-[8px_8px_0px_hsl(var(--shadow-color))]">
             <Image
               src={videoThumbnail}
-              alt="Video thumbnail"
+              alt={publicUiCopy.videoThumbnail}
               height={720}
               unoptimized
               width={1280}
@@ -1281,7 +1281,7 @@ export function LegalDocumentSection({
   sections,
 }: LegalDocumentSectionProps) {
   return (
-    <section className="mx-auto max-w-prose px-6 pb-20 leading-relaxed sm:px-10 lg:px-12">
+    <section className="typeset typeset-app mx-auto max-w-prose px-6 pb-20 leading-relaxed sm:px-10 lg:px-12">
       <p className="mb-10 text-center text-sm text-primary">
         {updatedAtLabel} <time dateTime={updatedAtDateTime}>{updatedAt}</time>
       </p>
@@ -1671,7 +1671,7 @@ export type PricingSectionProps = {
 // PRICING VARIANT 1: Tiers
 // ============================================================================
 export function PricingSection({
-  title = "Pricing",
+  title = publicUiCopy.pricing,
   subtitle,
   tiers,
   className,
@@ -1702,7 +1702,9 @@ export function PricingSection({
                 <h3 className="text-xl font-black tracking-wide uppercase">
                   {tier.name}
                 </h3>
-                {tier.featured && <Badge variant="accent">Popular</Badge>}
+                {tier.featured && (
+                  <Badge variant="accent">{publicUiCopy.popular}</Badge>
+                )}
               </div>
               {tier.description && (
                 <p className="mt-2 text-sm text-muted-foreground">
@@ -1787,7 +1789,7 @@ export function CheckoutSummary({
       )}
     >
       <h3 className="text-lg font-black tracking-wide uppercase">
-        Order summary
+        {publicUiCopy.orderSummary}
       </h3>
       <p className="mt-1 text-sm font-bold text-muted-foreground">{planName}</p>
       <div className="mt-4 space-y-2 border-t-2 border-foreground pt-4">
@@ -1802,7 +1804,7 @@ export function CheckoutSummary({
         ))}
       </div>
       <div className="mt-4 flex justify-between border-t-3 border-foreground pt-4 text-lg font-black uppercase">
-        <span>Total</span>
+        <span>{publicUiCopy.total}</span>
         <span>{total}</span>
       </div>
       <Button className="mt-6 w-full" onClick={onCheckout}>
@@ -2194,20 +2196,20 @@ export function TeamGrid({
                     {member.social.twitter && (
                       <SocialLink
                         href={member.social.twitter}
-                        label="X / Twitter"
+                        label={publicUiCopy.xTwitter}
                         icon={<XIcon className="h-4 w-4" />}
                       />
                     )}
                     {member.social.linkedin && (
                       <SocialLink
                         href={member.social.linkedin}
-                        label="LinkedIn"
+                        label={publicUiCopy.linkedIn}
                         icon={
                           <span
                             aria-hidden="true"
                             className="text-[10px] font-black"
                           >
-                            in
+                            {publicUiCopy.in}
                           </span>
                         }
                       />
@@ -2215,13 +2217,13 @@ export function TeamGrid({
                     {member.social.github && (
                       <SocialLink
                         href={member.social.github}
-                        label="GitHub"
+                        label={publicUiCopy.gitHub}
                         icon={
                           <span
                             aria-hidden="true"
                             className="text-[9px] font-black"
                           >
-                            GH
+                            {publicUiCopy.gH}
                           </span>
                         }
                       />
@@ -2288,20 +2290,20 @@ export function TeamList({ title, members, className }: TeamListProps) {
                   {member.social.twitter && (
                     <SocialLink
                       href={member.social.twitter}
-                      label="X / Twitter"
+                      label={publicUiCopy.xTwitter}
                       icon={<XIcon className="h-4 w-4" />}
                     />
                   )}
                   {member.social.linkedin && (
                     <SocialLink
                       href={member.social.linkedin}
-                      label="LinkedIn"
+                      label={publicUiCopy.linkedIn}
                       icon={
                         <span
                           aria-hidden="true"
                           className="text-[10px] font-black"
                         >
-                          in
+                          {publicUiCopy.in}
                         </span>
                       }
                     />
@@ -2379,7 +2381,7 @@ export function TeamLargePhotos({
                       {member.social.twitter && (
                         <SocialLink
                           href={member.social.twitter}
-                          label="X / Twitter"
+                          label={publicUiCopy.xTwitter}
                           icon={<XIcon className="h-4 w-4" />}
                           light
                           tabIndex={-1}
@@ -2388,13 +2390,13 @@ export function TeamLargePhotos({
                       {member.social.linkedin && (
                         <SocialLink
                           href={member.social.linkedin}
-                          label="LinkedIn"
+                          label={publicUiCopy.linkedIn}
                           icon={
                             <span
                               aria-hidden="true"
                               className="text-[10px] font-black"
                             >
-                              in
+                              {publicUiCopy.in}
                             </span>
                           }
                           light
@@ -2404,13 +2406,13 @@ export function TeamLargePhotos({
                       {member.social.github && (
                         <SocialLink
                           href={member.social.github}
-                          label="GitHub"
+                          label={publicUiCopy.gitHub}
                           icon={
                             <span
                               aria-hidden="true"
                               className="text-[9px] font-black"
                             >
-                              GH
+                              {publicUiCopy.gH}
                             </span>
                           }
                           light

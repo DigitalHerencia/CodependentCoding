@@ -1,8 +1,10 @@
 "use client";
-import { InvoicesToolbar } from "@/components/blocks/invoicing-blocks";
-import { useState } from "react";
+
 import { InvoicingInvoicesTemplate } from "@/components/templates/invoicing-templates";
+import { selectInvoicesWorkflow } from "@/lib/workflows/invoicingClientWorkflows";
 import type { InvoiceDTO } from "@/types/invoicingTypes";
+import { useState } from "react";
+
 export function InvoicesFeatureClient({
   invoices,
 }: {
@@ -12,22 +14,14 @@ export function InvoicesFeatureClient({
   const [status, setStatus] = useState("");
   return (
     <InvoicingInvoicesTemplate
-      invoices={invoices.filter(
-        (invoice) =>
-          (!status || invoice.status === status) &&
-          `${invoice.number} ${invoice.customerName}`
-            .toLowerCase()
-            .includes(query.toLowerCase()),
-      )}
-      toolbar={
-        <InvoicesToolbar
-          query={query}
-          onQueryChange={setQuery}
-          status={status}
-          onStatusChange={setStatus}
-          statuses={[...new Set(invoices.map((invoice) => invoice.status))]}
-        />
-      }
+      invoices={selectInvoicesWorkflow(invoices, query, status)}
+      toolbarProps={{
+        query: query,
+        onQueryChange: setQuery,
+        status: status,
+        onStatusChange: setStatus,
+        statuses: [...new Set(invoices.map((invoice) => invoice.status))],
+      }}
     />
   );
 }

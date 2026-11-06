@@ -1,12 +1,11 @@
 "use client";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import {
-  AdminAuditToolbar,
-  AdminPagination,
-} from "@/components/blocks/admin-blocks";
+
 import { AdminAuditTemplate } from "@/components/templates/admin-templates";
+import { getAdminAuditNavigationWorkflow } from "@/lib/workflows/adminClientWorkflows";
 import type { AuditEventDTO } from "@/types/adminTypes";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+
 export function AdminAuditFeatureClient({
   page,
 }: {
@@ -22,24 +21,18 @@ export function AdminAuditFeatureClient({
   return (
     <>
       <AdminAuditTemplate
+        pagination={{
+          path: "/admin/audit",
+          page: page.page,
+          query: page.query,
+          hasMore: page.hasMore,
+        }}
         events={page.items}
-        toolbar={
-          <AdminAuditToolbar
-            query={query}
-            onQueryChange={setQuery}
-            onSearch={() =>
-              router.push(
-                "/admin/audit?" + new URLSearchParams({ query }).toString(),
-              )
-            }
-          />
-        }
-      />
-      <AdminPagination
-        path="/admin/audit"
-        page={page.page}
-        query={page.query}
-        hasMore={page.hasMore}
+        toolbarProps={{
+          query: query,
+          onQueryChange: setQuery,
+          onSearch: () => router.push(getAdminAuditNavigationWorkflow(query)),
+        }}
       />
     </>
   );

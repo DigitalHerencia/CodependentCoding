@@ -1,11 +1,11 @@
+import { cn } from "@/components/ui/utils";
 import * as React from "react";
-import { cn } from "@/lib/utils/cn";
 import {
-  FunnelChart as RechartsFC,
   Funnel,
   LabelList,
-  Tooltip,
+  FunnelChart as RechartsFC,
   ResponsiveContainer,
+  Tooltip,
 } from "recharts";
 import { ChartEmpty } from "./empty";
 

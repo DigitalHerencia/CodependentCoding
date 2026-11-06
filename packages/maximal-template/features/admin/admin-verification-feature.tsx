@@ -1,12 +1,11 @@
-import { notFound, redirect } from "next/navigation";
-import { canAccessAdmin } from "@/lib/fetchers/adminFetchers";
-import { getAdminSessionState } from "@/lib/auth/auth";
-import { AdminVerificationForm } from "./admin-verification-form";
+import { loadAdminVerificationWorkflow } from "@/lib/workflows/adminWorkflows";
+import { AdminVerificationFeatureClient } from "./admin-verification-feature.client";
+
 export async function AdminVerificationFeature() {
-  if (!(await canAccessAdmin())) notFound();
-  const state = await getAdminSessionState();
-  if (state === "verified") redirect("/admin/users");
+  const state = await loadAdminVerificationWorkflow();
   return (
-    <AdminVerificationForm needsEnrollment={state === "enrollment-required"} />
+    <AdminVerificationFeatureClient
+      needsEnrollment={state === "enrollment-required"}
+    />
   );
 }

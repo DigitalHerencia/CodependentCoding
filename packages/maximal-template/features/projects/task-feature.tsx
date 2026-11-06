@@ -1,10 +1,10 @@
-// Why: Server feature: loads one task (null means 404) and composes the detail template.
-import { notFound } from "next/navigation";
 import { ProjectTaskDetailTemplate } from "@/components/templates/projects-templates";
-import { getProjectTask } from "@/lib/fetchers/projectsFetchers";
-import { TaskFeatureClient } from "./task-assignment-form.client";
-import { getOrganizationMembers } from "@/lib/fetchers/organizationFetchers";
-import { TaskStatusControl } from "./task-status-form";
+import { loadTaskWorkflow } from "@/lib/workflows/projectsWorkflows";
+import { EditTaskAssignmentForm } from "./editTaskAssignmentForm";
+import { EditTaskStatusForm } from "./editTaskStatusForm";
+
+// Why: Server feature: loads one task (null means 404) and composes the detail template.
+
 export async function TaskFeature({
   projectId,
   taskId,
@@ -12,15 +12,14 @@ export async function TaskFeature({
   projectId: string;
   taskId: string;
 }) {
-  const task = await getProjectTask(projectId, taskId);
-  if (!task) notFound();
+  const { task, members } = await loadTaskWorkflow({ projectId, taskId });
   return (
     <ProjectTaskDetailTemplate task={task}>
-      <TaskStatusControl key={task.version} task={task} />
-      <TaskFeatureClient
+      <EditTaskStatusForm key={task.version} task={task} />
+      <EditTaskAssignmentForm
         key={`assignment-${task.version}`}
         task={task}
-        members={await getOrganizationMembers()}
+        members={members}
       />
     </ProjectTaskDetailTemplate>
   );

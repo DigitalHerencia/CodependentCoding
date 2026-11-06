@@ -1,5 +1,5 @@
-import { InvoiceNewForm } from "@/features/invoicing/invoice-new-form";
+import { NewInvoiceForm } from "@/features/invoicing/newInvoiceForm";
 
 export default async function Page() {
-  return <InvoiceNewForm />;
+  return <NewInvoiceForm />;
 }

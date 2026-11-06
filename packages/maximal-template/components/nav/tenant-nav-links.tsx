@@ -1,24 +1,26 @@
 "use client";
+
+import type { MobileBottomNavItem } from "@/components/nav/mobile-bottom-nav";
+import { TreeView, type TreeNode } from "@/components/ui/tree-view";
+import { cn } from "@/components/ui/utils";
+import { moduleNavigation, settingsNavigation } from "@/lib/modules/navigation";
+import type { ModuleIcon, ModuleNavLink } from "@/types/moduleTypes";
 import {
-  Home,
   Brain,
   BriefcaseBusiness,
   Building2,
   CreditCard,
   FolderKanban,
   Headphones,
+  Home,
   LayoutDashboard,
   Megaphone,
   Settings,
   Users,
 } from "lucide-react";
-import type { MobileBottomNavItem } from "@/components/nav/mobile-bottom-nav";
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { TreeView, type TreeNode } from "@/components/ui/tree-view";
-import { moduleNavigation, settingsNavigation } from "@/lib/modules/navigation";
-import { cn } from "@/lib/utils/cn";
-import type { ModuleIcon, ModuleNavLink } from "@/types/moduleTypes";
+
 const icons: Record<ModuleIcon, ReactNode> = {
   brain: <Brain className="size-4" />,
   briefcase: <BriefcaseBusiness className="size-4" />,

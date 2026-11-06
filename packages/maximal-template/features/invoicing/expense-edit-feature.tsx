@@ -1,8 +1,7 @@
-import { notFound } from "next/navigation";
-import { getExpense } from "@/lib/fetchers/invoicingFetchers";
-import { ExpenseNewForm } from "./expense-new-form";
+import { loadExpenseEditWorkflow } from "@/lib/workflows/invoicingWorkflows";
+import { NewExpenseForm } from "./newExpenseForm";
+
 export async function ExpenseEditFeature({ expenseId }: { expenseId: string }) {
-  const expense = await getExpense(expenseId);
-  if (!expense) notFound();
-  return <ExpenseNewForm expense={expense} />;
+  const { expense } = await loadExpenseEditWorkflow({ expenseId });
+  return <NewExpenseForm expense={expense} />;
 }

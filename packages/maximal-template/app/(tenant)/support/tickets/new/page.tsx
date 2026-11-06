@@ -1,5 +1,5 @@
-import { TicketNewForm } from "@/features/support/ticket-new-form";
+import { NewSupportTicketForm } from "@/features/support/newSupportTicketForm";
 
 export default async function Page() {
-  return <TicketNewForm />;
+  return <NewSupportTicketForm />;
 }

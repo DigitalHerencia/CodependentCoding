@@ -1,5 +1,5 @@
-import { WorkspaceLoadingState } from "@/components/blocks/shared-blocks";
+import { WorkspaceLoadingTemplate } from "@/components/templates/shared-templates";
 
 export function CampaignSkeleton() {
-  return <WorkspaceLoadingState route="/marketing/campaigns/[campaignId]" />;
+  return <WorkspaceLoadingTemplate route="/marketing/campaigns/[campaignId]" />;
 }

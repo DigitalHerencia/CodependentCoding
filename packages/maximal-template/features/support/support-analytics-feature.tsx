@@ -1,5 +1,7 @@
-import { getSupportInbox } from "@/lib/fetchers/supportFetchers";
 import { SupportAnalyticsTemplate } from "@/components/templates/support-templates";
+import { loadSupportAnalyticsWorkflow } from "@/lib/workflows/supportWorkflows";
+
 export async function SupportAnalyticsFeature() {
-  return <SupportAnalyticsTemplate tickets={await getSupportInbox()} />;
+  const view = await loadSupportAnalyticsWorkflow();
+  return <SupportAnalyticsTemplate {...view} />;
 }

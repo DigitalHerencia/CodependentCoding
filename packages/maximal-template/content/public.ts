@@ -245,3 +245,37 @@ export const pipelineCards = [
     content: "Ship the artifact. Let the commit history explain itself.",
   },
 ] as const;
+
+// Copy for the domain's reusable presentation components.
+export const publicUiCopy = {
+  dismiss: "Dismiss",
+  openingQuote: "“",
+  closingQuote: "”",
+  changelog: "Changelog",
+  included: "Included",
+  notIncluded: "Not included",
+  comparePlans: "Compare plans",
+  metric: "Metric",
+  getInTouch: "Get in touch",
+  chooseYourPreferredWayToReachUs: "Choose your preferred way to reach us.",
+  videoThumbnail: "Video thumbnail",
+  pricing: "Pricing",
+  popular: "Popular",
+  orderSummary: "Order summary",
+  total: "Total",
+  xTwitter: "X / Twitter",
+  linkedIn: "LinkedIn",
+  in: "in",
+  gitHub: "GitHub",
+  gH: "GH",
+  offline: "Offline",
+  youAreOffline: "You are offline",
+  nothingInTheWorkspaceIsAvailableOfflineReconnectThen:
+    "Nothing in the workspace is available offline. Reconnect, then try again.",
+  retry: "Retry",
+  search: "Search",
+  email: "Email",
+  enterYourEmail: "Enter your email",
+  subscribe: "Subscribe",
+  noSpamUnsubscribeAnytime: "No spam. Unsubscribe anytime.",
+} as const;

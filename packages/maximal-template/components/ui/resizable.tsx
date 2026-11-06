@@ -1,8 +1,7 @@
-import * as React from "react";
+import { cn } from "@/components/ui/utils";
 import { GripVertical } from "lucide-react";
+import * as React from "react";
 import { Group, Panel, Separator } from "react-resizable-panels";
-
-import { cn } from "@/lib/utils/cn";
 
 type ResizablePanelGroupProps = Omit<
   React.ComponentProps<typeof Group>,
@@ -61,4 +60,4 @@ function ResizableHandle({
   );
 }
 
-export { ResizablePanelGroup, ResizablePanel, ResizableHandle };
+export { ResizableHandle, ResizablePanel, ResizablePanelGroup };

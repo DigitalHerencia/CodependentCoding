@@ -1,12 +1,11 @@
-import { notFound } from "next/navigation";
-import { getKnowledgeArticle } from "@/lib/fetchers/supportFetchers";
-import { KnowledgeArticleNewForm } from "./knowledge-article-new-form";
+import { loadKnowledgeArticleEditWorkflow } from "@/lib/workflows/supportWorkflows";
+import { NewKnowledgeArticleForm } from "./newKnowledgeArticleForm";
+
 export async function KnowledgeArticleEditFeature({
   articleId,
 }: {
   articleId: string;
 }) {
-  const article = await getKnowledgeArticle(articleId);
-  if (!article) notFound();
-  return <KnowledgeArticleNewForm article={article} />;
+  const { article } = await loadKnowledgeArticleEditWorkflow({ articleId });
+  return <NewKnowledgeArticleForm article={article} />;
 }

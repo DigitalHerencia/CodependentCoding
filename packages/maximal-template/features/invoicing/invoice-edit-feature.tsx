@@ -1,8 +1,7 @@
-import { notFound } from "next/navigation";
-import { getInvoice } from "@/lib/fetchers/invoicingFetchers";
-import { InvoiceNewForm } from "./invoice-new-form";
+import { loadInvoiceEditWorkflow } from "@/lib/workflows/invoicingWorkflows";
+import { NewInvoiceForm } from "./newInvoiceForm";
+
 export async function InvoiceEditFeature({ invoiceId }: { invoiceId: string }) {
-  const invoice = await getInvoice(invoiceId);
-  if (!invoice) notFound();
-  return <InvoiceNewForm invoice={invoice} />;
+  const { invoice } = await loadInvoiceEditWorkflow({ invoiceId });
+  return <NewInvoiceForm invoice={invoice} />;
 }

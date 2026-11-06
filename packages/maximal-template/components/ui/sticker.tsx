@@ -1,6 +1,6 @@
-import * as React from "react";
+import { cn } from "@/components/ui/utils";
 import { cva, type VariantProps } from "class-variance-authority";
-import { cn } from "@/lib/utils/cn";
+import * as React from "react";
 
 const stickerVariants = cva(
   "relative inline-flex items-center justify-center border-3 border-foreground font-bold tracking-wide uppercase transition-transform",
@@ -246,10 +246,10 @@ const StickyNote = React.forwardRef<HTMLDivElement, StickyNoteProps>(
 StickyNote.displayName = "StickyNote";
 
 export {
-  Sticker,
-  stickerVariants,
   Stamp,
   stampVariants,
+  Sticker,
+  stickerVariants,
   StickyNote,
   stickyNoteVariants,
 };

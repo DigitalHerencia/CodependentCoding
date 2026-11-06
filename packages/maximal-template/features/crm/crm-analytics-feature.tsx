@@ -1,5 +1,7 @@
-import { getCrmDeals } from "@/lib/fetchers/crmFetchers";
 import { CrmAnalyticsTemplate } from "@/components/templates/crm-templates";
+import { loadCrmAnalyticsWorkflow } from "@/lib/workflows/crmWorkflows";
+
 export async function CrmAnalyticsFeature() {
-  return <CrmAnalyticsTemplate deals={await getCrmDeals(100)} />;
+  const view = await loadCrmAnalyticsWorkflow();
+  return <CrmAnalyticsTemplate {...view} />;
 }

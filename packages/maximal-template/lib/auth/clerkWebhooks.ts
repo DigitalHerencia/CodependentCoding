@@ -1,22 +1,8 @@
-import "server-only";
-
+import { baseEnv } from "@/lib/utils/env";
+import type { ClerkUserProjection } from "@/types/integrationTypes";
 import { verifyWebhook } from "@clerk/nextjs/webhooks";
 import type { NextRequest } from "next/server";
-
-import type { ClerkUserProjection } from "@/types/integrationTypes";
-import { withProviderTransaction } from "@/lib/db/rls";
-import { baseEnv } from "@/lib/utils/env";
-import {
-  anonymizeClerkUserTx,
-  syncClerkUserTx,
-} from "@/lib/db/transactions/clerkUserTx";
-import {
-  claimWebhookEventTx,
-  completeWebhookEventTx,
-  failWebhookEventTx,
-} from "@/lib/db/transactions/webhookEventTx";
-
-export { WebhookIdentityConflictError } from "@/lib/db/transactions/webhookEventTx";
+import "server-only";
 
 export async function verifyClerkWebhook(request: NextRequest) {
   const signingSecret = baseEnv.read().CLERK_WEBHOOK_SIGNING_SECRET;
@@ -50,45 +36,4 @@ export function projectClerkUser(user: {
     imageUrl: user.image_url || null,
     username: user.username,
   };
-}
-
-export async function processClerkWebhook(
-  event: Awaited<ReturnType<typeof verifyClerkWebhook>>,
-  eventId: string,
-  payload: string,
-) {
-  const webhookEventId = await withProviderTransaction((tx) =>
-    claimWebhookEventTx(tx, {
-      provider: "clerk",
-      eventId,
-      type: event.type,
-      payload,
-    }),
-  );
-  if (!webhookEventId) return false;
-
-  try {
-    await withProviderTransaction(async (tx) => {
-      if (event.type === "user.created" || event.type === "user.updated") {
-        await syncClerkUserTx(tx, projectClerkUser(event.data));
-      } else if (event.type === "user.deleted" && event.data.id) {
-        await anonymizeClerkUserTx(tx, event.data.id);
-      }
-
-      await completeWebhookEventTx(tx, webhookEventId);
-    });
-    return true;
-  } catch (error) {
-    try {
-      await withProviderTransaction((tx) =>
-        failWebhookEventTx(tx, webhookEventId, "processing_failed"),
-      );
-    } catch (recordingError) {
-      throw new AggregateError(
-        [error, recordingError],
-        "Clerk webhook processing and failure recording both failed.",
-      );
-    }
-    throw error;
-  }
 }

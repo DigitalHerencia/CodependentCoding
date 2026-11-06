@@ -1,6 +1,6 @@
 // Why: Skeleton: matches the my-tasks layout so streaming does not shift the page.
-import { WorkspaceLoadingState } from "@/components/blocks/shared-blocks";
+import { WorkspaceLoadingTemplate } from "@/components/templates/shared-templates";
 
 export function MyTasksSkeleton() {
-  return <WorkspaceLoadingState route="/my-tasks" />;
+  return <WorkspaceLoadingTemplate route="/my-tasks" />;
 }

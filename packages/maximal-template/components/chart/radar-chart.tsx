@@ -1,16 +1,16 @@
+import { cn } from "@/components/ui/utils";
 import * as React from "react";
-import { cn } from "@/lib/utils/cn";
 import {
+  PolarAngleAxis,
+  PolarGrid,
+  PolarRadiusAxis,
   Radar,
   RadarChart as RechartsRadarChart,
-  PolarGrid,
-  PolarAngleAxis,
-  PolarRadiusAxis,
 } from "recharts";
 import { ChartContainer } from "./container";
 import { ChartEmpty } from "./empty";
-import { ChartTooltip, ChartTooltipContent } from "./tooltip";
 import { ChartLegend, ChartLegendContent } from "./legend";
+import { ChartTooltip, ChartTooltipContent } from "./tooltip";
 import type { ChartConfig } from "./types";
 
 export interface RadarChartData {

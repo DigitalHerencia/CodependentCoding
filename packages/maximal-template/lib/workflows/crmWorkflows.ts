@@ -1,16 +1,20 @@
-import "server-only";
-
 import {
   getClosedWonCrmValue,
   getContactById,
+  getContacts,
+  getCrmAccount,
+  getCrmAccounts,
   getCrmDeal,
   getCrmDeals,
-  getCrmAccount,
-  getContacts,
 } from "@/lib/fetchers/crmFetchers";
-
-import { decimalToUnits, unitsToDecimal } from "@/lib/utils/money";
-import type { CrmDealSummaryDTO } from "@/types/crmTypes";
+import {
+  decimalToUnits,
+  formatFixedUnits,
+  unitsToDecimal,
+} from "@/lib/utils/money";
+import { type CrmDealSummaryDTO } from "@/types/crmTypes";
+import { notFound } from "next/navigation";
+import "server-only";
 
 // Decimal(19, 4) deal values weighted by whole percentages need six places.
 const PIPELINE_SCALE = 6;
@@ -80,4 +84,121 @@ export function calculatePipelineValue(
     0n,
   );
   return unitsToDecimal(total, PIPELINE_SCALE);
+}
+
+export async function loadCrmAccountDetailWorkflow({
+  accountId,
+}: {
+  accountId: string;
+}) {
+  const account = await getCrmAccount(accountId);
+  if (!account) notFound();
+  return { account };
+}
+
+export async function loadCrmAccountsWorkflow() {
+  const accounts = await getCrmAccounts();
+  return { accounts };
+}
+
+export async function loadCrmAnalyticsWorkflow() {
+  const deals = await getCrmDeals(100);
+  const groups = [...new Set(deals.map((deal) => deal.currency))].map(
+    (currency) => ({
+      currency,
+      rows: ["LEAD", "QUALIFIED", "PROPOSAL", "NEGOTIATION", "WON", "LOST"].map(
+        (stage) => {
+          const group = deals.filter(
+            (deal) => deal.currency === currency && deal.stage === stage,
+          );
+          const total = group.reduce(
+            (sum, deal) => sum + decimalToUnits(deal.value, PIPELINE_SCALE),
+            0n,
+          );
+          const weighted = group.reduce(
+            (sum, deal) =>
+              sum +
+              (decimalToUnits(deal.value, PIPELINE_SCALE) *
+                BigInt(deal.probability)) /
+                100n,
+            0n,
+          );
+          return {
+            id: stage,
+            cells: {
+              stage,
+              count: group.length,
+              value: formatFixedUnits(total, PIPELINE_SCALE, 2),
+              weighted: formatFixedUnits(weighted, PIPELINE_SCALE, 2),
+            },
+          };
+        },
+      ),
+    }),
+  );
+  return { count: deals.length, groups };
+}
+
+export async function loadCrmContactDetailWorkflow({
+  contactId,
+}: {
+  contactId: string;
+}) {
+  const contact = await getContactById(contactId);
+  if (!contact) notFound();
+  return { contact };
+}
+
+export async function loadCrmContactsWorkflow() {
+  const contacts = await getContacts();
+  return { contacts };
+}
+
+export async function loadCrmEditAccountWorkflow({
+  accountId,
+}: {
+  accountId: string;
+}) {
+  const account = await getCrmAccount(accountId);
+  if (!account) notFound();
+  return { account };
+}
+
+export async function loadCrmEditContactWorkflow({
+  contactId,
+}: {
+  contactId: string;
+}) {
+  const contact = await getContactById(contactId);
+  if (!contact) notFound();
+  return { contact };
+}
+
+export async function loadCrmEditLeadWorkflow({ leadId }: { leadId: string }) {
+  const contact = await getContactById(leadId);
+  if (!contact) notFound();
+  return { contact };
+}
+
+export async function loadCrmLeadDetailWorkflow({
+  leadId,
+}: {
+  leadId: string;
+}) {
+  const contact = await getContactById(leadId);
+  if (!contact) notFound();
+  return { contact };
+}
+
+export async function loadCrmLeadsWorkflow() {
+  const contacts = await getContacts({ status: "LEAD" });
+  return { contacts };
+}
+
+export async function loadCrmPipelineWorkflow() {
+  const [deals, accounts] = await Promise.all([
+    getCrmDeals(100),
+    getCrmAccounts(),
+  ]);
+  return { deals, accounts };
 }

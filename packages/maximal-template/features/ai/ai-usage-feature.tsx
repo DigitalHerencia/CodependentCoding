@@ -1,5 +1,7 @@
-import { getMyAiUsage } from "@/lib/fetchers/aiFetchers";
 import { AiUsageTemplate } from "@/components/templates/ai-templates";
+import { loadAiUsageWorkflow } from "@/lib/workflows/aiWorkflows";
+
 export async function AiUsageFeature() {
-  return <AiUsageTemplate usage={await getMyAiUsage()} />;
+  const { usage } = await loadAiUsageWorkflow();
+  return <AiUsageTemplate usage={usage} />;
 }

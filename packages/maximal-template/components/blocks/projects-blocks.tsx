@@ -1,8 +1,16 @@
 "use client";
-import { projectsPresentationCopy } from "@/content/projects";
-import { projectsBlockCopy } from "@/content/projects";
-import Link from "next/link";
+
 import { Input } from "@/components/ui/input";
+import {
+  NativeSelect,
+  NativeSelectOption,
+} from "@/components/ui/native-select";
+import {
+  projectsBlockCopy,
+  projectsPresentationCopy,
+} from "@/content/projects";
+import Link from "next/link";
+
 export function ProjectsToolbar({
   query,
   onQueryChange,
@@ -24,17 +32,19 @@ export function ProjectsToolbar({
         value={query}
         onChange={(event) => onQueryChange(event.target.value)}
       />
-      <select
+      <NativeSelect
         className="control-field"
         aria-label={projectsBlockCopy.projectStatus}
         value={status}
         onChange={(event) => onStatusChange(event.target.value)}
       >
-        <option value="">{projectsBlockCopy.allStatuses}</option>
+        <NativeSelectOption value="">
+          {projectsBlockCopy.allStatuses}
+        </NativeSelectOption>
         {statuses.map((value) => (
-          <option key={value}>{value}</option>
+          <NativeSelectOption key={value}>{value}</NativeSelectOption>
         ))}
-      </select>
+      </NativeSelect>
       <Link className="type-link" href="/projects/new">
         {projectsBlockCopy.newProject}
       </Link>

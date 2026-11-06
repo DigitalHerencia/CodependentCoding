@@ -1,5 +1,7 @@
-import { getCampaigns } from "@/lib/fetchers/marketingFetchers";
 import { MarketingAnalyticsTemplate } from "@/components/templates/marketing-templates";
+import { loadMarketingAnalyticsWorkflow } from "@/lib/workflows/marketingWorkflows";
+
 export async function MarketingAnalyticsFeature() {
-  return <MarketingAnalyticsTemplate campaigns={await getCampaigns(100)} />;
+  const { campaigns } = await loadMarketingAnalyticsWorkflow();
+  return <MarketingAnalyticsTemplate campaigns={campaigns} />;
 }

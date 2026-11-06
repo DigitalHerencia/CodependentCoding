@@ -1,5 +1,7 @@
-import { getInvoices } from "@/lib/fetchers/invoicingFetchers";
+import { loadInvoicesWorkflow } from "@/lib/workflows/invoicingWorkflows";
 import { InvoicesFeatureClient } from "./invoices-feature.client";
+
 export async function InvoicesFeature() {
-  return <InvoicesFeatureClient invoices={await getInvoices(100)} />;
+  const { invoices } = await loadInvoicesWorkflow();
+  return <InvoicesFeatureClient invoices={invoices} />;
 }

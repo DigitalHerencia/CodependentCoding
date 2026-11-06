@@ -1,5 +1,7 @@
-import { getAudiences } from "@/lib/fetchers/marketingFetchers";
+import { loadAudiencesWorkflow } from "@/lib/workflows/marketingWorkflows";
 import { AudiencesFeatureClient } from "./audiences-feature.client";
+
 export async function AudiencesFeature() {
-  return <AudiencesFeatureClient audiences={await getAudiences()} />;
+  const { audiences } = await loadAudiencesWorkflow();
+  return <AudiencesFeatureClient audiences={audiences} />;
 }

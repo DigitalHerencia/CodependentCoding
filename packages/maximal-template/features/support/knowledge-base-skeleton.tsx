@@ -1,5 +1,5 @@
-import { WorkspaceLoadingState } from "@/components/blocks/shared-blocks";
+import { WorkspaceLoadingTemplate } from "@/components/templates/shared-templates";
 
 export function KnowledgeBaseSkeleton() {
-  return <WorkspaceLoadingState route="/support/knowledge-base" />;
+  return <WorkspaceLoadingTemplate route="/support/knowledge-base" />;
 }

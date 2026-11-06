@@ -1,9 +1,11 @@
 "use client";
-import { useState } from "react";
+
 import { PortalDocumentsTemplate } from "@/components/templates/portal-templates";
-import { PortalDocumentsToolbar } from "@/components/blocks/portal-blocks";
-import { PortalDocumentNewForm } from "./portal-document-new-form";
+import { selectDocumentsWorkflow } from "@/lib/workflows/portalClientWorkflows";
 import type { PortalDocumentDTO } from "@/types/portalTypes";
+import { useState } from "react";
+import { NewPortalDocumentForm } from "./newPortalDocumentForm";
+
 export function DocumentsFeatureClient({
   documents,
   canWrite,
@@ -14,16 +16,10 @@ export function DocumentsFeatureClient({
   const [query, setQuery] = useState("");
   return (
     <PortalDocumentsTemplate
-      documents={documents.filter((document) =>
-        (document.title + " " + (document.latestVersion?.filename ?? ""))
-          .toLowerCase()
-          .includes(query.toLowerCase()),
-      )}
-      toolbar={
-        <PortalDocumentsToolbar query={query} onQueryChange={setQuery} />
-      }
+      documents={selectDocumentsWorkflow(documents, query)}
+      toolbarProps={{ query: query, onQueryChange: setQuery }}
     >
-      {canWrite && <PortalDocumentNewForm />}
+      {canWrite && <NewPortalDocumentForm />}
     </PortalDocumentsTemplate>
   );
 }

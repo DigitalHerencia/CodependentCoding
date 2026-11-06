@@ -1,6 +1,6 @@
+import { cn } from "@/components/ui/utils";
 import * as React from "react";
-import { cn } from "@/lib/utils/cn";
-import { Pie, PieChart, Cell, Label } from "recharts";
+import { Cell, Label, Pie, PieChart } from "recharts";
 import { ChartContainer } from "./container";
 import { ChartEmpty } from "./empty";
 import { ChartTooltip, ChartTooltipContent } from "./tooltip";

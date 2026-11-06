@@ -1,8 +1,10 @@
 "use client";
-import { CrmAccountsToolbar } from "@/components/blocks/crm-blocks";
-import { useState } from "react";
+
 import { CrmAccountsTemplate } from "@/components/templates/crm-templates";
+import { selectCrmAccountsWorkflow } from "@/lib/workflows/crmClientWorkflows";
 import type { CrmAccountDTO } from "@/types/crmTypes";
+import { useState } from "react";
+
 export function CrmAccountsFeatureClient({
   accounts,
 }: {
@@ -11,12 +13,8 @@ export function CrmAccountsFeatureClient({
   const [query, setQuery] = useState("");
   return (
     <CrmAccountsTemplate
-      accounts={accounts.filter((account) =>
-        `${account.name} ${account.industry ?? ""}`
-          .toLowerCase()
-          .includes(query.toLowerCase()),
-      )}
-      toolbar={<CrmAccountsToolbar query={query} onQueryChange={setQuery} />}
+      accounts={selectCrmAccountsWorkflow(accounts, query)}
+      toolbarProps={{ query: query, onQueryChange: setQuery }}
     />
   );
 }

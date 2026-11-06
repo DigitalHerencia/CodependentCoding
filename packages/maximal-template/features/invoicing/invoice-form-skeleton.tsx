@@ -1,5 +1,5 @@
-import { FormLoadingState } from "@/components/blocks/shared-blocks";
+import { FormLoadingTemplate } from "@/components/templates/shared-templates";
 
 export function InvoiceFormSkeleton() {
-  return <FormLoadingState fields={6} width="5xl" />;
+  return <FormLoadingTemplate fields={6} width="5xl" />;
 }

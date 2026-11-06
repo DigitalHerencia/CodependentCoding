@@ -1,7 +1,7 @@
-import * as React from "react";
+import { cn } from "@/components/ui/utils";
 import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
-import { cn } from "@/lib/utils/cn";
+import * as React from "react";
 
 const buttonVariants = cva(
   "bk-interactive control-action whitespace-nowrap uppercase [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",

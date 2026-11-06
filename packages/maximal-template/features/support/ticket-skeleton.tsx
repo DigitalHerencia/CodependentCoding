@@ -1,5 +1,5 @@
-import { WorkspaceLoadingState } from "@/components/blocks/shared-blocks";
+import { WorkspaceLoadingTemplate } from "@/components/templates/shared-templates";
 
 export function TicketSkeleton() {
-  return <WorkspaceLoadingState route="/support/tickets/[ticketId]" />;
+  return <WorkspaceLoadingTemplate route="/support/tickets/[ticketId]" />;
 }

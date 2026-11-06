@@ -1,5 +1,7 @@
-import { getAudiences } from "@/lib/fetchers/marketingFetchers";
-import { CampaignForm } from "./campaign-form.client";
+import { loadCampaignNewWorkflow } from "@/lib/workflows/marketingWorkflows";
+import { NewCampaignForm } from "./newCampaignForm";
+
 export async function CampaignNewFeature() {
-  return <CampaignForm audiences={await getAudiences()} />;
+  const { audiences } = await loadCampaignNewWorkflow();
+  return <NewCampaignForm audiences={audiences} />;
 }
