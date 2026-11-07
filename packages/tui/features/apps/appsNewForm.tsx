@@ -9,16 +9,16 @@ import { newAppRequestSchema } from "@/schemas/appsSchemas";
 import type { NewAppRequest } from "@/types/appsTypes";
 
 const TENANCY = [
+  { value: "single", label: "One organization" },
   {
     value: "multi",
     label: "Many organizations",
     hint: "each with its own data",
   },
-  { value: "single", label: "One organization" },
 ] as const;
 const ACCESS = [
-  { value: "abac", label: "Roles plus rules", hint: "RBAC + ABAC" },
   { value: "rbac", label: "Roles only", hint: "RBAC" },
+  { value: "abac", label: "Roles plus rules", hint: "RBAC + ABAC" },
 ] as const;
 
 export function AppsNewForm({
@@ -32,8 +32,8 @@ export function AppsNewForm({
   const [values, setValues] = useState<NewAppRequest>({
     appDir: "",
     preset: "",
-    tenancy: "multi",
-    accessControl: "abac",
+    tenancy: "single",
+    accessControl: "rbac",
     color: "",
   });
   const [error, setError] = useState<string | null>(null);

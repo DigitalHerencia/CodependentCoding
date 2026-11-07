@@ -35,8 +35,8 @@ export function registerCompose(program: Command, cliVersion: string): void {
     .option("--all", "every module")
     .option("--color <hex>", "brand color, e.g. #2f7a8d")
     .option("--name <name>", "package name (default: directory name)")
-    .option("--tenancy <mode>", "multi (default) or single organization")
-    .option("--access <model>", "abac (RBAC + ABAC, default) or rbac")
+    .option("--tenancy <mode>", "single (default) or multi organization")
+    .option("--access <model>", "rbac (default) or abac (RBAC + ABAC)")
     .action(async (dir: string, options: ComposeOptions) => {
       const outDir = path.resolve(dir);
       const { dir: templateDir } = resolveTemplate();

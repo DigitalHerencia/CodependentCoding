@@ -24,6 +24,9 @@ export const invitableRoles = appRoles.filter(
 /** The role an invitation form starts on: staff. */
 export const defaultInvitedRole: InvitableRole = MembershipRole.MEMBER;
 
+/** The role a user gets by finishing onboarding without an invitation: the lowest one. Administrators promote from there. */
+export const selfSignupRole: InvitableRole = MembershipRole.VIEWER;
+
 const privilegedRoles = new Set<AppRole>([
   MembershipRole.OWNER,
   MembershipRole.ADMIN,

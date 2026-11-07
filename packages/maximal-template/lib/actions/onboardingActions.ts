@@ -1,49 +1,57 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { getVerifiedPrimaryEmail, requireIdentity } from "@/lib/auth/auth";
+import { getVerifiedPrimaryEmail } from "@/lib/auth/auth";
 import { withIdentityTransaction } from "@/lib/db/tenant";
 import { ResourceNotFoundError } from "@/lib/db/transactions/errors";
-import { acceptInvitationTx } from "@/lib/db/transactions/invitationTx";
 import { toActionResult } from "@/lib/utils/actionResult";
-import { completeOnboardingTx } from "@/lib/db/transactions/onboardingTx";
+import { baseEnv } from "@/lib/utils/env";
+import {
+  completeOnboardingTx,
+  provisionWorkspaceAccessTx,
+} from "@/lib/db/transactions/onboardingTx";
 import { onboardingSchema } from "@/schemas/commonSchemas";
+
+/** The Clerk-verified email, only when it matches the user record. */
+function matchingEmail(email: string | null, user: { email: string | null }) {
+  return email && email === user.email?.toLowerCase() ? email : null;
+}
+
+function isBootstrapOwner(clerkUserId: string) {
+  return baseEnv.value("BOOTSTRAP_OWNER_CLERK_USER_ID") === clerkUserId;
+}
 
 export async function completeOnboarding(rawInput: unknown) {
   return toActionResult(async () => {
+    const { name } = onboardingSchema.parse(rawInput);
+    const email = await getVerifiedPrimaryEmail();
     await withIdentityTransaction(async (tx, user) => {
-      const { name } = onboardingSchema.parse(rawInput);
       await completeOnboardingTx(tx, user.id, name);
+      await provisionWorkspaceAccessTx(
+        tx,
+        { id: user.id, displayName: user.displayName ?? name },
+        matchingEmail(email, user),
+        isBootstrapOwner(user.clerkUserId),
+      );
     });
     revalidatePath("/", "layout");
   });
 }
 
-export async function claimWorkspaceApproval() {
+/** Retries access for a user who finished onboarding but has no workspace yet. */
+export async function provisionWorkspaceAccess() {
   return toActionResult(async () => {
-    await requireIdentity();
     const email = await getVerifiedPrimaryEmail();
     await withIdentityTransaction(async (tx, user) => {
-      if (
-        !user.profileCompletedAt ||
-        !email ||
-        email !== user.email?.toLowerCase()
-      ) {
+      if (!user.profileCompletedAt)
         throw new ResourceNotFoundError("Workspace approval");
-      }
-
-      const approval = await tx.invitation.findFirst({
-        where: {
-          email,
-          requiresToken: false,
-          status: "PENDING",
-          expiresAt: { gt: new Date() },
-        },
-        orderBy: [{ createdAt: "desc" }, { id: "asc" }],
-        select: { id: true, organizationId: true, role: true },
-      });
-      if (!approval) throw new ResourceNotFoundError("Workspace approval");
-      await acceptInvitationTx(tx, approval, user.id);
+      const granted = await provisionWorkspaceAccessTx(
+        tx,
+        { id: user.id, displayName: user.displayName },
+        matchingEmail(email, user),
+        isBootstrapOwner(user.clerkUserId),
+      );
+      if (!granted) throw new ResourceNotFoundError("Workspace approval");
     });
     revalidatePath("/", "layout");
   });

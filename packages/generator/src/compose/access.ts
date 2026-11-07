@@ -6,7 +6,7 @@ import { pluginRoot } from "@codependent/generator/paths.mjs";
 /**
  * Setup choices baked into the app (AUTH.md §4.3, §5): one organization or
  * many (`lib/authz/mode.ts`), and role checks alone (RBAC) or role checks
- * plus record rules (ABAC). The template ships ABAC policies; RBAC replaces
+ * plus record rules (ABAC). The template ships RBAC policies; ABAC replaces
  * `lib/authz/policies.ts` and its test with the files in templates/authz/,
  * so no app branches on the choice at runtime.
  */
@@ -21,8 +21,8 @@ export interface AccessChoices {
 }
 
 export const defaultAccess: AccessChoices = {
-  tenancy: "multi",
-  accessControl: "abac",
+  tenancy: "single",
+  accessControl: "rbac",
 };
 
 export const MODE_FILE = path.join("lib", "authz", "mode.ts");
@@ -31,10 +31,10 @@ export const POLICIES_TEST_FILE = path.join("tests", "authzPolicies.test.ts");
 
 export const AUTHZ_TEMPLATES = path.join(pluginRoot, "templates", "authz");
 
-/** App file → RBAC replacement in templates/authz/. */
-const rbacFiles = [
-  [POLICIES_FILE, "policies.ts.tpl"],
-  [POLICIES_TEST_FILE, "authzPolicies.test.ts.tpl"],
+/** App file → ABAC replacement in templates/authz/. */
+const abacFiles = [
+  [POLICIES_FILE, "policies.abac.ts.tpl"],
+  [POLICIES_TEST_FILE, "authzPolicies.abac.test.ts.tpl"],
 ] as const;
 
 export function parseChoice<T extends string>(
@@ -65,8 +65,8 @@ export function writeAccessChoices(
     mode,
     applyTenancy(readFileSync(mode, "utf8"), choices.tenancy),
   );
-  if (choices.accessControl === "rbac") {
-    for (const [target, template] of rbacFiles) {
+  if (choices.accessControl === "abac") {
+    for (const [target, template] of abacFiles) {
       writeFileSync(
         path.join(appDir, target),
         readFileSync(path.join(AUTHZ_TEMPLATES, template), "utf8"),

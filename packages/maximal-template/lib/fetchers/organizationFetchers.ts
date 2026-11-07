@@ -4,6 +4,7 @@ import type {
   InvitationListDTO,
   OrganizationSwitcherDTO,
 } from "@/types/commonTypes";
+import { activeMembershipScope } from "@/lib/authz/mode";
 import { assertPermission, hasPermission } from "@/lib/authz/permissions";
 import { withAuthenticatedRead } from "@/lib/db/tenant";
 import {
@@ -41,7 +42,7 @@ export async function getOrganizationSwitcher(): Promise<OrganizationSwitcherDTO
   return withAuthenticatedRead(async (tx, access) => {
     assertPermission(access, "base.organization:read");
     const rows = await tx.membership.findMany({
-      where: { userId: access.userId, status: "ACTIVE" },
+      where: activeMembershipScope(access.userId),
       orderBy: [{ createdAt: "asc" }, { id: "asc" }],
       select: { organization: { select: { id: true, name: true } } },
     });
