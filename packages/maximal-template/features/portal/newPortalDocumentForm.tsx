@@ -1,14 +1,10 @@
 "use client";
 
-import {
-  PortalFormButtonBlock as Button,
-  PortalFormFieldBlock as Field,
-  PortalFormFieldErrorBlock as FieldError,
-  PortalFormFieldLabelBlock as FieldLabel,
-  PortalFormInputBlock as Input,
-  PortalFormTextareaBlock,
-} from "@/components/blocks/portal-form-blocks";
 import { formResultCopy } from "@/content/application";
+import { Button } from "@/components/ui/button";
+import { Field, FieldError, FieldLabel } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { portalPresentationCopy, portalRemainingCopy } from "@/content/portal";
 import { createPortalDocument } from "@/lib/actions/portalActions";
 import { createPortalDocumentSchema } from "@/schemas/portalSchemas";
@@ -85,7 +81,7 @@ export function NewPortalDocumentForm() {
               <FieldLabel htmlFor={id + "-description"}>
                 {portalRemainingCopy.description}
               </FieldLabel>
-              <PortalFormTextareaBlock
+              <Textarea
                 {...field}
                 value={field.value ?? ""}
                 id={id + "-description"}

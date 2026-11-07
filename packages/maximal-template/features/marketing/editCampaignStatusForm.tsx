@@ -1,14 +1,12 @@
 "use client";
 
-import {
-  MarketingFormButtonBlock as Button,
-  MarketingFormFieldBlock as Field,
-  MarketingFormFieldErrorBlock as FieldError,
-  MarketingFormFieldLabelBlock as FieldLabel,
-  MarketingFormNativeSelectBlock,
-  MarketingFormNativeSelectOptionBlock,
-} from "@/components/blocks/marketing-form-blocks";
 import { formResultCopy } from "@/content/application";
+import { Button } from "@/components/ui/button";
+import { Field, FieldError, FieldLabel } from "@/components/ui/field";
+import {
+  NativeSelect,
+  NativeSelectOption,
+} from "@/components/ui/native-select";
 import { marketingControlCopy } from "@/content/marketing";
 import { updateCampaignStatus } from "@/lib/actions/marketingActions";
 import {
@@ -76,7 +74,7 @@ export function EditCampaignStatusForm({
             <FieldLabel htmlFor={id + "-status"}>
               {marketingControlCopy.campaignLifecycle}
             </FieldLabel>
-            <MarketingFormNativeSelectBlock
+            <NativeSelect
               {...field}
               value={String(field.value ?? "")}
               id={id + "-status"}
@@ -84,11 +82,9 @@ export function EditCampaignStatusForm({
               aria-invalid={fieldState.invalid}
             >
               {Object.values(CampaignStatus).map((status) => (
-                <MarketingFormNativeSelectOptionBlock key={status}>
-                  {status}
-                </MarketingFormNativeSelectOptionBlock>
+                <NativeSelectOption key={status}>{status}</NativeSelectOption>
               ))}
-            </MarketingFormNativeSelectBlock>
+            </NativeSelect>
             {fieldState.error && (
               <FieldError>{fieldState.error.message}</FieldError>
             )}

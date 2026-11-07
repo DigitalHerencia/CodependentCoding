@@ -1,13 +1,9 @@
 "use client";
 
-import {
-  SettingsFormButtonBlock as Button,
-  SettingsFormFieldBlock as Field,
-  SettingsFormFieldErrorBlock as FieldError,
-  SettingsFormFieldLabelBlock as FieldLabel,
-  SettingsFormInputBlock as Input,
-} from "@/components/blocks/settings-form-blocks";
 import { formResultCopy } from "@/content/application";
+import { Button } from "@/components/ui/button";
+import { Field, FieldError, FieldLabel } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
 import { settingsControlCopy } from "@/content/settings";
 import { updateOrganizationSettings } from "@/lib/actions/commonActions";
 import { organizationSettingsSchema } from "@/schemas/commonSchemas";

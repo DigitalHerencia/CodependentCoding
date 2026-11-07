@@ -1,17 +1,13 @@
 "use client";
 
 import {
-  SupportFormButtonBlock as Button,
-  SupportFormFieldBlock as Field,
-  SupportFormFieldErrorBlock as FieldError,
-  SupportFormFieldLabelBlock as FieldLabel,
-  SupportFormInputBlock as Input,
-  SupportFormTextareaBlock,
-} from "@/components/blocks/support-form-blocks";
-import {
   supportPresentationCopy,
   supportRemainingCopy,
 } from "@/content/support";
+import { Button } from "@/components/ui/button";
+import { Field, FieldError, FieldLabel } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import {
   createKnowledgeArticle,
   updateKnowledgeArticle,
@@ -140,7 +136,7 @@ export function NewKnowledgeArticleForm({
             <FieldLabel htmlFor="article-body">
               {supportRemainingCopy.article}
             </FieldLabel>
-            <SupportFormTextareaBlock
+            <Textarea
               id="article-body"
               className="control-field min-h-96"
               required

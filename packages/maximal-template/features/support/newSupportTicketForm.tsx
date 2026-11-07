@@ -1,19 +1,17 @@
 "use client";
 
 import {
-  SupportFormButtonBlock as Button,
-  SupportFormFieldBlock as Field,
-  SupportFormFieldErrorBlock as FieldError,
-  SupportFormFieldLabelBlock as FieldLabel,
-  SupportFormInputBlock as Input,
-  SupportFormNativeSelectBlock,
-  SupportFormNativeSelectOptionBlock,
-  SupportFormTextareaBlock,
-} from "@/components/blocks/support-form-blocks";
-import {
   supportPresentationCopy,
   supportRemainingCopy,
 } from "@/content/support";
+import { Button } from "@/components/ui/button";
+import { Field, FieldError, FieldLabel } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import {
+  NativeSelect,
+  NativeSelectOption,
+} from "@/components/ui/native-select";
+import { Textarea } from "@/components/ui/textarea";
 import { createSupportTicket } from "@/lib/actions/supportActions";
 import {
   createSupportTicketSchema,
@@ -101,7 +99,7 @@ export function NewSupportTicketForm() {
             <FieldLabel htmlFor="ticket-description">
               {supportRemainingCopy.whatHappenedAndWhatDidYouExpect}
             </FieldLabel>
-            <SupportFormTextareaBlock
+            <Textarea
               id="ticket-description"
               className="control-field min-h-48"
               maxLength={30000}
@@ -123,7 +121,7 @@ export function NewSupportTicketForm() {
             <FieldLabel htmlFor="ticket-priority">
               {supportRemainingCopy.priority}
             </FieldLabel>
-            <SupportFormNativeSelectBlock
+            <NativeSelect
               id="ticket-priority"
               className="control-field"
               {...controllerField}
@@ -131,11 +129,11 @@ export function NewSupportTicketForm() {
               aria-invalid={fieldState.invalid}
             >
               {Object.values(TicketPriority).map((priority) => (
-                <SupportFormNativeSelectOptionBlock key={priority}>
+                <NativeSelectOption key={priority}>
                   {priority}
-                </SupportFormNativeSelectOptionBlock>
+                </NativeSelectOption>
               ))}
-            </SupportFormNativeSelectBlock>
+            </NativeSelect>
             {fieldState.error && (
               <FieldError>{fieldState.error.message}</FieldError>
             )}

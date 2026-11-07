@@ -1,18 +1,16 @@
 "use client";
 
 import {
-  MarketingFormButtonBlock as Button,
-  MarketingFormFieldBlock as Field,
-  MarketingFormFieldErrorBlock as FieldError,
-  MarketingFormFieldLabelBlock as FieldLabel,
-  MarketingFormInputBlock as Input,
-  MarketingFormNativeSelectBlock,
-  MarketingFormNativeSelectOptionBlock,
-} from "@/components/blocks/marketing-form-blocks";
-import {
   marketingPresentationCopy,
   marketingRemainingCopy,
 } from "@/content/marketing";
+import { Button } from "@/components/ui/button";
+import { Field, FieldError, FieldLabel } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import {
+  NativeSelect,
+  NativeSelectOption,
+} from "@/components/ui/native-select";
 import { createAudience, updateAudience } from "@/lib/actions/marketingActions";
 import { audienceFormSchema } from "@/schemas/marketingSchemas";
 import type { AudienceDTO } from "@/types/marketingTypes";
@@ -121,22 +119,22 @@ export function NewAudienceForm({ audience }: { audience?: AudienceDTO }) {
               <FieldLabel htmlFor="audience-rule">
                 {marketingRemainingCopy.contactRelationshipEquals}
               </FieldLabel>
-              <MarketingFormNativeSelectBlock
+              <NativeSelect
                 {...field}
                 id="audience-rule"
                 className="control-field"
                 aria-invalid={fieldState.invalid}
               >
-                <MarketingFormNativeSelectOptionBlock value="active">
+                <NativeSelectOption value="active">
                   {marketingRemainingCopy.active}
-                </MarketingFormNativeSelectOptionBlock>
-                <MarketingFormNativeSelectOptionBlock value="lead">
+                </NativeSelectOption>
+                <NativeSelectOption value="lead">
                   {marketingRemainingCopy.lead}
-                </MarketingFormNativeSelectOptionBlock>
-                <MarketingFormNativeSelectOptionBlock value="inactive">
+                </NativeSelectOption>
+                <NativeSelectOption value="inactive">
                   {marketingRemainingCopy.inactive}
-                </MarketingFormNativeSelectOptionBlock>
-              </MarketingFormNativeSelectBlock>
+                </NativeSelectOption>
+              </NativeSelect>
               {fieldState.error && (
                 <FieldError>{fieldState.error.message}</FieldError>
               )}
@@ -152,23 +150,23 @@ export function NewAudienceForm({ audience }: { audience?: AudienceDTO }) {
             <FieldLabel htmlFor="audience-status">
               {marketingRemainingCopy.audienceStatus}
             </FieldLabel>
-            <MarketingFormNativeSelectBlock
+            <NativeSelect
               id="audience-status"
               className="control-field"
               {...controllerField}
               value={String(controllerField.value ?? "")}
               aria-invalid={fieldState.invalid}
             >
-              <MarketingFormNativeSelectOptionBlock>
+              <NativeSelectOption>
                 {marketingRemainingCopy.dRAFT}
-              </MarketingFormNativeSelectOptionBlock>
-              <MarketingFormNativeSelectOptionBlock>
+              </NativeSelectOption>
+              <NativeSelectOption>
                 {marketingRemainingCopy.aCTIVE}
-              </MarketingFormNativeSelectOptionBlock>
-              <MarketingFormNativeSelectOptionBlock>
+              </NativeSelectOption>
+              <NativeSelectOption>
                 {marketingRemainingCopy.aRCHIVED}
-              </MarketingFormNativeSelectOptionBlock>
-            </MarketingFormNativeSelectBlock>
+              </NativeSelectOption>
+            </NativeSelect>
             {fieldState.error && (
               <FieldError>{fieldState.error.message}</FieldError>
             )}

@@ -1,13 +1,9 @@
 "use client";
 
-import {
-  PublicFormButtonBlock as Button,
-  PublicFormFieldBlock as Field,
-  PublicFormFieldErrorBlock as FieldError,
-  PublicFormFieldLabelBlock as FieldLabel,
-  PublicFormInputBlock as Input,
-} from "@/components/blocks/public-form-blocks";
 import { cn, safeHref } from "@/components/ui/utils";
+import { Button } from "@/components/ui/button";
+import { Field, FieldError, FieldLabel } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
 import { formResultCopy } from "@/content/application";
 import { publicUiCopy } from "@/content/public";
 import { sharedLibraryCopy } from "@/content/shared";

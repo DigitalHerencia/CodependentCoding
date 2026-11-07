@@ -1,17 +1,13 @@
 "use client";
 
 import {
-  ProjectsFormButtonBlock as Button,
-  ProjectsFormFieldBlock as Field,
-  ProjectsFormFieldErrorBlock as FieldError,
-  ProjectsFormFieldLabelBlock as FieldLabel,
-  ProjectsFormInputBlock as Input,
-  ProjectsFormTextareaBlock,
-} from "@/components/blocks/projects-form-blocks";
-import {
   projectsPresentationCopy,
   projectsRemainingCopy,
 } from "@/content/projects";
+import { Button } from "@/components/ui/button";
+import { Field, FieldError, FieldLabel } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { createProject, updateProject } from "@/lib/actions/projectsActions";
 import { createProjectSchema } from "@/schemas/projectsSchemas";
 import type { ProjectSummaryDTO } from "@/types/projectsTypes";
@@ -116,7 +112,7 @@ export function NewProjectForm({ project }: { project?: ProjectSummaryDTO }) {
             <FieldLabel htmlFor="project-description">
               {projectsRemainingCopy.projectBrief}
             </FieldLabel>
-            <ProjectsFormTextareaBlock
+            <Textarea
               id="project-description"
               className="control-field min-h-36"
               maxLength={10000}

@@ -1,15 +1,13 @@
 "use client";
 
-import {
-  SupportFormButtonBlock as Button,
-  SupportFormFieldBlock as Field,
-  SupportFormFieldErrorBlock as FieldError,
-  SupportFormFieldLabelBlock as FieldLabel,
-  SupportFormNativeSelectBlock,
-  SupportFormNativeSelectOptionBlock,
-  SupportFormTextareaBlock,
-} from "@/components/blocks/support-form-blocks";
 import { formResultCopy } from "@/content/application";
+import { Button } from "@/components/ui/button";
+import { Field, FieldError, FieldLabel } from "@/components/ui/field";
+import {
+  NativeSelect,
+  NativeSelectOption,
+} from "@/components/ui/native-select";
+import { Textarea } from "@/components/ui/textarea";
 import { supportControlCopy } from "@/content/support";
 import {
   replyToSupportTicket,
@@ -77,7 +75,7 @@ export function EditTicketConversationForm({
             <FieldLabel htmlFor={id + "-body"}>
               {supportControlCopy.replyToConversation}
             </FieldLabel>
-            <SupportFormTextareaBlock
+            <Textarea
               {...field}
               value={String(field.value ?? "")}
               id={id + "-body"}
@@ -153,7 +151,7 @@ export function TicketStatusForm({ ticket }: { ticket: SupportTicketDTO }) {
             <FieldLabel htmlFor={id + "-status"}>
               {supportControlCopy.ticketStatus}
             </FieldLabel>
-            <SupportFormNativeSelectBlock
+            <NativeSelect
               {...field}
               value={String(field.value ?? "")}
               id={id + "-status"}
@@ -161,11 +159,9 @@ export function TicketStatusForm({ ticket }: { ticket: SupportTicketDTO }) {
               aria-invalid={fieldState.invalid}
             >
               {Object.values(TicketStatus).map((status) => (
-                <SupportFormNativeSelectOptionBlock key={status}>
-                  {status}
-                </SupportFormNativeSelectOptionBlock>
+                <NativeSelectOption key={status}>{status}</NativeSelectOption>
               ))}
-            </SupportFormNativeSelectBlock>
+            </NativeSelect>
             {fieldState.error && (
               <FieldError>{fieldState.error.message}</FieldError>
             )}

@@ -1,19 +1,17 @@
 "use client";
 
 import {
-  MarketingFormButtonBlock as Button,
-  MarketingFormFieldBlock as Field,
-  MarketingFormFieldErrorBlock as FieldError,
-  MarketingFormFieldLabelBlock as FieldLabel,
-  MarketingFormInputBlock as Input,
-  MarketingFormNativeSelectBlock,
-  MarketingFormNativeSelectOptionBlock,
-  MarketingFormTextareaBlock,
-} from "@/components/blocks/marketing-form-blocks";
-import {
   marketingPresentationCopy,
   marketingRemainingCopy,
 } from "@/content/marketing";
+import { Button } from "@/components/ui/button";
+import { Field, FieldError, FieldLabel } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import {
+  NativeSelect,
+  NativeSelectOption,
+} from "@/components/ui/native-select";
+import { Textarea } from "@/components/ui/textarea";
 import { createCampaign, updateCampaign } from "@/lib/actions/marketingActions";
 import { createCampaignSchema } from "@/schemas/marketingSchemas";
 import type { AudienceDTO, CampaignDTO } from "@/types/marketingTypes";
@@ -124,7 +122,7 @@ export function NewCampaignForm({
             <FieldLabel htmlFor="campaign-brief">
               {marketingRemainingCopy.campaignBrief}
             </FieldLabel>
-            <MarketingFormTextareaBlock
+            <Textarea
               id="campaign-brief"
               className="control-field min-h-40"
               {...controllerField}
@@ -145,25 +143,22 @@ export function NewCampaignForm({
             <FieldLabel htmlFor="campaign-audience">
               {marketingRemainingCopy.targetAudience}
             </FieldLabel>
-            <MarketingFormNativeSelectBlock
+            <NativeSelect
               id="campaign-audience"
               className="control-field"
               {...controllerField}
               value={String(controllerField.value ?? "")}
               aria-invalid={fieldState.invalid}
             >
-              <MarketingFormNativeSelectOptionBlock value="">
+              <NativeSelectOption value="">
                 {marketingRemainingCopy.noAudienceSelected}
-              </MarketingFormNativeSelectOptionBlock>
+              </NativeSelectOption>
               {audiences.map((audience) => (
-                <MarketingFormNativeSelectOptionBlock
-                  key={audience.id}
-                  value={audience.id}
-                >
+                <NativeSelectOption key={audience.id} value={audience.id}>
                   {audience.name}
-                </MarketingFormNativeSelectOptionBlock>
+                </NativeSelectOption>
               ))}
-            </MarketingFormNativeSelectBlock>
+            </NativeSelect>
             {fieldState.error && (
               <FieldError>{fieldState.error.message}</FieldError>
             )}

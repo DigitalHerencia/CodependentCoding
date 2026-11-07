@@ -1,14 +1,10 @@
 "use client";
 
-import {
-  SocialFormButtonBlock as Button,
-  SocialFormFieldBlock as Field,
-  SocialFormFieldErrorBlock as FieldError,
-  SocialFormFieldLabelBlock as FieldLabel,
-  SocialFormInputBlock as Input,
-  SocialFormTextareaBlock,
-} from "@/components/blocks/social-form-blocks";
 import { SocialComposeTemplate } from "@/components/templates/social-templates";
+import { Button } from "@/components/ui/button";
+import { Field, FieldError, FieldLabel } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { formResultCopy } from "@/content/application";
 import {
   socialPresentationCopy,
@@ -109,7 +105,7 @@ export function NewSocialPostForm({
               <FieldLabel htmlFor="social-content">
                 {socialRemainingCopy.postContent}
               </FieldLabel>
-              <SocialFormTextareaBlock
+              <Textarea
                 {...field}
                 id="social-content"
                 className="control-field min-h-64"

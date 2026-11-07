@@ -1,14 +1,12 @@
 "use client";
 
-import {
-  AdminFormNativeSelectBlock,
-  AdminFormNativeSelectOptionBlock,
-  AdminFormButtonBlock as Button,
-  AdminFormFieldBlock as Field,
-  AdminFormFieldErrorBlock as FieldError,
-  AdminFormFieldLabelBlock as FieldLabel,
-} from "@/components/blocks/admin-form-blocks";
 import { adminMembershipCopy } from "@/content/admin";
+import {
+  NativeSelect,
+  NativeSelectOption,
+} from "@/components/ui/native-select";
+import { Button } from "@/components/ui/button";
+import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { formResultCopy } from "@/content/application";
 import {
   changeAdminMembership,
@@ -68,18 +66,16 @@ export function EditAdminMembershipForm({
               <FieldLabel htmlFor="member-role">
                 {adminMembershipCopy.role}
               </FieldLabel>
-              <AdminFormNativeSelectBlock
+              <NativeSelect
                 {...field}
                 id="member-role"
                 className="control-field"
                 aria-invalid={fieldState.invalid}
               >
                 {appRoles.map((role) => (
-                  <AdminFormNativeSelectOptionBlock key={role}>
-                    {role}
-                  </AdminFormNativeSelectOptionBlock>
+                  <NativeSelectOption key={role}>{role}</NativeSelectOption>
                 ))}
-              </AdminFormNativeSelectBlock>
+              </NativeSelect>
               {fieldState.error && (
                 <FieldError>{fieldState.error.message}</FieldError>
               )}

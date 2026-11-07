@@ -1,13 +1,9 @@
 "use client";
 
-import {
-  AiFormTextareaBlock,
-  AiFormButtonBlock as Button,
-  AiFormFieldBlock as Field,
-  AiFormFieldErrorBlock as FieldError,
-  AiFormFieldLabelBlock as FieldLabel,
-} from "@/components/blocks/ai-form-blocks";
 import { AiPlaygroundTemplate } from "@/components/templates/ai-templates";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { aiPresentationCopy, aiRemainingCopy } from "@/content/ai";
 import { formResultCopy } from "@/content/application";
 import { generateAiResponse } from "@/lib/actions/aiActions";
@@ -70,7 +66,7 @@ export function NewAiGenerationForm({
               <FieldLabel htmlFor="ai-prompt">
                 {aiRemainingCopy.yourPrompt}
               </FieldLabel>
-              <AiFormTextareaBlock
+              <Textarea
                 {...field}
                 id="ai-prompt"
                 className="control-field min-h-64 w-full"

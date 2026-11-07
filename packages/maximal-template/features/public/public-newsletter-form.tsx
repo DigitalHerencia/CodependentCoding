@@ -1,14 +1,10 @@
 "use client";
 
 import { type FooterColumn } from "@/components/blocks/public-blocks.client";
-import {
-  PublicFormButtonBlock as Button,
-  PublicFormFieldBlock as Field,
-  PublicFormFieldErrorBlock as FieldError,
-  PublicFormFieldLabelBlock as FieldLabel,
-  PublicFormInputBlock as Input,
-  PublicFormSeparatorBlock as Separator,
-} from "@/components/blocks/public-form-blocks";
+import { Button } from "@/components/ui/button";
+import { Field, FieldError, FieldLabel } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
 import { cn, safeHref } from "@/components/ui/utils";
 import { formResultCopy } from "@/content/application";
 import { publicUiCopy } from "@/content/public";

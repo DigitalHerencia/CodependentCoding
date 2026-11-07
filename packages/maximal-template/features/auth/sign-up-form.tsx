@@ -1,13 +1,9 @@
 "use client";
 
 import { AuthFormPanel } from "@/components/blocks/auth-blocks";
-import {
-  AuthFormButtonBlock as Button,
-  AuthFormFieldBlock as Field,
-  AuthFormFieldErrorBlock as FieldError,
-  AuthFormFieldLabelBlock as FieldLabel,
-  AuthFormInputBlock as Input,
-} from "@/components/blocks/auth-form-blocks";
+import { Button } from "@/components/ui/button";
+import { Field, FieldError, FieldLabel } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
 import { authAppearance, authPresentationCopy } from "@/content/auth";
 import { SignUp, useSignUp } from "@/lib/auth/clerkAccount";
 import { getSignUpFormSchema } from "@/schemas/authSchemas";

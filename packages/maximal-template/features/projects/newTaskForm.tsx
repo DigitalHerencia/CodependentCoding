@@ -1,19 +1,17 @@
 "use client";
 
 import {
-  ProjectsFormButtonBlock as Button,
-  ProjectsFormFieldBlock as Field,
-  ProjectsFormFieldErrorBlock as FieldError,
-  ProjectsFormFieldLabelBlock as FieldLabel,
-  ProjectsFormInputBlock as Input,
-  ProjectsFormNativeSelectBlock,
-  ProjectsFormNativeSelectOptionBlock,
-  ProjectsFormTextareaBlock,
-} from "@/components/blocks/projects-form-blocks";
-import {
   projectsPresentationCopy,
   projectsRemainingCopy,
 } from "@/content/projects";
+import { Button } from "@/components/ui/button";
+import { Field, FieldError, FieldLabel } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import {
+  NativeSelect,
+  NativeSelectOption,
+} from "@/components/ui/native-select";
+import { Textarea } from "@/components/ui/textarea";
 import { createTask, updateTask } from "@/lib/actions/projectsActions";
 import { createTaskSchema, TaskPriority } from "@/schemas/projectsSchemas";
 import type { TaskDTO } from "@/types/projectsTypes";
@@ -120,7 +118,7 @@ export function NewTaskForm({
             <FieldLabel htmlFor="task-description">
               {projectsRemainingCopy.descriptionAndAcceptanceCriteria}
             </FieldLabel>
-            <ProjectsFormTextareaBlock
+            <Textarea
               id="task-description"
               className="control-field min-h-36"
               maxLength={20000}
@@ -143,7 +141,7 @@ export function NewTaskForm({
               <FieldLabel htmlFor="task-priority">
                 {projectsRemainingCopy.priority}
               </FieldLabel>
-              <ProjectsFormNativeSelectBlock
+              <NativeSelect
                 id="task-priority"
                 className="control-field"
                 {...controllerField}
@@ -151,11 +149,11 @@ export function NewTaskForm({
                 aria-invalid={fieldState.invalid}
               >
                 {Object.values(TaskPriority).map((priority) => (
-                  <ProjectsFormNativeSelectOptionBlock key={priority}>
+                  <NativeSelectOption key={priority}>
                     {priority}
-                  </ProjectsFormNativeSelectOptionBlock>
+                  </NativeSelectOption>
                 ))}
-              </ProjectsFormNativeSelectBlock>
+              </NativeSelect>
               {fieldState.error && (
                 <FieldError>{fieldState.error.message}</FieldError>
               )}

@@ -1,15 +1,13 @@
 "use client";
 
-import {
-  AdminFormNativeSelectBlock,
-  AdminFormNativeSelectOptionBlock,
-  AdminFormButtonBlock as Button,
-  AdminFormFieldBlock as Field,
-  AdminFormFieldErrorBlock as FieldError,
-  AdminFormFieldLabelBlock as FieldLabel,
-  AdminFormInputBlock as Input,
-} from "@/components/blocks/admin-form-blocks";
 import { adminPresentationCopy, adminRemainingCopy } from "@/content/admin";
+import {
+  NativeSelect,
+  NativeSelectOption,
+} from "@/components/ui/native-select";
+import { Button } from "@/components/ui/button";
+import { Field, FieldError, FieldLabel } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
 import { formResultCopy } from "@/content/application";
 import { addAdminMembership } from "@/lib/actions/adminActions";
 import { invitableRoles } from "@/lib/authz/roles";
@@ -82,18 +80,16 @@ export function NewAdminUserForm() {
             <FieldLabel htmlFor="new-member-role">
               {adminRemainingCopy.applicationRole}
             </FieldLabel>
-            <AdminFormNativeSelectBlock
+            <NativeSelect
               {...field}
               id="new-member-role"
               className="control-field"
               aria-invalid={fieldState.invalid}
             >
               {invitableRoles.map((role) => (
-                <AdminFormNativeSelectOptionBlock key={role}>
-                  {role}
-                </AdminFormNativeSelectOptionBlock>
+                <NativeSelectOption key={role}>{role}</NativeSelectOption>
               ))}
-            </AdminFormNativeSelectBlock>
+            </NativeSelect>
             {fieldState.error && (
               <FieldError>{fieldState.error.message}</FieldError>
             )}

@@ -1,14 +1,12 @@
 "use client";
 
-import {
-  CrmFormButtonBlock as Button,
-  CrmFormNativeSelectBlock,
-  CrmFormNativeSelectOptionBlock,
-  CrmFormFieldBlock as Field,
-  CrmFormFieldErrorBlock as FieldError,
-  CrmFormFieldLabelBlock as FieldLabel,
-} from "@/components/blocks/crm-form-blocks";
 import { formResultCopy } from "@/content/application";
+import { Button } from "@/components/ui/button";
+import {
+  NativeSelect,
+  NativeSelectOption,
+} from "@/components/ui/native-select";
+import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { crmControlCopy } from "@/content/crm";
 import { updateCrmDealStage } from "@/lib/actions/crmActions";
 import { CrmDealStage, updateCrmDealStageSchema } from "@/schemas/crmSchemas";
@@ -69,7 +67,7 @@ export function EditCrmDealStageForm({ deal }: { deal: CrmDealSummaryDTO }) {
             <FieldLabel htmlFor={id + "-stage"}>
               {crmControlCopy.opportunityStage}
             </FieldLabel>
-            <CrmFormNativeSelectBlock
+            <NativeSelect
               {...field}
               value={String(field.value ?? "")}
               id={id + "-stage"}
@@ -77,11 +75,9 @@ export function EditCrmDealStageForm({ deal }: { deal: CrmDealSummaryDTO }) {
               aria-invalid={fieldState.invalid}
             >
               {Object.values(CrmDealStage).map((stage) => (
-                <CrmFormNativeSelectOptionBlock key={stage}>
-                  {stage}
-                </CrmFormNativeSelectOptionBlock>
+                <NativeSelectOption key={stage}>{stage}</NativeSelectOption>
               ))}
-            </CrmFormNativeSelectBlock>
+            </NativeSelect>
             {fieldState.error && (
               <FieldError>{fieldState.error.message}</FieldError>
             )}

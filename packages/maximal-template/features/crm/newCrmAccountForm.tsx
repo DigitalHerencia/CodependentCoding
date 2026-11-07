@@ -1,14 +1,10 @@
 "use client";
 
-import {
-  CrmFormButtonBlock as Button,
-  CrmFormTextareaBlock,
-  CrmFormFieldBlock as Field,
-  CrmFormFieldErrorBlock as FieldError,
-  CrmFormFieldLabelBlock as FieldLabel,
-  CrmFormInputBlock as Input,
-} from "@/components/blocks/crm-form-blocks";
 import { accountFormCopy as copy } from "@/content/crm";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Field, FieldError, FieldLabel } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
 import { createCrmAccount, updateCrmAccount } from "@/lib/actions/crmActions";
 import { crmAccountFormSchema } from "@/schemas/crmSchemas";
 import type { CrmAccountDTO } from "@/types/crmTypes";
@@ -73,7 +69,7 @@ export function NewCrmAccountForm({ account }: { account?: CrmAccountDTO }) {
               <Field data-invalid={fieldState.invalid}>
                 <FieldLabel htmlFor={name}>{copy.fields[name]}</FieldLabel>
                 {name === "notes" ? (
-                  <CrmFormTextareaBlock
+                  <Textarea
                     id={name}
                     className="control-field min-h-36"
                     aria-invalid={fieldState.invalid}

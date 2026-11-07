@@ -1,14 +1,12 @@
 "use client";
 
-import {
-  ProjectsFormButtonBlock as Button,
-  ProjectsFormFieldBlock as Field,
-  ProjectsFormFieldErrorBlock as FieldError,
-  ProjectsFormFieldLabelBlock as FieldLabel,
-  ProjectsFormNativeSelectBlock,
-  ProjectsFormNativeSelectOptionBlock,
-} from "@/components/blocks/projects-form-blocks";
 import { formResultCopy } from "@/content/application";
+import { Button } from "@/components/ui/button";
+import { Field, FieldError, FieldLabel } from "@/components/ui/field";
+import {
+  NativeSelect,
+  NativeSelectOption,
+} from "@/components/ui/native-select";
 import { projectsControlCopy } from "@/content/projects";
 import { updateTaskStatus } from "@/lib/actions/projectsActions";
 import { TaskStatus, updateTaskStatusSchema } from "@/schemas/projectsSchemas";
@@ -69,7 +67,7 @@ export function EditTaskStatusForm({ task }: { task: TaskDTO }) {
             <FieldLabel htmlFor={id + "-status"}>
               {projectsControlCopy.taskStatus}
             </FieldLabel>
-            <ProjectsFormNativeSelectBlock
+            <NativeSelect
               {...field}
               value={String(field.value ?? "")}
               id={id + "-status"}
@@ -77,11 +75,9 @@ export function EditTaskStatusForm({ task }: { task: TaskDTO }) {
               aria-invalid={fieldState.invalid}
             >
               {Object.values(TaskStatus).map((status) => (
-                <ProjectsFormNativeSelectOptionBlock key={status}>
-                  {status}
-                </ProjectsFormNativeSelectOptionBlock>
+                <NativeSelectOption key={status}>{status}</NativeSelectOption>
               ))}
-            </ProjectsFormNativeSelectBlock>
+            </NativeSelect>
             {fieldState.error && (
               <FieldError>{fieldState.error.message}</FieldError>
             )}

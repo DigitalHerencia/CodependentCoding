@@ -1,15 +1,13 @@
 "use client";
 
-import {
-  PortalFormButtonBlock as Button,
-  PortalFormFieldBlock as Field,
-  PortalFormFieldErrorBlock as FieldError,
-  PortalFormFieldLabelBlock as FieldLabel,
-  PortalFormNativeSelectBlock,
-  PortalFormNativeSelectOptionBlock,
-  PortalFormTextareaBlock,
-} from "@/components/blocks/portal-form-blocks";
 import { formResultCopy } from "@/content/application";
+import { Button } from "@/components/ui/button";
+import { Field, FieldError, FieldLabel } from "@/components/ui/field";
+import {
+  NativeSelect,
+  NativeSelectOption,
+} from "@/components/ui/native-select";
+import { Textarea } from "@/components/ui/textarea";
 import { portalControlCopy } from "@/content/portal";
 import { addPortalDocumentVersion } from "@/lib/actions/portalActions";
 import { addPortalDocumentVersionSchema } from "@/schemas/portalSchemas";
@@ -79,25 +77,22 @@ export function NewDocumentVersionForm({
             <FieldLabel htmlFor={id + "-assetId"}>
               {portalControlCopy.addAVersionFromWorkspaceFiles}
             </FieldLabel>
-            <PortalFormNativeSelectBlock
+            <NativeSelect
               {...field}
               value={String(field.value ?? "")}
               id={id + "-assetId"}
               className="control-field"
               aria-invalid={fieldState.invalid}
             >
-              <PortalFormNativeSelectOptionBlock value="">
+              <NativeSelectOption value="">
                 {portalControlCopy.selectAFile}
-              </PortalFormNativeSelectOptionBlock>
+              </NativeSelectOption>
               {assets.map((asset) => (
-                <PortalFormNativeSelectOptionBlock
-                  key={asset.id}
-                  value={asset.id}
-                >
+                <NativeSelectOption key={asset.id} value={asset.id}>
                   {asset.filename}
-                </PortalFormNativeSelectOptionBlock>
+                </NativeSelectOption>
               ))}
-            </PortalFormNativeSelectBlock>
+            </NativeSelect>
             {fieldState.error && (
               <FieldError>{fieldState.error.message}</FieldError>
             )}
@@ -112,7 +107,7 @@ export function NewDocumentVersionForm({
             <FieldLabel htmlFor={id + "-notes"}>
               {portalControlCopy.versionNotes}
             </FieldLabel>
-            <PortalFormTextareaBlock
+            <Textarea
               {...field}
               value={String(field.value ?? "")}
               id={id + "-notes"}

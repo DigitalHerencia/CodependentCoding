@@ -1,15 +1,13 @@
 "use client";
 
-import {
-  CrmFormButtonBlock as Button,
-  CrmFormNativeSelectBlock,
-  CrmFormNativeSelectOptionBlock,
-  CrmFormFieldBlock as Field,
-  CrmFormFieldErrorBlock as FieldError,
-  CrmFormFieldLabelBlock as FieldLabel,
-  CrmFormInputBlock as Input,
-} from "@/components/blocks/crm-form-blocks";
 import { contactFormCopy as copy } from "@/content/crm";
+import { Button } from "@/components/ui/button";
+import {
+  NativeSelect,
+  NativeSelectOption,
+} from "@/components/ui/native-select";
+import { Field, FieldError, FieldLabel } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
 import { createContact, updateContact } from "@/lib/actions/crmActions";
 import { contactFormSchema, contactStatusSchema } from "@/schemas/crmSchemas";
 import type { CrmContactDTO } from "@/types/crmTypes";
@@ -94,18 +92,18 @@ export function NewCrmContactForm({
               <Field data-invalid={fieldState.invalid}>
                 <FieldLabel htmlFor={name}>{copy.fields[name]}</FieldLabel>
                 {name === "status" ? (
-                  <CrmFormNativeSelectBlock
+                  <NativeSelect
                     id={name}
                     className="control-field"
                     aria-invalid={fieldState.invalid}
                     {...field}
                   >
                     {contactStatusSchema.options.map((status) => (
-                      <CrmFormNativeSelectOptionBlock key={status}>
+                      <NativeSelectOption key={status}>
                         {status}
-                      </CrmFormNativeSelectOptionBlock>
+                      </NativeSelectOption>
                     ))}
-                  </CrmFormNativeSelectBlock>
+                  </NativeSelect>
                 ) : (
                   <Input
                     id={name}

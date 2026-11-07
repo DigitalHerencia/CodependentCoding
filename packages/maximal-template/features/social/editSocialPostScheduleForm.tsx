@@ -1,13 +1,9 @@
 "use client";
 
-import {
-  SocialFormButtonBlock as Button,
-  SocialFormFieldBlock as Field,
-  SocialFormFieldErrorBlock as FieldError,
-  SocialFormFieldLabelBlock as FieldLabel,
-  SocialFormInputBlock as Input,
-} from "@/components/blocks/social-form-blocks";
 import { formResultCopy } from "@/content/application";
+import { Button } from "@/components/ui/button";
+import { Field, FieldError, FieldLabel } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
 import { socialPresentationCopy, socialRemainingCopy } from "@/content/social";
 import {
   approveSocialPost,

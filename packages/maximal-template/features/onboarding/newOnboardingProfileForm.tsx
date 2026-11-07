@@ -1,13 +1,9 @@
 "use client";
 
-import {
-  OnboardingFormButtonBlock as Button,
-  OnboardingFormFieldBlock as Field,
-  OnboardingFormFieldErrorBlock as FieldError,
-  OnboardingFormFieldLabelBlock as FieldLabel,
-  OnboardingFormInputBlock as Input,
-} from "@/components/blocks/onboarding-form-blocks";
 import { formResultCopy } from "@/content/application";
+import { Button } from "@/components/ui/button";
+import { Field, FieldError, FieldLabel } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
 import {
   onboardingPresentationCopy,
   onboardingRemainingCopy,

@@ -1,15 +1,13 @@
 "use client";
 
-import {
-  SettingsFormButtonBlock as Button,
-  SettingsFormFieldBlock as Field,
-  SettingsFormFieldErrorBlock as FieldError,
-  SettingsFormFieldLabelBlock as FieldLabel,
-  SettingsFormInputBlock as Input,
-  SettingsFormNativeSelectBlock,
-  SettingsFormNativeSelectOptionBlock,
-} from "@/components/blocks/settings-form-blocks";
 import { formResultCopy } from "@/content/application";
+import { Button } from "@/components/ui/button";
+import { Field, FieldError, FieldLabel } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import {
+  NativeSelect,
+  NativeSelectOption,
+} from "@/components/ui/native-select";
 import { memberInviteCopy as copy } from "@/content/settings";
 import { createInvitation } from "@/lib/actions/commonActions";
 import { defaultInvitedRole, invitableRoles } from "@/lib/authz/roles";
@@ -88,18 +86,16 @@ export function NewMemberInvitationForm() {
         render={({ field, fieldState }) => (
           <Field data-invalid={fieldState.invalid}>
             <FieldLabel htmlFor="invite-role">{copy.role}</FieldLabel>
-            <SettingsFormNativeSelectBlock
+            <NativeSelect
               id="invite-role"
               className="control-field"
               aria-invalid={fieldState.invalid}
               {...field}
             >
               {invitableRoles.map((role) => (
-                <SettingsFormNativeSelectOptionBlock key={role}>
-                  {role}
-                </SettingsFormNativeSelectOptionBlock>
+                <NativeSelectOption key={role}>{role}</NativeSelectOption>
               ))}
-            </SettingsFormNativeSelectBlock>
+            </NativeSelect>
             <FieldError>{fieldState.error?.message}</FieldError>
           </Field>
         )}

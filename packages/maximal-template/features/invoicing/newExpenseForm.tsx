@@ -1,16 +1,12 @@
 "use client";
 
 import {
-  InvoicingFormButtonBlock as Button,
-  InvoicingFormFieldBlock as Field,
-  InvoicingFormFieldErrorBlock as FieldError,
-  InvoicingFormFieldLabelBlock as FieldLabel,
-  InvoicingFormInputBlock as Input,
-} from "@/components/blocks/invoicing-form-blocks";
-import {
   invoicingPresentationCopy,
   invoicingRemainingCopy,
 } from "@/content/invoicing";
+import { Button } from "@/components/ui/button";
+import { Field, FieldError, FieldLabel } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
 import { createExpense, updateExpense } from "@/lib/actions/invoicingActions";
 import { expenseFormSchema } from "@/schemas/invoicingSchemas";
 import type { ExpenseDTO } from "@/types/invoicingTypes";

@@ -1,10 +1,8 @@
 "use client";
 
-import {
-  OnboardingFormButtonBlock as Button,
-  OnboardingFormFieldErrorBlock as FieldError,
-} from "@/components/blocks/onboarding-form-blocks";
 import { formResultCopy } from "@/content/application";
+import { Button } from "@/components/ui/button";
+import { FieldError } from "@/components/ui/field";
 import { onboardingPresentationCopy } from "@/content/onboarding";
 import { acceptInvitation } from "@/lib/actions/commonActions";
 import { acceptInvitationSchema } from "@/schemas/commonSchemas";

@@ -1,13 +1,9 @@
 "use client";
 
-import {
-  UploadsFormButtonBlock as Button,
-  UploadsFormFieldBlock as Field,
-  UploadsFormFieldErrorBlock as FieldError,
-  UploadsFormFieldLabelBlock as FieldLabel,
-  UploadsFormInputBlock as Input,
-} from "@/components/blocks/uploads-form-blocks";
 import { formResultCopy } from "@/content/application";
+import { Button } from "@/components/ui/button";
+import { Field, FieldError, FieldLabel } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
 import {
   uploadsPresentationCopy,
   uploadsRemainingCopy,

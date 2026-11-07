@@ -1,14 +1,12 @@
 "use client";
 
-import {
-  ProjectsFormButtonBlock as Button,
-  ProjectsFormFieldBlock as Field,
-  ProjectsFormFieldErrorBlock as FieldError,
-  ProjectsFormFieldLabelBlock as FieldLabel,
-  ProjectsFormNativeSelectBlock,
-  ProjectsFormNativeSelectOptionBlock,
-} from "@/components/blocks/projects-form-blocks";
 import { formResultCopy } from "@/content/application";
+import { Button } from "@/components/ui/button";
+import { Field, FieldError, FieldLabel } from "@/components/ui/field";
+import {
+  NativeSelect,
+  NativeSelectOption,
+} from "@/components/ui/native-select";
 import { projectsControlCopy } from "@/content/projects";
 import { assignProjectTask } from "@/lib/actions/projectsActions";
 import { assignTaskSchema } from "@/schemas/projectsSchemas";
@@ -75,27 +73,24 @@ export function EditTaskAssignmentForm({
             <FieldLabel htmlFor={id + "-assigneeMembershipId"}>
               {projectsControlCopy.assignTo}
             </FieldLabel>
-            <ProjectsFormNativeSelectBlock
+            <NativeSelect
               {...field}
               value={String(field.value ?? "")}
               id={id + "-assigneeMembershipId"}
               className="control-field"
               aria-invalid={fieldState.invalid}
             >
-              <ProjectsFormNativeSelectOptionBlock value="">
+              <NativeSelectOption value="">
                 {projectsControlCopy.unassigned}
-              </ProjectsFormNativeSelectOptionBlock>
+              </NativeSelectOption>
               {members
                 .filter((member) => member.status === "ACTIVE")
                 .map((member) => (
-                  <ProjectsFormNativeSelectOptionBlock
-                    key={member.id}
-                    value={member.id}
-                  >
+                  <NativeSelectOption key={member.id} value={member.id}>
                     {member.name}
-                  </ProjectsFormNativeSelectOptionBlock>
+                  </NativeSelectOption>
                 ))}
-            </ProjectsFormNativeSelectBlock>
+            </NativeSelect>
             {fieldState.error && (
               <FieldError>{fieldState.error.message}</FieldError>
             )}
