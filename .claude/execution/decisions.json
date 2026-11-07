@@ -1287,6 +1287,25 @@
         "packages/maximal-template/proxy.ts",
         "packages/maximal-template/app/layout.tsx"
       ]
+    },
+    {
+      "id": "DEC-130",
+      "date": "2026-11-07",
+      "status": "accepted",
+      "title": "Auth shell is a server component; sign-up mirrors via CSS",
+      "decision": "Owner (2026-11-07). AuthShell no longer reads usePathname (it blocked prerendering /sign-up). AuthFormPanel marks data-auth-variant; globals.css swaps the panels for signUp with :has(). Auth group has no nav links or mobile bottom nav: header = back-to-landing link over the headline side; footer = copyright under the form. Both halves share placement and content width (max-w-lg). content.authContent.formPosition removed.",
+      "refs": [
+        "packages/maximal-template/components/shells/auth-shell.tsx",
+        "packages/maximal-template/app/globals.css"
+      ]
+    },
+    {
+      "id": "DEC-131",
+      "date": "2026-11-07",
+      "status": "accepted",
+      "title": "React Hook Form forms are self-contained on shadcn primitives",
+      "decision": "Owner asked for a professional call applied site-wide. Each RHF form is one client feature component owning useForm + zodResolver + submit, built from Controller and the shadcn Field/FieldLabel/FieldError/Input/Textarea/NativeSelect/Button primitives exactly as the shadcn React Hook Form docs show. Blocks provide only static layout around a form (e.g. AuthFormPanel), never fields. Deleted components/blocks/form-blocks.tsx and its 14 per-domain re-export files (pure renames of primitives).",
+      "refs": ["packages/maximal-template/features"]
     }
   ]
 }

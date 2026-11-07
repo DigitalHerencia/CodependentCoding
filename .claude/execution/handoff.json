@@ -1,8 +1,8 @@
 {
   "$schema": "codependent-coding/execution/handoff/v1",
-  "updated": "2026-11-07T04:43:35.016Z",
+  "updated": "2026-11-07T07:09:04.636Z",
   "format": "One current package; history is in progress.json, decisions.json and git.",
-  "status": "complete-local-main",
+  "status": "complete-local-main-pushed",
   "milestone": "M-S2",
   "current_issue": null,
   "next_issue": null,
@@ -10,7 +10,7 @@
   "branch": "main",
   "active_package": null,
   "source_commit": "cdc27d273ecebda7d4744f23a5f674cff184fca7",
-  "completion": "Owner-directed mirrored template architecture completed locally on main. Allowed static checks passed; no tests, builds, PR or push. See progress.json.",
+  "completion": "Auth group, onboarding, admin MFA removal, static CSP and RHF primitives done and pushed on main. Next: centralize page spacing into public/tenant shells (needs owner design call on full-bleed sections).",
   "in_flight": [
     "CC-050 token consolidation implemented; focused static checks passed. Affected-site CI and owner browser contrast/reduced-motion verification pending. CC-049 merged in #351; main synced and branch deleted.",
     "Homepage PR #349 has passing CI and ready preview; owner desktop/mobile verification remains pending.",
@@ -29,11 +29,8 @@
     "No stash remains; previous source recovery snapshots are archive tags, not work to replay."
   ],
   "risks": [
-    "PWA browser/runtime verification is owner-run; no agent dev servers.",
-    "Machine-wide environment edits require an administrator shell. User-level defaults are correct; an owner-local administrator script is prepared if all-user scope is desired.",
-    "Live Clerk production setup is only needed if/when the owner requests an actual template production deployment; it does not block ordinary internal development.",
-    "Homepage PR #349 must update its new site loader/import to lib/content/ when rebased after CC-049; preserve owner visual review.",
-    "Homepage PR #349 also changes the stylesheet; rebase onto merged CC-050 before owner final visual approval to preserve canonical tokens."
+    "Visual changes not browser-verified by agent (no dev server).",
+    "Page spacing centralization pending owner decision."
   ],
   "do_not": [
     "Start any dev server or run full suites",

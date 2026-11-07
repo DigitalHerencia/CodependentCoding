@@ -26,7 +26,7 @@
     ]
   },
   "$schema": "codependent-coding/execution/progress/v1",
-  "updated": "2026-11-07T04:43:35.016Z",
+  "updated": "2026-11-07T07:09:04.636Z",
   "format": "Evidence states: EXECUTED | INSPECTED | NOT_RUN | BLOCKED. Never mark an issue done without EXECUTED evidence for its Validation commands.",
   "milestones": {
     "M0": {
@@ -3937,5 +3937,27 @@
       "pnpm --dir packages/maximal-template governance:validate -> PASS"
     ],
     "not_run": "typecheck (no .ts changed), build, tests, push, CI run on GitHub"
+  },
+  "auth-and-forms-2026-11-07": {
+    "status": "complete-pushed",
+    "commits": [
+      "62257d9",
+      "fbbd597",
+      "9e4ad8d",
+      "56bdae3",
+      "d39ee86",
+      "5c4a38b"
+    ],
+    "summary": "Onboarding without approval button; admin MFA removed; static CSP + Suspense session reads; auth one-screen mirrored split with server shell; forms on shadcn primitives.",
+    "evidence": {
+      "prettier --write (changed files)": "PASS",
+      "eslint --fix (changed files)": "PASS, no findings",
+      "pnpm --dir packages/maximal-template typecheck": "PASS"
+    },
+    "not_run": ["dev server", "build", "tests (unit/e2e)"],
+    "owner_verification": [
+      "browser check of sign-in/sign-up/onboarding/admin",
+      "Instant errors gone in dev overlay"
+    ]
   }
 }
