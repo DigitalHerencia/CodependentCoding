@@ -1,43 +1,28 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "1.1",
   "kind": "spec",
   "id": "M3-P3.2-HARD-T02",
   "work_code": "ENG-M3-P3.2-HARD-T02",
   "team": "engineering",
-  "title": "Security patches",
-  "issue_type": "bug",
+  "title": "Data export & deletion",
+  "issue_type": "feature",
+  "cadence": "once",
   "traceability": {
     "milestone_id": "M3",
     "milestone_title": "Expansion & Hardening",
     "phase_id": "P3.2",
     "phase_title": "Platform Hardening & Security",
     "dev_cycle_id": "M3-P3.2-HARD",
-    "dev_cycle_title": "Hardening",
+    "dev_cycle_title": "Resilience",
     "task_id": "T02",
     "ontology_ids": []
   },
-  "documentation": {
-    "prd": {
-      "file": "context/docs/PRD.md",
-      "requirement_id": "PRD-M3-P3.2-HARD-T02"
-    },
-    "tech_requirements": {
-      "file": "context/docs/tech-requirements.md",
-      "requirement_id": "TECH-M3-P3.2-HARD-T02"
-    },
-    "architecture": {
-      "file": "context/docs/Architecture.md",
-      "requirement_id": "ARCH-M3-P3.2-HARD-T02"
-    },
-    "auth": {
+  "documentation": [
+    {
       "file": "context/docs/AUTH.md",
-      "requirement_id": "AUTH-M3-P3.2-HARD-T02"
-    },
-    "design": {
-      "file": "context/docs/Design.md",
-      "requirement_id": "DES-M3-P3.2-HARD-T02"
+      "section": "data-protection-and-pii"
     }
-  },
+  ],
   "contracts": {
     "application": ".agents/contracts/application.yaml",
     "validation": ".agents/contracts/validation.yaml",
@@ -51,36 +36,39 @@
     "billable": null
   },
   "specification": {
-    "objective": "",
+    "objective": "Let users and tenants export and delete their data as policy requires.",
     "scope": {
       "included": [],
       "excluded": []
     },
     "requirements": [],
-    "inputs": [],
+    "inputs": ["context/docs/AUTH.md#data-protection-and-pii"],
     "deliverables": [],
-    "dependencies": [],
-    "acceptance_criteria": [],
+    "dependencies": ["ENG-M3-P3.2-HARD-T01"],
+    "acceptance_criteria": [
+      "Export produces a complete, machine-readable copy of a tenant's data",
+      "Deletion removes or anonymizes data across tables and files",
+      "Both actions are permission checked and audited"
+    ],
     "validation": {
-      "commands": [],
+      "commands": ["pnpm typecheck", "pnpm test"],
       "manual_checks": [],
-      "evidence_required": []
+      "evidence_required": [
+        "Command output or manual check result recorded in .agents/execution/progress.json"
+      ]
     },
     "references": []
   },
-  "bug_details": {
-    "steps_to_reproduce": [],
-    "expected_behavior": "",
-    "actual_behavior": "",
-    "environment": ""
-  },
+  "sub_issues": [],
+  "bug_details": null,
   "github": {
-    "title": "[M3-P3.2-HARD-T02] fix(hard): Security patches",
+    "title": "[ENG-M3-P3.2-HARD-T02] Resilience – Data export & deletion",
     "labels": [
       "tracked",
-      "type:bug",
+      "type:feature",
       "phase:P3.2",
       "devcycle:M3-P3.2-HARD",
+      "cadence:once",
       "spec:linked"
     ],
     "milestone": "M3 — Expansion & Hardening",
@@ -93,10 +81,5 @@
     "approval_required": false,
     "approved": false,
     "evidence": []
-  },
-  "source": {
-    "kind": "Engineering Tasks CSV",
-    "project_code": "ENG-M3-P3.2-HARD-T02",
-    "task_name": "T02 Security patches"
   }
 }

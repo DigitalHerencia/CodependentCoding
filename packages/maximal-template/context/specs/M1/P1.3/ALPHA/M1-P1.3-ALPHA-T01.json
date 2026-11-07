@@ -1,11 +1,12 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "1.1",
   "kind": "spec",
   "id": "M1-P1.3-ALPHA-T01",
   "work_code": "ENG-M1-P1.3-ALPHA-T01",
   "team": "engineering",
   "title": "Feature integration",
   "issue_type": "feature",
+  "cadence": "once",
   "traceability": {
     "milestone_id": "M1",
     "milestone_title": "Foundation & Pre-Production",
@@ -16,28 +17,16 @@
     "task_id": "T01",
     "ontology_ids": []
   },
-  "documentation": {
-    "prd": {
-      "file": "context/docs/PRD.md",
-      "requirement_id": "PRD-M1-P1.3-ALPHA-T01"
-    },
-    "tech_requirements": {
-      "file": "context/docs/tech-requirements.md",
-      "requirement_id": "TECH-M1-P1.3-ALPHA-T01"
-    },
-    "architecture": {
+  "documentation": [
+    {
       "file": "context/docs/Architecture.md",
-      "requirement_id": "ARCH-M1-P1.3-ALPHA-T01"
+      "section": "runtime-flows"
     },
-    "auth": {
-      "file": "context/docs/AUTH.md",
-      "requirement_id": "AUTH-M1-P1.3-ALPHA-T01"
-    },
-    "design": {
-      "file": "context/docs/Design.md",
-      "requirement_id": "DES-M1-P1.3-ALPHA-T01"
+    {
+      "file": "context/docs/PRD.md",
+      "section": "key-user-journeys"
     }
-  },
+  ],
   "contracts": {
     "application": ".agents/contracts/application.yaml",
     "validation": ".agents/contracts/validation.yaml",
@@ -51,31 +40,42 @@
     "billable": null
   },
   "specification": {
-    "objective": "",
+    "objective": "Confirm the selected modules work together end to end with real data.",
     "scope": {
       "included": [],
       "excluded": []
     },
     "requirements": [],
-    "inputs": [],
+    "inputs": [
+      "context/docs/Architecture.md#runtime-flows",
+      "context/docs/PRD.md#key-user-journeys"
+    ],
     "deliverables": [],
     "dependencies": [],
-    "acceptance_criteria": [],
+    "acceptance_criteria": [
+      "Navigation reaches every selected module",
+      "Each module reads and writes through the server layer",
+      "No console errors on the main flows"
+    ],
     "validation": {
-      "commands": [],
+      "commands": ["pnpm lint", "pnpm typecheck", "pnpm build"],
       "manual_checks": [],
-      "evidence_required": []
+      "evidence_required": [
+        "Command output or manual check result recorded in .agents/execution/progress.json"
+      ]
     },
     "references": []
   },
+  "sub_issues": [],
   "bug_details": null,
   "github": {
-    "title": "[M1-P1.3-ALPHA-T01] feat(alpha): Feature integration",
+    "title": "[ENG-M1-P1.3-ALPHA-T01] Alpha Build – Feature integration",
     "labels": [
       "tracked",
       "type:feature",
       "phase:P1.3",
       "devcycle:M1-P1.3-ALPHA",
+      "cadence:once",
       "spec:linked"
     ],
     "milestone": "M1 — Foundation & Pre-Production",
@@ -88,10 +88,5 @@
     "approval_required": false,
     "approved": false,
     "evidence": []
-  },
-  "source": {
-    "kind": "Engineering Tasks CSV",
-    "project_code": "ENG-M1-P1.3-ALPHA-T01",
-    "task_name": "T01 Feature integration"
   }
 }

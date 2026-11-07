@@ -26,7 +26,7 @@
     ]
   },
   "$schema": "codependent-coding/execution/progress/v1",
-  "updated": "2026-11-07T01:22:00.968918+00:00",
+  "updated": "2026-11-07T03:16:09.583Z",
   "format": "Evidence states: EXECUTED | INSPECTED | NOT_RUN | BLOCKED. Never mark an issue done without EXECUTED evidence for its Validation commands.",
   "milestones": {
     "M0": {
@@ -3910,5 +3910,18 @@
       "pnpm typecheck (root) -> passed"
     ],
     "not_run": "tests, builds, dev server, owner browser check of signup/onboarding"
+  },
+  "template-governance-kit": {
+    "status": "done-local-main",
+    "date": "2026-11-07",
+    "decision": "DEC-125",
+    "summary": "Governance templates replaced in packages/maximal-template: 5 topic-organized docs with Feeds lines; 100 specs (schema 1.1) with cadence/documentation/sub_issues; 3 YAML contracts with doc sources; validator, create-project and publish-issues scripts; .github forms/labels/project/CI (moved from _github-staging, which was deleted); root template markdowns.",
+    "evidence": [
+      "pnpm exec prettier --write <138 changed template files> -> ok, no errors",
+      "pnpm exec eslint --fix scripts/*.mjs -> first run 18 no-console errors in governance scripts; fixed via stdout log helper in scripts/common.mjs; re-run exit 0",
+      "pnpm --dir packages/maximal-template typecheck (prisma generate, next typegen, tsc --noEmit) -> passed",
+      "pnpm --dir packages/maximal-template governance:validate -> PASS (3 milestones, 9 phases, 20 dev cycles, 100 linked specs, 5 docs, 3 contracts)"
+    ],
+    "not_run": "tests, builds, dev server, push, GitHub writes (taxonomy/project/publish run dry only if at all)"
   }
 }

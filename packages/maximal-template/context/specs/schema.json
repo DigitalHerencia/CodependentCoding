@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:codependentcoding:governance:spec:v1",
+  "$id": "urn:codependentcoding:governance:spec:v1.1",
   "title": "Engineering work specification (ticket)",
   "type": "object",
   "additionalProperties": false,
@@ -12,11 +12,13 @@
     "team",
     "title",
     "issue_type",
+    "cadence",
     "traceability",
     "documentation",
     "contracts",
     "ticket",
     "specification",
+    "sub_issues",
     "bug_details",
     "github",
     "state",
@@ -24,7 +26,7 @@
   ],
   "properties": {
     "schema_version": {
-      "const": "1.0"
+      "const": "1.1"
     },
     "kind": {
       "const": "spec"
@@ -45,10 +47,11 @@
       "minLength": 1
     },
     "issue_type": {
-      "enum": [
-        "feature",
-        "bug"
-      ]
+      "enum": ["feature", "bug"]
+    },
+    "cadence": {
+      "enum": ["once", "repeatable", "expandable", "gate"],
+      "description": "once: done one time. repeatable: runs again as needed. expandable: one sub-issue per item. gate: sign-off. Only repeatable and expandable specs may have sub_issues."
     },
     "traceability": {
       "type": "object",
@@ -93,37 +96,28 @@
       }
     },
     "documentation": {
-      "type": "object",
-      "required": [
-        "prd",
-        "tech_requirements",
-        "architecture",
-        "auth",
-        "design"
-      ],
-      "additionalProperties": {
+      "type": "array",
+      "minItems": 1,
+      "description": "Doc sections that feed this spec.",
+      "items": {
         "type": "object",
-        "required": [
-          "file",
-          "requirement_id"
-        ],
+        "additionalProperties": false,
+        "required": ["file", "section"],
         "properties": {
           "file": {
-            "type": "string"
+            "type": "string",
+            "pattern": "^context/docs/[A-Za-z-]+\\.md$"
           },
-          "requirement_id": {
-            "type": "string"
+          "section": {
+            "type": "string",
+            "pattern": "^[a-z0-9-]+$"
           }
         }
       }
     },
     "contracts": {
       "type": "object",
-      "required": [
-        "application",
-        "validation",
-        "design"
-      ],
+      "required": ["application", "validation", "design"],
       "additionalProperties": {
         "type": "string"
       }
@@ -152,11 +146,31 @@
         "references"
       ]
     },
+    "sub_issues": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "title"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^ENG-M[123]-P[123]\\.[123]-[A-Z]+-T0[1-5]\\.[0-9]+$"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "issue_number": {
+            "type": ["integer", "null"]
+          },
+          "issue_url": {
+            "type": ["string", "null"]
+          }
+        }
+      }
+    },
     "bug_details": {
-      "type": [
-        "object",
-        "null"
-      ]
+      "type": ["object", "null"]
     },
     "github": {
       "type": "object",
@@ -171,12 +185,7 @@
     },
     "state": {
       "type": "object",
-      "required": [
-        "status",
-        "approval_required",
-        "approved",
-        "evidence"
-      ]
+      "required": ["status", "approval_required", "approved", "evidence"]
     },
     "source": {
       "type": "object"

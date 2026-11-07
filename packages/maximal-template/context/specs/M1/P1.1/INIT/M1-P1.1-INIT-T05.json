@@ -1,11 +1,12 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "1.1",
   "kind": "spec",
   "id": "M1-P1.1-INIT-T05",
   "work_code": "ENG-M1-P1.1-INIT-T05",
   "team": "engineering",
   "title": "Initialization sign-off",
   "issue_type": "feature",
+  "cadence": "gate",
   "traceability": {
     "milestone_id": "M1",
     "milestone_title": "Foundation & Pre-Production",
@@ -16,28 +17,12 @@
     "task_id": "T05",
     "ontology_ids": []
   },
-  "documentation": {
-    "prd": {
+  "documentation": [
+    {
       "file": "context/docs/PRD.md",
-      "requirement_id": "PRD-M1-P1.1-INIT-T05"
-    },
-    "tech_requirements": {
-      "file": "context/docs/tech-requirements.md",
-      "requirement_id": "TECH-M1-P1.1-INIT-T05"
-    },
-    "architecture": {
-      "file": "context/docs/Architecture.md",
-      "requirement_id": "ARCH-M1-P1.1-INIT-T05"
-    },
-    "auth": {
-      "file": "context/docs/AUTH.md",
-      "requirement_id": "AUTH-M1-P1.1-INIT-T05"
-    },
-    "design": {
-      "file": "context/docs/Design.md",
-      "requirement_id": "DES-M1-P1.1-INIT-T05"
+      "section": "release-plan"
     }
-  },
+  ],
   "contracts": {
     "application": ".agents/contracts/application.yaml",
     "validation": ".agents/contracts/validation.yaml",
@@ -51,31 +36,39 @@
     "billable": null
   },
   "specification": {
-    "objective": "",
+    "objective": "Approve that the project is initialized and ready for scaffolding.",
     "scope": {
       "included": [],
       "excluded": []
     },
     "requirements": [],
-    "inputs": [],
+    "inputs": ["context/docs/PRD.md#release-plan"],
     "deliverables": [],
-    "dependencies": [],
-    "acceptance_criteria": [],
+    "dependencies": ["ENG-M1-P1.1-INIT-T04"],
+    "acceptance_criteria": [
+      "INIT-T01 to T04 are complete with recorded evidence",
+      "GitHub labels, milestones, issues and the Project board exist",
+      "Owner approval is recorded in `decisions.json`"
+    ],
     "validation": {
-      "commands": [],
+      "commands": ["pnpm governance:validate"],
       "manual_checks": [],
-      "evidence_required": []
+      "evidence_required": [
+        "Command output or manual check result recorded in .agents/execution/progress.json"
+      ]
     },
     "references": []
   },
+  "sub_issues": [],
   "bug_details": null,
   "github": {
-    "title": "[M1-P1.1-INIT-T05] feat(init): Initialization sign-off",
+    "title": "[ENG-M1-P1.1-INIT-T05] Environment Initialization – Initialization sign-off",
     "labels": [
       "tracked",
       "type:feature",
       "phase:P1.1",
       "devcycle:M1-P1.1-INIT",
+      "cadence:gate",
       "spec:linked"
     ],
     "milestone": "M1 — Foundation & Pre-Production",
@@ -85,13 +78,8 @@
   },
   "state": {
     "status": "backlog",
-    "approval_required": false,
+    "approval_required": true,
     "approved": false,
     "evidence": []
-  },
-  "source": {
-    "kind": "Engineering Tasks CSV",
-    "project_code": "ENG-M1-P1.1-INIT-T05",
-    "task_name": "T05 Initialization sign-off"
   }
 }

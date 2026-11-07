@@ -1,11 +1,12 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "1.1",
   "kind": "spec",
   "id": "M3-P3.3-DEPLOY-T03",
   "work_code": "ENG-M3-P3.3-DEPLOY-T03",
   "team": "engineering",
   "title": "Smoke tests",
   "issue_type": "feature",
+  "cadence": "once",
   "traceability": {
     "milestone_id": "M3",
     "milestone_title": "Expansion & Hardening",
@@ -16,28 +17,12 @@
     "task_id": "T03",
     "ontology_ids": []
   },
-  "documentation": {
-    "prd": {
-      "file": "context/docs/PRD.md",
-      "requirement_id": "PRD-M3-P3.3-DEPLOY-T03"
-    },
-    "tech_requirements": {
+  "documentation": [
+    {
       "file": "context/docs/tech-requirements.md",
-      "requirement_id": "TECH-M3-P3.3-DEPLOY-T03"
-    },
-    "architecture": {
-      "file": "context/docs/Architecture.md",
-      "requirement_id": "ARCH-M3-P3.3-DEPLOY-T03"
-    },
-    "auth": {
-      "file": "context/docs/AUTH.md",
-      "requirement_id": "AUTH-M3-P3.3-DEPLOY-T03"
-    },
-    "design": {
-      "file": "context/docs/Design.md",
-      "requirement_id": "DES-M3-P3.3-DEPLOY-T03"
+      "section": "testing-strategy"
     }
-  },
+  ],
   "contracts": {
     "application": ".agents/contracts/application.yaml",
     "validation": ".agents/contracts/validation.yaml",
@@ -51,31 +36,39 @@
     "billable": null
   },
   "specification": {
-    "objective": "",
+    "objective": "Run smoke checks against production.",
     "scope": {
       "included": [],
       "excluded": []
     },
     "requirements": [],
-    "inputs": [],
+    "inputs": ["context/docs/tech-requirements.md#testing-strategy"],
     "deliverables": [],
-    "dependencies": [],
-    "acceptance_criteria": [],
+    "dependencies": ["ENG-M3-P3.3-DEPLOY-T02"],
+    "acceptance_criteria": [
+      "Sign-in, one journey per module, and billing checkout work in production",
+      "Webhooks are received in production",
+      "Results are recorded"
+    ],
     "validation": {
-      "commands": [],
+      "commands": ["pnpm test:e2e"],
       "manual_checks": [],
-      "evidence_required": []
+      "evidence_required": [
+        "Command output or manual check result recorded in .agents/execution/progress.json"
+      ]
     },
     "references": []
   },
+  "sub_issues": [],
   "bug_details": null,
   "github": {
-    "title": "[M3-P3.3-DEPLOY-T03] feat(deploy): Smoke tests",
+    "title": "[ENG-M3-P3.3-DEPLOY-T03] Deployment – Smoke tests",
     "labels": [
       "tracked",
       "type:feature",
       "phase:P3.3",
       "devcycle:M3-P3.3-DEPLOY",
+      "cadence:once",
       "spec:linked"
     ],
     "milestone": "M3 — Expansion & Hardening",
@@ -88,10 +81,5 @@
     "approval_required": false,
     "approved": false,
     "evidence": []
-  },
-  "source": {
-    "kind": "Engineering Tasks CSV",
-    "project_code": "ENG-M3-P3.3-DEPLOY-T03",
-    "task_name": "T03 Smoke tests"
   }
 }

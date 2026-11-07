@@ -1,46 +1,18 @@
 {
-  "schema_version": "1.0",
-  "owner": "DigitalHerencia",
-  "repository": "DigitalHerencia/CodependentCoding",
+  "schema_version": "1.1",
+  "title": "{repo} — Build",
   "project_number": null,
-  "title": "CodependentCoding — Engineering Delivery",
-  "status_options": [
-    "Backlog",
-    "Todo",
-    "In Progress",
-    "In Review",
-    "Done"
-  ],
-  "field_guidance": {
-    "milestone": "native GitHub Issue milestone (authoritative)",
+  "note": "The repository and owner are detected with `gh repo view`. `pnpm governance:project --apply` creates the Project, links it to the repo and records project_number here.",
+  "fields": {
+    "milestone": "native issue milestone",
     "phase": "phase:* label",
     "dev_cycle": "devcycle:* label",
-    "ontology": "domain:* label; assign only after mapping approved",
-    "priority": "priority:p0..p3 optional"
+    "cadence": "cadence:* label",
+    "status": "default Status field: Todo, In Progress, Done"
   },
-  "built_in_workflows": {
-    "auto_add": {
-      "enabled_intent": true,
-      "filter": "repo:DigitalHerencia/CodependentCoding is:issue is:open label:tracked"
-    },
-    "item_added": {
-      "status": "Todo"
-    },
-    "item_closed": {
-      "status": "Done"
-    },
-    "pull_request_merged": {
-      "status": "Done for PR items only"
-    },
-    "item_reopened": {
-      "enabled_intent": false
-    },
-    "done_closes_issue": {
-      "enabled_intent": false
-    },
-    "auto_archive": {
-      "enabled_intent": false
-    }
-  },
-  "note": "Configuration intent only; GitHub does not automatically read this JSON or provision Project v2 workflows. Verify available native workflows manually."
+  "default_workflows": {
+    "item_closed": "Status → Done (on by default)",
+    "pull_request_merged": "Status → Done (on by default)",
+    "auto_add": "Turn on manually in Project → Workflows, filter: is:issue label:tracked (GitHub has no API for this)"
+  }
 }

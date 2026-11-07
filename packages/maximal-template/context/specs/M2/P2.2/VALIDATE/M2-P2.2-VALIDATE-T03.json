@@ -1,11 +1,12 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "1.1",
   "kind": "spec",
   "id": "M2-P2.2-VALIDATE-T03",
   "work_code": "ENG-M2-P2.2-VALIDATE-T03",
   "team": "engineering",
   "title": "Data contract validation",
   "issue_type": "feature",
+  "cadence": "once",
   "traceability": {
     "milestone_id": "M2",
     "milestone_title": "MVP Launch",
@@ -16,28 +17,16 @@
     "task_id": "T03",
     "ontology_ids": []
   },
-  "documentation": {
-    "prd": {
-      "file": "context/docs/PRD.md",
-      "requirement_id": "PRD-M2-P2.2-VALIDATE-T03"
-    },
-    "tech_requirements": {
-      "file": "context/docs/tech-requirements.md",
-      "requirement_id": "TECH-M2-P2.2-VALIDATE-T03"
-    },
-    "architecture": {
+  "documentation": [
+    {
       "file": "context/docs/Architecture.md",
-      "requirement_id": "ARCH-M2-P2.2-VALIDATE-T03"
+      "section": "data-model"
     },
-    "auth": {
-      "file": "context/docs/AUTH.md",
-      "requirement_id": "AUTH-M2-P2.2-VALIDATE-T03"
-    },
-    "design": {
-      "file": "context/docs/Design.md",
-      "requirement_id": "DES-M2-P2.2-VALIDATE-T03"
+    {
+      "file": "context/docs/Architecture.md",
+      "section": "runtime-flows"
     }
-  },
+  ],
   "contracts": {
     "application": ".agents/contracts/application.yaml",
     "validation": ".agents/contracts/validation.yaml",
@@ -51,31 +40,42 @@
     "billable": null
   },
   "specification": {
-    "objective": "",
+    "objective": "Validate inputs, outputs and stored data against their schemas.",
     "scope": {
       "included": [],
       "excluded": []
     },
     "requirements": [],
-    "inputs": [],
+    "inputs": [
+      "context/docs/Architecture.md#data-model",
+      "context/docs/Architecture.md#runtime-flows"
+    ],
     "deliverables": [],
-    "dependencies": [],
-    "acceptance_criteria": [],
+    "dependencies": ["ENG-M2-P2.2-VALIDATE-T02"],
+    "acceptance_criteria": [
+      "Every server input is validated with a schema",
+      "Responses never leak fields the caller may not see",
+      "Stored data passes database constraints"
+    ],
     "validation": {
-      "commands": [],
+      "commands": ["pnpm typecheck", "pnpm test"],
       "manual_checks": [],
-      "evidence_required": []
+      "evidence_required": [
+        "Command output or manual check result recorded in .agents/execution/progress.json"
+      ]
     },
     "references": []
   },
+  "sub_issues": [],
   "bug_details": null,
   "github": {
-    "title": "[M2-P2.2-VALIDATE-T03] feat(validate): Data contract validation",
+    "title": "[ENG-M2-P2.2-VALIDATE-T03] System Validation – Data contract validation",
     "labels": [
       "tracked",
       "type:feature",
       "phase:P2.2",
       "devcycle:M2-P2.2-VALIDATE",
+      "cadence:once",
       "spec:linked"
     ],
     "milestone": "M2 — MVP Launch",
@@ -88,10 +88,5 @@
     "approval_required": false,
     "approved": false,
     "evidence": []
-  },
-  "source": {
-    "kind": "Engineering Tasks CSV",
-    "project_code": "ENG-M2-P2.2-VALIDATE-T03",
-    "task_name": "T03 Data contract validation"
   }
 }

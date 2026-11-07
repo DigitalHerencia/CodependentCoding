@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "source": "Engineering specs and ticketing SOP",
+  "source": "context/specs/catalog.json",
   "labels": [
     {
       "name": "tracked",
@@ -115,12 +115,12 @@
     {
       "name": "devcycle:M2-P2.1-MVP",
       "color": "d4c5f9",
-      "description": "MVP Build"
+      "description": "Core Platform"
     },
     {
       "name": "devcycle:M3-P3.2-HARD",
       "color": "d4c5f9",
-      "description": "Hardening"
+      "description": "Resilience"
     },
     {
       "name": "devcycle:M1-P1.1-INIT",
@@ -251,6 +251,26 @@
       "name": "domain:admin",
       "color": "bfdadc",
       "description": "Internal Tools / Admin Portal"
+    },
+    {
+      "name": "cadence:once",
+      "color": "c5def5",
+      "description": "Done once per project"
+    },
+    {
+      "name": "cadence:repeatable",
+      "color": "fbca04",
+      "description": "Runs again whenever needed; sub-issues per run"
+    },
+    {
+      "name": "cadence:expandable",
+      "color": "0e8a16",
+      "description": "One sub-issue per item (for example per feature)"
+    },
+    {
+      "name": "cadence:gate",
+      "color": "b60205",
+      "description": "Sign-off gate; needs owner approval"
     }
   ]
 }

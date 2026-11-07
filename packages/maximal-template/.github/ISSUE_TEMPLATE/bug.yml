@@ -1,70 +1,69 @@
-name: Bug / corrective work
-description: SOP-linked engineering defect or corrective spec
-title: ''
+name: Defect
+description: A defect, filed as a sub-issue of a DEBUG spec (ENG-M2-P2.2-DEBUG-T01).
+title: "[ENG-M2-P2.2-DEBUG-T01.N] Debug & Fixes – <short defect summary>"
 labels:
-- tracked
-- type:bug
+  - tracked
+  - type:bug
+  - cadence:repeatable
 body:
-- type: markdown
-  attributes:
-    value: Use the exact `M#-P#.#-CYCLE-T##` spec identifier. JSON is the canonical record; this form supports manual
-      issue creation.
-- type: input
-  id: spec_id
-  attributes:
-    label: Specification ID
-    placeholder: M1-P1.1-INIT-T01
-  validations:
-    required: true
-- type: input
-  id: work_code
-  attributes:
-    label: SOP work code
-    placeholder: ENG-M1-P1.1-INIT-T01
-  validations:
-    required: true
-- type: input
-  id: traceability
-  attributes:
-    label: Milestone / Phase / Dev Cycle
-    placeholder: M1 / P1.1 / M1-P1.1-INIT
-  validations:
-    required: true
-- type: textarea
-  id: objective
-  attributes:
-    label: Objective and scope
-  validations:
-    required: true
-- type: textarea
-  id: reproduction
-  attributes:
-    label: Observed behavior and reproduction (or triage objective)
-    description: For planned defect triage, explain the intended diagnostic activity without inventing a defect.
-  validations:
-    required: true
-- type: textarea
-  id: expected
-  attributes:
-    label: Expected behavior or corrective target
-- type: textarea
-  id: acceptance
-  attributes:
-    label: Acceptance criteria
-    description: Observable, testable conditions for closing this specification.
-  validations:
-    required: true
-- type: textarea
-  id: validation
-  attributes:
-    label: Validation commands and evidence
-- type: textarea
-  id: dependencies
-  attributes:
-    label: Dependencies and inputs
-- type: textarea
-  id: documentation
-  attributes:
-    label: Documentation IDs and references
-  validations:
-    required: true
+  - type: input
+    id: spec_id
+    attributes:
+      label: Sub-issue ID
+      description: The DEBUG spec ID plus `.N`.
+      placeholder: ENG-M2-P2.2-DEBUG-T01.4
+    validations:
+      required: true
+  - type: input
+    id: affected_spec
+    attributes:
+      label: Affected spec
+      description: The spec whose delivered work is broken.
+      placeholder: ENG-M2-P2.1-MVP-T02
+    validations:
+      required: true
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      options:
+        - critical (data loss, security, outage)
+        - high (core flow broken)
+        - medium (workaround exists)
+        - low (cosmetic)
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to reproduce
+      value: |
+        1.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      description: Include error messages and logs. Remove secrets and personal data.
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      placeholder: production · commit abc1234 · Chrome 140
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      value: |
+        - [ ] A regression test fails before the fix and passes after it
+    validations:
+      required: true

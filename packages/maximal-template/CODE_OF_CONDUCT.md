@@ -1,3 +1,5 @@
-# Code of Conduct — working template
+# Code of Conduct
 
-Communicate professionally, review work on technical merit, avoid harassment, and protect contributor privacy. Raise concerns through the maintainer-approved channel specified in SUPPORT.md. This document is a reusable draft; maintainers should review and approve enforcement/contact details before adoption.
+This project follows the [Contributor Covenant, version 2.1](https://www.contributor-covenant.org/version/2/1/code_of_conduct/).
+
+Report unacceptable behavior to TODO: conduct contact. Reports are reviewed promptly and kept confidential.

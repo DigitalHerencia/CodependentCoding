@@ -1,10 +1,23 @@
-# Agent contracts and execution state
+# .agents
 
-- [`contracts/application.yaml`](contracts/application.yaml): application boundaries and implementation linkage.
-- [`contracts/design.yaml`](contracts/design.yaml): UX constraints and design applicability.
-- [`contracts/validation.yaml`](contracts/validation.yaml): acceptance, checks, and evidence.
-- [`execution/progress.json`](execution/progress.json): ledger initialized for all 100 specifications without fabricated passes.
-- [`execution/handoff.json`](execution/handoff.json): current and next spec, risks, and evidence.
-- [`execution/decisions.json`](execution/decisions.json): append-only decisions linked to spec IDs.
+What agents read to build the app and write to record their work.
 
-The YAML contracts are **derived from** the five docs and contain all 100 trace bindings. Their generic integrity rules are not substitutes for product requirements still to be authored. Existing live agent contracts and execution state must be reconciled rather than overwritten.
+## contracts/
+
+Machine-readable translation of `context/docs/`. Every block has a `source` naming the doc section it translates; each doc section appears exactly once.
+
+| File               | Translates                                                                                |
+| ------------------ | ----------------------------------------------------------------------------------------- |
+| `application.yaml` | PRD, tech requirements, architecture and AUTH: what to build and the rules it must follow |
+| `validation.yaml`  | Checks, test suites, CI, performance budgets, threat model, evidence rules                |
+| `design.yaml`      | Design.md: brand, tokens, components, pages, states, accessibility, SEO, analytics        |
+
+`status` moves `template` → `draft` → `approved`. Do not build from a template contract.
+
+## execution/
+
+| File             | Written when                                                                                                   |
+| ---------------- | -------------------------------------------------------------------------------------------------------------- |
+| `progress.json`  | After every check: one entry per spec with status, issue, PRs and the commands actually run with their results |
+| `decisions.json` | Whenever a decision is made: append-only, with the spec IDs it affects                                         |
+| `handoff.json`   | Last thing before a session ends: active and next spec, risks, next actions                                    |

@@ -1,11 +1,12 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "1.1",
   "kind": "spec",
   "id": "M3-P3.2-REVIEW-T03",
   "work_code": "ENG-M3-P3.2-REVIEW-T03",
   "team": "engineering",
   "title": "Feature completeness review",
   "issue_type": "feature",
+  "cadence": "repeatable",
   "traceability": {
     "milestone_id": "M3",
     "milestone_title": "Expansion & Hardening",
@@ -16,28 +17,16 @@
     "task_id": "T03",
     "ontology_ids": []
   },
-  "documentation": {
-    "prd": {
+  "documentation": [
+    {
       "file": "context/docs/PRD.md",
-      "requirement_id": "PRD-M3-P3.2-REVIEW-T03"
+      "section": "functional-requirements"
     },
-    "tech_requirements": {
-      "file": "context/docs/tech-requirements.md",
-      "requirement_id": "TECH-M3-P3.2-REVIEW-T03"
-    },
-    "architecture": {
-      "file": "context/docs/Architecture.md",
-      "requirement_id": "ARCH-M3-P3.2-REVIEW-T03"
-    },
-    "auth": {
-      "file": "context/docs/AUTH.md",
-      "requirement_id": "AUTH-M3-P3.2-REVIEW-T03"
-    },
-    "design": {
+    {
       "file": "context/docs/Design.md",
-      "requirement_id": "DES-M3-P3.2-REVIEW-T03"
+      "section": "page-inventory-and-layouts"
     }
-  },
+  ],
   "contracts": {
     "application": ".agents/contracts/application.yaml",
     "validation": ".agents/contracts/validation.yaml",
@@ -51,31 +40,44 @@
     "billable": null
   },
   "specification": {
-    "objective": "",
+    "objective": "Check that delivered features match the PRD and design.",
     "scope": {
       "included": [],
       "excluded": []
     },
     "requirements": [],
-    "inputs": [],
+    "inputs": [
+      "context/docs/PRD.md#functional-requirements",
+      "context/docs/Design.md#page-inventory-and-layouts"
+    ],
     "deliverables": [],
-    "dependencies": [],
-    "acceptance_criteria": [],
+    "dependencies": ["ENG-M3-P3.2-REVIEW-T02"],
+    "acceptance_criteria": [
+      "Each PRD requirement maps to closed work",
+      "Screens match Design.md",
+      "Gaps are filed as specs or sub-issues"
+    ],
     "validation": {
       "commands": [],
-      "manual_checks": [],
-      "evidence_required": []
+      "manual_checks": [
+        "Verify each acceptance criterion by hand and record the result"
+      ],
+      "evidence_required": [
+        "Command output or manual check result recorded in .agents/execution/progress.json"
+      ]
     },
     "references": []
   },
+  "sub_issues": [],
   "bug_details": null,
   "github": {
-    "title": "[M3-P3.2-REVIEW-T03] feat(review): Feature completeness review",
+    "title": "[ENG-M3-P3.2-REVIEW-T03] Code Review – Feature completeness review",
     "labels": [
       "tracked",
       "type:feature",
       "phase:P3.2",
       "devcycle:M3-P3.2-REVIEW",
+      "cadence:repeatable",
       "spec:linked"
     ],
     "milestone": "M3 — Expansion & Hardening",
@@ -88,10 +90,5 @@
     "approval_required": false,
     "approved": false,
     "evidence": []
-  },
-  "source": {
-    "kind": "Engineering Tasks CSV",
-    "project_code": "ENG-M3-P3.2-REVIEW-T03",
-    "task_name": "T03 Feature completeness review"
   }
 }

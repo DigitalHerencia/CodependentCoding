@@ -1,11 +1,12 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "1.1",
   "kind": "spec",
   "id": "M1-P1.2-CONFIG-T03",
   "work_code": "ENG-M1-P1.2-CONFIG-T03",
   "team": "engineering",
   "title": "Env variable templates",
   "issue_type": "feature",
+  "cadence": "once",
   "traceability": {
     "milestone_id": "M1",
     "milestone_title": "Foundation & Pre-Production",
@@ -16,28 +17,16 @@
     "task_id": "T03",
     "ontology_ids": []
   },
-  "documentation": {
-    "prd": {
-      "file": "context/docs/PRD.md",
-      "requirement_id": "PRD-M1-P1.2-CONFIG-T03"
-    },
-    "tech_requirements": {
+  "documentation": [
+    {
       "file": "context/docs/tech-requirements.md",
-      "requirement_id": "TECH-M1-P1.2-CONFIG-T03"
+      "section": "environments-and-configuration"
     },
-    "architecture": {
-      "file": "context/docs/Architecture.md",
-      "requirement_id": "ARCH-M1-P1.2-CONFIG-T03"
-    },
-    "auth": {
+    {
       "file": "context/docs/AUTH.md",
-      "requirement_id": "AUTH-M1-P1.2-CONFIG-T03"
-    },
-    "design": {
-      "file": "context/docs/Design.md",
-      "requirement_id": "DES-M1-P1.2-CONFIG-T03"
+      "section": "secrets-and-key-management"
     }
-  },
+  ],
   "contracts": {
     "application": ".agents/contracts/application.yaml",
     "validation": ".agents/contracts/validation.yaml",
@@ -51,31 +40,42 @@
     "billable": null
   },
   "specification": {
-    "objective": "",
+    "objective": "Make `.env.example` the complete, documented list of configuration the app reads.",
     "scope": {
       "included": [],
       "excluded": []
     },
     "requirements": [],
-    "inputs": [],
+    "inputs": [
+      "context/docs/tech-requirements.md#environments-and-configuration",
+      "context/docs/AUTH.md#secrets-and-key-management"
+    ],
     "deliverables": [],
-    "dependencies": [],
-    "acceptance_criteria": [],
+    "dependencies": ["ENG-M1-P1.2-CONFIG-T02"],
+    "acceptance_criteria": [
+      "Every variable the code reads is in `.env.example` with required/optional noted",
+      "Env access is validated at startup, never read ad hoc",
+      "No secrets are committed"
+    ],
     "validation": {
-      "commands": [],
+      "commands": ["pnpm typecheck"],
       "manual_checks": [],
-      "evidence_required": []
+      "evidence_required": [
+        "Command output or manual check result recorded in .agents/execution/progress.json"
+      ]
     },
     "references": []
   },
+  "sub_issues": [],
   "bug_details": null,
   "github": {
-    "title": "[M1-P1.2-CONFIG-T03] feat(config): Env variable templates",
+    "title": "[ENG-M1-P1.2-CONFIG-T03] Project Configuration – Env variable templates",
     "labels": [
       "tracked",
       "type:feature",
       "phase:P1.2",
       "devcycle:M1-P1.2-CONFIG",
+      "cadence:once",
       "spec:linked"
     ],
     "milestone": "M1 — Foundation & Pre-Production",
@@ -88,10 +88,5 @@
     "approval_required": false,
     "approved": false,
     "evidence": []
-  },
-  "source": {
-    "kind": "Engineering Tasks CSV",
-    "project_code": "ENG-M1-P1.2-CONFIG-T03",
-    "task_name": "T03 Env variable templates"
   }
 }

@@ -1,11 +1,12 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "1.1",
   "kind": "spec",
   "id": "M3-P3.3-UPDATES-T05",
   "work_code": "ENG-M3-P3.3-UPDATES-T05",
   "team": "engineering",
   "title": "Update release notes",
   "issue_type": "feature",
+  "cadence": "gate",
   "traceability": {
     "milestone_id": "M3",
     "milestone_title": "Expansion & Hardening",
@@ -16,28 +17,12 @@
     "task_id": "T05",
     "ontology_ids": []
   },
-  "documentation": {
-    "prd": {
+  "documentation": [
+    {
       "file": "context/docs/PRD.md",
-      "requirement_id": "PRD-M3-P3.3-UPDATES-T05"
-    },
-    "tech_requirements": {
-      "file": "context/docs/tech-requirements.md",
-      "requirement_id": "TECH-M3-P3.3-UPDATES-T05"
-    },
-    "architecture": {
-      "file": "context/docs/Architecture.md",
-      "requirement_id": "ARCH-M3-P3.3-UPDATES-T05"
-    },
-    "auth": {
-      "file": "context/docs/AUTH.md",
-      "requirement_id": "AUTH-M3-P3.3-UPDATES-T05"
-    },
-    "design": {
-      "file": "context/docs/Design.md",
-      "requirement_id": "DES-M3-P3.3-UPDATES-T05"
+      "section": "release-plan"
     }
-  },
+  ],
   "contracts": {
     "application": ".agents/contracts/application.yaml",
     "validation": ".agents/contracts/validation.yaml",
@@ -51,31 +36,39 @@
     "billable": null
   },
   "specification": {
-    "objective": "",
+    "objective": "Publish release notes and close milestone M3.",
     "scope": {
       "included": [],
       "excluded": []
     },
     "requirements": [],
-    "inputs": [],
+    "inputs": ["context/docs/PRD.md#release-plan"],
     "deliverables": [],
-    "dependencies": [],
-    "acceptance_criteria": [],
+    "dependencies": ["ENG-M3-P3.3-UPDATES-T04"],
+    "acceptance_criteria": [
+      "CHANGELOG lists user-facing changes",
+      "All M3 specs are closed or deferred",
+      "Owner approval is recorded"
+    ],
     "validation": {
-      "commands": [],
+      "commands": ["pnpm format:check"],
       "manual_checks": [],
-      "evidence_required": []
+      "evidence_required": [
+        "Command output or manual check result recorded in .agents/execution/progress.json"
+      ]
     },
     "references": []
   },
+  "sub_issues": [],
   "bug_details": null,
   "github": {
-    "title": "[M3-P3.3-UPDATES-T05] feat(updates): Update release notes",
+    "title": "[ENG-M3-P3.3-UPDATES-T05] Maintenance & Updates – Update release notes",
     "labels": [
       "tracked",
       "type:feature",
       "phase:P3.3",
       "devcycle:M3-P3.3-UPDATES",
+      "cadence:gate",
       "spec:linked"
     ],
     "milestone": "M3 — Expansion & Hardening",
@@ -85,13 +78,8 @@
   },
   "state": {
     "status": "backlog",
-    "approval_required": false,
+    "approval_required": true,
     "approved": false,
     "evidence": []
-  },
-  "source": {
-    "kind": "Engineering Tasks CSV",
-    "project_code": "ENG-M3-P3.3-UPDATES-T05",
-    "task_name": "T05 Update release notes"
   }
 }

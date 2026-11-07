@@ -1,11 +1,12 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "1.1",
   "kind": "spec",
   "id": "M3-P3.3-DOCS-T01",
   "work_code": "ENG-M3-P3.3-DOCS-T01",
   "team": "engineering",
   "title": "README & repo docs",
   "issue_type": "feature",
+  "cadence": "once",
   "traceability": {
     "milestone_id": "M3",
     "milestone_title": "Expansion & Hardening",
@@ -16,28 +17,12 @@
     "task_id": "T01",
     "ontology_ids": []
   },
-  "documentation": {
-    "prd": {
+  "documentation": [
+    {
       "file": "context/docs/PRD.md",
-      "requirement_id": "PRD-M3-P3.3-DOCS-T01"
-    },
-    "tech_requirements": {
-      "file": "context/docs/tech-requirements.md",
-      "requirement_id": "TECH-M3-P3.3-DOCS-T01"
-    },
-    "architecture": {
-      "file": "context/docs/Architecture.md",
-      "requirement_id": "ARCH-M3-P3.3-DOCS-T01"
-    },
-    "auth": {
-      "file": "context/docs/AUTH.md",
-      "requirement_id": "AUTH-M3-P3.3-DOCS-T01"
-    },
-    "design": {
-      "file": "context/docs/Design.md",
-      "requirement_id": "DES-M3-P3.3-DOCS-T01"
+      "section": "overview"
     }
-  },
+  ],
   "contracts": {
     "application": ".agents/contracts/application.yaml",
     "validation": ".agents/contracts/validation.yaml",
@@ -51,31 +36,39 @@
     "billable": null
   },
   "specification": {
-    "objective": "",
+    "objective": "Fill in the README and root docs for the finished app.",
     "scope": {
       "included": [],
       "excluded": []
     },
     "requirements": [],
-    "inputs": [],
+    "inputs": ["context/docs/PRD.md#overview"],
     "deliverables": [],
     "dependencies": [],
-    "acceptance_criteria": [],
+    "acceptance_criteria": [
+      "README describes the product, stack, setup and scripts",
+      "Root markdown files are filled for this app",
+      "No template placeholders remain"
+    ],
     "validation": {
-      "commands": [],
+      "commands": ["pnpm format:check"],
       "manual_checks": [],
-      "evidence_required": []
+      "evidence_required": [
+        "Command output or manual check result recorded in .agents/execution/progress.json"
+      ]
     },
     "references": []
   },
+  "sub_issues": [],
   "bug_details": null,
   "github": {
-    "title": "[M3-P3.3-DOCS-T01] feat(docs): README & repo docs",
+    "title": "[ENG-M3-P3.3-DOCS-T01] Documentation – README & repo docs",
     "labels": [
       "tracked",
       "type:feature",
       "phase:P3.3",
       "devcycle:M3-P3.3-DOCS",
+      "cadence:once",
       "spec:linked"
     ],
     "milestone": "M3 — Expansion & Hardening",
@@ -88,10 +81,5 @@
     "approval_required": false,
     "approved": false,
     "evidence": []
-  },
-  "source": {
-    "kind": "Engineering Tasks CSV",
-    "project_code": "ENG-M3-P3.3-DOCS-T01",
-    "task_name": "T01 README & repo docs"
   }
 }

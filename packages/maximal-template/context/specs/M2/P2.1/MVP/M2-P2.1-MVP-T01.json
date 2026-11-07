@@ -1,43 +1,32 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "1.1",
   "kind": "spec",
   "id": "M2-P2.1-MVP-T01",
   "work_code": "ENG-M2-P2.1-MVP-T01",
   "team": "engineering",
-  "title": "Tenant isolation",
+  "title": "Billing plans & checkout",
   "issue_type": "feature",
+  "cadence": "once",
   "traceability": {
     "milestone_id": "M2",
     "milestone_title": "MVP Launch",
     "phase_id": "P2.1",
     "phase_title": "Core Feature Implementation",
     "dev_cycle_id": "M2-P2.1-MVP",
-    "dev_cycle_title": "MVP Build",
+    "dev_cycle_title": "Core Platform",
     "task_id": "T01",
     "ontology_ids": []
   },
-  "documentation": {
-    "prd": {
+  "documentation": [
+    {
       "file": "context/docs/PRD.md",
-      "requirement_id": "PRD-M2-P2.1-MVP-T01"
+      "section": "billing-and-monetization"
     },
-    "tech_requirements": {
+    {
       "file": "context/docs/tech-requirements.md",
-      "requirement_id": "TECH-M2-P2.1-MVP-T01"
-    },
-    "architecture": {
-      "file": "context/docs/Architecture.md",
-      "requirement_id": "ARCH-M2-P2.1-MVP-T01"
-    },
-    "auth": {
-      "file": "context/docs/AUTH.md",
-      "requirement_id": "AUTH-M2-P2.1-MVP-T01"
-    },
-    "design": {
-      "file": "context/docs/Design.md",
-      "requirement_id": "DES-M2-P2.1-MVP-T01"
+      "section": "integrations"
     }
-  },
+  ],
   "contracts": {
     "application": ".agents/contracts/application.yaml",
     "validation": ".agents/contracts/validation.yaml",
@@ -51,31 +40,42 @@
     "billable": null
   },
   "specification": {
-    "objective": "",
+    "objective": "Implement the plans, pricing and checkout defined in the PRD.",
     "scope": {
       "included": [],
       "excluded": []
     },
     "requirements": [],
-    "inputs": [],
+    "inputs": [
+      "context/docs/PRD.md#billing-and-monetization",
+      "context/docs/tech-requirements.md#integrations"
+    ],
     "deliverables": [],
     "dependencies": [],
-    "acceptance_criteria": [],
+    "acceptance_criteria": [
+      "Plans and prices exist in Stripe test and live mode",
+      "Checkout and customer portal work for each plan",
+      "Plan limits are enforced server side"
+    ],
     "validation": {
-      "commands": [],
+      "commands": ["pnpm typecheck", "pnpm test"],
       "manual_checks": [],
-      "evidence_required": []
+      "evidence_required": [
+        "Command output or manual check result recorded in .agents/execution/progress.json"
+      ]
     },
     "references": []
   },
+  "sub_issues": [],
   "bug_details": null,
   "github": {
-    "title": "[M2-P2.1-MVP-T01] feat(mvp): Tenant isolation",
+    "title": "[ENG-M2-P2.1-MVP-T01] Core Platform – Billing plans & checkout",
     "labels": [
       "tracked",
       "type:feature",
       "phase:P2.1",
       "devcycle:M2-P2.1-MVP",
+      "cadence:once",
       "spec:linked"
     ],
     "milestone": "M2 — MVP Launch",
@@ -88,10 +88,5 @@
     "approval_required": false,
     "approved": false,
     "evidence": []
-  },
-  "source": {
-    "kind": "Engineering Tasks CSV",
-    "project_code": "ENG-M2-P2.1-MVP-T01",
-    "task_name": "T01 Tenant isolation"
   }
 }

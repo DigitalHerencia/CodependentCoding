@@ -1,43 +1,38 @@
-# Pull request: traceable engineering specification
+## Spec
 
-**Issue:** Closes #<!-- number -->
-**Spec ID:** `<!-- M1-P1.1-INIT-T01 -->`
-**SOP work code:** `<!-- ENG-M1-P1.1-INIT-T01 -->`
-**Milestone / Phase / Dev Cycle:** `<!-- M1 / P1.1 / M1-P1.1-INIT -->`
+Closes #<!-- issue number -->
 
-## Change and scope
+**Spec ID:** `ENG-…` <!-- the spec or sub-issue this PR delivers; one per PR -->
 
-<!-- Explain only what this single specification authorizes; flag adjacent changes. -->
+## Change
 
-## Requirements and documentation
+<!-- What changed and why. Flag anything outside the spec's scope. -->
 
-| Document | Requirement ID | Decision / impact |
-|---|---|---|
-| PRD | `PRD-...` | |
-| Tech requirements | `TECH-...` | |
-| Architecture | `ARCH-...` | |
-| Auth | `AUTH-...` | |
-| Design | `DES-...` | |
+## Acceptance criteria
 
-## Acceptance criteria and evidence
+<!-- Copy each criterion from the spec and give its evidence. -->
 
-<!-- Map each criterion from JSON spec to actual result; no unrun green checks. -->
+- [ ] <!-- criterion --> — <!-- evidence -->
 
-## Validation
+## Checks run
 
-| Check or command | Result | Evidence |
-|---|---|---|
-| | Not run / pass / fail | |
+<!-- Only checks you actually ran. -->
 
-## Contract and execution updates
+| Check               | Result |
+| ------------------- | ------ |
+| `pnpm format:check` |        |
+| `pnpm lint`         |        |
+| `pnpm typecheck`    |        |
+| `pnpm build`        |        |
 
-- [ ] `.agents/contracts/application.yaml` reviewed for applicability
-- [ ] `.agents/contracts/design.yaml` reviewed for applicability
-- [ ] `.agents/contracts/validation.yaml` reviewed for applicability
-- [ ] `.agents/execution/progress.json` updated with actual evidence
-- [ ] `.agents/execution/decisions.json` updated if decisions changed
-- [ ] `.agents/execution/handoff.json` updated for continuity
+## Governance
 
-## Approval gates and risks
+- [ ] Docs in `context/docs/` updated if intent changed
+- [ ] Matching `.agents/contracts/*.yaml` sections updated
+- [ ] `.agents/execution/progress.json` has the evidence
+- [ ] `.agents/execution/decisions.json` has any decision made
+- [ ] `.agents/execution/handoff.json` updated
 
-<!-- No deployment, irreversible data change, security-control weakening, or other gated action without approval. -->
+## Risk
+
+<!-- Migrations, security boundaries, or anything needing owner approval. Write "None" if none. -->

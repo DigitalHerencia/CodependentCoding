@@ -1,9 +1,18 @@
-# GitHub integration
+# .github
 
-Native GitHub files: `ISSUE_TEMPLATE/{bug,feature,config}.yml`, `pull_request_template.md`, `workflows/ci.yml`, `dependabot.yml`, `CODEOWNERS`, `release.yml`.
+| File                         | Read by         | Purpose                                                        |
+| ---------------------------- | --------------- | -------------------------------------------------------------- |
+| `ISSUE_TEMPLATE/feature.yml` | GitHub          | Form for a spec or sub-issue the scripts did not create        |
+| `ISSUE_TEMPLATE/bug.yml`     | GitHub          | Defect form; defects are sub-issues of `ENG-M2-P2.2-DEBUG-T01` |
+| `ISSUE_TEMPLATE/config.yml`  | GitHub          | Disables blank issues                                          |
+| `pull_request_template.md`   | GitHub          | One spec per PR, with evidence and governance checklist        |
+| `workflows/ci.yml`           | GitHub Actions  | Lean PR check: format, lint, type check, governance, build     |
+| `dependabot.yml`             | Dependabot      | Weekly npm and Actions updates                                 |
+| `release.yml`                | GitHub Releases | Release-note categories by label                               |
+| `CODEOWNERS`                 | GitHub          | Review owners (set before enabling)                            |
+| `labels.json`                | `scripts/`      | Labels: type, phase, dev cycle, cadence, status                |
+| `milestones.json`            | `scripts/`      | The three milestones                                           |
+| `project.json`               | `scripts/`      | Project title, recorded project number, default workflows      |
+| `dependabot.json`            | humans          | Notes on the Dependabot setup                                  |
 
-Custom metadata (not parsed natively by GitHub): `labels.json`, `milestones.json`, `project.json`, `dependabot.json`. The scripts in `scripts/governance/` read these files. The desired GitHub Projects v2 workflow is documented in `project.json` but its built-in workflow options must be configured and verified in GitHub itself.
-
-For a spec, use its `github.title`, `github.labels`, and `github.milestone`. Render issue-body Markdown with `scripts/governance/render-issue.mjs`; `gh issue create` accepts `--body-file` and does **not** require JSON input. Issue forms are for manual entry and have aligned fields.
-
-Existing `.github/labels.yml` or sync scripts may already be active: reconcile the catalogs before enabling a new sync path. Do not overwrite or duplicate issue labels silently.
+`labels.json`, `milestones.json` and `project.json` are not read by GitHub; `pnpm governance:taxonomy`, `governance:project` and `governance:publish` apply them. See [`scripts/README.md`](../scripts/README.md).

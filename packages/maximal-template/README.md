@@ -1,40 +1,60 @@
-# CodependentCoding — Traceable Engineering Governance Kit
+# TODO: App name
 
-**Repository-shaped template package.** All artifact paths are relative to a repository root. This kit does **not** modify the live repository.
+TODO: One-line pitch from `context/docs/PRD.md#overview`.
 
-## What is inside
+<!-- Agents: fill every TODO from context/docs at ENG-M3-P3.3-DOCS-T01. Keep sections; remove this comment when done. -->
 
-- **3 milestones → 9 phases → 20 dev cycles → 100 JSON specifications**, faithfully named from the supplied Engineering exports.
-- Two GitHub issue forms: **bug** and **feature**, with 100 pre-classified issue records and GitHub-ready titles.
-- Five Markdown documentation templates (PRD, tech requirements, architecture, auth, design), each with **100 individually identified authoring slots**.
-- Three YAML contracts and three JSON execution files, cross-referenced to the same stable specification IDs.
-- Issue-to-PR traceability, metadata for labels/milestones/Projects v2, read-only validation and dry-run GitHub CLI scripts.
+## Overview
 
-## Naming and source of truth
+TODO: Two or three sentences: the problem, who it is for, and what the app does.
 
-- Native spec ID / filename: `M1-P1.2-SCAFF-T01` / `M1-P1.2-SCAFF-T01.json`.
-- SOP-compatible work code: `ENG-M1-P1.2-SCAFF-T01` (retained inside the JSON).
-- A **dev cycle** is the five-spec parent previously called a project in the Engineering export.
-- GitHub accepts **Markdown bodies via `gh issue create --body-file`**; JSON is this kit’s machine-readable source, **not a requirement of the GitHub CLI**.
-- GitHub does not read `.github/{labels,milestones,project,dependabot}.json` natively; the kit scripts read these metadata files. **Only `.github/dependabot.yml` is a native Dependabot config.**
+## Features
 
-## Local validation (Windows PowerShell)
+- TODO: one bullet per Must feature in `context/docs/PRD.md#functional-requirements`
+
+## Tech stack
+
+Next.js (App Router) · TypeScript · PostgreSQL (Neon) + Prisma · Clerk · Tailwind CSS + shadcn/ui · Vercel. Integrations: TODO: from `context/docs/tech-requirements.md#integrations`.
+
+## Getting started
+
+Requirements: Node.js 24, pnpm, and the accounts listed in `.env.example`.
 
 ```powershell
-node ./scripts/governance/validate.mjs
-node ./scripts/governance/publish-issues.mjs --id M1-P1.1-INIT-T01
+pnpm install
+Copy-Item .env.example .env.local   # then fill in the values
+pnpm prisma:generate
+pnpm dev
 ```
 
-The second command is a **dry run**. For explicit GitHub writes, read `scripts/governance/README.md` and add `--apply` after configuring `gh auth login`. Labels and milestones must exist before publishing issues.
+## Scripts
 
-## Integration
+| Script                                          | Purpose                                                |
+| ----------------------------------------------- | ------------------------------------------------------ |
+| `pnpm dev`                                      | Start the development server                           |
+| `pnpm build`                                    | Production build                                       |
+| `pnpm lint` / `pnpm lint:fix`                   | Lint (zero warnings)                                   |
+| `pnpm format` / `pnpm format:check`             | Format with Prettier                                   |
+| `pnpm typecheck`                                | Generate types and type check                          |
+| `pnpm test` / `pnpm test:rls` / `pnpm test:e2e` | Unit, row-level security and end-to-end tests          |
+| `pnpm governance:validate`                      | Check docs, specs, contracts and GitHub metadata agree |
 
-This package intentionally includes filenames that exist in the live repo, e.g. `context/docs/PRD.md`, `.github/pull_request_template.md`, `LICENSE`, and agent contracts. **Review and merge their contents; do not extract this ZIP blindly over the repository.** Preserve existing application doctrine, CC-numbered work, history, and validated functionality.
+## Project structure
 
-## Source authority
+| Path          | Contents                                                       |
+| ------------- | -------------------------------------------------------------- |
+| `app/`        | Routes and composition                                         |
+| `features/`   | Feature UI and view logic                                      |
+| `components/` | Shared UI                                                      |
+| `lib/`        | Server logic: actions, fetchers, auth, authz, db, integrations |
+| `prisma/`     | Schema, migrations, RLS and seed                               |
+| `context/`    | Product and technical docs, and the build specs                |
+| `.agents/`    | Agent contracts and execution records                          |
 
-The user-confirmed Engineering CSV export supplies **milestone and task names**. Digital Herencia’s [Ticketing SOP](https://app.notion.com/p/2d8a4e63bf2380dd9a04cbbb762b9c7c) supplies the work-code shape and ticket rollup semantics. Source Ontologies™ are maintained as a nine-item registry, not invented assignments to unrelated work. Empty requirement content is intended to be filled in by users.
+## Deployment
 
-## Files
+TODO: from `context/docs/tech-requirements.md#cicd-and-deployment`.
 
-[Roadmap](ROADMAP.md) · [Context](context/README.md) · [Agents](.agents/README.md) · [GitHub](.github/README.md) · [Security](SECURITY.md) · [Support](SUPPORT.md) · [License](LICENSE)
+## License
+
+See [LICENSE](LICENSE).

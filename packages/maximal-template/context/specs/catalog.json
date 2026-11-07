@@ -1,11 +1,9 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "1.1",
   "team": "engineering",
+  "id_format": "ENG-{milestone}-{phase}-{devcycle}-{T##}",
   "source_of_truth": "context/specs/",
-  "ticketing_sop": {
-    "id": "SOP-STUDIO-DELIVERY-001",
-    "url": "https://app.notion.com/p/2d8a4e63bf2380dd9a04cbbb762b9c7c"
-  },
+  "governance": "GOVERNANCE.md",
   "milestones": [
     {
       "id": "M1",
@@ -17,7 +15,7 @@
           "dev_cycles": [
             {
               "id": "M1-P1.1-INIT",
-              "source_id": "ENG-M1-P1.1-INIT",
+              "code": "INIT",
               "title": "Environment Initialization",
               "spec_ids": [
                 "M1-P1.1-INIT-T01",
@@ -34,20 +32,8 @@
           "title": "Platform & Operations Scaffolding",
           "dev_cycles": [
             {
-              "id": "M1-P1.2-CONFIG",
-              "source_id": "ENG-M1-P1.2-CONFIG",
-              "title": "Project Configuration",
-              "spec_ids": [
-                "M1-P1.2-CONFIG-T01",
-                "M1-P1.2-CONFIG-T02",
-                "M1-P1.2-CONFIG-T03",
-                "M1-P1.2-CONFIG-T04",
-                "M1-P1.2-CONFIG-T05"
-              ]
-            },
-            {
               "id": "M1-P1.2-SCAFF",
-              "source_id": "ENG-M1-P1.2-SCAFF",
+              "code": "SCAFF",
               "title": "Architecture Setup",
               "spec_ids": [
                 "M1-P1.2-SCAFF-T01",
@@ -55,6 +41,18 @@
                 "M1-P1.2-SCAFF-T03",
                 "M1-P1.2-SCAFF-T04",
                 "M1-P1.2-SCAFF-T05"
+              ]
+            },
+            {
+              "id": "M1-P1.2-CONFIG",
+              "code": "CONFIG",
+              "title": "Project Configuration",
+              "spec_ids": [
+                "M1-P1.2-CONFIG-T01",
+                "M1-P1.2-CONFIG-T02",
+                "M1-P1.2-CONFIG-T03",
+                "M1-P1.2-CONFIG-T04",
+                "M1-P1.2-CONFIG-T05"
               ]
             }
           ]
@@ -64,20 +62,20 @@
           "title": "Internal Alpha Validation",
           "dev_cycles": [
             {
-              "id": "M1-P1.3-ALPHA",
-              "source_id": "ENG-M1-P1.3-ALPHA",
-              "title": "Alpha Build",
+              "id": "M1-P1.3-DATA",
+              "code": "DATA",
+              "title": "Data Layer Definition",
               "spec_ids": [
-                "M1-P1.3-ALPHA-T01",
-                "M1-P1.3-ALPHA-T02",
-                "M1-P1.3-ALPHA-T03",
-                "M1-P1.3-ALPHA-T04",
-                "M1-P1.3-ALPHA-T05"
+                "M1-P1.3-DATA-T01",
+                "M1-P1.3-DATA-T02",
+                "M1-P1.3-DATA-T03",
+                "M1-P1.3-DATA-T04",
+                "M1-P1.3-DATA-T05"
               ]
             },
             {
               "id": "M1-P1.3-AUTH",
-              "source_id": "ENG-M1-P1.3-AUTH",
+              "code": "AUTH",
               "title": "Auth & RBAC",
               "spec_ids": [
                 "M1-P1.3-AUTH-T01",
@@ -88,15 +86,15 @@
               ]
             },
             {
-              "id": "M1-P1.3-DATA",
-              "source_id": "ENG-M1-P1.3-DATA",
-              "title": "Data Layer Definition",
+              "id": "M1-P1.3-ALPHA",
+              "code": "ALPHA",
+              "title": "Alpha Build",
               "spec_ids": [
-                "M1-P1.3-DATA-T01",
-                "M1-P1.3-DATA-T02",
-                "M1-P1.3-DATA-T03",
-                "M1-P1.3-DATA-T04",
-                "M1-P1.3-DATA-T05"
+                "M1-P1.3-ALPHA-T01",
+                "M1-P1.3-ALPHA-T02",
+                "M1-P1.3-ALPHA-T03",
+                "M1-P1.3-ALPHA-T04",
+                "M1-P1.3-ALPHA-T05"
               ]
             }
           ]
@@ -112,8 +110,20 @@
           "title": "Core Feature Implementation",
           "dev_cycles": [
             {
+              "id": "M2-P2.1-MVP",
+              "code": "MVP",
+              "title": "Core Platform",
+              "spec_ids": [
+                "M2-P2.1-MVP-T01",
+                "M2-P2.1-MVP-T02",
+                "M2-P2.1-MVP-T03",
+                "M2-P2.1-MVP-T04",
+                "M2-P2.1-MVP-T05"
+              ]
+            },
+            {
               "id": "M2-P2.1-FEATURES",
-              "source_id": "ENG-M2-P2.1-FEATURES",
+              "code": "FEATURES",
               "title": "Feature Development",
               "spec_ids": [
                 "M2-P2.1-FEATURES-T01",
@@ -124,20 +134,8 @@
               ]
             },
             {
-              "id": "M2-P2.1-MVP",
-              "source_id": "ENG-M2-P2.1-MVP",
-              "title": "MVP Build",
-              "spec_ids": [
-                "M2-P2.1-MVP-T01",
-                "M2-P2.1-MVP-T02",
-                "M2-P2.1-MVP-T03",
-                "M2-P2.1-MVP-T04",
-                "M2-P2.1-MVP-T05"
-              ]
-            },
-            {
               "id": "M2-P2.1-TEST",
-              "source_id": "ENG-M2-P2.1-TEST",
+              "code": "TEST",
               "title": "Testing Strategy",
               "spec_ids": [
                 "M2-P2.1-TEST-T01",
@@ -155,7 +153,7 @@
           "dev_cycles": [
             {
               "id": "M2-P2.2-DEBUG",
-              "source_id": "ENG-M2-P2.2-DEBUG",
+              "code": "DEBUG",
               "title": "Debug & Fixes",
               "spec_ids": [
                 "M2-P2.2-DEBUG-T01",
@@ -167,7 +165,7 @@
             },
             {
               "id": "M2-P2.2-VALIDATE",
-              "source_id": "ENG-M2-P2.2-VALIDATE",
+              "code": "VALIDATE",
               "title": "System Validation",
               "spec_ids": [
                 "M2-P2.2-VALIDATE-T01",
@@ -185,7 +183,7 @@
           "dev_cycles": [
             {
               "id": "M2-P2.3-CICD",
-              "source_id": "ENG-M2-P2.3-CICD",
+              "code": "CICD",
               "title": "CI/CD Pipeline",
               "spec_ids": [
                 "M2-P2.3-CICD-T01",
@@ -208,20 +206,8 @@
           "title": "Feature Expansion",
           "dev_cycles": [
             {
-              "id": "M3-P3.1-PERF",
-              "source_id": "ENG-M3-P3.1-PERF",
-              "title": "Performance Optimization",
-              "spec_ids": [
-                "M3-P3.1-PERF-T01",
-                "M3-P3.1-PERF-T02",
-                "M3-P3.1-PERF-T03",
-                "M3-P3.1-PERF-T04",
-                "M3-P3.1-PERF-T05"
-              ]
-            },
-            {
               "id": "M3-P3.1-SEC",
-              "source_id": "ENG-M3-P3.1-SEC",
+              "code": "SEC",
               "title": "Security Hardening",
               "spec_ids": [
                 "M3-P3.1-SEC-T01",
@@ -229,6 +215,18 @@
                 "M3-P3.1-SEC-T03",
                 "M3-P3.1-SEC-T04",
                 "M3-P3.1-SEC-T05"
+              ]
+            },
+            {
+              "id": "M3-P3.1-PERF",
+              "code": "PERF",
+              "title": "Performance Optimization",
+              "spec_ids": [
+                "M3-P3.1-PERF-T01",
+                "M3-P3.1-PERF-T02",
+                "M3-P3.1-PERF-T03",
+                "M3-P3.1-PERF-T04",
+                "M3-P3.1-PERF-T05"
               ]
             }
           ]
@@ -239,8 +237,8 @@
           "dev_cycles": [
             {
               "id": "M3-P3.2-HARD",
-              "source_id": "ENG-M3-P3.2-HARD",
-              "title": "Hardening",
+              "code": "HARD",
+              "title": "Resilience",
               "spec_ids": [
                 "M3-P3.2-HARD-T01",
                 "M3-P3.2-HARD-T02",
@@ -251,7 +249,7 @@
             },
             {
               "id": "M3-P3.2-OBS",
-              "source_id": "ENG-M3-P3.2-OBS",
+              "code": "OBS",
               "title": "Observability",
               "spec_ids": [
                 "M3-P3.2-OBS-T01",
@@ -263,7 +261,7 @@
             },
             {
               "id": "M3-P3.2-REVIEW",
-              "source_id": "ENG-M3-P3.2-REVIEW",
+              "code": "REVIEW",
               "title": "Code Review",
               "spec_ids": [
                 "M3-P3.2-REVIEW-T01",
@@ -281,7 +279,7 @@
           "dev_cycles": [
             {
               "id": "M3-P3.3-DEPLOY",
-              "source_id": "ENG-M3-P3.3-DEPLOY",
+              "code": "DEPLOY",
               "title": "Deployment",
               "spec_ids": [
                 "M3-P3.3-DEPLOY-T01",
@@ -293,7 +291,7 @@
             },
             {
               "id": "M3-P3.3-DOCS",
-              "source_id": "ENG-M3-P3.3-DOCS",
+              "code": "DOCS",
               "title": "Documentation",
               "spec_ids": [
                 "M3-P3.3-DOCS-T01",
@@ -305,7 +303,7 @@
             },
             {
               "id": "M3-P3.3-UPDATES",
-              "source_id": "ENG-M3-P3.3-UPDATES",
+              "code": "UPDATES",
               "title": "Maintenance & Updates",
               "spec_ids": [
                 "M3-P3.3-UPDATES-T01",

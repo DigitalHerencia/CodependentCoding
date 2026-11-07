@@ -1,11 +1,12 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "1.1",
   "kind": "spec",
   "id": "M3-P3.2-REVIEW-T04",
   "work_code": "ENG-M3-P3.2-REVIEW-T04",
   "team": "engineering",
   "title": "Refactor recommendations",
   "issue_type": "feature",
+  "cadence": "repeatable",
   "traceability": {
     "milestone_id": "M3",
     "milestone_title": "Expansion & Hardening",
@@ -16,28 +17,12 @@
     "task_id": "T04",
     "ontology_ids": []
   },
-  "documentation": {
-    "prd": {
-      "file": "context/docs/PRD.md",
-      "requirement_id": "PRD-M3-P3.2-REVIEW-T04"
-    },
-    "tech_requirements": {
-      "file": "context/docs/tech-requirements.md",
-      "requirement_id": "TECH-M3-P3.2-REVIEW-T04"
-    },
-    "architecture": {
+  "documentation": [
+    {
       "file": "context/docs/Architecture.md",
-      "requirement_id": "ARCH-M3-P3.2-REVIEW-T04"
-    },
-    "auth": {
-      "file": "context/docs/AUTH.md",
-      "requirement_id": "AUTH-M3-P3.2-REVIEW-T04"
-    },
-    "design": {
-      "file": "context/docs/Design.md",
-      "requirement_id": "DES-M3-P3.2-REVIEW-T04"
+      "section": "architecture-decisions"
     }
-  },
+  ],
   "contracts": {
     "application": ".agents/contracts/application.yaml",
     "validation": ".agents/contracts/validation.yaml",
@@ -51,31 +36,41 @@
     "billable": null
   },
   "specification": {
-    "objective": "",
+    "objective": "Record refactors worth doing, without doing them in unrelated PRs.",
     "scope": {
       "included": [],
       "excluded": []
     },
     "requirements": [],
-    "inputs": [],
+    "inputs": ["context/docs/Architecture.md#architecture-decisions"],
     "deliverables": [],
-    "dependencies": [],
-    "acceptance_criteria": [],
+    "dependencies": ["ENG-M3-P3.2-REVIEW-T03"],
+    "acceptance_criteria": [
+      "Recommendations are filed as UPDATES sub-issues",
+      "Each has a reason and a cost",
+      "Architecture decisions are updated if a pattern changes"
+    ],
     "validation": {
       "commands": [],
-      "manual_checks": [],
-      "evidence_required": []
+      "manual_checks": [
+        "Verify each acceptance criterion by hand and record the result"
+      ],
+      "evidence_required": [
+        "Command output or manual check result recorded in .agents/execution/progress.json"
+      ]
     },
     "references": []
   },
+  "sub_issues": [],
   "bug_details": null,
   "github": {
-    "title": "[M3-P3.2-REVIEW-T04] feat(review): Refactor recommendations",
+    "title": "[ENG-M3-P3.2-REVIEW-T04] Code Review – Refactor recommendations",
     "labels": [
       "tracked",
       "type:feature",
       "phase:P3.2",
       "devcycle:M3-P3.2-REVIEW",
+      "cadence:repeatable",
       "spec:linked"
     ],
     "milestone": "M3 — Expansion & Hardening",
@@ -88,10 +83,5 @@
     "approval_required": false,
     "approved": false,
     "evidence": []
-  },
-  "source": {
-    "kind": "Engineering Tasks CSV",
-    "project_code": "ENG-M3-P3.2-REVIEW-T04",
-    "task_name": "T04 Refactor recommendations"
   }
 }

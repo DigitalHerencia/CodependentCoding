@@ -1,11 +1,12 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "1.1",
   "kind": "spec",
   "id": "M2-P2.1-FEATURES-T03",
   "work_code": "ENG-M2-P2.1-FEATURES-T03",
   "team": "engineering",
   "title": "Feature flag gating",
   "issue_type": "feature",
+  "cadence": "once",
   "traceability": {
     "milestone_id": "M2",
     "milestone_title": "MVP Launch",
@@ -16,28 +17,12 @@
     "task_id": "T03",
     "ontology_ids": []
   },
-  "documentation": {
-    "prd": {
-      "file": "context/docs/PRD.md",
-      "requirement_id": "PRD-M2-P2.1-FEATURES-T03"
-    },
-    "tech_requirements": {
-      "file": "context/docs/tech-requirements.md",
-      "requirement_id": "TECH-M2-P2.1-FEATURES-T03"
-    },
-    "architecture": {
+  "documentation": [
+    {
       "file": "context/docs/Architecture.md",
-      "requirement_id": "ARCH-M2-P2.1-FEATURES-T03"
-    },
-    "auth": {
-      "file": "context/docs/AUTH.md",
-      "requirement_id": "AUTH-M2-P2.1-FEATURES-T03"
-    },
-    "design": {
-      "file": "context/docs/Design.md",
-      "requirement_id": "DES-M2-P2.1-FEATURES-T03"
+      "section": "cross-cutting-concerns"
     }
-  },
+  ],
   "contracts": {
     "application": ".agents/contracts/application.yaml",
     "validation": ".agents/contracts/validation.yaml",
@@ -51,31 +36,39 @@
     "billable": null
   },
   "specification": {
-    "objective": "",
+    "objective": "Gate unfinished or plan-limited features behind flags or entitlements.",
     "scope": {
       "included": [],
       "excluded": []
     },
     "requirements": [],
-    "inputs": [],
+    "inputs": ["context/docs/Architecture.md#cross-cutting-concerns"],
     "deliverables": [],
-    "dependencies": [],
-    "acceptance_criteria": [],
+    "dependencies": ["ENG-M2-P2.1-FEATURES-T02"],
+    "acceptance_criteria": [
+      "Flagged features are off by default in production",
+      "Flags are evaluated on the server",
+      "Flag removal is tracked"
+    ],
     "validation": {
-      "commands": [],
+      "commands": ["pnpm typecheck"],
       "manual_checks": [],
-      "evidence_required": []
+      "evidence_required": [
+        "Command output or manual check result recorded in .agents/execution/progress.json"
+      ]
     },
     "references": []
   },
+  "sub_issues": [],
   "bug_details": null,
   "github": {
-    "title": "[M2-P2.1-FEATURES-T03] feat(features): Feature flag gating",
+    "title": "[ENG-M2-P2.1-FEATURES-T03] Feature Development – Feature flag gating",
     "labels": [
       "tracked",
       "type:feature",
       "phase:P2.1",
       "devcycle:M2-P2.1-FEATURES",
+      "cadence:once",
       "spec:linked"
     ],
     "milestone": "M2 — MVP Launch",
@@ -88,10 +81,5 @@
     "approval_required": false,
     "approved": false,
     "evidence": []
-  },
-  "source": {
-    "kind": "Engineering Tasks CSV",
-    "project_code": "ENG-M2-P2.1-FEATURES-T03",
-    "task_name": "T03 Feature flag gating"
   }
 }

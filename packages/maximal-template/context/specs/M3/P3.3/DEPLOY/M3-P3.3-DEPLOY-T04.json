@@ -1,11 +1,12 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "1.1",
   "kind": "spec",
   "id": "M3-P3.3-DEPLOY-T04",
   "work_code": "ENG-M3-P3.3-DEPLOY-T04",
   "team": "engineering",
-  "title": "Rollback readiness",
+  "title": "Production config & domains",
   "issue_type": "feature",
+  "cadence": "once",
   "traceability": {
     "milestone_id": "M3",
     "milestone_title": "Expansion & Hardening",
@@ -16,28 +17,16 @@
     "task_id": "T04",
     "ontology_ids": []
   },
-  "documentation": {
-    "prd": {
-      "file": "context/docs/PRD.md",
-      "requirement_id": "PRD-M3-P3.3-DEPLOY-T04"
-    },
-    "tech_requirements": {
-      "file": "context/docs/tech-requirements.md",
-      "requirement_id": "TECH-M3-P3.3-DEPLOY-T04"
-    },
-    "architecture": {
+  "documentation": [
+    {
       "file": "context/docs/Architecture.md",
-      "requirement_id": "ARCH-M3-P3.3-DEPLOY-T04"
+      "section": "deployment-view"
     },
-    "auth": {
-      "file": "context/docs/AUTH.md",
-      "requirement_id": "AUTH-M3-P3.3-DEPLOY-T04"
-    },
-    "design": {
-      "file": "context/docs/Design.md",
-      "requirement_id": "DES-M3-P3.3-DEPLOY-T04"
+    {
+      "file": "context/docs/tech-requirements.md",
+      "section": "environments-and-configuration"
     }
-  },
+  ],
   "contracts": {
     "application": ".agents/contracts/application.yaml",
     "validation": ".agents/contracts/validation.yaml",
@@ -51,31 +40,44 @@
     "billable": null
   },
   "specification": {
-    "objective": "",
+    "objective": "Configure domains, DNS, email deliverability and provider production settings.",
     "scope": {
       "included": [],
       "excluded": []
     },
     "requirements": [],
-    "inputs": [],
+    "inputs": [
+      "context/docs/Architecture.md#deployment-view",
+      "context/docs/tech-requirements.md#environments-and-configuration"
+    ],
     "deliverables": [],
-    "dependencies": [],
-    "acceptance_criteria": [],
+    "dependencies": ["ENG-M3-P3.3-DEPLOY-T03"],
+    "acceptance_criteria": [
+      "Custom domain and HTTPS are live",
+      "Email sender domain passes SPF, DKIM and DMARC",
+      "Auth and billing providers use production instances"
+    ],
     "validation": {
       "commands": [],
-      "manual_checks": [],
-      "evidence_required": []
+      "manual_checks": [
+        "Verify each acceptance criterion by hand and record the result"
+      ],
+      "evidence_required": [
+        "Command output or manual check result recorded in .agents/execution/progress.json"
+      ]
     },
     "references": []
   },
+  "sub_issues": [],
   "bug_details": null,
   "github": {
-    "title": "[M3-P3.3-DEPLOY-T04] feat(deploy): Rollback readiness",
+    "title": "[ENG-M3-P3.3-DEPLOY-T04] Deployment – Production config & domains",
     "labels": [
       "tracked",
       "type:feature",
       "phase:P3.3",
       "devcycle:M3-P3.3-DEPLOY",
+      "cadence:once",
       "spec:linked"
     ],
     "milestone": "M3 — Expansion & Hardening",
@@ -88,10 +90,5 @@
     "approval_required": false,
     "approved": false,
     "evidence": []
-  },
-  "source": {
-    "kind": "Engineering Tasks CSV",
-    "project_code": "ENG-M3-P3.3-DEPLOY-T04",
-    "task_name": "T04 Rollback readiness"
   }
 }

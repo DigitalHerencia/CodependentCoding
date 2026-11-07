@@ -1,11 +1,12 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "1.1",
   "kind": "spec",
   "id": "M3-P3.1-PERF-T02",
   "work_code": "ENG-M3-P3.1-PERF-T02",
   "team": "engineering",
   "title": "Query optimization",
   "issue_type": "feature",
+  "cadence": "repeatable",
   "traceability": {
     "milestone_id": "M3",
     "milestone_title": "Expansion & Hardening",
@@ -16,28 +17,16 @@
     "task_id": "T02",
     "ontology_ids": []
   },
-  "documentation": {
-    "prd": {
-      "file": "context/docs/PRD.md",
-      "requirement_id": "PRD-M3-P3.1-PERF-T02"
-    },
-    "tech_requirements": {
+  "documentation": [
+    {
       "file": "context/docs/tech-requirements.md",
-      "requirement_id": "TECH-M3-P3.1-PERF-T02"
+      "section": "performance"
     },
-    "architecture": {
+    {
       "file": "context/docs/Architecture.md",
-      "requirement_id": "ARCH-M3-P3.1-PERF-T02"
-    },
-    "auth": {
-      "file": "context/docs/AUTH.md",
-      "requirement_id": "AUTH-M3-P3.1-PERF-T02"
-    },
-    "design": {
-      "file": "context/docs/Design.md",
-      "requirement_id": "DES-M3-P3.1-PERF-T02"
+      "section": "data-model"
     }
-  },
+  ],
   "contracts": {
     "application": ".agents/contracts/application.yaml",
     "validation": ".agents/contracts/validation.yaml",
@@ -51,31 +40,42 @@
     "billable": null
   },
   "specification": {
-    "objective": "",
+    "objective": "Fix slow or excessive database queries.",
     "scope": {
       "included": [],
       "excluded": []
     },
     "requirements": [],
-    "inputs": [],
+    "inputs": [
+      "context/docs/tech-requirements.md#performance",
+      "context/docs/Architecture.md#data-model"
+    ],
     "deliverables": [],
-    "dependencies": [],
-    "acceptance_criteria": [],
+    "dependencies": ["ENG-M3-P3.1-PERF-T01"],
+    "acceptance_criteria": [
+      "No N+1 queries on key pages",
+      "Hot queries have supporting indexes",
+      "Queries select only the fields they use"
+    ],
     "validation": {
-      "commands": [],
+      "commands": ["pnpm prisma:validate", "pnpm typecheck"],
       "manual_checks": [],
-      "evidence_required": []
+      "evidence_required": [
+        "Command output or manual check result recorded in .agents/execution/progress.json"
+      ]
     },
     "references": []
   },
+  "sub_issues": [],
   "bug_details": null,
   "github": {
-    "title": "[M3-P3.1-PERF-T02] feat(perf): Query optimization",
+    "title": "[ENG-M3-P3.1-PERF-T02] Performance Optimization – Query optimization",
     "labels": [
       "tracked",
       "type:feature",
       "phase:P3.1",
       "devcycle:M3-P3.1-PERF",
+      "cadence:repeatable",
       "spec:linked"
     ],
     "milestone": "M3 — Expansion & Hardening",
@@ -88,10 +88,5 @@
     "approval_required": false,
     "approved": false,
     "evidence": []
-  },
-  "source": {
-    "kind": "Engineering Tasks CSV",
-    "project_code": "ENG-M3-P3.1-PERF-T02",
-    "task_name": "T02 Query optimization"
   }
 }

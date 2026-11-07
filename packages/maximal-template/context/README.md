@@ -1,3 +1,7 @@
-# Context
+# context
 
-The five Markdown documents in [`docs/`](docs/README.md) carry human-readable requirements and explicit requirement slots for all 100 specifications. [`specs/catalog.json`](specs/catalog.json) defines the complete engineering delivery tree. Each JSON specification is the source of truth for one ticket; every specification identifies document slots and agent contracts. [`ontologies.json`](ontologies.json) is the nine-domain classification registry. Preserve existing repository docs and their authority when integrating.
+The developer-facing source of intent for this app (not end-user documentation).
+
+- [`docs/`](docs/README.md): the five requirement documents the owner fills in.
+- [`specs/`](specs/README.md): the 100-spec build process; each spec becomes a GitHub issue.
+- [`ontologies.json`](ontologies.json): the nine template domains, used for `ontology_ids` on specs.

@@ -1,11 +1,12 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "1.1",
   "kind": "spec",
   "id": "M2-P2.1-FEATURES-T02",
   "work_code": "ENG-M2-P2.1-FEATURES-T02",
   "team": "engineering",
   "title": "UI to data wiring",
   "issue_type": "feature",
+  "cadence": "expandable",
   "traceability": {
     "milestone_id": "M2",
     "milestone_title": "MVP Launch",
@@ -16,28 +17,20 @@
     "task_id": "T02",
     "ontology_ids": []
   },
-  "documentation": {
-    "prd": {
-      "file": "context/docs/PRD.md",
-      "requirement_id": "PRD-M2-P2.1-FEATURES-T02"
-    },
-    "tech_requirements": {
-      "file": "context/docs/tech-requirements.md",
-      "requirement_id": "TECH-M2-P2.1-FEATURES-T02"
-    },
-    "architecture": {
+  "documentation": [
+    {
       "file": "context/docs/Architecture.md",
-      "requirement_id": "ARCH-M2-P2.1-FEATURES-T02"
+      "section": "runtime-flows"
     },
-    "auth": {
-      "file": "context/docs/AUTH.md",
-      "requirement_id": "AUTH-M2-P2.1-FEATURES-T02"
-    },
-    "design": {
+    {
       "file": "context/docs/Design.md",
-      "requirement_id": "DES-M2-P2.1-FEATURES-T02"
+      "section": "components"
+    },
+    {
+      "file": "context/docs/Design.md",
+      "section": "key-flows-and-states"
     }
-  },
+  ],
   "contracts": {
     "application": ".agents/contracts/application.yaml",
     "validation": ".agents/contracts/validation.yaml",
@@ -51,31 +44,43 @@
     "billable": null
   },
   "specification": {
-    "objective": "",
+    "objective": "Wire each feature's screens to server reads and actions with loading, empty and error states.",
     "scope": {
       "included": [],
       "excluded": []
     },
     "requirements": [],
-    "inputs": [],
+    "inputs": [
+      "context/docs/Architecture.md#runtime-flows",
+      "context/docs/Design.md#components",
+      "context/docs/Design.md#key-flows-and-states"
+    ],
     "deliverables": [],
-    "dependencies": [],
-    "acceptance_criteria": [],
+    "dependencies": ["ENG-M2-P2.1-FEATURES-T01"],
+    "acceptance_criteria": [
+      "Every screen reads through fetchers and writes through actions",
+      "Loading, empty and error states exist for each screen",
+      "Mutations revalidate affected views"
+    ],
     "validation": {
-      "commands": [],
+      "commands": ["pnpm lint", "pnpm typecheck", "pnpm test"],
       "manual_checks": [],
-      "evidence_required": []
+      "evidence_required": [
+        "Command output or manual check result recorded in .agents/execution/progress.json"
+      ]
     },
     "references": []
   },
+  "sub_issues": [],
   "bug_details": null,
   "github": {
-    "title": "[M2-P2.1-FEATURES-T02] feat(features): UI to data wiring",
+    "title": "[ENG-M2-P2.1-FEATURES-T02] Feature Development – UI to data wiring",
     "labels": [
       "tracked",
       "type:feature",
       "phase:P2.1",
       "devcycle:M2-P2.1-FEATURES",
+      "cadence:expandable",
       "spec:linked"
     ],
     "milestone": "M2 — MVP Launch",
@@ -88,10 +93,5 @@
     "approval_required": false,
     "approved": false,
     "evidence": []
-  },
-  "source": {
-    "kind": "Engineering Tasks CSV",
-    "project_code": "ENG-M2-P2.1-FEATURES-T02",
-    "task_name": "T02 UI to data wiring"
   }
 }

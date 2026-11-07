@@ -1,11 +1,12 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "1.1",
   "kind": "spec",
   "id": "M3-P3.3-DEPLOY-T02",
   "work_code": "ENG-M3-P3.3-DEPLOY-T02",
   "team": "engineering",
   "title": "Production deploy",
   "issue_type": "feature",
+  "cadence": "once",
   "traceability": {
     "milestone_id": "M3",
     "milestone_title": "Expansion & Hardening",
@@ -16,28 +17,16 @@
     "task_id": "T02",
     "ontology_ids": []
   },
-  "documentation": {
-    "prd": {
-      "file": "context/docs/PRD.md",
-      "requirement_id": "PRD-M3-P3.3-DEPLOY-T02"
-    },
-    "tech_requirements": {
-      "file": "context/docs/tech-requirements.md",
-      "requirement_id": "TECH-M3-P3.3-DEPLOY-T02"
-    },
-    "architecture": {
+  "documentation": [
+    {
       "file": "context/docs/Architecture.md",
-      "requirement_id": "ARCH-M3-P3.3-DEPLOY-T02"
+      "section": "deployment-view"
     },
-    "auth": {
-      "file": "context/docs/AUTH.md",
-      "requirement_id": "AUTH-M3-P3.3-DEPLOY-T02"
-    },
-    "design": {
-      "file": "context/docs/Design.md",
-      "requirement_id": "DES-M3-P3.3-DEPLOY-T02"
+    {
+      "file": "context/docs/tech-requirements.md",
+      "section": "cicd-and-deployment"
     }
-  },
+  ],
   "contracts": {
     "application": ".agents/contracts/application.yaml",
     "validation": ".agents/contracts/validation.yaml",
@@ -51,31 +40,44 @@
     "billable": null
   },
   "specification": {
-    "objective": "",
+    "objective": "Deploy to production with production services and data.",
     "scope": {
       "included": [],
       "excluded": []
     },
     "requirements": [],
-    "inputs": [],
+    "inputs": [
+      "context/docs/Architecture.md#deployment-view",
+      "context/docs/tech-requirements.md#cicd-and-deployment"
+    ],
     "deliverables": [],
-    "dependencies": [],
-    "acceptance_criteria": [],
+    "dependencies": ["ENG-M3-P3.3-DEPLOY-T01"],
+    "acceptance_criteria": [
+      "Production environment variables are complete",
+      "Migrations are applied in a controlled step",
+      "Deployment URL and version are recorded"
+    ],
     "validation": {
       "commands": [],
-      "manual_checks": [],
-      "evidence_required": []
+      "manual_checks": [
+        "Verify each acceptance criterion by hand and record the result"
+      ],
+      "evidence_required": [
+        "Command output or manual check result recorded in .agents/execution/progress.json"
+      ]
     },
     "references": []
   },
+  "sub_issues": [],
   "bug_details": null,
   "github": {
-    "title": "[M3-P3.3-DEPLOY-T02] feat(deploy): Production deploy",
+    "title": "[ENG-M3-P3.3-DEPLOY-T02] Deployment – Production deploy",
     "labels": [
       "tracked",
       "type:feature",
       "phase:P3.3",
       "devcycle:M3-P3.3-DEPLOY",
+      "cadence:once",
       "spec:linked"
     ],
     "milestone": "M3 — Expansion & Hardening",
@@ -88,10 +90,5 @@
     "approval_required": false,
     "approved": false,
     "evidence": []
-  },
-  "source": {
-    "kind": "Engineering Tasks CSV",
-    "project_code": "ENG-M3-P3.3-DEPLOY-T02",
-    "task_name": "T02 Production deploy"
   }
 }

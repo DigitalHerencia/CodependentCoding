@@ -1,11 +1,12 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "1.1",
   "kind": "spec",
   "id": "M1-P1.2-CONFIG-T04",
   "work_code": "ENG-M1-P1.2-CONFIG-T04",
   "team": "engineering",
-  "title": "Tooling alignment check",
+  "title": "Brand & design tokens",
   "issue_type": "feature",
+  "cadence": "once",
   "traceability": {
     "milestone_id": "M1",
     "milestone_title": "Foundation & Pre-Production",
@@ -16,28 +17,20 @@
     "task_id": "T04",
     "ontology_ids": []
   },
-  "documentation": {
-    "prd": {
-      "file": "context/docs/PRD.md",
-      "requirement_id": "PRD-M1-P1.2-CONFIG-T04"
-    },
-    "tech_requirements": {
-      "file": "context/docs/tech-requirements.md",
-      "requirement_id": "TECH-M1-P1.2-CONFIG-T04"
-    },
-    "architecture": {
-      "file": "context/docs/Architecture.md",
-      "requirement_id": "ARCH-M1-P1.2-CONFIG-T04"
-    },
-    "auth": {
-      "file": "context/docs/AUTH.md",
-      "requirement_id": "AUTH-M1-P1.2-CONFIG-T04"
-    },
-    "design": {
+  "documentation": [
+    {
       "file": "context/docs/Design.md",
-      "requirement_id": "DES-M1-P1.2-CONFIG-T04"
+      "section": "brand-and-visual-principles"
+    },
+    {
+      "file": "context/docs/Design.md",
+      "section": "design-tokens"
+    },
+    {
+      "file": "context/docs/Design.md",
+      "section": "components"
     }
-  },
+  ],
   "contracts": {
     "application": ".agents/contracts/application.yaml",
     "validation": ".agents/contracts/validation.yaml",
@@ -51,31 +44,43 @@
     "billable": null
   },
   "specification": {
-    "objective": "",
+    "objective": "Apply the app's brand: name, color, typography and tokens, in light and dark themes.",
     "scope": {
       "included": [],
       "excluded": []
     },
     "requirements": [],
-    "inputs": [],
+    "inputs": [
+      "context/docs/Design.md#brand-and-visual-principles",
+      "context/docs/Design.md#design-tokens",
+      "context/docs/Design.md#components"
+    ],
     "deliverables": [],
-    "dependencies": [],
-    "acceptance_criteria": [],
+    "dependencies": ["ENG-M1-P1.2-CONFIG-T03"],
+    "acceptance_criteria": [
+      "Brand color and typography follow Design.md tokens",
+      "Light and dark themes meet WCAG AA contrast",
+      "No hard-coded colors outside the token layer"
+    ],
     "validation": {
-      "commands": [],
+      "commands": ["pnpm lint", "pnpm typecheck"],
       "manual_checks": [],
-      "evidence_required": []
+      "evidence_required": [
+        "Command output or manual check result recorded in .agents/execution/progress.json"
+      ]
     },
     "references": []
   },
+  "sub_issues": [],
   "bug_details": null,
   "github": {
-    "title": "[M1-P1.2-CONFIG-T04] feat(config): Tooling alignment check",
+    "title": "[ENG-M1-P1.2-CONFIG-T04] Project Configuration – Brand & design tokens",
     "labels": [
       "tracked",
       "type:feature",
       "phase:P1.2",
       "devcycle:M1-P1.2-CONFIG",
+      "cadence:once",
       "spec:linked"
     ],
     "milestone": "M1 — Foundation & Pre-Production",
@@ -88,10 +93,5 @@
     "approval_required": false,
     "approved": false,
     "evidence": []
-  },
-  "source": {
-    "kind": "Engineering Tasks CSV",
-    "project_code": "ENG-M1-P1.2-CONFIG-T04",
-    "task_name": "T04 Tooling alignment check"
   }
 }

@@ -1,3 +1,17 @@
-# Security policy — integration template
+# Security Policy
 
-For suspected vulnerabilities, use this repository's GitHub **Private vulnerability reporting** feature if enabled, or the maintainer's established private channel. Do not publish exploit details in a public issue. Supported versions, expected response time and contact addresses must be supplied by the maintainer before adopting this policy. Do not claim an unconfigured inbox or response SLA exists. Credential and tenant isolation boundaries cannot be weakened by routine governance changes.
+## Supported versions
+
+| Version              | Supported |
+| -------------------- | --------- |
+| TODO: latest release | Yes       |
+
+## Reporting a vulnerability
+
+Do not open a public issue. Report privately through [GitHub private vulnerability reporting](../../security/advisories/new) or email TODO: security contact.
+
+Include the affected URL or component, steps to reproduce, and the impact. You will get an acknowledgement within TODO: business days and a fix or mitigation plan after triage.
+
+## Scope
+
+In scope: this application and its API. Out of scope: third-party services (report to the vendor), denial-of-service testing, and social engineering.

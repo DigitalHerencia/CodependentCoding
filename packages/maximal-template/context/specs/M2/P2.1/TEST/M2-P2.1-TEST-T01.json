@@ -1,11 +1,12 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "1.1",
   "kind": "spec",
   "id": "M2-P2.1-TEST-T01",
   "work_code": "ENG-M2-P2.1-TEST-T01",
   "team": "engineering",
   "title": "Unit test plan",
   "issue_type": "feature",
+  "cadence": "once",
   "traceability": {
     "milestone_id": "M2",
     "milestone_title": "MVP Launch",
@@ -16,28 +17,12 @@
     "task_id": "T01",
     "ontology_ids": []
   },
-  "documentation": {
-    "prd": {
-      "file": "context/docs/PRD.md",
-      "requirement_id": "PRD-M2-P2.1-TEST-T01"
-    },
-    "tech_requirements": {
+  "documentation": [
+    {
       "file": "context/docs/tech-requirements.md",
-      "requirement_id": "TECH-M2-P2.1-TEST-T01"
-    },
-    "architecture": {
-      "file": "context/docs/Architecture.md",
-      "requirement_id": "ARCH-M2-P2.1-TEST-T01"
-    },
-    "auth": {
-      "file": "context/docs/AUTH.md",
-      "requirement_id": "AUTH-M2-P2.1-TEST-T01"
-    },
-    "design": {
-      "file": "context/docs/Design.md",
-      "requirement_id": "DES-M2-P2.1-TEST-T01"
+      "section": "testing-strategy"
     }
-  },
+  ],
   "contracts": {
     "application": ".agents/contracts/application.yaml",
     "validation": ".agents/contracts/validation.yaml",
@@ -51,31 +36,39 @@
     "billable": null
   },
   "specification": {
-    "objective": "",
+    "objective": "Cover business logic, authorization and validation with unit tests.",
     "scope": {
       "included": [],
       "excluded": []
     },
     "requirements": [],
-    "inputs": [],
+    "inputs": ["context/docs/tech-requirements.md#testing-strategy"],
     "deliverables": [],
     "dependencies": [],
-    "acceptance_criteria": [],
+    "acceptance_criteria": [
+      "Each feature's pure logic and policies have unit tests",
+      "Tests are deterministic and isolated",
+      "`pnpm test` passes"
+    ],
     "validation": {
-      "commands": [],
+      "commands": ["pnpm test"],
       "manual_checks": [],
-      "evidence_required": []
+      "evidence_required": [
+        "Command output or manual check result recorded in .agents/execution/progress.json"
+      ]
     },
     "references": []
   },
+  "sub_issues": [],
   "bug_details": null,
   "github": {
-    "title": "[M2-P2.1-TEST-T01] feat(test): Unit test plan",
+    "title": "[ENG-M2-P2.1-TEST-T01] Testing Strategy – Unit test plan",
     "labels": [
       "tracked",
       "type:feature",
       "phase:P2.1",
       "devcycle:M2-P2.1-TEST",
+      "cadence:once",
       "spec:linked"
     ],
     "milestone": "M2 — MVP Launch",
@@ -88,10 +81,5 @@
     "approval_required": false,
     "approved": false,
     "evidence": []
-  },
-  "source": {
-    "kind": "Engineering Tasks CSV",
-    "project_code": "ENG-M2-P2.1-TEST-T01",
-    "task_name": "T01 Unit test plan"
   }
 }

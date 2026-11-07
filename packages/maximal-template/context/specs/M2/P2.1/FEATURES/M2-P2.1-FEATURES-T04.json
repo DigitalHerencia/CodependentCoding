@@ -1,11 +1,12 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "1.1",
   "kind": "spec",
   "id": "M2-P2.1-FEATURES-T04",
   "work_code": "ENG-M2-P2.1-FEATURES-T04",
   "team": "engineering",
-  "title": "Business logic integration",
+  "title": "Background jobs & scheduled work",
   "issue_type": "feature",
+  "cadence": "once",
   "traceability": {
     "milestone_id": "M2",
     "milestone_title": "MVP Launch",
@@ -16,28 +17,12 @@
     "task_id": "T04",
     "ontology_ids": []
   },
-  "documentation": {
-    "prd": {
-      "file": "context/docs/PRD.md",
-      "requirement_id": "PRD-M2-P2.1-FEATURES-T04"
-    },
-    "tech_requirements": {
+  "documentation": [
+    {
       "file": "context/docs/tech-requirements.md",
-      "requirement_id": "TECH-M2-P2.1-FEATURES-T04"
-    },
-    "architecture": {
-      "file": "context/docs/Architecture.md",
-      "requirement_id": "ARCH-M2-P2.1-FEATURES-T04"
-    },
-    "auth": {
-      "file": "context/docs/AUTH.md",
-      "requirement_id": "AUTH-M2-P2.1-FEATURES-T04"
-    },
-    "design": {
-      "file": "context/docs/Design.md",
-      "requirement_id": "DES-M2-P2.1-FEATURES-T04"
+      "section": "background-jobs-and-scheduling"
     }
-  },
+  ],
   "contracts": {
     "application": ".agents/contracts/application.yaml",
     "validation": ".agents/contracts/validation.yaml",
@@ -51,31 +36,41 @@
     "billable": null
   },
   "specification": {
-    "objective": "",
+    "objective": "Implement the background jobs and schedules the PRD and tech requirements need.",
     "scope": {
       "included": [],
       "excluded": []
     },
     "requirements": [],
-    "inputs": [],
+    "inputs": [
+      "context/docs/tech-requirements.md#background-jobs-and-scheduling"
+    ],
     "deliverables": [],
-    "dependencies": [],
-    "acceptance_criteria": [],
+    "dependencies": ["ENG-M2-P2.1-FEATURES-T03"],
+    "acceptance_criteria": [
+      "Each job is idempotent and safe to retry",
+      "Schedules are defined in config, not in code paths",
+      "Job failures are logged and alertable"
+    ],
     "validation": {
-      "commands": [],
+      "commands": ["pnpm typecheck", "pnpm test"],
       "manual_checks": [],
-      "evidence_required": []
+      "evidence_required": [
+        "Command output or manual check result recorded in .agents/execution/progress.json"
+      ]
     },
     "references": []
   },
+  "sub_issues": [],
   "bug_details": null,
   "github": {
-    "title": "[M2-P2.1-FEATURES-T04] feat(features): Business logic integration",
+    "title": "[ENG-M2-P2.1-FEATURES-T04] Feature Development – Background jobs & scheduled work",
     "labels": [
       "tracked",
       "type:feature",
       "phase:P2.1",
       "devcycle:M2-P2.1-FEATURES",
+      "cadence:once",
       "spec:linked"
     ],
     "milestone": "M2 — MVP Launch",
@@ -88,10 +83,5 @@
     "approval_required": false,
     "approved": false,
     "evidence": []
-  },
-  "source": {
-    "kind": "Engineering Tasks CSV",
-    "project_code": "ENG-M2-P2.1-FEATURES-T04",
-    "task_name": "T04 Business logic integration"
   }
 }

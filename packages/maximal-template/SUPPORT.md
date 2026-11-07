@@ -1,3 +1,5 @@
-# Support — integration template
+# Support
 
-For software defects, use the Bug Issue form; for planned changes, use the Feature Issue form. Include the exact specification ID, reproduction or intended outcome, and relevant execution evidence. For account/security-sensitive matters, use the private channel described in SECURITY.md. Public support channels and maintainers should be identified before adopting this document.
+- **Bugs:** open an issue with the Defect form.
+- **Questions and requests:** TODO: support channel (email, discussions or help desk).
+- **Security issues:** follow [SECURITY.md](SECURITY.md); never post them publicly.

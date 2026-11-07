@@ -1240,6 +1240,13 @@
       "status": "accepted",
       "title": "Self-provisioned workspace access; single tenancy + RBAC by default",
       "decision": "Owner-approved. Template and generator default to single tenancy with RBAC (template ships RBAC policies; --access abac swaps in templates/authz/*.abac.*.tpl). Finishing onboarding grants access without an admin: single tenancy joins the fixed-id shared organization (SINGLE_ORGANIZATION_ID, equal to the seed organization) as selfSignupRole VIEWER, or the pending approval's role; BOOTSTRAP_OWNER_CLERK_USER_ID joins or is promoted to OWNER. Multi tenancy accepts a pending approval, waits when an invitation link is pending, otherwise creates the user's own organization as OWNER. Suspended/revoked members are never re-added. Single tenancy scopes access resolution, the switcher and switching to the shared organization."
+    },
+    {
+      "id": "DEC-125",
+      "date": "2026-11-07",
+      "status": "accepted",
+      "title": "Spec IDs are the governance trace keys",
+      "decision": "In the maximal-template governance kit, spec IDs are the trace keys. Docs and specs relate many-to-many: each doc section declares the specs it feeds via Feeds lines, and each spec lists its sources in its documentation array; scripts/validate.mjs checks the links in both directions. Governance scripts print through a stdout log helper instead of console.log so the no-console rule stays enabled."
     }
   ]
 }

@@ -1,7 +1,9 @@
 # Changelog
 
-This is a template. Record actual released changes only; do not infer releases from a planned milestone or completed specification.
+All notable changes are recorded here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses [Semantic Versioning](https://semver.org/).
 
-## Unreleased
+## [Unreleased]
 
-- _Document shipped changes here when verified._
+### Added
+
+- TODO: record shipped, verified changes only.

@@ -17,7 +17,12 @@
     "test:rls": "vitest run --project rls",
     "test:e2e": "playwright test",
     "typecheck": "prisma generate && next typegen && tsc --noEmit",
-    "validate": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test"
+    "validate": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test",
+    "governance:validate": "node scripts/validate.mjs",
+    "governance:render": "node scripts/render-issue.mjs",
+    "governance:taxonomy": "node scripts/sync-taxonomy.mjs",
+    "governance:project": "node scripts/create-project.mjs",
+    "governance:publish": "node scripts/publish-issues.mjs"
   },
   "packageManager": "pnpm@12.16.1",
   "engines": {

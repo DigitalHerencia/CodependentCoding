@@ -1,11 +1,12 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "1.1",
   "kind": "spec",
   "id": "M3-P3.2-REVIEW-T05",
   "work_code": "ENG-M3-P3.2-REVIEW-T05",
   "team": "engineering",
   "title": "Merge approval",
   "issue_type": "feature",
+  "cadence": "gate",
   "traceability": {
     "milestone_id": "M3",
     "milestone_title": "Expansion & Hardening",
@@ -16,28 +17,16 @@
     "task_id": "T05",
     "ontology_ids": []
   },
-  "documentation": {
-    "prd": {
-      "file": "context/docs/PRD.md",
-      "requirement_id": "PRD-M3-P3.2-REVIEW-T05"
-    },
-    "tech_requirements": {
-      "file": "context/docs/tech-requirements.md",
-      "requirement_id": "TECH-M3-P3.2-REVIEW-T05"
-    },
-    "architecture": {
+  "documentation": [
+    {
       "file": "context/docs/Architecture.md",
-      "requirement_id": "ARCH-M3-P3.2-REVIEW-T05"
+      "section": "architecture-decisions"
     },
-    "auth": {
-      "file": "context/docs/AUTH.md",
-      "requirement_id": "AUTH-M3-P3.2-REVIEW-T05"
-    },
-    "design": {
-      "file": "context/docs/Design.md",
-      "requirement_id": "DES-M3-P3.2-REVIEW-T05"
+    {
+      "file": "context/docs/Architecture.md",
+      "section": "constraints"
     }
-  },
+  ],
   "contracts": {
     "application": ".agents/contracts/application.yaml",
     "validation": ".agents/contracts/validation.yaml",
@@ -51,31 +40,42 @@
     "billable": null
   },
   "specification": {
-    "objective": "",
+    "objective": "Approve merging the hardening work.",
     "scope": {
       "included": [],
       "excluded": []
     },
     "requirements": [],
-    "inputs": [],
+    "inputs": [
+      "context/docs/Architecture.md#architecture-decisions",
+      "context/docs/Architecture.md#constraints"
+    ],
     "deliverables": [],
-    "dependencies": [],
-    "acceptance_criteria": [],
+    "dependencies": ["ENG-M3-P3.2-REVIEW-T04"],
+    "acceptance_criteria": [
+      "REVIEW-T01 to T04 are complete",
+      "All P3.2 specs are closed or deferred",
+      "Owner approval is recorded"
+    ],
     "validation": {
-      "commands": [],
+      "commands": ["pnpm lint", "pnpm typecheck"],
       "manual_checks": [],
-      "evidence_required": []
+      "evidence_required": [
+        "Command output or manual check result recorded in .agents/execution/progress.json"
+      ]
     },
     "references": []
   },
+  "sub_issues": [],
   "bug_details": null,
   "github": {
-    "title": "[M3-P3.2-REVIEW-T05] feat(review): Merge approval",
+    "title": "[ENG-M3-P3.2-REVIEW-T05] Code Review – Merge approval",
     "labels": [
       "tracked",
       "type:feature",
       "phase:P3.2",
       "devcycle:M3-P3.2-REVIEW",
+      "cadence:gate",
       "spec:linked"
     ],
     "milestone": "M3 — Expansion & Hardening",
@@ -85,13 +85,8 @@
   },
   "state": {
     "status": "backlog",
-    "approval_required": false,
+    "approval_required": true,
     "approved": false,
     "evidence": []
-  },
-  "source": {
-    "kind": "Engineering Tasks CSV",
-    "project_code": "ENG-M3-P3.2-REVIEW-T05",
-    "task_name": "T05 Merge approval"
   }
 }

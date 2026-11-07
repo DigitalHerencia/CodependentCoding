@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/handoff/v1",
-  "updated": "2026-11-07T01:22:00.968918+00:00",
+  "updated": "2026-11-07T03:16:09.583Z",
   "format": "One current package; history is in progress.json, decisions.json and git.",
   "status": "complete-local-main",
   "milestone": "M-S2",
@@ -15,7 +15,8 @@
     "CC-050 token consolidation implemented; focused static checks passed. Affected-site CI and owner browser contrast/reduced-motion verification pending. CC-049 merged in #351; main synced and branch deleted.",
     "Homepage PR #349 has passing CI and ready preview; owner desktop/mobile verification remains pending.",
     "CC-077 Stripe hardening remains stopped at owner direction.",
-    "Signup access (DEC-124) done on main: single+RBAC default, self-provisioned onboarding. Owner runtime check pending; generator access tests updated but not run."
+    "Signup access (DEC-124) done on main: single+RBAC default, self-provisioned onboarding. Owner runtime check pending; generator access tests updated but not run.",
+    "Template governance kit (DEC-125) replaced on main locally; not pushed. Optional owner step: run governance:taxonomy/project/publish with --apply when ready."
   ],
   "notes": [
     "Solo internal generator/dev tool; no users or commercial deployment. Keep process lean, without enterprise review or speculative production-readiness ceremony.",
@@ -40,11 +41,10 @@
     "Expose credentials in commands/logs/commits; owner-local backups are outside the repo"
   ],
   "latest_followup": {
-    "status": "build-passed",
-    "package": "template-build-publication",
-    "owner_instruction": "Build successfully, then push main; afterward clean safe machine/network state and stop task processes.",
-    "evidence": "See template-build-publication in progress.json and DEC-123.",
-    "delivery": "Origin/main publication authorized following this commit.",
-    "NOT_RUN": ["Tests, migrations and browser verification."]
+    "status": "committed-local-main",
+    "package": "template-governance-kit",
+    "evidence": "See template-governance-kit in progress.json and DEC-125.",
+    "delivery": "Not pushed.",
+    "NOT_RUN": ["Tests, builds, push, GitHub writes."]
   }
 }

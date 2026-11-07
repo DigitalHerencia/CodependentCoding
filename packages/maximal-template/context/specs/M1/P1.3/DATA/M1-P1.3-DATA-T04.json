@@ -1,11 +1,12 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "1.1",
   "kind": "spec",
   "id": "M1-P1.3-DATA-T04",
   "work_code": "ENG-M1-P1.3-DATA-T04",
   "team": "engineering",
   "title": "Data constraint validation",
   "issue_type": "feature",
+  "cadence": "once",
   "traceability": {
     "milestone_id": "M1",
     "milestone_title": "Foundation & Pre-Production",
@@ -16,28 +17,16 @@
     "task_id": "T04",
     "ontology_ids": []
   },
-  "documentation": {
-    "prd": {
-      "file": "context/docs/PRD.md",
-      "requirement_id": "PRD-M1-P1.3-DATA-T04"
-    },
-    "tech_requirements": {
-      "file": "context/docs/tech-requirements.md",
-      "requirement_id": "TECH-M1-P1.3-DATA-T04"
-    },
-    "architecture": {
+  "documentation": [
+    {
       "file": "context/docs/Architecture.md",
-      "requirement_id": "ARCH-M1-P1.3-DATA-T04"
+      "section": "data-model"
     },
-    "auth": {
+    {
       "file": "context/docs/AUTH.md",
-      "requirement_id": "AUTH-M1-P1.3-DATA-T04"
-    },
-    "design": {
-      "file": "context/docs/Design.md",
-      "requirement_id": "DES-M1-P1.3-DATA-T04"
+      "section": "row-level-security"
     }
-  },
+  ],
   "contracts": {
     "application": ".agents/contracts/application.yaml",
     "validation": ".agents/contracts/validation.yaml",
@@ -51,31 +40,42 @@
     "billable": null
   },
   "specification": {
-    "objective": "",
+    "objective": "Enforce integrity in the database: unique, foreign key, check constraints and row-level security.",
     "scope": {
       "included": [],
       "excluded": []
     },
     "requirements": [],
-    "inputs": [],
+    "inputs": [
+      "context/docs/Architecture.md#data-model",
+      "context/docs/AUTH.md#row-level-security"
+    ],
     "deliverables": [],
-    "dependencies": [],
-    "acceptance_criteria": [],
+    "dependencies": ["ENG-M1-P1.3-DATA-T03"],
+    "acceptance_criteria": [
+      "Uniqueness and referential rules exist in the database, not only in code",
+      "Row-level security policies cover every tenant-owned table",
+      "`pnpm test:rls` passes"
+    ],
     "validation": {
-      "commands": [],
+      "commands": ["pnpm prisma:validate", "pnpm test:rls"],
       "manual_checks": [],
-      "evidence_required": []
+      "evidence_required": [
+        "Command output or manual check result recorded in .agents/execution/progress.json"
+      ]
     },
     "references": []
   },
+  "sub_issues": [],
   "bug_details": null,
   "github": {
-    "title": "[M1-P1.3-DATA-T04] feat(data): Data constraint validation",
+    "title": "[ENG-M1-P1.3-DATA-T04] Data Layer Definition – Data constraint validation",
     "labels": [
       "tracked",
       "type:feature",
       "phase:P1.3",
       "devcycle:M1-P1.3-DATA",
+      "cadence:once",
       "spec:linked"
     ],
     "milestone": "M1 — Foundation & Pre-Production",
@@ -88,10 +88,5 @@
     "approval_required": false,
     "approved": false,
     "evidence": []
-  },
-  "source": {
-    "kind": "Engineering Tasks CSV",
-    "project_code": "ENG-M1-P1.3-DATA-T04",
-    "task_name": "T04 Data constraint validation"
   }
 }

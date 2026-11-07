@@ -1,11 +1,12 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "1.1",
   "kind": "spec",
   "id": "M1-P1.3-AUTH-T02",
   "work_code": "ENG-M1-P1.3-AUTH-T02",
   "team": "engineering",
   "title": "Role & permission matrix",
   "issue_type": "feature",
+  "cadence": "once",
   "traceability": {
     "milestone_id": "M1",
     "milestone_title": "Foundation & Pre-Production",
@@ -16,28 +17,16 @@
     "task_id": "T02",
     "ontology_ids": []
   },
-  "documentation": {
-    "prd": {
-      "file": "context/docs/PRD.md",
-      "requirement_id": "PRD-M1-P1.3-AUTH-T02"
-    },
-    "tech_requirements": {
-      "file": "context/docs/tech-requirements.md",
-      "requirement_id": "TECH-M1-P1.3-AUTH-T02"
-    },
-    "architecture": {
-      "file": "context/docs/Architecture.md",
-      "requirement_id": "ARCH-M1-P1.3-AUTH-T02"
-    },
-    "auth": {
+  "documentation": [
+    {
       "file": "context/docs/AUTH.md",
-      "requirement_id": "AUTH-M1-P1.3-AUTH-T02"
+      "section": "roles-and-permissions"
     },
-    "design": {
-      "file": "context/docs/Design.md",
-      "requirement_id": "DES-M1-P1.3-AUTH-T02"
+    {
+      "file": "context/docs/PRD.md",
+      "section": "users-and-personas"
     }
-  },
+  ],
   "contracts": {
     "application": ".agents/contracts/application.yaml",
     "validation": ".agents/contracts/validation.yaml",
@@ -51,31 +40,42 @@
     "billable": null
   },
   "specification": {
-    "objective": "",
+    "objective": "Implement the roles and permissions (RBAC or ABAC) defined in AUTH.md.",
     "scope": {
       "included": [],
       "excluded": []
     },
     "requirements": [],
-    "inputs": [],
+    "inputs": [
+      "context/docs/AUTH.md#roles-and-permissions",
+      "context/docs/PRD.md#users-and-personas"
+    ],
     "deliverables": [],
-    "dependencies": [],
-    "acceptance_criteria": [],
+    "dependencies": ["ENG-M1-P1.3-AUTH-T01"],
+    "acceptance_criteria": [
+      "Every role and permission in the matrix exists in code",
+      "Default role for new members matches AUTH.md",
+      "Unit tests cover allow and deny for each role"
+    ],
     "validation": {
-      "commands": [],
+      "commands": ["pnpm typecheck", "pnpm test"],
       "manual_checks": [],
-      "evidence_required": []
+      "evidence_required": [
+        "Command output or manual check result recorded in .agents/execution/progress.json"
+      ]
     },
     "references": []
   },
+  "sub_issues": [],
   "bug_details": null,
   "github": {
-    "title": "[M1-P1.3-AUTH-T02] feat(auth): Role & permission matrix",
+    "title": "[ENG-M1-P1.3-AUTH-T02] Auth & RBAC – Role & permission matrix",
     "labels": [
       "tracked",
       "type:feature",
       "phase:P1.3",
       "devcycle:M1-P1.3-AUTH",
+      "cadence:once",
       "spec:linked"
     ],
     "milestone": "M1 — Foundation & Pre-Production",
@@ -88,10 +88,5 @@
     "approval_required": false,
     "approved": false,
     "evidence": []
-  },
-  "source": {
-    "kind": "Engineering Tasks CSV",
-    "project_code": "ENG-M1-P1.3-AUTH-T02",
-    "task_name": "T02 Role & permission matrix"
   }
 }

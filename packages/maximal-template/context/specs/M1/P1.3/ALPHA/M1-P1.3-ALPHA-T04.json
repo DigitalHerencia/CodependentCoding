@@ -1,11 +1,12 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "1.1",
   "kind": "spec",
   "id": "M1-P1.3-ALPHA-T04",
   "work_code": "ENG-M1-P1.3-ALPHA-T04",
   "team": "engineering",
   "title": "Internal testing",
   "issue_type": "feature",
+  "cadence": "once",
   "traceability": {
     "milestone_id": "M1",
     "milestone_title": "Foundation & Pre-Production",
@@ -16,28 +17,12 @@
     "task_id": "T04",
     "ontology_ids": []
   },
-  "documentation": {
-    "prd": {
-      "file": "context/docs/PRD.md",
-      "requirement_id": "PRD-M1-P1.3-ALPHA-T04"
-    },
-    "tech_requirements": {
+  "documentation": [
+    {
       "file": "context/docs/tech-requirements.md",
-      "requirement_id": "TECH-M1-P1.3-ALPHA-T04"
-    },
-    "architecture": {
-      "file": "context/docs/Architecture.md",
-      "requirement_id": "ARCH-M1-P1.3-ALPHA-T04"
-    },
-    "auth": {
-      "file": "context/docs/AUTH.md",
-      "requirement_id": "AUTH-M1-P1.3-ALPHA-T04"
-    },
-    "design": {
-      "file": "context/docs/Design.md",
-      "requirement_id": "DES-M1-P1.3-ALPHA-T04"
+      "section": "testing-strategy"
     }
-  },
+  ],
   "contracts": {
     "application": ".agents/contracts/application.yaml",
     "validation": ".agents/contracts/validation.yaml",
@@ -51,31 +36,39 @@
     "billable": null
   },
   "specification": {
-    "objective": "",
+    "objective": "Run the unit, RLS and e2e suites against the alpha.",
     "scope": {
       "included": [],
       "excluded": []
     },
     "requirements": [],
-    "inputs": [],
+    "inputs": ["context/docs/tech-requirements.md#testing-strategy"],
     "deliverables": [],
-    "dependencies": [],
-    "acceptance_criteria": [],
+    "dependencies": ["ENG-M1-P1.3-ALPHA-T03"],
+    "acceptance_criteria": [
+      "Unit and RLS suites pass",
+      "Smoke e2e covers sign-in and one journey per module",
+      "Failures are filed as DEBUG sub-issues"
+    ],
     "validation": {
-      "commands": [],
+      "commands": ["pnpm test", "pnpm test:rls", "pnpm test:e2e"],
       "manual_checks": [],
-      "evidence_required": []
+      "evidence_required": [
+        "Command output or manual check result recorded in .agents/execution/progress.json"
+      ]
     },
     "references": []
   },
+  "sub_issues": [],
   "bug_details": null,
   "github": {
-    "title": "[M1-P1.3-ALPHA-T04] feat(alpha): Internal testing",
+    "title": "[ENG-M1-P1.3-ALPHA-T04] Alpha Build – Internal testing",
     "labels": [
       "tracked",
       "type:feature",
       "phase:P1.3",
       "devcycle:M1-P1.3-ALPHA",
+      "cadence:once",
       "spec:linked"
     ],
     "milestone": "M1 — Foundation & Pre-Production",
@@ -88,10 +81,5 @@
     "approval_required": false,
     "approved": false,
     "evidence": []
-  },
-  "source": {
-    "kind": "Engineering Tasks CSV",
-    "project_code": "ENG-M1-P1.3-ALPHA-T04",
-    "task_name": "T04 Internal testing"
   }
 }

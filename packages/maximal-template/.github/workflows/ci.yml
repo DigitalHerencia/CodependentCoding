@@ -1,25 +1,32 @@
-name: Governance structure
+name: CI
+
+# Lean PR baseline: format check, lint, type check, governance check, build.
+# Deploys happen through the hosting provider's Git integration, not here.
 on:
   pull_request:
-    paths:
-      - 'context/**'
-      - '.agents/**'
-      - '.github/ISSUE_TEMPLATE/**'
-      - '.github/labels.json'
-      - '.github/milestones.json'
-      - '.github/project.json'
-      - 'scripts/governance/**'
   workflow_dispatch:
+
 permissions:
   contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  validate-governance:
+  check:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '24'
-      - name: Validate specification traceability (read-only)
-        run: node scripts/governance/validate.mjs
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm format:check
+      - run: pnpm lint
+      - run: pnpm typecheck
+      - run: pnpm governance:validate
+      - run: pnpm build

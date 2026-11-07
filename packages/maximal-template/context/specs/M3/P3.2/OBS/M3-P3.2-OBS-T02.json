@@ -1,11 +1,12 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "1.1",
   "kind": "spec",
   "id": "M3-P3.2-OBS-T02",
   "work_code": "ENG-M3-P3.2-OBS-T02",
   "team": "engineering",
   "title": "Metrics definition",
   "issue_type": "feature",
+  "cadence": "once",
   "traceability": {
     "milestone_id": "M3",
     "milestone_title": "Expansion & Hardening",
@@ -16,28 +17,16 @@
     "task_id": "T02",
     "ontology_ids": []
   },
-  "documentation": {
-    "prd": {
-      "file": "context/docs/PRD.md",
-      "requirement_id": "PRD-M3-P3.2-OBS-T02"
-    },
-    "tech_requirements": {
+  "documentation": [
+    {
       "file": "context/docs/tech-requirements.md",
-      "requirement_id": "TECH-M3-P3.2-OBS-T02"
+      "section": "observability"
     },
-    "architecture": {
-      "file": "context/docs/Architecture.md",
-      "requirement_id": "ARCH-M3-P3.2-OBS-T02"
-    },
-    "auth": {
-      "file": "context/docs/AUTH.md",
-      "requirement_id": "AUTH-M3-P3.2-OBS-T02"
-    },
-    "design": {
-      "file": "context/docs/Design.md",
-      "requirement_id": "DES-M3-P3.2-OBS-T02"
+    {
+      "file": "context/docs/PRD.md",
+      "section": "success-metrics"
     }
-  },
+  ],
   "contracts": {
     "application": ".agents/contracts/application.yaml",
     "validation": ".agents/contracts/validation.yaml",
@@ -51,31 +40,44 @@
     "billable": null
   },
   "specification": {
-    "objective": "",
+    "objective": "Define the product and system metrics to track.",
     "scope": {
       "included": [],
       "excluded": []
     },
     "requirements": [],
-    "inputs": [],
+    "inputs": [
+      "context/docs/tech-requirements.md#observability",
+      "context/docs/PRD.md#success-metrics"
+    ],
     "deliverables": [],
-    "dependencies": [],
-    "acceptance_criteria": [],
+    "dependencies": ["ENG-M3-P3.2-OBS-T01"],
+    "acceptance_criteria": [
+      "PRD success metrics are measurable",
+      "System metrics cover errors, latency and job failures",
+      "Each metric has an owner"
+    ],
     "validation": {
       "commands": [],
-      "manual_checks": [],
-      "evidence_required": []
+      "manual_checks": [
+        "Verify each acceptance criterion by hand and record the result"
+      ],
+      "evidence_required": [
+        "Command output or manual check result recorded in .agents/execution/progress.json"
+      ]
     },
     "references": []
   },
+  "sub_issues": [],
   "bug_details": null,
   "github": {
-    "title": "[M3-P3.2-OBS-T02] feat(obs): Metrics definition",
+    "title": "[ENG-M3-P3.2-OBS-T02] Observability – Metrics definition",
     "labels": [
       "tracked",
       "type:feature",
       "phase:P3.2",
       "devcycle:M3-P3.2-OBS",
+      "cadence:once",
       "spec:linked"
     ],
     "milestone": "M3 — Expansion & Hardening",
@@ -88,10 +90,5 @@
     "approval_required": false,
     "approved": false,
     "evidence": []
-  },
-  "source": {
-    "kind": "Engineering Tasks CSV",
-    "project_code": "ENG-M3-P3.2-OBS-T02",
-    "task_name": "T02 Metrics definition"
   }
 }

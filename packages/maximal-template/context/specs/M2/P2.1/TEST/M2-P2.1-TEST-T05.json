@@ -1,11 +1,12 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "1.1",
   "kind": "spec",
   "id": "M2-P2.1-TEST-T05",
   "work_code": "ENG-M2-P2.1-TEST-T05",
   "team": "engineering",
   "title": "Coverage verification",
   "issue_type": "feature",
+  "cadence": "gate",
   "traceability": {
     "milestone_id": "M2",
     "milestone_title": "MVP Launch",
@@ -16,28 +17,12 @@
     "task_id": "T05",
     "ontology_ids": []
   },
-  "documentation": {
-    "prd": {
-      "file": "context/docs/PRD.md",
-      "requirement_id": "PRD-M2-P2.1-TEST-T05"
-    },
-    "tech_requirements": {
+  "documentation": [
+    {
       "file": "context/docs/tech-requirements.md",
-      "requirement_id": "TECH-M2-P2.1-TEST-T05"
-    },
-    "architecture": {
-      "file": "context/docs/Architecture.md",
-      "requirement_id": "ARCH-M2-P2.1-TEST-T05"
-    },
-    "auth": {
-      "file": "context/docs/AUTH.md",
-      "requirement_id": "AUTH-M2-P2.1-TEST-T05"
-    },
-    "design": {
-      "file": "context/docs/Design.md",
-      "requirement_id": "DES-M2-P2.1-TEST-T05"
+      "section": "testing-strategy"
     }
-  },
+  ],
   "contracts": {
     "application": ".agents/contracts/application.yaml",
     "validation": ".agents/contracts/validation.yaml",
@@ -51,31 +36,39 @@
     "billable": null
   },
   "specification": {
-    "objective": "",
+    "objective": "Approve test coverage for the MVP.",
     "scope": {
       "included": [],
       "excluded": []
     },
     "requirements": [],
-    "inputs": [],
+    "inputs": ["context/docs/tech-requirements.md#testing-strategy"],
     "deliverables": [],
-    "dependencies": [],
-    "acceptance_criteria": [],
+    "dependencies": ["ENG-M2-P2.1-TEST-T04"],
+    "acceptance_criteria": [
+      "Every acceptance criterion in M2 specs is covered by a test or a recorded manual check",
+      "No skipped or disabled tests",
+      "Owner approval is recorded"
+    ],
     "validation": {
-      "commands": [],
+      "commands": ["pnpm test", "pnpm test:rls", "pnpm test:e2e"],
       "manual_checks": [],
-      "evidence_required": []
+      "evidence_required": [
+        "Command output or manual check result recorded in .agents/execution/progress.json"
+      ]
     },
     "references": []
   },
+  "sub_issues": [],
   "bug_details": null,
   "github": {
-    "title": "[M2-P2.1-TEST-T05] feat(test): Coverage verification",
+    "title": "[ENG-M2-P2.1-TEST-T05] Testing Strategy – Coverage verification",
     "labels": [
       "tracked",
       "type:feature",
       "phase:P2.1",
       "devcycle:M2-P2.1-TEST",
+      "cadence:gate",
       "spec:linked"
     ],
     "milestone": "M2 — MVP Launch",
@@ -85,13 +78,8 @@
   },
   "state": {
     "status": "backlog",
-    "approval_required": false,
+    "approval_required": true,
     "approved": false,
     "evidence": []
-  },
-  "source": {
-    "kind": "Engineering Tasks CSV",
-    "project_code": "ENG-M2-P2.1-TEST-T05",
-    "task_name": "T05 Coverage verification"
   }
 }

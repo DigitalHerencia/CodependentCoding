@@ -1,11 +1,12 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "1.1",
   "kind": "spec",
   "id": "M1-P1.3-ALPHA-T03",
   "work_code": "ENG-M1-P1.3-ALPHA-T03",
   "team": "engineering",
-  "title": "Observability setup",
+  "title": "Seeded demo walkthrough",
   "issue_type": "feature",
+  "cadence": "once",
   "traceability": {
     "milestone_id": "M1",
     "milestone_title": "Foundation & Pre-Production",
@@ -16,28 +17,12 @@
     "task_id": "T03",
     "ontology_ids": []
   },
-  "documentation": {
-    "prd": {
+  "documentation": [
+    {
       "file": "context/docs/PRD.md",
-      "requirement_id": "PRD-M1-P1.3-ALPHA-T03"
-    },
-    "tech_requirements": {
-      "file": "context/docs/tech-requirements.md",
-      "requirement_id": "TECH-M1-P1.3-ALPHA-T03"
-    },
-    "architecture": {
-      "file": "context/docs/Architecture.md",
-      "requirement_id": "ARCH-M1-P1.3-ALPHA-T03"
-    },
-    "auth": {
-      "file": "context/docs/AUTH.md",
-      "requirement_id": "AUTH-M1-P1.3-ALPHA-T03"
-    },
-    "design": {
-      "file": "context/docs/Design.md",
-      "requirement_id": "DES-M1-P1.3-ALPHA-T03"
+      "section": "key-user-journeys"
     }
-  },
+  ],
   "contracts": {
     "application": ".agents/contracts/application.yaml",
     "validation": ".agents/contracts/validation.yaml",
@@ -51,31 +36,41 @@
     "billable": null
   },
   "specification": {
-    "objective": "",
+    "objective": "Walk the main user journeys on the preview with seeded data.",
     "scope": {
       "included": [],
       "excluded": []
     },
     "requirements": [],
-    "inputs": [],
+    "inputs": ["context/docs/PRD.md#key-user-journeys"],
     "deliverables": [],
-    "dependencies": [],
-    "acceptance_criteria": [],
+    "dependencies": ["ENG-M1-P1.3-ALPHA-T02"],
+    "acceptance_criteria": [
+      "Each PRD key journey completes on the preview",
+      "Defects found are filed as DEBUG sub-issues",
+      "Walkthrough notes are recorded"
+    ],
     "validation": {
       "commands": [],
-      "manual_checks": [],
-      "evidence_required": []
+      "manual_checks": [
+        "Verify each acceptance criterion by hand and record the result"
+      ],
+      "evidence_required": [
+        "Command output or manual check result recorded in .agents/execution/progress.json"
+      ]
     },
     "references": []
   },
+  "sub_issues": [],
   "bug_details": null,
   "github": {
-    "title": "[M1-P1.3-ALPHA-T03] feat(alpha): Observability setup",
+    "title": "[ENG-M1-P1.3-ALPHA-T03] Alpha Build – Seeded demo walkthrough",
     "labels": [
       "tracked",
       "type:feature",
       "phase:P1.3",
       "devcycle:M1-P1.3-ALPHA",
+      "cadence:once",
       "spec:linked"
     ],
     "milestone": "M1 — Foundation & Pre-Production",
@@ -88,10 +83,5 @@
     "approval_required": false,
     "approved": false,
     "evidence": []
-  },
-  "source": {
-    "kind": "Engineering Tasks CSV",
-    "project_code": "ENG-M1-P1.3-ALPHA-T03",
-    "task_name": "T03 Observability setup"
   }
 }
