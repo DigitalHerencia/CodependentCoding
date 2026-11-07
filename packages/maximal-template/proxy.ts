@@ -10,8 +10,8 @@ import { isDevelopment } from "@/lib/constants/mode";
  * page is sent to sign-in here, because those pages stream (Cache Components)
  * and a redirect thrown while rendering can no longer set a 3xx status. The
  * layouts and the data layer still check (CC-ROUTE-003); this is UX, never
- * enforcement. The root renders per request so Next.js and Clerk receive
- * the script nonce.
+ * enforcement. The CSP is static (no nonce), so public and auth pages stay
+ * prerendered.
  *
  * Clerk hosts follow Clerk's CSP guide for @clerk/nextjs 7.9
  * (clerk.com/docs/guides/secure/best-practices/csp-headers): the Frontend API
@@ -63,12 +63,13 @@ const shared = [
   ...(isDevelopment ? [] : ["upgrade-insecure-requests"]),
 ];
 
-export function noncePolicy(nonce: string): string {
+/** One policy for every response: Clerk's non-nonce CSP variant. */
+export function contentSecurityPolicy(): string {
   const fapi = clerkFrontendApi() ?? "";
   const dev = isDevelopment ? " 'unsafe-eval'" : "";
   return [
     ...shared,
-    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic'${dev} ${fapi} https://challenges.cloudflare.com https://*.protect.clerk.com`,
+    `script-src 'self' 'unsafe-inline'${dev} ${fapi} https://challenges.cloudflare.com https://*.protect.clerk.com`,
     // Clerk injects runtime CSS.
     "style-src 'self' 'unsafe-inline'",
     "img-src 'self' data: blob: https://img.clerk.com",
@@ -79,13 +80,9 @@ export function noncePolicy(nonce: string): string {
     .join("; ");
 }
 
-function withNonceCsp(request: NextRequest): NextResponse {
-  const nonce = btoa(crypto.randomUUID());
-  const policy = noncePolicy(nonce);
-  const headers = new Headers(request.headers);
-  headers.set("x-nonce", nonce);
-  headers.set("Content-Security-Policy", policy);
-  const response = NextResponse.next({ request: { headers } });
+const policy = contentSecurityPolicy();
+
+function withCsp(response: NextResponse): NextResponse {
   response.headers.set("Content-Security-Policy", policy);
   return response;
 }
@@ -100,7 +97,7 @@ const signedInGate = clerkMiddleware(async (auth, request) => {
       new URL(DEFAULT_AUTH_REDIRECT_PATH, request.url),
     );
   }
-  return withNonceCsp(request);
+  return withCsp(NextResponse.next());
 });
 
 export default signedInGate;

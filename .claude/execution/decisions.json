@@ -1276,6 +1276,17 @@
         "packages/maximal-template/lib/auth/auth.ts",
         "packages/maximal-template/features/admin/admin-gate-feature.tsx"
       ]
+    },
+    {
+      "id": "DEC-129",
+      "date": "2026-11-07",
+      "status": "accepted",
+      "title": "Static CSP instead of per-request nonce; only tenant/admin read the session",
+      "decision": "Owner-approved (2026-11-07). The nonce CSP forced every page to render per request and conflicts with Cache Components instant navigation. proxy.ts keeps clerkMiddleware and its route matchers and sends one static policy (Clerk non-nonce variant). Root layout drops connection(), instant=false and ClerkProvider dynamic. Tenant/admin layouts and onboarding/invite pages read the session inside Suspense.",
+      "refs": [
+        "packages/maximal-template/proxy.ts",
+        "packages/maximal-template/app/layout.tsx"
+      ]
     }
   ]
 }

@@ -1,7 +1,6 @@
 import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata } from "next";
 import { Archivo_Black, Fira_Code, JetBrains_Mono } from "next/font/google";
-import { connection } from "next/server";
 import type { ReactNode } from "react";
 
 import { applicationProduct } from "@/content/application";
@@ -26,19 +25,15 @@ const codeFont = Fira_Code({
   variable: "--font-code",
 });
 
-// Rendered per request so proxy.ts's CSP nonce reaches every script.
-export const instant = false;
-
 export const metadata: Metadata = {
   title: applicationProduct.name,
   description: applicationProduct.description,
 };
 
 // The root provides the shared document and Clerk context.
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{ children: ReactNode }>) {
-  await connection();
   return (
     <html
       lang="en"
@@ -46,7 +41,7 @@ export default async function RootLayout({
       style={{ colorScheme: "dark" }}
     >
       <body className="m-0 min-h-dvh bg-background font-sans text-foreground antialiased [text-rendering:optimizeLegibility]">
-        <ClerkProvider dynamic>
+        <ClerkProvider>
           {children}
           <PwaInstallFeature />
         </ClerkProvider>

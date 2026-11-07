@@ -5,12 +5,15 @@ import { OnboardingSkeleton } from "@/features/onboarding/onboarding-skeleton";
 import { getIdentity } from "@/lib/auth/auth";
 import { redirectToSignIn } from "@/lib/auth/redirects";
 
-export default async function Page() {
-  if (!(await getIdentity())) redirectToSignIn();
-
+export default function Page() {
   return (
     <Suspense fallback={<OnboardingSkeleton />}>
-      <OnboardingFeature />
+      <SignedInOnboarding />
     </Suspense>
   );
+}
+
+async function SignedInOnboarding() {
+  if (!(await getIdentity())) redirectToSignIn();
+  return <OnboardingFeature />;
 }
