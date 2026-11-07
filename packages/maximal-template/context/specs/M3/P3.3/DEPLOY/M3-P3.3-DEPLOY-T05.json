@@ -1,0 +1,97 @@
+{
+  "schema_version": "1.0",
+  "kind": "spec",
+  "id": "M3-P3.3-DEPLOY-T05",
+  "work_code": "ENG-M3-P3.3-DEPLOY-T05",
+  "team": "engineering",
+  "title": "Deploy sign-off",
+  "issue_type": "feature",
+  "traceability": {
+    "milestone_id": "M3",
+    "milestone_title": "Expansion & Hardening",
+    "phase_id": "P3.3",
+    "phase_title": "Growth Enablement",
+    "dev_cycle_id": "M3-P3.3-DEPLOY",
+    "dev_cycle_title": "Deployment",
+    "task_id": "T05",
+    "ontology_ids": []
+  },
+  "documentation": {
+    "prd": {
+      "file": "context/docs/PRD.md",
+      "requirement_id": "PRD-M3-P3.3-DEPLOY-T05"
+    },
+    "tech_requirements": {
+      "file": "context/docs/tech-requirements.md",
+      "requirement_id": "TECH-M3-P3.3-DEPLOY-T05"
+    },
+    "architecture": {
+      "file": "context/docs/Architecture.md",
+      "requirement_id": "ARCH-M3-P3.3-DEPLOY-T05"
+    },
+    "auth": {
+      "file": "context/docs/AUTH.md",
+      "requirement_id": "AUTH-M3-P3.3-DEPLOY-T05"
+    },
+    "design": {
+      "file": "context/docs/Design.md",
+      "requirement_id": "DES-M3-P3.3-DEPLOY-T05"
+    }
+  },
+  "contracts": {
+    "application": ".agents/contracts/application.yaml",
+    "validation": ".agents/contracts/validation.yaml",
+    "design": ".agents/contracts/design.yaml"
+  },
+  "ticket": {
+    "owner_role": null,
+    "workday_limit": 1,
+    "estimated_hours": null,
+    "time_log": [],
+    "billable": null
+  },
+  "specification": {
+    "objective": "",
+    "scope": {
+      "included": [],
+      "excluded": []
+    },
+    "requirements": [],
+    "inputs": [],
+    "deliverables": [],
+    "dependencies": [],
+    "acceptance_criteria": [],
+    "validation": {
+      "commands": [],
+      "manual_checks": [],
+      "evidence_required": []
+    },
+    "references": []
+  },
+  "bug_details": null,
+  "github": {
+    "title": "[M3-P3.3-DEPLOY-T05] feat(deploy): Deploy sign-off",
+    "labels": [
+      "tracked",
+      "type:feature",
+      "phase:P3.3",
+      "devcycle:M3-P3.3-DEPLOY",
+      "spec:linked"
+    ],
+    "milestone": "M3 — Expansion & Hardening",
+    "issue_number": null,
+    "issue_url": null,
+    "project_item_id": null
+  },
+  "state": {
+    "status": "backlog",
+    "approval_required": false,
+    "approved": false,
+    "evidence": []
+  },
+  "source": {
+    "kind": "Engineering Tasks CSV",
+    "project_code": "ENG-M3-P3.3-DEPLOY-T05",
+    "task_name": "T05 Deploy sign-off"
+  }
+}

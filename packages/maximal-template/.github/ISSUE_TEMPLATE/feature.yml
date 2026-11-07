@@ -1,0 +1,59 @@
+name: Feature / planned work
+description: SOP-linked engineering planned work (including setup, tests, docs, and reviews)
+title: ''
+labels:
+- tracked
+- type:feature
+body:
+- type: markdown
+  attributes:
+    value: Use the exact `M#-P#.#-CYCLE-T##` spec identifier. JSON is the canonical record; this form supports manual
+      issue creation.
+- type: input
+  id: spec_id
+  attributes:
+    label: Specification ID
+    placeholder: M1-P1.1-INIT-T01
+  validations:
+    required: true
+- type: input
+  id: work_code
+  attributes:
+    label: SOP work code
+    placeholder: ENG-M1-P1.1-INIT-T01
+  validations:
+    required: true
+- type: input
+  id: traceability
+  attributes:
+    label: Milestone / Phase / Dev Cycle
+    placeholder: M1 / P1.1 / M1-P1.1-INIT
+  validations:
+    required: true
+- type: textarea
+  id: objective
+  attributes:
+    label: Objective and scope
+  validations:
+    required: true
+- type: textarea
+  id: acceptance
+  attributes:
+    label: Acceptance criteria
+    description: Observable, testable conditions for closing this specification.
+  validations:
+    required: true
+- type: textarea
+  id: validation
+  attributes:
+    label: Validation commands and evidence
+- type: textarea
+  id: dependencies
+  attributes:
+    label: Dependencies and inputs
+- type: textarea
+  id: documentation
+  attributes:
+    label: Documentation IDs and references
+  validations:
+    required: true

@@ -1,0 +1,97 @@
+{
+  "schema_version": "1.0",
+  "kind": "spec",
+  "id": "M2-P2.1-FEATURES-T05",
+  "work_code": "ENG-M2-P2.1-FEATURES-T05",
+  "team": "engineering",
+  "title": "Feature readiness",
+  "issue_type": "feature",
+  "traceability": {
+    "milestone_id": "M2",
+    "milestone_title": "MVP Launch",
+    "phase_id": "P2.1",
+    "phase_title": "Core Feature Implementation",
+    "dev_cycle_id": "M2-P2.1-FEATURES",
+    "dev_cycle_title": "Feature Development",
+    "task_id": "T05",
+    "ontology_ids": []
+  },
+  "documentation": {
+    "prd": {
+      "file": "context/docs/PRD.md",
+      "requirement_id": "PRD-M2-P2.1-FEATURES-T05"
+    },
+    "tech_requirements": {
+      "file": "context/docs/tech-requirements.md",
+      "requirement_id": "TECH-M2-P2.1-FEATURES-T05"
+    },
+    "architecture": {
+      "file": "context/docs/Architecture.md",
+      "requirement_id": "ARCH-M2-P2.1-FEATURES-T05"
+    },
+    "auth": {
+      "file": "context/docs/AUTH.md",
+      "requirement_id": "AUTH-M2-P2.1-FEATURES-T05"
+    },
+    "design": {
+      "file": "context/docs/Design.md",
+      "requirement_id": "DES-M2-P2.1-FEATURES-T05"
+    }
+  },
+  "contracts": {
+    "application": ".agents/contracts/application.yaml",
+    "validation": ".agents/contracts/validation.yaml",
+    "design": ".agents/contracts/design.yaml"
+  },
+  "ticket": {
+    "owner_role": null,
+    "workday_limit": 1,
+    "estimated_hours": null,
+    "time_log": [],
+    "billable": null
+  },
+  "specification": {
+    "objective": "",
+    "scope": {
+      "included": [],
+      "excluded": []
+    },
+    "requirements": [],
+    "inputs": [],
+    "deliverables": [],
+    "dependencies": [],
+    "acceptance_criteria": [],
+    "validation": {
+      "commands": [],
+      "manual_checks": [],
+      "evidence_required": []
+    },
+    "references": []
+  },
+  "bug_details": null,
+  "github": {
+    "title": "[M2-P2.1-FEATURES-T05] feat(features): Feature readiness",
+    "labels": [
+      "tracked",
+      "type:feature",
+      "phase:P2.1",
+      "devcycle:M2-P2.1-FEATURES",
+      "spec:linked"
+    ],
+    "milestone": "M2 — MVP Launch",
+    "issue_number": null,
+    "issue_url": null,
+    "project_item_id": null
+  },
+  "state": {
+    "status": "backlog",
+    "approval_required": false,
+    "approved": false,
+    "evidence": []
+  },
+  "source": {
+    "kind": "Engineering Tasks CSV",
+    "project_code": "ENG-M2-P2.1-FEATURES-T05",
+    "task_name": "T05 Feature readiness"
+  }
+}

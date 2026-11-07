@@ -1,0 +1,11 @@
+changelog:
+  exclude:
+    labels:
+      - skip-changelog
+  categories:
+    - title: Corrective work
+      labels:
+        - type:bug
+    - title: Planned work
+      labels:
+        - type:feature

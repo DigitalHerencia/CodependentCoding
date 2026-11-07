@@ -1,0 +1,43 @@
+{
+  "registry_version": "1.0",
+  "origin": "Source Ontology™ Authoritative Source Specification 2026-08-22",
+  "naming_note": "Technical IDs only; do not infer application ontology from a task title; empty ontology_ids require later classification. Current PRD terminology may call these presets.",
+  "ontologies": [
+    {
+      "id": "crm",
+      "source_name": "CRM / Pipeline Tracker"
+    },
+    {
+      "id": "projects",
+      "source_name": "Project Management / Task Tracker"
+    },
+    {
+      "id": "support",
+      "source_name": "Customer Support / Ticketing"
+    },
+    {
+      "id": "marketing",
+      "source_name": "Marketing Automation & Analytics"
+    },
+    {
+      "id": "invoicing",
+      "source_name": "Invoicing & Expense Tracker"
+    },
+    {
+      "id": "social",
+      "source_name": "Social Media Scheduler"
+    },
+    {
+      "id": "ai",
+      "source_name": "AI-Powered Wrapper / Micro-SaaS"
+    },
+    {
+      "id": "portal",
+      "source_name": "B2B Client Portal"
+    },
+    {
+      "id": "admin",
+      "source_name": "Internal Tools / Admin Portal"
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "schema_version": "1.0",
+  "milestones": [
+    {
+      "id": "M1",
+      "title": "M1 — Foundation & Pre-Production",
+      "description": "Engineering delivery milestone M1; see context/specs/catalog.json.",
+      "due_on": null
+    },
+    {
+      "id": "M2",
+      "title": "M2 — MVP Launch",
+      "description": "Engineering delivery milestone M2; see context/specs/catalog.json.",
+      "due_on": null
+    },
+    {
+      "id": "M3",
+      "title": "M3 — Expansion & Hardening",
+      "description": "Engineering delivery milestone M3; see context/specs/catalog.json.",
+      "due_on": null
+    }
+  ]
+}

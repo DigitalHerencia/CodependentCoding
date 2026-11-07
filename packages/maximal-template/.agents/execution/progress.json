@@ -1,0 +1,808 @@
+{
+  "schema_version": "1.0",
+  "kind": "progress_ledger",
+  "source_contract": ".agents/contracts/validation.yaml",
+  "spec_catalog": "context/specs/catalog.json",
+  "entries": [
+    {
+      "spec_id": "M1-P1.1-INIT-T01",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M1-P1.1-INIT-T02",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M1-P1.1-INIT-T03",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M1-P1.1-INIT-T04",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M1-P1.1-INIT-T05",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M1-P1.2-CONFIG-T01",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M1-P1.2-CONFIG-T02",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M1-P1.2-CONFIG-T03",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M1-P1.2-CONFIG-T04",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M1-P1.2-CONFIG-T05",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M1-P1.2-SCAFF-T01",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M1-P1.2-SCAFF-T02",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M1-P1.2-SCAFF-T03",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M1-P1.2-SCAFF-T04",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M1-P1.2-SCAFF-T05",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M1-P1.3-ALPHA-T01",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M1-P1.3-ALPHA-T02",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M1-P1.3-ALPHA-T03",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M1-P1.3-ALPHA-T04",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M1-P1.3-ALPHA-T05",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M1-P1.3-AUTH-T01",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M1-P1.3-AUTH-T02",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M1-P1.3-AUTH-T03",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M1-P1.3-AUTH-T04",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M1-P1.3-AUTH-T05",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M1-P1.3-DATA-T01",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M1-P1.3-DATA-T02",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M1-P1.3-DATA-T03",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M1-P1.3-DATA-T04",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M1-P1.3-DATA-T05",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M2-P2.1-FEATURES-T01",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M2-P2.1-FEATURES-T02",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M2-P2.1-FEATURES-T03",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M2-P2.1-FEATURES-T04",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M2-P2.1-FEATURES-T05",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M2-P2.1-MVP-T01",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M2-P2.1-MVP-T02",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M2-P2.1-MVP-T03",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M2-P2.1-MVP-T04",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M2-P2.1-MVP-T05",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M2-P2.1-TEST-T01",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M2-P2.1-TEST-T02",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M2-P2.1-TEST-T03",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M2-P2.1-TEST-T04",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M2-P2.1-TEST-T05",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M2-P2.2-DEBUG-T01",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M2-P2.2-DEBUG-T02",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M2-P2.2-DEBUG-T03",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M2-P2.2-DEBUG-T04",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M2-P2.2-DEBUG-T05",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M2-P2.2-VALIDATE-T01",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M2-P2.2-VALIDATE-T02",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M2-P2.2-VALIDATE-T03",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M2-P2.2-VALIDATE-T04",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M2-P2.2-VALIDATE-T05",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M2-P2.3-CICD-T01",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M2-P2.3-CICD-T02",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M2-P2.3-CICD-T03",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M2-P2.3-CICD-T04",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M2-P2.3-CICD-T05",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M3-P3.1-PERF-T01",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M3-P3.1-PERF-T02",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M3-P3.1-PERF-T03",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M3-P3.1-PERF-T04",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M3-P3.1-PERF-T05",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M3-P3.1-SEC-T01",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M3-P3.1-SEC-T02",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M3-P3.1-SEC-T03",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M3-P3.1-SEC-T04",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M3-P3.1-SEC-T05",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M3-P3.2-HARD-T01",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M3-P3.2-HARD-T02",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M3-P3.2-HARD-T03",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M3-P3.2-HARD-T04",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M3-P3.2-HARD-T05",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M3-P3.2-OBS-T01",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M3-P3.2-OBS-T02",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M3-P3.2-OBS-T03",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M3-P3.2-OBS-T04",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M3-P3.2-OBS-T05",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M3-P3.2-REVIEW-T01",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M3-P3.2-REVIEW-T02",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M3-P3.2-REVIEW-T03",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M3-P3.2-REVIEW-T04",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M3-P3.2-REVIEW-T05",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M3-P3.3-DEPLOY-T01",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M3-P3.3-DEPLOY-T02",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M3-P3.3-DEPLOY-T03",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M3-P3.3-DEPLOY-T04",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M3-P3.3-DEPLOY-T05",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M3-P3.3-DOCS-T01",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M3-P3.3-DOCS-T02",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M3-P3.3-DOCS-T03",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M3-P3.3-DOCS-T04",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M3-P3.3-DOCS-T05",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M3-P3.3-UPDATES-T01",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M3-P3.3-UPDATES-T02",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M3-P3.3-UPDATES-T03",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M3-P3.3-UPDATES-T04",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    },
+    {
+      "spec_id": "M3-P3.3-UPDATES-T05",
+      "status": "backlog",
+      "issue_number": null,
+      "pr_numbers": [],
+      "validation_runs": [],
+      "last_updated": null
+    }
+  ]
+}

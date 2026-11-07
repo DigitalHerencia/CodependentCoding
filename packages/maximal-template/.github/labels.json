@@ -1,0 +1,256 @@
+{
+  "schema_version": "1.0",
+  "source": "Engineering specs and ticketing SOP",
+  "labels": [
+    {
+      "name": "tracked",
+      "color": "1d76db",
+      "description": "Eligible for Projects v2 intake"
+    },
+    {
+      "name": "needs:triage",
+      "color": "ffcc00",
+      "description": "Requires specification triage"
+    },
+    {
+      "name": "needs:info",
+      "color": "c2e0c6",
+      "description": "Missing information"
+    },
+    {
+      "name": "blocked",
+      "color": "000000",
+      "description": "Dependency or approval prevents work"
+    },
+    {
+      "name": "spec:linked",
+      "color": "8250df",
+      "description": "Linked JSON specification exists"
+    },
+    {
+      "name": "spec:drift",
+      "color": "d93f0b",
+      "description": "Issue differs from current spec"
+    },
+    {
+      "name": "type:feature",
+      "color": "0e8a16",
+      "description": "Planned work including maintenance, docs and tests"
+    },
+    {
+      "name": "type:bug",
+      "color": "d73a4a",
+      "description": "Corrective/defect work"
+    },
+    {
+      "name": "priority:p0",
+      "color": "b60205",
+      "description": "Critical"
+    },
+    {
+      "name": "priority:p1",
+      "color": "d93f0b",
+      "description": "High"
+    },
+    {
+      "name": "priority:p2",
+      "color": "fbca04",
+      "description": "Normal"
+    },
+    {
+      "name": "priority:p3",
+      "color": "c2e0c6",
+      "description": "Low"
+    },
+    {
+      "name": "phase:P1.3",
+      "color": "c5def5",
+      "description": "Engineering phase P1.3 — Internal Alpha Validation"
+    },
+    {
+      "name": "phase:P2.1",
+      "color": "c5def5",
+      "description": "Engineering phase P2.1 — Core Feature Implementation"
+    },
+    {
+      "name": "phase:P3.2",
+      "color": "c5def5",
+      "description": "Engineering phase P3.2 — Platform Hardening & Security"
+    },
+    {
+      "name": "phase:P1.1",
+      "color": "c5def5",
+      "description": "Engineering phase P1.1 — Product Discovery & Business Definition"
+    },
+    {
+      "name": "phase:P1.2",
+      "color": "c5def5",
+      "description": "Engineering phase P1.2 — Platform & Operations Scaffolding"
+    },
+    {
+      "name": "phase:P2.2",
+      "color": "c5def5",
+      "description": "Engineering phase P2.2 — QA & Launch Readiness"
+    },
+    {
+      "name": "phase:P2.3",
+      "color": "c5def5",
+      "description": "Engineering phase P2.3 — Soft Launch & Feedback Loop"
+    },
+    {
+      "name": "phase:P3.1",
+      "color": "c5def5",
+      "description": "Engineering phase P3.1 — Feature Expansion"
+    },
+    {
+      "name": "phase:P3.3",
+      "color": "c5def5",
+      "description": "Engineering phase P3.3 — Growth Enablement"
+    },
+    {
+      "name": "devcycle:M1-P1.3-ALPHA",
+      "color": "d4c5f9",
+      "description": "Alpha Build"
+    },
+    {
+      "name": "devcycle:M2-P2.1-MVP",
+      "color": "d4c5f9",
+      "description": "MVP Build"
+    },
+    {
+      "name": "devcycle:M3-P3.2-HARD",
+      "color": "d4c5f9",
+      "description": "Hardening"
+    },
+    {
+      "name": "devcycle:M1-P1.1-INIT",
+      "color": "d4c5f9",
+      "description": "Environment Initialization"
+    },
+    {
+      "name": "devcycle:M1-P1.2-SCAFF",
+      "color": "d4c5f9",
+      "description": "Architecture Setup"
+    },
+    {
+      "name": "devcycle:M1-P1.2-CONFIG",
+      "color": "d4c5f9",
+      "description": "Project Configuration"
+    },
+    {
+      "name": "devcycle:M1-P1.3-DATA",
+      "color": "d4c5f9",
+      "description": "Data Layer Definition"
+    },
+    {
+      "name": "devcycle:M1-P1.3-AUTH",
+      "color": "d4c5f9",
+      "description": "Auth & RBAC"
+    },
+    {
+      "name": "devcycle:M2-P2.1-FEATURES",
+      "color": "d4c5f9",
+      "description": "Feature Development"
+    },
+    {
+      "name": "devcycle:M2-P2.1-TEST",
+      "color": "d4c5f9",
+      "description": "Testing Strategy"
+    },
+    {
+      "name": "devcycle:M2-P2.2-DEBUG",
+      "color": "d4c5f9",
+      "description": "Debug & Fixes"
+    },
+    {
+      "name": "devcycle:M2-P2.2-VALIDATE",
+      "color": "d4c5f9",
+      "description": "System Validation"
+    },
+    {
+      "name": "devcycle:M2-P2.3-CICD",
+      "color": "d4c5f9",
+      "description": "CI/CD Pipeline"
+    },
+    {
+      "name": "devcycle:M3-P3.1-SEC",
+      "color": "d4c5f9",
+      "description": "Security Hardening"
+    },
+    {
+      "name": "devcycle:M3-P3.1-PERF",
+      "color": "d4c5f9",
+      "description": "Performance Optimization"
+    },
+    {
+      "name": "devcycle:M3-P3.2-OBS",
+      "color": "d4c5f9",
+      "description": "Observability"
+    },
+    {
+      "name": "devcycle:M3-P3.2-REVIEW",
+      "color": "d4c5f9",
+      "description": "Code Review"
+    },
+    {
+      "name": "devcycle:M3-P3.3-DEPLOY",
+      "color": "d4c5f9",
+      "description": "Deployment"
+    },
+    {
+      "name": "devcycle:M3-P3.3-DOCS",
+      "color": "d4c5f9",
+      "description": "Documentation"
+    },
+    {
+      "name": "devcycle:M3-P3.3-UPDATES",
+      "color": "d4c5f9",
+      "description": "Maintenance & Updates"
+    },
+    {
+      "name": "domain:crm",
+      "color": "bfdadc",
+      "description": "CRM / Pipeline Tracker"
+    },
+    {
+      "name": "domain:projects",
+      "color": "bfdadc",
+      "description": "Project Management / Task Tracker"
+    },
+    {
+      "name": "domain:support",
+      "color": "bfdadc",
+      "description": "Customer Support / Ticketing"
+    },
+    {
+      "name": "domain:marketing",
+      "color": "bfdadc",
+      "description": "Marketing Automation & Analytics"
+    },
+    {
+      "name": "domain:invoicing",
+      "color": "bfdadc",
+      "description": "Invoicing & Expense Tracker"
+    },
+    {
+      "name": "domain:social",
+      "color": "bfdadc",
+      "description": "Social Media Scheduler"
+    },
+    {
+      "name": "domain:ai",
+      "color": "bfdadc",
+      "description": "AI-Powered Wrapper / Micro-SaaS"
+    },
+    {
+      "name": "domain:portal",
+      "color": "bfdadc",
+      "description": "B2B Client Portal"
+    },
+    {
+      "name": "domain:admin",
+      "color": "bfdadc",
+      "description": "Internal Tools / Admin Portal"
+    }
+  ]
+}

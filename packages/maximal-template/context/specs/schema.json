@@ -1,0 +1,185 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:codependentcoding:governance:spec:v1",
+  "title": "Engineering work specification (ticket)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "kind",
+    "id",
+    "work_code",
+    "team",
+    "title",
+    "issue_type",
+    "traceability",
+    "documentation",
+    "contracts",
+    "ticket",
+    "specification",
+    "bug_details",
+    "github",
+    "state",
+    "source"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "kind": {
+      "const": "spec"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^M[123]-P[123]\\.[123]-[A-Z]+-T0[1-5]$"
+    },
+    "work_code": {
+      "type": "string",
+      "pattern": "^ENG-M[123]-P[123]\\.[123]-[A-Z]+-T0[1-5]$"
+    },
+    "team": {
+      "const": "engineering"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "issue_type": {
+      "enum": [
+        "feature",
+        "bug"
+      ]
+    },
+    "traceability": {
+      "type": "object",
+      "required": [
+        "milestone_id",
+        "milestone_title",
+        "phase_id",
+        "phase_title",
+        "dev_cycle_id",
+        "dev_cycle_title",
+        "task_id",
+        "ontology_ids"
+      ],
+      "properties": {
+        "milestone_id": {
+          "type": "string"
+        },
+        "milestone_title": {
+          "type": "string"
+        },
+        "phase_id": {
+          "type": "string"
+        },
+        "phase_title": {
+          "type": "string"
+        },
+        "dev_cycle_id": {
+          "type": "string"
+        },
+        "dev_cycle_title": {
+          "type": "string"
+        },
+        "task_id": {
+          "type": "string"
+        },
+        "ontology_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "documentation": {
+      "type": "object",
+      "required": [
+        "prd",
+        "tech_requirements",
+        "architecture",
+        "auth",
+        "design"
+      ],
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "file",
+          "requirement_id"
+        ],
+        "properties": {
+          "file": {
+            "type": "string"
+          },
+          "requirement_id": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "contracts": {
+      "type": "object",
+      "required": [
+        "application",
+        "validation",
+        "design"
+      ],
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "ticket": {
+      "type": "object",
+      "required": [
+        "owner_role",
+        "workday_limit",
+        "estimated_hours",
+        "time_log",
+        "billable"
+      ]
+    },
+    "specification": {
+      "type": "object",
+      "required": [
+        "objective",
+        "scope",
+        "requirements",
+        "inputs",
+        "deliverables",
+        "dependencies",
+        "acceptance_criteria",
+        "validation",
+        "references"
+      ]
+    },
+    "bug_details": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "github": {
+      "type": "object",
+      "required": [
+        "title",
+        "labels",
+        "milestone",
+        "issue_number",
+        "issue_url",
+        "project_item_id"
+      ]
+    },
+    "state": {
+      "type": "object",
+      "required": [
+        "status",
+        "approval_required",
+        "approved",
+        "evidence"
+      ]
+    },
+    "source": {
+      "type": "object"
+    }
+  }
+}

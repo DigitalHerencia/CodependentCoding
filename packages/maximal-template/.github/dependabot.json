@@ -1,0 +1,5 @@
+{
+  "schema_version": "1.0",
+  "github_native_file": ".github/dependabot.yml",
+  "intent": "Keep direct root pnpm manifests and GitHub Actions dependencies reviewed. This JSON is metadata; GitHub reads only the YAML config."
+}

@@ -1,0 +1,97 @@
+{
+  "schema_version": "1.0",
+  "kind": "spec",
+  "id": "M1-P1.3-ALPHA-T03",
+  "work_code": "ENG-M1-P1.3-ALPHA-T03",
+  "team": "engineering",
+  "title": "Observability setup",
+  "issue_type": "feature",
+  "traceability": {
+    "milestone_id": "M1",
+    "milestone_title": "Foundation & Pre-Production",
+    "phase_id": "P1.3",
+    "phase_title": "Internal Alpha Validation",
+    "dev_cycle_id": "M1-P1.3-ALPHA",
+    "dev_cycle_title": "Alpha Build",
+    "task_id": "T03",
+    "ontology_ids": []
+  },
+  "documentation": {
+    "prd": {
+      "file": "context/docs/PRD.md",
+      "requirement_id": "PRD-M1-P1.3-ALPHA-T03"
+    },
+    "tech_requirements": {
+      "file": "context/docs/tech-requirements.md",
+      "requirement_id": "TECH-M1-P1.3-ALPHA-T03"
+    },
+    "architecture": {
+      "file": "context/docs/Architecture.md",
+      "requirement_id": "ARCH-M1-P1.3-ALPHA-T03"
+    },
+    "auth": {
+      "file": "context/docs/AUTH.md",
+      "requirement_id": "AUTH-M1-P1.3-ALPHA-T03"
+    },
+    "design": {
+      "file": "context/docs/Design.md",
+      "requirement_id": "DES-M1-P1.3-ALPHA-T03"
+    }
+  },
+  "contracts": {
+    "application": ".agents/contracts/application.yaml",
+    "validation": ".agents/contracts/validation.yaml",
+    "design": ".agents/contracts/design.yaml"
+  },
+  "ticket": {
+    "owner_role": null,
+    "workday_limit": 1,
+    "estimated_hours": null,
+    "time_log": [],
+    "billable": null
+  },
+  "specification": {
+    "objective": "",
+    "scope": {
+      "included": [],
+      "excluded": []
+    },
+    "requirements": [],
+    "inputs": [],
+    "deliverables": [],
+    "dependencies": [],
+    "acceptance_criteria": [],
+    "validation": {
+      "commands": [],
+      "manual_checks": [],
+      "evidence_required": []
+    },
+    "references": []
+  },
+  "bug_details": null,
+  "github": {
+    "title": "[M1-P1.3-ALPHA-T03] feat(alpha): Observability setup",
+    "labels": [
+      "tracked",
+      "type:feature",
+      "phase:P1.3",
+      "devcycle:M1-P1.3-ALPHA",
+      "spec:linked"
+    ],
+    "milestone": "M1 — Foundation & Pre-Production",
+    "issue_number": null,
+    "issue_url": null,
+    "project_item_id": null
+  },
+  "state": {
+    "status": "backlog",
+    "approval_required": false,
+    "approved": false,
+    "evidence": []
+  },
+  "source": {
+    "kind": "Engineering Tasks CSV",
+    "project_code": "ENG-M1-P1.3-ALPHA-T03",
+    "task_name": "T03 Observability setup"
+  }
+}

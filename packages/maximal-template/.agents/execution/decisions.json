@@ -1,0 +1,11 @@
+{
+  "schema_version": "1.0",
+  "kind": "decision_log",
+  "spec_catalog": "context/specs/catalog.json",
+  "source_contracts": [
+    ".agents/contracts/application.yaml",
+    ".agents/contracts/design.yaml",
+    ".agents/contracts/validation.yaml"
+  ],
+  "decisions": []
+}

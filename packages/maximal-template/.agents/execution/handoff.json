@@ -1,0 +1,18 @@
+{
+  "schema_version": "1.0",
+  "kind": "handoff",
+  "source_contracts": [
+    ".agents/contracts/application.yaml",
+    ".agents/contracts/design.yaml",
+    ".agents/contracts/validation.yaml"
+  ],
+  "spec_catalog": "context/specs/catalog.json",
+  "active_spec_id": null,
+  "next_spec_id": null,
+  "completed_spec_ids": [],
+  "blocked_spec_ids": [],
+  "next_actions": [],
+  "risks": [],
+  "verification_summary": [],
+  "updated_at": null
+}

@@ -1,0 +1,97 @@
+{
+  "schema_version": "1.0",
+  "kind": "spec",
+  "id": "M2-P2.2-VALIDATE-T02",
+  "work_code": "ENG-M2-P2.2-VALIDATE-T02",
+  "team": "engineering",
+  "title": "UX flow validation",
+  "issue_type": "feature",
+  "traceability": {
+    "milestone_id": "M2",
+    "milestone_title": "MVP Launch",
+    "phase_id": "P2.2",
+    "phase_title": "QA & Launch Readiness",
+    "dev_cycle_id": "M2-P2.2-VALIDATE",
+    "dev_cycle_title": "System Validation",
+    "task_id": "T02",
+    "ontology_ids": []
+  },
+  "documentation": {
+    "prd": {
+      "file": "context/docs/PRD.md",
+      "requirement_id": "PRD-M2-P2.2-VALIDATE-T02"
+    },
+    "tech_requirements": {
+      "file": "context/docs/tech-requirements.md",
+      "requirement_id": "TECH-M2-P2.2-VALIDATE-T02"
+    },
+    "architecture": {
+      "file": "context/docs/Architecture.md",
+      "requirement_id": "ARCH-M2-P2.2-VALIDATE-T02"
+    },
+    "auth": {
+      "file": "context/docs/AUTH.md",
+      "requirement_id": "AUTH-M2-P2.2-VALIDATE-T02"
+    },
+    "design": {
+      "file": "context/docs/Design.md",
+      "requirement_id": "DES-M2-P2.2-VALIDATE-T02"
+    }
+  },
+  "contracts": {
+    "application": ".agents/contracts/application.yaml",
+    "validation": ".agents/contracts/validation.yaml",
+    "design": ".agents/contracts/design.yaml"
+  },
+  "ticket": {
+    "owner_role": null,
+    "workday_limit": 1,
+    "estimated_hours": null,
+    "time_log": [],
+    "billable": null
+  },
+  "specification": {
+    "objective": "",
+    "scope": {
+      "included": [],
+      "excluded": []
+    },
+    "requirements": [],
+    "inputs": [],
+    "deliverables": [],
+    "dependencies": [],
+    "acceptance_criteria": [],
+    "validation": {
+      "commands": [],
+      "manual_checks": [],
+      "evidence_required": []
+    },
+    "references": []
+  },
+  "bug_details": null,
+  "github": {
+    "title": "[M2-P2.2-VALIDATE-T02] feat(validate): UX flow validation",
+    "labels": [
+      "tracked",
+      "type:feature",
+      "phase:P2.2",
+      "devcycle:M2-P2.2-VALIDATE",
+      "spec:linked"
+    ],
+    "milestone": "M2 — MVP Launch",
+    "issue_number": null,
+    "issue_url": null,
+    "project_item_id": null
+  },
+  "state": {
+    "status": "backlog",
+    "approval_required": false,
+    "approved": false,
+    "evidence": []
+  },
+  "source": {
+    "kind": "Engineering Tasks CSV",
+    "project_code": "ENG-M2-P2.2-VALIDATE-T02",
+    "task_name": "T02 UX flow validation"
+  }
+}

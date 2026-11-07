@@ -1,0 +1,323 @@
+{
+  "schema_version": "1.0",
+  "team": "engineering",
+  "source_of_truth": "context/specs/",
+  "ticketing_sop": {
+    "id": "SOP-STUDIO-DELIVERY-001",
+    "url": "https://app.notion.com/p/2d8a4e63bf2380dd9a04cbbb762b9c7c"
+  },
+  "milestones": [
+    {
+      "id": "M1",
+      "title": "Foundation & Pre-Production",
+      "phases": [
+        {
+          "id": "P1.1",
+          "title": "Product Discovery & Business Definition",
+          "dev_cycles": [
+            {
+              "id": "M1-P1.1-INIT",
+              "source_id": "ENG-M1-P1.1-INIT",
+              "title": "Environment Initialization",
+              "spec_ids": [
+                "M1-P1.1-INIT-T01",
+                "M1-P1.1-INIT-T02",
+                "M1-P1.1-INIT-T03",
+                "M1-P1.1-INIT-T04",
+                "M1-P1.1-INIT-T05"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "P1.2",
+          "title": "Platform & Operations Scaffolding",
+          "dev_cycles": [
+            {
+              "id": "M1-P1.2-CONFIG",
+              "source_id": "ENG-M1-P1.2-CONFIG",
+              "title": "Project Configuration",
+              "spec_ids": [
+                "M1-P1.2-CONFIG-T01",
+                "M1-P1.2-CONFIG-T02",
+                "M1-P1.2-CONFIG-T03",
+                "M1-P1.2-CONFIG-T04",
+                "M1-P1.2-CONFIG-T05"
+              ]
+            },
+            {
+              "id": "M1-P1.2-SCAFF",
+              "source_id": "ENG-M1-P1.2-SCAFF",
+              "title": "Architecture Setup",
+              "spec_ids": [
+                "M1-P1.2-SCAFF-T01",
+                "M1-P1.2-SCAFF-T02",
+                "M1-P1.2-SCAFF-T03",
+                "M1-P1.2-SCAFF-T04",
+                "M1-P1.2-SCAFF-T05"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "P1.3",
+          "title": "Internal Alpha Validation",
+          "dev_cycles": [
+            {
+              "id": "M1-P1.3-ALPHA",
+              "source_id": "ENG-M1-P1.3-ALPHA",
+              "title": "Alpha Build",
+              "spec_ids": [
+                "M1-P1.3-ALPHA-T01",
+                "M1-P1.3-ALPHA-T02",
+                "M1-P1.3-ALPHA-T03",
+                "M1-P1.3-ALPHA-T04",
+                "M1-P1.3-ALPHA-T05"
+              ]
+            },
+            {
+              "id": "M1-P1.3-AUTH",
+              "source_id": "ENG-M1-P1.3-AUTH",
+              "title": "Auth & RBAC",
+              "spec_ids": [
+                "M1-P1.3-AUTH-T01",
+                "M1-P1.3-AUTH-T02",
+                "M1-P1.3-AUTH-T03",
+                "M1-P1.3-AUTH-T04",
+                "M1-P1.3-AUTH-T05"
+              ]
+            },
+            {
+              "id": "M1-P1.3-DATA",
+              "source_id": "ENG-M1-P1.3-DATA",
+              "title": "Data Layer Definition",
+              "spec_ids": [
+                "M1-P1.3-DATA-T01",
+                "M1-P1.3-DATA-T02",
+                "M1-P1.3-DATA-T03",
+                "M1-P1.3-DATA-T04",
+                "M1-P1.3-DATA-T05"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "M2",
+      "title": "MVP Launch",
+      "phases": [
+        {
+          "id": "P2.1",
+          "title": "Core Feature Implementation",
+          "dev_cycles": [
+            {
+              "id": "M2-P2.1-FEATURES",
+              "source_id": "ENG-M2-P2.1-FEATURES",
+              "title": "Feature Development",
+              "spec_ids": [
+                "M2-P2.1-FEATURES-T01",
+                "M2-P2.1-FEATURES-T02",
+                "M2-P2.1-FEATURES-T03",
+                "M2-P2.1-FEATURES-T04",
+                "M2-P2.1-FEATURES-T05"
+              ]
+            },
+            {
+              "id": "M2-P2.1-MVP",
+              "source_id": "ENG-M2-P2.1-MVP",
+              "title": "MVP Build",
+              "spec_ids": [
+                "M2-P2.1-MVP-T01",
+                "M2-P2.1-MVP-T02",
+                "M2-P2.1-MVP-T03",
+                "M2-P2.1-MVP-T04",
+                "M2-P2.1-MVP-T05"
+              ]
+            },
+            {
+              "id": "M2-P2.1-TEST",
+              "source_id": "ENG-M2-P2.1-TEST",
+              "title": "Testing Strategy",
+              "spec_ids": [
+                "M2-P2.1-TEST-T01",
+                "M2-P2.1-TEST-T02",
+                "M2-P2.1-TEST-T03",
+                "M2-P2.1-TEST-T04",
+                "M2-P2.1-TEST-T05"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "P2.2",
+          "title": "QA & Launch Readiness",
+          "dev_cycles": [
+            {
+              "id": "M2-P2.2-DEBUG",
+              "source_id": "ENG-M2-P2.2-DEBUG",
+              "title": "Debug & Fixes",
+              "spec_ids": [
+                "M2-P2.2-DEBUG-T01",
+                "M2-P2.2-DEBUG-T02",
+                "M2-P2.2-DEBUG-T03",
+                "M2-P2.2-DEBUG-T04",
+                "M2-P2.2-DEBUG-T05"
+              ]
+            },
+            {
+              "id": "M2-P2.2-VALIDATE",
+              "source_id": "ENG-M2-P2.2-VALIDATE",
+              "title": "System Validation",
+              "spec_ids": [
+                "M2-P2.2-VALIDATE-T01",
+                "M2-P2.2-VALIDATE-T02",
+                "M2-P2.2-VALIDATE-T03",
+                "M2-P2.2-VALIDATE-T04",
+                "M2-P2.2-VALIDATE-T05"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "P2.3",
+          "title": "Soft Launch & Feedback Loop",
+          "dev_cycles": [
+            {
+              "id": "M2-P2.3-CICD",
+              "source_id": "ENG-M2-P2.3-CICD",
+              "title": "CI/CD Pipeline",
+              "spec_ids": [
+                "M2-P2.3-CICD-T01",
+                "M2-P2.3-CICD-T02",
+                "M2-P2.3-CICD-T03",
+                "M2-P2.3-CICD-T04",
+                "M2-P2.3-CICD-T05"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "M3",
+      "title": "Expansion & Hardening",
+      "phases": [
+        {
+          "id": "P3.1",
+          "title": "Feature Expansion",
+          "dev_cycles": [
+            {
+              "id": "M3-P3.1-PERF",
+              "source_id": "ENG-M3-P3.1-PERF",
+              "title": "Performance Optimization",
+              "spec_ids": [
+                "M3-P3.1-PERF-T01",
+                "M3-P3.1-PERF-T02",
+                "M3-P3.1-PERF-T03",
+                "M3-P3.1-PERF-T04",
+                "M3-P3.1-PERF-T05"
+              ]
+            },
+            {
+              "id": "M3-P3.1-SEC",
+              "source_id": "ENG-M3-P3.1-SEC",
+              "title": "Security Hardening",
+              "spec_ids": [
+                "M3-P3.1-SEC-T01",
+                "M3-P3.1-SEC-T02",
+                "M3-P3.1-SEC-T03",
+                "M3-P3.1-SEC-T04",
+                "M3-P3.1-SEC-T05"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "P3.2",
+          "title": "Platform Hardening & Security",
+          "dev_cycles": [
+            {
+              "id": "M3-P3.2-HARD",
+              "source_id": "ENG-M3-P3.2-HARD",
+              "title": "Hardening",
+              "spec_ids": [
+                "M3-P3.2-HARD-T01",
+                "M3-P3.2-HARD-T02",
+                "M3-P3.2-HARD-T03",
+                "M3-P3.2-HARD-T04",
+                "M3-P3.2-HARD-T05"
+              ]
+            },
+            {
+              "id": "M3-P3.2-OBS",
+              "source_id": "ENG-M3-P3.2-OBS",
+              "title": "Observability",
+              "spec_ids": [
+                "M3-P3.2-OBS-T01",
+                "M3-P3.2-OBS-T02",
+                "M3-P3.2-OBS-T03",
+                "M3-P3.2-OBS-T04",
+                "M3-P3.2-OBS-T05"
+              ]
+            },
+            {
+              "id": "M3-P3.2-REVIEW",
+              "source_id": "ENG-M3-P3.2-REVIEW",
+              "title": "Code Review",
+              "spec_ids": [
+                "M3-P3.2-REVIEW-T01",
+                "M3-P3.2-REVIEW-T02",
+                "M3-P3.2-REVIEW-T03",
+                "M3-P3.2-REVIEW-T04",
+                "M3-P3.2-REVIEW-T05"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "P3.3",
+          "title": "Growth Enablement",
+          "dev_cycles": [
+            {
+              "id": "M3-P3.3-DEPLOY",
+              "source_id": "ENG-M3-P3.3-DEPLOY",
+              "title": "Deployment",
+              "spec_ids": [
+                "M3-P3.3-DEPLOY-T01",
+                "M3-P3.3-DEPLOY-T02",
+                "M3-P3.3-DEPLOY-T03",
+                "M3-P3.3-DEPLOY-T04",
+                "M3-P3.3-DEPLOY-T05"
+              ]
+            },
+            {
+              "id": "M3-P3.3-DOCS",
+              "source_id": "ENG-M3-P3.3-DOCS",
+              "title": "Documentation",
+              "spec_ids": [
+                "M3-P3.3-DOCS-T01",
+                "M3-P3.3-DOCS-T02",
+                "M3-P3.3-DOCS-T03",
+                "M3-P3.3-DOCS-T04",
+                "M3-P3.3-DOCS-T05"
+              ]
+            },
+            {
+              "id": "M3-P3.3-UPDATES",
+              "source_id": "ENG-M3-P3.3-UPDATES",
+              "title": "Maintenance & Updates",
+              "spec_ids": [
+                "M3-P3.3-UPDATES-T01",
+                "M3-P3.3-UPDATES-T02",
+                "M3-P3.3-UPDATES-T03",
+                "M3-P3.3-UPDATES-T04",
+                "M3-P3.3-UPDATES-T05"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
