@@ -41,7 +41,7 @@ export function AuthShell({ children }: AuthShellProps) {
           )}
         >
           <div className="auth-form-placement">
-            <div className="w-full max-w-md">
+            <div className="w-full max-w-md md:my-auto">
               <div className="auth-brand-placement">
                 <LogoLockup size="auth" />
               </div>

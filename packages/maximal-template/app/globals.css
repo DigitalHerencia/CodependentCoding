@@ -380,8 +380,9 @@
   @apply flex flex-wrap items-center justify-between gap-x-4 gap-y-2 border-t border-foreground/30 pt-4 text-sm;
 }
 
+/* Desktop: exactly one screen, no page scroll; a tall form scrolls inside its column. Phones stack and scroll. */
 @utility auth-layout {
-  @apply grid min-h-dvh grid-cols-1 bg-background text-foreground md:grid-cols-2 md:grid-rows-[auto_1fr_auto];
+  @apply grid min-h-dvh grid-cols-1 bg-background text-foreground md:h-dvh md:grid-cols-2 md:grid-rows-[auto_minmax(0,1fr)_auto] md:overflow-hidden;
 }
 
 @utility auth-panel {
@@ -393,11 +394,11 @@
 }
 
 @utility auth-copy-placement {
-  @apply px-6 pb-8 md:row-start-2 md:p-12;
+  @apply px-6 pb-8 md:row-start-2 md:min-h-0 md:overflow-y-auto md:p-12;
 }
 
 @utility auth-form-placement {
-  @apply flex flex-col items-center px-6 py-10 md:row-start-2 md:p-12;
+  @apply flex flex-col items-center px-6 py-10 md:row-start-2 md:min-h-0 md:overflow-y-auto md:p-12;
 }
 
 @utility brand-image {
