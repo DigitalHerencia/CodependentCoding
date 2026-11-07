@@ -2,11 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  adminBlockCopy,
-  adminPaginationCopy,
-  adminSessionCopy,
-} from "@/content/admin";
+import { adminBlockCopy, adminPaginationCopy } from "@/content/admin";
 import Link from "next/link";
 
 export function AdminAuditToolbar({
@@ -92,39 +88,5 @@ export function AdminPagination({
       </span>
       {hasMore && <Link href={href(page + 1)}>{adminPaginationCopy.next}</Link>}
     </nav>
-  );
-}
-
-export function AdminVerificationBlock({
-  needsEnrollment,
-  pending,
-  message,
-  onVerify,
-  onManageAccount,
-}: {
-  needsEnrollment: boolean;
-  pending: boolean;
-  message: string;
-  onVerify: () => Promise<void>;
-  onManageAccount: () => void;
-}) {
-  return (
-    <section className="mx-auto max-w-lg space-y-4 p-6">
-      <h1 className="type-title">{adminSessionCopy.title}</h1>
-      <p>
-        {needsEnrollment
-          ? adminSessionCopy.enrollment
-          : adminSessionCopy.verification}
-      </p>
-      {needsEnrollment && (
-        <Button type="button" variant="outline" onClick={onManageAccount}>
-          {adminSessionCopy.account}
-        </Button>
-      )}
-      <Button type="button" onClick={onVerify} disabled={pending}>
-        {adminSessionCopy.verify}
-      </Button>
-      <p role="status">{message}</p>
-    </section>
   );
 }

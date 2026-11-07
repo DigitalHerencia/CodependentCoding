@@ -6,17 +6,6 @@ export const adminBlockCopy = {
   searchNameEmailOrRole: "Search name, email or role",
 } as const;
 
-export const adminSessionCopy = {
-  title: "Verify administrator access",
-  enrollment:
-    "Enable two-factor authentication in your account before entering administration.",
-  verification:
-    "Verify both factors to continue. Administrator access expires after ten minutes; sensitive changes require verification within five minutes.",
-  account: "Manage account security",
-  verify: "Verify and continue",
-  cancelled: "Verification was not completed. Try again when ready.",
-} as const;
-
 export const adminMembershipCopy = {
   role: "Application role",
   roleUpdated: "Role updated.",

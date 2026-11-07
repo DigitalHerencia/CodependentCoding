@@ -1,4 +1,3 @@
-import { AdminVerificationBlock } from "@/components/blocks/admin-blocks";
 import {
   AdminAuditContentBlock,
   AdminAuditToolbarBlock,
@@ -76,10 +75,4 @@ export function AdminUsersTemplate(
       <AdminUsersContentBlock {...props} />
     </DashboardLayout>
   );
-}
-
-export function AdminVerificationTemplate(
-  props: ComponentProps<typeof AdminVerificationBlock>,
-) {
-  return <AdminVerificationBlock {...props} />;
 }

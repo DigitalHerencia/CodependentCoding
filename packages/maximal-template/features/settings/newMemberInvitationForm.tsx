@@ -12,7 +12,6 @@ import {
 import { formResultCopy } from "@/content/application";
 import { memberInviteCopy as copy } from "@/content/settings";
 import { createInvitation } from "@/lib/actions/commonActions";
-import { useAdminReverification } from "@/lib/auth/clerkAccount";
 import { defaultInvitedRole, invitableRoles } from "@/lib/authz/roles";
 import { createInvitationSchema } from "@/schemas/commonSchemas";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -23,7 +22,6 @@ import type { z } from "zod";
 
 export function NewMemberInvitationForm() {
   const router = useRouter();
-  const invite = useAdminReverification(createInvitation);
   const [link, setLink] = useState("");
   const {
     control,
@@ -47,7 +45,7 @@ export function NewMemberInvitationForm() {
         setLink("");
         let result;
         try {
-          result = await invite(values);
+          result = await createInvitation(values);
         } catch {
           setError("root", { message: formResultCopy.failed });
           return;

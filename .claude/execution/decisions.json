@@ -1265,6 +1265,17 @@
         "packages/maximal-template/lib/workflows/onboardingWorkflows.ts",
         "packages/maximal-template/app/(auth)/onboarding/page.tsx"
       ]
+    },
+    {
+      "id": "DEC-128",
+      "date": "2026-11-07",
+      "status": "accepted",
+      "title": "Remove admin MFA/reverification from the template (supersedes the MFA part of DEC-109)",
+      "decision": "Owner (2026-11-07): the template must not require 2FA or step-up verification; an MVP built from it may add it. Admin access needs only the signed-in session plus admin permissions (AdminGateFeature keeps the canAccessAdmin 404 check). Removed getAdminSessionState, requireFreshAdminSession, AdminReverificationRequiredError, toReverifiedActionResult, verifyAdminSession, the /admin/verification route and rewrite, admin-verification features, AdminVerificationBlock/Template, adminSessionCopy and useAdminReverification; admin/invitation actions use toActionResult.",
+      "refs": [
+        "packages/maximal-template/lib/auth/auth.ts",
+        "packages/maximal-template/features/admin/admin-gate-feature.tsx"
+      ]
     }
   ]
 }

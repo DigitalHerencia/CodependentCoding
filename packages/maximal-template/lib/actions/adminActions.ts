@@ -6,11 +6,7 @@ import {
   changeAdminMembershipSchema,
   updateAdminMembershipStatusSchema,
 } from "@/schemas/adminSchemas";
-import {
-  requireIdentity,
-  requireFreshAdminSession,
-  toReverifiedActionResult,
-} from "@/lib/auth/auth";
+import { requireIdentity } from "@/lib/auth/auth";
 import { assertPermission } from "@/lib/authz/permissions";
 import { toAdminMembershipDTO } from "@/lib/db/dtos/adminDtos";
 import { withTenantTransaction } from "@/lib/db/tenant";
@@ -19,14 +15,14 @@ import {
   updateMembershipAdministrationTx,
 } from "@/lib/db/transactions/adminTx";
 import { InvariantViolationError } from "@/lib/db/transactions/errors";
+import { toActionResult } from "@/lib/utils/actionResult";
 
 /** Every command commits together or none does; an administrator never changes their own membership. */
 export async function executeAdminBulkOperation(rawInput: unknown) {
-  return toReverifiedActionResult(async () => {
+  return toActionResult(async () => {
     const identity = await requireIdentity();
     return withTenantTransaction(identity, async (tx, access) => {
       assertPermission(access, "admin.membership:update");
-      await requireFreshAdminSession(5);
       const commands = adminBulkOperationSchema.parse(rawInput);
       const results = [];
       for (const command of commands) {
@@ -54,12 +50,11 @@ export async function executeAdminBulkOperation(rawInput: unknown) {
 }
 
 export async function changeAdminMembership(rawInput: unknown) {
-  return toReverifiedActionResult(async () => {
+  return toActionResult(async () => {
     const identity = await requireIdentity();
 
     return withTenantTransaction(identity, async (tx, access) => {
       assertPermission(access, "admin.membership:update");
-      await requireFreshAdminSession(5);
       const input = changeAdminMembershipSchema.parse(rawInput);
       if (input.membershipId === access.membershipId) {
         throw new InvariantViolationError(
@@ -79,12 +74,11 @@ export async function changeAdminMembership(rawInput: unknown) {
 }
 
 export async function suspendAdminMembership(rawInput: unknown) {
-  return toReverifiedActionResult(async () => {
+  return toActionResult(async () => {
     const identity = await requireIdentity();
 
     return withTenantTransaction(identity, async (tx, access) => {
       assertPermission(access, "admin.membership:update");
-      await requireFreshAdminSession(5);
       const input = updateAdminMembershipStatusSchema.parse(rawInput);
       if (input.membershipId === access.membershipId) {
         throw new InvariantViolationError(
@@ -104,12 +98,11 @@ export async function suspendAdminMembership(rawInput: unknown) {
 }
 
 export async function restoreAdminMembership(rawInput: unknown) {
-  return toReverifiedActionResult(async () => {
+  return toActionResult(async () => {
     const identity = await requireIdentity();
 
     return withTenantTransaction(identity, async (tx, access) => {
       assertPermission(access, "admin.membership:update");
-      await requireFreshAdminSession(5);
       const input = updateAdminMembershipStatusSchema.parse(rawInput);
       const membership = await updateMembershipAdministrationTx(tx, {
         organizationId: access.organizationId,
@@ -123,27 +116,16 @@ export async function restoreAdminMembership(rawInput: unknown) {
 }
 
 export async function addAdminMembership(rawInput: unknown) {
-  return toReverifiedActionResult(async () => {
+  return toActionResult(async () => {
     const identity = await requireIdentity();
     return withTenantTransaction(identity, async (tx, access) => {
       assertPermission(access, "admin.membership:create");
-      await requireFreshAdminSession(5);
       const input = addAdminMembershipSchema.parse(rawInput);
       await approveWorkspaceAccessTx(tx, {
         ...input,
         organizationId: access.organizationId,
         actorUserId: access.userId,
       });
-    });
-  });
-}
-
-export async function verifyAdminSession() {
-  return toReverifiedActionResult(async () => {
-    const identity = await requireIdentity();
-    await withTenantTransaction(identity, async (_tx, access) => {
-      assertPermission(access, "admin.membership:read");
-      await requireFreshAdminSession(5);
     });
   });
 }

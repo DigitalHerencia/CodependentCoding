@@ -1,7 +1,6 @@
 import "server-only";
 
-import { toActionResult } from "@/lib/utils/actionResult";
-import { auth, currentUser, reverificationError } from "@clerk/nextjs/server";
+import { auth, currentUser } from "@clerk/nextjs/server";
 
 import type {
   AuthenticatedIdentity,
@@ -76,52 +75,4 @@ export async function requireCurrentUser(): Promise<CurrentUserProfile> {
   const user = await getCurrentUser();
   if (!user) throw new AuthenticationRequiredError();
   return user;
-}
-
-/** Admin access expires independently of the ordinary signed-in session. */
-export async function getAdminSessionState(afterMinutes = 10) {
-  const session = await auth();
-  if (!session.isAuthenticated) throw new AuthenticationRequiredError();
-  const ages = session.sessionClaims?.fva;
-  if (
-    ages &&
-    ages[0] >= 0 &&
-    ages[1] >= 0 &&
-    ages.every((age) => age < afterMinutes)
-  )
-    return "verified" as const;
-  if (!(await currentUser())?.twoFactorEnabled)
-    return "enrollment-required" as const;
-  return "verification-required" as const;
-}
-
-export class AdminReverificationRequiredError extends Error {}
-
-export async function requireFreshAdminSession(afterMinutes = 10) {
-  const session = await auth();
-  if (!session.isAuthenticated) throw new AuthenticationRequiredError();
-  const ages = session.sessionClaims?.fva;
-  if (
-    ages &&
-    ages[0] >= 0 &&
-    ages[1] >= 0 &&
-    ages.every((age) => age < afterMinutes)
-  )
-    return;
-  throw new AdminReverificationRequiredError();
-}
-
-export { reverificationError } from "@clerk/nextjs/server";
-
-/** Preserve Clerk's reverification protocol while mapping all other failures safely. */
-export async function toReverifiedActionResult<T>(run: () => Promise<T>) {
-  try {
-    return { ok: true, data: await run() } as const;
-  } catch (cause) {
-    if (cause instanceof AdminReverificationRequiredError)
-      return reverificationError({ level: "multi_factor", afterMinutes: 5 });
-    return toActionResult<T>(async () => {
-      throw cause;
-    });
-  }
 }

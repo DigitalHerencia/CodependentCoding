@@ -9,13 +9,9 @@ import {
   AdminFormFieldLabelBlock as FieldLabel,
   AdminFormInputBlock as Input,
 } from "@/components/blocks/admin-form-blocks";
-import {
-  adminPresentationCopy,
-  adminRemainingCopy,
-  adminSessionCopy,
-} from "@/content/admin";
+import { adminPresentationCopy, adminRemainingCopy } from "@/content/admin";
+import { formResultCopy } from "@/content/application";
 import { addAdminMembership } from "@/lib/actions/adminActions";
-import { useAdminReverification } from "@/lib/auth/clerkAccount";
 import { invitableRoles } from "@/lib/authz/roles";
 import { addAdminMembershipSchema } from "@/schemas/adminSchemas";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -24,7 +20,6 @@ import { Controller, useForm } from "react-hook-form";
 import type { z } from "zod";
 
 export function NewAdminUserForm() {
-  const approve = useAdminReverification(addAdminMembership);
   const [approved, setApproved] = useState(false);
   const form = useForm<z.input<typeof addAdminMembershipSchema>>({
     resolver: zodResolver(addAdminMembershipSchema),
@@ -37,9 +32,9 @@ export function NewAdminUserForm() {
         setApproved(false);
         let result;
         try {
-          result = await approve(values);
+          result = await addAdminMembership(values);
         } catch {
-          form.setError("root", { message: adminSessionCopy.cancelled });
+          form.setError("root", { message: formResultCopy.failed });
           return;
         }
         if (result.ok) {

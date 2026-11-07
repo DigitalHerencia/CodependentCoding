@@ -1,14 +1,9 @@
 import "server-only";
 
-import { redirect } from "next/navigation";
 import {
   adminListCriteriaSchema,
   adminUserIdSchema,
 } from "@/schemas/adminSchemas";
-import {
-  requireFreshAdminSession,
-  AdminReverificationRequiredError,
-} from "@/lib/auth/auth";
 import { assertPermission } from "@/lib/authz/permissions";
 import { isPrivilegedRole } from "@/lib/authz/roles";
 import { toAdminMembershipDTO, toAuditEventDTO } from "@/lib/db/dtos/adminDtos";
@@ -33,7 +28,6 @@ export async function canAccessAdmin() {
 export async function getAuditEvents(rawCriteria: unknown = {}) {
   return withAuthenticatedRead(async (tx, access) => {
     assertPermission(access, "admin.audit-event:read");
-    await requireAdminReadSession();
 
     const { page, query } = adminListCriteriaSchema.parse(rawCriteria);
     const rows = await tx.auditEvent.findMany({
@@ -79,7 +73,6 @@ export async function getAuditEvents(rawCriteria: unknown = {}) {
 export async function getAdminMemberships(rawCriteria: unknown = {}) {
   return withAuthenticatedRead(async (tx, access) => {
     assertPermission(access, "admin.membership:read");
-    await requireAdminReadSession();
     const { page, query } = adminListCriteriaSchema.parse(rawCriteria);
     const rows = await tx.membership.findMany({
       where: {
@@ -119,7 +112,6 @@ export async function getAdminRecordSummary() {
   const records = installedModules.flatMap(({ records }) => records ?? []);
   return withAuthenticatedRead(async (tx, access) => {
     assertPermission(access, "admin.record:read");
-    await requireAdminReadSession();
     const where = { organizationId: access.organizationId };
     const counts = await Promise.all(
       records.map(({ model }) =>
@@ -133,19 +125,9 @@ export async function getAdminRecordSummary() {
   });
 }
 
-async function requireAdminReadSession() {
-  try {
-    await requireFreshAdminSession();
-  } catch (cause) {
-    if (cause instanceof AdminReverificationRequiredError)
-      redirect("/admin/verification");
-    throw cause;
-  }
-}
 export async function getAdminMembership(rawUserId: unknown) {
   return withAuthenticatedRead(async (tx, access) => {
     assertPermission(access, "admin.membership:read");
-    await requireAdminReadSession();
     const userId = adminUserIdSchema.parse(rawUserId);
     const row = await tx.membership.findFirst({
       where: { organizationId: access.organizationId, userId },

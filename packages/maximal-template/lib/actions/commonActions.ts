@@ -11,12 +11,7 @@ import {
 } from "@/schemas/commonSchemas";
 import type { ActionResult } from "@/types/actionTypes";
 import { setActiveOrganizationPreference } from "@/lib/auth/activeOrganization";
-import {
-  getVerifiedPrimaryEmail,
-  requireIdentity,
-  requireFreshAdminSession,
-  toReverifiedActionResult,
-} from "@/lib/auth/auth";
+import { getVerifiedPrimaryEmail, requireIdentity } from "@/lib/auth/auth";
 import { activeMembershipScope } from "@/lib/authz/mode";
 import { assertPermission } from "@/lib/authz/permissions";
 import { invalidateAllPaths, invalidatePaths } from "@/lib/cache/invalidate";
@@ -80,13 +75,12 @@ export async function updateOrganizationSettings(rawInput: unknown) {
 
 /** Invites an email with a role; returns the one-time link path to share. */
 export async function createInvitation(rawInput: unknown) {
-  return toReverifiedActionResult(async () => {
+  return toActionResult(async () => {
     const identity = await requireIdentity();
     const created = await withTenantTransaction(
       identity,
       async (tx, access) => {
         assertPermission(access, "base.membership:create");
-        await requireFreshAdminSession(5);
         const input = createInvitationSchema.parse(rawInput);
         const token = randomBytes(32).toString("base64url");
         const record = await tx.invitation.create({

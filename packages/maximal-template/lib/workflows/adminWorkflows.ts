@@ -1,4 +1,3 @@
-import { getAdminSessionState } from "@/lib/auth/auth";
 import {
   canAccessAdmin,
   getAdminMembership,
@@ -6,7 +5,7 @@ import {
   getAdminRecordSummary,
   getAuditEvents,
 } from "@/lib/fetchers/adminFetchers";
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import "server-only";
 
 export async function getAdminWorkspaceWorkflow() {
@@ -65,10 +64,4 @@ export async function loadAdminUsersWorkflow({
 
 export async function guardAdminWorkflow() {
   if (!(await canAccessAdmin())) notFound();
-  return getAdminSessionState();
-}
-export async function loadAdminVerificationWorkflow() {
-  const state = await guardAdminWorkflow();
-  if (state === "verified") redirect("/admin/users");
-  return state;
 }
