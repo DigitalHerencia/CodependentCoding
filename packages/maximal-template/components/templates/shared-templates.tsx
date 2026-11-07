@@ -1,4 +1,3 @@
-import { OnboardingAccessBlock } from "@/components/blocks/onboarding-blocks";
 import {
   InvitationsBlock,
   OrganizationSwitcherBlock,
@@ -76,12 +75,6 @@ export function OrganizationSwitcherTemplate(
   props: ComponentProps<typeof OrganizationSwitcherBlock>,
 ) {
   return <OrganizationSwitcherBlock {...props} />;
-}
-
-export function OnboardingAccessTemplate(
-  props: ComponentProps<typeof OnboardingAccessBlock>,
-) {
-  return <OnboardingAccessBlock {...props} />;
 }
 
 export function WorkspaceLoadingTemplate(

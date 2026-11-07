@@ -18,8 +18,8 @@ export const getOnboardingState = cache(async () => {
         where: activeMembershipScope(user.id),
         select: { role: true },
       });
-      // The single organization's bootstrap owner is promoted from the
-      // onboarding page (provisionWorkspaceAccess) until it holds OWNER.
+      // The single organization's bootstrap owner stays pending until the
+      // onboarding page (loadOnboardingWorkflow) promotes it to OWNER.
       const awaitingOwnerPromotion =
         tenancy === "single" &&
         membership?.role !== "OWNER" &&

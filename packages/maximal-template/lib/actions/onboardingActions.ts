@@ -38,21 +38,24 @@ export async function completeOnboarding(rawInput: unknown) {
   });
 }
 
-/** Retries access for a user who finished onboarding but has no workspace yet. */
+/**
+ * Grants access to a user who finished onboarding but has none yet. Runs
+ * while the onboarding page renders, so it does not revalidate; the caller
+ * redirects instead.
+ */
 export async function provisionWorkspaceAccess() {
   return toActionResult(async () => {
     const email = await getVerifiedPrimaryEmail();
     await withIdentityTransaction(async (tx, user) => {
       if (!user.profileCompletedAt)
-        throw new ResourceNotFoundError("Workspace approval");
+        throw new ResourceNotFoundError("Workspace access");
       const granted = await provisionWorkspaceAccessTx(
         tx,
         { id: user.id, displayName: user.displayName },
         matchingEmail(email, user),
         isBootstrapOwner(user.clerkUserId),
       );
-      if (!granted) throw new ResourceNotFoundError("Workspace approval");
+      if (!granted) throw new ResourceNotFoundError("Workspace access");
     });
-    revalidatePath("/", "layout");
   });
 }

@@ -1,6 +1,5 @@
 "use client";
 
-import { OnboardingApprovalBlock } from "@/components/blocks/onboarding-blocks";
 import {
   OnboardingFormButtonBlock as Button,
   OnboardingFormFieldBlock as Field,
@@ -14,14 +13,11 @@ import {
   onboardingRemainingCopy,
   onboardingStepCopy,
 } from "@/content/onboarding";
-import {
-  provisionWorkspaceAccess,
-  completeOnboarding,
-} from "@/lib/actions/onboardingActions";
+import { completeOnboarding } from "@/lib/actions/onboardingActions";
 import { onboardingSchema } from "@/schemas/commonSchemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { useState, useTransition } from "react";
+import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import type { z } from "zod";
 
@@ -115,32 +111,5 @@ export function NewOnboardingProfileForm({
           : onboardingStepCopy.continue}
       </Button>
     </form>
-  );
-}
-
-export function WorkspaceApprovalCheck() {
-  const router = useRouter();
-  const [pending, startTransition] = useTransition();
-  const [message, setMessage] = useState("");
-  return (
-    <OnboardingApprovalBlock
-      pending={pending}
-      message={message}
-      onCheck={() =>
-        startTransition(async () => {
-          setMessage("");
-          const result = await provisionWorkspaceAccess();
-          if (!result.ok) {
-            setMessage(
-              result.error.code === "NOT_FOUND"
-                ? onboardingStepCopy.noApproval
-                : result.error.message,
-            );
-            return;
-          }
-          router.refresh();
-        })
-      }
-    />
   );
 }

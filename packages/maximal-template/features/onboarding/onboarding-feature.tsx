@@ -1,9 +1,6 @@
 import { SharedOnboardingTemplate } from "@/components/templates/shared-templates";
 import { onboardingPresentationCopy } from "@/content/onboarding";
-import {
-  NewOnboardingProfileForm,
-  WorkspaceApprovalCheck,
-} from "@/features/onboarding/newOnboardingProfileForm";
+import { NewOnboardingProfileForm } from "@/features/onboarding/newOnboardingProfileForm";
 import { loadOnboardingWorkflow } from "@/lib/workflows/onboardingWorkflows";
 
 export async function OnboardingFeature() {
@@ -15,15 +12,13 @@ export async function OnboardingFeature() {
       title={
         state.status === "provisioning"
           ? onboardingPresentationCopy.preparingYourAccount
-          : onboardingPresentationCopy.waitingForApproval
+          : onboardingPresentationCopy.noWorkspaceAccess
       }
       description={
         state.status === "provisioning"
           ? onboardingPresentationCopy.refreshThisPageInAMomentToContinue
-          : onboardingPresentationCopy.yourProfileIsCompleteAWorkspaceAdministratorMustGrant
+          : onboardingPresentationCopy.noWorkspaceAccessDescription
       }
-    >
-      {state.status === "pending" && <WorkspaceApprovalCheck />}
-    </SharedOnboardingTemplate>
+    />
   );
 }

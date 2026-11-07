@@ -9,13 +9,12 @@ export const onboardingPresentationCopy = {
 
   saveProfile: "Save profile",
 
-  checkAccess: "Check access",
   preparingYourAccount: "Preparing your account",
-  waitingForApproval: "Waiting for approval",
   refreshThisPageInAMomentToContinue:
     "Refresh this page in a moment to continue.",
-  yourProfileIsCompleteAWorkspaceAdministratorMustGrant:
-    "Your profile is complete. A workspace administrator must grant you access. Check your access after the administrator approves it.",
+  noWorkspaceAccess: "No workspace access",
+  noWorkspaceAccessDescription:
+    "Your membership is suspended, or an invitation link is waiting for you. Open the link from your invitation email, or ask a workspace administrator.",
 } as const;
 
 export const onboardingStepCopy = {
@@ -25,7 +24,6 @@ export const onboardingStepCopy = {
   continue: "Review profile",
   back: "Edit profile",
   reviewTitle: "Review your profile",
-  noApproval: "No approval is available for your verified primary email yet.",
 } as const;
 
 export const onboardingLibraryCopy = {
