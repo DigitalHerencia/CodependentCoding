@@ -1,23 +1,11 @@
 import "server-only";
 
-import { randomUUID } from "node:crypto";
-
 import type { Prisma } from "@/generated/prisma/client";
 import type { ClerkUserProjection } from "@/types/integrationTypes";
-import { SINGLE_ORGANIZATION_SLUG, tenancy } from "@/lib/authz/mode";
 import { setRlsContext } from "@/lib/db/rls";
+import { provisionWorkspaceAccessTx } from "@/lib/db/transactions/onboardingTx";
 
 import { baseEnv } from "@/lib/utils/env";
-
-function workspaceSlug(username: string | null, clerkUserId: string): string {
-  const base =
-    (username ?? "workspace")
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/^-+|-+$/g, "")
-      .slice(0, 40) || "workspace";
-  return `${base}-${clerkUserId.slice(-8).toLowerCase()}`;
-}
 
 export async function syncClerkUserTx(
   tx: Prisma.TransactionClient,
@@ -42,61 +30,12 @@ export async function syncClerkUserTx(
     return;
 
   await setRlsContext(tx, { userId: record.id });
-
-  // Any previous membership includes suspended and revoked memberships.
-  const membership = await tx.membership.findFirst({
-    where: { userId: record.id },
-    select: { id: true },
-  });
-  if (membership) return;
-
-  if (tenancy === "single") {
-    await claimSingleOrganizationTx(tx, record.id);
-    return;
-  }
-
-  const organizationId = randomUUID();
-  await setRlsContext(tx, { organizationId });
-  await tx.organization.create({
-    data: {
-      id: organizationId,
-      slug: workspaceSlug(user.username, user.clerkUserId),
-      name: user.username ? `${user.username}'s Workspace` : "My Workspace",
-    },
-    select: { id: true },
-  });
-  await ownOrganizationTx(tx, organizationId, record.id);
-}
-
-async function ownOrganizationTx(
-  tx: Prisma.TransactionClient,
-  organizationId: string,
-  userId: string,
-) {
-  await tx.membership.create({
-    data: { organizationId, userId, role: "OWNER", status: "ACTIVE" },
-  });
-  await tx.organizationSettings.create({ data: { organizationId } });
-}
-
-/**
- * Single tenancy: the configured bootstrap identity provisions the shared
- * workspace only if it does not already exist.
- */
-async function claimSingleOrganizationTx(
-  tx: Prisma.TransactionClient,
-  userId: string,
-) {
-  const organizationId = randomUUID();
-  await setRlsContext(tx, { organizationId });
-  const created = await tx.$queryRaw<{ id: string }[]>`
-    INSERT INTO "Organization" ("id", "slug", "name", "updatedAt")
-    VALUES (${organizationId}::uuid, ${SINGLE_ORGANIZATION_SLUG}, 'Workspace', now())
-    ON CONFLICT ("slug") DO NOTHING
-    RETURNING "id"
-  `;
-  if (created.length === 0) return;
-  await ownOrganizationTx(tx, organizationId, userId);
+  await provisionWorkspaceAccessTx(
+    tx,
+    { id: record.id, displayName: user.username },
+    null,
+    true,
+  );
 }
 
 export async function anonymizeClerkUserTx(

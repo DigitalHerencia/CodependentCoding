@@ -17,6 +17,7 @@ import {
   requireFreshAdminSession,
   toReverifiedActionResult,
 } from "@/lib/auth/auth";
+import { activeMembershipScope } from "@/lib/authz/mode";
 import { assertPermission } from "@/lib/authz/permissions";
 import { invalidateAllPaths, invalidatePaths } from "@/lib/cache/invalidate";
 import { INVITATION_TTL_DAYS } from "@/lib/constants/invitations";
@@ -214,7 +215,7 @@ export async function switchOrganization(
     const organizationId = await withIdentityTransaction(async (tx, user) => {
       const { organizationId } = switchOrganizationSchema.parse(rawInput);
       const membership = await tx.membership.findFirst({
-        where: { userId: user.id, organizationId, status: "ACTIVE" },
+        where: { organizationId, ...activeMembershipScope(user.id) },
         select: { id: true },
       });
       if (!membership) throw new ResourceNotFoundError("Organization");

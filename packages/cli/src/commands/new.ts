@@ -94,14 +94,14 @@ export async function accessChoices(
         initialValue: defaultAccess.tenancy,
         options: [
           {
-            value: "multi" as const,
-            label: "Multi-tenant",
-            hint: "every sign-up gets its own organization; invite others in",
-          },
-          {
             value: "single" as const,
             label: "Single organization",
-            hint: "the first sign-up owns it; everyone else joins by invitation",
+            hint: "the bootstrap owner owns it; sign-ups join with the lowest role",
+          },
+          {
+            value: "multi" as const,
+            label: "Multi-tenant",
+            hint: "sign-ups without an invitation get their own organization",
           },
         ],
       }),
@@ -114,14 +114,14 @@ export async function accessChoices(
         initialValue: defaultAccess.accessControl,
         options: [
           {
-            value: "abac" as const,
-            label: "RBAC + ABAC",
-            hint: "role permissions, then record rules (owner, assignee, shared with clients)",
-          },
-          {
             value: "rbac" as const,
             label: "RBAC only",
             hint: "role permissions decide; any record in the organization",
+          },
+          {
+            value: "abac" as const,
+            label: "RBAC + ABAC",
+            hint: "role permissions, then record rules (owner, assignee, shared with clients)",
           },
         ],
       }),
@@ -261,8 +261,8 @@ export function registerNew(program: Command, cliVersion: string): void {
     .option("--all", "every module")
     .option("--color <hex>", "brand color, e.g. #2f7a8d")
     .option("--name <name>", "package name (default: directory name)")
-    .option("--tenancy <mode>", "multi (default) or single organization")
-    .option("--access <model>", "abac (RBAC + ABAC, default) or rbac")
+    .option("--tenancy <mode>", "single (default) or multi organization")
+    .option("--access <model>", "rbac (default) or abac (RBAC + ABAC)")
     .option(
       "-y, --yes",
       "no prompts; unanswered choices use defaults (blank preset)",

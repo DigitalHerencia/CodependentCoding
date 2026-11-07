@@ -27,20 +27,20 @@ const readAuthzTemplate = (file: string) =>
 
 test("flags pick the access choices; missing ones default without prompts", async () => {
   await expect(accessChoices({}, false)).resolves.toEqual({
-    tenancy: "multi",
-    accessControl: "abac",
+    tenancy: "single",
+    accessControl: "rbac",
   });
   await expect(
-    accessChoices({ tenancy: "single", access: "rbac" }, false),
-  ).resolves.toEqual({ tenancy: "single", accessControl: "rbac" });
+    accessChoices({ tenancy: "multi", access: "abac" }, false),
+  ).resolves.toEqual({ tenancy: "multi", accessControl: "abac" });
   await expect(accessChoices({ access: "acl" }, false)).rejects.toThrow(
     /--access must be one of abac, rbac/,
   );
 });
 
 test("the template's mode file is the one the CLI rewrites", () => {
-  expect(applyTenancy(readTemplate(MODE_FILE), "single")).toContain(
-    'const configuredTenancy: Tenancy = "single";',
+  expect(applyTenancy(readTemplate(MODE_FILE), "multi")).toContain(
+    'const configuredTenancy: Tenancy = "multi";',
   );
   expect(() => applyTenancy("export const x = 1;", "multi")).toThrow(
     /no `configuredTenancy`/,
@@ -52,9 +52,9 @@ const exportsOf = (source: string): string[] =>
     .map((match) => match[1] ?? "")
     .sort();
 
-test("the RBAC policies keep the ABAC exports and branch on no runtime flag", () => {
-  const abac = readTemplate(POLICIES_FILE);
-  const rbac = readAuthzTemplate("policies.ts.tpl");
+test("the ABAC policies keep the RBAC exports and branch on no runtime flag", () => {
+  const rbac = readTemplate(POLICIES_FILE);
+  const abac = readAuthzTemplate("policies.abac.ts.tpl");
   expect(exportsOf(rbac).length).toBeGreaterThan(0);
   expect(exportsOf(rbac)).toEqual(exportsOf(abac));
   for (const source of [abac, rbac]) {
@@ -81,25 +81,27 @@ async function compose(access: AccessChoices) {
   };
 }
 
-test("compose bakes RBAC and single tenancy into the app and hipster.json", async () => {
-  const app = await compose({ tenancy: "single", accessControl: "rbac" });
-  expect(app.read(MODE_FILE)).toContain(
-    'configuredTenancy: Tenancy = "single"',
+test("compose bakes ABAC and multi tenancy into the app and hipster.json", async () => {
+  const app = await compose({ tenancy: "multi", accessControl: "abac" });
+  expect(app.read(MODE_FILE)).toContain('configuredTenancy: Tenancy = "multi"');
+  expect(app.read(POLICIES_FILE)).toBe(
+    readAuthzTemplate("policies.abac.ts.tpl"),
   );
-  expect(app.read(POLICIES_FILE)).toBe(readAuthzTemplate("policies.ts.tpl"));
   expect(app.read(POLICIES_TEST_FILE)).toBe(
-    readAuthzTemplate("authzPolicies.test.ts.tpl"),
+    readAuthzTemplate("authzPolicies.abac.test.ts.tpl"),
   );
   expect(app.exists("lib/constants/access.ts")).toBe(false);
   expect(JSON.parse(app.read("hipster.json"))).toMatchObject({
-    tenancy: "single",
-    accessControl: "rbac",
+    tenancy: "multi",
+    accessControl: "abac",
   });
 }, 60_000);
 
-test("compose keeps the template's ABAC policies by default", async () => {
+test("compose keeps the template's RBAC policies by default", async () => {
   const app = await compose(defaultAccess);
-  expect(app.read(MODE_FILE)).toContain('configuredTenancy: Tenancy = "multi"');
+  expect(app.read(MODE_FILE)).toContain(
+    'configuredTenancy: Tenancy = "single"',
+  );
   expect(app.read(POLICIES_FILE)).toBe(readTemplate(POLICIES_FILE));
   expect(app.read(POLICIES_TEST_FILE)).toBe(readTemplate(POLICIES_TEST_FILE));
 }, 60_000);

@@ -6,13 +6,15 @@ import type {
   ResourceAccessDescriptor,
 } from "@/types/accessTypes";
 
+import { isOutsideRole, isPrivilegedRole } from "./roles";
 import { assertPermission } from "./permissions";
 
 /**
- * RBAC only (`hipster-stack new --access rbac`): the role's permissions
- * decide, and the one record rule left is the organization boundary. Viewers
- * reach every record in their organization. Same exports as the ABAC
- * policies, so fetchers and actions do not change.
+ * ABAC: record-level rules that run after the RBAC permission check. They
+ * read attributes of the caller (organization, membership, role) and of the
+ * record (organization, owner, assignee, requester, shared flag).
+ * `hipster-stack new --access abac` writes this file over the template's RBAC
+ * policies, which keep only the organization boundary.
  */
 
 export class ResourceAuthorizationError extends Error {
@@ -52,26 +54,48 @@ export function requestedResource(
   return resource.requesterUserId === context.userId;
 }
 
-/** RBAC only: nobody is limited to their own records. */
-export function limitedToOwnRecords(_context: AccessContext): boolean {
-  return false;
+/** Outside viewers (clients) see only what is shared with them or theirs; staff see the whole organization. */
+export function limitedToOwnRecords(context: AccessContext): boolean {
+  return isOutsideRole(context.role);
 }
 
 export function canReadResource(
   context: AccessContext,
   resource: ResourceAccessDescriptor,
 ): boolean {
-  return isSameTenant(context, resource);
+  if (!isSameTenant(context, resource)) {
+    return false;
+  }
+
+  if (!limitedToOwnRecords(context)) {
+    return true;
+  }
+
+  return (
+    resource.clientVisible === true ||
+    ownsResource(context, resource) ||
+    isAssignedResource(context, resource) ||
+    requestedResource(context, resource)
+  );
 }
 
 export function canManageOwnedOrAssignedResource(
   context: AccessContext,
   resource: ResourceAccessDescriptor,
 ): boolean {
-  return isSameTenant(context, resource);
+  if (!isSameTenant(context, resource)) {
+    return false;
+  }
+
+  return (
+    isPrivilegedRole(context.role) ||
+    ownsResource(context, resource) ||
+    isAssignedResource(context, resource) ||
+    (limitedToOwnRecords(context) && requestedResource(context, resource))
+  );
 }
 
-/** RBAC, then the organization boundary, for a write to one record. */
+/** RBAC then ABAC for a write to one record. */
 export function authorizeOwnedOrAssignedWrite(
   context: AccessContext,
   permission: Permission,

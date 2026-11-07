@@ -1,17 +1,12 @@
 {
   "$schema": "codependent-coding/execution/handoff/v1",
-  "updated": "2026-11-06T00:52:23.100031+00:00",
+  "updated": "2026-11-07T01:22:00.968918+00:00",
   "format": "One current package; history is in progress.json, decisions.json and git.",
   "status": "complete-local-main",
   "milestone": "M-S2",
   "current_issue": null,
   "next_issue": null,
-  "queue": [
-    "CC-050",
-    "CC-052",
-    "CC-053",
-    "CC-063"
-  ],
+  "queue": ["CC-050", "CC-052", "CC-053", "CC-063"],
   "branch": "main",
   "active_package": null,
   "source_commit": "cdc27d273ecebda7d4744f23a5f674cff184fca7",
@@ -19,7 +14,8 @@
   "in_flight": [
     "CC-050 token consolidation implemented; focused static checks passed. Affected-site CI and owner browser contrast/reduced-motion verification pending. CC-049 merged in #351; main synced and branch deleted.",
     "Homepage PR #349 has passing CI and ready preview; owner desktop/mobile verification remains pending.",
-    "CC-077 Stripe hardening remains stopped at owner direction."
+    "CC-077 Stripe hardening remains stopped at owner direction.",
+    "Signup access (DEC-124) done on main: single+RBAC default, self-provisioned onboarding. Owner runtime check pending; generator access tests updated but not run."
   ],
   "notes": [
     "Solo internal generator/dev tool; no users or commercial deployment. Keep process lean, without enterprise review or speculative production-readiness ceremony.",
@@ -49,8 +45,6 @@
     "owner_instruction": "Build successfully, then push main; afterward clean safe machine/network state and stop task processes.",
     "evidence": "See template-build-publication in progress.json and DEC-123.",
     "delivery": "Origin/main publication authorized following this commit.",
-    "NOT_RUN": [
-      "Tests, migrations and browser verification."
-    ]
+    "NOT_RUN": ["Tests, migrations and browser verification."]
   }
 }

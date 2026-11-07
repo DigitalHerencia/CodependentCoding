@@ -11,6 +11,7 @@ import type {
 
 import { getActiveOrganizationPreference } from "@/lib/auth/activeOrganization";
 import { requireIdentity } from "@/lib/auth/auth";
+import { activeMembershipScope } from "@/lib/authz/mode";
 import { prisma } from "@/lib/db/client";
 import { setRlsContext } from "@/lib/db/rls";
 
@@ -70,11 +71,12 @@ async function resolveAccessContext(
       "Complete onboarding before accessing the workspace.",
     );
   }
-  const active = { userId: user.id, status: "ACTIVE" } as const;
+  const active = activeMembershipScope(user.id);
 
   const preferred = preferredOrganizationId
     ? await tx.membership.findFirst({
-        where: { ...active, organizationId: preferredOrganizationId },
+        // `active` comes last so single tenancy keeps its one organization.
+        where: { organizationId: preferredOrganizationId, ...active },
         select: membershipSelect,
       })
     : null;

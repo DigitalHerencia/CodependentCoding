@@ -15,7 +15,7 @@ import {
   onboardingStepCopy,
 } from "@/content/onboarding";
 import {
-  claimWorkspaceApproval,
+  provisionWorkspaceAccess,
   completeOnboarding,
 } from "@/lib/actions/onboardingActions";
 import { onboardingSchema } from "@/schemas/commonSchemas";
@@ -129,7 +129,7 @@ export function WorkspaceApprovalCheck() {
       onCheck={() =>
         startTransition(async () => {
           setMessage("");
-          const result = await claimWorkspaceApproval();
+          const result = await provisionWorkspaceAccess();
           if (!result.ok) {
             setMessage(
               result.error.code === "NOT_FOUND"
