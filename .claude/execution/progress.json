@@ -26,7 +26,7 @@
     ]
   },
   "$schema": "codependent-coding/execution/progress/v1",
-  "updated": "2026-11-07T03:16:09.583Z",
+  "updated": "2026-11-07T04:43:35.016Z",
   "format": "Evidence states: EXECUTED | INSPECTED | NOT_RUN | BLOCKED. Never mark an issue done without EXECUTED evidence for its Validation commands.",
   "milestones": {
     "M0": {
@@ -3923,5 +3923,19 @@
       "pnpm --dir packages/maximal-template governance:validate -> PASS (3 milestones, 9 phases, 20 dev cycles, 100 linked specs, 5 docs, 3 contracts)"
     ],
     "not_run": "tests, builds, dev server, push, GitHub writes (taxonomy/project/publish run dry only if at all)"
+  },
+  "template-ci-validator-fixes": {
+    "status": "done-local-main",
+    "date": "2026-11-07",
+    "decision": "DEC-126",
+    "summary": "Template CI: dropped next build (instrumentation.ts validateProductionIntegrations throws at prerender without real Clerk/integration secrets), kept install/format:check/lint/typecheck/governance:validate; actions pinned to v4.4.0 commit SHAs, checkout persist-credentials false, permissions contents read, no deploy job. validate.mjs collects and prints all errors, exits 1 at end; duplicate ## heading slugs reported; dependent checks guarded.",
+    "evidence": [
+      "Old validator on temp copy with 2 broken Feeds lines -> reported only 1 (AUTH-T02); new -> both (AUTH-T02, DOCS-T05), exit 1",
+      "Old validator on temp copy with duplicate heading -> misleading unknown-section error only; first new run crashed (TypeError, unguarded lookup) -> guarded; new -> duplicate heading slug reported first plus 3 consequences, exit 1",
+      "pnpm exec prettier --write scripts/validate.mjs .github/workflows/ci.yml -> unchanged, ok",
+      "pnpm exec eslint --fix scripts/validate.mjs -> exit 0",
+      "pnpm --dir packages/maximal-template governance:validate -> PASS"
+    ],
+    "not_run": "typecheck (no .ts changed), build, tests, push, CI run on GitHub"
   }
 }

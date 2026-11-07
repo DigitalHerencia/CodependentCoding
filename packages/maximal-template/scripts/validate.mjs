@@ -2,8 +2,10 @@ import { existsSync } from "node:fs";
 import { join } from "node:path";
 import { root, read, json, catalog, entries, log } from "./common.mjs";
 
+// Collect every failure so one run shows the whole list, not just the first.
+const errors = [];
 function assert(yes, what) {
-  if (!yes) throw new Error(what);
+  if (!yes) errors.push(what);
 }
 const milestones = catalog.milestones;
 assert(milestones.length === 3, "Must have 3 milestones");
@@ -49,7 +51,10 @@ for (const doc of docFiles) {
     const heading = line.match(/^## (.+)$/);
     if (heading) {
       current = `${file}#${slugify(heading[1])}`;
-      sections.set(current, new Set());
+      if (sections.has(current)) {
+        assert(false, `${current}: duplicate heading slug`);
+        current = null; // keep the first section's Feeds intact
+      } else sections.set(current, new Set());
       continue;
     }
     if (current && line.startsWith("**Feeds:**"))
@@ -116,7 +121,10 @@ for (const { id, spec, path, milestone, phase, cycle } of specs) {
   assert(spec.documentation.length > 0, `${id}: not fed by any doc section`);
   for (const ref of spec.documentation) {
     const key = `${ref.file}#${ref.section}`;
-    assert(sections.has(key), `${id}: unknown doc section ${key}`);
+    if (!sections.has(key)) {
+      assert(false, `${id}: unknown doc section ${key}`);
+      continue;
+    }
     assert(
       sections.get(key).has(spec.work_code),
       `${id}: ${key} does not list it under Feeds`,
@@ -161,9 +169,10 @@ for (const [key, codes] of sections) {
     assert(specCodes.has(code), `${key}: lists unknown spec ${code}`);
   for (const code of codes)
     assert(
-      specs
-        .find((s) => s.spec.work_code === code)
-        .spec.documentation.some((d) => `${d.file}#${d.section}` === key),
+      !specCodes.has(code) || // already reported as unknown above
+        specs
+          .find((s) => s.spec.work_code === code)
+          .spec.documentation.some((d) => `${d.file}#${d.section}` === key),
       `${key}: lists ${code}, but the spec does not reference it`,
     );
 }
@@ -177,6 +186,11 @@ for (const name of ["bug", "feature"])
     existsSync(join(root, `.github/ISSUE_TEMPLATE/${name}.yml`)),
     `Missing GitHub issue form: ${name}`,
   );
+if (errors.length) {
+  for (const error of errors) console.error(`FAIL: ${error}`);
+  console.error(`${errors.length} governance error(s).`);
+  process.exit(1);
+}
 log(
   "PASS: 3 milestones; 9 phases; 20 dev cycles; 100 linked JSON specs; every spec fed by a doc section; 5 docs; 3 contracts; 3 execution files; labels and milestones valid.",
 );

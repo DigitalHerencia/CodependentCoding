@@ -1,6 +1,6 @@
 {
   "$schema": "codependent-coding/execution/handoff/v1",
-  "updated": "2026-11-07T03:16:09.583Z",
+  "updated": "2026-11-07T04:43:35.016Z",
   "format": "One current package; history is in progress.json, decisions.json and git.",
   "status": "complete-local-main",
   "milestone": "M-S2",
@@ -16,7 +16,8 @@
     "Homepage PR #349 has passing CI and ready preview; owner desktop/mobile verification remains pending.",
     "CC-077 Stripe hardening remains stopped at owner direction.",
     "Signup access (DEC-124) done on main: single+RBAC default, self-provisioned onboarding. Owner runtime check pending; generator access tests updated but not run.",
-    "Template governance kit (DEC-125) replaced on main locally; not pushed. Optional owner step: run governance:taxonomy/project/publish with --apply when ready."
+    "Template governance kit (DEC-125) replaced on main locally; not pushed. Optional owner step: run governance:taxonomy/project/publish with --apply when ready.",
+    "Template CI/validator fixes (DEC-126) committed on main locally; owner pushes at end of thread."
   ],
   "notes": [
     "Solo internal generator/dev tool; no users or commercial deployment. Keep process lean, without enterprise review or speculative production-readiness ceremony.",
@@ -42,9 +43,9 @@
   ],
   "latest_followup": {
     "status": "committed-local-main",
-    "package": "template-governance-kit",
-    "evidence": "See template-governance-kit in progress.json and DEC-125.",
-    "delivery": "Not pushed.",
-    "NOT_RUN": ["Tests, builds, push, GitHub writes."]
+    "package": "template-ci-validator-fixes",
+    "evidence": "See template-ci-validator-fixes in progress.json and DEC-126.",
+    "delivery": "Not pushed; owner pushes.",
+    "NOT_RUN": ["Build, tests, push, GitHub CI run."]
   }
 }

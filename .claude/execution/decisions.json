@@ -1247,6 +1247,13 @@
       "status": "accepted",
       "title": "Spec IDs are the governance trace keys",
       "decision": "In the maximal-template governance kit, spec IDs are the trace keys. Docs and specs relate many-to-many: each doc section declares the specs it feeds via Feeds lines, and each spec lists its sources in its documentation array; scripts/validate.mjs checks the links in both directions. Governance scripts print through a stdout log helper instead of console.log so the no-console rule stays enabled."
+    },
+    {
+      "id": "DEC-126",
+      "date": "2026-11-07",
+      "status": "accepted",
+      "title": "Template CI runs without secrets and never deploys",
+      "decision": "packages/maximal-template is a template copied by the generator; it is never deployed from this repo and its CI has no deploy step. next build is not run in template CI because instrumentation.ts validates production credentials at prerender and CI must not hold real secrets; typecheck (prisma generate, next typegen, tsc) is the compile gate. Third-party actions are pinned to full commit SHAs with version comments and updated by dependabot github-actions. Fixed 3/9/20/5/100 governance shape stays as the template design."
     }
   ]
 }
