@@ -106,6 +106,7 @@ export function SignUpForm() {
 
   return (
     <AuthFormPanel
+      variant="signUp"
       title={
         verifying
           ? authPresentationCopy.verifyYourEmail
@@ -287,12 +288,14 @@ export function SignUpForm() {
         </fieldset>
         {/* Smart CAPTCHA stays mounted and may display a challenge when Clerk requires one. */}
         <div id="clerk-captcha" />
-        <p className="border-t border-foreground/30 pt-4 text-sm">
-          {authPresentationCopy.alreadyHaveAnAccount}{" "}
-          <Link href="/sign-in" className="type-link">
-            {authPresentationCopy.signIn}
-          </Link>
-        </p>
+        <div className="auth-secondary-actions">
+          <span>
+            {authPresentationCopy.alreadyHaveAnAccount}{" "}
+            <Link href="/sign-in" className="type-link">
+              {authPresentationCopy.signIn}
+            </Link>
+          </span>
+        </div>
       </form>
     </AuthFormPanel>
   );

@@ -5,15 +5,21 @@ type AuthFormPanelProps = {
   children: ReactNode;
   title: string;
   description: string;
+  /** Sign-up mirrors the auth shell (see globals.css). */
+  variant?: "signIn" | "signUp";
 };
 
 export function AuthFormPanel({
   children,
   title,
   description,
+  variant = "signIn",
 }: AuthFormPanelProps) {
   return (
-    <div className="w-full space-y-6 bg-transparent text-left">
+    <div
+      data-auth-variant={variant}
+      className="w-full space-y-6 bg-transparent text-left"
+    >
       <div className="space-y-2">
         <h2 className="type-title uppercase">{title}</h2>
         <p className="max-w-prose type-body">{description}</p>

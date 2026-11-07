@@ -3,12 +3,15 @@ export const authHeaderContent = {
   homeLabel: "Back to home",
 } as const;
 
+export const authFooterContent = {
+  rightsReserved: "All rights reserved.",
+} as const;
+
 export const authContent = {
   eyebrow: "On Security",
   title: "We take security very seriously.",
   description:
     "Our policies do not put users' data at risk. Their PII already got leaked...just not by us.",
-  formPosition: { signIn: "right", signUp: "left" },
 } as const;
 
 export const authAppearance = {
