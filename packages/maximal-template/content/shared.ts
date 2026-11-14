@@ -19,6 +19,7 @@ export const sharedPresentationCopy = {
 } as const;
 
 export const sharedLibraryCopy = {
+  email: "Email",
   columns: "Columns",
   of: " of ",
   rowSSelected: " row(s) selected.",

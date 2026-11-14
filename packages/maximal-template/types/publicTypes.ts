@@ -153,3 +153,54 @@ export type TestimonialsGridProps = {
   className?: string;
   cardClassName?: string;
 };
+
+// ============================================================================
+// PUBLIC ROUTE STATES
+// ============================================================================
+
+/** Props for a public route-group error boundary and its recovery block. */
+export type PublicErrorBoundaryProps = {
+  error: Error & { digest?: string };
+  reset: () => void;
+};
+
+/** Recovery action passed from the route boundary to public presentation. */
+export type PublicErrorBlockProps = {
+  onRetry: () => void;
+};
+
+// ============================================================================
+// PUBLIC NAVIGATION AND SHELL CONTRACTS
+// ============================================================================
+
+/** Shared destination model for all public navigation surfaces. */
+export type PublicNavigationLink = {
+  label: string;
+  href: string;
+};
+
+/** Icon keys resolved by the public mobile navigation component. */
+export type PublicMobileNavIcon = "home" | "features" | "faq" | "signIn";
+
+/** Public mobile navigation destination and icon reference. */
+export type PublicMobileNavigationLink = PublicNavigationLink & {
+  icon: PublicMobileNavIcon;
+};
+
+/** Optional branding override for the public header. */
+export type PublicHeaderProps = {
+  logo?: ReactNode;
+};
+
+/** Optional footer destinations. */
+export type PublicFooterProps = {
+  links?: readonly PublicNavigationLink[];
+};
+
+/** Input for a public link with a route-aware active state. */
+export type PublicNavLinkProps = PublicNavigationLink;
+
+/** Children rendered inside the public presentation shell and layout. */
+export type PublicShellProps = {
+  children: ReactNode;
+};

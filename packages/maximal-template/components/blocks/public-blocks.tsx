@@ -25,8 +25,10 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { cn, safeHref } from "@/components/ui/utils";
-import { publicUiCopy } from "@/content/public";
+import { publicErrorCopy, publicLoadingCopy, publicUiCopy } from "@/content/public";
 import { ArrowRight, Quote, Star } from "lucide-react";
+import Link from "next/link";
+import { Skeleton } from "@/components/ui/skeleton";
 import type {
   CTASimpleProps,
   FAQAccordionProps,
@@ -34,6 +36,7 @@ import type {
   HeroCenteredProps,
   LegalDocumentSectionProps,
   TestimonialsGridProps,
+  PublicErrorBlockProps,
 } from "@/types/publicTypes";
 
 // ============================================================================
@@ -429,6 +432,68 @@ export function TestimonialsGrid({
           })}
         </div>
       </div>
+    </section>
+  );
+}
+
+// ============================================================================
+// PUBLIC ERROR BLOCK
+// ============================================================================
+
+/**
+ * Presents route-group recovery actions without owning error-boundary state.
+ *
+ * @param props - Retry callback supplied by the Next.js route boundary.
+ * @returns The accessible public recovery presentation.
+ * @public
+ */
+export function PublicErrorBlock({ onRetry }: PublicErrorBlockProps) {
+  return (
+    <section
+      aria-labelledby="public-error-title"
+      className="mx-auto flex min-h-[60vh] w-full max-w-3xl items-center px-4 py-12 sm:px-8"
+    >
+      <Card className="w-full">
+        <CardHeader>
+          <h1 id="public-error-title" className="text-heading-2">
+            {publicErrorCopy.title}
+          </h1>
+        </CardHeader>
+        <CardContent className="flex flex-wrap gap-3">
+          <Button type="button" onClick={onRetry}>
+            {publicErrorCopy.retry}
+          </Button>
+          <Button variant="outline" asChild>
+            <Link href={publicErrorCopy.homeHref}>{publicErrorCopy.home}</Link>
+          </Button>
+        </CardContent>
+      </Card>
+    </section>
+  );
+}
+
+// ============================================================================
+// PUBLIC LOADING BLOCK
+// ============================================================================
+
+/**
+ * Renders a presentational loading state while public routes stream.
+ *
+ * @returns A labeled, noninteractive ShadCN skeleton.
+ * @public
+ */
+export function PublicLoadingBlock() {
+  return (
+    <section
+      aria-label={publicLoadingCopy.label}
+      role="status"
+      className="mx-auto w-full max-w-5xl space-y-6 px-4 py-16 sm:px-8"
+    >
+      <span className="sr-only">{publicLoadingCopy.label}</span>
+      <Skeleton className="h-12 w-3/4" aria-hidden="true" />
+      <Skeleton className="h-5 w-full" aria-hidden="true" />
+      <Skeleton className="h-5 w-5/6" aria-hidden="true" />
+      <Skeleton className="h-48 w-full" aria-hidden="true" />
     </section>
   );
 }

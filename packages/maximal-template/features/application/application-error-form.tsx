@@ -5,9 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { formResultCopy } from "@/content/application";
-import { publicUiCopy } from "@/content/public";
 import { sharedLibraryCopy } from "@/content/shared";
-import { publicEmailSchema, publicSearchSchema } from "@/schemas/publicSchemas";
+import { applicationEmailSchema, applicationSearchSchema } from "@/schemas/applicationSchemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft, Clock, FileQuestion, Home, Search } from "lucide-react";
 import * as React from "react";
@@ -37,8 +36,8 @@ export function NotFoundPage({
   className,
 }: NotFoundPageProps) {
   const id = React.useId();
-  const form = useForm<z.input<typeof publicSearchSchema>>({
-    resolver: zodResolver(publicSearchSchema),
+  const form = useForm<z.input<typeof applicationSearchSchema>>({
+    resolver: zodResolver(applicationSearchSchema),
     defaultValues: { query: "" },
   });
 
@@ -86,7 +85,7 @@ export function NotFoundPage({
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
                   <FieldLabel htmlFor={id} className="sr-only">
-                    {publicUiCopy.search}
+                    {sharedLibraryCopy.search}
                   </FieldLabel>
                   <Input
                     {...field}
@@ -166,8 +165,8 @@ export function ComingSoonPage({
   className,
 }: ComingSoonPageProps) {
   const id = React.useId();
-  const form = useForm<z.input<typeof publicEmailSchema>>({
-    resolver: zodResolver(publicEmailSchema),
+  const form = useForm<z.input<typeof applicationEmailSchema>>({
+    resolver: zodResolver(applicationEmailSchema),
     defaultValues: { email: "" },
   });
   const [submitted, setSubmitted] = React.useState(false);
@@ -244,7 +243,7 @@ export function ComingSoonPage({
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
                   <FieldLabel htmlFor={id} className="sr-only">
-                    {publicUiCopy.email}
+                    {sharedLibraryCopy.email}
                   </FieldLabel>
                   <Input
                     {...field}

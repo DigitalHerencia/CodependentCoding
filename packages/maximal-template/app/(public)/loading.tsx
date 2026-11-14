@@ -1,5 +1,10 @@
-import { PageLoadingTemplate } from "@/components/templates/shared-templates";
+import { PublicLoadingTemplate } from "@/components/templates/public-templates";
 
-export default function Loading() {
-  return <PageLoadingTemplate label="Loading public content" />;
+/**
+ * Presents a loading fallback while a public route is pending.
+ *
+ * @returns The public loading template.
+ */
+export default function PublicLoading() {
+  return <PublicLoadingTemplate />;
 }

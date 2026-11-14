@@ -3,15 +3,24 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-export function PublicNavLink({
-  href,
-  label,
-}: {
-  href: string;
-  label: string;
-}) {
+import type { PublicNavLinkProps } from "@/types/publicTypes";
+
+// ============================================================================
+// PUBLIC NAVIGATION LINK
+// ============================================================================
+
+/**
+ * Renders a public destination with an accessible active-page indication.
+ *
+ * @param props - Public link text and destination.
+ * @returns A route-aware link.
+ * @public
+ */
+export function PublicNavLink({ href, label }: PublicNavLinkProps) {
   const pathname = usePathname();
-  const active = pathname === href.split("?")[0];
+  const targetPath = href.split(/[?#]/, 1)[0] || "/";
+  const active = pathname === targetPath;
+
   return (
     <Link
       href={href}

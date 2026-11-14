@@ -1,4 +1,5 @@
 import { applicationOperator } from "@/content/application";
+import type { PublicMobileNavigationLink, PublicNavigationLink } from "@/types/publicTypes";
 
 // Public page copy. Keep presentation in components and preserve approved wording.
 export const faqCopy = {
@@ -246,36 +247,66 @@ export const pipelineCards = [
   },
 ] as const;
 
-// Copy for the domain's reusable presentation components.
+// ============================================================================
+// PUBLIC NAVIGATION
+// ============================================================================
+
+/** Public navigation links and accessible labels shared across all public surfaces. */
+export const publicNavigation = {
+  headerLabel: "Account navigation",
+  footerLabel: "Information and policies",
+  mobileLabel: "Public mobile navigation",
+  skipToContent: "Skip to main content",
+  copyright: "All rights reserved.",
+  headerLinks: [
+    { label: "Sign in", href: "/sign-in" },
+    { label: "Get started", href: "/sign-up?return_to=/dashboard" },
+  ],
+  footerLinks: [
+    { label: "FAQ", href: "/faq" },
+    { label: "Terms", href: "/terms" },
+    { label: "Privacy", href: "/privacy" },
+  ],
+  mobileLinks: [
+    { label: "Home", href: "/", icon: "home" },
+    { label: "Features", href: "/#features", icon: "features" },
+    { label: "FAQ", href: "/faq", icon: "faq" },
+    { label: "Sign In", href: "/sign-in", icon: "signIn" },
+  ],
+} as const satisfies {
+  headerLabel: string;
+  footerLabel: string;
+  mobileLabel: string;
+  skipToContent: string;
+  copyright: string;
+  headerLinks: readonly PublicNavigationLink[];
+  footerLinks: readonly PublicNavigationLink[];
+  mobileLinks: readonly PublicMobileNavigationLink[];
+};
+
+// ============================================================================
+// PUBLIC ROUTE FALLBACK COPY
+// ============================================================================
+
+/** User-facing copy for the public route-group error boundary. */
+export const publicErrorCopy = {
+  title: "Something went wrong",
+  retry: "Try again",
+  home: "Return to public",
+  homeHref: "/",
+} as const;
+
+/** User-facing copy for the public loading boundary. */
+export const publicLoadingCopy = {
+  label: "Loading public content",
+} as const;
+
+// ============================================================================
+// PUBLIC BLOCK PRESENTATION COPY
+// ============================================================================
+
+/** Shared presentation punctuation used by public testimonial blocks. */
 export const publicUiCopy = {
-  dismiss: "Dismiss",
   openingQuote: "“",
   closingQuote: "”",
-  changelog: "Changelog",
-  included: "Included",
-  notIncluded: "Not included",
-  comparePlans: "Compare plans",
-  metric: "Metric",
-  getInTouch: "Get in touch",
-  chooseYourPreferredWayToReachUs: "Choose your preferred way to reach us.",
-  videoThumbnail: "Video thumbnail",
-  pricing: "Pricing",
-  popular: "Popular",
-  orderSummary: "Order summary",
-  total: "Total",
-  xTwitter: "X / Twitter",
-  linkedIn: "LinkedIn",
-  in: "in",
-  gitHub: "GitHub",
-  gH: "GH",
-  offline: "Offline",
-  youAreOffline: "You are offline",
-  nothingInTheWorkspaceIsAvailableOfflineReconnectThen:
-    "Nothing in the workspace is available offline. Reconnect, then try again.",
-  retry: "Retry",
-  search: "Search",
-  email: "Email",
-  enterYourEmail: "Enter your email",
-  subscribe: "Subscribe",
-  noSpamUnsubscribeAnytime: "No spam. Unsubscribe anytime.",
 } as const;

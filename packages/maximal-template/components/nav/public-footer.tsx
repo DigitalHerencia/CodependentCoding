@@ -1,18 +1,19 @@
+/**
+ * Public footer navigation and copyright presentation.
+ *
+ * @remarks
+ * Labels and link destinations are owned by `content/public.ts`.
+ */
+
 import { cacheLife } from "next/cache";
 
 import { PublicNavLink } from "@/components/nav/public-nav-link";
-import { publicNavigation } from "@/content/public-navigation";
+import { publicNavigation } from "@/content/public";
+import type { PublicFooterProps } from "@/types/publicTypes";
 
-export interface PublicFooterLink {
-  label: string;
-  href: string;
-}
-
-export interface PublicFooterProps {
-  links?: readonly PublicFooterLink[] | undefined;
-}
-
-export const defaultPublicFooterLinks = publicNavigation.footerLinks;
+// ============================================================================
+// CACHED COPYRIGHT YEAR
+// ============================================================================
 
 /** The year is part of the static page; the cached value refreshes daily. */
 async function CopyrightYear() {
@@ -21,8 +22,19 @@ async function CopyrightYear() {
   return new Date().getFullYear();
 }
 
+// ============================================================================
+// PUBLIC FOOTER
+// ============================================================================
+
+/**
+ * Renders the public copyright and informational destinations.
+ *
+ * @param props - Optional links for the footer navigation.
+ * @returns Public footer presentation.
+ * @public
+ */
 export function PublicFooter({
-  links = defaultPublicFooterLinks,
+  links = publicNavigation.footerLinks,
 }: PublicFooterProps) {
   return (
     <footer className="public-footer">

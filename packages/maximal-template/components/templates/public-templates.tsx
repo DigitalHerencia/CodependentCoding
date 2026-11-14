@@ -14,6 +14,8 @@ import {
   HeroSection,
   LegalDocumentSection,
   TestimonialsGrid,
+  PublicErrorBlock,
+  PublicLoadingBlock,
 } from "@/components/blocks/public-blocks";
 import {
   faqCopy,
@@ -23,6 +25,7 @@ import {
   termsCopy,
 } from "@/content/public";
 import Image from "next/image";
+import type { PublicErrorBlockProps } from "@/types/publicTypes";
 
 // ============================================================================
 // FAQ PAGE TEMPLATE
@@ -242,4 +245,33 @@ export function TermsPageTemplate() {
       />
     </>
   );
+}
+
+// ============================================================================
+// PUBLIC ERROR PAGE TEMPLATE
+// ============================================================================
+
+/**
+ * Composes the public route-group error presentation.
+ *
+ * @param props - Error-boundary recovery callback.
+ * @returns The public error block.
+ * @public
+ */
+export function PublicErrorTemplate({ onRetry }: PublicErrorBlockProps) {
+  return <PublicErrorBlock onRetry={onRetry} />;
+}
+
+// ============================================================================
+// PUBLIC LOADING PAGE TEMPLATE
+// ============================================================================
+
+/**
+ * Composes the public route-group loading state.
+ *
+ * @returns The public loading block.
+ * @public
+ */
+export function PublicLoadingTemplate() {
+  return <PublicLoadingBlock />;
 }
