@@ -3,13 +3,10 @@
 import { usePathname } from "next/navigation";
 import { useRef, useState } from "react";
 
-import {
-  TenantFooterBlock,
-  TenantHeaderBlock,
-  TenantMobileBottomNavBlock,
-  TenantNavigationBlock,
-  TenantSidebarBlock,
-} from "@/components/blocks/tenant-blocks";
+import { TenantFooter } from "@/components/nav/tenant-footer";
+import { TenantHeader } from "@/components/nav/tenant-header";
+import { TenantMobileBottomNav } from "@/components/nav/tenant-mobile-bottom-nav";
+import { TenantNavigation, TenantSidebar } from "@/components/nav/tenant-navigation";
 import { cn } from "@/components/ui/utils";
 import { applicationDesign } from "@/content/application";
 import { tenantCopy } from "@/content/tenant";
@@ -78,7 +75,7 @@ export function TenantShell({
         {tenantCopy.skipToContent}
       </a>
       {sidebar && (
-        <TenantSidebarBlock
+        <TenantSidebar
           navigation={navigation}
           pathname={pathname}
           expandedIds={expandedIds}
@@ -98,7 +95,7 @@ export function TenantShell({
         />
       )}
       <div className="flex min-w-0 flex-col">
-        <TenantHeaderBlock
+        <TenantHeader
           sidebar={sidebar}
           mobileOpen={mobileOpen}
           onToggle={() => setMenuState({ route: pathname, open: !mobileOpen })}
@@ -112,7 +109,7 @@ export function TenantShell({
               sidebar && "md:hidden",
             )}
           >
-            <TenantNavigationBlock
+            <TenantNavigation
               navigation={navigation}
               pathname={pathname}
               expandedIds={expandedIds}
@@ -126,8 +123,8 @@ export function TenantShell({
         <main id="tenant-main-content" tabIndex={-1} className="min-w-0 flex-1">
           {children}
         </main>
-        <TenantFooterBlock />
-        <TenantMobileBottomNavBlock items={navigation.mobile} />
+        <TenantFooter />
+        <TenantMobileBottomNav items={navigation.mobile} />
       </div>
     </div>
   );
