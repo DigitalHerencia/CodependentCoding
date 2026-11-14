@@ -31,9 +31,8 @@ test("the service worker refuses HTML from an immutable-asset URL", async ({
 
   expect(cachedUrls).not.toContain("/_next/static/pwa-html-probe.js");
   expect(cachedUrls).not.toContain("/");
-  expect(cachedUrls).toEqual(
-    expect.arrayContaining(["/offline", "/icons/192.png"]),
-  );
+  expect(cachedUrls).not.toContain("/offline");
+  expect(cachedUrls).toContain("/icons/192.png");
 });
 
 test("the logout signal empties every cache", async ({ page }) => {
@@ -56,4 +55,10 @@ test("the logout signal empties every cache", async ({ page }) => {
 
   expect(workerMessage).toBe("cleared");
   await expect.poll(async () => page.evaluate(() => caches.keys())).toEqual([]);
+});
+
+
+test("the removed offline page returns 404", async ({ page }) => {
+  const response = await page.goto("/offline");
+  expect(response?.status()).toBe(404);
 });

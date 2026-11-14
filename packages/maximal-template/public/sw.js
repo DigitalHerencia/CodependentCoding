@@ -1,5 +1,4 @@
-const SHELL = "maximal-shell-v3";
-const OFFLINE = "/offline";
+const SHELL = "maximal-shell-v4";
 const ICON = "/icons/192.png";
 let cacheGeneration = 0;
 let cacheEnabled = true;
@@ -7,11 +6,7 @@ const cacheWrites = new Set();
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
-    caches
-      .open(SHELL)
-      .then((cache) =>
-        cache.addAll([new Request(OFFLINE, { credentials: "omit" }), ICON]),
-      ),
+    caches.open(SHELL).then((cache) => cache.add(ICON)),
   );
   self.skipWaiting();
 });
@@ -70,11 +65,6 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  if (request.mode === "navigate") {
-    event.respondWith(
-      fetch(request).catch(() => caches.match(OFFLINE, { cacheName: SHELL })),
-    );
-  }
 });
 
 self.addEventListener("message", (event) => {

@@ -13,7 +13,6 @@ import {
   FeatureContentGrid,
   HeroSection,
   LegalDocumentSection,
-  OfflinePageBlock,
   TestimonialsGrid,
 } from "@/components/blocks/public-blocks";
 import {
@@ -243,22 +242,4 @@ export function TermsPageTemplate() {
       />
     </>
   );
-}
-
-// ============================================================================
-// OFFLINE PAGE TEMPLATE (EXISTING COMPATIBILITY BRIDGE)
-// ============================================================================
-
-/**
- * Retains the existing offline-page export without introducing a seventh
- * public block into this six-block reference.
- *
- * @returns The current offline page's presentation block.
- * @remarks
- * The offline block now lives in `public-blocks.tsx`, preserving its markup
- * while the obsolete public-page-blocks module is removed.
- * @public
- */
-export function OfflinePageTemplate() {
-  return <OfflinePageBlock />;
 }

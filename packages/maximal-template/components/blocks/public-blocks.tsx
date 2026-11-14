@@ -6,8 +6,6 @@
  * Page templates supply copy from `content/public.ts`. Blocks own neither
  * application state nor persisted data access; the ShadCN accordion delegates
  * its interactive behavior to Radix UI.
- *
- * The offline fallback is retained in this module to preserve its current page.
  */
 
 import {
@@ -29,7 +27,6 @@ import {
 import { cn, safeHref } from "@/components/ui/utils";
 import { publicUiCopy } from "@/content/public";
 import { ArrowRight, Quote, Star } from "lucide-react";
-import Link from "next/link";
 import type {
   CTASimpleProps,
   FAQAccordionProps,
@@ -433,40 +430,5 @@ export function TestimonialsGrid({
         </div>
       </div>
     </section>
-  );
-}
-
-
-// ============================================================================
-// OFFLINE PAGE BLOCK — EXISTING PRESENTATION PRESERVED
-// ============================================================================
-
-/**
- * Presents the offline fallback and retry navigation.
- *
- * @returns The existing offline-page presentation.
- * @public
- */
-export function OfflinePageBlock() {
-  return (
-    <main className="mx-auto grid min-h-dvh max-w-2xl place-items-center px-6 py-16">
-      <section className="w-full border border-neutral-400 bg-black p-8 shadow-[8px_8px_0_0_oklch(54.6%_0.245_262.881_/_0.24)]">
-        <p className="font-mono text-xs tracking-[0.16em] text-blue-400 uppercase">
-          {publicUiCopy.offline}
-        </p>
-        <h1 className="mt-3 font-(family-name:--font-display) text-4xl tracking-[0.04em] text-white uppercase">
-          {publicUiCopy.youAreOffline}
-        </h1>
-        <p className="mt-4 max-w-prose text-neutral-300">
-          {publicUiCopy.nothingInTheWorkspaceIsAvailableOfflineReconnectThen}
-        </p>
-        <Link
-          className="mt-6 inline-flex border border-blue-500 bg-blue-600 px-4 py-2 font-mono text-sm text-white hover:bg-blue-500 focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:outline-none"
-          href="/"
-        >
-          {publicUiCopy.retry}
-        </Link>
-      </section>
-    </main>
   );
 }
