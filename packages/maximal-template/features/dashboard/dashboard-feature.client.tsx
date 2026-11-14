@@ -5,14 +5,18 @@ import { useState, useTransition } from "react";
 
 import { DashboardPreferencesBlock } from "@/components/blocks/dashboard-blocks";
 import { dashboardCopy } from "@/content/dashboard";
-import { saveDashboardPreferences } from "@/lib/actions/dashboardActions";
-import type { DashboardPreferencesDTO } from "@/types/dashboardTypes";
+import type {
+  DashboardPreferencesDTO,
+  DashboardSavePreferencesAction,
+} from "@/types/dashboardTypes";
 
-/** Browser-only orchestration for editing the signed-in member's preferences. */
+/** Client-only interaction; the server feature supplies its Server Action. */
 export function DashboardFeatureClient({
   initialPreferences,
+  savePreferences,
 }: {
   initialPreferences: DashboardPreferencesDTO;
+  savePreferences: DashboardSavePreferencesAction;
 }) {
   const router = useRouter();
   const [preferences, setPreferences] = useState(initialPreferences);
@@ -27,7 +31,7 @@ export function DashboardFeatureClient({
 
   function save() {
     startTransition(async () => {
-      const result = await saveDashboardPreferences(preferences);
+      const result = await savePreferences(preferences);
       if (result.ok) {
         setSavedPreferences(result.data);
         setPreferences(result.data);

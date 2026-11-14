@@ -15,8 +15,8 @@ import type {
   DashboardActivityDTO,
   DashboardOrganizationDTO,
   DashboardPreferencesDTO,
+  ModuleDashboardEntry,
 } from "@/types/dashboardTypes";
-import type { ModuleDashboardEntry } from "@/types/moduleTypes";
 
 // ---------------------------------------------------------------------------
 // DASHBOARD OVERVIEW

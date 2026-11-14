@@ -1,6 +1,5 @@
 import type { ReactNode } from "react";
 
-import { DashboardLayout } from "@/components/blocks/shared-blocks";
 import {
   DashboardActivityBlock,
   DashboardMetricsBlock,
@@ -23,8 +22,13 @@ export function DashboardPageTemplate({
 }) {
   const { organization, preferences, activities, workspaces } = dashboard;
   return (
-    <DashboardLayout title={organization.name} nav={[]}>
+    <section aria-labelledby="dashboard-heading" className="min-w-0 p-4">
       <div className={preferences.compactView ? "space-y-3" : "space-y-6"}>
+        <header className="border-b border-foreground/30 pb-4">
+          <h1 id="dashboard-heading" className="type-title text-foreground">
+            {organization.name}
+          </h1>
+        </header>
         <DashboardOverviewBlock organization={organization} />
         <DashboardMetricsBlock
           memberCount={organization.memberCount}
@@ -40,6 +44,6 @@ export function DashboardPageTemplate({
         {preferences.showActivity && <DashboardActivityBlock activities={activities} />}
         {preferencesControl}
       </div>
-    </DashboardLayout>
+    </section>
   );
 }

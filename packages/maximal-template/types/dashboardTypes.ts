@@ -1,4 +1,19 @@
-import type { ModuleDashboardEntry } from "@/types/moduleTypes";
+import type { Route } from "next";
+
+import type { ActionResult } from "@/types/actionTypes";
+
+/** Dashboard entry contributed by an installed module. */
+export type ModuleDashboardEntry = {
+  id: string;
+  title: string;
+  description: string;
+  href: Route;
+};
+
+/** Server Action reference passed from the server feature to its client island. */
+export type DashboardSavePreferencesAction = (
+  input: DashboardPreferencesDTO,
+) => Promise<ActionResult<DashboardPreferencesDTO>>;
 
 /** Persisted preferences of the active organization membership. */
 export type DashboardPreferencesDTO = {

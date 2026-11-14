@@ -1,18 +1,14 @@
 "use client";
-import { GenericErrorTemplate } from "@/components/templates/shared-templates";
 
-// Route-group errors need a client boundary; recovery presentation remains a block.
-export default function RouteError({
-  reset,
-}: Readonly<{ error: Error & { digest?: string }; reset: () => void }>) {
-  return (
-    <GenericErrorTemplate
-      actions={[
-        { label: "Try again", onClick: reset },
-        { label: "Go to dashboard", href: "/dashboard", variant: "outline" },
-      ]}
-      className="min-h-[60vh]"
-      title="Something went wrong"
-    />
-  );
+import { TenantErrorTemplate } from "@/components/templates/tenant-templates";
+import type { TenantErrorBoundaryProps } from "@/types/tenantTypes";
+
+/**
+ * Recover from child-route errors within the authenticated tenant group.
+ *
+ * @remarks
+ * Layout authentication and onboarding failures are outside this boundary.
+ */
+export default function TenantRouteError({ reset }: TenantErrorBoundaryProps) {
+  return <TenantErrorTemplate onRetry={reset} />;
 }

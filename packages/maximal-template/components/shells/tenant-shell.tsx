@@ -1,66 +1,62 @@
 "use client";
 
-import { Wordmark } from "@/components/brand/wordmark";
-import { TenantHeader } from "@/components/nav/tenant-header";
-import { TenantMobileBottomNav } from "@/components/nav/tenant-mobile-bottom-nav";
+import { usePathname } from "next/navigation";
+import { useRef, useState } from "react";
+
 import {
-  TenantNavLinks,
-  tenantDomains as domains,
-} from "@/components/nav/tenant-nav-links";
-import { Button } from "@/components/ui/button";
+  TenantFooterBlock,
+  TenantHeaderBlock,
+  TenantMobileBottomNavBlock,
+  TenantNavigationBlock,
+  TenantSidebarBlock,
+} from "@/components/blocks/tenant-blocks";
 import { cn } from "@/components/ui/utils";
 import { applicationDesign } from "@/content/application";
-import { LayoutDashboard, PanelLeftClose, PanelLeftOpen } from "lucide-react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useRef, useState, type ReactNode } from "react";
+import { tenantCopy } from "@/content/tenant";
+import type { TenantShellProps } from "@/types/tenantTypes";
 
+/**
+ * Shared tenant frame. The layout supplies authorized navigation and server
+ * account slots; this component owns only responsive interaction state.
+ */
 export function TenantShell({
   children,
+  navigation,
   accountMenu,
-  footer,
   organizationSwitcher,
-}: {
-  children: ReactNode;
-  accountMenu: ReactNode;
-  footer: ReactNode;
-  /** Rendered above the user menu; the route layout passes the organization switcher. */
-  organizationSwitcher?: ReactNode;
-}) {
+}: TenantShellProps) {
   const pathname = usePathname();
   const [collapsed, setCollapsed] = useState(false);
-  const [mobileOpen, setMobileOpen] = useState(false);
+  const [menuState, setMenuState] = useState({ route: pathname, open: false });
+  const mobileOpen = menuState.route === pathname && menuState.open;
+  const closeMobileMenu = () => setMenuState({ route: pathname, open: false });
   const menuButtonRef = useRef<HTMLButtonElement>(null);
-  const activeRoute = domains
-    .flatMap((domain) => domain.children ?? [])
-    .filter(
-      (item) => pathname === item.href || pathname.startsWith(`${item.href}/`),
-    )
-    .sort((a, b) => b.id.length - a.id.length)[0];
-  const activeDomain = domains.find((domain) =>
-    domain.children?.some((item) => item.id === activeRoute?.id),
+  const activeGroup = navigation.groups.find((group) =>
+    group.links.some(
+      (link) => pathname === link.href || pathname.startsWith(link.href + "/"),
+    ),
   );
-  const [expandedIds, setExpandedIds] = useState<string[]>(
-    activeDomain ? [activeDomain.id] : [],
-  );
+
+  // A new route gets its appropriate default expanded group without a render
+  // effect; user-controlled expansion persists on the current pathname.
+  const [expanded, setExpanded] = useState({
+    route: pathname,
+    ids: activeGroup ? [activeGroup.id] : ([] as string[]),
+  });
+  const expandedIds =
+    expanded.route === pathname
+      ? expanded.ids
+      : activeGroup
+        ? [activeGroup.id]
+        : [];
+
   const sidebar = applicationDesign.navigation === "sidebar";
-  const navigation = (
-    <TenantNavLinks
-      pathname={pathname}
-      expandedIds={expandedIds}
-      setExpandedIds={setExpandedIds}
-      activeRoute={activeRoute}
-      onNavigate={() => setMobileOpen(false)}
-    />
-  );
+  const onNavigate = closeMobileMenu;
+  const onExpandedChange = (ids: string[]) =>
+    setExpanded({ route: pathname, ids });
+
   return (
     <div
-      onKeyDown={(event) => {
-        if (event.key === "Escape" && mobileOpen) {
-          setMobileOpen(false);
-          menuButtonRef.current?.focus();
-        }
-      }}
       className={cn(
         "tenant-shell min-h-dvh pb-[calc(3.5rem+env(safe-area-inset-bottom))] md:pb-0",
         sidebar &&
@@ -68,68 +64,44 @@ export function TenantShell({
             ? "md:grid md:grid-cols-[4.5rem_minmax(0,1fr)]"
             : "md:grid md:grid-cols-[16rem_minmax(0,1fr)]"),
       )}
+      onKeyDown={(event) => {
+        if (event.key === "Escape" && mobileOpen) {
+          closeMobileMenu();
+          menuButtonRef.current?.focus();
+        }
+      }}
     >
+      <a
+        href="#tenant-main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[60] focus:bg-background focus:px-4 focus:py-2"
+      >
+        {tenantCopy.skipToContent}
+      </a>
       {sidebar && (
-        <aside
-          aria-label="Sidebar"
-          className="sticky top-0 hidden h-dvh min-w-0 flex-col gap-5 border-r bg-background p-3 md:flex"
-        >
-          <Wordmark collapsed={collapsed} compact />
-          <Button
-            variant="ghost"
-            size="icon"
-            aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-            aria-expanded={!collapsed}
-            onClick={() => setCollapsed(!collapsed)}
-          >
-            {collapsed ? <PanelLeftOpen /> : <PanelLeftClose />}
-          </Button>
-          {collapsed ? (
-            <nav
-              aria-label="Collapsed domain navigation"
-              className="min-h-0 flex-1 space-y-1 overflow-y-auto"
-            >
-              <Button asChild variant="ghost" size="icon">
-                <Link
-                  href="/dashboard"
-                  aria-label="Dashboard"
-                  title="Dashboard"
-                >
-                  <LayoutDashboard />
-                </Link>
-              </Button>
-              {domains.map((domain) => (
-                <Button
-                  key={domain.id}
-                  variant="ghost"
-                  size="icon"
-                  title={domain.label}
-                  aria-label={`Expand ${domain.label} navigation`}
-                  onClick={() => {
-                    setCollapsed(false);
-                    setExpandedIds((ids) =>
-                      Array.from(new Set([...ids, domain.id])),
-                    );
-                  }}
-                >
-                  {domain.icon}
-                </Button>
-              ))}
-            </nav>
-          ) : (
-            navigation
-          )}
-          <div className="space-y-3 border-t pt-4">
-            {!collapsed && organizationSwitcher}
-            {accountMenu}
-          </div>
-        </aside>
+        <TenantSidebarBlock
+          navigation={navigation}
+          pathname={pathname}
+          expandedIds={expandedIds}
+          onExpandedChange={onExpandedChange}
+          onNavigate={onNavigate}
+          collapsed={collapsed}
+          onToggleCollapsed={() => setCollapsed((value) => !value)}
+          onExpand={(id) => {
+            setCollapsed(false);
+            setExpanded({
+              route: pathname,
+              ids: Array.from(new Set([...expandedIds, id])),
+            });
+          }}
+          organizationSwitcher={organizationSwitcher}
+          accountMenu={accountMenu}
+        />
       )}
-      <div className="min-w-0">
-        <TenantHeader
+      <div className="flex min-w-0 flex-col">
+        <TenantHeaderBlock
           sidebar={sidebar}
           mobileOpen={mobileOpen}
-          setMobileOpen={setMobileOpen}
+          onToggle={() => setMenuState({ route: pathname, open: !mobileOpen })}
           menuButtonRef={menuButtonRef}
         />
         {mobileOpen && (
@@ -140,14 +112,22 @@ export function TenantShell({
               sidebar && "md:hidden",
             )}
           >
-            {navigation}
+            <TenantNavigationBlock
+              navigation={navigation}
+              pathname={pathname}
+              expandedIds={expandedIds}
+              onExpandedChange={onExpandedChange}
+              onNavigate={onNavigate}
+            />
             {organizationSwitcher}
             {accountMenu}
           </div>
         )}
-        <main>{children}</main>
-        {footer}
-        <TenantMobileBottomNav />
+        <main id="tenant-main-content" tabIndex={-1} className="min-w-0 flex-1">
+          {children}
+        </main>
+        <TenantFooterBlock />
+        <TenantMobileBottomNavBlock items={navigation.mobile} />
       </div>
     </div>
   );

@@ -2,9 +2,10 @@ import { DashboardPageTemplate } from "@/components/templates/dashboard-template
 import { loadDashboardWorkflow } from "@/lib/workflows/dashboardWorkflows";
 import { DashboardFeatureClient } from "./dashboard-feature.client";
 
-/** Server feature coordinating the dashboard read and prepared presentation. */
+/** Server feature orchestrating its workflow, template and client action slot. */
 export async function DashboardFeature() {
-  const dashboard = await loadDashboardWorkflow();
+  const { dashboard, savePreferences } = await loadDashboardWorkflow();
+
   return (
     <DashboardPageTemplate
       dashboard={dashboard}
@@ -12,6 +13,7 @@ export async function DashboardFeature() {
         <DashboardFeatureClient
           key={dashboard.organization.id}
           initialPreferences={dashboard.preferences}
+          savePreferences={savePreferences}
         />
       }
     />

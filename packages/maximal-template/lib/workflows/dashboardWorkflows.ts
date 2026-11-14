@@ -1,17 +1,34 @@
 import "server-only";
 
+import { saveDashboardPreferences } from "@/lib/actions/dashboardActions";
 import { getDashboardOverview } from "@/lib/fetchers/dashboardFetchers";
 import { installedModules } from "@/lib/modules/registry";
-import type { DashboardPageDTO } from "@/types/dashboardTypes";
+import type {
+  DashboardPageDTO,
+  DashboardSavePreferencesAction,
+} from "@/types/dashboardTypes";
+
+/** Server-side dashboard contract consumed only by the dashboard feature. */
+export type DashboardWorkflowResult = {
+  dashboard: DashboardPageDTO;
+  savePreferences: DashboardSavePreferencesAction;
+};
 
 /**
- * Assemble the tenant dashboard view model from authorized reads and
- * the application's installed-module registry.
+ * Orchestrate the authorized dashboard read and expose its existing Server
+ * Action as a serializable reference to the feature.
+ *
+ * @remarks
+ * The action is invoked only after user interaction; loading the dashboard
+ * never writes preferences. Client code never imports this server-only module.
  */
-export async function loadDashboardWorkflow(): Promise<DashboardPageDTO> {
+export async function loadDashboardWorkflow(): Promise<DashboardWorkflowResult> {
   const overview = await getDashboardOverview();
   return {
-    ...overview,
-    workspaces: installedModules.flatMap(({ dashboard }) => dashboard ?? []),
+    dashboard: {
+      ...overview,
+      workspaces: installedModules.flatMap(({ dashboard }) => dashboard ?? []),
+    },
+    savePreferences: saveDashboardPreferences,
   };
 }
