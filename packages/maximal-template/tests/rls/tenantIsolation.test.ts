@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { randomUUID } from "node:crypto";
 
 import type pg from "pg";
 import { afterAll, beforeAll, describe, test } from "vitest";
@@ -230,6 +231,44 @@ describe("cross-tenant isolation through the runtime role", () => {
           table.name,
         );
       }
+    });
+  });
+
+
+  test("dashboard preferences are hidden from a different member of the same organization", async () => {
+    await inTransaction(app, async () => {
+      await setTenantContext(app, orgA);
+      const anotherUserId = `user_rls_${randomUUID().slice(0, 8)}`;
+      await app.query(
+        `SELECT set_config('app.clerk_user_id', $1, true),
+                set_config('app.user_id', $1, true)`,
+        [anotherUserId],
+      );
+      await app.query(`INSERT INTO "User" (id, "updatedAt") VALUES ($1, now())`, [anotherUserId]);
+      const membership = await app.query<{ id: string }>(
+        `INSERT INTO "Membership" (id, "organizationId", "userId", "updatedAt")
+         VALUES (gen_random_uuid(), $1, $2, now()) RETURNING id`,
+        [orgA.organizationId, anotherUserId],
+      );
+      const membershipId = membership.rows[0]?.id;
+      assert.ok(membershipId);
+
+      await app.query(
+        `INSERT INTO "DashboardPreference" (id, "organizationId", "membershipId", "updatedAt")
+         VALUES (gen_random_uuid(), $1, $2, now())`,
+        [orgA.organizationId, membershipId],
+      );
+      await setTenantContext(app, orgA);
+      const hidden = await app.query(
+        `SELECT id FROM "DashboardPreference" WHERE "membershipId" = $1`,
+        [membershipId],
+      );
+      assert.equal(hidden.rowCount, 0);
+      const changed = await app.query(
+        `UPDATE "DashboardPreference" SET "compactView" = true WHERE "membershipId" = $1`,
+        [membershipId],
+      );
+      assert.equal(changed.rowCount, 0);
     });
   });
 

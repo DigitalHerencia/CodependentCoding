@@ -1,9 +1,5 @@
 export const sharedPresentationCopy = {
-  workspaces: "Workspaces",
-  yourWorkspace: "Your workspace",
   members: " members",
-  timeZone: "Time zone: ",
-  workspacePreferences: "Workspace preferences",
   integrationConfiguration: "Integration configuration",
   configurationPresenceOnlyTheseChecksDoNotContactProviders:
     "Configuration presence only. These checks do not contact providers or verify connectivity.",

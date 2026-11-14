@@ -9,7 +9,6 @@ import {
   PageLoadingState,
 } from "@/components/blocks/shared-blocks";
 import {
-  SharedDashboardContentBlock,
   SharedIntegrationsContentBlock,
   SharedMembersContentBlock,
   SharedOnboardingPageBlock,
@@ -19,16 +18,6 @@ import { sharedPresentationCopy } from "@/content/shared";
 import type { ComponentProps } from "react";
 import { GenericErrorPage } from "@/components/blocks/shared-blocks.client";
 
-export function SharedDashboardTemplate(
-  props: ComponentProps<typeof SharedDashboardContentBlock>,
-) {
-  const { organization } = props;
-  return (
-    <DashboardLayout title={organization.name} nav={[]}>
-      <SharedDashboardContentBlock {...props} />
-    </DashboardLayout>
-  );
-}
 export function SharedIntegrationsTemplate(
   props: ComponentProps<typeof SharedIntegrationsContentBlock>,
 ) {

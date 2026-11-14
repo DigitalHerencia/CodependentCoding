@@ -22,6 +22,7 @@ export const baseResources = [
   "base.organization",
   "base.membership",
   "base.settings",
+  "base.dashboard",
 ] as const satisfies readonly ResourceKind[];
 
 /** Resources known to authz: base plus each installed module's. */

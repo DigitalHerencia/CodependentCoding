@@ -8,58 +8,9 @@ import { settingsPresentationCopy } from "@/content/settings";
 import { sharedPresentationCopy, sharedRemainingCopy } from "@/content/shared";
 import type { OrganizationDTO } from "@/types/commonTypes";
 import type { IntegrationStatus } from "@/types/integrationTypes";
-import type { ModuleDashboardEntry } from "@/types/moduleTypes";
-import Link from "next/link";
 import type { ReactNode } from "react";
 
-// Why: Templates: pure presentation for the base pages every app has (dashboard, members, integrations, onboarding, profile).
-
-export function SharedDashboardContentBlock({
-  organization,
-  workspaces,
-}: {
-  organization: OrganizationDTO;
-  workspaces: readonly ModuleDashboardEntry[];
-}) {
-  return (
-    <>
-      <div className="grid gap-5 lg:grid-cols-[2fr_1fr]">
-        <DashboardPanel title={sharedPresentationCopy.workspaces}>
-          <nav className="grid gap-3 sm:grid-cols-2">
-            {workspaces.map((item) => (
-              <Link
-                key={item.id}
-                href={item.href}
-                className="space-y-2 surface-inset p-4 hover:bg-primary/10"
-              >
-                <h2 className="type-label">{item.title}</h2>
-                <p className="text-sm text-muted-primary">{item.description}</p>
-              </Link>
-            ))}
-          </nav>
-        </DashboardPanel>
-        <DashboardPanel title={sharedPresentationCopy.yourWorkspace}>
-          <p>
-            {organization.memberCount}
-            {sharedPresentationCopy.members}
-          </p>
-          <p className="mt-3">
-            {sharedPresentationCopy.timeZone}
-            {organization.timezone}
-          </p>
-          <nav className="mt-6 flex flex-col gap-4">
-            <Link className="type-link" href="/settings/profile">
-              {sharedPresentationCopy.workspacePreferences}
-            </Link>
-            <Link className="type-link" href="/settings/integrations">
-              {sharedPresentationCopy.integrationConfiguration}
-            </Link>
-          </nav>
-        </DashboardPanel>
-      </div>
-    </>
-  );
-}
+// Shared presentation for integrations, members, onboarding and profile.
 
 export function SharedIntegrationsContentBlock({
   integrations,

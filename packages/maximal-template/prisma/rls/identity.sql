@@ -175,3 +175,32 @@ CREATE POLICY "webhook_ledger_runtime_interim" ON "WebhookEvent"
 FOR ALL TO app_runtime
 USING (true)
 WITH CHECK (true);
+
+
+-- Membership-owned dashboard preferences: one organization's active member
+-- cannot read or modify another member's preferences, even in the same tenant.
+ALTER TABLE "DashboardPreference" ENABLE ROW LEVEL SECURITY;
+ALTER TABLE "DashboardPreference" FORCE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "dashboard_membership_isolation" ON "DashboardPreference";
+CREATE POLICY "dashboard_membership_isolation" ON "DashboardPreference"
+FOR ALL TO app_runtime
+USING (
+  "organizationId" = (SELECT NULLIF(current_setting('app.organization_id', true), '')::uuid)
+  AND EXISTS (
+    SELECT 1 FROM "Membership" AS m
+    WHERE m."id" = "DashboardPreference"."membershipId"
+      AND m."organizationId" = "DashboardPreference"."organizationId"
+      AND m."userId" = (SELECT NULLIF(current_setting('app.user_id', true), ''))
+      AND m."status" = 'ACTIVE'
+  )
+)
+WITH CHECK (
+  "organizationId" = (SELECT NULLIF(current_setting('app.organization_id', true), '')::uuid)
+  AND EXISTS (
+    SELECT 1 FROM "Membership" AS m
+    WHERE m."id" = "DashboardPreference"."membershipId"
+      AND m."organizationId" = "DashboardPreference"."organizationId"
+      AND m."userId" = (SELECT NULLIF(current_setting('app.user_id', true), ''))
+      AND m."status" = 'ACTIVE'
+  )
+);

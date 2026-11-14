@@ -17,7 +17,10 @@ export const permissions: readonly Permission[] = resourceKinds.flatMap(
 /** Base grants below ADMIN: staff and outside viewers can read the organization. */
 const baseGrants: ModulePermissions = {
   resources: baseResources,
-  grants: { MEMBER: ["read"], VIEWER: ["read"] },
+  grants: {
+    MEMBER: ["read", "base.dashboard:update"],
+    VIEWER: ["read", "base.dashboard:update"],
+  },
 };
 
 function expand(
