@@ -16,6 +16,7 @@ vi.mock("@/lib/db/tenant", () => ({
     callback: (tx: unknown, access: unknown) => Promise<unknown>,
   ) => callback({
     crmAccount: { create: vi.fn(async () => ({ id: "account-1" })) },
+    auditEvent: { create: vi.fn(async () => ({ id: "audit-1" })) },
   }, {
     organizationId: "organization-1",
     userId: "user-1",

@@ -45,6 +45,7 @@ const CRM_INVALIDATION_PATHS = [
   "/crm/leads",
   "/crm/pipeline",
   "/crm/analytics",
+  "/dashboard",
 ] as const;
 
 /** Invalidate affected CRM route data only after a transaction commits. */
@@ -52,6 +53,11 @@ function invalidateCrmViews(recordPaths: readonly string[] = []) {
   invalidatePaths([...CRM_INVALIDATION_PATHS, ...recordPaths]);
 }
 
+// -----------------------------------------------------------------------------
+// CRM lead qualification writes
+// -----------------------------------------------------------------------------
+
+/** Perform an authenticated, validated, tenant-scoped CRM mutation and invalidate its affected views after commit. */
 export async function qualifyCrmLead(rawContactId: unknown) {
   return toActionResult(async () => {
     const identity = await requireIdentity();
@@ -82,6 +88,11 @@ export async function qualifyCrmLead(rawContactId: unknown) {
   });
 }
 
+// -----------------------------------------------------------------------------
+// CRM opportunity writes
+// -----------------------------------------------------------------------------
+
+/** Perform an authenticated, validated, tenant-scoped CRM mutation and invalidate its affected views after commit. */
 export async function createCrmDeal(rawInput: unknown) {
   return toActionResult(async () => {
     const identity = await requireIdentity();
@@ -151,6 +162,7 @@ export async function createCrmDeal(rawInput: unknown) {
   });
 }
 
+/** Perform an authenticated, validated, tenant-scoped CRM mutation and invalidate its affected views after commit. */
 export async function updateCrmDealStage(rawInput: unknown) {
   return toActionResult(async () => {
     const identity = await requireIdentity();
@@ -180,6 +192,11 @@ export async function updateCrmDealStage(rawInput: unknown) {
   });
 }
 
+// -----------------------------------------------------------------------------
+// CRM contact writes
+// -----------------------------------------------------------------------------
+
+/** Perform an authenticated, validated, tenant-scoped CRM mutation and invalidate its affected views after commit. */
 export async function createContact(rawInput: unknown) {
   return toActionResult(async () => {
     const identity = await requireIdentity();
@@ -215,6 +232,7 @@ export async function createContact(rawInput: unknown) {
   });
 }
 
+/** Perform an authenticated, validated, tenant-scoped CRM mutation and invalidate its affected views after commit. */
 export async function updateContact(rawInput: unknown) {
   return toActionResult(async () => {
     const identity = await requireIdentity();
@@ -234,6 +252,8 @@ export async function updateContact(rawInput: unknown) {
         organizationId: existing.organizationId,
         ownerMembershipId: existing.ownerMembershipId,
       });
+      if (existing.status === "LEAD" && input.status !== "LEAD")
+        throw new InvariantViolationError("Qualify the lead through the dedicated CRM workflow.");
       if (existing.updatedAt.getTime() !== input.expectedUpdatedAt.getTime())
         throw new ConcurrencyConflictError("CRM contact");
       const result = await tx.crmContact.updateMany({
@@ -278,6 +298,7 @@ export async function updateContact(rawInput: unknown) {
   });
 }
 
+/** Perform an authenticated, validated, tenant-scoped CRM mutation and invalidate its affected views after commit. */
 export async function archiveContact(rawInput: unknown) {
   return toActionResult(async () => {
     const identity = await requireIdentity();
@@ -325,6 +346,11 @@ export async function archiveContact(rawInput: unknown) {
   });
 }
 
+// -----------------------------------------------------------------------------
+// CRM account writes
+// -----------------------------------------------------------------------------
+
+/** Perform an authenticated, validated, tenant-scoped CRM mutation and invalidate its affected views after commit. */
 export async function createCrmAccount(rawInput: unknown) {
   return toActionResult(async () => {
     const identity = await requireIdentity();
@@ -342,12 +368,22 @@ export async function createCrmAccount(rawInput: unknown) {
         },
         select: crmAccountSelect,
       });
+      await tx.auditEvent.create({
+        data: {
+          organizationId: access.organizationId,
+          actorUserId: access.userId,
+          action: "crm.account.created",
+          resourceType: "CrmAccount",
+          resourceId: record.id,
+        },
+      });
       return toCrmAccountDTO(record);
     });
     invalidateCrmViews(saved && "id" in saved ? [`/crm/accounts/${saved.id}`] : []);
     return saved;
   });
 }
+/** Perform an authenticated, validated, tenant-scoped CRM mutation and invalidate its affected views after commit. */
 export async function updateCrmAccount(rawInput: unknown) {
   return toActionResult(async () => {
     const identity = await requireIdentity();
@@ -381,12 +417,20 @@ export async function updateCrmAccount(rawInput: unknown) {
         },
       });
       if (result.count !== 1) throw new ConcurrencyConflictError("Account");
-      return toCrmAccountDTO(
-        await tx.crmAccount.findFirstOrThrow({
-          where: { id: input.accountId, organizationId: access.organizationId },
-          select: crmAccountSelect,
-        }),
-      );
+      const record = await tx.crmAccount.findFirstOrThrow({
+        where: { id: input.accountId, organizationId: access.organizationId, archivedAt: null },
+        select: crmAccountSelect,
+      });
+      await tx.auditEvent.create({
+        data: {
+          organizationId: access.organizationId,
+          actorUserId: access.userId,
+          action: "crm.account.updated",
+          resourceType: "CrmAccount",
+          resourceId: record.id,
+        },
+      });
+      return toCrmAccountDTO(record);
     });
     invalidateCrmViews(saved && "id" in saved ? [`/crm/accounts/${saved.id}`] : []);
     return saved;

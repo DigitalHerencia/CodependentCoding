@@ -15,6 +15,20 @@ export const layers = [
   { id: "route-handler", match: /^app\/api\// },
   { id: "route", match: /^app\// },
   { id: "proxy", match: /^proxy\.ts$/ },
+  // CRM golden slice uses owner-approved module-prefixed PascalCase routes.
+  {
+    id: "feature-form",
+    match: /^features\/crm\/crm(?:New|Edit)[A-Z][A-Za-z0-9]*Form\.tsx$/,
+  },
+  {
+    id: "feature-skeleton",
+    match:
+      /^features\/crm\/(?:crm[A-Z][A-Za-z0-9]*Skeleton|crmSkeletons)\.tsx$/,
+  },
+  {
+    id: "feature-client",
+    match: /^features\/crm\/crm[A-Z][A-Za-z0-9]*FeatureClient\.tsx$/,
+  },
   { id: "feature-form", match: /^features\/.+-form(\.client)?\.tsx$/ },
   { id: "feature-skeleton", match: /^features\/.+-skeleton\.tsx$/ },
   { id: "feature-client", match: /^features\/.+\.client\.tsx$/ },
@@ -546,6 +560,12 @@ export const serverOnlyPaths = [
 /** Filename conventions: directory pattern -> allowed basename pattern. */
 export const filenameConventions = [
   {
+    dir: /^features\/crm\/$/,
+    file: /^(?:crm[A-Z][A-Za-z0-9]*(?:FeatureClient|Feature|Form|Skeleton)|crmSkeletons)\.tsx$/,
+    example:
+      "crmContactsFeature.tsx, crmContactsFeatureClient.tsx, crmNewContactForm.tsx",
+  },
+  {
     dir: /^lib\/modules\/$/,
     file: /^(registry|navigation|status|[a-z][a-zA-Z0-9]*Module)\.ts$/,
     example: "crmModule.ts, registry.ts, navigation.ts, status.ts",
@@ -681,4 +701,4 @@ export const defaultExportAllowed =
 
 /** Files allowed to declare "use client" without the .client suffix. */
 export const useClientAllowed =
-  /(\.client\.tsx$)|(^features\/.+-form\.tsx$)|(^components\/)|(^hooks\/)|(^app\/(.*\/)?(error|global-error)\.tsx$)/;
+  /(\.client\.tsx$)|(^features\/.+-form\.tsx$)|(^features\/crm\/crm[A-Z][A-Za-z0-9]*(?:FeatureClient|Form)\.tsx$)|(^components\/)|(^hooks\/)|(^app\/(.*\/)?(error|global-error)\.tsx$)/;

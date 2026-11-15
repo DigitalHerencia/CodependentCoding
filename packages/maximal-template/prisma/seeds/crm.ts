@@ -1,12 +1,14 @@
 import { Prisma } from "@/generated/prisma/client";
 import type { SeedContext } from "@/prisma/seeds/base";
 
+/** Provide CRM-owned presentation copy and stable UI labels. */
 export const seedIds = {
   crmAccount: "00000000-0000-4000-8000-000000000030",
   crmContact: "00000000-0000-4000-8000-000000000031",
   crmDeal: "00000000-0000-4000-8000-000000000032",
 } as const;
 
+/** Provide CRM-owned presentation copy and stable UI labels. */
 export async function seed({
   tx,
   organization,

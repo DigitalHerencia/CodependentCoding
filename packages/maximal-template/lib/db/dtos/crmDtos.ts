@@ -13,6 +13,11 @@ import type {
   CrmDealSummaryRecord,
 } from "@/lib/db/selects/crmSelects";
 
+// -----------------------------------------------------------------------------
+// Contact DTO projection
+// -----------------------------------------------------------------------------
+
+/** Map selected CRM database records to serializable, presentation-safe DTOs. */
 export function toCrmContactDTO(record: CrmContactRecord): CrmContactDTO {
   return {
     id: record.id,
@@ -34,6 +39,11 @@ export function toCrmContactDTO(record: CrmContactRecord): CrmContactDTO {
   };
 }
 
+// -----------------------------------------------------------------------------
+// Account DTO projection
+// -----------------------------------------------------------------------------
+
+/** Map selected CRM database records to serializable, presentation-safe DTOs. */
 export function toCrmAccountDTO(record: CrmAccountRecord): CrmAccountDTO {
   return {
     id: record.id,
@@ -49,6 +59,11 @@ export function toCrmAccountDTO(record: CrmAccountRecord): CrmAccountDTO {
   };
 }
 
+// -----------------------------------------------------------------------------
+// Opportunity DTO projection
+// -----------------------------------------------------------------------------
+
+/** Map selected CRM database records to serializable, presentation-safe DTOs. */
 export function toCrmDealSummaryDTO(
   record: CrmDealSummaryRecord,
 ): CrmDealSummaryDTO {
@@ -74,6 +89,7 @@ export function toCrmDealSummaryDTO(
   };
 }
 
+/** Map selected CRM database records to serializable, presentation-safe DTOs. */
 export function toCrmDealDTO(record: CrmDealDetailRecord): CrmDealDTO {
   return {
     ...toCrmDealSummaryDTO(record),

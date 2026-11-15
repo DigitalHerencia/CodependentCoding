@@ -4,6 +4,7 @@ import type { Prisma } from "@/generated/prisma/client";
 
 import { ResourceNotFoundError } from "./errors";
 
+/** Declare or implement the CRM-specific contract named recordSalesActivityTx. */
 export async function recordSalesActivityTx(
   tx: Prisma.TransactionClient,
   input: {

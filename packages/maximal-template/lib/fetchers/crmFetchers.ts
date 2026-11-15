@@ -1,14 +1,16 @@
-import {
-  persistedReadLimitSchema,
-  persistedDateRangeSchema,
-  persistedRecordIdSchema,
-} from "@/schemas/commonSchemas";
+import type { Prisma } from "@/generated/prisma/client";
 import "server-only";
 
 import {
   contactIdSchema,
   dealIdSchema,
   contactListCriteriaSchema,
+  crmAccountQuerySchema,
+  crmContactQuerySchema,
+  crmDealQuerySchema,
+  crmPeriodSchema,
+  crmReadLimitSchema,
+  crmRecordIdSchema,
 } from "@/schemas/crmSchemas";
 import { assertPermission } from "@/lib/authz/permissions";
 import {
@@ -19,16 +21,22 @@ import {
 } from "@/lib/db/dtos/crmDtos";
 import {
   crmAccountSelect,
+  selectCrmDealAnalyticsTotals,
   crmContactSelect,
   crmDealDetailSelect,
   crmDealSummarySelect,
 } from "@/lib/db/selects/crmSelects";
 import { withAuthenticatedRead } from "@/lib/db/tenant";
 
+// -----------------------------------------------------------------------------
+// CRM opportunity reads
+// -----------------------------------------------------------------------------
+
+/** Read CRM records through authenticated, authorized, tenant-scoped persistence. */
 export async function getCrmDeals(rawLimit: unknown = 50) {
   return withAuthenticatedRead(async (tx, access) => {
     assertPermission(access, "crm.deal:read");
-    const limit = persistedReadLimitSchema.parse(rawLimit);
+    const limit = crmReadLimitSchema.parse(rawLimit);
 
     const rows = await tx.crmDeal.findMany({
       where: {
@@ -51,6 +59,7 @@ export async function getCrmDeals(rawLimit: unknown = 50) {
   });
 }
 
+/** Read CRM records through authenticated, authorized, tenant-scoped persistence. */
 export async function getCrmDeal(rawDealId: unknown) {
   return withAuthenticatedRead(async (tx, access) => {
     assertPermission(access, "crm.deal:read");
@@ -69,13 +78,14 @@ export async function getCrmDeal(rawDealId: unknown) {
   });
 }
 
+/** Read CRM records through authenticated, authorized, tenant-scoped persistence. */
 export async function getClosedWonCrmValue(
   rawPeriodStart: unknown,
   rawPeriodEnd: unknown,
 ) {
   return withAuthenticatedRead(async (tx, access) => {
     assertPermission(access, "crm.deal:read");
-    const { periodStart, periodEnd } = persistedDateRangeSchema.parse({
+    const { periodStart, periodEnd } = crmPeriodSchema.parse({
       periodStart: rawPeriodStart,
       periodEnd: rawPeriodEnd,
     });
@@ -97,6 +107,11 @@ export async function getClosedWonCrmValue(
   });
 }
 
+// -----------------------------------------------------------------------------
+// CRM contact reads
+// -----------------------------------------------------------------------------
+
+/** Read CRM records through authenticated, authorized, tenant-scoped persistence. */
 export async function getContacts(rawCriteria: unknown = {}) {
   return withAuthenticatedRead(async (tx, access) => {
     assertPermission(access, "crm.contact:read");
@@ -155,6 +170,7 @@ export async function getContacts(rawCriteria: unknown = {}) {
   });
 }
 
+/** Read CRM records through authenticated, authorized, tenant-scoped persistence. */
 export async function getContactById(rawContactId: unknown) {
   return withAuthenticatedRead(async (tx, access) => {
     assertPermission(access, "crm.contact:read");
@@ -171,10 +187,11 @@ export async function getContactById(rawContactId: unknown) {
   });
 }
 
+/** Read CRM records through authenticated, authorized, tenant-scoped persistence. */
 export async function getCrmAccount(rawAccountId: unknown) {
   return withAuthenticatedRead(async (tx, access) => {
     assertPermission(access, "crm.account:read");
-    const accountId = persistedRecordIdSchema.parse(rawAccountId);
+    const accountId = crmRecordIdSchema.parse(rawAccountId);
     const row = await tx.crmAccount.findFirst({
       where: {
         id: accountId,
@@ -187,10 +204,11 @@ export async function getCrmAccount(rawAccountId: unknown) {
   });
 }
 
+/** Read CRM records through authenticated, authorized, tenant-scoped persistence. */
 export async function getCrmAccounts(rawLimit: unknown = 100) {
   return withAuthenticatedRead(async (tx, access) => {
     assertPermission(access, "crm.account:read");
-    const limit = persistedReadLimitSchema.parse(rawLimit);
+    const limit = crmReadLimitSchema.parse(rawLimit);
     const rows = await tx.crmAccount.findMany({
       where: { organizationId: access.organizationId, archivedAt: null },
       orderBy: { name: "asc" },
@@ -198,5 +216,166 @@ export async function getCrmAccounts(rawLimit: unknown = 100) {
       select: crmAccountSelect,
     });
     return rows.map(toCrmAccountDTO);
+  });
+}
+
+// -----------------------------------------------------------------------------
+// CRM tenant-scoped server pagination and complete analytics.
+// -----------------------------------------------------------------------------
+/** Build stable page metadata without exposing raw database cursors. */
+function crmPageInfo(page: number, pageSize: number, total: number) {
+  return {
+    page,
+    pageSize,
+    total,
+    totalPages: Math.max(1, Math.ceil(total / pageSize)),
+    hasNext: page * pageSize < total,
+    hasPrevious: page > 1,
+  };
+}
+
+// -----------------------------------------------------------------------------
+// CRM paginated account reads
+// -----------------------------------------------------------------------------
+
+/** Database-filtered accounts, with deterministic paging before limiting rows. */
+export async function getCrmAccountsPage(rawCriteria: unknown = {}) {
+  const criteria = crmAccountQuerySchema.parse(rawCriteria);
+  return withAuthenticatedRead(async (tx, access) => {
+    assertPermission(access, "crm.account:read");
+    const where: Prisma.CrmAccountWhereInput = {
+      organizationId: access.organizationId,
+      archivedAt: null,
+      ...(criteria.status ? { status: criteria.status } : {}),
+      ...(criteria.q ? {
+        OR: [
+          { name: { contains: criteria.q, mode: "insensitive" } },
+          { industry: { contains: criteria.q, mode: "insensitive" } },
+          { website: { contains: criteria.q, mode: "insensitive" } },
+        ],
+      } : {}),
+    };
+    const orderBy: Prisma.CrmAccountOrderByWithRelationInput[] =
+      criteria.sort === "updated-desc"
+        ? [{ updatedAt: "desc" }, { id: "asc" }]
+        : criteria.sort === "name-desc"
+          ? [{ name: "desc" }, { id: "asc" }]
+          : [{ name: "asc" }, { id: "asc" }];
+    const [total, rows] = await Promise.all([
+      tx.crmAccount.count({ where }),
+      tx.crmAccount.findMany({
+        where, orderBy,
+        skip: (criteria.page - 1) * criteria.pageSize,
+        take: criteria.pageSize,
+        select: crmAccountSelect,
+      }),
+    ]);
+    return {
+      items: rows.map(toCrmAccountDTO),
+      pageInfo: crmPageInfo(criteria.page, criteria.pageSize, total),
+      criteria,
+    };
+  });
+}
+
+// -----------------------------------------------------------------------------
+// CRM paginated contact reads
+// -----------------------------------------------------------------------------
+
+/** Database-filtered contacts including linked account names, RLS scoped. */
+export async function getCrmContactsPage(rawCriteria: unknown = {}) {
+  const criteria = crmContactQuerySchema.parse(rawCriteria);
+  return withAuthenticatedRead(async (tx, access) => {
+    assertPermission(access, "crm.contact:read");
+    const where: Prisma.CrmContactWhereInput = {
+      organizationId: access.organizationId,
+      archivedAt: null,
+      ...(criteria.status ? { status: criteria.status } : {}),
+      ...(criteria.q ? {
+        OR: [
+          { firstName: { contains: criteria.q, mode: "insensitive" } },
+          { lastName: { contains: criteria.q, mode: "insensitive" } },
+          { email: { contains: criteria.q, mode: "insensitive" } },
+          { account: { name: { contains: criteria.q, mode: "insensitive" } } },
+        ],
+      } : {}),
+    };
+    const orderBy: Prisma.CrmContactOrderByWithRelationInput[] =
+      criteria.sort === "updated-desc"
+        ? [{ updatedAt: "desc" }, { id: "asc" }]
+        : criteria.sort === "name-desc"
+          ? [{ lastName: "desc" }, { firstName: "desc" }, { id: "asc" }]
+          : [{ lastName: "asc" }, { firstName: "asc" }, { id: "asc" }];
+    const [total, rows] = await Promise.all([
+      tx.crmContact.count({ where }),
+      tx.crmContact.findMany({
+        where, orderBy,
+        skip: (criteria.page - 1) * criteria.pageSize,
+        take: criteria.pageSize,
+        select: crmContactSelect,
+      }),
+    ]);
+    return {
+      items: rows.map(toCrmContactDTO),
+      pageInfo: crmPageInfo(criteria.page, criteria.pageSize, total),
+      criteria,
+    };
+  });
+}
+
+// -----------------------------------------------------------------------------
+// CRM paginated opportunity reads
+// -----------------------------------------------------------------------------
+
+/** Database-filtered pipeline deals with stable ordering and paginated DTOs. */
+export async function getCrmDealsPage(rawCriteria: unknown = {}) {
+  const criteria = crmDealQuerySchema.parse(rawCriteria);
+  return withAuthenticatedRead(async (tx, access) => {
+    assertPermission(access, "crm.deal:read");
+    const where: Prisma.CrmDealWhereInput = {
+      organizationId: access.organizationId,
+      archivedAt: null,
+      ...(criteria.stage ? { stage: criteria.stage } : {}),
+      ...(criteria.q ? {
+        OR: [
+          { name: { contains: criteria.q, mode: "insensitive" } },
+          { account: { name: { contains: criteria.q, mode: "insensitive" } } },
+          { owner: { user: { displayName: { contains: criteria.q, mode: "insensitive" } } } },
+        ],
+      } : {}),
+    };
+    const orderBy: Prisma.CrmDealOrderByWithRelationInput[] =
+      criteria.sort === "updated-desc"
+        ? [{ updatedAt: "desc" }, { id: "asc" }]
+        : criteria.sort === "value-desc"
+          ? [{ value: "desc" }, { id: "asc" }]
+          : [{ stage: "asc" }, { expectedCloseDate: "asc" }, { id: "asc" }];
+    const [total, rows] = await Promise.all([
+      tx.crmDeal.count({ where }),
+      tx.crmDeal.findMany({
+        where, orderBy,
+        skip: (criteria.page - 1) * criteria.pageSize,
+        take: criteria.pageSize,
+        select: crmDealSummarySelect,
+      }),
+    ]);
+    return {
+      items: rows.map(toCrmDealSummaryDTO),
+      pageInfo: crmPageInfo(criteria.page, criteria.pageSize, total),
+      criteria,
+    };
+  });
+}
+
+/**
+ * Aggregate every active CRM deal by currency and stage inside the
+ * authenticated RLS transaction. A parameterized SQL aggregate avoids
+ * loading the full tenant pipeline into server memory.
+ */
+export async function getCrmDealAnalytics() {
+  return withAuthenticatedRead(async (tx, access) => {
+    assertPermission(access, "crm.deal:read");
+    const rows = await selectCrmDealAnalyticsTotals(tx, access.organizationId);
+    return rows;
   });
 }

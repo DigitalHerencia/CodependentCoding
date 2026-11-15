@@ -1,3 +1,8 @@
+// -----------------------------------------------------------------------------
+// Contact and lead copy
+// -----------------------------------------------------------------------------
+
+/** Provide CRM-owned presentation copy and stable UI labels. */
 export const contactFormCopy = {
   fields: {
     firstName: "First name",
@@ -15,6 +20,11 @@ export const contactFormCopy = {
   saving: "Saving…",
 };
 
+// -----------------------------------------------------------------------------
+// Account copy
+// -----------------------------------------------------------------------------
+
+/** Provide CRM-owned presentation copy and stable UI labels. */
 export const accountFormCopy = {
   fields: {
     name: "Company name",
@@ -28,6 +38,11 @@ export const accountFormCopy = {
   saving: "Saving…",
 };
 
+// -----------------------------------------------------------------------------
+// CRM page copy
+// -----------------------------------------------------------------------------
+
+/** Provide CRM-owned presentation copy and stable UI labels. */
 export const crmTemplateCopy = {
   editAccount: "Edit account",
   relationshipNotes: "Relationship notes",
@@ -95,17 +110,7 @@ export const crmTemplateCopy = {
     `Analysis of the latest ${count} opportunities (maximum 100). Values are kept separate by currency.`,
 };
 
-export const crmBlockCopy = {
-  searchAccounts: "Search accounts",
-  searchCompanyOrIndustry: "Search company or industry",
-  newAccount: "New account",
-  searchContacts: "Search contacts",
-  searchPersonEmailOrAccount: "Search person, email or account",
-  add: "Add",
-  lead: "lead",
-  contact: "contact",
-} as const;
-
+/** Provide CRM-owned presentation copy and stable UI labels. */
 export const crmPresentationCopy = {
   leads: "leads",
   contacts: "contacts",
@@ -118,6 +123,7 @@ export const crmPresentationCopy = {
   sentenceSeparator: "%",
 } as const;
 
+/** Provide CRM-owned presentation copy and stable UI labels. */
 export const crmControlCopy = {
   chooseAccount: "Choose account",
   opportunityName: "Opportunity name",
@@ -131,7 +137,59 @@ export const crmControlCopy = {
   moveOpportunity: "Move opportunity",
 } as const;
 
+/** Provide CRM-owned presentation copy and stable UI labels. */
 export const crmRemainingCopy = {
   personName: (value0: unknown, value1: unknown) => `${value0} ${value1}`,
   nameAndDetail: (value0: unknown, value1: unknown) => `${value0} · ${value1}`,
+} as const;
+
+
+// -----------------------------------------------------------------------------
+// CRM-specific result messages and page filter labels.
+// -----------------------------------------------------------------------------
+/** Human-readable CRM operation results; form clients pass only status keys. */
+export const crmResultCopy = {
+  saved: "Saved successfully.",
+  failed: "Unable to save. Please try again.",
+} as const;
+
+/** CRM list, filter and pagination control copy. */
+export const crmListCopy = {
+  search: "Search CRM records",
+  sort: "Sort by",
+  status: "Status",
+  stage: "Pipeline stage",
+  all: "All",
+  previous: "Previous",
+  next: "Next",
+  page: (page: number, total: number) => `Page ${page} of ${total}`,
+  resultCount: (count: number) => `${count} matching records`,
+  sortNameAsc: "Name (A-Z)",
+  sortNameDesc: "Name (Z-A)",
+  sortUpdatedDesc: "Recently updated",
+  sortStageAsc: "Pipeline stage",
+  sortValueDesc: "Highest value",
+  createAccount: "New account",
+  createContact: "New contact",
+  createLead: "New lead",
+  qualifyLead: "Qualify lead",
+  qualifyingLead: "Qualifying…",
+  accountStatusOptions: [
+    { value: "PROSPECT", label: "Prospect" },
+    { value: "ACTIVE", label: "Active" },
+    { value: "INACTIVE", label: "Inactive" },
+  ],
+  contactStatusOptions: [
+    { value: "LEAD", label: "Lead" },
+    { value: "ACTIVE", label: "Active" },
+    { value: "INACTIVE", label: "Inactive" },
+  ],
+  stageOptions: [
+    { value: "LEAD", label: "Lead" },
+    { value: "QUALIFIED", label: "Qualified" },
+    { value: "PROPOSAL", label: "Proposal" },
+    { value: "NEGOTIATION", label: "Negotiation" },
+    { value: "WON", label: "Won" },
+    { value: "LOST", label: "Lost" },
+  ],
 } as const;

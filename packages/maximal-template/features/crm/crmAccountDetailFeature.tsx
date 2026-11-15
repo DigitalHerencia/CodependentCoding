@@ -1,6 +1,7 @@
 import { CrmAccountDetailTemplate } from "@/components/templates/crm-templates";
 import { loadCrmAccountDetailWorkflow } from "@/lib/workflows/crmWorkflows";
 
+/** Compose the authorized CRM workflow and the route presentation. */
 export async function CrmAccountDetailFeature({
   accountId,
 }: {

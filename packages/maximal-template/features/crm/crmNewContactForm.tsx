@@ -2,25 +2,15 @@
 
 import { CrmContactFieldBlock } from "@/components/blocks/crm-blocks";
 import { CrmContactFormTemplate } from "@/components/templates/crm-templates";
-import {
-  createCrmContactWorkflow,
-  updateCrmContactWorkflow,
-} from "@/lib/workflows/crmMutationWorkflows";
-import { contactFormSchema } from "@/schemas/crmSchemas";
-import type { CrmContactDTO } from "@/types/crmTypes";
+import { createCrmContactWorkflow, createCrmLeadWorkflow } from "@/lib/workflows/crmWorkflows";
+import { contactFormSchema, contactStatusSchema } from "@/schemas/crmSchemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
 import type { z } from "zod";
 
 /** Client RHF state for contacts and leads; rendering belongs to CRM templates. */
-export function NewCrmContactForm({
-  contact,
-  lead = false,
-}: {
-  contact?: CrmContactDTO;
-  lead?: boolean;
-}) {
+export function CrmNewContactForm({ lead = false }: { lead?: boolean }) {
   const router = useRouter();
   const form = useForm<
     z.input<typeof contactFormSchema>,
@@ -29,14 +19,12 @@ export function NewCrmContactForm({
   >({
     resolver: zodResolver(contactFormSchema),
     defaultValues: {
-      firstName: contact?.firstName ?? "",
-      lastName: contact?.lastName ?? "",
-      email: contact?.email ?? "",
-      phone: contact?.phone ?? "",
-      title: contact?.title ?? "",
-      status: contact?.status === "ARCHIVED"
-        ? "INACTIVE"
-        : (contact?.status ?? (lead ? "LEAD" : "ACTIVE")),
+      firstName: "",
+      lastName: "",
+      email: "",
+      phone: "",
+      title: "",
+      status: lead ? "LEAD" : "ACTIVE",
     },
   });
   const fieldNames = ["firstName", "lastName", "email", "phone", "title", "status"] as const;
@@ -51,6 +39,7 @@ export function NewCrmContactForm({
           field={field}
           invalid={fieldState.invalid}
           error={fieldState.error?.message}
+          statusOptions={lead ? ["LEAD"] : contactStatusSchema.options}
         />
       )}
     />
@@ -58,18 +47,14 @@ export function NewCrmContactForm({
 
   return (
     <CrmContactFormTemplate
-      edit={Boolean(contact)}
+      edit={false}
       lead={lead}
       fields={fields}
       pending={form.formState.isSubmitting}
       error={form.formState.errors.root?.message}
       onSubmit={form.handleSubmit(async (values) => {
-        const result = contact
-          ? await updateCrmContactWorkflow({
-              ...values,
-              contactId: contact.id,
-              expectedUpdatedAt: contact.updatedAt,
-            })
+        const result = lead
+          ? await createCrmLeadWorkflow(values)
           : await createCrmContactWorkflow(values);
         if (!result.ok) {
           for (const name of fieldNames) {

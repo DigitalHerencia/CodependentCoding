@@ -1,5 +1,6 @@
 import type { ModuleDefinition } from "@/types/moduleTypes";
 
+/** Register CRM navigation, authorization resources and module contributions. */
 export const crmModule = {
   id: "crm",
   nav: {
@@ -25,5 +26,10 @@ export const crmModule = {
     resources: ["crm.contact", "crm.account", "crm.deal"],
     grants: { MEMBER: ["read", "create", "update", "delete"] },
   },
-  records: [{ label: "CRM contacts", model: "crmContact" }],
+  records: [
+    { label: "CRM contacts", model: "crmContact" },
+    { label: "CRM accounts", model: "crmAccount" },
+    { label: "CRM opportunities", model: "crmDeal" },
+    { label: "CRM activities", model: "crmActivity" },
+  ],
 } satisfies ModuleDefinition;

@@ -2,8 +2,7 @@
 
 import { CrmOpportunityFieldBlock } from "@/components/blocks/crm-blocks";
 import { CrmOpportunityFormTemplate } from "@/components/templates/crm-templates";
-import { formResultCopy } from "@/content/application";
-import { createCrmDealWorkflow } from "@/lib/workflows/crmMutationWorkflows";
+import { createCrmDealWorkflow } from "@/lib/workflows/crmWorkflows";
 import { createCrmDealSchema } from "@/schemas/crmSchemas";
 import type { CrmAccountDTO } from "@/types/crmTypes";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -13,9 +12,9 @@ import { Controller, useForm, type FieldPath } from "react-hook-form";
 import type { z } from "zod";
 
 /** Own only RHF lifecycle; the template composes the visible form. */
-export function NewCrmOpportunityForm({ accounts }: { accounts: CrmAccountDTO[] }) {
+export function CrmNewOpportunityForm({ accounts }: { accounts: CrmAccountDTO[] }) {
   const router = useRouter();
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState<"saved" | "failed" | undefined>(undefined);
   const form = useForm<
     z.input<typeof createCrmDealSchema>,
     unknown,
@@ -55,7 +54,7 @@ export function NewCrmOpportunityForm({ accounts }: { accounts: CrmAccountDTO[] 
       disabled={!accounts.length}
       status={message}
       onSubmit={form.handleSubmit(async (values) => {
-        setMessage("");
+        setMessage(undefined);
         try {
           const result = await createCrmDealWorkflow(values);
           if (!result.ok) {
@@ -67,11 +66,11 @@ export function NewCrmOpportunityForm({ accounts }: { accounts: CrmAccountDTO[] 
             form.setError("root", { message: result.error.message });
             return;
           }
-          setMessage(formResultCopy.saved);
+          setMessage("saved");
           form.reset();
           router.refresh();
         } catch {
-          form.setError("root", { message: formResultCopy.failed });
+          form.setError("root", { message: "Unable to save opportunity." });
         }
       })}
     />

@@ -1,22 +1,22 @@
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
-  DashboardPanel,
-  DashboardTable,
-} from "@/components/blocks/shared-blocks";
-import { Card } from "@/components/ui/card";
+  Table, TableHeader, TableBody, TableRow, TableCell, TableHead,
+} from "@/components/ui/table";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { NativeSelect, NativeSelectOption } from "@/components/ui/native-select";
-import { contactStatusSchema, CrmDealStage } from "@/schemas/crmSchemas";
 import {
   crmPresentationCopy,
-  crmBlockCopy,
   crmControlCopy,
   crmRemainingCopy,
   accountFormCopy,
   contactFormCopy,
   crmTemplateCopy,
+  crmResultCopy,
+  crmListCopy,
 } from "@/content/crm";
 import type {
   CrmAccountDTO,
@@ -24,10 +24,14 @@ import type {
   CrmDealSummaryDTO,
 } from "@/types/crmTypes";
 import Link from "next/link";
-import type { ComponentProps, ReactNode } from "react";
+import type { ReactNode, FormEventHandler, ComponentProps } from "react";
+import type { Route } from "next";
+import type { CrmPageInfo } from "@/types/crmTypes";
+import type { CrmFieldBinding } from "@/types/crmTypes";
 
 // Why: Templates: pure presentation for the crm pages, laid out from DTOs; data and slots come from features.
 
+/** Compose CRM content and ShadCN primitives into a domain UI block. */
 export function CrmAccountDetailContentBlock({
   account,
 }: {
@@ -35,13 +39,13 @@ export function CrmAccountDetailContentBlock({
 }) {
   return (
     <>
-      <div className="grid gap-4 lg:grid-cols-[2fr_1fr]">
-        <DashboardPanel title={crmTemplateCopy.relationshipNotes}>
+      <section className="grid gap-4 lg:grid-cols-[2fr_1fr]">
+        <CrmPanelBlock title={crmTemplateCopy.relationshipNotes}>
           <p className="whitespace-pre-wrap">
             {account.notes ?? crmTemplateCopy.noNotes}
           </p>
-        </DashboardPanel>
-        <DashboardPanel title={crmTemplateCopy.companyProfile}>
+        </CrmPanelBlock>
+        <CrmPanelBlock title={crmTemplateCopy.companyProfile}>
           <dl className="space-y-2">
             <dt>{crmTemplateCopy.industry}</dt>
             <dd>{account.industry ?? crmTemplateCopy.notRecorded}</dd>
@@ -64,12 +68,13 @@ export function CrmAccountDetailContentBlock({
               {account.dealCount}
             </dd>
           </dl>
-        </DashboardPanel>
-      </div>
+        </CrmPanelBlock>
+      </section>
     </>
   );
 }
 
+/** Compose CRM content and ShadCN primitives into a domain UI block. */
 export function CrmAccountsContentBlock({
   accounts,
 }: {
@@ -78,7 +83,7 @@ export function CrmAccountsContentBlock({
 }) {
   return (
     <>
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+      <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         {accounts.map((account) => (
           <Card key={account.id} className="space-y-3 p-5">
             <Link
@@ -101,12 +106,13 @@ export function CrmAccountsContentBlock({
             </p>
           </Card>
         ))}
-      </div>
+      </section>
       {!accounts.length && <p>{crmTemplateCopy.noAccounts}</p>}
     </>
   );
 }
 
+/** Compose CRM content and ShadCN primitives into a domain UI block. */
 export function CrmAnalyticsContentBlock({
   count,
   groups,
@@ -124,8 +130,8 @@ export function CrmAnalyticsContentBlock({
     <>
       <p>{crmTemplateCopy.analyticsDescription(count)}</p>
       {groups.map(({ currency, rows }) => (
-        <DashboardPanel key={currency} title={currency}>
-          <DashboardTable
+        <CrmPanelBlock key={currency} title={currency}>
+          <CrmTableBlock
             columns={[
               { key: "stage", label: crmTemplateCopy.stage },
               { key: "count", label: crmTemplateCopy.opportunityCount },
@@ -134,13 +140,14 @@ export function CrmAnalyticsContentBlock({
             ]}
             rows={rows}
           />
-        </DashboardPanel>
+        </CrmPanelBlock>
       ))}
       {!count && <p>{crmTemplateCopy.noAnalytics}</p>}
     </>
   );
 }
 
+/** Compose CRM content and ShadCN primitives into a domain UI block. */
 export function CrmContactDetailContentBlock({
   contact,
 }: {
@@ -149,12 +156,12 @@ export function CrmContactDetailContentBlock({
 }) {
   return (
     <>
-      <div className="grid gap-4 lg:grid-cols-[2fr_1fr]">
-        <DashboardPanel title={crmTemplateCopy.contactProfile}>
+      <section className="grid gap-4 lg:grid-cols-[2fr_1fr]">
+        <CrmPanelBlock title={crmTemplateCopy.contactProfile}>
           <p className="text-xl">
             {contact.title ?? crmTemplateCopy.unknownTitle}
           </p>
-          <div className="mt-5 space-y-3">
+          <section className="mt-5 space-y-3">
             {contact.email && (
               <p>
                 <a className="type-link" href={`mailto:${contact.email}`}>
@@ -181,9 +188,9 @@ export function CrmContactDetailContentBlock({
                 crmTemplateCopy.noAccount
               )}
             </p>
-          </div>
-        </DashboardPanel>
-        <DashboardPanel title={crmTemplateCopy.relationship}>
+          </section>
+        </CrmPanelBlock>
+        <CrmPanelBlock title={crmTemplateCopy.relationship}>
           <dl className="space-y-2">
             <dt>{crmTemplateCopy.status}</dt>
             <dd>{contact.status}</dd>
@@ -194,12 +201,13 @@ export function CrmContactDetailContentBlock({
             <dt>{crmTemplateCopy.lastUpdated}</dt>
             <dd>{contact.updatedAt.slice(0, 10)}</dd>
           </dl>
-        </DashboardPanel>
-      </div>
+        </CrmPanelBlock>
+      </section>
     </>
   );
 }
 
+/** Compose CRM content and ShadCN primitives into a domain UI block. */
 export function CrmContactsContentBlock({
   contacts,
   lead = false,
@@ -216,7 +224,7 @@ export function CrmContactsContentBlock({
           : crmTemplateCopy.contactDirectoryDescription}{" "}
         {crmTemplateCopy.contactLimit}
       </p>
-      <DashboardTable
+      <CrmTableBlock
         columns={[
           { key: "person", label: crmTemplateCopy.person },
           { key: "role", label: crmTemplateCopy.jobTitle },
@@ -253,14 +261,22 @@ export function CrmContactsContentBlock({
   );
 }
 
+/** Compose CRM content and ShadCN primitives into a domain UI block. */
 export function CrmLeadDetailPageBlock({
-  contact,
+  contact, qualifyControl,
 }: {
   contact: CrmContactDTO;
+  qualifyControl?: ReactNode | undefined;
 }) {
-  return <CrmContactDetailContentBlock contact={contact} lead />;
+  return (
+    <>
+      <CrmContactDetailContentBlock contact={contact} lead />
+      {qualifyControl}
+    </>
+  );
 }
 
+/** Compose CRM content and ShadCN primitives into a domain UI block. */
 export function CrmLeadsContentBlock({
   contacts,
 }: {
@@ -271,13 +287,13 @@ export function CrmLeadsContentBlock({
   return (
     <>
       <p>{crmTemplateCopy.leadQueueDescription}</p>
-      <div className="space-y-3">
+      <section className="space-y-3">
         {contacts.map((contact) => (
           <Card
             key={contact.id}
             className="grid gap-4 p-5 md:grid-cols-[1fr_1fr_auto]"
           >
-            <div>
+            <section>
               <Link
                 className="type-label hover:underline"
                 href={`/crm/leads/${contact.id}`}
@@ -288,8 +304,8 @@ export function CrmLeadsContentBlock({
               <p className="text-sm text-muted-primary">
                 {crmTemplateCopy.added} {contact.createdAt.slice(0, 10)}
               </p>
-            </div>
-            <div>
+            </section>
+            <section>
               {contact.email ? (
                 <a className="type-link" href={`mailto:${contact.email}`}>
                   {contact.email}
@@ -299,18 +315,19 @@ export function CrmLeadsContentBlock({
               )}
               <p>{contact.phone ?? crmTemplateCopy.unknownPhone}</p>
               <p>{contact.account?.name ?? crmTemplateCopy.noAccount}</p>
-            </div>
+            </section>
             <Link className="type-link" href={`/crm/leads/${contact.id}/edit`}>
               {crmTemplateCopy.qualify}
             </Link>
           </Card>
         ))}
-      </div>
+      </section>
       {!contacts.length && <p>{crmTemplateCopy.noLeads}</p>}
     </>
   );
 }
 
+/** Compose CRM content and ShadCN primitives into a domain UI block. */
 export function CrmPipelineContentBlock({
   stages,
   renderControls,
@@ -324,17 +341,17 @@ export function CrmPipelineContentBlock({
       <p className="text-muted-primary">
         {crmTemplateCopy.pipelineDescription}
       </p>
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+      <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         {stages.map(({ stage, items }) => {
           return (
-            <DashboardPanel
+            <CrmPanelBlock
               key={stage}
               title={crmRemainingCopy.nameAndDetail(
                 stage.replaceAll("_", " "),
                 items.length,
               )}
             >
-              <div className="space-y-3">
+              <section className="space-y-3">
                 {items.map((deal) => (
                   <Card variant="inset" key={deal.id} className="space-y-3 p-4">
                     <h3 className="type-label">{deal.name}</h3>
@@ -371,15 +388,16 @@ export function CrmPipelineContentBlock({
                     {crmTemplateCopy.noDealsInStage}
                   </p>
                 )}
-              </div>
-            </DashboardPanel>
+              </section>
+            </CrmPanelBlock>
           );
         })}
-      </div>
+      </section>
     </>
   );
 }
 
+/** Compose CRM content and ShadCN primitives into a domain UI block. */
 export function CrmAccountDetailToolbarBlock(
   props: ComponentProps<typeof CrmAccountDetailContentBlock>,
 ) {
@@ -390,9 +408,11 @@ export function CrmAccountDetailToolbarBlock(
     </Link>
   );
 }
+/** Compose CRM content and ShadCN primitives into a domain UI block. */
 export function CrmAccountsToolbarBlock({ toolbar }: { toolbar?: ReactNode }) {
   return toolbar ?? null;
 }
+/** Compose CRM content and ShadCN primitives into a domain UI block. */
 export function CrmContactDetailToolbarBlock(
   props: ComponentProps<typeof CrmContactDetailContentBlock>,
 ) {
@@ -406,12 +426,15 @@ export function CrmContactDetailToolbarBlock(
     </Link>
   );
 }
+/** Compose CRM content and ShadCN primitives into a domain UI block. */
 export function CrmContactsToolbarBlock({ toolbar }: { toolbar?: ReactNode }) {
   return toolbar ?? null;
 }
+/** Compose CRM content and ShadCN primitives into a domain UI block. */
 export function CrmLeadsToolbarBlock({ toolbar }: { toolbar?: ReactNode }) {
   return toolbar ?? null;
 }
+/** Compose CRM content and ShadCN primitives into a domain UI block. */
 export function CrmPipelineToolbarBlock({ toolbar }: { toolbar?: ReactNode }) {
   return toolbar ?? null;
 }
@@ -419,80 +442,11 @@ export function CrmPipelineToolbarBlock({ toolbar }: { toolbar?: ReactNode }) {
 // -----------------------------------------------------------------------------
 // Interactive CRM search controls: composed primitives, no local state.
 // -----------------------------------------------------------------------------
-export function CrmAccountsToolbar({
-  query,
-  onQueryChange,
-}: {
-  query: string;
-  onQueryChange: (value: string) => void;
-}) {
-  return (
-    <div className="flex flex-wrap gap-3">
-      <Input
-        aria-label={crmBlockCopy.searchAccounts}
-        value={query}
-        onChange={(event) => onQueryChange(event.target.value)}
-        placeholder={crmBlockCopy.searchCompanyOrIndustry}
-      />
-      <Link className="type-link" href="/crm/accounts/new">
-        {crmBlockCopy.newAccount}
-      </Link>
-    </div>
-  );
-}
-export function CrmContactsToolbar({
-  query,
-  onQueryChange,
-  lead,
-}: {
-  query: string;
-  onQueryChange: (value: string) => void;
-  lead: boolean;
-}) {
-  return (
-    <div className="flex flex-wrap gap-3">
-      <Input
-        aria-label={crmBlockCopy.searchContacts}
-        placeholder={crmBlockCopy.searchPersonEmailOrAccount}
-        value={query}
-        onChange={(event) => onQueryChange(event.target.value)}
-      />
-      <Link
-        className="type-link"
-        href={`/crm/${lead ? crmPresentationCopy.leads : crmPresentationCopy.contacts}/new`}
-      >
-        {crmBlockCopy.add}
-        {lead ? crmBlockCopy.lead : crmBlockCopy.contact}
-      </Link>
-    </div>
-  );
-}
-
-export function CrmPipelineToolbar({
-  query,
-  onQueryChange,
-}: {
-  query: string;
-  onQueryChange: (query: string) => void;
-}) {
-  return (
-    <Input
-      aria-label={crmPresentationCopy.searchOpportunitiesAndAccounts}
-      placeholder={crmPresentationCopy.searchOpportunitiesOrAccounts}
-      value={query}
-      onChange={(event) => onQueryChange(event.target.value)}
-    />
-  );
-}
-
-
+/** Declare or implement the CRM-specific contract named CrmAccountsToolbar. */
 // -----------------------------------------------------------------------------
-// CRM form field blocks: presentation only; RHF controllers live in forms.
+// CRM form field blocks: presentation only; controllers belong in form features.
 // -----------------------------------------------------------------------------
-import type { ControllerRenderProps, FieldValues } from "react-hook-form";
-
-type CrmFieldBinding = Pick<ControllerRenderProps<FieldValues>, "name" | "value" | "onChange" | "onBlur" | "ref">;
-type CrmFieldView = { field: CrmFieldBinding; invalid: boolean; error?: string };
+type CrmFieldView = { field: CrmFieldBinding; invalid: boolean; error?: string | undefined };
 
 /** Render one account field from its RHF controller without owning RHF state. */
 export function CrmAccountFieldBlock({ name, field, invalid, error }: CrmFieldView & {
@@ -513,8 +467,9 @@ export function CrmAccountFieldBlock({ name, field, invalid, error }: CrmFieldVi
 }
 
 /** Render one contact/lead field using current ShadCN Field components. */
-export function CrmContactFieldBlock({ name, field, invalid, error }: CrmFieldView & {
+export function CrmContactFieldBlock({ name, field, invalid, error, statusOptions }: CrmFieldView & {
   name: "firstName" | "lastName" | "email" | "phone" | "title" | "status";
+  statusOptions: readonly string[];
 }) {
   const inputProps = { id: name, name: field.name, onBlur: field.onBlur, onChange: field.onChange, ref: field.ref, "aria-invalid": invalid };
   return (
@@ -522,7 +477,7 @@ export function CrmContactFieldBlock({ name, field, invalid, error }: CrmFieldVi
       <FieldLabel htmlFor={name}>{contactFormCopy.fields[name]}</FieldLabel>
       {name === "status" ? (
         <NativeSelect {...inputProps} value={String(field.value ?? "")} className="control-field">
-          {contactStatusSchema.options.map((status) => <NativeSelectOption key={status} value={status}>{status}</NativeSelectOption>)}
+          {statusOptions.map((status) => <NativeSelectOption key={status} value={status}>{status}</NativeSelectOption>)}
         </NativeSelect>
       ) : (
         <Input {...inputProps} value={String(field.value ?? "")} type={name === "email" ? "email" : "text"} />
@@ -571,12 +526,13 @@ export function CrmOpportunityFieldBlock({ name, field, invalid, error, accounts
 }
 
 /** Render the allowed opportunity stages; the server transaction validates transitions. */
-export function CrmDealStageFieldBlock({ field, invalid, error, id }: CrmFieldView & { id: string }) {
+export function CrmDealStageFieldBlock({ field, invalid, error, id, stageOptions }: CrmFieldView & { id: string; stageOptions: readonly string[] }) {
+  const inputProps = { id, name: field.name, onBlur: field.onBlur, onChange: field.onChange, ref: field.ref, "aria-invalid": invalid };
   return (
     <Field data-invalid={invalid}>
       <FieldLabel htmlFor={id}>{crmControlCopy.opportunityStage}</FieldLabel>
-      <NativeSelect name={field.name} value={String(field.value ?? "")} onChange={field.onChange} onBlur={field.onBlur} ref={field.ref} id={id} aria-invalid={invalid} className="control-field">
-        {Object.values(CrmDealStage).map((stage) => <NativeSelectOption key={stage} value={stage}>{stage}</NativeSelectOption>)}
+      <NativeSelect {...inputProps} value={String(field.value ?? "")} className="control-field">
+        {stageOptions.map((stage) => <NativeSelectOption key={stage} value={stage}>{stage}</NativeSelectOption>)}
       </NativeSelect>
       <FieldError>{error}</FieldError>
     </Field>
@@ -585,13 +541,333 @@ export function CrmDealStageFieldBlock({ field, invalid, error, id }: CrmFieldVi
 
 /** Shared submit/error/status block for CRM form templates. */
 export function CrmFormSubmitBlock({ label, pendingLabel, pending, disabled = false, error, status }: {
-  label: string; pendingLabel?: string; pending: boolean; disabled?: boolean; error?: string; status?: string;
+  label: string; pendingLabel?: string; pending: boolean; disabled?: boolean; error?: string | undefined; status?: "saved" | "failed" | undefined;
 }) {
   return (
     <>
       {error && <FieldError>{error}</FieldError>}
       <Button type="submit" disabled={pending || disabled}>{pending ? (pendingLabel ?? label) : label}</Button>
-      {status && <p role="status">{status}</p>}
+      {status && <p role="status">{crmResultCopy[status]}</p>}
+    </>
+  );
+}
+
+
+// -----------------------------------------------------------------------------
+// CRM-owned layout and collection primitives (no shared presentation).
+// -----------------------------------------------------------------------------
+
+/** An accessible CRM page frame beneath the existing tenant route-group shell. */
+export function CrmPageBlock({
+  section,
+  account,
+  contact,
+  toolbar,
+  children,
+}: {
+  section: "accounts" | "analytics" | "contacts" | "leads" | "pipeline" | "detail";
+  account?: CrmAccountDTO | undefined;
+  contact?: CrmContactDTO | undefined;
+  toolbar?: ReactNode | undefined;
+  children: ReactNode;
+}) {
+  const titles = {
+    accounts: crmTemplateCopy.accounts,
+    analytics: crmTemplateCopy.analytics,
+    contacts: crmTemplateCopy.contactDirectory,
+    leads: crmTemplateCopy.leadQueue,
+    pipeline: crmTemplateCopy.pipeline,
+    detail: crmTemplateCopy.relationship,
+  };
+  const title = account?.name
+    ?? (contact ? crmRemainingCopy.personName(contact.firstName, contact.lastName) : titles[section]);
+  return (
+    <Card role="region" aria-label={title} className="min-w-0">
+      <CardHeader className="grid gap-3 md:flex md:items-center md:justify-between">
+        <h1 className="type-title">{title}</h1>
+        {toolbar}
+      </CardHeader>
+      <CardContent className="space-y-4 p-4">{children}</CardContent>
+    </Card>
+  );
+}
+
+/** A CRM record grouping using domain-owned ShadCN card composition. */
+export function CrmPanelBlock({
+  title,
+  children,
+  className,
+}: {
+  title?: string | undefined;
+  children: ReactNode;
+  className?: string | undefined;
+}) {
+  return (
+    <Card className={className}>
+      {title && <CardHeader><CardTitle>{title}</CardTitle></CardHeader>}
+      <CardContent className="space-y-3 p-4">{children}</CardContent>
+    </Card>
+  );
+}
+
+type CrmTableColumn = { key: string; label: string };
+type CrmTableRow = { id: string; href?: string; cells: Record<string, ReactNode> };
+
+/** Domain-specific ShadCN table; links remain accessible to keyboard users. */
+export function CrmTableBlock({
+  columns,
+  rows,
+  emptyLabel = crmTemplateCopy.noContacts,
+}: {
+  columns: readonly CrmTableColumn[];
+  rows: readonly CrmTableRow[];
+  emptyLabel?: string | undefined;
+}) {
+  return (
+    <Table>
+      <TableHeader>
+        <TableRow>
+          {columns.map((column) => <TableHead key={column.key}>{column.label}</TableHead>)}
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {rows.length ? rows.map((row) => (
+          <TableRow key={row.id}>
+            {columns.map((column, index) => (
+              <TableCell key={column.key}>
+                {index === 0 && row.href ? (
+                  <Link href={row.href as Route} className="type-link">
+                    {row.cells[column.key]}
+                  </Link>
+                ) : (row.cells[column.key] ?? crmTemplateCopy.emptyValue)}
+              </TableCell>
+            ))}
+          </TableRow>
+        )) : (
+          <TableRow>
+            <TableCell colSpan={Math.max(1, columns.length)}>{emptyLabel}</TableCell>
+          </TableRow>
+        )}
+      </TableBody>
+    </Table>
+  );
+}
+
+// -----------------------------------------------------------------------------
+// CRM-specific search, filter and page controls.
+// -----------------------------------------------------------------------------
+
+/** CRM-only filters; client islands own URL state and event behavior. */
+export function CrmListFiltersBlock({
+  mode, query, sort, filter, onQueryChange, onSortChange, onFilterChange,
+}: {
+  mode: "accounts" | "contacts" | "leads" | "pipeline";
+  query: string;
+  sort: string;
+  filter: string;
+  onQueryChange: (value: string) => void;
+  onSortChange: (value: string) => void;
+  onFilterChange: (value: string) => void;
+}) {
+  const sorts = mode === "pipeline" ? [
+    { value: "stage-asc", label: crmListCopy.sortStageAsc },
+    { value: "updated-desc", label: crmListCopy.sortUpdatedDesc },
+    { value: "value-desc", label: crmListCopy.sortValueDesc },
+  ] : [
+    { value: "name-asc", label: crmListCopy.sortNameAsc },
+    { value: "name-desc", label: crmListCopy.sortNameDesc },
+    { value: "updated-desc", label: crmListCopy.sortUpdatedDesc },
+  ];
+  const filterOptions = mode === "pipeline"
+    ? crmListCopy.stageOptions
+    : mode === "accounts" ? crmListCopy.accountStatusOptions : crmListCopy.contactStatusOptions;
+  const filterLabel = mode === "pipeline" ? crmListCopy.stage : crmListCopy.status;
+  const create = mode === "accounts"
+    ? { href: "/crm/accounts/new", label: crmListCopy.createAccount }
+    : mode === "contacts"
+      ? { href: "/crm/contacts/new", label: crmListCopy.createContact }
+      : mode === "leads" ? { href: "/crm/leads/new", label: crmListCopy.createLead } : null;
+  return (
+    <nav aria-label={crmListCopy.search} className="grid w-full gap-3 md:grid-cols-[minmax(10rem,1fr)_auto_auto_auto]">
+      <Field>
+        <FieldLabel htmlFor="crm-search">{crmListCopy.search}</FieldLabel>
+        <Input id="crm-search" type="search" value={query} onChange={(event) => onQueryChange(event.target.value)} />
+      </Field>
+      <Field>
+        <FieldLabel htmlFor="crm-sort">{crmListCopy.sort}</FieldLabel>
+        <NativeSelect id="crm-sort" value={sort} onChange={(event) => onSortChange(event.target.value)}>
+          {sorts.map(({ value, label }) => <NativeSelectOption key={value} value={value}>{label}</NativeSelectOption>)}
+        </NativeSelect>
+      </Field>
+      {mode !== "leads" && (
+        <Field>
+          <FieldLabel htmlFor="crm-filter">{filterLabel}</FieldLabel>
+          <NativeSelect id="crm-filter" value={filter} onChange={(event) => onFilterChange(event.target.value)}>
+            <NativeSelectOption value="">{crmListCopy.all}</NativeSelectOption>
+            {filterOptions.map(({ value, label }) => <NativeSelectOption key={value} value={value}>{label}</NativeSelectOption>)}
+          </NativeSelect>
+        </Field>
+      )}
+      {create && <Button variant="default" size="sm" asChild><Link href={create.href as Route}>{create.label}</Link></Button>}
+    </nav>
+  );
+}
+
+/** CRM paging controls, with total and pending state supplied by the feature. */
+export function CrmPaginationBlock({
+  pageInfo,
+  onPageChange,
+  pending = false,
+}: {
+  pageInfo: CrmPageInfo;
+  onPageChange: (page: number) => void;
+  pending?: boolean | undefined;
+}) {
+  return (
+    <nav aria-label={crmListCopy.page(pageInfo.page, pageInfo.totalPages)} className="flex flex-wrap items-center justify-between gap-3">
+      <p className="text-sm">{crmListCopy.resultCount(pageInfo.total)}</p>
+      <p className="text-sm">{crmListCopy.page(pageInfo.page, pageInfo.totalPages)}</p>
+      <Button type="button" variant="outline" size="sm" disabled={!pageInfo.hasPrevious || pending}
+        onClick={() => onPageChange(pageInfo.page - 1)}>{crmListCopy.previous}</Button>
+      <Button type="button" variant="outline" size="sm" disabled={!pageInfo.hasNext || pending}
+        onClick={() => onPageChange(pageInfo.page + 1)}>{crmListCopy.next}</Button>
+    </nav>
+  );
+}
+
+// -----------------------------------------------------------------------------
+// CRM form composition; controllers and Zod remain in feature forms.
+// -----------------------------------------------------------------------------
+
+/** Full CRM account create/edit form using ShadCN Card and Field blocks. */
+export function CrmAccountFormBlock({
+  edit, fields, onSubmit, error, pending,
+}: {
+  edit: boolean;
+  fields: ReactNode;
+  onSubmit: FormEventHandler<HTMLFormElement>;
+  error?: string | undefined;
+  pending: boolean;
+}) {
+  return (
+    <Card className="mx-auto max-w-3xl">
+      <form className="space-y-5 p-5" noValidate onSubmit={onSubmit}>
+        <CardHeader><h1 className="type-title">{edit ? accountFormCopy.edit : accountFormCopy.create}</h1></CardHeader>
+        <CardContent className="grid gap-4">{fields}</CardContent>
+        <CrmFormSubmitBlock label={accountFormCopy.save} pendingLabel={accountFormCopy.saving} pending={pending} error={error} />
+      </form>
+    </Card>
+  );
+}
+
+/** Full CRM contact/lead create/edit form, with copy owned by CRM. */
+export function CrmContactFormBlock({
+  edit, lead, fields, onSubmit, error, pending,
+}: {
+  edit: boolean;
+  lead: boolean;
+  fields: ReactNode;
+  onSubmit: FormEventHandler<HTMLFormElement>;
+  error?: string | undefined;
+  pending: boolean;
+}) {
+  return (
+    <Card className="mx-auto max-w-3xl">
+      <form className="space-y-5 p-5" noValidate onSubmit={onSubmit}>
+        <CardHeader><h1 className="type-title">{edit ? contactFormCopy.edit : contactFormCopy.create} {lead ? contactFormCopy.lead : contactFormCopy.contact}</h1></CardHeader>
+        <CardContent className="grid gap-4 sm:grid-cols-2">{fields}</CardContent>
+        <CrmFormSubmitBlock label={contactFormCopy.save} pendingLabel={contactFormCopy.saving} pending={pending} error={error} />
+      </form>
+    </Card>
+  );
+}
+
+/** Opportunity form preserved as native disclosure, styled with ShadCN Card. */
+export function CrmOpportunityFormBlock({
+  fields, onSubmit, error, pending, disabled, status,
+}: {
+  fields: ReactNode;
+  onSubmit: FormEventHandler<HTMLFormElement>;
+  error?: string | undefined;
+  pending: boolean;
+  disabled: boolean;
+  status: "saved" | "failed" | undefined;
+}) {
+  return (
+    <Card>
+      <details className="p-4">
+        <summary className="type-label cursor-pointer">{crmControlCopy.createOpportunity}</summary>
+        <form className="space-y-4 py-4" noValidate onSubmit={onSubmit}>
+          {fields}
+          <CrmFormSubmitBlock label={crmControlCopy.createOpportunity} pending={pending}
+            disabled={disabled} error={error} status={status} />
+        </form>
+      </details>
+    </Card>
+  );
+}
+
+/** Stage editor: presentation only, with server-validated transitions. */
+export function CrmDealStageFormBlock({
+  fields, onSubmit, error, pending, status,
+}: {
+  fields: ReactNode;
+  onSubmit: FormEventHandler<HTMLFormElement>;
+  error?: string | undefined;
+  pending: boolean;
+  status: "saved" | "failed" | undefined;
+}) {
+  return (
+    <form className="space-y-4" noValidate onSubmit={onSubmit}>
+      {fields}
+      <CrmFormSubmitBlock label={crmControlCopy.moveOpportunity} pending={pending} error={error} status={status} />
+    </form>
+  );
+}
+
+// -----------------------------------------------------------------------------
+// CRM-only loading placeholders: skeletons replace templates directly.
+// -----------------------------------------------------------------------------
+
+/** Route-shaped CRM skeleton composed exclusively from ShadCN primitives. */
+export function CrmSkeletonBlock({ variant }: {
+  variant: "form" | "detail" | "directory" | "pipeline" | "analytics";
+}) {
+  const rows = variant === "form" ? 4 : variant === "pipeline" ? 6 : 5;
+  return (
+    <Card role="status" aria-label={crmListCopy.search} className="space-y-4 p-5">
+      <CardHeader><Skeleton className="h-7 w-48" /></CardHeader>
+      <CardContent className={variant === "form" ? "grid max-w-3xl gap-4" : "grid gap-4 md:grid-cols-2"}>
+        {Array.from({ length: rows }, (_, index) => (
+          <Card key={index} variant="inset" className="space-y-3 p-4">
+            <Skeleton className="h-5 w-3/4" />
+            <Skeleton className="h-4 w-full" />
+            {variant !== "form" && <Skeleton className="h-4 w-1/2" />}
+          </Card>
+        ))}
+      </CardContent>
+    </Card>
+  );
+}
+
+
+// -----------------------------------------------------------------------------
+// CRM lead qualification presentation (action reference owned by server feature).
+// -----------------------------------------------------------------------------
+/** Typed CRM lead qualification control, with no business logic in the block. */
+export function CrmQualifyLeadBlock({
+  pending, onQualify, error,
+}: {
+  pending: boolean;
+  onQualify: () => void;
+  error?: string | undefined;
+}) {
+  return (
+    <>
+      <Button type="button" variant="default" size="sm" disabled={pending} onClick={onQualify}>
+        {pending ? crmListCopy.qualifyingLead : crmListCopy.qualifyLead}
+      </Button>
+      {error && <FieldError>{error}</FieldError>}
     </>
   );
 }

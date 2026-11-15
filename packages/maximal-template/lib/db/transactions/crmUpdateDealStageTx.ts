@@ -21,6 +21,7 @@ function advanceDealStage(current: CrmDealStage, next: CrmDealStage) {
   return { stage: next, terminal: next === "WON" || next === "LOST" };
 }
 
+/** Declare or implement the CRM-specific contract named updateDealStageTx. */
 export async function updateDealStageTx(
   tx: Prisma.TransactionClient,
   input: {

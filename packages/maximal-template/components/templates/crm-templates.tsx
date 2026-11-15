@@ -1,192 +1,155 @@
+import type { ComponentProps, ReactNode } from "react";
+
 import {
   CrmAccountDetailContentBlock,
   CrmAccountDetailToolbarBlock,
+  CrmAccountFormBlock,
   CrmAccountsContentBlock,
   CrmAccountsToolbarBlock,
   CrmAnalyticsContentBlock,
   CrmContactDetailContentBlock,
   CrmContactDetailToolbarBlock,
+  CrmContactFormBlock,
   CrmContactsContentBlock,
   CrmContactsToolbarBlock,
+  CrmDealStageFormBlock,
   CrmLeadDetailPageBlock,
   CrmLeadsContentBlock,
   CrmLeadsToolbarBlock,
+  CrmOpportunityFormBlock,
+  CrmPageBlock,
   CrmPipelineContentBlock,
   CrmPipelineToolbarBlock,
 } from "@/components/blocks/crm-blocks";
-import { DashboardLayout } from "@/components/blocks/shared-blocks";
-import { CrmFormSubmitBlock } from "@/components/blocks/crm-blocks";
-import type { ReactNode, FormEventHandler } from "react";
-import { accountFormCopy, contactFormCopy, crmControlCopy } from "@/content/crm";
-import { crmRemainingCopy, crmTemplateCopy } from "@/content/crm";
-import type { ComponentProps } from "react";
 
+// -----------------------------------------------------------------------------
+// CRM tenant route templates: composition only, no copy or UI primitives.
+// -----------------------------------------------------------------------------
+
+/** Arrange one account detail page inside its existing tenant shell. */
 export function CrmAccountDetailTemplate(
   props: ComponentProps<typeof CrmAccountDetailContentBlock>,
 ) {
-  const { account } = props;
   return (
-    <DashboardLayout
-      title={account.name}
-      nav={[]}
-      toolbar={<CrmAccountDetailToolbarBlock {...props} />}
-    >
+    <CrmPageBlock section="detail" account={props.account}
+      toolbar={<CrmAccountDetailToolbarBlock {...props} />}>
       <CrmAccountDetailContentBlock {...props} />
-    </DashboardLayout>
+    </CrmPageBlock>
   );
 }
-export function CrmAccountsTemplate(
-  props: ComponentProps<typeof CrmAccountsContentBlock>,
-) {
+
+/** Arrange the account directory and its independent interaction slots. */
+export function CrmAccountsTemplate({
+  pagination,
+  ...props
+}: ComponentProps<typeof CrmAccountsContentBlock> & { pagination?: ReactNode | undefined }) {
   return (
-    <DashboardLayout
-      title={crmTemplateCopy.accounts}
-      nav={[]}
-      toolbar={<CrmAccountsToolbarBlock {...props} />}
-    >
+    <CrmPageBlock section="accounts" toolbar={<CrmAccountsToolbarBlock {...props} />}>
       <CrmAccountsContentBlock {...props} />
-    </DashboardLayout>
+      {pagination}
+    </CrmPageBlock>
   );
 }
+
+/** Arrange the accurate tenant-scoped currency analytics. */
 export function CrmAnalyticsTemplate(
   props: ComponentProps<typeof CrmAnalyticsContentBlock>,
 ) {
   return (
-    <DashboardLayout title={crmTemplateCopy.analytics} nav={[]}>
+    <CrmPageBlock section="analytics">
       <CrmAnalyticsContentBlock {...props} />
-    </DashboardLayout>
+    </CrmPageBlock>
   );
 }
+
+/** Arrange a contact detail record. */
 export function CrmContactDetailTemplate(
   props: ComponentProps<typeof CrmContactDetailContentBlock>,
 ) {
-  const { contact } = props;
   return (
-    <DashboardLayout
-      title={crmRemainingCopy.personName(contact.firstName, contact.lastName)}
-      nav={[]}
-      toolbar={<CrmContactDetailToolbarBlock {...props} />}
-    >
+    <CrmPageBlock section="detail" contact={props.contact}
+      toolbar={<CrmContactDetailToolbarBlock {...props} />}>
       <CrmContactDetailContentBlock {...props} />
-    </DashboardLayout>
+    </CrmPageBlock>
   );
 }
-export function CrmContactsTemplate(
-  props: ComponentProps<typeof CrmContactsContentBlock>,
-) {
-  const { lead = false } = props;
+
+/** Arrange a contact directory with its client interaction slot. */
+export function CrmContactsTemplate({
+  pagination,
+  ...props
+}: ComponentProps<typeof CrmContactsContentBlock> & { pagination?: ReactNode | undefined }) {
   return (
-    <DashboardLayout
-      title={
-        lead
-          ? crmTemplateCopy.leadQualification
-          : crmTemplateCopy.contactDirectory
-      }
-      nav={[]}
-      toolbar={<CrmContactsToolbarBlock {...props} />}
-    >
+    <CrmPageBlock section="contacts" toolbar={<CrmContactsToolbarBlock {...props} />}>
       <CrmContactsContentBlock {...props} />
-    </DashboardLayout>
+      {pagination}
+    </CrmPageBlock>
   );
 }
+
+/** Arrange the lead detail page without sharing presentation components. */
 export function CrmLeadDetailTemplate(
   props: ComponentProps<typeof CrmLeadDetailPageBlock>,
 ) {
   return (
-    <DashboardLayout
-      title={crmRemainingCopy.personName(
-        props.contact.firstName,
-        props.contact.lastName,
-      )}
-      nav={[]}
-      toolbar={<CrmContactDetailToolbarBlock {...props} lead />}
-    >
+    <CrmPageBlock section="detail" contact={props.contact}
+      toolbar={<CrmContactDetailToolbarBlock {...props} lead />}>
       <CrmLeadDetailPageBlock {...props} />
-    </DashboardLayout>
+    </CrmPageBlock>
   );
 }
-export function CrmLeadsTemplate(
-  props: ComponentProps<typeof CrmLeadsContentBlock>,
-) {
+
+/** Arrange the lead queue with CRM-owned filtering and paging. */
+export function CrmLeadsTemplate({
+  pagination,
+  ...props
+}: ComponentProps<typeof CrmLeadsContentBlock> & { pagination?: ReactNode | undefined }) {
   return (
-    <DashboardLayout
-      title={crmTemplateCopy.leadQueue}
-      nav={[]}
-      toolbar={<CrmLeadsToolbarBlock {...props} />}
-    >
+    <CrmPageBlock section="leads" toolbar={<CrmLeadsToolbarBlock {...props} />}>
       <CrmLeadsContentBlock {...props} />
-    </DashboardLayout>
+      {pagination}
+    </CrmPageBlock>
   );
 }
+
+/** Arrange a stage-grouped pipeline and its independent RHF forms. */
 export function CrmPipelineTemplate({
   creationControl,
+  pagination,
   ...props
-}: ComponentProps<typeof CrmPipelineContentBlock> & { creationControl?: ReactNode }) {
+}: ComponentProps<typeof CrmPipelineContentBlock> & {
+  creationControl?: ReactNode | undefined;
+  pagination?: ReactNode | undefined;
+}) {
   return (
-    <DashboardLayout
-      title={crmTemplateCopy.pipeline}
-      nav={[]}
-      toolbar={<CrmPipelineToolbarBlock {...props} />}
-    >
+    <CrmPageBlock section="pipeline" toolbar={<CrmPipelineToolbarBlock {...props} />}>
       {creationControl}
       <CrmPipelineContentBlock {...props} />
-    </DashboardLayout>
+      {pagination}
+    </CrmPageBlock>
   );
 }
 
 // -----------------------------------------------------------------------------
-// CRM form templates: arrange prepared fields and controls, never own RHF state.
+// CRM RHF templates: delegate all rendered markup to named CRM blocks.
 // -----------------------------------------------------------------------------
-/** Account create/edit form layout. */
-export function CrmAccountFormTemplate({ edit, fields, onSubmit, error, pending }: {
-  edit: boolean; fields: ReactNode; onSubmit: FormEventHandler<HTMLFormElement>; error?: string; pending: boolean;
-}) {
-  return (
-    <form className="mx-auto max-w-3xl space-y-5 surface-card p-5" noValidate onSubmit={onSubmit}>
-      <h1 className="type-title">{edit ? accountFormCopy.edit : accountFormCopy.create}</h1>
-      <div className="grid gap-4">{fields}</div>
-      <CrmFormSubmitBlock label={accountFormCopy.save} pendingLabel={accountFormCopy.saving} pending={pending} error={error} />
-    </form>
-  );
+
+/** Compose the account form block from prepared RHF controllers. */
+export function CrmAccountFormTemplate(props: ComponentProps<typeof CrmAccountFormBlock>) {
+  return <CrmAccountFormBlock {...props} />;
 }
 
-/** Contact/lead create/edit form layout. */
-export function CrmContactFormTemplate({ edit, lead, fields, onSubmit, error, pending }: {
-  edit: boolean; lead: boolean; fields: ReactNode; onSubmit: FormEventHandler<HTMLFormElement>; error?: string; pending: boolean;
-}) {
-  return (
-    <form className="mx-auto max-w-3xl space-y-5 surface-card p-5" noValidate onSubmit={onSubmit}>
-      <h1 className="type-title">{edit ? contactFormCopy.edit : contactFormCopy.create} {lead ? contactFormCopy.lead : contactFormCopy.contact}</h1>
-      <div className="grid gap-4 sm:grid-cols-2">{fields}</div>
-      <CrmFormSubmitBlock label={contactFormCopy.save} pendingLabel={contactFormCopy.saving} pending={pending} error={error} />
-    </form>
-  );
+/** Compose the contact/lead form block from prepared RHF controllers. */
+export function CrmContactFormTemplate(props: ComponentProps<typeof CrmContactFormBlock>) {
+  return <CrmContactFormBlock {...props} />;
 }
 
-/** Opportunity creation presentation; all application state remains in RHF. */
-export function CrmOpportunityFormTemplate({ fields, onSubmit, error, pending, disabled, status }: {
-  fields: ReactNode; onSubmit: FormEventHandler<HTMLFormElement>; error?: string; pending: boolean; disabled: boolean; status: string;
-}) {
-  return (
-    <details className="surface-card p-4">
-      <summary>{crmControlCopy.createOpportunity}</summary>
-      <form className="space-y-4" noValidate onSubmit={onSubmit}>
-        <h2 className="type-title">{crmControlCopy.createOpportunity}</h2>
-        {fields}
-        <CrmFormSubmitBlock label={crmControlCopy.createOpportunity} pending={pending} disabled={disabled} error={error} status={status} />
-      </form>
-    </details>
-  );
+/** Compose the opportunity form block from prepared RHF controllers. */
+export function CrmOpportunityFormTemplate(props: ComponentProps<typeof CrmOpportunityFormBlock>) {
+  return <CrmOpportunityFormBlock {...props} />;
 }
 
-/** Opportunity stage editor presentation. */
-export function CrmDealStageFormTemplate({ fields, onSubmit, error, pending, status }: {
-  fields: ReactNode; onSubmit: FormEventHandler<HTMLFormElement>; error?: string; pending: boolean; status: string;
-}) {
-  return (
-    <form className="space-y-4" noValidate onSubmit={onSubmit}>
-      {fields}
-      <CrmFormSubmitBlock label={crmControlCopy.moveOpportunity} pending={pending} error={error} status={status} />
-    </form>
-  );
+/** Compose the deal stage editor block from prepared RHF controllers. */
+export function CrmDealStageFormTemplate(props: ComponentProps<typeof CrmDealStageFormBlock>) {
+  return <CrmDealStageFormBlock {...props} />;
 }

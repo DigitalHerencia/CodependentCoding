@@ -1,3 +1,5 @@
+"use server";
+
 import {
   getClosedWonCrmValue,
   getContactById,
@@ -6,25 +8,30 @@ import {
   getCrmAccounts,
   getCrmDeal,
   getCrmDeals,
+  getCrmAccountsPage,
+  getCrmContactsPage,
+  getCrmDealsPage,
+  getCrmDealAnalytics,
 } from "@/lib/fetchers/crmFetchers";
+import { decimalToUnits, formatFixedUnits } from "@/lib/utils/money";
+import { calculateCrmPipelineValue } from "@/lib/utils/crmMoney";
 import {
-  decimalToUnits,
-  formatFixedUnits,
-  unitsToDecimal,
-} from "@/lib/utils/money";
-import { type CrmDealSummaryDTO } from "@/types/crmTypes";
+  createCrmAccount,
+  updateCrmAccount,
+  createContact,
+  updateContact,
+  createCrmDeal,
+  updateCrmDealStage,
+  qualifyCrmLead,
+} from "@/lib/actions/crmActions";
+import { createContactSchema } from "@/schemas/crmSchemas";
 import { notFound } from "next/navigation";
 import "server-only";
 
-/** Normalize browser-supplied search text; the underlying reads stay authorized. */
-function crmSearchQuery(query: string) {
-  return query.trim().slice(0, 100).toLocaleLowerCase();
-}
-
-
-// Decimal(19, 4) deal values weighted by whole percentages need six places.
-const PIPELINE_SCALE = 6;
-
+// -----------------------------------------------------------------------------
+// CRM read orchestration
+// -----------------------------------------------------------------------------
+/** Compose a CRM route-level server operation from authorized read or write functions. */
 export async function getCrmWorkspaceWorkflow(limit = 100) {
   const [deals, contacts] = await Promise.all([
     getCrmDeals(limit),
@@ -33,6 +40,7 @@ export async function getCrmWorkspaceWorkflow(limit = 100) {
   return { deals, contacts };
 }
 
+/** Compose a CRM route-level server operation from authorized read or write functions. */
 export async function getCrmRecordWorkflow(
   kind: "deal" | "contact" | "account",
   id: string,
@@ -41,6 +49,7 @@ export async function getCrmRecordWorkflow(
   if (kind === "account") return getCrmAccount(id);
   return getContactById(id);
 }
+/** Compose a CRM route-level server operation from authorized read or write functions. */
 export async function detectStalledDealWorkflow(
   dealId: string,
   now = new Date(),
@@ -55,10 +64,12 @@ export async function detectStalledDealWorkflow(
   );
 }
 
+/** Compose a CRM route-level server operation from authorized read or write functions. */
 export async function calculatePipelineValueWorkflow(limit = 100) {
-  return calculatePipelineValue(await getCrmDeals(limit));
+  return calculateCrmPipelineValue(await getCrmDeals(limit));
 }
 
+/** Compose a CRM route-level server operation from authorized read or write functions. */
 export async function calculateSalesVelocityWorkflow(
   periodStart: Date,
   periodEnd: Date,
@@ -74,24 +85,7 @@ export async function calculateSalesVelocityWorkflow(
   return (Number(closedWonValue) / days).toFixed(4);
 }
 
-export function calculatePipelineValue(
-  deals: ReadonlyArray<
-    Pick<CrmDealSummaryDTO, "value" | "probability" | "stage">
-  >,
-) {
-  const total = deals.reduce(
-    (sum, deal) =>
-      deal.stage === "LOST"
-        ? sum
-        : sum +
-          (decimalToUnits(deal.value, PIPELINE_SCALE) *
-            BigInt(deal.probability)) /
-            100n,
-    0n,
-  );
-  return unitsToDecimal(total, PIPELINE_SCALE);
-}
-
+/** Compose a CRM route-level server operation from authorized read or write functions. */
 export async function loadCrmAccountDetailWorkflow({
   accountId,
 }: {
@@ -102,56 +96,39 @@ export async function loadCrmAccountDetailWorkflow({
   return { account };
 }
 
-export async function loadCrmAccountsWorkflow(query = "") {
-  const accounts = await getCrmAccounts();
-  const needle = crmSearchQuery(query);
+/** Compose persisted account search, filters and stable pagination. */
+export async function loadCrmAccountsWorkflow(criteria: unknown = {}) {
+  const page = await getCrmAccountsPage(criteria);
+  return { accounts: page.items, pageInfo: page.pageInfo, criteria: page.criteria };
+}
+
+/** Aggregate every CRM opportunity by currency and stage (never first-page totals). */
+export async function loadCrmAnalyticsWorkflow() {
+  const results = await getCrmDealAnalytics();
+  const currencies = Array.from(new Set(results.map((row) => row.currency)));
+  const stages = ["LEAD", "QUALIFIED", "PROPOSAL", "NEGOTIATION", "WON", "LOST"] as const;
+  const groups = currencies.map((currency) => ({
+    currency,
+    rows: stages.map((stage) => {
+      const record = results.find((row) => row.currency === currency && row.stage === stage);
+      return {
+        id: stage,
+        cells: {
+          stage,
+          count: record?.count ?? 0,
+          value: formatFixedUnits(decimalToUnits(record?.value ?? "0", 6), 6, 2),
+          weighted: formatFixedUnits(decimalToUnits(record?.weighted ?? "0", 6), 6, 2),
+        },
+      };
+    }),
+  }));
   return {
-    accounts: needle
-      ? accounts.filter((account) =>
-          `${account.name} ${account.industry ?? ""}`.toLocaleLowerCase().includes(needle),
-        )
-      : accounts,
+    count: results.reduce((sum, result) => sum + result.count, 0),
+    groups,
   };
 }
 
-export async function loadCrmAnalyticsWorkflow() {
-  const deals = await getCrmDeals(100);
-  const groups = [...new Set(deals.map((deal) => deal.currency))].map(
-    (currency) => ({
-      currency,
-      rows: ["LEAD", "QUALIFIED", "PROPOSAL", "NEGOTIATION", "WON", "LOST"].map(
-        (stage) => {
-          const group = deals.filter(
-            (deal) => deal.currency === currency && deal.stage === stage,
-          );
-          const total = group.reduce(
-            (sum, deal) => sum + decimalToUnits(deal.value, PIPELINE_SCALE),
-            0n,
-          );
-          const weighted = group.reduce(
-            (sum, deal) =>
-              sum +
-              (decimalToUnits(deal.value, PIPELINE_SCALE) *
-                BigInt(deal.probability)) /
-                100n,
-            0n,
-          );
-          return {
-            id: stage,
-            cells: {
-              stage,
-              count: group.length,
-              value: formatFixedUnits(total, PIPELINE_SCALE, 2),
-              weighted: formatFixedUnits(weighted, PIPELINE_SCALE, 2),
-            },
-          };
-        },
-      ),
-    }),
-  );
-  return { count: deals.length, groups };
-}
-
+/** Compose a CRM route-level server operation from authorized read or write functions. */
 export async function loadCrmContactDetailWorkflow({
   contactId,
 }: {
@@ -162,20 +139,13 @@ export async function loadCrmContactDetailWorkflow({
   return { contact };
 }
 
-export async function loadCrmContactsWorkflow(query = "") {
-  const contacts = await getContacts();
-  const needle = crmSearchQuery(query);
-  return {
-    contacts: needle
-      ? contacts.filter((contact) =>
-          `${contact.firstName} ${contact.lastName} ${contact.email ?? ""} ${contact.account?.name ?? ""}`
-            .toLocaleLowerCase()
-            .includes(needle),
-        )
-      : contacts,
-  };
+/** Compose persisted contact search, filters, and stable pagination. */
+export async function loadCrmContactsWorkflow(criteria: unknown = {}) {
+  const page = await getCrmContactsPage(criteria);
+  return { contacts: page.items, pageInfo: page.pageInfo, criteria: page.criteria };
 }
 
+/** Compose a CRM route-level server operation from authorized read or write functions. */
 export async function loadCrmEditAccountWorkflow({
   accountId,
 }: {
@@ -186,6 +156,7 @@ export async function loadCrmEditAccountWorkflow({
   return { account };
 }
 
+/** Compose a CRM route-level server operation from authorized read or write functions. */
 export async function loadCrmEditContactWorkflow({
   contactId,
 }: {
@@ -196,52 +167,80 @@ export async function loadCrmEditContactWorkflow({
   return { contact };
 }
 
+/** Compose a CRM route-level server operation from authorized read or write functions. */
 export async function loadCrmEditLeadWorkflow({ leadId }: { leadId: string }) {
   const contact = await getContactById(leadId);
-  if (!contact) notFound();
+  if (!contact || contact.status !== "LEAD") notFound();
   return { contact };
 }
 
+/** Compose a CRM route-level server operation from authorized read or write functions. */
 export async function loadCrmLeadDetailWorkflow({
   leadId,
 }: {
   leadId: string;
 }) {
   const contact = await getContactById(leadId);
-  if (!contact) notFound();
-  return { contact };
+  if (!contact || contact.status !== "LEAD") notFound();
+  return { contact, qualifyLead: qualifyCrmLeadWorkflow };
 }
 
-export async function loadCrmLeadsWorkflow(query = "") {
-  const contacts = await getContacts({ status: "LEAD" });
-  const needle = crmSearchQuery(query);
-  return {
-    contacts: needle
-      ? contacts.filter((contact) =>
-          `${contact.firstName} ${contact.lastName} ${contact.email ?? ""} ${contact.account?.name ?? ""}`
-            .toLocaleLowerCase()
-            .includes(needle),
-        )
-      : contacts,
-  };
+/** Lead directory always filters LEAD regardless of external URL status. */
+export async function loadCrmLeadsWorkflow(rawCriteria: unknown = {}) {
+  const criteria = typeof rawCriteria === "object" && rawCriteria !== null
+    ? { ...rawCriteria, status: "LEAD" }
+    : { status: "LEAD" };
+  const page = await getCrmContactsPage(criteria);
+  return { contacts: page.items, pageInfo: page.pageInfo, criteria: page.criteria };
 }
 
-/** Compose server-side filtering and stage grouping for the pipeline page. */
-export async function loadCrmPipelineWorkflow(query = "") {
-  const [deals, accounts] = await Promise.all([
-    getCrmDeals(100),
-    getCrmAccounts(),
+/** Server pipeline: paginated deals and account references for new opportunity. */
+export async function loadCrmPipelineWorkflow(criteria: unknown = {}) {
+  const [page, accounts] = await Promise.all([
+    getCrmDealsPage(criteria),
+    getCrmAccounts(200),
   ]);
-  const needle = crmSearchQuery(query);
-  const visible = needle
-    ? deals.filter((deal) =>
-        `${deal.name} ${deal.account.name} ${deal.owner?.displayName ?? ""}`
-          .toLocaleLowerCase()
-          .includes(needle),
-      )
-    : deals;
   const stages = (["LEAD", "QUALIFIED", "PROPOSAL", "NEGOTIATION", "WON", "LOST"] as const).map(
-    (stage) => ({ stage, items: visible.filter((deal) => deal.stage === stage) }),
+    (stage) => ({ stage, items: page.items.filter((deal) => deal.stage === stage) }),
   );
-  return { stages, accounts };
+  return { stages, accounts, pageInfo: page.pageInfo, criteria: page.criteria };
+}
+
+// -----------------------------------------------------------------------------
+// Client-callable CRM Server Functions; persistence remains in crmActions.
+// -----------------------------------------------------------------------------
+/** Create an account with server authorization and cache coherence. */
+export async function createCrmAccountWorkflow(input: unknown) {
+  return createCrmAccount(input);
+}
+/** Update an account through its validated, authorized action. */
+export async function updateCrmAccountWorkflow(input: unknown) {
+  return updateCrmAccount(input);
+}
+/** Create a contact or lead with its validated, authorized action. */
+export async function createCrmContactWorkflow(input: unknown) {
+  return createContact(input);
+}
+/** Update a contact or lead with its validated, authorized action. */
+export async function updateCrmContactWorkflow(input: unknown) {
+  return updateContact(input);
+}
+/** Qualify a lead using the dedicated CRM transition and audit action. */
+export async function qualifyCrmLeadWorkflow(id: unknown) {
+  return qualifyCrmLead(id);
+}
+/** Create a CRM opportunity with authorized linked records. */
+export async function createCrmDealWorkflow(input: unknown) {
+  return createCrmDeal(input);
+}
+/** Advance a deal using its version-checked transition transaction. */
+export async function updateCrmDealStageWorkflow(input: unknown) {
+  return updateCrmDealStage(input);
+}
+
+
+/** Create a lead with LEAD status enforced on the server, independent of browser fields. */
+export async function createCrmLeadWorkflow(input: unknown) {
+  const parsed = createContactSchema.parse(input);
+  return createContact({ ...parsed, status: "LEAD" });
 }

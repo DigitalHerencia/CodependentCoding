@@ -157,7 +157,19 @@ const layerBoundaries = {
       ...(boundary.profileExcept?.[profile] ?? []),
     ]);
     return onEachSource((spec, sourceNode, node) => {
-      const hits = categoriesOf(resolveSpecifier(spec, rel), profile);
+      const resolved = resolveSpecifier(spec, rel);
+      const hits = categoriesOf(resolved, profile);
+      // A CRM RHF form may invoke only the client-callable CRM Server Functions.
+      // No other form or client island receives a workflow exemption.
+      if (
+        layer === "feature-form" &&
+        /^features\/crm\/crm(?:New|Edit)[A-Z][A-Za-z0-9]*Form\.tsx$/.test(
+          rel,
+        ) &&
+        resolved.kind === "internal" &&
+        /^lib\/workflows\/crmWorkflows(\.ts)?$/.test(resolved.value)
+      )
+        return;
       if (hits.some((hit) => except.has(hit))) return;
       const denied = hits.find((hit) => deny.has(hit));
       if (!denied) return;
@@ -273,7 +285,13 @@ const useClientPlacement = {
         if (isClient && !useClientAllowed.test(rel)) {
           context.report({ node: program, messageId: "misplaced" });
         }
-        if (!isClient && rel.endsWith(".client.tsx")) {
+        if (
+          !isClient &&
+          (rel.endsWith(".client.tsx") ||
+            /^features\/crm\/crm[A-Z][A-Za-z0-9]*(FeatureClient|Form)\.tsx$/.test(
+              rel,
+            ))
+        ) {
           context.report({ node: program, messageId: "missing" });
         }
       },
@@ -680,6 +698,22 @@ const noPassThrough = {
       if (!fn || !/Function/.test(fn.type)) return;
       const call = soleCall(fn);
       if (!call) return;
+      const serverEntry =
+        relativeFile(context) === "lib/workflows/crmWorkflows.ts" &&
+        directives(context.sourceCode.ast).includes("use server");
+      // A client-callable CRM workflow is a Server Function boundary, not
+      // a redundant local wrapper. Limit the exception to authorized
+      // mutations that would otherwise be directly imported by RHF forms.
+      const authorizedMutation =
+        /^(?:createCrm(?:Account|Contact|Deal)|updateCrm(?:Account|Contact|DealStage)|qualifyCrmLead)Workflow$/.test(
+          name,
+        );
+      if (
+        serverEntry &&
+        authorizedMutation &&
+        call.callee.type === "Identifier"
+      )
+        return;
       context.report({
         node: fn,
         messageId: "passThrough",

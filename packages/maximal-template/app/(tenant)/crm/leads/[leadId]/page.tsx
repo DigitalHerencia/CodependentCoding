@@ -1,8 +1,9 @@
 import { Suspense } from "react";
 
-import { CrmLeadDetailFeature } from "@/features/crm/crm-lead-detail-feature";
-import { CrmLeadDetailSkeleton } from "@/features/crm/crm-lead-detail-skeleton";
+import { CrmLeadDetailFeature } from "@/features/crm/crmLeadDetailFeature";
+import { CrmLeadDetailSkeleton } from "@/features/crm/crmSkeletons";
 
+/** Declare or implement the CRM-specific contract named Page. */
 export default async function Page({
   params,
 }: {

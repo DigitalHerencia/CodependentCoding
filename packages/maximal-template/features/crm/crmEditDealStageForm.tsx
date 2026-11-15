@@ -2,9 +2,8 @@
 
 import { CrmDealStageFieldBlock } from "@/components/blocks/crm-blocks";
 import { CrmDealStageFormTemplate } from "@/components/templates/crm-templates";
-import { formResultCopy } from "@/content/application";
-import { updateCrmDealStageWorkflow } from "@/lib/workflows/crmMutationWorkflows";
-import { updateCrmDealStageSchema } from "@/schemas/crmSchemas";
+import { updateCrmDealStageWorkflow } from "@/lib/workflows/crmWorkflows";
+import { updateCrmDealStageSchema, CrmDealStage } from "@/schemas/crmSchemas";
 import type { CrmDealSummaryDTO } from "@/types/crmTypes";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
@@ -13,10 +12,10 @@ import { Controller, useForm, type FieldPath } from "react-hook-form";
 import type { z } from "zod";
 
 /** RHF stage editor: state and server workflow invocation only. */
-export function EditCrmDealStageForm({ deal }: { deal: CrmDealSummaryDTO }) {
+export function CrmEditDealStageForm({ deal }: { deal: CrmDealSummaryDTO }) {
   const router = useRouter();
   const id = useId();
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState<"saved" | "failed" | undefined>(undefined);
   const form = useForm<
     z.input<typeof updateCrmDealStageSchema>,
     unknown,
@@ -39,6 +38,7 @@ export function EditCrmDealStageForm({ deal }: { deal: CrmDealSummaryDTO }) {
           field={field}
           invalid={fieldState.invalid}
           error={fieldState.error?.message}
+          stageOptions={Object.values(CrmDealStage)}
         />
       )}
     />
@@ -50,7 +50,7 @@ export function EditCrmDealStageForm({ deal }: { deal: CrmDealSummaryDTO }) {
       error={form.formState.errors.root?.message}
       status={message}
       onSubmit={form.handleSubmit(async (values) => {
-        setMessage("");
+        setMessage(undefined);
         try {
           const result = await updateCrmDealStageWorkflow(values);
           if (!result.ok) {
@@ -62,10 +62,10 @@ export function EditCrmDealStageForm({ deal }: { deal: CrmDealSummaryDTO }) {
             form.setError("root", { message: result.error.message });
             return;
           }
-          setMessage(formResultCopy.saved);
+          setMessage("saved");
           router.refresh();
         } catch {
-          form.setError("root", { message: formResultCopy.failed });
+          form.setError("root", { message: "Unable to update deal stage." });
         }
       })}
     />

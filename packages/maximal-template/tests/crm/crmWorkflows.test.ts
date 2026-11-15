@@ -77,11 +77,11 @@ test("pipeline stage changes retain tenant and version predicates", async () => 
       updateMany: async ({
         where,
       }: {
-        where: { organizationId: string; version: number };
+        where: { organizationId: string; version: number; archivedAt: Date | null };
       }) => {
         assert.equal(where.organizationId, "tenant-a");
         assert.equal(where.version, 2);
-        assert.equal((where as { archivedAt: null }).archivedAt, null);
+        assert.equal(where.archivedAt, null);
         return { count: 0 };
       },
     },
@@ -127,10 +127,10 @@ test("CRM pipeline renders opportunity stages and value without a generic table 
 });
 
 test("pipeline value weights open deals by probability with exact decimals and skips lost deals", async () => {
-  const { calculatePipelineValue } =
-    await import("@/lib/workflows/crmWorkflows");
+  const { calculateCrmPipelineValue } =
+    await import("@/lib/utils/crmMoney");
   assert.equal(
-    calculatePipelineValue([
+    calculateCrmPipelineValue([
       { value: "1000.0000", probability: 50, stage: "PROPOSAL" },
       { value: "0.1000", probability: 30, stage: "QUALIFIED" },
       { value: "0.2000", probability: 30, stage: "QUALIFIED" },

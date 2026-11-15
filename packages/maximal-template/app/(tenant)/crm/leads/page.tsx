@@ -1,19 +1,18 @@
 import { Suspense } from "react";
 
-import { CrmLeadsFeature } from "@/features/crm/crm-leads-feature";
-import { CrmLeadsSkeleton } from "@/features/crm/crm-leads-skeleton";
+import { CrmLeadsFeature } from "@/features/crm/crmLeadsFeature";
+import { CrmLeadsSkeleton } from "@/features/crm/crmSkeletons";
 
-/** Tenant CRM route: URL query and streaming boundary only. */
+/** Thin CRM tenant route: URL parsing happens in the named server workflow. */
 export default async function Page({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string | string[] }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
-  const { q } = await searchParams;
-  const query = typeof q === "string" ? q.slice(0, 100) : "";
+  const criteria = await searchParams;
   return (
     <Suspense fallback={<CrmLeadsSkeleton />}>
-      <CrmLeadsFeature query={query} />
+      <CrmLeadsFeature criteria={criteria} />
     </Suspense>
   );
 }

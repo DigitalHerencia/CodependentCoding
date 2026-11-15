@@ -1,39 +1,58 @@
 import { describe, expect, it, vi } from "vitest";
 
+const account = { id: "1", name: "Acme", industry: "Technology" };
+const contact = {
+  id: "3", firstName: "Ada", lastName: "Lovelace", email: null,
+  account: { name: "Acme" },
+};
+const deal = {
+  id: "5", name: "Renewal", stage: "PROPOSAL", value: "100",
+  currency: "USD", probability: 60, account: { name: "Acme" }, owner: null,
+};
+const info = { page: 1, pageSize: 25, total: 1, totalPages: 1, hasNext: false, hasPrevious: false };
+
 vi.mock("@/lib/fetchers/crmFetchers", () => ({
-  getCrmAccounts: vi.fn(async () => [
-    { id: "1", name: "Acme", industry: "Technology" },
-    { id: "2", name: "Other", industry: "Manufacturing" },
-  ]),
-  getContacts: vi.fn(async () => [
-    { id: "3", firstName: "Ada", lastName: "Lovelace", email: null, account: { name: "Acme" } },
-    { id: "4", firstName: "Grace", lastName: "Hopper", email: null, account: { name: "Other" } },
-  ]),
-  getCrmDeals: vi.fn(async () => [
-    { id: "5", name: "Renewal", stage: "PROPOSAL", account: { name: "Acme" }, owner: null },
-    { id: "6", name: "Launch", stage: "LEAD", account: { name: "Other" }, owner: null },
-  ]),
+  getCrmAccountsPage: vi.fn(async () => ({ items: [account], pageInfo: info, criteria: { q: "acme", page: 1, pageSize: 25, sort: "name-asc" } })),
+  getCrmContactsPage: vi.fn(async () => ({ items: [contact], pageInfo: info, criteria: { q: "ada", page: 1, pageSize: 25, sort: "name-asc" } })),
+  getCrmDealsPage: vi.fn(async () => ({ items: [deal], pageInfo: info, criteria: { q: "renewal", page: 1, pageSize: 25, sort: "stage-asc" } })),
+  getCrmDealAnalytics: vi.fn(async () => [{ currency: "USD", stage: "PROPOSAL", count: 2, value: "300", weighted: "180" }]),
+  getCrmAccounts: vi.fn(async () => [account]),
+  getContacts: vi.fn(async () => []),
+  getCrmDeals: vi.fn(async () => []),
 }));
 
 import {
-  loadCrmAccountsWorkflow,
-  loadCrmContactsWorkflow,
-  loadCrmPipelineWorkflow,
+  getCrmAccountsPage, getCrmContactsPage, getCrmDealsPage,
+} from "@/lib/fetchers/crmFetchers";
+import {
+  loadCrmAccountsWorkflow, loadCrmContactsWorkflow,
+  loadCrmPipelineWorkflow, loadCrmAnalyticsWorkflow,
 } from "@/lib/workflows/crmWorkflows";
 
-describe("CRM server page workflows", () => {
-  it("filters account DTOs without client workflow imports", async () => {
-    const view = await loadCrmAccountsWorkflow("technology");
-    expect(view.accounts.map((account) => account.id)).toEqual(["1"]);
+describe("CRM route read orchestration", () => {
+  it("forwards full validated account search/filter/page inputs to the fetcher", async () => {
+    const criteria = { q: "acme", page: 3, pageSize: 10, sort: "name-asc" };
+    const view = await loadCrmAccountsWorkflow(criteria);
+    expect(getCrmAccountsPage).toHaveBeenCalledWith(criteria);
+    expect(view.accounts).toEqual([account]);
+    expect(view.pageInfo.total).toBe(1);
   });
-  it("filters contact DTOs including account names", async () => {
-    const view = await loadCrmContactsWorkflow("acme");
-    expect(view.contacts.map((contact) => contact.id)).toEqual(["3"]);
+  it("forwards contact criteria into tenant-scoped persisted reads", async () => {
+    const criteria = { q: "ada", status: "LEAD", page: 1 };
+    const view = await loadCrmContactsWorkflow(criteria);
+    expect(getCrmContactsPage).toHaveBeenCalledWith(criteria);
+    expect(view.contacts[0]?.id).toBe("3");
   });
-  it("groups filtered opportunities into stable stage buckets", async () => {
-    const view = await loadCrmPipelineWorkflow("renewal");
+  it("groups the complete returned pipeline page into stage buckets", async () => {
+    const criteria = { q: "renewal", page: 1 };
+    const view = await loadCrmPipelineWorkflow(criteria);
+    expect(getCrmDealsPage).toHaveBeenCalledWith(criteria);
     expect(view.stages).toHaveLength(6);
     expect(view.stages.find((stage) => stage.stage === "PROPOSAL")?.items).toHaveLength(1);
-    expect(view.stages.find((stage) => stage.stage === "LEAD")?.items).toHaveLength(0);
+  });
+  it("aggregates the complete tenant pipeline, not an arbitrary 100 records", async () => {
+    const view = await loadCrmAnalyticsWorkflow();
+    expect(view.count).toBe(2);
+    expect(view.groups[0]?.rows.find((row) => row.id === "PROPOSAL")?.cells.weighted).toBe("180.00");
   });
 });

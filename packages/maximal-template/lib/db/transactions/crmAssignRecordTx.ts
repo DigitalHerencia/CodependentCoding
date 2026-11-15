@@ -4,6 +4,7 @@ import type { Prisma } from "@/generated/prisma/client";
 
 import { ResourceNotFoundError } from "./errors";
 
+/** Declare or implement the CRM-specific contract named assignCrmRecordTx. */
 export async function assignCrmRecordTx(
   tx: Prisma.TransactionClient,
   input: {

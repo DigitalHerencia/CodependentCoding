@@ -2,19 +2,15 @@
 
 import { CrmAccountFieldBlock } from "@/components/blocks/crm-blocks";
 import { CrmAccountFormTemplate } from "@/components/templates/crm-templates";
-import {
-  createCrmAccountWorkflow,
-  updateCrmAccountWorkflow,
-} from "@/lib/workflows/crmMutationWorkflows";
+import { createCrmAccountWorkflow } from "@/lib/workflows/crmWorkflows";
 import { crmAccountFormSchema } from "@/schemas/crmSchemas";
-import type { CrmAccountDTO } from "@/types/crmTypes";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
 import type { z } from "zod";
 
 /** Client RHF controller; template and field blocks own the markup. */
-export function NewCrmAccountForm({ account }: { account?: CrmAccountDTO }) {
+export function CrmNewAccountForm() {
   const router = useRouter();
   const form = useForm<
     z.input<typeof crmAccountFormSchema>,
@@ -23,10 +19,10 @@ export function NewCrmAccountForm({ account }: { account?: CrmAccountDTO }) {
   >({
     resolver: zodResolver(crmAccountFormSchema),
     defaultValues: {
-      name: account?.name ?? "",
-      website: account?.website ?? "",
-      industry: account?.industry ?? "",
-      notes: account?.notes ?? "",
+      name: "",
+      website: "",
+      industry: "",
+      notes: "",
     },
   });
   const fields = (["name", "website", "industry", "notes"] as const).map((name) => (
@@ -47,18 +43,12 @@ export function NewCrmAccountForm({ account }: { account?: CrmAccountDTO }) {
 
   return (
     <CrmAccountFormTemplate
-      edit={Boolean(account)}
+      edit={false}
       fields={fields}
       pending={form.formState.isSubmitting}
       error={form.formState.errors.root?.message}
       onSubmit={form.handleSubmit(async (values) => {
-        const result = account
-          ? await updateCrmAccountWorkflow({
-              ...values,
-              accountId: account.id,
-              expectedUpdatedAt: account.updatedAt,
-            })
-          : await createCrmAccountWorkflow(values);
+        const result = await createCrmAccountWorkflow(values);
         if (!result.ok) {
           for (const name of ["name", "website", "industry", "notes"] as const) {
             const message = result.error.fieldErrors?.[name]?.[0];
