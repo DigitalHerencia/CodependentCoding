@@ -1,27 +1,16 @@
 "use client";
 
-import {
-  CrmContactsTemplate,
-  CrmLeadsTemplate,
-} from "@/components/templates/crm-templates";
-import { selectCrmContactsWorkflow } from "@/lib/workflows/crmClientWorkflows";
-import type { CrmContactDTO } from "@/types/crmTypes";
-import { useState } from "react";
+import { CrmContactsToolbar } from "@/components/blocks/crm-blocks";
+import { useCrmSearch } from "./crm-search-feature.client";
 
+/** Contact/lead browser interaction slot; no template or data orchestration. */
 export function CrmContactsFeatureClient({
-  contacts,
+  initialQuery,
   lead = false,
 }: {
-  contacts: CrmContactDTO[];
+  initialQuery: string;
   lead?: boolean;
 }) {
-  const [query, setQuery] = useState("");
-  const Template = lead ? CrmLeadsTemplate : CrmContactsTemplate;
-  return (
-    <Template
-      lead={lead}
-      contacts={selectCrmContactsWorkflow(contacts, query)}
-      toolbarProps={{ query: query, onQueryChange: setQuery, lead: lead }}
-    />
-  );
+  const { query, onQueryChange } = useCrmSearch(initialQuery);
+  return <CrmContactsToolbar query={query} onQueryChange={onQueryChange} lead={lead} />;
 }

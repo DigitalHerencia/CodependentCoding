@@ -22,7 +22,7 @@ export async function assignCrmRecordTx(
     select: { id: true },
   });
   if (!owner) throw new ResourceNotFoundError("CRM owner membership");
-  const where = { id: input.recordId, organizationId: input.organizationId };
+  const where = { id: input.recordId, organizationId: input.organizationId, archivedAt: null };
   const data = { ownerMembershipId: owner.id };
   const result =
     input.recordType === "account"

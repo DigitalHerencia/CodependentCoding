@@ -3,8 +3,12 @@ import type {
   CrmDealStage as PrismaCrmDealStage,
 } from "@/generated/prisma/enums";
 import type { z } from "zod";
+import type { UseFormReturn } from "react-hook-form";
 import type {
   contactFormSchema,
+  crmAccountFormSchema,
+  createCrmDealSchema,
+  updateCrmDealStageSchema,
   contactListCriteriaSchema,
   contactSortValues,
 } from "@/schemas/crmSchemas";
@@ -70,3 +74,19 @@ export type CrmAccountDTO = {
 };
 
 export type CrmDealStage = PrismaCrmDealStage;
+
+// -----------------------------------------------------------------------------
+// CRM React Hook Form contracts (input and transformed output are distinct).
+// -----------------------------------------------------------------------------
+export type CrmAccountFormApi = UseFormReturn<
+  z.input<typeof crmAccountFormSchema>, unknown, z.output<typeof crmAccountFormSchema>
+>;
+export type CrmContactFormApi = UseFormReturn<
+  z.input<typeof contactFormSchema>, unknown, z.output<typeof contactFormSchema>
+>;
+export type CrmOpportunityFormApi = UseFormReturn<
+  z.input<typeof createCrmDealSchema>, unknown, z.output<typeof createCrmDealSchema>
+>;
+export type CrmDealStageFormApi = UseFormReturn<
+  z.input<typeof updateCrmDealStageSchema>, unknown, z.output<typeof updateCrmDealStageSchema>
+>;

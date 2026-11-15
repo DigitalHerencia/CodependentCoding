@@ -1,5 +1,13 @@
-import { NewCrmLeadForm } from "@/features/crm/newCrmLeadForm";
+import { Suspense } from "react";
 
-export default async function Page() {
-  return <NewCrmLeadForm />;
+import { NewCrmLeadForm } from "@/features/crm/newCrmLeadForm";
+import { CrmFormSkeleton } from "@/features/crm/crm-form-skeleton";
+
+/** Tenant CRM creation route with a standard Suspense fallback. */
+export default function Page() {
+  return (
+    <Suspense fallback={<CrmFormSkeleton />}>
+      <NewCrmLeadForm />
+    </Suspense>
+  );
 }

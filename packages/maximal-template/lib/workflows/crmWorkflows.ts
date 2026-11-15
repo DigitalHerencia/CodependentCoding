@@ -16,6 +16,12 @@ import { type CrmDealSummaryDTO } from "@/types/crmTypes";
 import { notFound } from "next/navigation";
 import "server-only";
 
+/** Normalize browser-supplied search text; the underlying reads stay authorized. */
+function crmSearchQuery(query: string) {
+  return query.trim().slice(0, 100).toLocaleLowerCase();
+}
+
+
 // Decimal(19, 4) deal values weighted by whole percentages need six places.
 const PIPELINE_SCALE = 6;
 
@@ -96,9 +102,16 @@ export async function loadCrmAccountDetailWorkflow({
   return { account };
 }
 
-export async function loadCrmAccountsWorkflow() {
+export async function loadCrmAccountsWorkflow(query = "") {
   const accounts = await getCrmAccounts();
-  return { accounts };
+  const needle = crmSearchQuery(query);
+  return {
+    accounts: needle
+      ? accounts.filter((account) =>
+          `${account.name} ${account.industry ?? ""}`.toLocaleLowerCase().includes(needle),
+        )
+      : accounts,
+  };
 }
 
 export async function loadCrmAnalyticsWorkflow() {
@@ -149,9 +162,18 @@ export async function loadCrmContactDetailWorkflow({
   return { contact };
 }
 
-export async function loadCrmContactsWorkflow() {
+export async function loadCrmContactsWorkflow(query = "") {
   const contacts = await getContacts();
-  return { contacts };
+  const needle = crmSearchQuery(query);
+  return {
+    contacts: needle
+      ? contacts.filter((contact) =>
+          `${contact.firstName} ${contact.lastName} ${contact.email ?? ""} ${contact.account?.name ?? ""}`
+            .toLocaleLowerCase()
+            .includes(needle),
+        )
+      : contacts,
+  };
 }
 
 export async function loadCrmEditAccountWorkflow({
@@ -190,15 +212,36 @@ export async function loadCrmLeadDetailWorkflow({
   return { contact };
 }
 
-export async function loadCrmLeadsWorkflow() {
+export async function loadCrmLeadsWorkflow(query = "") {
   const contacts = await getContacts({ status: "LEAD" });
-  return { contacts };
+  const needle = crmSearchQuery(query);
+  return {
+    contacts: needle
+      ? contacts.filter((contact) =>
+          `${contact.firstName} ${contact.lastName} ${contact.email ?? ""} ${contact.account?.name ?? ""}`
+            .toLocaleLowerCase()
+            .includes(needle),
+        )
+      : contacts,
+  };
 }
 
-export async function loadCrmPipelineWorkflow() {
+/** Compose server-side filtering and stage grouping for the pipeline page. */
+export async function loadCrmPipelineWorkflow(query = "") {
   const [deals, accounts] = await Promise.all([
     getCrmDeals(100),
     getCrmAccounts(),
   ]);
-  return { deals, accounts };
+  const needle = crmSearchQuery(query);
+  const visible = needle
+    ? deals.filter((deal) =>
+        `${deal.name} ${deal.account.name} ${deal.owner?.displayName ?? ""}`
+          .toLocaleLowerCase()
+          .includes(needle),
+      )
+    : deals;
+  const stages = (["LEAD", "QUALIFIED", "PROPOSAL", "NEGOTIATION", "WON", "LOST"] as const).map(
+    (stage) => ({ stage, items: visible.filter((deal) => deal.stage === stage) }),
+  );
+  return { stages, accounts };
 }

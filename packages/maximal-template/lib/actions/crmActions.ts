@@ -11,6 +11,7 @@ import {
   updateCrmDealStageSchema,
 } from "@/schemas/crmSchemas";
 import { requireIdentity } from "@/lib/auth/auth";
+import { invalidatePaths } from "@/lib/cache/invalidate";
 import { assertPermission } from "@/lib/authz/permissions";
 import { authorizeOwnedOrAssignedWrite } from "@/lib/authz/policies";
 import {
@@ -37,10 +38,24 @@ import {
 } from "@/lib/db/transactions/crmQualifyLeadTx";
 import { toActionResult } from "@/lib/utils/actionResult";
 
+/** CRM views whose server-rendered data may depend on a successful CRM mutation. */
+const CRM_INVALIDATION_PATHS = [
+  "/crm/accounts",
+  "/crm/contacts",
+  "/crm/leads",
+  "/crm/pipeline",
+  "/crm/analytics",
+] as const;
+
+/** Invalidate affected CRM route data only after a transaction commits. */
+function invalidateCrmViews(recordPaths: readonly string[] = []) {
+  invalidatePaths([...CRM_INVALIDATION_PATHS, ...recordPaths]);
+}
+
 export async function qualifyCrmLead(rawContactId: unknown) {
   return toActionResult(async () => {
     const identity = await requireIdentity();
-    return withTenantTransaction(identity, async (tx, access) => {
+    const saved = await withTenantTransaction(identity, async (tx, access) => {
       assertPermission(access, "crm.contact:update");
       const contactId = contactIdSchema.parse(rawContactId);
       const contact = await findCrmContactForWriteTx(tx, {
@@ -62,13 +77,15 @@ export async function qualifyCrmLead(rawContactId: unknown) {
       });
       return toCrmContactDTO(record);
     });
+    invalidateCrmViews(saved && "id" in saved ? [`/crm/contacts/${saved.id}`, `/crm/leads/${saved.id}`] : []);
+    return saved;
   });
 }
 
 export async function createCrmDeal(rawInput: unknown) {
   return toActionResult(async () => {
     const identity = await requireIdentity();
-    return withTenantTransaction(identity, async (tx, access) => {
+    const saved = await withTenantTransaction(identity, async (tx, access) => {
       assertPermission(access, "crm.deal:create");
       const input = createCrmDealSchema.parse(rawInput);
       const account = await tx.crmAccount.findFirst({
@@ -129,13 +146,15 @@ export async function createCrmDeal(rawInput: unknown) {
       });
       return toCrmDealDTO(record);
     });
+    invalidateCrmViews([`/crm/accounts/${saved.account.id}`]);
+    return saved;
   });
 }
 
 export async function updateCrmDealStage(rawInput: unknown) {
   return toActionResult(async () => {
     const identity = await requireIdentity();
-    return withTenantTransaction(identity, async (tx, access) => {
+    const saved = await withTenantTransaction(identity, async (tx, access) => {
       assertPermission(access, "crm.deal:update");
       const input = updateCrmDealStageSchema.parse(rawInput);
       const record = await updateDealStageTx(tx, {
@@ -156,13 +175,15 @@ export async function updateCrmDealStage(rawInput: unknown) {
       });
       return toCrmDealDTO(record);
     });
+    invalidateCrmViews([`/crm/accounts/${saved.account.id}`]);
+    return saved;
   });
 }
 
 export async function createContact(rawInput: unknown) {
   return toActionResult(async () => {
     const identity = await requireIdentity();
-    return withTenantTransaction(identity, async (tx, access) => {
+    const saved = await withTenantTransaction(identity, async (tx, access) => {
       assertPermission(access, "crm.contact:create");
       const input = createContactSchema.parse(rawInput);
       const record = await tx.crmContact.create({
@@ -189,13 +210,15 @@ export async function createContact(rawInput: unknown) {
       });
       return toCrmContactDTO(record);
     });
+    invalidateCrmViews(saved && "id" in saved ? [`/crm/contacts/${saved.id}`, `/crm/leads/${saved.id}`] : []);
+    return saved;
   });
 }
 
 export async function updateContact(rawInput: unknown) {
   return toActionResult(async () => {
     const identity = await requireIdentity();
-    return withTenantTransaction(identity, async (tx, access) => {
+    const saved = await withTenantTransaction(identity, async (tx, access) => {
       const input = updateContactSchema.parse(rawInput);
       const existing = await tx.crmContact.findFirst({
         where: {
@@ -250,13 +273,15 @@ export async function updateContact(rawInput: unknown) {
       });
       return toCrmContactDTO(record);
     });
+    invalidateCrmViews(saved && "id" in saved ? [`/crm/contacts/${saved.id}`, `/crm/leads/${saved.id}`] : []);
+    return saved;
   });
 }
 
 export async function archiveContact(rawInput: unknown) {
   return toActionResult(async () => {
     const identity = await requireIdentity();
-    return withTenantTransaction(identity, async (tx, access) => {
+    const saved = await withTenantTransaction(identity, async (tx, access) => {
       const input = archiveContactSchema.parse(rawInput);
       const existing = await tx.crmContact.findFirst({
         where: {
@@ -295,13 +320,15 @@ export async function archiveContact(rawInput: unknown) {
       });
       return { id: existing.id };
     });
+    invalidateCrmViews(saved && "id" in saved ? [`/crm/contacts/${saved.id}`, `/crm/leads/${saved.id}`] : []);
+    return saved;
   });
 }
 
 export async function createCrmAccount(rawInput: unknown) {
   return toActionResult(async () => {
     const identity = await requireIdentity();
-    return withTenantTransaction(identity, async (tx, access) => {
+    const saved = await withTenantTransaction(identity, async (tx, access) => {
       assertPermission(access, "crm.account:create");
       const input = crmAccountFormSchema.parse(rawInput);
       const record = await tx.crmAccount.create({
@@ -317,12 +344,14 @@ export async function createCrmAccount(rawInput: unknown) {
       });
       return toCrmAccountDTO(record);
     });
+    invalidateCrmViews(saved && "id" in saved ? [`/crm/accounts/${saved.id}`] : []);
+    return saved;
   });
 }
 export async function updateCrmAccount(rawInput: unknown) {
   return toActionResult(async () => {
     const identity = await requireIdentity();
-    return withTenantTransaction(identity, async (tx, access) => {
+    const saved = await withTenantTransaction(identity, async (tx, access) => {
       const input = updateCrmAccountSchema.parse(rawInput);
       const existing = await tx.crmAccount.findFirst({
         where: {
@@ -359,5 +388,7 @@ export async function updateCrmAccount(rawInput: unknown) {
         }),
       );
     });
+    invalidateCrmViews(saved && "id" in saved ? [`/crm/accounts/${saved.id}`] : []);
+    return saved;
   });
 }

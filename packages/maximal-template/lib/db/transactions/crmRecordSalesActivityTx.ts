@@ -17,7 +17,7 @@ export async function recordSalesActivityTx(
     occurredAt: Date;
   },
 ) {
-  const where = { id: input.recordId, organizationId: input.organizationId };
+  const where = { id: input.recordId, organizationId: input.organizationId, archivedAt: null };
   const record =
     input.recordType === "account"
       ? await tx.crmAccount.findFirst({ where, select: { id: true } })

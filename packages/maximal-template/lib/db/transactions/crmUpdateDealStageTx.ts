@@ -31,7 +31,7 @@ export async function updateDealStageTx(
   },
 ) {
   const current = await tx.crmDeal.findFirstOrThrow({
-    where: { id: input.dealId, organizationId: input.organizationId },
+    where: { id: input.dealId, organizationId: input.organizationId, archivedAt: null },
     select: { stage: true },
   });
   const transition = advanceDealStage(current.stage, input.stage);
@@ -41,6 +41,7 @@ export async function updateDealStageTx(
       id: input.dealId,
       organizationId: input.organizationId,
       version: input.expectedVersion,
+      archivedAt: null,
     },
     data: {
       stage: input.stage,
@@ -59,6 +60,7 @@ export async function updateDealStageTx(
     where: {
       id: input.dealId,
       organizationId: input.organizationId,
+      archivedAt: null,
     },
     select: crmDealDetailSelect,
   });

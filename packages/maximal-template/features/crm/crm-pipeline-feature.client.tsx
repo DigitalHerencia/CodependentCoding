@@ -1,24 +1,10 @@
 "use client";
 
-import { CrmPipelineTemplate } from "@/components/templates/crm-templates";
-import { selectCrmPipelineWorkflow } from "@/lib/workflows/crmClientWorkflows";
-import type { CrmDealSummaryDTO } from "@/types/crmTypes";
-import { useState } from "react";
-import { EditCrmDealStageForm } from "./editCrmDealStageForm";
+import { CrmPipelineToolbar } from "@/components/blocks/crm-blocks";
+import { useCrmSearch } from "./crm-search-feature.client";
 
-export function CrmPipelineFeatureClient({
-  deals,
-}: {
-  deals: CrmDealSummaryDTO[];
-}) {
-  const [query, setQuery] = useState("");
-  return (
-    <CrmPipelineTemplate
-      {...selectCrmPipelineWorkflow(deals, query)}
-      toolbarProps={{ query: query, onQueryChange: setQuery }}
-      renderControls={(deal) => (
-        <EditCrmDealStageForm key={deal.id + "-" + deal.version} deal={deal} />
-      )}
-    />
-  );
+/** Pipeline browser search interaction only; no page composition. */
+export function CrmPipelineFeatureClient({ initialQuery }: { initialQuery: string }) {
+  const { query, onQueryChange } = useCrmSearch(initialQuery);
+  return <CrmPipelineToolbar query={query} onQueryChange={onQueryChange} />;
 }

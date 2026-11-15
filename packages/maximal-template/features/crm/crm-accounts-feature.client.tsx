@@ -1,20 +1,10 @@
 "use client";
 
-import { CrmAccountsTemplate } from "@/components/templates/crm-templates";
-import { selectCrmAccountsWorkflow } from "@/lib/workflows/crmClientWorkflows";
-import type { CrmAccountDTO } from "@/types/crmTypes";
-import { useState } from "react";
+import { CrmAccountsToolbar } from "@/components/blocks/crm-blocks";
+import { useCrmSearch } from "./crm-search-feature.client";
 
-export function CrmAccountsFeatureClient({
-  accounts,
-}: {
-  accounts: CrmAccountDTO[];
-}) {
-  const [query, setQuery] = useState("");
-  return (
-    <CrmAccountsTemplate
-      accounts={selectCrmAccountsWorkflow(accounts, query)}
-      toolbarProps={{ query: query, onQueryChange: setQuery }}
-    />
-  );
+/** Browser interaction slot; page composition remains in the server feature. */
+export function CrmAccountsFeatureClient({ initialQuery }: { initialQuery: string }) {
+  const { query, onQueryChange } = useCrmSearch(initialQuery);
+  return <CrmAccountsToolbar query={query} onQueryChange={onQueryChange} />;
 }
