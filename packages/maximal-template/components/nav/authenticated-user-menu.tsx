@@ -21,6 +21,7 @@ import type { AuthenticatedUserMenuProps } from "@/types/authenticatedNavigation
 export function AuthenticatedUserMenu({
   profile,
   switcher,
+  role,
   presentation = "popover",
 }: AuthenticatedUserMenuProps) {
   const { user, isLoaded } = useUser();
@@ -30,6 +31,9 @@ export function AuthenticatedUserMenu({
   const [signingOut, setSigningOut] = useState(false);
   const [error, setError] = useState("");
   const afterClose = useRef<(() => void) | null>(null);
+  const activeOrganization = switcher.organizations.find(
+    (organization) => organization.id === switcher.activeOrganizationId,
+  );
 
   useEffect(() => {
     const media = window.matchMedia("(min-width: 64rem)");
@@ -55,6 +59,24 @@ export function AuthenticatedUserMenu({
         <h2 className="type-heading">{copy.account}</h2>
       </div>
       <OnboardingProfileCardBlock profile={profile} />
+      <dl className="space-y-2 text-sm">
+        <div>
+          <dt className="text-muted-foreground">{copy.role}</dt>
+          <dd className="break-words">{role}</dd>
+        </div>
+        <div>
+          <dt className="text-muted-foreground">{copy.organization}</dt>
+          <dd className="break-words">
+            {activeOrganization?.name ?? copy.organizationUnavailable}
+          </dd>
+        </div>
+        {user?.primaryEmailAddress?.emailAddress && (
+          <div>
+            <dt className="text-muted-foreground">{copy.email}</dt>
+            <dd className="break-all">{user.primaryEmailAddress.emailAddress}</dd>
+          </div>
+        )}
+      </dl>
       {switcher.organizations.length > 1 && (
         <OrganizationSwitcherFeatureClient {...switcher} />
       )}

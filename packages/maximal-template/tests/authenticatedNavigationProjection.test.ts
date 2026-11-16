@@ -4,12 +4,17 @@ import { buildTenantNavigation } from "@/lib/workflows/tenantWorkflows";
 import { loadAuthenticatedUserMenuWorkflow } from "@/lib/workflows/authenticatedNavigationWorkflows";
 
 vi.mock("@/lib/db/tenant", () => ({ withAuthenticatedRead: vi.fn() }));
-const reads = vi.hoisted(() => ({ profile: vi.fn(), switcher: vi.fn() }));
+const reads = vi.hoisted(() => ({
+  profile: vi.fn(),
+  switcher: vi.fn(),
+  role: vi.fn(),
+}));
 vi.mock("@/lib/fetchers/onboardingFetchers", () => ({
   getOwnOnboardingProfile: reads.profile,
 }));
 vi.mock("@/lib/fetchers/organizationFetchers", () => ({
   getOrganizationSwitcher: reads.switcher,
+  getActiveMembershipRole: reads.role,
 }));
 
 test.each(["OWNER", "ADMIN", "MEMBER", "VIEWER"] as const)(
@@ -46,10 +51,13 @@ test("account navigation reuses the authenticated own-profile and ACTIVE-members
   };
   reads.profile.mockResolvedValueOnce(profile);
   reads.switcher.mockResolvedValueOnce(switcher);
+  reads.role.mockResolvedValueOnce("MEMBER");
   expect(await loadAuthenticatedUserMenuWorkflow()).toEqual({
     profile,
     switcher,
+    role: "MEMBER",
   });
   expect(reads.profile).toHaveBeenCalledExactlyOnceWith();
   expect(reads.switcher).toHaveBeenCalledExactlyOnceWith();
+  expect(reads.role).toHaveBeenCalledExactlyOnceWith();
 });

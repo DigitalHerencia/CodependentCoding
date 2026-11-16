@@ -29,6 +29,11 @@ export async function getCurrentOrganization() {
   });
 }
 
+/** The current authenticated membership role, scoped to the active organization. */
+export async function getActiveMembershipRole() {
+  return withAuthenticatedRead(async (_tx, access) => access.role);
+}
+
 /** The organizations the caller can switch between, oldest membership first. */
 export async function getOrganizationSwitcher(): Promise<OrganizationSwitcherDTO> {
   return withAuthenticatedRead(async (tx, access) => {

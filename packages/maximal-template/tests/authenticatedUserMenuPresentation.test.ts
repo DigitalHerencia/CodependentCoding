@@ -7,7 +7,10 @@ import { AuthenticatedMobileNavigation } from "@/components/nav/authenticated-mo
 vi.mock("@clerk/nextjs", () => ({
   useUser: () => ({
     isLoaded: true,
-    user: { imageUrl: "https://example.test/avatar.png" },
+    user: {
+      imageUrl: "https://example.test/avatar.png",
+      primaryEmailAddress: { emailAddress: "member@example.test" },
+    },
   }),
 }));
 vi.mock("@/lib/workflows/pwaClientWorkflows", () => ({
@@ -34,6 +37,7 @@ test.each([1, 2])(
     const html = renderToStaticMarkup(
       createElement(AuthenticatedUserMenu, {
         profile,
+        role: "MEMBER",
         presentation: "panel",
         switcher: {
           activeOrganizationId: orgA.id,
@@ -43,6 +47,9 @@ test.each([1, 2])(
     );
     expect(html.includes("Organization fixture")).toBe(count > 1);
     expect(html).toContain("Fixture name");
+    expect(html).toContain("MEMBER");
+    expect(html).toContain("<dd>A</dd>");
+    expect(html).toContain("member@example.test");
     expect(html).toContain('href="/onboarding/profile"');
     expect(html).toContain("Manage account");
     expect(html).toContain("Sign out");
