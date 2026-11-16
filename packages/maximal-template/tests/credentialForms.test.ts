@@ -3,19 +3,19 @@ import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { test, vi } from "vitest";
 
-vi.mock("@/lib/auth/clerkAccount", () => ({
+vi.mock("@clerk/nextjs", () => ({
   useSignIn: () => ({ signIn: {}, fetchStatus: "idle" }),
   useSignUp: () => ({ signUp: {}, fetchStatus: "idle" }),
   SignIn: () => null,
   SignUp: () => null,
 }));
 
-import { SignInForm } from "@/features/auth/sign-in-form";
-import { SignUpForm } from "@/features/auth/sign-up-form";
+import { AuthSignInForm } from "@/features/auth/authSignInForm";
+import { AuthSignUpForm } from "@/features/auth/authSignUpForm";
 
 for (const [path, Component] of [
-  ["/sign-in", SignInForm],
-  ["/sign-up", SignUpForm],
+  ["/sign-in", AuthSignInForm],
+  ["/sign-up", AuthSignUpForm],
 ] as const) {
   test(`${path} cannot submit credentials through a native GET before hydration`, () => {
     const html = renderToStaticMarkup(createElement(Component));

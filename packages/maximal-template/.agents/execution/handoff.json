@@ -7,49 +7,117 @@
     ".agents/contracts/validation.yaml"
   ],
   "spec_catalog": "context/specs/catalog.json",
-  "active_spec_id": "ENG-M1-P1.3-AUTH-T01",
+  "active_spec_id": "TYPESCRIPTION-T2",
   "next_spec_id": null,
   "completed_spec_ids": [],
   "blocked_spec_ids": [],
   "next_actions": [
-    "Owner: re-review the corrective commit and final-SHA update comment on existing draft PR #363.",
-    "Owner: resolve the dependency-installation mismatch under separate authorization and verify lint/format/typecheck plus protected CRM/public QA. The corrective check pass was attempted once and blocked before tools executed.",
-    "Strict chronological first-signup ownership requires a separately approved persistence/infrastructure change; current safe one-time serialized allocation is retained.",
-    "Leave PR #363 draft and unmerged; no Tasks 2-4 work is authorized in this handoff."
+    "STOP for explicit independent review of draft PR #368. Do not merge or begin #365/#366.",
+    "Apply requested corrections on codex/364-authentication and the same PR.",
+    "Owner: resolve or isolate unrelated shared UI/chart work and existing authz type errors before clean-main type/runtime QA; frozen CRM/public consumers must remain untouched."
   ],
   "risks": [
-    "Protected CRM/public preservation is static-review only, pending owner QA.",
-    "Upstream ABAC policies.abac.ts.tpl accepts clientVisible without a customer relationship. It cannot be changed in this task. Sensitive consumers enforce mandatory boundaries independently; upstream direct helper parity remains unresolved.",
-    "PortalDocument and Invoice need an authenticated customer-recipient relationship before VIEWER access may be enabled.",
-    "Owner allocation durability relies on the existing insert-only audit ledger. Destructive tenant deletion/restoration must preserve the allocation history.",
-    "Dependency node_modules junction points to the original checkout installation. Cleanup command was rejected by automatic approval review with blocked by policy; junction retained.",
-    "Single-tenant allocation remains one-time for the first eligible serialized provisioning transaction, not necessarily the first chronological Clerk signup. Asynchronous delivery does not guarantee ordering; strict ordering needs separately approved persistence/infrastructure work.",
-    "New multi-tenant ownership now requires verified primary email; email-less/unverified signup must wait for verification.",
-    "An approval targeting a suspended/revoked membership is rejected and requires administrator resolution; it never silently reactivates that membership.",
-    "Prior upstream ABAC/customer-recipient modeling and protected-slice owner-QA follow-ups remain outside this corrective scope."
+    "No runtime/test verification authorized.",
+    "BoldKit registry endpoints returned HTML; upstream source inspected at 93ffef8ac58ae45c3574ebe07c0cafbb6bf32a38.",
+    "Existing unrelated shared UI/chart work remains in the working tree.",
+    "Issue #364 has no GitHub Project item; no unrelated Project/governance setup performed."
   ],
   "verification_summary": [
-    "pnpm exec eslint --fix --max-warnings=0 <changed code files>: FAIL - pnpm ERR_PNPM_VERIFY_DEPS_BEFORE_RUN: workspace structure changed since last install. ESLint did not execute.",
-    "pnpm exec prettier --write --ignore-unknown <changed files>: FAIL - pnpm ERR_PNPM_VERIFY_DEPS_BEFORE_RUN: workspace structure changed since last install. Prettier did not execute.",
-    "pnpm typecheck: FAIL - pnpm ERR_PNPM_VERIFY_DEPS_BEFORE_RUN: workspace structure changed since last install. Prisma generate, next typegen and tsc did not execute.",
-    "tests, builds, validation, security scans, database jobs, browser/runtime QA: NOT RUN - Prohibited by owner instruction. Test files were authored only.",
-    "PASS: Git whitespace and full scope/path/source inspection at implementation commit 28c26d9b8c04275821331650f6866ef834f405a2. GitHub confirmed draft PR #363, unmerged. Execution-record-only follow-up does not rerun the blocked check pass.",
-    "Review corrections: pnpm exec eslint --fix --max-warnings=0 @taskCode: FAIL - ERR_PNPM_VERIFY_DEPS_BEFORE_RUN; ESLint did not execute.",
-    "Review corrections: pnpm exec prettier --write --ignore-unknown @taskFiles: FAIL - ERR_PNPM_VERIFY_DEPS_BEFORE_RUN; Prettier did not execute.",
-    "Review corrections: pnpm typecheck: FAIL - ERR_PNPM_VERIFY_DEPS_BEFORE_RUN; Prisma generate, next typegen and tsc did not execute.",
-    "Review corrections: tests, builds, database jobs, scans, runtime verification: NOT RUN - Forbidden by owner instruction; regression tests authored only.",
-    "Corrective final static review: 36 inventory entries including the existing preference-helper rename (37 endpoints), zero CRM/public or outside-template paths; 8 corrective paths; no corrective deletions/migrations, generator/upstream edits or changed policy/Clerk APIs. Protected preservation remains pending owner QA."
+    {
+      "command": "pnpm exec eslint --fix --max-warnings=0 @taskCode",
+      "selection": "Existing changed .ts/.tsx files from handoff changed_file_inventory; excludes unrelated UI/chart files.",
+      "result": "FAIL (exit 1): two consistent-type-imports violations: tests/authWebhookWorkflow.test.ts:20 and tests/tenancyProvisioning.test.ts:11. Both replaced with explicit type-only namespace imports before Prettier. NOT RERUN under the one-pass limit.",
+      "date": "2026-11-16T06:35:41.174287+00:00"
+    },
+    {
+      "command": "pnpm exec prettier --write --ignore-unknown @taskFiles",
+      "selection": "Existing files from handoff changed_file_inventory.",
+      "result": "PASS (exit 0); affected files formatted. Subsequent execution-record metadata updated without rerunning the successful formatter.",
+      "date": "2026-11-16T06:35:41.174287+00:00"
+    },
+    {
+      "command": "pnpm typecheck",
+      "result": "FAIL (exit 1). Prisma generate (7.10.1) and Next typegen PASSED; tsc failed. Incremental diagnostic artifact contains 368 diagnostics. Sole diagnostic in a task file: auth-blocks.tsx:1 cannot resolve its retained @/components/ui/utils import because the pre-existing unrelated work deletes components/ui/utils.ts. Other diagnostics are outside this task, including frozen CRM/public consumers (NativeSelectOption/LayeredCard API mismatches), UI/chart missing radix-ui and @/lib/utils imports, and tests/authzPolicies.test.ts kind typing. No protected files or dependencies were changed to repair these. No typecheck rerun.",
+      "date": "2026-11-16T06:35:41.174287+00:00"
+    },
+    {
+      "command": "Unit/integration/E2E tests, builds, validation, security scans, DB jobs, browser/runtime verification",
+      "result": "NOT RUN - prohibited by owner; test sources authored only.",
+      "date": "2026-11-16T06:35:41.174287+00:00"
+    },
+    {
+      "command": "Complete branch-versus-main source/path inspection; deleted-consumer search; git diff --cached --check",
+      "result": "STATIC REVIEW: no remaining deleted-module consumers; existing AuthFormPanel/AuthSplitLayout implementations retained; sync/deactivation and HTTP handler behavior preserved. Zero protected/outside-package staged paths. Runtime compatibility remains unverified.",
+      "date": "2026-11-16T06:35:41.174287+00:00"
+    }
   ],
-  "updated_at": "2026-11-16T05:39:16.809849+00:00",
+  "updated_at": "2026-11-16T06:38:45.473814+00:00",
   "delivery": {
-    "branch": "codex/authz-tenancy",
-    "base_commit": "37e6d0880b3366f6d488a7e477a39de163f061f1",
-    "owner_task": "CODEX TASK 1 - Authorization, tenancy and initial ownership",
-    "status": "draft_corrective_review_checks_blocked",
-    "pr_number": 363,
-    "pr_url": "https://github.com/DigitalHerencia/CodependentCoding/pull/363",
-    "implementation_commit": "28c26d9b8c04275821331650f6866ef834f405a2",
-    "reviewed_commit": "fa246b1cc77c753cfe63c871517e6ae34f8deba4",
-    "review_url": "https://github.com/DigitalHerencia/CodependentCoding/pull/363#pullrequestreview-5915113021"
-  }
+    "issue_number": 364,
+    "branch": "codex/364-authentication",
+    "base_commit": "9cb9474d72f95ed60d3143f88ec7f3f7118ca7b5",
+    "status": "draft_awaiting_independent_review_checks_failed",
+    "merged_prerequisites": {
+      "363": "7d4bd957c74d3dd550e67c37a26ea9b8670c6091",
+      "367": "9cb9474d72f95ed60d3143f88ec7f3f7118ca7b5"
+    },
+    "pr_number": 368,
+    "pr_url": "https://github.com/DigitalHerencia/CodependentCoding/pull/368",
+    "implementation_commit": "6a8f55ea7dbb96f5939bbe5edab713ced2770572",
+    "installed_versions": {
+      "next": "16.4.5",
+      "react": "19.3.1",
+      "@clerk/nextjs": "7.9.25",
+      "@prisma/client": "7.10.1",
+      "react-hook-form": "7.91.0",
+      "@hookform/resolvers": "7.0.3",
+      "zod": "4.6.7",
+      "tailwindcss": "4.3.4",
+      "typescript": "6.0.2",
+      "eslint": "10.14.0",
+      "prettier": "3.9.10"
+    }
+  },
+  "changed_file_inventory": [
+    ".agents/execution/decisions.json",
+    ".agents/execution/handoff.json",
+    ".agents/execution/progress.json",
+    ".env.example",
+    "app/(auth)/error.tsx",
+    "app/(auth)/loading.tsx",
+    "app/(auth)/sign-in/[[...sign-in]]/page.tsx",
+    "app/(auth)/sign-up/[[...sign-up]]/page.tsx",
+    "app/api/clerk/webhooks/route.ts",
+    "components.json",
+    "components/blocks/auth-blocks.tsx",
+    "components/nav/auth-header.tsx",
+    "components/shells/auth-shell.module.css",
+    "components/shells/auth-shell.tsx",
+    "components/templates/auth-templates.tsx",
+    "content/auth.ts",
+    "context/docs/AUTH.md",
+    "features/auth/authSignInForm.tsx",
+    "features/auth/authSignUpForm.tsx",
+    "features/auth/authSkeleton.tsx",
+    "features/auth/sign-in-form.tsx",
+    "features/auth/sign-up-form.tsx",
+    "lib/actions/authWebhookActions.ts",
+    "lib/auth/clerkAccount.ts",
+    "lib/db/transactions/clerkUserTx.ts",
+    "lib/workflows/authClientWorkflows.ts",
+    "lib/workflows/authWebhookWorkflows.ts",
+    "lib/workflows/authWorkflows.ts",
+    "lib/workflows/pwaClientWorkflows.ts",
+    "schemas/authSchemas.ts",
+    "tests/auth-webhooks.integration.test.ts",
+    "tests/authClientWorkflows.test.ts",
+    "tests/authPresentation.test.ts",
+    "tests/authPwaAccount.test.ts",
+    "tests/authWebhookWorkflow.test.ts",
+    "tests/clerkProvisioningIdentity.test.ts",
+    "tests/credentialForms.test.ts",
+    "tests/e2e/auth.spec.ts",
+    "tests/tenancyProvisioning.test.ts",
+    "types/authTypes.ts"
+  ]
 }

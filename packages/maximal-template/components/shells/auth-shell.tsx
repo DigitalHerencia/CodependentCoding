@@ -6,6 +6,7 @@ import { LogoLockup } from "@/components/brand/logo-lockup";
 import { AuthFooter } from "@/components/nav/auth-footer";
 import { AuthHeader } from "@/components/nav/auth-header";
 import { authContent } from "@/content/auth";
+import styles from "@/components/shells/auth-shell.module.css";
 
 /**
  * Split screen: the brand side carries the header (back to the landing) and
@@ -14,7 +15,7 @@ import { authContent } from "@/content/auth";
  */
 export function AuthShell({ children }: { children: ReactNode }) {
   return (
-    <div className="auth-layout">
+    <div className={`auth-layout ${styles.layout}`}>
       <section className="auth-brand-panel auth-panel">
         <AuthHeader />
         <div className="auth-copy-placement">

@@ -809,9 +809,7 @@
       "owner_task": "CODEX TASK 1 - Authorization, tenancy and initial ownership",
       "status": "blocked",
       "issue_number": null,
-      "pr_numbers": [
-        363
-      ],
+      "pr_numbers": [363],
       "branch": "codex/authz-tenancy",
       "base_commit": "37e6d0880b3366f6d488a7e477a39de163f061f1",
       "validation_runs": [
@@ -929,6 +927,87 @@
           "delivery": "Corrections ready on existing draft PR #363; awaiting owner re-review. Exact pushed commit SHA is recorded in the PR update comment."
         }
       ]
+    },
+    {
+      "spec_id": "TYPESCRIPTION-T2",
+      "issue_number": 364,
+      "status": "awaiting_review",
+      "branch": "codex/364-authentication",
+      "base_commit": "9cb9474d72f95ed60d3143f88ec7f3f7118ca7b5",
+      "pr_numbers": [368],
+      "last_updated": "2026-11-16T06:38:45.473814+00:00",
+      "authority": "Owner mission and GitHub issue #364 supersede stale handoff routing. PR #363 and #367 are merged.",
+      "acceptance_evidence": {
+        "auth_layers": "features/auth/authSignInForm.tsx and authSignUpForm.tsx own RHF; components/templates/auth-templates.tsx composes owned blocks; types/authTypes.ts and schemas/authSchemas.ts describe stages and validation.",
+        "webhook": "lib/workflows/authWorkflows.ts retains signature-before-processing, identity sync/deactivation, shared event claims, failure recording and RLS provisioning; persistence loads lazily so auth entry has no new database requirement.",
+        "account": "@clerk/nextjs replaces clerkAccount.ts in both forms and PWA workflow; cache purge/sign-out options unchanged.",
+        "presentation": "Plain Return Home link; copyright footer retained; auth error/loading templates; auth-only CSS module keeps tablets stacked and desktop mirrored halves.",
+        "configuration": "components.json missing opening brace repaired without changing registry; env schema/reader inspected and unchanged; .env.example and AUTH.md document instance-specific signing secrets, optional CLI forwarding, and separate DB-role follow-up.",
+        "protection": "CRM/public and shared authorization/tenancy/RLS implementations untouched. Existing dirty UI/chart edits excluded from task."
+      },
+      "tests_authored_not_run": [
+        "tests/authClientWorkflows.test.ts",
+        "tests/authWebhookWorkflow.test.ts",
+        "tests/authPresentation.test.ts",
+        "tests/authPwaAccount.test.ts",
+        "tests/e2e/auth.spec.ts",
+        "tests/auth-webhooks.integration.test.ts (extended signatures + existing opt-in DB scenario)"
+      ],
+      "validation_runs": [
+        {
+          "command": "pnpm exec eslint --fix --max-warnings=0 @taskCode",
+          "selection": "Existing changed .ts/.tsx files from handoff changed_file_inventory; excludes unrelated UI/chart files.",
+          "result": "FAIL (exit 1): two consistent-type-imports violations: tests/authWebhookWorkflow.test.ts:20 and tests/tenancyProvisioning.test.ts:11. Both replaced with explicit type-only namespace imports before Prettier. NOT RERUN under the one-pass limit.",
+          "date": "2026-11-16T06:35:41.174287+00:00"
+        },
+        {
+          "command": "pnpm exec prettier --write --ignore-unknown @taskFiles",
+          "selection": "Existing files from handoff changed_file_inventory.",
+          "result": "PASS (exit 0); affected files formatted. Subsequent execution-record metadata updated without rerunning the successful formatter.",
+          "date": "2026-11-16T06:35:41.174287+00:00"
+        },
+        {
+          "command": "pnpm typecheck",
+          "result": "FAIL (exit 1). Prisma generate (7.10.1) and Next typegen PASSED; tsc failed. Incremental diagnostic artifact contains 368 diagnostics. Sole diagnostic in a task file: auth-blocks.tsx:1 cannot resolve its retained @/components/ui/utils import because the pre-existing unrelated work deletes components/ui/utils.ts. Other diagnostics are outside this task, including frozen CRM/public consumers (NativeSelectOption/LayeredCard API mismatches), UI/chart missing radix-ui and @/lib/utils imports, and tests/authzPolicies.test.ts kind typing. No protected files or dependencies were changed to repair these. No typecheck rerun.",
+          "date": "2026-11-16T06:35:41.174287+00:00"
+        },
+        {
+          "command": "Unit/integration/E2E tests, builds, validation, security scans, DB jobs, browser/runtime verification",
+          "result": "NOT RUN - prohibited by owner; test sources authored only.",
+          "date": "2026-11-16T06:35:41.174287+00:00"
+        },
+        {
+          "command": "Complete branch-versus-main source/path inspection; deleted-consumer search; git diff --cached --check",
+          "result": "STATIC REVIEW: no remaining deleted-module consumers; existing AuthFormPanel/AuthSplitLayout implementations retained; sync/deactivation and HTTP handler behavior preserved. Zero protected/outside-package staged paths. Runtime compatibility remains unverified.",
+          "date": "2026-11-16T06:35:41.174287+00:00"
+        }
+      ],
+      "limitations": [
+        "No runtime/test verification authorized.",
+        "BoldKit registry endpoints returned HTML; upstream source inspected at 93ffef8ac58ae45c3574ebe07c0cafbb6bf32a38.",
+        "Existing unrelated shared UI/chart work remains in the working tree.",
+        "Issue #364 has no GitHub Project item; no unrelated Project/governance setup performed."
+      ],
+      "check_blockers": [
+        "The sole lint pass failed; both reported findings corrected without rerun.",
+        "Package typecheck fails in the existing dirty shared UI/chart tree and unrelated authz tests. Do not repair frozen consumers."
+      ],
+      "pr_url": "https://github.com/DigitalHerencia/CodependentCoding/pull/368",
+      "implementation_commit": "6a8f55ea7dbb96f5939bbe5edab713ced2770572",
+      "installed_versions": {
+        "next": "16.4.5",
+        "react": "19.3.1",
+        "@clerk/nextjs": "7.9.25",
+        "@prisma/client": "7.10.1",
+        "react-hook-form": "7.91.0",
+        "@hookform/resolvers": "7.0.3",
+        "zod": "4.6.7",
+        "tailwindcss": "4.3.4",
+        "typescript": "6.0.2",
+        "eslint": "10.14.0",
+        "prettier": "3.9.10"
+      },
+      "delivery": "Draft PR #368 opened and unmerged; stopped for explicit independent review. #365 and #366 not started."
     }
   ]
 }

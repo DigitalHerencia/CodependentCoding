@@ -69,11 +69,58 @@ _Database policies that enforce tenant isolation even if application code is wro
 
 ## Webhook sync
 
-_How identity events reach the database._
+`POST /api/clerk/webhooks` delegates to server-only `lib/workflows/authWorkflows.ts`.
+Clerk verifies the raw request signature before any event is claimed. The handler
+requires `svix-id`; the shared `webhookEventTx.ts` ledger hashes the raw payload,
+acknowledges duplicates and rejects changed payload/type reuse with HTTP 409.
+Failed or stale claims retain the existing retry behavior. Identity changes and
+event completion share a provider transaction; failures record only a bounded
+diagnostic code, never the request payload, credentials or personal data.
 
-- **Events handled:** TODO:
-- **Verification:** signing secret
-- **Retries:** idempotent by event ID
+- `user.created` / `user.updated`: retain identity synchronization and the accepted
+  PR #363 verified-primary-email provisioning and tenancy gates.
+- `user.deleted`: suspend memberships, audit deactivation, anonymize the local user.
+- Other verified event types: acknowledge through the same idempotency ledger.
+
+Configure `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` and `CLERK_SECRET_KEY` for the intended
+Clerk instance. Both remain optional in `schemas/envSchemas.ts` to preserve local
+Clerk keyless development. Only the publishable key is browser-visible. The base
+reader in `lib/utils/env.ts` validates these lazily. The webhook verifier reads
+`CLERK_WEBHOOK_SIGNING_SECRET` through that reader and rejects requests if it is
+unset; no development or unsigned processing bypass exists.
+
+Create separate webhook endpoints for development and production in the matching
+Clerk instances. Each has its own signing secret: set the corresponding
+`CLERK_WEBHOOK_SIGNING_SECRET` in that environment's secret store. Do not reuse a
+development signing secret in production or commit real values or tunnel domains.
+Subscribe to the three user events above.
+
+Optional local forwarding uses `clerk webhooks listen --forward-to http://localhost:3000/api/clerk/webhooks`.
+Inspect the installed CLI's help for authentication/token requirements, register
+its relay URL as a development webhook endpoint, and use that endpoint's signing
+secret. Alternatively follow Clerk's official local webhook guide with a temporary
+HTTPS tunnel to the same endpoint.
+Do not point local deliveries at a production database. No listener or live
+delivery is required by the static checks for #364, and none was run.
+
+Provider transactions and RLS helpers are preserved. A dedicated least-privilege
+webhook database login needs separately authorized database-role/configuration
+work; this task does not widen privileges or alter migrations or RLS policies.
+
+Official references: [Clerk webhook verification](https://clerk.com/docs/reference/backend/verify-webhook),
+[Clerk CLI](https://clerk.com/docs/cli),
+[webhook setup and local forwarding](https://clerk.com/docs/guides/development/webhooks/syncing),
+[Core 3 finalization](https://clerk.com/articles/from-setactive-to-finalize-migrating-custom-auth-flows-to-clerk-core-3).
+
+Auth presentation was compared with upstream BoldKit `application/auth-forms`,
+`onboarding-flow` and `error-pages` at commit
+`93ffef8ac58ae45c3574ebe07c0cafbb6bf32a38`. The existing split layout is retained;
+the form field/password-toggle and server-error presentation is adapted to the
+existing primitives, editorial copy and Clerk operations. No demo authentication
+handlers or onboarding requirements were imported. `components.json` had a missing
+opening brace; its existing `@boldkit` URL is retained. The three corresponding
+`https://boldkit.dev/r/{name}.json` requests returned HTML during this inspection,
+so registry installation itself remains unverified.
 
 **Feeds:** `ENG-M1-P1.3-AUTH-T03`
 

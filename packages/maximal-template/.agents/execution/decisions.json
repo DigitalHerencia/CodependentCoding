@@ -31,6 +31,20 @@
       "decision": "Process verified approvals independently of other active memberships. Defer multi-tenant ownership until verified email exists. Preserve Clerk verification, webhook deduplication, active target roles, inactive-membership refusal, and single-tenant one-time allocation.",
       "clarification": "Single-tenant allocation remains one-time for the first eligible serialized provisioning transaction, not necessarily the first chronological Clerk signup. Asynchronous delivery does not guarantee ordering; strict ordering needs separately approved persistence/infrastructure work.",
       "scope": "Existing codex/authz-tenancy branch and draft PR #363 only; no protected CRM/public, generator, upstream ABAC, infrastructure, migrations or dependency-junction changes."
+    },
+    {
+      "id": "DEC-TYPESCRIPTION-T2-001",
+      "spec_id": "TYPESCRIPTION-T2",
+      "issue_number": 364,
+      "date": "2026-11-16T06:31:23.774805+00:00",
+      "status": "accepted",
+      "authority": "Explicit owner mission and GitHub issue #364; begin only after merged PR #367.",
+      "decision": "Implement authentication only on codex/364-authentication from 9cb9474d72f95ed60d3143f88ec7f3f7118ca7b5. Consolidate existing webhook behavior in server-only authWorkflows and replace all Clerk account adapter consumers with official imports. Preserve accepted PR #363 provisioning, RLS and CRM/public contracts. Author tests without execution. Open one draft PR and stop for explicit review clearance.",
+      "follow_up": [
+        "Independent review and owner runtime/QA remain required before merge.",
+        "A dedicated webhook database role requires separately authorized infrastructure changes.",
+        "Do not begin #365 until #364 is reviewed, corrected if necessary, and merged."
+      ]
     }
   ]
 }

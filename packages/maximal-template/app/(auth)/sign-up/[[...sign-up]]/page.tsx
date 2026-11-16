@@ -1,11 +1,11 @@
 import { AuthEntryFeature } from "@/features/auth/auth-entry-feature";
-import { SignUpForm } from "@/features/auth/sign-up-form";
+import { AuthSignUpForm } from "@/features/auth/authSignUpForm";
 
 // URL ownership stops here; orchestration is delegated to the feature.
 export default function Page() {
   return (
     <AuthEntryFeature>
-      <SignUpForm />
+      <AuthSignUpForm />
     </AuthEntryFeature>
   );
 }

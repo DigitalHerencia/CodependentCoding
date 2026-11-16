@@ -1,0 +1,18 @@
+/* The existing shared utilities split at md. Auth stays stacked through tablets. */
+@media (48rem <= width < 64rem) {
+  .layout {
+    height: auto;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: none;
+    overflow: visible;
+  }
+
+  .layout > section {
+    display: flex;
+    grid-row: auto;
+  }
+
+  .layout:global(.auth-layout):has([data-auth-variant="signUp"]) > section {
+    order: 0;
+  }
+}

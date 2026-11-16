@@ -10,7 +10,7 @@ import { baseEnv } from "@/lib/utils/env";
 import {
   syncClerkUserTx,
   anonymizeClerkUserTx,
-} from "@/lib/db/transactions/clerkUserTx";
+} from "@/lib/workflows/authWorkflows";
 import {
   claimWebhookEventTx,
   completeWebhookEventTx,
@@ -50,6 +50,30 @@ test("Clerk verifies signed payloads and rejects tampered deliveries", async () 
       signingSecret,
     }),
   );
+});
+
+test("Clerk rejects a correctly signed delivery outside the replay window", async () => {
+  const secret = randomBytes(32);
+  const signingSecret = `whsec_${secret.toString("base64")}`;
+  const eventId = `msg_${randomUUID()}`;
+  const timestamp = Math.floor(Date.now() / 1000 - 3600).toString();
+  const body = JSON.stringify({
+    type: "user.deleted",
+    data: { id: "user_expired_fixture", deleted: true },
+  });
+  const signature = createHmac("sha256", secret)
+    .update(`${eventId}.${timestamp}.${body}`)
+    .digest("base64");
+  const request = new NextRequest("https://example.test/api/clerk/webhooks", {
+    method: "POST",
+    body,
+    headers: {
+      "svix-id": eventId,
+      "svix-timestamp": timestamp,
+      "svix-signature": `v1,${signature}`,
+    },
+  });
+  await assert.rejects(verifyWebhook(request, { signingSecret }));
 });
 
 test.skipIf(baseEnv.value("AUTH_WEBHOOK_DB_TEST") !== "1")(
