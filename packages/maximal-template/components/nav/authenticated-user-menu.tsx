@@ -73,7 +73,9 @@ export function AuthenticatedUserMenu({
         {user?.primaryEmailAddress?.emailAddress && (
           <div>
             <dt className="text-muted-foreground">{copy.email}</dt>
-            <dd className="break-all">{user.primaryEmailAddress.emailAddress}</dd>
+            <dd className="break-all">
+              {user.primaryEmailAddress.emailAddress}
+            </dd>
           </div>
         )}
       </dl>
