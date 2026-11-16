@@ -32,9 +32,9 @@ test("customers require relationships; staff retain tenant access", () => {
   expect(
     canReadResource(as("VIEWER"), { ...ours, ownerMembershipId: "mem_1" }),
   ).toBe(true);
-  expect(
-    canReadResource(as("VIEWER"), { ...ours, clientVisible: true }),
-  ).toBe(false);
+  expect(canReadResource(as("VIEWER"), { ...ours, clientVisible: true })).toBe(
+    false,
+  );
   expect(canManageOwnedOrAssignedResource(as("MEMBER"), ours)).toBe(true);
 });
 
