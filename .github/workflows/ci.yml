@@ -1,121 +1,23 @@
-# Owner policy: changed-file fixes, type generation/checking and affected builds only.
-name: CI
+# Current factory focus: validate changed Maximal Template code only.
+# No builds, tests, migrations, dev servers, deployments, or CI autofixes.
+name: Template CI
 
 on:
   pull_request:
-  workflow_dispatch:
-    inputs:
-      base_ref:
-        description: Commit or ref to compare with HEAD
-        required: true
-        default: main
-
-concurrency:
-  group: ci-${{ github.ref }}
-  cancel-in-progress: true
+    paths:
+      - "packages/maximal-template/**"
+      - ".github/workflows/ci.yml"
 
 permissions:
   contents: read
 
-env:
-  BASE_REF: ${{ github.event.pull_request.base.sha || inputs.base_ref }}
+concurrency:
+  group: template-ci-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
 
 jobs:
-  changes:
-    name: What changed
-    runs-on: ubuntu-latest
-    timeout-minutes: 2
-    outputs:
-      root: ${{ steps.scope.outputs.root }}
-      root_types: ${{ steps.scope.outputs.root_types }}
-      site: ${{ steps.scope.outputs.site }}
-      cli: ${{ steps.scope.outputs.cli }}
-      tui: ${{ steps.scope.outputs.tui }}
-      template: ${{ steps.scope.outputs.template }}
-      template_types: ${{ steps.scope.outputs.template_types }}
-      template_build: ${{ steps.scope.outputs.template_build }}
-    steps:
-      - uses: actions/checkout@v7
-        with:
-          fetch-depth: 0
-      - id: scope
-        shell: bash
-        run: |
-          set -euo pipefail
-          git diff --name-only "$BASE_REF" HEAD > "$RUNNER_TEMP/changed.txt"
-          list="$RUNNER_TEMP/changed.txt"
-          has() { if grep -qE "$1" "$list"; then echo true; else echo false; fi; }
-          {
-            echo "root=$(if grep -qvE '^packages/maximal-template/' "$list"; then echo true; else echo false; fi)"
-            echo "root_types=$(if grep -vE '^(packages/maximal-template/|packages/tui/)' "$list" | grep -E '\.(ts|tsx)$|^(package\.json|pnpm-lock\.yaml|tsconfig\.json)$' > /dev/null; then echo true; else echo false; fi)"
-            echo "site=$(has '^(app|components|features|lib|content|public|context/docs|context/canon|context/doctrine)/|^packages/(maximal-template/|generator/assets/|loaded-vibes/(skills/|agents/|references/|\.claude-plugin/)|cli/src/commands/)|^(next\.config\.ts|package\.json|pnpm-lock\.yaml)$')"
-            echo "cli=$(has '^packages/(cli|generator|loaded-vibes)/')"
-            echo "tui=$(has '^packages/(tui|cli|generator|loaded-vibes)/')"
-            echo "template=$(has '^packages/(maximal-template|generator|loaded-vibes)/')"
-            echo "template_types=$(has '^packages/maximal-template/.*\.(ts|tsx|prisma)$|^packages/maximal-template/(package\.json|pnpm-lock\.yaml|tsconfig\.json)$')"
-            echo "template_build=$(has '^packages/maximal-template/(app|components|features|hooks|lib|types|schemas|content|public|prisma/schema)/|^packages/maximal-template/(proxy\.ts|next\.config\.ts|package\.json|pnpm-lock\.yaml|postcss\.config\.mjs|tsconfig\.json)$')"
-          } >> "$GITHUB_OUTPUT"
-
-  root:
-    name: Factory (root)
-    needs: changes
-    if: needs.changes.outputs.root == 'true'
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    steps:
-      - uses: actions/checkout@v7
-        with:
-          fetch-depth: 0
-      - uses: pnpm/action-setup@v6
-      - uses: actions/setup-node@v7
-        with:
-          node-version-file: .node-version
-          cache: pnpm
-          cache-dependency-path: pnpm-lock.yaml
-      - run: pnpm install --frozen-lockfile
-      - if: needs.changes.outputs.cli == 'true' || needs.changes.outputs.tui == 'true'
-        run: pnpm --dir packages/maximal-template install --frozen-lockfile
-        env:
-          DATABASE_URL: postgresql://ci:ci@localhost:5432/ci
-      - name: Format changed files and fix changed code
-        shell: bash
-        run: |
-          set -euo pipefail
-          mapfile -t files < <(git diff --name-only --diff-filter=ACMR "$BASE_REF" HEAD | grep -vE '^packages/maximal-template/' || true)
-          if ((${#files[@]})); then pnpm exec prettier --write --ignore-unknown "${files[@]}"; fi
-          mapfile -t code < <(printf '%s\n' "${files[@]}" | grep -vE '^packages/tui/' | grep -E '\.(mjs|cjs|js|jsx|ts|tsx|mts|cts)$' || true)
-          if ((${#code[@]})); then pnpm exec eslint --fix --max-warnings=0 "${code[@]}"; fi
-      - name: Generate types
-        if: needs.changes.outputs.root_types == 'true'
-        run: pnpm exec next typegen
-      - name: Type-check
-        if: needs.changes.outputs.root_types == 'true'
-        run: pnpm exec tsc --noEmit
-      - name: Build site
-        if: needs.changes.outputs.site == 'true'
-        run: pnpm build
-      - name: Build CLI
-        if: needs.changes.outputs.cli == 'true'
-        run: pnpm cli:build
-      - name: Fix changed terminal code
-        if: needs.changes.outputs.tui == 'true'
-        working-directory: packages/tui
-        shell: bash
-        run: |
-          set -euo pipefail
-          mapfile -t code < <(git diff --relative --name-only --diff-filter=ACMR "$BASE_REF" HEAD -- . | grep -E '\.(mjs|cjs|js|jsx|ts|tsx|mts|cts)$' || true)
-          if ((${#code[@]})); then pnpm exec eslint --fix --max-warnings=0 "${code[@]}"; fi
-      - name: Type-check and build terminal app
-        if: needs.changes.outputs.tui == 'true'
-        working-directory: packages/tui
-        run: |
-          pnpm typecheck
-          pnpm build
-
   template:
-    name: Maximal Template
-    needs: changes
-    if: needs.changes.outputs.template == 'true'
+    name: Changed-file checks
     runs-on: ubuntu-latest
     timeout-minutes: 15
     defaults:
@@ -131,31 +33,56 @@ jobs:
       - uses: actions/checkout@v7
         with:
           fetch-depth: 0
+          persist-credentials: false
+
+      - name: Determine changed template files
+        id: changes
+        shell: bash
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          set -euo pipefail
+          git -C "$GITHUB_WORKSPACE" diff --name-only --diff-filter=ACMR "$BASE_SHA" HEAD -- packages/maximal-template/ |
+            sed 's#^packages/maximal-template/##' > "$RUNNER_TEMP/changed-template.txt"
+          if [[ -s "$RUNNER_TEMP/changed-template.txt" ]]; then
+            echo 'any=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'any=false' >> "$GITHUB_OUTPUT"
+          fi
+          if grep -Eq '\.(ts|tsx|js|jsx|mjs|cjs|prisma)$|^(package\.json|pnpm-lock\.yaml|tsconfig\.json|next\.config\.[cm]?[jt]s|prisma\.config\.ts)$' "$RUNNER_TEMP/changed-template.txt"; then
+            echo 'types=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'types=false' >> "$GITHUB_OUTPUT"
+          fi
+
       - uses: pnpm/action-setup@v6
+        if: steps.changes.outputs.any == 'true'
         with:
           package_json_file: packages/maximal-template/package.json
       - uses: actions/setup-node@v7
+        if: steps.changes.outputs.any == 'true'
         with:
           node-version-file: .node-version
           cache: pnpm
           cache-dependency-path: packages/maximal-template/pnpm-lock.yaml
-      - run: pnpm install --frozen-lockfile
-      - name: Format changed files and fix changed code
+      - name: Install template dependencies
+        if: steps.changes.outputs.any == 'true'
+        run: pnpm install --frozen-lockfile
+
+      - name: Check formatting and lint changed files
+        if: steps.changes.outputs.any == 'true'
         shell: bash
         run: |
           set -euo pipefail
-          mapfile -t files < <(git diff --relative --name-only --diff-filter=ACMR "$BASE_REF" HEAD -- .)
-          if ((${#files[@]})); then pnpm exec prettier --write --ignore-unknown "${files[@]}"; fi
-          mapfile -t code < <(printf '%s\n' "${files[@]}" | grep -E '\.(mjs|cjs|js|jsx|ts|tsx|mts|cts)$' || true)
-          if ((${#code[@]})); then node ../loaded-vibes/scripts/app.mjs lint --app . --fix "${code[@]}"; fi
-      - name: Generate types
-        if: needs.changes.outputs.template_types == 'true' || needs.changes.outputs.template_build == 'true'
-        run: |
-          pnpm prisma:generate
-          pnpm exec next typegen
-      - name: Type-check
-        if: needs.changes.outputs.template_types == 'true' || needs.changes.outputs.template_build == 'true'
-        run: pnpm exec tsc --noEmit
-      - name: Build
-        if: needs.changes.outputs.template_build == 'true'
-        run: pnpm exec next build --turbopack
+          mapfile -t files < "$RUNNER_TEMP/changed-template.txt"
+          pnpm exec prettier --check --ignore-unknown "${files[@]}"
+          mapfile -t code < <(grep -E '\.(js|jsx|ts|tsx|mjs|cjs|mts|cts)$' "$RUNNER_TEMP/changed-template.txt" || true)
+          if (("${#code[@]}")); then
+            # Baseline ESLint config is self-contained; the optional factory
+            # doctrine plugin needs sibling packages not installed here.
+            pnpm exec eslint --max-warnings=0 "${code[@]}"
+          fi
+
+      - name: Typecheck
+        if: steps.changes.outputs.types == 'true'
+        run: pnpm typecheck
