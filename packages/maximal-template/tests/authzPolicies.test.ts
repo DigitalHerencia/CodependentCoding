@@ -1,6 +1,4 @@
-// Why: pins RBAC (the default; `--access abac` swaps in record rules): the record rules
-// are absent, only the organization boundary remains, and the role's
-// permissions alone decide.
+// RBAC staff grants and mandatory customer relationships; generator ABAC replaces this file.
 import { expect, test } from "vitest";
 
 import {
@@ -27,11 +25,19 @@ test("roles rank OWNER > ADMIN > MEMBER > VIEWER", () => {
   expect(hasRoleAtLeast("VIEWER", "MEMBER")).toBe(false);
 });
 
-test("viewers and members reach any record in their organization", () => {
+test("customers need a relationship while staff retain RBAC tenant access", () => {
   const ours = { ...record, organizationId: "org_a" };
-  expect(limitedToOwnRecords(as("VIEWER"))).toBe(false);
-  expect(canReadResource(as("VIEWER"), ours)).toBe(true);
+  expect(limitedToOwnRecords(as("VIEWER"))).toBe(true);
+  expect(canReadResource(as("VIEWER"), ours)).toBe(false);
+  expect(canReadResource(as("VIEWER"), { ...ours, ownerMembershipId: "mem_1" })).toBe(true);
+  expect(canReadResource(as("VIEWER"), { ...ours, clientVisible: true })).toBe(false);
   expect(canManageOwnedOrAssignedResource(as("MEMBER"), ours)).toBe(true);
+});
+
+test("CRM keeps its existing tenant-scoped policy semantics", () => {
+  const crm = { kind: "crm.account", organizationId: "org_a" };
+  expect(canManageOwnedOrAssignedResource(as("MEMBER"), crm)).toBe(true);
+  expect(canReadResource(as("VIEWER"), crm)).toBe(true);
 });
 
 test("the organization boundary still holds", () => {

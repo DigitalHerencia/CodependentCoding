@@ -8,9 +8,9 @@ export { tenancies } from "@/schemas/accessSchemas";
 /**
  * Organization mode (AUTH.md §4.3). `hipster-stack new --tenancy` writes it;
  * change it by hand only before the app has users.
- * - "single" (default): one shared organization. Users who finish onboarding
- *   join it with the lowest role; the bootstrap owner joins as OWNER.
- * - "multi": users who finish onboarding without an invitation get their own
+ * - "single" (default): one shared organization. The first live signup is OWNER; later
+ *   signups join as VIEWER. The allocation survives owner deletion.
+ * - "multi": new signups without an invitation get their own
  *   organization as OWNER; invited users join the inviting organization.
  */
 

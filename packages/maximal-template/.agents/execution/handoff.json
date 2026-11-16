@@ -7,12 +7,33 @@
     ".agents/contracts/validation.yaml"
   ],
   "spec_catalog": "context/specs/catalog.json",
-  "active_spec_id": null,
+  "active_spec_id": "ENG-M1-P1.3-AUTH-T01",
   "next_spec_id": null,
   "completed_spec_ids": [],
   "blocked_spec_ids": [],
-  "next_actions": [],
-  "risks": [],
-  "verification_summary": [],
-  "updated_at": null
+  "next_actions": [
+    "Owner: prepare dependencies for this latest-main worktree and authorize a fresh check pass; review the draft PR and perform protected CRM/public QA.",
+    "Resolve the upstream ABAC helper/clientVisible mismatch and model customer recipients under a later explicitly authorized scope.",
+    "Do not merge or proceed to Tasks 2-4 until owner review and the required verification are complete."
+  ],
+  "risks": [
+    "Protected CRM/public preservation is static-review only, pending owner QA.",
+    "Upstream ABAC policies.abac.ts.tpl accepts clientVisible without a customer relationship. It cannot be changed in this task. Sensitive consumers enforce mandatory boundaries independently; upstream direct helper parity remains unresolved.",
+    "PortalDocument and Invoice need an authenticated customer-recipient relationship before VIEWER access may be enabled.",
+    "Owner allocation durability relies on the existing insert-only audit ledger. Destructive tenant deletion/restoration must preserve the allocation history.",
+    "Dependency node_modules junction points to the original checkout installation. Cleanup command was rejected by automatic approval review with blocked by policy; junction retained."
+  ],
+  "verification_summary": [
+    "pnpm exec eslint --fix --max-warnings=0 <changed code files>: FAIL - pnpm ERR_PNPM_VERIFY_DEPS_BEFORE_RUN: workspace structure changed since last install. ESLint did not execute.",
+    "pnpm exec prettier --write --ignore-unknown <changed files>: FAIL - pnpm ERR_PNPM_VERIFY_DEPS_BEFORE_RUN: workspace structure changed since last install. Prettier did not execute.",
+    "pnpm typecheck: FAIL - pnpm ERR_PNPM_VERIFY_DEPS_BEFORE_RUN: workspace structure changed since last install. Prisma generate, next typegen and tsc did not execute.",
+    "tests, builds, validation, security scans, database jobs, browser/runtime QA: NOT RUN - Prohibited by owner instruction. Test files were authored only."
+  ],
+  "updated_at": "2026-11-16",
+  "delivery": {
+    "branch": "codex/authz-tenancy",
+    "base_commit": "37e6d0880b3366f6d488a7e477a39de163f061f1",
+    "owner_task": "CODEX TASK 1 - Authorization, tenancy and initial ownership",
+    "status": "draft_review_pending_checks"
+  }
 }

@@ -5,7 +5,7 @@ import {
 import "server-only";
 
 import { assertPermission, hasPermission } from "@/lib/authz/permissions";
-import { limitedToOwnRecords } from "@/lib/authz/policies";
+import { limitedToCustomerRecords } from "@/lib/authz/attributes";
 import {
   toPortalBillingSubscriptionDTO,
   toPortalDocumentDTO,
@@ -23,19 +23,12 @@ export async function getPortalDocuments(rawLimit: unknown = 100) {
     assertPermission(access, "portal.document:read");
     const limit = persistedReadLimitSchema.parse(rawLimit);
 
-    const clientOnly = limitedToOwnRecords(access);
+    // No customer-recipient relationship exists in PortalDocument yet.
+    if (limitedToCustomerRecords(access)) return [];
 
     const rows = await tx.portalDocument.findMany({
       where: {
         organizationId: access.organizationId,
-        ...(clientOnly
-          ? {
-              clientVisible: true,
-              status: {
-                not: "ARCHIVED",
-              },
-            }
-          : {}),
       },
       orderBy: {
         updatedAt: "desc",
@@ -51,6 +44,8 @@ export async function getPortalDocuments(rawLimit: unknown = 100) {
 export async function getPortalBilling() {
   return withAuthenticatedRead(async (tx, access) => {
     assertPermission(access, "portal.billing:read");
+    // Invoice customerName/email and tenant subscription are not authenticated recipients.
+    if (limitedToCustomerRecords(access)) return { subscription: null, invoices: [] };
     const [subscription, invoices] = await Promise.all([
       tx.billingSubscription.findUnique({
         where: { organizationId: access.organizationId },
@@ -94,13 +89,11 @@ export async function getPortalDocument(rawDocumentId: unknown) {
   return withAuthenticatedRead(async (tx, access) => {
     assertPermission(access, "portal.document:read");
     const documentId = persistedRecordIdSchema.parse(rawDocumentId);
+    if (limitedToCustomerRecords(access)) return null;
     const row = await tx.portalDocument.findFirst({
       where: {
         id: documentId,
         organizationId: access.organizationId,
-        ...(limitedToOwnRecords(access)
-          ? { clientVisible: true, status: { not: "ARCHIVED" as const } }
-          : {}),
       },
       select: portalDocumentSelect,
     });

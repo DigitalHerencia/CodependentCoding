@@ -5,8 +5,6 @@ import type { ClerkUserProjection } from "@/types/integrationTypes";
 import { setRlsContext } from "@/lib/db/rls";
 import { provisionWorkspaceAccessTx } from "@/lib/db/transactions/onboardingTx";
 
-import { baseEnv } from "@/lib/utils/env";
-
 export async function syncClerkUserTx(
   tx: Prisma.TransactionClient,
   user: ClerkUserProjection,
@@ -26,15 +24,11 @@ export async function syncClerkUserTx(
     },
     select: { id: true },
   });
-  if (baseEnv.value("BOOTSTRAP_OWNER_CLERK_USER_ID") !== user.clerkUserId)
-    return;
-
   await setRlsContext(tx, { userId: record.id });
   await provisionWorkspaceAccessTx(
     tx,
-    { id: record.id, displayName: user.username },
-    null,
-    true,
+    { id: record.id, displayName: user.displayName },
+    user.verifiedEmail,
   );
 }
 

@@ -9,7 +9,7 @@ import type {
   AuthenticatedIdentity,
 } from "@/types/accessTypes";
 
-import { getActiveOrganizationPreference } from "@/lib/auth/activeOrganization";
+import { getActiveOrganizationPreference } from "@/lib/authz/tenancy";
 import { requireIdentity } from "@/lib/auth/auth";
 import { activeMembershipScope } from "@/lib/authz/mode";
 import { prisma } from "@/lib/db/client";

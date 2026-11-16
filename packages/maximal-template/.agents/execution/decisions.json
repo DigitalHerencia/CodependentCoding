@@ -7,5 +7,20 @@
     ".agents/contracts/design.yaml",
     ".agents/contracts/validation.yaml"
   ],
-  "decisions": []
+  "decisions": [
+    {
+      "id": "DEC-AUTHZ-TENANCY-001",
+      "spec_id": "ENG-M1-P1.3-AUTH-T01",
+      "date": "2026-11-16",
+      "status": "accepted",
+      "authority": "Owner-approved CODEX TASK 1 binding execution contract; supersedes stale handoff routing for this bounded assignment.",
+      "decision": "Keep generator-selected lib/authz policies and CRM tenant-scoped behavior; enforce mandatory non-CRM customer boundaries outside the replaceable policy module. Use transaction-held locks and the insert-only audit ledger for one-time live initial-owner allocation; seed fixtures do not allocate.",
+      "follow_up": [
+        "Protected CRM/public preservation is static-review only, pending owner QA.",
+        "Upstream ABAC policies.abac.ts.tpl accepts clientVisible without a customer relationship. It cannot be changed in this task. Sensitive consumers enforce mandatory boundaries independently; upstream direct helper parity remains unresolved.",
+        "PortalDocument and Invoice need an authenticated customer-recipient relationship before VIEWER access may be enabled.",
+        "Owner allocation durability relies on the existing insert-only audit ledger. Destructive tenant deletion/restoration must preserve the allocation history."
+      ]
+    }
+  ]
 }

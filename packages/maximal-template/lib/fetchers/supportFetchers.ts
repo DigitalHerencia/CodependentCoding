@@ -5,7 +5,7 @@ import {
 import "server-only";
 
 import { assertPermission } from "@/lib/authz/permissions";
-import { limitedToOwnRecords } from "@/lib/authz/policies";
+import { limitedToCustomerRecords as limitedToOwnRecords } from "@/lib/authz/attributes";
 import {
   toKnowledgeArticleDTO,
   toSupportTicketDTO,

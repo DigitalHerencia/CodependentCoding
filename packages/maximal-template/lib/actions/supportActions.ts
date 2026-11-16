@@ -11,6 +11,7 @@ import {
 import { requireIdentity } from "@/lib/auth/auth";
 import { assertPermission } from "@/lib/authz/permissions";
 import { authorizeOwnedOrAssignedWrite } from "@/lib/authz/policies";
+import { assertCustomerRequester } from "@/lib/authz/attributes";
 import {
   toKnowledgeArticleDTO,
   toSupportTicketDTO,
@@ -65,6 +66,7 @@ export async function updateSupportTicketStatus(rawInput: unknown) {
         },
       });
       if (!target) throw new Error("Support ticket was not found.");
+      assertCustomerRequester(access, target);
 
       authorizeOwnedOrAssignedWrite(access, "support.ticket:update", {
         kind: "support.ticket",
@@ -99,6 +101,7 @@ export async function replyToSupportTicket(rawInput: unknown) {
         },
       });
       if (!target) throw new Error("Ticket not found.");
+      assertCustomerRequester(access, target);
       authorizeOwnedOrAssignedWrite(access, "support.ticket:update", {
         kind: "support.ticket",
         organizationId: target.organizationId,

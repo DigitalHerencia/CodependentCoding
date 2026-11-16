@@ -1,9 +1,8 @@
 import "server-only";
 
 import { cache } from "react";
-import { activeMembershipScope, tenancy } from "@/lib/authz/mode";
+import { activeMembershipScope } from "@/lib/authz/mode";
 import { TenantContextError, withIdentityTransaction } from "@/lib/db/tenant";
-import { baseEnv } from "@/lib/utils/env";
 
 export const getOnboardingState = cache(async () => {
   try {
@@ -18,14 +17,8 @@ export const getOnboardingState = cache(async () => {
         where: activeMembershipScope(user.id),
         select: { role: true },
       });
-      // The single organization's bootstrap owner stays pending until the
-      // onboarding page (loadOnboardingWorkflow) promotes it to OWNER.
-      const awaitingOwnerPromotion =
-        tenancy === "single" &&
-        membership?.role !== "OWNER" &&
-        baseEnv.value("BOOTSTRAP_OWNER_CLERK_USER_ID") === user.clerkUserId;
       return {
-        status: membership && !awaitingOwnerPromotion ? "active" : "pending",
+        status: membership ? "active" : "pending",
       } as const;
     });
   } catch (error) {

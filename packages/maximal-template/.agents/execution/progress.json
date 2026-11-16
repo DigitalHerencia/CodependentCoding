@@ -803,6 +803,58 @@
       "pr_numbers": [],
       "validation_runs": [],
       "last_updated": null
+    },
+    {
+      "spec_id": "ENG-M1-P1.3-AUTH-T01",
+      "owner_task": "CODEX TASK 1 - Authorization, tenancy and initial ownership",
+      "status": "blocked",
+      "issue_number": null,
+      "pr_numbers": [],
+      "branch": "codex/authz-tenancy",
+      "base_commit": "37e6d0880b3366f6d488a7e477a39de163f061f1",
+      "validation_runs": [
+        {
+          "command": "pnpm exec eslint --fix --max-warnings=0 <changed code files>",
+          "status": "FAIL",
+          "exit_code": 1,
+          "result": "pnpm ERR_PNPM_VERIFY_DEPS_BEFORE_RUN: workspace structure changed since last install. ESLint did not execute."
+        },
+        {
+          "command": "pnpm exec prettier --write --ignore-unknown <changed files>",
+          "status": "FAIL",
+          "exit_code": 1,
+          "result": "pnpm ERR_PNPM_VERIFY_DEPS_BEFORE_RUN: workspace structure changed since last install. Prettier did not execute."
+        },
+        {
+          "command": "pnpm typecheck",
+          "status": "FAIL",
+          "exit_code": 1,
+          "result": "pnpm ERR_PNPM_VERIFY_DEPS_BEFORE_RUN: workspace structure changed since last install. Prisma generate, next typegen and tsc did not execute."
+        },
+        {
+          "command": "tests, builds, validation, security scans, database jobs, browser/runtime QA",
+          "status": "NOT RUN",
+          "result": "Prohibited by owner instruction. Test files were authored only."
+        }
+      ],
+      "evidence": [
+        "Static inspection: generator configuredTenancy assignment and existing policy exports preserved; no generator changes.",
+        "Single owner allocation uses transaction advisory lock and insert-only AuditEvent marker; seed fixture excluded; inactive memberships never reactivated.",
+        "Server-selected organization and locked ACTIVE OWNER/ADMIN actor required for routine membership changes; OWNER grants/changes rejected.",
+        "Customer membership and support queries are identity-scoped. Portal document list/detail/download deny VIEWER because no recipient relationship exists.",
+        "Focused tests authored but not executed. Runtime behavior and database lock/RLS behavior remain unverified."
+      ],
+      "risks": [
+        "Protected CRM/public preservation is static-review only, pending owner QA.",
+        "Upstream ABAC policies.abac.ts.tpl accepts clientVisible without a customer relationship. It cannot be changed in this task. Sensitive consumers enforce mandatory boundaries independently; upstream direct helper parity remains unresolved.",
+        "PortalDocument and Invoice need an authenticated customer-recipient relationship before VIEWER access may be enabled.",
+        "Owner allocation durability relies on the existing insert-only audit ledger. Destructive tenant deletion/restoration must preserve the allocation history."
+      ],
+      "last_updated": "2026-11-16",
+      "blockers": [
+        "Refresh/install dependencies for the latest-main worktree before another owner-authorized verification pass. The single authorized local check pass was attempted once; all three commands were blocked by pnpm before execution. No bypass, install, or retry was performed."
+      ],
+      "verification_status": "NOT RE-VERIFIED; no lint/format/typecheck results available."
     }
   ]
 }

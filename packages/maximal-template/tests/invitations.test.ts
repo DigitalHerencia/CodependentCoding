@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { test } from "vitest";
+import { test, vi } from "vitest";
 import type { Prisma } from "@/generated/prisma/client";
 import {
   acceptInvitationTx,
@@ -7,6 +7,9 @@ import {
 } from "@/lib/db/transactions/invitationTx";
 import { ResourceNotFoundError } from "@/lib/db/transactions/errors";
 import { acceptInvitationSchema } from "@/schemas/commonSchemas";
+
+const mode = vi.hoisted(() => ({ tenancy: "multi" }));
+vi.mock("@/lib/authz/mode", () => mode);
 
 const invitation = {
   id: "invite-1",
@@ -62,14 +65,28 @@ test("accepting creates the membership with the invited role, once", async () =>
   assert.deepEqual(calls, ["create:VIEWER", "audit"]);
 });
 
-test("accepting reactivates a suspended membership", async () => {
+test("accepting cannot reactivate a suspended membership", async () => {
   const { tx, calls } = fixture({
     pending: true,
     membership: { id: "member-old", status: "SUSPENDED" },
   });
-  const result = await acceptInvitationTx(tx, invitation, "user-1");
-  assert.equal(result.membershipId, "member-old");
-  assert.deepEqual(calls, ["reactivate:VIEWER", "audit"]);
+  await assert.rejects(acceptInvitationTx(tx, invitation, "user-1"), ResourceNotFoundError);
+  assert.deepEqual(calls, []);
+});
+
+test("single tenancy forbids invitation acceptance before any database write", async () => {
+  const { tx, calls } = fixture({ pending: true, membership: null });
+  mode.tenancy = "single";
+  try {
+    await assert.rejects(acceptInvitationTx(tx, invitation, "user-1"), /single tenancy/);
+    assert.deepEqual(calls, []);
+  } finally { mode.tenancy = "multi"; }
+});
+
+test("ordinary invitations cannot grant OWNER", async () => {
+  const { tx, calls } = fixture({ pending: true, membership: null });
+  await assert.rejects(acceptInvitationTx(tx, { ...invitation, role: "OWNER" }, "user-1"), ResourceNotFoundError);
+  assert.deepEqual(calls, []);
 });
 
 test("an active member keeps their role when accepting", async () => {

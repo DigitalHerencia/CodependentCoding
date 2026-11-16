@@ -6,6 +6,8 @@ import type { Prisma } from "@/generated/prisma/client";
 import type { AppRole } from "@/types/accessTypes";
 
 import { setRlsContext } from "@/lib/db/rls";
+import { assertInvitationsAllowed } from "@/lib/authz/tenancy";
+import { invitableRoles } from "@/lib/authz/roles";
 
 import { ResourceNotFoundError } from "./errors";
 
@@ -24,10 +26,16 @@ export async function acceptInvitationTx(
   invitation: { id: string; organizationId: string; role: AppRole },
   userId: string,
 ): Promise<{ membershipId: string; organizationId: string }> {
+  assertInvitationsAllowed();
+  if (!invitableRoles.some((role) => role === invitation.role))
+    throw new ResourceNotFoundError("Invitation");
   const { organizationId } = invitation;
+  // Serialize with signup provisioning and other invitation acceptances.
+  const lockKey = `workspace-provision:${userId}`;
+  await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtextextended(${lockKey}, 0))`;
   await setRlsContext(tx, { organizationId });
   const accepted = await tx.invitation.updateMany({
-    where: { id: invitation.id, organizationId, status: "PENDING" },
+    where: { id: invitation.id, organizationId, role: invitation.role, status: "PENDING", expiresAt: { gt: new Date() } },
     data: { status: "ACCEPTED", acceptedAt: new Date() },
   });
   const existing = await tx.membership.findUnique({

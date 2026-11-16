@@ -282,7 +282,6 @@ access:
     provider: clerk
     sign_in_methods: []
     session_lifetime: ""
-    bootstrap_owner_env: BOOTSTRAP_OWNER_CLERK_USER_ID
   tenancy_model:
     source: context/docs/AUTH.md#tenancy-model
     mode: ""

@@ -5,7 +5,6 @@ import { getVerifiedPrimaryEmail } from "@/lib/auth/auth";
 import { withIdentityTransaction } from "@/lib/db/tenant";
 import { ResourceNotFoundError } from "@/lib/db/transactions/errors";
 import { toActionResult } from "@/lib/utils/actionResult";
-import { baseEnv } from "@/lib/utils/env";
 import {
   completeOnboardingTx,
   provisionWorkspaceAccessTx,
@@ -15,10 +14,6 @@ import { onboardingSchema } from "@/schemas/commonSchemas";
 /** The Clerk-verified email, only when it matches the user record. */
 function matchingEmail(email: string | null, user: { email: string | null }) {
   return email && email === user.email?.toLowerCase() ? email : null;
-}
-
-function isBootstrapOwner(clerkUserId: string) {
-  return baseEnv.value("BOOTSTRAP_OWNER_CLERK_USER_ID") === clerkUserId;
 }
 
 export async function completeOnboarding(rawInput: unknown) {
@@ -31,7 +26,6 @@ export async function completeOnboarding(rawInput: unknown) {
         tx,
         { id: user.id, displayName: user.displayName ?? name },
         matchingEmail(email, user),
-        isBootstrapOwner(user.clerkUserId),
       );
     });
     revalidatePath("/", "layout");
@@ -39,7 +33,7 @@ export async function completeOnboarding(rawInput: unknown) {
 }
 
 /**
- * Grants access to a user who finished onboarding but has none yet. Runs
+ * Ensures signup access independently of profile completion. Runs
  * while the onboarding page renders, so it does not revalidate; the caller
  * redirects instead.
  */
@@ -47,13 +41,10 @@ export async function provisionWorkspaceAccess() {
   return toActionResult(async () => {
     const email = await getVerifiedPrimaryEmail();
     await withIdentityTransaction(async (tx, user) => {
-      if (!user.profileCompletedAt)
-        throw new ResourceNotFoundError("Workspace access");
       const granted = await provisionWorkspaceAccessTx(
         tx,
         { id: user.id, displayName: user.displayName },
         matchingEmail(email, user),
-        isBootstrapOwner(user.clerkUserId),
       );
       if (!granted) throw new ResourceNotFoundError("Workspace access");
     });

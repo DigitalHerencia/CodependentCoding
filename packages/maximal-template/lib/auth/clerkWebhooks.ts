@@ -14,7 +14,7 @@ export async function verifyClerkWebhook(request: NextRequest) {
 
 export function projectClerkUser(user: {
   id: string;
-  email_addresses: Array<{ id: string; email_address: string }>;
+  email_addresses: Array<{ id: string; email_address: string; verification?: { status: string } | null }>;
   primary_email_address_id: string | null;
   first_name: string | null;
   last_name: string | null;
@@ -32,6 +32,7 @@ export function projectClerkUser(user: {
   return {
     clerkUserId: user.id,
     email: primaryEmail?.email_address ?? null,
+    verifiedEmail: primaryEmail?.verification?.status === "verified" ? primaryEmail.email_address.toLowerCase() : null,
     displayName: displayName || user.username,
     imageUrl: user.image_url || null,
     username: user.username,

@@ -13,7 +13,6 @@ _Identity provider, sign-in methods and session rules. Clerk handles identity an
 - **Provider:** Clerk
 - **Sign-in methods:** TODO:
 - **Session lifetime:** TODO:
-- **Bootstrap owner:** `BOOTSTRAP_OWNER_CLERK_USER_ID`
 
 **Feeds:** `ENG-M1-P1.2-SCAFF-T04`
 
