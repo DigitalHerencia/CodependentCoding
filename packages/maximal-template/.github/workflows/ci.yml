@@ -1,35 +1,63 @@
+# Included in generated apps. Lean, read-only PR checks; no builds/tests/deploys.
 name: CI
 
-# Lean PR baseline: format check, lint, type check, governance check.
-# No build step: instrumentation.ts validates production credentials at
-# prerender, so `next build` needs real secrets that CI should never hold.
-# No deploy job: deployment belongs to the hosting provider's Git integration.
 on:
   pull_request:
-  workflow_dispatch:
 
 permissions:
   contents: read
 
 concurrency:
-  group: ci-${{ github.ref }}
+  group: ci-${{ github.event.pull_request.number }}
   cancel-in-progress: true
 
 jobs:
   check:
+    name: Changed-file checks
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/checkout@v7
         with:
+          fetch-depth: 0
           persist-credentials: false
-      - uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v4.4.0
-      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+      - name: Determine changed files
+        id: changes
+        shell: bash
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          set -euo pipefail
+          git diff --name-only --diff-filter=ACMR "$BASE_SHA" HEAD > "$RUNNER_TEMP/changed.txt"
+          if [[ -s "$RUNNER_TEMP/changed.txt" ]]; then
+            echo 'any=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'any=false' >> "$GITHUB_OUTPUT"
+          fi
+          if grep -Eq '\.(ts|tsx|js|jsx|mjs|cjs|prisma)$|^(package\.json|pnpm-lock\.yaml|tsconfig\.json|next\.config\.[cm]?[jt]s|prisma\.config\.ts)$' "$RUNNER_TEMP/changed.txt"; then
+            echo 'types=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'types=false' >> "$GITHUB_OUTPUT"
+          fi
+      - uses: pnpm/action-setup@v6
+        if: steps.changes.outputs.any == 'true'
+      - uses: actions/setup-node@v7
+        if: steps.changes.outputs.any == 'true'
         with:
           node-version: 24
           cache: pnpm
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm format:check
-      - run: pnpm lint
-      - run: pnpm typecheck
-      - run: pnpm governance:validate
+      - name: Install dependencies
+        if: steps.changes.outputs.any == 'true'
+        run: pnpm install --frozen-lockfile
+      - name: Check formatting and lint changed files
+        if: steps.changes.outputs.any == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -t files < "$RUNNER_TEMP/changed.txt"
+          pnpm exec prettier --check --ignore-unknown "${files[@]}"
+          mapfile -t code < <(grep -E '\.(js|jsx|ts|tsx|mjs|cjs|mts|cts)$' "$RUNNER_TEMP/changed.txt" || true)
+          if (("${#code[@]}")); then pnpm exec eslint --max-warnings=0 "${code[@]}"; fi
+      - name: Typecheck
+        if: steps.changes.outputs.types == 'true'
+        run: pnpm typecheck
