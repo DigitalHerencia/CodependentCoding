@@ -26,6 +26,18 @@ export async function completeOnboardingTx(
 
 type ProvisionedUser = { id: string; displayName: string | null };
 
+/** The active-member action supplies this identity; completion/membership stay unchanged. */
+export function updateOwnOnboardingProfileTx(
+  tx: Prisma.TransactionClient,
+  userId: string,
+  name: string,
+) {
+  return tx.user.updateMany({
+    where: { id: userId, profileCompletedAt: { not: null } },
+    data: { displayName: name },
+  });
+}
+
 function workspaceSlug(name: string | null, userId: string): string {
   const base =
     (name ?? "workspace")
@@ -146,7 +158,10 @@ async function joinSingleOrganizationTx(
     return existing?.status === "ACTIVE";
 
   const allocation = await tx.auditEvent.findFirst({
-    where: { organizationId: SINGLE_ORGANIZATION_ID, action: "tenancy.initial_owner_allocated" },
+    where: {
+      organizationId: SINGLE_ORGANIZATION_ID,
+      action: "tenancy.initial_owner_allocated",
+    },
     select: { id: true },
   });
   let role: AppRole = selfSignupRole;
@@ -154,7 +169,11 @@ async function joinSingleOrganizationTx(
     // Preserve pre-existing real ownership, including inactive owners and deleted
     // owners with a provisioning audit event. Seed OWNER is explicitly excluded.
     const previousOwner = await tx.membership.findFirst({
-      where: { organizationId: SINGLE_ORGANIZATION_ID, role: "OWNER", userId: { not: "user_seed_owner" } },
+      where: {
+        organizationId: SINGLE_ORGANIZATION_ID,
+        role: "OWNER",
+        userId: { not: "user_seed_owner" },
+      },
       select: { id: true },
     });
     const previousAllocation = await tx.auditEvent.findFirst({
@@ -162,7 +181,10 @@ async function joinSingleOrganizationTx(
         organizationId: SINGLE_ORGANIZATION_ID,
         OR: [
           { action: "membership.bootstrap_owner" },
-          { action: "membership.provisioned", metadata: { path: ["role"], equals: "OWNER" } },
+          {
+            action: "membership.provisioned",
+            metadata: { path: ["role"], equals: "OWNER" },
+          },
         ],
       },
       select: { id: true },
@@ -177,7 +199,13 @@ async function joinSingleOrganizationTx(
           action: "tenancy.initial_owner_allocated",
           resourceType: "Organization",
           resourceId: SINGLE_ORGANIZATION_ID,
-          metadata: { source: previousOwner || previousAllocation ? "existing-allocation" : "signup", initialOwnerUserId: role === "OWNER" ? user.id : null },
+          metadata: {
+            source:
+              previousOwner || previousAllocation
+                ? "existing-allocation"
+                : "signup",
+            initialOwnerUserId: role === "OWNER" ? user.id : null,
+          },
         },
       });
     }
@@ -213,7 +241,13 @@ async function joinOrCreateOrganizationTx(
   if (!email) return false;
 
   // Revoked/suspended users cannot escape administration by creating a workspace.
-  if (await tx.membership.findFirst({ where: { userId: user.id }, select: { id: true } })) return false;
+  if (
+    await tx.membership.findFirst({
+      where: { userId: user.id },
+      select: { id: true },
+    })
+  )
+    return false;
 
   // An invitation link is waiting: join through it instead of a new organization.
   if (await findPendingInvitationTx(tx, email, true)) return false;

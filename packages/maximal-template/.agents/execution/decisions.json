@@ -45,6 +45,22 @@
         "A dedicated webhook database role requires separately authorized infrastructure changes.",
         "Do not begin #365 until #364 is reviewed, corrected if necessary, and merged."
       ]
+    },
+    {
+      "id": "DEC-TYPESCRIPTION-T2-MERGE",
+      "spec_id": "TYPESCRIPTION-T2",
+      "date": "2026-11-16T11:49:26.582364+00:00",
+      "status": "accepted",
+      "authority": "Latest explicit owner instruction: merge the PR, clean up its branches, then move to the next issue.",
+      "decision": "PR #368 squash-merged at 82bce456a58b256000391d6d1f3a946b9a2426bd after scoped corrections at 6a0c70a6f2ffe4d0c178228161fbabbcccdeef7b. Owner had been informed of clean CI passing format/lint/type generation and failing on two untouched CRM-policy test type errors. No checks or protections were disabled. Local/remote codex/364-authentication deleted; #364 closed. Other contributor/worktree branches retained."
+    },
+    {
+      "id": "DEC-TYPESCRIPTION-T3-001",
+      "spec_id": "TYPESCRIPTION-T3",
+      "date": "2026-11-16T11:49:26.582364+00:00",
+      "status": "accepted",
+      "authority": "GitHub issue #365 and latest explicit owner continuation after merged #368.",
+      "decision": "Conform onboarding and invitations on codex/365-onboarding-invitations from accepted main. Keep profile completion/provisioning and accepted security contracts; own-profile edit changes only current active user displayName. Retain compatible shared schema/DTO/select exports while moving invitation behavior to its domain. No Prisma/RLS/authz, CRM/public, infrastructure or dependency changes. Author tests without execution; one local final check pass; one draft PR then stop for review."
     }
   ]
 }

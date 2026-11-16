@@ -6,7 +6,7 @@ import {
   hashInvitationToken,
 } from "@/lib/db/transactions/invitationTx";
 import { ResourceNotFoundError } from "@/lib/db/transactions/errors";
-import { acceptInvitationSchema } from "@/schemas/commonSchemas";
+import { acceptInvitationSchema } from "@/schemas/invitationSchemas";
 
 const mode = vi.hoisted(() => ({ tenancy: "multi" }));
 vi.mock("@/lib/authz/mode", () => mode);
@@ -70,7 +70,10 @@ test("accepting cannot reactivate a suspended membership", async () => {
     pending: true,
     membership: { id: "member-old", status: "SUSPENDED" },
   });
-  await assert.rejects(acceptInvitationTx(tx, invitation, "user-1"), ResourceNotFoundError);
+  await assert.rejects(
+    acceptInvitationTx(tx, invitation, "user-1"),
+    ResourceNotFoundError,
+  );
   assert.deepEqual(calls, []);
 });
 
@@ -78,14 +81,22 @@ test("single tenancy forbids invitation acceptance before any database write", a
   const { tx, calls } = fixture({ pending: true, membership: null });
   mode.tenancy = "single";
   try {
-    await assert.rejects(acceptInvitationTx(tx, invitation, "user-1"), /single tenancy/);
+    await assert.rejects(
+      acceptInvitationTx(tx, invitation, "user-1"),
+      /single tenancy/,
+    );
     assert.deepEqual(calls, []);
-  } finally { mode.tenancy = "multi"; }
+  } finally {
+    mode.tenancy = "multi";
+  }
 });
 
 test("ordinary invitations cannot grant OWNER", async () => {
   const { tx, calls } = fixture({ pending: true, membership: null });
-  await assert.rejects(acceptInvitationTx(tx, { ...invitation, role: "OWNER" }, "user-1"), ResourceNotFoundError);
+  await assert.rejects(
+    acceptInvitationTx(tx, { ...invitation, role: "OWNER" }, "user-1"),
+    ResourceNotFoundError,
+  );
   assert.deepEqual(calls, []);
 });
 

@@ -1,15 +1,11 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import {
   NativeSelect,
   NativeSelectOption,
 } from "@/components/ui/native-select";
 import { settingsBlockCopy, settingsLibraryCopy } from "@/content/settings";
-import type {
-  InvitationDTO,
-  OrganizationSwitcherDTO,
-} from "@/types/commonTypes";
+import type { OrganizationSwitcherDTO } from "@/types/commonTypes";
 import type * as React from "react";
 import type { ChangeEvent } from "react";
 
@@ -49,46 +45,7 @@ export function OrganizationSwitcherBlock({
   );
 }
 
-export function InvitationsBlock({
-  invitations,
-  pending,
-  error,
-  onRevoke,
-}: {
-  invitations: InvitationDTO[];
-  pending: boolean;
-  error: string;
-  onRevoke: (invitationId: string) => void | Promise<void>;
-}) {
-  if (invitations.length === 0) return <p>{settingsBlockCopy.noInvitations}</p>;
-  return (
-    <div className="space-y-2">
-      <ul className="divide-y divide-border border border-border">
-        {invitations.map((invitation) => (
-          <li
-            className="flex flex-wrap items-center justify-between gap-2 p-3"
-            key={invitation.id}
-          >
-            <span>
-              {invitation.email} {settingsBlockCopy.separator} {invitation.role}{" "}
-              {settingsBlockCopy.expires}{" "}
-              {new Date(invitation.expiresAt).toLocaleDateString()}
-            </span>
-            <Button
-              disabled={pending}
-              onClick={() => onRevoke(invitation.id)}
-              type="button"
-              variant="outline"
-            >
-              {settingsBlockCopy.revoke}
-            </Button>
-          </li>
-        ))}
-      </ul>
-      {error && <p role="alert">{error}</p>}
-    </div>
-  );
-}
+export { InvitationsBlock } from "@/components/blocks/invitation-blocks";
 
 export function SettingsSurface({
   title,

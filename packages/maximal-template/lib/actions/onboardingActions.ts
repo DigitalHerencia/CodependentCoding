@@ -1,15 +1,19 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { getVerifiedPrimaryEmail } from "@/lib/auth/auth";
-import { withIdentityTransaction } from "@/lib/db/tenant";
+import { getVerifiedPrimaryEmail, requireIdentity } from "@/lib/auth/auth";
+import {
+  withIdentityTransaction,
+  withTenantTransaction,
+} from "@/lib/db/tenant";
 import { ResourceNotFoundError } from "@/lib/db/transactions/errors";
 import { toActionResult } from "@/lib/utils/actionResult";
 import {
   completeOnboardingTx,
   provisionWorkspaceAccessTx,
+  updateOwnOnboardingProfileTx,
 } from "@/lib/db/transactions/onboardingTx";
-import { onboardingSchema } from "@/schemas/commonSchemas";
+import { onboardingSchema } from "@/schemas/onboardingSchemas";
 
 /** The Clerk-verified email, only when it matches the user record. */
 function matchingEmail(email: string | null, user: { email: string | null }) {
@@ -48,5 +52,24 @@ export async function provisionWorkspaceAccess() {
       );
       if (!granted) throw new ResourceNotFoundError("Workspace access");
     });
+  });
+}
+
+/** Updates only the caller's completed profile under the existing active-member gate. */
+export async function updateOwnOnboardingProfile(rawInput: unknown) {
+  return toActionResult(async () => {
+    const { name } = onboardingSchema.parse(rawInput);
+    const identity = await requireIdentity();
+    await withTenantTransaction(identity, async (tx, access) => {
+      const updated = await updateOwnOnboardingProfileTx(
+        tx,
+        access.userId,
+        name,
+      );
+      if (updated.count !== 1) throw new ResourceNotFoundError("Profile");
+    });
+    revalidatePath("/onboarding/profile");
+    revalidatePath("/settings/profile");
+    revalidatePath("/settings/members");
   });
 }

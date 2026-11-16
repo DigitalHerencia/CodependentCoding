@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 
-import { EditInvitationAcceptanceForm } from "@/features/onboarding/editInvitationAcceptanceForm";
-import { OnboardingSkeleton } from "@/features/onboarding/onboarding-skeleton";
+import { EditInvitationAcceptanceForm } from "@/features/invitations/editInvitationAcceptanceForm";
+import { InvitationSkeleton } from "@/features/invitations/invitation-skeleton";
 import { getIdentity } from "@/lib/auth/auth";
 import { redirectToSignIn } from "@/lib/auth/redirects";
 
@@ -11,7 +11,7 @@ export default function Page({
   params: Promise<{ token: string }>;
 }) {
   return (
-    <Suspense fallback={<OnboardingSkeleton />}>
+    <Suspense fallback={<InvitationSkeleton />}>
       <SignedInInvitation params={params} />
     </Suspense>
   );

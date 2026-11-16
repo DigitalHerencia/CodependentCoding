@@ -1,10 +1,4 @@
 export const onboardingPresentationCopy = {
-  thisInvitationIsNotValidForYourAccountIt:
-    "This invitation is not valid for your account. It may have expired, been revoked, or been sent to a different email.",
-  joinTheWorkspace: "Join the workspace",
-  youWereInvitedToAWorkspaceAcceptToJoin:
-    "You were invited to a workspace. Accept to join it.",
-  acceptInvitation: "Accept invitation",
   completeYourProfile: "Complete your profile",
 
   saveProfile: "Save profile",
@@ -24,6 +18,15 @@ export const onboardingStepCopy = {
   continue: "Review profile",
   back: "Edit profile",
   reviewTitle: "Review your profile",
+} as const;
+
+export const onboardingProfileCopy = {
+  editTitle: "Edit your profile",
+  cardLabel: "Your profile",
+  saved: "Profile saved.",
+  complete: "Profile complete",
+  incomplete: "Profile incomplete",
+  loading: "Loading your profile",
 } as const;
 
 export const onboardingLibraryCopy = {

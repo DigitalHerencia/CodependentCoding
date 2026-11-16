@@ -1,21 +1,12 @@
 import "server-only";
 
-import type {
-  InvitationListDTO,
-  OrganizationSwitcherDTO,
-} from "@/types/commonTypes";
-import { activeMembershipScope, tenancy } from "@/lib/authz/mode";
+import type { OrganizationSwitcherDTO } from "@/types/commonTypes";
+import { activeMembershipScope } from "@/lib/authz/mode";
 import { limitedToCustomerRecords } from "@/lib/authz/attributes";
 import { assertPermission, hasPermission } from "@/lib/authz/permissions";
 import { withAuthenticatedRead } from "@/lib/db/tenant";
-import {
-  toInvitationDTO,
-  toOrganizationDTO,
-} from "@/lib/db/dtos/organizationDtos";
-import {
-  invitationSelect,
-  organizationOverviewSelect,
-} from "@/lib/db/selects/organizationSelects";
+import { toOrganizationDTO } from "@/lib/db/dtos/organizationDtos";
+import { organizationOverviewSelect } from "@/lib/db/selects/organizationSelects";
 
 export async function canViewIntegrationStatuses() {
   return withAuthenticatedRead(async (_tx, access) =>
@@ -58,7 +49,10 @@ export async function getOrganizationMembers() {
   return withAuthenticatedRead(async (tx, access) => {
     assertPermission(access, "base.membership:read");
     const rows = await tx.membership.findMany({
-      where: { organizationId: access.organizationId, ...(limitedToCustomerRecords(access) ? { userId: access.userId } : {}) },
+      where: {
+        organizationId: access.organizationId,
+        ...(limitedToCustomerRecords(access) ? { userId: access.userId } : {}),
+      },
       orderBy: { createdAt: "asc" },
       select: {
         id: true,
@@ -73,24 +67,5 @@ export async function getOrganizationMembers() {
       status: row.status,
       name: row.user.displayName ?? "Member",
     }));
-  });
-}
-
-/** Pending invitations, for members who may invite; others get an empty list. */
-export async function getPendingInvitations(): Promise<InvitationListDTO> {
-  return withAuthenticatedRead(async (tx, access) => {
-    if (tenancy === "single" || !hasPermission(access, "base.membership:create"))
-      return { canInvite: false, invitations: [] };
-    const rows = await tx.invitation.findMany({
-      where: {
-        organizationId: access.organizationId,
-        status: "PENDING",
-        expiresAt: { gt: new Date() },
-      },
-      orderBy: { createdAt: "desc" },
-      take: 100,
-      select: invitationSelect,
-    });
-    return { canInvite: true, invitations: rows.map(toInvitationDTO) };
   });
 }

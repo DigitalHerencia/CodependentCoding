@@ -1,0 +1,55 @@
+import { createElement } from "react";
+import { renderToStaticMarkup } from "react-dom/server";
+import { expect, test } from "vitest";
+import {
+  InvitationAcceptanceTemplate,
+  InvitationCreateTemplate,
+  InvitationLoadingTemplate,
+} from "@/components/templates/invitation-templates";
+import { InvitationRoleFieldBlock } from "@/components/blocks/invitation-blocks";
+
+test("the role picker contains ADMIN/MEMBER/VIEWER and never OWNER", () => {
+  const html = renderToStaticMarkup(
+    createElement(InvitationRoleFieldBlock, {
+      name: "role",
+      defaultValue: "MEMBER",
+    }),
+  );
+  for (const role of ["ADMIN", "MEMBER", "VIEWER"])
+    expect(html).toContain(`value="${role}"`);
+  expect(html).not.toContain("OWNER");
+});
+
+test("acceptance renders safe errors and disables duplicate submissions", () => {
+  const html = renderToStaticMarkup(
+    createElement(InvitationAcceptanceTemplate, {
+      onSubmit: () => {},
+      busy: true,
+      error: "This invitation is not valid for your account.",
+    }),
+  );
+  expect(html).toContain('method="post"');
+  expect(html).toContain('aria-busy="true"');
+  expect(html).toContain('disabled=""');
+  expect(html).toContain("This invitation is not valid for your account.");
+  expect(html).not.toContain("tokenHash");
+});
+
+test("creation exposes only the one-time path returned by the authorized workflow", () => {
+  const html = renderToStaticMarkup(
+    InvitationCreateTemplate({
+      onSubmit: () => {},
+      busy: false,
+      link: "https://example.test/invite/fixture",
+      children: null,
+    }),
+  );
+  expect(html).toContain('role="status"');
+  expect(html).toContain("https://example.test/invite/fixture");
+});
+
+test("the invitation route's independent loading state is announced", () => {
+  const html = renderToStaticMarkup(createElement(InvitationLoadingTemplate));
+  expect(html).toContain('aria-label="Loading invitation"');
+  expect(html).toContain('aria-hidden="true"');
+});

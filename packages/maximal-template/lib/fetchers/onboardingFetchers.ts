@@ -2,7 +2,12 @@ import "server-only";
 
 import { cache } from "react";
 import { activeMembershipScope } from "@/lib/authz/mode";
-import { TenantContextError, withIdentityTransaction } from "@/lib/db/tenant";
+import {
+  TenantContextError,
+  withAuthenticatedRead,
+  withIdentityTransaction,
+} from "@/lib/db/tenant";
+import type { OnboardingProfileDTO } from "@/types/onboardingTypes";
 
 export const getOnboardingState = cache(async () => {
   try {
@@ -27,3 +32,18 @@ export const getOnboardingState = cache(async () => {
     throw error;
   }
 });
+
+/** Read only the signed-in profile after the existing ACTIVE membership/completion gate. */
+export const getOwnOnboardingProfile = cache(
+  async (): Promise<OnboardingProfileDTO> =>
+    withAuthenticatedRead(async (tx, access) => {
+      const profile = await tx.user.findUniqueOrThrow({
+        where: { id: access.userId },
+        select: { displayName: true, profileCompletedAt: true },
+      });
+      return {
+        displayName: profile.displayName ?? "",
+        profileCompletedAt: profile.profileCompletedAt?.toISOString() ?? null,
+      };
+    }),
+);

@@ -1,4 +1,4 @@
-import { SharedOnboardingTemplate } from "@/components/templates/shared-templates";
+import { OnboardingStatusTemplate } from "@/components/templates/onboarding-templates";
 import { onboardingPresentationCopy } from "@/content/onboarding";
 import { NewOnboardingProfileForm } from "@/features/onboarding/newOnboardingProfileForm";
 import { loadOnboardingWorkflow } from "@/lib/workflows/onboardingWorkflows";
@@ -8,7 +8,7 @@ export async function OnboardingFeature() {
   if (state.status === "profile")
     return <NewOnboardingProfileForm displayName={state.displayName} />;
   return (
-    <SharedOnboardingTemplate
+    <OnboardingStatusTemplate
       title={
         state.status === "provisioning"
           ? onboardingPresentationCopy.preparingYourAccount
