@@ -1,12 +1,11 @@
 import { z } from "zod";
+import type { AuthSignInStep } from "@/types/authTypes";
 const fields = z.object({
   identifier: z.string().default(""),
   password: z.string().default(""),
   code: z.string().default(""),
 });
-export function getSignInFormSchema(
-  step: "password" | "recover" | "reset-code" | "new-password" | "mfa",
-) {
+export function getSignInFormSchema(step: AuthSignInStep) {
   return fields.superRefine((values, ctx) => {
     const required =
       step === "password"

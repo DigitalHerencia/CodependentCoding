@@ -1,6 +1,13 @@
 export const authHeaderContent = {
   homeHref: "/",
-  homeLabel: "Back to home",
+  homeLabel: "Return Home",
+} as const;
+
+export const authStateContent = {
+  loading: "Loading auth content",
+  errorTitle: "Something went wrong",
+  retry: "Try again",
+  returnToAuth: "Return to auth",
 } as const;
 
 export const authFooterContent = {

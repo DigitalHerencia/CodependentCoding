@@ -1,4 +1,4 @@
-import { useClerkAccount } from "@/lib/auth/clerkAccount";
+import { useClerk } from "@clerk/nextjs";
 import { isDevelopment } from "@/lib/constants/mode";
 import { useEffect, useRef, useState } from "react";
 
@@ -124,7 +124,7 @@ async function clearCaches(worker: ServiceWorker | null | undefined) {
 }
 
 export function usePwaAccountMenuWorkflow() {
-  const { openUserProfile, signOut } = useClerkAccount();
+  const { openUserProfile, signOut } = useClerk();
   const safeSignOut = async () => {
     const registration = await navigator.serviceWorker?.getRegistration();
     await clearCaches(

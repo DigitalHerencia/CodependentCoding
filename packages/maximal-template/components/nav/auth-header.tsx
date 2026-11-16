@@ -3,19 +3,19 @@
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
-import { Button } from "@/components/ui/button";
 import { authHeaderContent } from "@/content/auth";
 
 /** The auth group's only navigation: a quiet way back to the landing page. */
 export function AuthHeader() {
   return (
     <header className="auth-header">
-      <Button asChild variant="link" size="sm" className="auth-back-link">
-        <Link href={authHeaderContent.homeHref}>
-          <ArrowLeft aria-hidden />
-          {authHeaderContent.homeLabel}
-        </Link>
-      </Button>
+      <Link
+        href={authHeaderContent.homeHref}
+        className="inline-flex auth-back-link min-h-9 type-link items-center gap-2"
+      >
+        <ArrowLeft aria-hidden />
+        {authHeaderContent.homeLabel}
+      </Link>
     </header>
   );
 }

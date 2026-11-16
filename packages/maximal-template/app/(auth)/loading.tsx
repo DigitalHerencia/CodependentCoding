@@ -1,5 +1,5 @@
-import { PageLoadingTemplate } from "@/components/templates/shared-templates";
+import { AuthSkeleton } from "@/features/auth/authSkeleton";
 
 export default function Loading() {
-  return <PageLoadingTemplate label="Loading auth content" />;
+  return <AuthSkeleton />;
 }
