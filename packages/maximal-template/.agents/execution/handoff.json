@@ -12,7 +12,7 @@
   "completed_spec_ids": ["TYPESCRIPTION-T2", "TYPESCRIPTION-T3"],
   "blocked_spec_ids": [],
   "next_actions": [
-    "Final scoped check evidence recorded. Commit/push and open one draft PR for #366.",
+    "Draft PR #370 is open; STOP for independent review. Do not merge.",
     "STOP for independent review. Do not merge this issue without explicit clearance."
   ],
   "risks": [
@@ -44,9 +44,10 @@
     "issue_number": 366,
     "branch": "codex/366-responsive-navigation",
     "base_commit": "6b295de545e84405a2c57e617d2b409eca20763a",
-    "status": "draft_pending_creation",
-    "pr_number": null,
-    "pr_url": null,
+    "status": "draft_awaiting_independent_review",
+    "pr_number": 370,
+    "pr_url": "https://github.com/DigitalHerencia/CodependentCoding/pull/370",
+    "implementation_commit": "25673d383f4bed4a3a3a4df6523ce6cea4a945e0",
     "prior_merged_pr": 369,
     "prior_merge_commit": "6b295de545e84405a2c57e617d2b409eca20763a"
   },

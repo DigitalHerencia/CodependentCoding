@@ -1065,8 +1065,8 @@
       "status": "awaiting_review",
       "branch": "codex/366-responsive-navigation",
       "base_commit": "6b295de545e84405a2c57e617d2b409eca20763a",
-      "pr_numbers": [],
-      "pr_url": null,
+      "pr_numbers": [370],
+      "pr_url": "https://github.com/DigitalHerencia/CodependentCoding/pull/370",
       "last_updated": "2026-11-16T17:20:23.406399+00:00",
       "authority": "Owner continued the sequential issues after independent review and merge of #369; GitHub #366 is the canonical work body.",
       "acceptance_evidence": {
