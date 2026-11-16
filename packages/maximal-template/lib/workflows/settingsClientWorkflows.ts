@@ -1,11 +1,4 @@
-import {
-  revokeInvitation,
-  switchOrganization,
-} from "@/lib/actions/commonActions";
-
-export function getInvitationCommandsWorkflow() {
-  return { revokeInvitation };
-}
+import { switchOrganization } from "@/lib/actions/commonActions";
 
 export function getOrganizationSwitcherCommandsWorkflow() {
   return { switchOrganization };

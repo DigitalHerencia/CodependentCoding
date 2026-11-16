@@ -1,6 +1,6 @@
 import { SharedMembersTemplate } from "@/components/templates/shared-templates";
-import { MembersFeatureClient } from "@/features/settings/members-feature.client";
-import { NewMemberInvitationForm } from "@/features/settings/newMemberInvitationForm";
+import { InvitationsFeatureClient } from "@/features/invitations/invitations-feature.client";
+import { NewMemberInvitationForm } from "@/features/invitations/newMemberInvitationForm";
 import { loadMembersWorkflow } from "@/lib/workflows/settingsWorkflows";
 
 export async function MembersFeature() {
@@ -11,7 +11,7 @@ export async function MembersFeature() {
       invitations={
         pending.canInvite ? (
           <>
-            <MembersFeatureClient invitations={pending.invitations} />
+            <InvitationsFeatureClient invitations={pending.invitations} />
             <NewMemberInvitationForm />
           </>
         ) : null

@@ -1,5 +1,8 @@
 import { provisionWorkspaceAccess } from "@/lib/actions/onboardingActions";
-import { getOnboardingState } from "@/lib/fetchers/onboardingFetchers";
+import {
+  getOnboardingState,
+  getOwnOnboardingProfile,
+} from "@/lib/fetchers/onboardingFetchers";
 import { redirect } from "next/navigation";
 import "server-only";
 
@@ -16,4 +19,8 @@ export async function loadOnboardingWorkflow() {
 
 export async function guardOnboardingWorkflow() {
   if ((await getOnboardingState()).status !== "active") redirect("/onboarding");
+}
+
+export async function loadOwnOnboardingProfileWorkflow() {
+  return { profile: await getOwnOnboardingProfile() };
 }

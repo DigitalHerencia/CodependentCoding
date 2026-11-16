@@ -931,7 +931,7 @@
     {
       "spec_id": "TYPESCRIPTION-T2",
       "issue_number": 364,
-      "status": "awaiting_review",
+      "status": "merged",
       "branch": "codex/364-authentication",
       "base_commit": "9cb9474d72f95ed60d3143f88ec7f3f7118ca7b5",
       "pr_numbers": [368],
@@ -1007,7 +1007,52 @@
         "eslint": "10.14.0",
         "prettier": "3.9.10"
       },
-      "delivery": "Draft PR #368 opened and unmerged; stopped for explicit independent review. #365 and #366 not started."
+      "delivery": "Owner authorized merge after the two scoped review corrections; #368 squash-merged and #364 closed. Known unchanged CRM-policy type errors retained.",
+      "merged_pr": 368,
+      "merge_commit": "82bce456a58b256000391d6d1f3a946b9a2426bd"
+    },
+    {
+      "spec_id": "TYPESCRIPTION-T3",
+      "issue_number": 365,
+      "status": "awaiting_review",
+      "branch": "codex/365-onboarding-invitations",
+      "base_commit": "82bce456a58b256000391d6d1f3a946b9a2426bd",
+      "pr_numbers": [369],
+      "pr_url": "https://github.com/DigitalHerencia/CodependentCoding/pull/369",
+      "last_updated": "2026-11-16T11:49:26.582364+00:00",
+      "authority": "Owner authorized merging #368, branch cleanup, and beginning #365; issue #365 is the canonical scope.",
+      "acceptance_evidence": {
+        "onboarding": "Owned blocks/templates/schema/types and shared RHF new/edit two-step profile review. /onboarding/profile uses ACTIVE-member own-profile read/write and a compact profile card mounted in existing settings/profile.",
+        "profile_authority": "New own-profile transaction changes displayName only for the authenticated user with non-null profileCompletedAt. Existing completion/provisioning/gate bodies retained. No organization settings or memberships are changed by editing.",
+        "invitations": "Dedicated invitation feature/form/skeleton, content/types/schema, action/fetcher/select/DTO and client/server workflow files. Acceptance route has independent invitation imports. Generic files retain unrelated behavior and compatible schema/DTO/select exports.",
+        "security": "Existing single-tenancy denial, verified email + token hash + expiry checks, replay/role preservation, inactive refusal and A-plus-B membership behavior retained. Revoke now locks/rechecks the active administrator like create. Admin approval/role and organization switching implementations unchanged.",
+        "protection": "No CRM/public or authz/RLS/Prisma source changes. Existing dirty UI/chart work is excluded. Common schema/DTO/select aliases preserve their previous shapes."
+      },
+      "validation_runs": [
+        {
+          "command": "pnpm exec eslint --fix --max-warnings=0 @taskCode",
+          "result": "FAIL (exit 1): one react/no-children-prop finding in tests/invitationPresentation.test.ts. Corrected before Prettier by rendering the pure template directly; NOT RERUN under the single-pass limit. No lint-pass claim."
+        },
+        {
+          "command": "pnpm exec prettier --write --ignore-unknown @taskFiles",
+          "result": "PASS (exit 0): all existing affected files formatted. Later delivery metadata changes use scalar replacements that preserve formatted JSON; no successful check rerun."
+        },
+        {
+          "command": "pnpm typecheck",
+          "result": "FAIL (exit 1): Prisma Client 7.10.1 and Next route type generation PASSED. TypeScript emitted 370 diagnostics in the dirty worktree. Two affected-file diagnostics: NativeSelectOption is missing in local components/ui/native-select at invitation-blocks.tsx:6 and settings-blocks.tsx:5; the export exists on accepted main and was altered by pre-existing unrelated UI work. Other failures include missing shared utilities/radix-ui and the untouched tests/authzPolicies.test.ts:39-40 template-literal kind errors confirmed on prior clean CI. No protected dependency fix, install/bypass, or rerun."
+        },
+        {
+          "command": "Tests, builds, dev servers, migrations/seeds, live DB operations, deployments, webhooks and security scans",
+          "result": "NOT RUN - prohibited by owner. Regression test sources authored only."
+        }
+      ],
+      "known_limitations": [
+        "Clean-runner #368 CI had two unchanged TS2345 errors in tests/authzPolicies.test.ts:39-40; those protected CRM-policy tests remain untouched.",
+        "Existing unrelated dirty UI/chart work may affect the single local typecheck.",
+        "No runtime authentication, responsive layout or database correctness claim from static review.",
+        "Own-profile E2E scenarios require disposable Clerk session fixtures; DB lifecycle test needs a prepared disposable multi-tenant DATABASE_URL_TEST.",
+        "No Project item exists for #365; no unrelated governance setup."
+      ]
     }
   ]
 }

@@ -25,17 +25,21 @@ test("roles rank OWNER > ADMIN > MEMBER > VIEWER", () => {
   expect(hasRoleAtLeast("VIEWER", "MEMBER")).toBe(false);
 });
 
-test("customers need a relationship while staff retain RBAC tenant access", () => {
+test("customers require relationships; staff retain tenant access", () => {
   const ours = { ...record, organizationId: "org_a" };
   expect(limitedToOwnRecords(as("VIEWER"))).toBe(true);
   expect(canReadResource(as("VIEWER"), ours)).toBe(false);
-  expect(canReadResource(as("VIEWER"), { ...ours, ownerMembershipId: "mem_1" })).toBe(true);
-  expect(canReadResource(as("VIEWER"), { ...ours, clientVisible: true })).toBe(false);
+  expect(
+    canReadResource(as("VIEWER"), { ...ours, ownerMembershipId: "mem_1" }),
+  ).toBe(true);
+  expect(canReadResource(as("VIEWER"), { ...ours, clientVisible: true })).toBe(
+    false,
+  );
   expect(canManageOwnedOrAssignedResource(as("MEMBER"), ours)).toBe(true);
 });
 
 test("CRM keeps its existing tenant-scoped policy semantics", () => {
-  const crm = { kind: "crm.account", organizationId: "org_a" };
+  const crm = { kind: "crm.account", organizationId: "org_a" } as const;
   expect(canManageOwnedOrAssignedResource(as("MEMBER"), crm)).toBe(true);
   expect(canReadResource(as("VIEWER"), crm)).toBe(true);
 });
