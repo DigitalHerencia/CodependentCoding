@@ -1,4 +1,3 @@
-import type { LucideIcon } from "lucide-react";
 import {
   Brain,
   BriefcaseBusiness,
@@ -6,21 +5,17 @@ import {
   CreditCard,
   FolderKanban,
   Headphones,
-  Home,
   LayoutDashboard,
   Megaphone,
-  Menu,
   PanelLeftClose,
   PanelLeftOpen,
   Settings,
   Users,
-  X,
 } from "lucide-react";
 import Link from "next/link";
 import type { ReactNode } from "react";
 
 import { Wordmark } from "@/components/brand/wordmark";
-import { MobileBottomNav } from "@/components/nav/mobile-bottom-nav";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -32,8 +27,6 @@ import type {
   TenantErrorBlockProps,
   TenantHeaderBlockProps,
   TenantLoadingBlockProps,
-  TenantMobileIcon,
-  TenantMobileNavigationItem,
   TenantNavigationBlockProps,
   TenantNavigationIcon,
   TenantSidebarBlockProps,
@@ -55,13 +48,6 @@ const navigationIcons: Record<TenantNavigationIcon, ReactNode> = {
   settings: <Settings className="size-4" />,
 };
 
-const mobileIcons: Record<TenantMobileIcon, LucideIcon> = {
-  home: Home,
-  settings: Settings,
-  users: Users,
-  building: Building2,
-};
-
 // ============================================================================
 // HEADER
 // ============================================================================
@@ -69,30 +55,17 @@ const mobileIcons: Record<TenantMobileIcon, LucideIcon> = {
 /** Branded header with an accessible, client-controlled mobile menu toggle. */
 export function TenantHeaderBlock({
   sidebar,
-  mobileOpen,
-  onToggle,
-  menuButtonRef,
+  mobileMenu,
 }: TenantHeaderBlockProps) {
   return (
     <header
       className={cn(
-        "sticky top-0 z-40 flex min-h-16 items-center justify-between gap-2 border-b bg-background px-4 py-3",
-        sidebar && "md:hidden",
+        "sticky top-0 z-40 flex min-h-16 min-w-0 items-center justify-between gap-2 border-b bg-background px-4 py-3",
+        sidebar && "lg:hidden",
       )}
     >
       <Wordmark compact />
-      <Button
-        ref={menuButtonRef}
-        type="button"
-        variant="ghost"
-        size="icon"
-        aria-label={mobileOpen ? tenantCopy.closeNavigation : tenantCopy.openNavigation}
-        aria-expanded={mobileOpen}
-        aria-controls="mobile-navigation"
-        onClick={onToggle}
-      >
-        {mobileOpen ? <X aria-hidden="true" /> : <Menu aria-hidden="true" />}
-      </Button>
+      {mobileMenu}
     </header>
   );
 }
@@ -111,7 +84,9 @@ export function TenantNavigationBlock({
 }: TenantNavigationBlockProps) {
   const routeMatch = navigation.groups
     .flatMap((group) => group.links)
-    .filter((link) => pathname === link.href || pathname.startsWith(link.href + "/"))
+    .filter(
+      (link) => pathname === link.href || pathname.startsWith(link.href + "/"),
+    )
     .sort((left, right) => right.href.length - left.href.length)[0];
 
   const nodes: TreeNode[] = navigation.groups.map((group) => ({
@@ -130,7 +105,7 @@ export function TenantNavigationBlock({
       aria-label={tenantCopy.headerNavigation}
       className="min-h-0 flex-1 overflow-y-auto"
       onClick={(event) => {
-        if ((event.target as HTMLElement).closest("a")) onNavigate();
+        if ((event.target as HTMLElement).closest("a")) onNavigate?.();
       }}
     >
       <Link
@@ -144,7 +119,9 @@ export function TenantNavigationBlock({
         <LayoutDashboard className="size-4" aria-hidden="true" />
         {tenantCopy.dashboard}
       </Link>
-      <p className="px-3 pb-2 eyebrow text-muted-primary">{tenantCopy.domains}</p>
+      <p className="px-3 pb-2 eyebrow text-muted-primary">
+        {tenantCopy.domains}
+      </p>
       <TreeView
         aria-label={tenantCopy.domains}
         data={nodes}
@@ -215,18 +192,24 @@ export function TenantSidebarBlock({
   return (
     <aside
       aria-label={tenantCopy.sidebar}
-      className="sticky top-0 hidden h-dvh min-w-0 flex-col gap-5 border-r bg-background p-3 md:flex"
+      className="sticky top-0 hidden h-dvh min-w-0 flex-col gap-5 border-r bg-background p-3 lg:flex"
     >
       <Wordmark collapsed={collapsed} compact />
       <Button
         type="button"
         variant="ghost"
         size="icon"
-        aria-label={collapsed ? tenantCopy.expandSidebar : tenantCopy.collapseSidebar}
+        aria-label={
+          collapsed ? tenantCopy.expandSidebar : tenantCopy.collapseSidebar
+        }
         aria-expanded={!collapsed}
         onClick={onToggleCollapsed}
       >
-        {collapsed ? <PanelLeftOpen aria-hidden="true" /> : <PanelLeftClose aria-hidden="true" />}
+        {collapsed ? (
+          <PanelLeftOpen aria-hidden="true" />
+        ) : (
+          <PanelLeftClose aria-hidden="true" />
+        )}
       </Button>
       {collapsed ? (
         <TenantCollapsedNavigationBlock
@@ -266,7 +249,10 @@ export function TenantFooterBlock() {
         <ul className="flex flex-wrap gap-4">
           {tenantFooterLinks.map((link) => (
             <li key={link.href}>
-              <Link href={link.href} className="hover:text-foreground focus-visible:underline">
+              <Link
+                href={link.href}
+                className="hover:text-foreground focus-visible:underline"
+              >
                 {link.label}
               </Link>
             </li>
@@ -277,24 +263,6 @@ export function TenantFooterBlock() {
   );
 }
 
-/** Mobile bottom navigation built from serializable tenant link/icon data. */
-export function TenantMobileBottomNavBlock({
-  items,
-}: {
-  items: readonly TenantMobileNavigationItem[];
-}) {
-  return (
-    <MobileBottomNav
-      items={items.map(({ label, href, icon }) => ({
-        label,
-        href,
-        icon: mobileIcons[icon],
-      }))}
-      aria-label={tenantCopy.mobileNavigation}
-    />
-  );
-}
-
 // ============================================================================
 // ROUTE-GROUP ERROR AND LOADING
 // ============================================================================
@@ -302,7 +270,10 @@ export function TenantMobileBottomNavBlock({
 /** Safe recovery UI for errors arising inside tenant child routes. */
 export function TenantErrorBlock({ onRetry }: TenantErrorBlockProps) {
   return (
-    <section role="alert" className="mx-auto flex min-h-[60vh] max-w-3xl items-center p-4">
+    <section
+      role="alert"
+      className="mx-auto flex min-h-[60vh] max-w-3xl items-center p-4"
+    >
       <Card className="w-full">
         <CardHeader>
           <CardTitle>{tenantCopy.errorTitle}</CardTitle>
@@ -310,7 +281,9 @@ export function TenantErrorBlock({ onRetry }: TenantErrorBlockProps) {
         <CardContent className="space-y-4">
           <p>{tenantCopy.errorDescription}</p>
           <div className="flex flex-wrap gap-3">
-            <Button type="button" onClick={onRetry}>{tenantCopy.tryAgain}</Button>
+            <Button type="button" onClick={onRetry}>
+              {tenantCopy.tryAgain}
+            </Button>
             <Button asChild variant="outline">
               <Link href="/dashboard">{tenantCopy.goToDashboard}</Link>
             </Button>
@@ -326,7 +299,12 @@ export function TenantLoadingBlock({
   label = tenantCopy.loadingContent,
 }: TenantLoadingBlockProps) {
   return (
-    <section role="status" aria-busy="true" aria-label={label} className="space-y-4 p-4">
+    <section
+      role="status"
+      aria-busy="true"
+      aria-label={label}
+      className="space-y-4 p-4"
+    >
       <Skeleton className="h-9 w-56" />
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
         <Skeleton className="h-24 w-full" />

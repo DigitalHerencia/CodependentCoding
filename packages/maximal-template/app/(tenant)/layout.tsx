@@ -4,8 +4,7 @@ import { TenantLoadingTemplate } from "@/components/templates/tenant-templates";
 import { TenantShell } from "@/components/shells/tenant-shell";
 import { tenantCopy } from "@/content/tenant";
 import { OnboardingGateFeature } from "@/features/onboarding/onboarding-gate-feature";
-import { PwaAccountMenu } from "@/features/pwa/pwa-account-menu.client";
-import { OrganizationSwitcherFeature } from "@/features/settings/organization-switcher-feature";
+import { AuthenticatedUserMenuFeature } from "@/features/navigation/authenticated-user-menu-feature";
 import { getIdentity } from "@/lib/auth/auth";
 import { redirectToSignIn } from "@/lib/auth/redirects";
 import { loadTenantNavigationWorkflow } from "@/lib/workflows/tenantWorkflows";
@@ -24,9 +23,7 @@ export default function TenantLayout({
 }
 
 /** Authenticate before evaluating the tenant onboarding gate. */
-async function SignedInTenant({
-  children,
-}: Readonly<{ children: ReactNode }>) {
+async function SignedInTenant({ children }: Readonly<{ children: ReactNode }>) {
   const identity = await getIdentity();
   if (!identity) redirectToSignIn();
 
@@ -45,8 +42,8 @@ async function TenantWorkspace({
   return (
     <TenantShell
       navigation={navigation}
-      accountMenu={<PwaAccountMenu />}
-      organizationSwitcher={<OrganizationSwitcherFeature />}
+      accountMenu={<AuthenticatedUserMenuFeature />}
+      mobileAccountMenu={<AuthenticatedUserMenuFeature presentation="panel" />}
     >
       {children}
     </TenantShell>

@@ -1014,7 +1014,7 @@
     {
       "spec_id": "TYPESCRIPTION-T3",
       "issue_number": 365,
-      "status": "awaiting_review",
+      "status": "merged",
       "branch": "codex/365-onboarding-invitations",
       "base_commit": "82bce456a58b256000391d6d1f3a946b9a2426bd",
       "pr_numbers": [369],
@@ -1052,6 +1052,52 @@
         "No runtime authentication, responsive layout or database correctness claim from static review.",
         "Own-profile E2E scenarios require disposable Clerk session fixtures; DB lifecycle test needs a prepared disposable multi-tenant DATABASE_URL_TEST.",
         "No Project item exists for #365; no unrelated governance setup."
+      ],
+      "merged_pr": 369,
+      "merge_commit": "6b295de545e84405a2c57e617d2b409eca20763a",
+      "reviewed_commit": "126b083caa55ef93b3d328504a1264772c718847",
+      "review_url": "https://github.com/DigitalHerencia/CodependentCoding/pull/369",
+      "delivery": "Independent reviewer corrected the baseline fixture under owner authorization, verified clean CI run 43911319927 PASS at 126b083caa55ef93b3d328504a1264772c718847, merged #369 and closed #365. Local/remote task branch is removed; accepted main is Task4 base."
+    },
+    {
+      "spec_id": "TYPESCRIPTION-T4",
+      "issue_number": 366,
+      "status": "awaiting_review",
+      "branch": "codex/366-responsive-navigation",
+      "base_commit": "6b295de545e84405a2c57e617d2b409eca20763a",
+      "pr_numbers": [370],
+      "pr_url": "https://github.com/DigitalHerencia/CodependentCoding/pull/370",
+      "last_updated": "2026-11-16T17:20:23.406399+00:00",
+      "authority": "Owner continued the sequential issues after independent review and merge of #369; GitHub #366 is the canonical work body.",
+      "acceptance_evidence": {
+        "responsive_menu": "One shared AuthenticatedMobileNavigation uses the installed Radix modal foundation for focus/escape/outside/scroll behavior; CSS lg breakpoint and resize cleanup, full dynamic viewport plus safe areas. Tenant/admin bottom-bar wrappers and consumers removed; generic/public mobile navigation unchanged.",
+        "authorized_account": "AuthenticatedUserMenuFeature reuses active own-profile and organization projections. Clerk useUser supplies avatar; existing PWA workflow retains cache-purge-before-signout. Account management opens only after the enclosing modal/popover FocusScope closes. Profile card/link reused; org select only for multiple ACTIVE memberships.",
+        "route_security": "Tenant role projection remains server-owned; integrations discovery now matches its existing base.settings:update gate. Admin, onboarding and identity gates retained. No RLS, tenancy, role management, switching or backend permissions changed.",
+        "boundaries": "Tenant owned loading/error templates retained. Admin owned shell fallback blocks/templates added, preserving reset and excluding raw errors. Child page content slots unchanged; no dashboard/CRM/public implementation changes."
+      },
+      "validation_runs": [
+        {
+          "command": "pnpm exec eslint --fix --max-warnings=0 @taskCode",
+          "result": "PASS (exit 0): affected code checked/fixed with zero warnings. Subsequent issue-owned TypeScript callback correction is reported separately; no successful lint rerun."
+        },
+        {
+          "command": "pnpm exec prettier --write --ignore-unknown @taskFiles",
+          "result": "PASS (exit 0): existing affected files formatted. Later scalar metadata replacements and the optional-call correction preserve formatting; no successful formatter rerun."
+        },
+        {
+          "command": "pnpm typecheck",
+          "result": "FAIL (exit 1): Prisma Client 7.10.1 and Next route type generation PASSED. TypeScript emitted 369 diagnostics in the dirty tree: retained missing components/ui/utils imports in tenant-blocks and tenant-shell plus existing unrelated UI/chart errors; one issue-owned TS2722 at tenant-blocks:108 was corrected to onNavigate?.() after the single pass. NOT RERUN. Prior clean main CI 43911319927 passed after reviewer correction; no frozen test/dependency fixes or installs/bypasses here."
+        },
+        {
+          "command": "Tests, builds, dev servers, DB jobs/migrations/seeds, deployments, live webhooks and security scans",
+          "result": "NOT RUN - prohibited by owner; regression sources authored only."
+        }
+      ],
+      "known_limitations": [
+        "No browser/mobile/runtime behavior verified; E2E sources require disposable role/session fixtures and are NOT RUN.",
+        "Existing unrelated UI/chart changes remain excluded and can affect local typechecking.",
+        "The prior reviewer corrected the pre-existing authzPolicies test fixture on accepted main; this task never modifies protected tests.",
+        "No GitHub Project item exists for #366."
       ]
     }
   ]

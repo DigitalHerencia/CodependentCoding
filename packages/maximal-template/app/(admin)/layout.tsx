@@ -1,6 +1,7 @@
-import { PageLoadingTemplate } from "@/components/templates/shared-templates";
+import { AdminLoadingTemplate } from "@/components/templates/admin-shell-templates";
 import { AdminShell } from "@/components/shells/admin-shell";
-import { PwaAccountMenu } from "@/features/pwa/pwa-account-menu.client";
+import { AuthenticatedUserMenuFeature } from "@/features/navigation/authenticated-user-menu-feature";
+import { adminNavigationCopy } from "@/content/admin-navigation";
 import { Suspense, type ReactNode } from "react";
 
 import { OnboardingGateFeature } from "@/features/onboarding/onboarding-gate-feature";
@@ -14,7 +15,11 @@ export default function AdminLayout({
   children,
 }: Readonly<{ children: ReactNode }>) {
   return (
-    <Suspense fallback={<PageLoadingTemplate label="Loading administration" />}>
+    <Suspense
+      fallback={
+        <AdminLoadingTemplate label={adminNavigationCopy.loadingLayout} />
+      }
+    >
       <SignedInAdmin>{children}</SignedInAdmin>
     </Suspense>
   );
@@ -27,7 +32,14 @@ async function SignedInAdmin({ children }: Readonly<{ children: ReactNode }>) {
   return (
     <OnboardingGateFeature>
       <AdminGateFeature>
-        <AdminShell accountMenu={<PwaAccountMenu />}>{children}</AdminShell>
+        <AdminShell
+          accountMenu={<AuthenticatedUserMenuFeature />}
+          mobileAccountMenu={
+            <AuthenticatedUserMenuFeature presentation="panel" />
+          }
+        >
+          {children}
+        </AdminShell>
       </AdminGateFeature>
     </OnboardingGateFeature>
   );

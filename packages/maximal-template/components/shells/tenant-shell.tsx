@@ -1,12 +1,15 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { useRef, useState } from "react";
+import { useState } from "react";
 
 import { TenantFooter } from "@/components/nav/tenant-footer";
 import { TenantHeader } from "@/components/nav/tenant-header";
-import { TenantMobileBottomNav } from "@/components/nav/tenant-mobile-bottom-nav";
-import { TenantNavigation, TenantSidebar } from "@/components/nav/tenant-navigation";
+import { AuthenticatedMobileNavigation } from "@/components/nav/authenticated-mobile-navigation";
+import {
+  TenantNavigation,
+  TenantSidebar,
+} from "@/components/nav/tenant-navigation";
 import { cn } from "@/components/ui/utils";
 import { applicationDesign } from "@/content/application";
 import { tenantCopy } from "@/content/tenant";
@@ -20,14 +23,11 @@ export function TenantShell({
   children,
   navigation,
   accountMenu,
+  mobileAccountMenu,
   organizationSwitcher,
 }: TenantShellProps) {
   const pathname = usePathname();
   const [collapsed, setCollapsed] = useState(false);
-  const [menuState, setMenuState] = useState({ route: pathname, open: false });
-  const mobileOpen = menuState.route === pathname && menuState.open;
-  const closeMobileMenu = () => setMenuState({ route: pathname, open: false });
-  const menuButtonRef = useRef<HTMLButtonElement>(null);
   const activeGroup = navigation.groups.find((group) =>
     group.links.some(
       (link) => pathname === link.href || pathname.startsWith(link.href + "/"),
@@ -48,25 +48,18 @@ export function TenantShell({
         : [];
 
   const sidebar = applicationDesign.navigation === "sidebar";
-  const onNavigate = closeMobileMenu;
   const onExpandedChange = (ids: string[]) =>
     setExpanded({ route: pathname, ids });
 
   return (
     <div
       className={cn(
-        "tenant-shell min-h-dvh pb-[calc(3.5rem+env(safe-area-inset-bottom))] md:pb-0",
+        "tenant-shell min-h-dvh min-w-0",
         sidebar &&
           (collapsed
-            ? "md:grid md:grid-cols-[4.5rem_minmax(0,1fr)]"
-            : "md:grid md:grid-cols-[16rem_minmax(0,1fr)]"),
+            ? "lg:grid lg:grid-cols-[4.5rem_minmax(0,1fr)]"
+            : "lg:grid lg:grid-cols-[16rem_minmax(0,1fr)]"),
       )}
-      onKeyDown={(event) => {
-        if (event.key === "Escape" && mobileOpen) {
-          closeMobileMenu();
-          menuButtonRef.current?.focus();
-        }
-      }}
     >
       <a
         href="#tenant-main-content"
@@ -80,7 +73,6 @@ export function TenantShell({
           pathname={pathname}
           expandedIds={expandedIds}
           onExpandedChange={onExpandedChange}
-          onNavigate={onNavigate}
           collapsed={collapsed}
           onToggleCollapsed={() => setCollapsed((value) => !value)}
           onExpand={(id) => {
@@ -97,24 +89,25 @@ export function TenantShell({
       <div className="flex min-w-0 flex-col">
         <TenantHeader
           sidebar={sidebar}
-          mobileOpen={mobileOpen}
-          onToggle={() => setMenuState({ route: pathname, open: !mobileOpen })}
-          menuButtonRef={menuButtonRef}
+          mobileMenu={
+            <AuthenticatedMobileNavigation title={tenantCopy.headerNavigation}>
+              <TenantNavigation
+                navigation={navigation}
+                pathname={pathname}
+                expandedIds={expandedIds}
+                onExpandedChange={onExpandedChange}
+              />
+              {mobileAccountMenu}
+            </AuthenticatedMobileNavigation>
+          }
         />
-        {mobileOpen && (
-          <div
-            id="mobile-navigation"
-            className={cn(
-              "flex max-h-[calc(100dvh-4rem)] flex-col gap-4 overflow-y-auto border-b bg-background p-4",
-              sidebar && "md:hidden",
-            )}
-          >
+        {!sidebar && (
+          <div className="hidden space-y-4 border-b bg-background p-4 lg:block">
             <TenantNavigation
               navigation={navigation}
               pathname={pathname}
               expandedIds={expandedIds}
               onExpandedChange={onExpandedChange}
-              onNavigate={onNavigate}
             />
             {organizationSwitcher}
             {accountMenu}
@@ -124,7 +117,6 @@ export function TenantShell({
           {children}
         </main>
         <TenantFooter />
-        <TenantMobileBottomNav items={navigation.mobile} />
       </div>
     </div>
   );

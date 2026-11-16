@@ -1,5 +1,5 @@
-import { PageLoadingTemplate } from "@/components/templates/shared-templates";
+import { AdminLoadingTemplate } from "@/components/templates/admin-shell-templates";
 
 export default function Loading() {
-  return <PageLoadingTemplate label="Loading admin content" />;
+  return <AdminLoadingTemplate />;
 }
