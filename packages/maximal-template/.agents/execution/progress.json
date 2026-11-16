@@ -936,8 +936,10 @@
       "status": "awaiting_review",
       "branch": "codex/364-authentication",
       "base_commit": "9cb9474d72f95ed60d3143f88ec7f3f7118ca7b5",
-      "pr_numbers": [],
-      "last_updated": "2026-11-16T06:35:41.174287+00:00",
+      "pr_numbers": [
+        368
+      ],
+      "last_updated": "2026-11-16T06:38:45.473814+00:00",
       "authority": "Owner mission and GitHub issue #364 supersede stale handoff routing. PR #363 and #367 are merged.",
       "acceptance_evidence": {
         "auth_layers": "features/auth/authSignInForm.tsx and authSignUpForm.tsx own RHF; components/templates/auth-templates.tsx composes owned blocks; types/authTypes.ts and schemas/authSchemas.ts describe stages and validation.",
@@ -993,7 +995,23 @@
       "check_blockers": [
         "The sole lint pass failed; both reported findings corrected without rerun.",
         "Package typecheck fails in the existing dirty shared UI/chart tree and unrelated authz tests. Do not repair frozen consumers."
-      ]
+      ],
+      "pr_url": "https://github.com/DigitalHerencia/CodependentCoding/pull/368",
+      "implementation_commit": "6a8f55ea7dbb96f5939bbe5edab713ced2770572",
+      "installed_versions": {
+        "next": "16.4.5",
+        "react": "19.3.1",
+        "@clerk/nextjs": "7.9.25",
+        "@prisma/client": "7.10.1",
+        "react-hook-form": "7.91.0",
+        "@hookform/resolvers": "7.0.3",
+        "zod": "4.6.7",
+        "tailwindcss": "4.3.4",
+        "typescript": "6.0.2",
+        "eslint": "10.14.0",
+        "prettier": "3.9.10"
+      },
+      "delivery": "Draft PR #368 opened and unmerged; stopped for explicit independent review. #365 and #366 not started."
     }
   ]
 }

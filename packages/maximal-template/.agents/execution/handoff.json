@@ -12,10 +12,9 @@
   "completed_spec_ids": [],
   "blocked_spec_ids": [],
   "next_actions": [
-    "Push the issue branch and open one draft PR for #364 with exact evidence and SHA.",
-    "Stop for explicit independent review; correct this same branch/PR if requested.",
-    "Owner: resolve or isolate existing unrelated shared UI/chart changes and authz test type errors before clean runtime/QA verification. Do not modify frozen CRM/public consumers.",
-    "Do not begin #365 or #366 until preceding review and merge gates are satisfied."
+    "STOP for explicit independent review of draft PR #368. Do not merge or begin #365/#366.",
+    "Apply requested corrections on codex/364-authentication and the same PR.",
+    "Owner: resolve or isolate unrelated shared UI/chart work and existing authz type errors before clean-main type/runtime QA; frozen CRM/public consumers must remain untouched."
   ],
   "risks": [
     "No runtime/test verification authorized.",
@@ -52,15 +51,31 @@
       "date": "2026-11-16T06:35:41.174287+00:00"
     }
   ],
-  "updated_at": "2026-11-16T06:35:41.174287+00:00",
+  "updated_at": "2026-11-16T06:38:45.473814+00:00",
   "delivery": {
     "issue_number": 364,
     "branch": "codex/364-authentication",
     "base_commit": "9cb9474d72f95ed60d3143f88ec7f3f7118ca7b5",
-    "status": "draft_pending_creation_checks_failed",
+    "status": "draft_awaiting_independent_review_checks_failed",
     "merged_prerequisites": {
       "363": "7d4bd957c74d3dd550e67c37a26ea9b8670c6091",
       "367": "9cb9474d72f95ed60d3143f88ec7f3f7118ca7b5"
+    },
+    "pr_number": 368,
+    "pr_url": "https://github.com/DigitalHerencia/CodependentCoding/pull/368",
+    "implementation_commit": "6a8f55ea7dbb96f5939bbe5edab713ced2770572",
+    "installed_versions": {
+      "next": "16.4.5",
+      "react": "19.3.1",
+      "@clerk/nextjs": "7.9.25",
+      "@prisma/client": "7.10.1",
+      "react-hook-form": "7.91.0",
+      "@hookform/resolvers": "7.0.3",
+      "zod": "4.6.7",
+      "tailwindcss": "4.3.4",
+      "typescript": "6.0.2",
+      "eslint": "10.14.0",
+      "prettier": "3.9.10"
     }
   },
   "changed_file_inventory": [
