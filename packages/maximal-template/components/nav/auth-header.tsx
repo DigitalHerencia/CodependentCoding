@@ -1,6 +1,5 @@
 // components/nav/auth-header.tsx
 
-import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
 import { authHeaderContent } from "@/content/auth";
@@ -11,9 +10,8 @@ export function AuthHeader() {
     <header className="auth-header">
       <Link
         href={authHeaderContent.homeHref}
-        className="inline-flex auth-back-link min-h-9 type-link items-center gap-2"
+        className="inline-flex auth-back-link min-h-9 type-link items-center"
       >
-        <ArrowLeft aria-hidden />
         {authHeaderContent.homeLabel}
       </Link>
     </header>

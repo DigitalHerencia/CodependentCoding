@@ -809,9 +809,7 @@
       "owner_task": "CODEX TASK 1 - Authorization, tenancy and initial ownership",
       "status": "blocked",
       "issue_number": null,
-      "pr_numbers": [
-        363
-      ],
+      "pr_numbers": [363],
       "branch": "codex/authz-tenancy",
       "base_commit": "37e6d0880b3366f6d488a7e477a39de163f061f1",
       "validation_runs": [
@@ -936,9 +934,7 @@
       "status": "awaiting_review",
       "branch": "codex/364-authentication",
       "base_commit": "9cb9474d72f95ed60d3143f88ec7f3f7118ca7b5",
-      "pr_numbers": [
-        368
-      ],
+      "pr_numbers": [368],
       "last_updated": "2026-11-16T06:38:45.473814+00:00",
       "authority": "Owner mission and GitHub issue #364 supersede stale handoff routing. PR #363 and #367 are merged.",
       "acceptance_evidence": {
