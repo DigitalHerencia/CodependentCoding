@@ -125,6 +125,7 @@ export async function revokeInvitation(
   rawInput: unknown,
 ): Promise<ActionResult<{ id: string }>> {
   return toActionResult(async () => {
+    assertInvitationsAllowed();
     const identity = await requireIdentity();
     const revoked = await withTenantTransaction(
       identity,

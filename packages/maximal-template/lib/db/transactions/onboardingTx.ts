@@ -193,20 +193,28 @@ async function joinOrCreateOrganizationTx(
   user: ProvisionedUser,
   email: string | null,
 ): Promise<boolean> {
+  // Approvals target their own organization, even if this identity is already
+  // active elsewhere. Acceptance preserves active roles and rejects inactive
+  // target memberships; only the verified email can select an approval.
+  const approval = await findPendingInvitationTx(tx, email, false);
+  if (approval) {
+    await acceptInvitationTx(tx, approval, user.id);
+    return true;
+  }
+
   const active = await tx.membership.findFirst({
     where: { userId: user.id, status: "ACTIVE" },
     select: { id: true },
   });
   if (active) return true;
 
+  // Without verified email we cannot distinguish an invitee from an
+  // unaffiliated signup. Defer creation until a later verified event/request.
+  if (!email) return false;
+
   // Revoked/suspended users cannot escape administration by creating a workspace.
   if (await tx.membership.findFirst({ where: { userId: user.id }, select: { id: true } })) return false;
 
-  const approval = await findPendingInvitationTx(tx, email, false);
-  if (approval) {
-    await acceptInvitationTx(tx, approval, user.id);
-    return true;
-  }
   // An invitation link is waiting: join through it instead of a new organization.
   if (await findPendingInvitationTx(tx, email, true)) return false;
 

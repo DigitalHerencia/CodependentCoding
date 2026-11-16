@@ -21,6 +21,16 @@
         "PortalDocument and Invoice need an authenticated customer-recipient relationship before VIEWER access may be enabled.",
         "Owner allocation durability relies on the existing insert-only audit ledger. Destructive tenant deletion/restoration must preserve the allocation history."
       ]
+    },
+    {
+      "id": "DEC-AUTHZ-TENANCY-002",
+      "spec_id": "ENG-M1-P1.3-AUTH-T01",
+      "date": "2026-11-16T05:37:20.600638+00:00",
+      "status": "accepted",
+      "authority": "Owner-approved PR #363 corrective assignment and review of fa246b1.",
+      "decision": "Process verified approvals independently of other active memberships. Defer multi-tenant ownership until verified email exists. Preserve Clerk verification, webhook deduplication, active target roles, inactive-membership refusal, and single-tenant one-time allocation.",
+      "clarification": "Single-tenant allocation remains one-time for the first eligible serialized provisioning transaction, not necessarily the first chronological Clerk signup. Asynchronous delivery does not guarantee ordering; strict ordering needs separately approved persistence/infrastructure work.",
+      "scope": "Existing codex/authz-tenancy branch and draft PR #363 only; no protected CRM/public, generator, upstream ABAC, infrastructure, migrations or dependency-junction changes."
     }
   ]
 }

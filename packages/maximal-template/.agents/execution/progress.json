@@ -870,14 +870,65 @@
         "PortalDocument and Invoice need an authenticated customer-recipient relationship before VIEWER access may be enabled.",
         "Owner allocation durability relies on the existing insert-only audit ledger. Destructive tenant deletion/restoration must preserve the allocation history."
       ],
-      "last_updated": "2026-11-16",
+      "last_updated": "2026-11-16T05:39:16.809849+00:00",
       "blockers": [
         "Refresh/install dependencies for the latest-main worktree before another owner-authorized verification pass. The single authorized local check pass was attempted once; all three commands were blocked by pnpm before execution. No bypass, install, or retry was performed."
       ],
-      "verification_status": "NOT RE-VERIFIED; no lint/format/typecheck results available.",
+      "verification_status": "Corrective check pass attempted once; lint/format/typecheck blocked before execution. No dependency/junction changes, bypass or retry.",
       "pr_url": "https://github.com/DigitalHerencia/CodependentCoding/pull/363",
       "implementation_commit": "28c26d9b8c04275821331650f6866ef834f405a2",
-      "delivery_status": "draft_in_review_checks_blocked"
+      "delivery_status": "draft_corrective_review_checks_blocked",
+      "review_corrections": [
+        {
+          "assignment": "PR #363 corrective review",
+          "reviewed_commit": "fa246b1cc77c753cfe63c871517e6ae34f8deba4",
+          "review_url": "https://github.com/DigitalHerencia/CodependentCoding/pull/363#pullrequestreview-5915113021",
+          "updated_at": "2026-11-16T05:37:20.600638+00:00",
+          "changes": [
+            "Check verified-email pending approvals before returning for existing active memberships; preserve target roles and inactive-membership refusal through the existing acceptance transaction.",
+            "Defer multi-tenant organization creation without verified email in the shared provisioning transaction, covering both signed webhook sync and authenticated onboarding.",
+            "Reject single-tenant invitation revocation before persistence; directly related create/approve/accept entry points retain their existing guards.",
+            "Author focused multi-membership, unverified/verified/repeated sync, invitation lifecycle, existing-role and inactive-membership regressions; tests not executed."
+          ],
+          "limitations": [
+            "Single-tenant allocation remains one-time for the first eligible serialized provisioning transaction, not necessarily the first chronological Clerk signup. Asynchronous delivery does not guarantee ordering; strict ordering needs separately approved persistence/infrastructure work.",
+            "New multi-tenant ownership now requires verified primary email; email-less/unverified signup must wait for verification.",
+            "An approval targeting a suspended/revoked membership is rejected and requires administrator resolution; it never silently reactivates that membership.",
+            "Prior upstream ABAC/customer-recipient modeling and protected-slice owner-QA follow-ups remain outside this corrective scope."
+          ],
+          "validation_runs": [
+            {
+              "command": "pnpm exec eslint --fix --max-warnings=0 @taskCode",
+              "status": "FAIL",
+              "exit_code": 1,
+              "result": "ERR_PNPM_VERIFY_DEPS_BEFORE_RUN; ESLint did not execute."
+            },
+            {
+              "command": "pnpm exec prettier --write --ignore-unknown @taskFiles",
+              "status": "FAIL",
+              "exit_code": 1,
+              "result": "ERR_PNPM_VERIFY_DEPS_BEFORE_RUN; Prettier did not execute."
+            },
+            {
+              "command": "pnpm typecheck",
+              "status": "FAIL",
+              "exit_code": 1,
+              "result": "ERR_PNPM_VERIFY_DEPS_BEFORE_RUN; Prisma generate, next typegen and tsc did not execute."
+            },
+            {
+              "command": "tests, builds, database jobs, scans, runtime verification",
+              "status": "NOT RUN",
+              "result": "Forbidden by owner instruction; regression tests authored only."
+            },
+            {
+              "command": "Complete staged PR-versus-origin/main and reviewed-commit inventories, source/import/export review, git diff --cached --check and git diff --check",
+              "status": "PASS (STATIC ONLY)",
+              "result": "36 inventory entries including the existing preference-helper rename (37 endpoints), zero CRM/public or outside-template paths; 8 corrective paths; no corrective deletions/migrations, generator/upstream edits or changed policy/Clerk APIs. Protected preservation remains pending owner QA."
+            }
+          ],
+          "delivery": "Corrections ready on existing draft PR #363; awaiting owner re-review. Exact pushed commit SHA is recorded in the PR update comment."
+        }
+      ]
     }
   ]
 }

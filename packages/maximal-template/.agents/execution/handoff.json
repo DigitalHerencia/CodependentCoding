@@ -12,32 +12,44 @@
   "completed_spec_ids": [],
   "blocked_spec_ids": [],
   "next_actions": [
-    "Owner: prepare dependencies for this latest-main worktree and authorize a fresh check pass; review the draft PR and perform protected CRM/public QA.",
-    "Resolve the upstream ABAC helper/clientVisible mismatch and model customer recipients under a later explicitly authorized scope.",
-    "Do not merge or proceed to Tasks 2-4 until owner review and the required verification are complete."
+    "Owner: re-review the corrective commit and final-SHA update comment on existing draft PR #363.",
+    "Owner: resolve the dependency-installation mismatch under separate authorization and verify lint/format/typecheck plus protected CRM/public QA. The corrective check pass was attempted once and blocked before tools executed.",
+    "Strict chronological first-signup ownership requires a separately approved persistence/infrastructure change; current safe one-time serialized allocation is retained.",
+    "Leave PR #363 draft and unmerged; no Tasks 2-4 work is authorized in this handoff."
   ],
   "risks": [
     "Protected CRM/public preservation is static-review only, pending owner QA.",
     "Upstream ABAC policies.abac.ts.tpl accepts clientVisible without a customer relationship. It cannot be changed in this task. Sensitive consumers enforce mandatory boundaries independently; upstream direct helper parity remains unresolved.",
     "PortalDocument and Invoice need an authenticated customer-recipient relationship before VIEWER access may be enabled.",
     "Owner allocation durability relies on the existing insert-only audit ledger. Destructive tenant deletion/restoration must preserve the allocation history.",
-    "Dependency node_modules junction points to the original checkout installation. Cleanup command was rejected by automatic approval review with blocked by policy; junction retained."
+    "Dependency node_modules junction points to the original checkout installation. Cleanup command was rejected by automatic approval review with blocked by policy; junction retained.",
+    "Single-tenant allocation remains one-time for the first eligible serialized provisioning transaction, not necessarily the first chronological Clerk signup. Asynchronous delivery does not guarantee ordering; strict ordering needs separately approved persistence/infrastructure work.",
+    "New multi-tenant ownership now requires verified primary email; email-less/unverified signup must wait for verification.",
+    "An approval targeting a suspended/revoked membership is rejected and requires administrator resolution; it never silently reactivates that membership.",
+    "Prior upstream ABAC/customer-recipient modeling and protected-slice owner-QA follow-ups remain outside this corrective scope."
   ],
   "verification_summary": [
     "pnpm exec eslint --fix --max-warnings=0 <changed code files>: FAIL - pnpm ERR_PNPM_VERIFY_DEPS_BEFORE_RUN: workspace structure changed since last install. ESLint did not execute.",
     "pnpm exec prettier --write --ignore-unknown <changed files>: FAIL - pnpm ERR_PNPM_VERIFY_DEPS_BEFORE_RUN: workspace structure changed since last install. Prettier did not execute.",
     "pnpm typecheck: FAIL - pnpm ERR_PNPM_VERIFY_DEPS_BEFORE_RUN: workspace structure changed since last install. Prisma generate, next typegen and tsc did not execute.",
     "tests, builds, validation, security scans, database jobs, browser/runtime QA: NOT RUN - Prohibited by owner instruction. Test files were authored only.",
-    "PASS: Git whitespace and full scope/path/source inspection at implementation commit 28c26d9b8c04275821331650f6866ef834f405a2. GitHub confirmed draft PR #363, unmerged. Execution-record-only follow-up does not rerun the blocked check pass."
+    "PASS: Git whitespace and full scope/path/source inspection at implementation commit 28c26d9b8c04275821331650f6866ef834f405a2. GitHub confirmed draft PR #363, unmerged. Execution-record-only follow-up does not rerun the blocked check pass.",
+    "Review corrections: pnpm exec eslint --fix --max-warnings=0 @taskCode: FAIL - ERR_PNPM_VERIFY_DEPS_BEFORE_RUN; ESLint did not execute.",
+    "Review corrections: pnpm exec prettier --write --ignore-unknown @taskFiles: FAIL - ERR_PNPM_VERIFY_DEPS_BEFORE_RUN; Prettier did not execute.",
+    "Review corrections: pnpm typecheck: FAIL - ERR_PNPM_VERIFY_DEPS_BEFORE_RUN; Prisma generate, next typegen and tsc did not execute.",
+    "Review corrections: tests, builds, database jobs, scans, runtime verification: NOT RUN - Forbidden by owner instruction; regression tests authored only.",
+    "Corrective final static review: 36 inventory entries including the existing preference-helper rename (37 endpoints), zero CRM/public or outside-template paths; 8 corrective paths; no corrective deletions/migrations, generator/upstream edits or changed policy/Clerk APIs. Protected preservation remains pending owner QA."
   ],
-  "updated_at": "2026-11-16",
+  "updated_at": "2026-11-16T05:39:16.809849+00:00",
   "delivery": {
     "branch": "codex/authz-tenancy",
     "base_commit": "37e6d0880b3366f6d488a7e477a39de163f061f1",
     "owner_task": "CODEX TASK 1 - Authorization, tenancy and initial ownership",
-    "status": "draft_in_review_checks_blocked",
+    "status": "draft_corrective_review_checks_blocked",
     "pr_number": 363,
     "pr_url": "https://github.com/DigitalHerencia/CodependentCoding/pull/363",
-    "implementation_commit": "28c26d9b8c04275821331650f6866ef834f405a2"
+    "implementation_commit": "28c26d9b8c04275821331650f6866ef834f405a2",
+    "reviewed_commit": "fa246b1cc77c753cfe63c871517e6ae34f8deba4",
+    "review_url": "https://github.com/DigitalHerencia/CodependentCoding/pull/363#pullrequestreview-5915113021"
   }
 }
