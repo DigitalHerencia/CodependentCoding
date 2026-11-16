@@ -35,7 +35,7 @@ test("customers need a relationship while staff retain RBAC tenant access", () =
 });
 
 test("CRM keeps its existing tenant-scoped policy semantics", () => {
-  const crm = { kind: "crm.account", organizationId: "org_a" };
+  const crm = { kind: "crm.account", organizationId: "org_a" } as const;
   expect(canManageOwnedOrAssignedResource(as("MEMBER"), crm)).toBe(true);
   expect(canReadResource(as("VIEWER"), crm)).toBe(true);
 });
