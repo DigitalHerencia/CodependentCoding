@@ -1017,8 +1017,8 @@
       "status": "awaiting_review",
       "branch": "codex/365-onboarding-invitations",
       "base_commit": "82bce456a58b256000391d6d1f3a946b9a2426bd",
-      "pr_numbers": [],
-      "pr_url": null,
+      "pr_numbers": [369],
+      "pr_url": "https://github.com/DigitalHerencia/CodependentCoding/pull/369",
       "last_updated": "2026-11-16T11:49:26.582364+00:00",
       "authority": "Owner authorized merging #368, branch cleanup, and beginning #365; issue #365 is the canonical scope.",
       "acceptance_evidence": {

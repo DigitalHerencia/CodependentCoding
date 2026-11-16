@@ -12,7 +12,7 @@
   "completed_spec_ids": ["TYPESCRIPTION-T2"],
   "blocked_spec_ids": [],
   "next_actions": [
-    "Final scoped checks recorded. Commit, push and open one draft PR for #365.",
+    "Draft PR #369 is open; stop for independent review. Do not merge or start #366.",
     "STOP for independent review after the draft PR. No merge and no #366 until explicit clearance."
   ],
   "risks": [
@@ -45,9 +45,10 @@
     "issue_number": 365,
     "branch": "codex/365-onboarding-invitations",
     "base_commit": "82bce456a58b256000391d6d1f3a946b9a2426bd",
-    "status": "draft_pending_creation",
-    "pr_number": null,
-    "pr_url": null,
+    "status": "draft_awaiting_review_checks_failed",
+    "pr_number": 369,
+    "pr_url": "https://github.com/DigitalHerencia/CodependentCoding/pull/369",
+    "implementation_commit": "fb187e4d3993d9ecc86a669ed6a1825877176405",
     "prior_merged_pr": 368,
     "prior_merge_commit": "82bce456a58b256000391d6d1f3a946b9a2426bd"
   },
