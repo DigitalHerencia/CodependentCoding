@@ -45,7 +45,13 @@ export function buildTenantNavigation(
       id: "settings",
       label: tenantCopy.settings,
       icon: "settings" as const,
-      links: settingsNavigation(visibleModules),
+      // Match the existing integrations route's server permission; discovery is
+      // still separate from the unchanged route/action authorization checks.
+      links: settingsNavigation(visibleModules).filter(
+        (link) =>
+          link.href !== "/settings/integrations" ||
+          hasPermission(access, "base.settings:update"),
+      ),
     },
   ];
 

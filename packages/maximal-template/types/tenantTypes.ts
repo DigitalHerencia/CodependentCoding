@@ -1,5 +1,5 @@
 import type { Route } from "next";
-import type { ReactNode, Ref } from "react";
+import type { ReactNode } from "react";
 
 import type { ModuleIcon } from "@/types/moduleTypes";
 
@@ -39,15 +39,14 @@ export type TenantShellProps = {
   children: ReactNode;
   navigation: TenantNavigationDTO;
   accountMenu: ReactNode;
+  mobileAccountMenu: ReactNode;
   organizationSwitcher?: ReactNode;
 };
 
 /** Browser-only toggle controls for the tenant's header. */
 export type TenantHeaderBlockProps = {
   sidebar: boolean;
-  mobileOpen: boolean;
-  onToggle: () => void;
-  menuButtonRef: Ref<HTMLButtonElement>;
+  mobileMenu: ReactNode;
 };
 
 /** Controlled navigation view, also reused inside the mobile menu. */
@@ -56,7 +55,7 @@ export type TenantNavigationBlockProps = {
   pathname: string;
   expandedIds: string[];
   onExpandedChange: (ids: string[]) => void;
-  onNavigate: () => void;
+  onNavigate?: (() => void) | undefined;
 };
 
 /** Sidebar presentation composed from the same navigation view. */

@@ -61,6 +61,22 @@
       "status": "accepted",
       "authority": "GitHub issue #365 and latest explicit owner continuation after merged #368.",
       "decision": "Conform onboarding and invitations on codex/365-onboarding-invitations from accepted main. Keep profile completion/provisioning and accepted security contracts; own-profile edit changes only current active user displayName. Retain compatible shared schema/DTO/select exports while moving invitation behavior to its domain. No Prisma/RLS/authz, CRM/public, infrastructure or dependency changes. Author tests without execution; one local final check pass; one draft PR then stop for review."
+    },
+    {
+      "id": "DEC-TYPESCRIPTION-T3-MERGE",
+      "spec_id": "TYPESCRIPTION-T3",
+      "date": "2026-11-16T17:20:23.406399+00:00",
+      "status": "accepted",
+      "authority": "Independent owner review of #369 at 126b083caa55ef93b3d328504a1264772c718847 and latest explicit owner instruction to proceed.",
+      "decision": "Task3 reviewed and merged at 6b295de545e84405a2c57e617d2b409eca20763a. CI 43911319927 passed format/lint/Prisma/Next/TypeScript. Reviewer-authorized baseline test correction is accepted main; do not change protected files in Task4. Local stale codex/365-onboarding-invitations branch removed after remote merge/cleanup verification."
+    },
+    {
+      "id": "DEC-TYPESCRIPTION-T4-001",
+      "spec_id": "TYPESCRIPTION-T4",
+      "date": "2026-11-16T17:20:23.406399+00:00",
+      "status": "accepted",
+      "authority": "GitHub issue #366 and explicit owner continuation after merged #369.",
+      "decision": "Implement tenant/admin navigation only, using one authenticated full-screen modal on phone/tablet (<64rem) and existing desktop side/header/footer structure. Remove duplicate bottom bars without invented quick actions. Reuse active own-profile/organization reads and existing Clerk/PWA account operations. Keep public/CRM paths, shared primitive contracts and authz/RLS/Prisma unchanged. Open one draft PR and stop for independent review."
     }
   ]
 }
