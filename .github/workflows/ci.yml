@@ -83,6 +83,13 @@ jobs:
             pnpm exec eslint --max-warnings=0 "${code[@]}"
           fi
 
+      # TEMPORARY DIAGNOSTIC ONLY; remove after extracting the Prettier diff.
+      - name: Show Prettier's exact expected diff
+        if: failure()
+        run: |
+          pnpm exec prettier --write tests/authzPolicies.test.ts
+          git diff -- tests/authzPolicies.test.ts
+
       - name: Typecheck
         if: steps.changes.outputs.types == 'true'
         run: pnpm typecheck
