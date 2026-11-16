@@ -78,6 +78,7 @@ test.skipIf(baseEnv.value("AUTH_WEBHOOK_DB_TEST") !== "1")(
               clerkUserId,
               username: "auth-test",
               email: null,
+              verifiedEmail: null,
               displayName: "Auth test",
               imageUrl: null,
             };

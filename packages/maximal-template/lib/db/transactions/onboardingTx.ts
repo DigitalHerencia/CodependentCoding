@@ -123,12 +123,13 @@ function findPendingInvitationTx(
   });
 }
 
+/** The ledger is insert-only and survives deletion of the original owner's User. */
 async function joinSingleOrganizationTx(
   tx: Prisma.TransactionClient,
   user: ProvisionedUser,
-  email: string | null,
-  isBootstrapOwner: boolean,
 ): Promise<boolean> {
+  // Every allocation path holds this transaction lock before reading the ledger.
+  await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtextextended('single-tenancy:initial-owner', 0))`;
   await ensureSingleOrganizationTx(tx);
   const existing = await tx.membership.findUnique({
     where: {
@@ -140,42 +141,50 @@ async function joinSingleOrganizationTx(
     select: { id: true, role: true, status: true },
   });
 
-  if (isBootstrapOwner) {
-    if (!existing) {
-      await createMembershipTx(tx, SINGLE_ORGANIZATION_ID, user.id, "OWNER");
-      return true;
-    }
-    if (existing.role !== "OWNER" || existing.status !== "ACTIVE") {
-      await tx.membership.update({
-        where: { id: existing.id },
-        data: { role: "OWNER", status: "ACTIVE" },
-      });
+  // Seed fixtures never participate in the live allocation.
+  if (user.id === "user_seed_owner" || user.id === "user_seed_agent")
+    return existing?.status === "ACTIVE";
+
+  const allocation = await tx.auditEvent.findFirst({
+    where: { organizationId: SINGLE_ORGANIZATION_ID, action: "tenancy.initial_owner_allocated" },
+    select: { id: true },
+  });
+  let role: AppRole = selfSignupRole;
+  if (!allocation) {
+    // Preserve pre-existing real ownership, including inactive owners and deleted
+    // owners with a provisioning audit event. Seed OWNER is explicitly excluded.
+    const previousOwner = await tx.membership.findFirst({
+      where: { organizationId: SINGLE_ORGANIZATION_ID, role: "OWNER", userId: { not: "user_seed_owner" } },
+      select: { id: true },
+    });
+    const previousAllocation = await tx.auditEvent.findFirst({
+      where: {
+        organizationId: SINGLE_ORGANIZATION_ID,
+        OR: [
+          { action: "membership.bootstrap_owner" },
+          { action: "membership.provisioned", metadata: { path: ["role"], equals: "OWNER" } },
+        ],
+      },
+      select: { id: true },
+    });
+    // Existing customers are never promoted by a repeated provisioning request.
+    if (!previousOwner && !previousAllocation && !existing) role = "OWNER";
+    if (previousOwner || previousAllocation || role === "OWNER") {
       await tx.auditEvent.create({
         data: {
           organizationId: SINGLE_ORGANIZATION_ID,
           actorUserId: user.id,
-          action: "membership.bootstrap_owner",
-          resourceType: "Membership",
-          resourceId: existing.id,
-          metadata: {
-            previousRole: existing.role,
-            previousStatus: existing.status,
-          },
+          action: "tenancy.initial_owner_allocated",
+          resourceType: "Organization",
+          resourceId: SINGLE_ORGANIZATION_ID,
+          metadata: { source: previousOwner || previousAllocation ? "existing-allocation" : "signup", initialOwnerUserId: role === "OWNER" ? user.id : null },
         },
       });
     }
-    return true;
   }
-
-  // Suspended and revoked members stay that way until an administrator acts.
+  // Suspended and revoked memberships are never reactivated by signup.
   if (existing) return existing.status === "ACTIVE";
-
-  const approval = await findPendingInvitationTx(tx, email, false);
-  if (approval) {
-    await acceptInvitationTx(tx, approval, user.id);
-    return true;
-  }
-  await createMembershipTx(tx, SINGLE_ORGANIZATION_ID, user.id, selfSignupRole);
+  await createMembershipTx(tx, SINGLE_ORGANIZATION_ID, user.id, role);
   return true;
 }
 
@@ -184,17 +193,28 @@ async function joinOrCreateOrganizationTx(
   user: ProvisionedUser,
   email: string | null,
 ): Promise<boolean> {
+  // Approvals target their own organization, even if this identity is already
+  // active elsewhere. Acceptance preserves active roles and rejects inactive
+  // target memberships; only the verified email can select an approval.
+  const approval = await findPendingInvitationTx(tx, email, false);
+  if (approval) {
+    await acceptInvitationTx(tx, approval, user.id);
+    return true;
+  }
+
   const active = await tx.membership.findFirst({
     where: { userId: user.id, status: "ACTIVE" },
     select: { id: true },
   });
   if (active) return true;
 
-  const approval = await findPendingInvitationTx(tx, email, false);
-  if (approval) {
-    await acceptInvitationTx(tx, approval, user.id);
-    return true;
-  }
+  // Without verified email we cannot distinguish an invitee from an
+  // unaffiliated signup. Defer creation until a later verified event/request.
+  if (!email) return false;
+
+  // Revoked/suspended users cannot escape administration by creating a workspace.
+  if (await tx.membership.findFirst({ where: { userId: user.id }, select: { id: true } })) return false;
+
   // An invitation link is waiting: join through it instead of a new organization.
   if (await findPendingInvitationTx(tx, email, true)) return false;
 
@@ -202,20 +222,15 @@ async function joinOrCreateOrganizationTx(
   return true;
 }
 
-/**
- * Gives a user who finished onboarding access without an administrator
- * (AUTH.md §4.3). Single tenancy joins the shared organization (the bootstrap
- * owner as OWNER, everyone else with `selfSignupRole` or their pending
- * approval's role). Multi tenancy accepts a pending approval or creates the
- * user's own organization. Idempotent; false when the user must wait.
- */
+/** Provision from trusted identity, independently of profile completion. */
 export async function provisionWorkspaceAccessTx(
   tx: Prisma.TransactionClient,
   user: ProvisionedUser,
   email: string | null,
-  isBootstrapOwner: boolean,
 ): Promise<boolean> {
+  const lockKey = `workspace-provision:${user.id}`;
+  await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtextextended(${lockKey}, 0))`;
   return tenancy === "single"
-    ? joinSingleOrganizationTx(tx, user, email, isBootstrapOwner)
+    ? joinSingleOrganizationTx(tx, user)
     : joinOrCreateOrganizationTx(tx, user, email);
 }

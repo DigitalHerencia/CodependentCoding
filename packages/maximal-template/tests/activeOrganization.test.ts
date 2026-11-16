@@ -4,7 +4,13 @@
 import assert from "node:assert/strict";
 import { beforeEach, test, vi } from "vitest";
 
-import { ACTIVE_ORGANIZATION_COOKIE } from "@/lib/auth/activeOrganization";
+import { ACTIVE_ORGANIZATION_COOKIE } from "@/lib/authz/tenancy";
+
+vi.mock("@/lib/authz/mode", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/lib/authz/mode")>()),
+  tenancy: "multi",
+  activeMembershipScope: (userId: string) => ({ userId, status: "ACTIVE" }),
+}));
 
 const orgA = "00000000-0000-4000-8000-00000000000a";
 const orgB = "00000000-0000-4000-8000-00000000000b";

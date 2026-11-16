@@ -8,6 +8,7 @@ import {
 } from "@/schemas/adminSchemas";
 import { requireIdentity } from "@/lib/auth/auth";
 import { assertPermission } from "@/lib/authz/permissions";
+import { assertInvitationsAllowed } from "@/lib/authz/tenancy";
 import { toAdminMembershipDTO } from "@/lib/db/dtos/adminDtos";
 import { withTenantTransaction } from "@/lib/db/tenant";
 import {
@@ -120,6 +121,7 @@ export async function addAdminMembership(rawInput: unknown) {
     const identity = await requireIdentity();
     return withTenantTransaction(identity, async (tx, access) => {
       assertPermission(access, "admin.membership:create");
+      assertInvitationsAllowed();
       const input = addAdminMembershipSchema.parse(rawInput);
       await approveWorkspaceAccessTx(tx, {
         ...input,

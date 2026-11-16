@@ -7,11 +7,13 @@ import type {
 } from "@/types/accessTypes";
 
 import { assertPermission } from "./permissions";
+import { hasCustomerRelationship, limitedToCustomerRecords } from "./attributes";
 
 /**
  * RBAC (the default): the role's permissions decide, and the one record rule
- * left is the organization boundary. Viewers reach every record in their
- * organization. `hipster-stack new --access abac` replaces this file with the
+ * left for staff is the organization boundary. Customers require a record
+ * relationship. The existing CRM contract remains tenant-scoped.
+ * `hipster-stack new --access abac` replaces this file with the
  * record rules in packages/loaded-vibes/templates/authz/, which keep the same
  * exports, so fetchers and actions do not change.
  */
@@ -53,23 +55,26 @@ export function requestedResource(
   return resource.requesterUserId === context.userId;
 }
 
-/** RBAC only: nobody is limited to their own records. */
-export function limitedToOwnRecords(_context: AccessContext): boolean {
-  return false;
+/** Customers require explicit record relationships in both access modes. */
+export function limitedToOwnRecords(context: AccessContext): boolean {
+  return limitedToCustomerRecords(context);
 }
 
 export function canReadResource(
   context: AccessContext,
   resource: ResourceAccessDescriptor,
 ): boolean {
-  return isSameTenant(context, resource);
+  return isSameTenant(context, resource) && (
+    resource.kind.startsWith("crm.") || !limitedToOwnRecords(context) ||
+    hasCustomerRelationship(context, resource)
+  );
 }
 
 export function canManageOwnedOrAssignedResource(
   context: AccessContext,
   resource: ResourceAccessDescriptor,
 ): boolean {
-  return isSameTenant(context, resource);
+  return canReadResource(context, resource);
 }
 
 /** RBAC, then the organization boundary, for a write to one record. */

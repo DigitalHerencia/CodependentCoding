@@ -8,7 +8,8 @@ import {
 } from "@/schemas/portalSchemas";
 import { requireIdentity } from "@/lib/auth/auth";
 import { assertPermission } from "@/lib/authz/permissions";
-import { limitedToOwnRecords } from "@/lib/authz/policies";
+import { limitedToCustomerRecords } from "@/lib/authz/attributes";
+import { ResourceNotFoundError } from "@/lib/db/transactions/errors";
 import { toPortalDocumentDTO } from "@/lib/db/dtos/portalDtos";
 import { portalDocumentSelect } from "@/lib/db/selects/portalSelects";
 import { withTenantTransaction } from "@/lib/db/tenant";
@@ -75,6 +76,7 @@ export async function downloadPortalDocument(rawInput: unknown) {
     const identity = await requireIdentity();
     const asset = await withTenantTransaction(identity, async (tx, access) => {
       assertPermission(access, "portal.document:read");
+      if (limitedToCustomerRecords(access)) throw new ResourceNotFoundError("File");
       const { documentId } = portalDocumentCommandSchema
         .pick({ documentId: true })
         .parse(rawInput);
@@ -82,9 +84,6 @@ export async function downloadPortalDocument(rawInput: unknown) {
         where: {
           id: documentId,
           organizationId: access.organizationId,
-          ...(limitedToOwnRecords(access)
-            ? { clientVisible: true, status: { not: "ARCHIVED" as const } }
-            : {}),
         },
         select: {
           versions: {

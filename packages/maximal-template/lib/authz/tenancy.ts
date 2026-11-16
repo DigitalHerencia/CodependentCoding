@@ -2,6 +2,13 @@ import "server-only";
 
 import { cookies } from "next/headers";
 import { organizationIdSchema } from "@/schemas/accessSchemas";
+import { tenancy } from "./mode";
+
+/** Single tenancy never accepts invitations or administrator approvals. */
+export function assertInvitationsAllowed(): void {
+  if (tenancy === "single")
+    throw Object.assign(new Error("Invitations are unavailable in single tenancy."), { code: "FORBIDDEN" });
+}
 
 /** httpOnly cookie holding the organization the user last chose (AUTH.md §4.1). */
 export const ACTIVE_ORGANIZATION_COOKIE = "active-org";

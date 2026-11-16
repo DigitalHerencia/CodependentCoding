@@ -58,5 +58,4 @@ export const baseEnvShape = {
   DATABASE_URL_TEST: optional(),
   DATABASE_URL_TEST_APP: optional(),
   AUTH_WEBHOOK_DB_TEST: optional(),
-  BOOTSTRAP_OWNER_CLERK_USER_ID: optional(),
 };

@@ -10,7 +10,10 @@ import {
   switchOrganizationSchema,
 } from "@/schemas/commonSchemas";
 import type { ActionResult } from "@/types/actionTypes";
-import { setActiveOrganizationPreference } from "@/lib/auth/activeOrganization";
+import {
+  assertInvitationsAllowed,
+  setActiveOrganizationPreference,
+} from "@/lib/authz/tenancy";
 import { getVerifiedPrimaryEmail, requireIdentity } from "@/lib/auth/auth";
 import { activeMembershipScope } from "@/lib/authz/mode";
 import { assertPermission } from "@/lib/authz/permissions";
@@ -34,6 +37,7 @@ import {
   hashInvitationToken,
 } from "@/lib/db/transactions/invitationTx";
 import { toActionResult } from "@/lib/utils/actionResult";
+import { assertMembershipAdministratorTx } from "@/lib/db/transactions/adminTx";
 
 export async function updateOrganizationSettings(rawInput: unknown) {
   return toActionResult(async () => {
@@ -76,11 +80,13 @@ export async function updateOrganizationSettings(rawInput: unknown) {
 /** Invites an email with a role; returns the one-time link path to share. */
 export async function createInvitation(rawInput: unknown) {
   return toActionResult(async () => {
+    assertInvitationsAllowed();
     const identity = await requireIdentity();
     const created = await withTenantTransaction(
       identity,
       async (tx, access) => {
         assertPermission(access, "base.membership:create");
+        await assertMembershipAdministratorTx(tx, { organizationId: access.organizationId, actorUserId: access.userId });
         const input = createInvitationSchema.parse(rawInput);
         const token = randomBytes(32).toString("base64url");
         const record = await tx.invitation.create({
@@ -119,6 +125,7 @@ export async function revokeInvitation(
   rawInput: unknown,
 ): Promise<ActionResult<{ id: string }>> {
   return toActionResult(async () => {
+    assertInvitationsAllowed();
     const identity = await requireIdentity();
     const revoked = await withTenantTransaction(
       identity,
@@ -159,6 +166,7 @@ export async function acceptInvitation(
   rawInput: unknown,
 ): Promise<ActionResult<{ organizationId: string }>> {
   return toActionResult(async () => {
+    assertInvitationsAllowed();
     await requireIdentity();
     const { token } = acceptInvitationSchema.parse(rawInput);
     const email = await getVerifiedPrimaryEmail();
