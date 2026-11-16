@@ -809,7 +809,9 @@
       "owner_task": "CODEX TASK 1 - Authorization, tenancy and initial ownership",
       "status": "blocked",
       "issue_number": null,
-      "pr_numbers": [],
+      "pr_numbers": [
+        363
+      ],
       "branch": "codex/authz-tenancy",
       "base_commit": "37e6d0880b3366f6d488a7e477a39de163f061f1",
       "validation_runs": [
@@ -835,6 +837,24 @@
           "command": "tests, builds, validation, security scans, database jobs, browser/runtime QA",
           "status": "NOT RUN",
           "result": "Prohibited by owner instruction. Test files were authored only."
+        },
+        {
+          "command": "git diff --cached --check; git diff --check; git diff --check origin/main...HEAD",
+          "status": "PASS",
+          "verified_commit": "28c26d9b8c04275821331650f6866ef834f405a2",
+          "result": "No whitespace errors. Full staged/unstaged and branch-versus-base file inventories inspected: 35 entries including one rename, zero protected CRM/public paths, zero out-of-template paths."
+        },
+        {
+          "command": "Template source/reference inspection with rg",
+          "status": "PASS",
+          "verified_commit": "28c26d9b8c04275821331650f6866ef834f405a2",
+          "result": "Zero remaining removed-owner-environment or legacy preference-path imports. Generator assignment syntax and policy exports preserved. Protected slice preservation is static-review only, pending owner QA."
+        },
+        {
+          "command": "git push --set-upstream origin codex/authz-tenancy; GitHub create_pull_request",
+          "status": "PASS",
+          "verified_commit": "28c26d9b8c04275821331650f6866ef834f405a2",
+          "result": "GitHub confirmed open draft PR #363 targeting main, not merged."
         }
       ],
       "evidence": [
@@ -854,7 +874,10 @@
       "blockers": [
         "Refresh/install dependencies for the latest-main worktree before another owner-authorized verification pass. The single authorized local check pass was attempted once; all three commands were blocked by pnpm before execution. No bypass, install, or retry was performed."
       ],
-      "verification_status": "NOT RE-VERIFIED; no lint/format/typecheck results available."
+      "verification_status": "NOT RE-VERIFIED; no lint/format/typecheck results available.",
+      "pr_url": "https://github.com/DigitalHerencia/CodependentCoding/pull/363",
+      "implementation_commit": "28c26d9b8c04275821331650f6866ef834f405a2",
+      "delivery_status": "draft_in_review_checks_blocked"
     }
   ]
 }

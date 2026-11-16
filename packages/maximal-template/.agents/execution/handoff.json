@@ -27,13 +27,17 @@
     "pnpm exec eslint --fix --max-warnings=0 <changed code files>: FAIL - pnpm ERR_PNPM_VERIFY_DEPS_BEFORE_RUN: workspace structure changed since last install. ESLint did not execute.",
     "pnpm exec prettier --write --ignore-unknown <changed files>: FAIL - pnpm ERR_PNPM_VERIFY_DEPS_BEFORE_RUN: workspace structure changed since last install. Prettier did not execute.",
     "pnpm typecheck: FAIL - pnpm ERR_PNPM_VERIFY_DEPS_BEFORE_RUN: workspace structure changed since last install. Prisma generate, next typegen and tsc did not execute.",
-    "tests, builds, validation, security scans, database jobs, browser/runtime QA: NOT RUN - Prohibited by owner instruction. Test files were authored only."
+    "tests, builds, validation, security scans, database jobs, browser/runtime QA: NOT RUN - Prohibited by owner instruction. Test files were authored only.",
+    "PASS: Git whitespace and full scope/path/source inspection at implementation commit 28c26d9b8c04275821331650f6866ef834f405a2. GitHub confirmed draft PR #363, unmerged. Execution-record-only follow-up does not rerun the blocked check pass."
   ],
   "updated_at": "2026-11-16",
   "delivery": {
     "branch": "codex/authz-tenancy",
     "base_commit": "37e6d0880b3366f6d488a7e477a39de163f061f1",
     "owner_task": "CODEX TASK 1 - Authorization, tenancy and initial ownership",
-    "status": "draft_review_pending_checks"
+    "status": "draft_in_review_checks_blocked",
+    "pr_number": 363,
+    "pr_url": "https://github.com/DigitalHerencia/CodependentCoding/pull/363",
+    "implementation_commit": "28c26d9b8c04275821331650f6866ef834f405a2"
   }
 }
