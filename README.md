@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="public/Codependent Coding Crown.jpg" alt="Vouch" width="800" />
+  <img src="public/codependent-coding-crown.jpg" alt="Codependent Coding Crown" width="800" />
 
   <br />
   <br />
@@ -432,7 +432,7 @@ The plugin should help an agent:
 # System Identity and Product Topology
 
 <div align="center">
-  <img src="public/webapp_architecture.png" alt="Vouch" width="600" />
+  <img src="public/webapp-architecture.png" alt="webapp architecture" width="600" />
 
 </div>
 
