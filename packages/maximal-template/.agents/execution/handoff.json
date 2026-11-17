@@ -7,83 +7,41 @@
     ".agents/contracts/validation.yaml"
   ],
   "spec_catalog": "context/specs/catalog.json",
-  "active_spec_id": "TYPESCRIPTION-T4",
+  "active_spec_id": null,
   "next_spec_id": null,
   "completed_spec_ids": ["TYPESCRIPTION-T2", "TYPESCRIPTION-T3"],
   "blocked_spec_ids": [],
-  "next_actions": [
-    "Draft PR #370 is open; STOP for independent review. Do not merge.",
-    "STOP for independent review. Do not merge this issue without explicit clearance."
-  ],
+  "next_actions": [],
   "risks": [
-    "No browser/mobile/runtime behavior verified; E2E sources require disposable role/session fixtures and are NOT RUN.",
-    "Existing unrelated UI/chart changes remain excluded and can affect local typechecking.",
-    "The prior reviewer corrected the pre-existing authzPolicies test fixture on accepted main; this task never modifies protected tests.",
-    "No GitHub Project item exists for #366."
+    "Local builds, tests and browser/runtime checks were not run under repository resource limits."
   ],
   "verification_summary": [
     {
-      "command": "pnpm exec eslint --fix --max-warnings=0 @taskCode",
-      "result": "PASS (exit 0): affected code checked/fixed with zero warnings. Subsequent issue-owned TypeScript callback correction is reported separately; no successful lint rerun."
+      "command": "pnpm.cmd typecheck",
+      "result": "PASS: Prisma generation, Next route type generation, TypeScript."
     },
     {
-      "command": "pnpm exec prettier --write --ignore-unknown @taskFiles",
-      "result": "PASS (exit 0): existing affected files formatted. Later scalar metadata replacements and the optional-call correction preserve formatting; no successful formatter rerun."
+      "command": "Template-local Prettier and zero-warning ESLint on complete committed PR diff",
+      "result": "PASS"
     },
     {
-      "command": "pnpm typecheck",
-      "result": "FAIL (exit 1): Prisma Client 7.10.1 and Next route type generation PASSED. TypeScript emitted 369 diagnostics in the dirty tree: retained missing components/ui/utils imports in tenant-blocks and tenant-shell plus existing unrelated UI/chart errors; one issue-owned TS2722 at tenant-blocks:108 was corrected to onNavigate?.() after the single pass. NOT RERUN. Prior clean main CI 43911319927 passed after reviewer correction; no frozen test/dependency fixes or installs/bypasses here."
+      "command": "gh pr checks 371 --watch --interval 15",
+      "result": "PASS: Changed-file checks, Vercel, Vercel Preview Comments for head 201adf9."
     },
     {
-      "command": "Tests, builds, dev servers, DB jobs/migrations/seeds, deployments, live webhooks and security scans",
-      "result": "NOT RUN - prohibited by owner; regression sources authored only."
+      "command": "gh pr view 371; git pull --ff-only; git status --short --branch; git branch -vv; git ls-remote --heads origin",
+      "result": "MERGED; clean synced main; only main remains locally and remotely."
     }
   ],
-  "updated_at": "2026-11-16T17:20:23.406399+00:00",
+  "updated_at": "2026-11-17T19:13:59.516Z",
   "delivery": {
-    "issue_number": 366,
-    "branch": "codex/366-responsive-navigation",
-    "base_commit": "6b295de545e84405a2c57e617d2b409eca20763a",
-    "status": "draft_awaiting_independent_review",
-    "pr_number": 370,
-    "pr_url": "https://github.com/DigitalHerencia/CodependentCoding/pull/370",
-    "implementation_commit": "25673d383f4bed4a3a3a4df6523ce6cea4a945e0",
-    "prior_merged_pr": 369,
-    "prior_merge_commit": "6b295de545e84405a2c57e617d2b409eca20763a"
+    "pr_number": 371,
+    "pr_url": "https://github.com/DigitalHerencia/CodependentCoding/pull/371",
+    "branch": "main",
+    "status": "merged-verified",
+    "merge_commit": "59c256766681883d7d1f9694b707c177b2e40e09"
   },
-  "changed_file_inventory": [
-    ".agents/execution/decisions.json",
-    ".agents/execution/handoff.json",
-    ".agents/execution/progress.json",
-    "app/(admin)/error.tsx",
-    "app/(admin)/layout.tsx",
-    "app/(admin)/loading.tsx",
-    "app/(tenant)/layout.tsx",
-    "components/blocks/admin-shell-blocks.tsx",
-    "components/blocks/tenant-blocks.tsx",
-    "components/nav/admin-header.tsx",
-    "components/nav/admin-mobile-bottom-nav.tsx",
-    "components/nav/admin-nav-links.tsx",
-    "components/nav/authenticated-mobile-navigation.tsx",
-    "components/nav/authenticated-user-menu.tsx",
-    "components/nav/tenant-mobile-bottom-nav.tsx",
-    "components/shells/admin-shell.tsx",
-    "components/shells/tenant-shell.tsx",
-    "components/templates/admin-shell-templates.tsx",
-    "content/admin-navigation.ts",
-    "content/authenticated-navigation.ts",
-    "features/navigation/authenticated-user-menu-feature.tsx",
-    "lib/workflows/authenticatedNavigationWorkflows.ts",
-    "lib/workflows/tenantWorkflows.ts",
-    "tests/adminNavigationPresentation.test.ts",
-    "tests/authenticatedNavigationProjection.test.ts",
-    "tests/authenticatedNavigationStructure.test.ts",
-    "tests/authenticatedUserMenuPresentation.test.ts",
-    "tests/e2e/admin-navigation.spec.ts",
-    "tests/e2e/tenant-navigation.spec.ts",
-    "types/authenticatedNavigationTypes.ts",
-    "types/tenantTypes.ts"
-  ],
+  "changed_file_inventory": [],
   "git_maintenance_2026_11_17": {
     "date": "2026-11-17",
     "request": "Commit changes, sync, and clean up local and remote branches.",
@@ -110,25 +68,29 @@
   "ci_fix_pr_371": {
     "date": "2026-11-17",
     "pr": 371,
-    "status": "ready-for-ci",
-    "changes": [
-      "Formatted template-local changed files.",
-      "Restored shared helpers, existing UI contracts, installed Radix imports, client boundaries and strict-safe indexing.",
-      "Adapted DataTable to installed TanStack v9 and panels to installed v4.",
-      "Added owner-approved @radix-ui/react-toast 1.3.1 with lockfile and corrected Toast import."
-    ],
+    "status": "merged-verified",
+    "merge_commit": "59c256766681883d7d1f9694b707c177b2e40e09",
+    "verified_head": "201adf9",
+    "ci_run": 44155983387,
     "evidence": [
       {
         "command": "pnpm.cmd typecheck",
-        "result": "PASS exit 0: Prisma Client generation, Next route type generation and tsc --noEmit."
+        "result": "PASS: Prisma generation, Next route type generation, TypeScript."
       },
       {
-        "command": "Template-local prettier --write and eslint --max-warnings=0 on PR changed files",
-        "result": "PASS before final Toast import; final changed-file verification follows."
+        "command": "Template-local Prettier and zero-warning ESLint on complete committed PR diff",
+        "result": "PASS"
+      },
+      {
+        "command": "gh pr checks 371 --watch --interval 15",
+        "result": "PASS: Changed-file checks, Vercel, Vercel Preview Comments for head 201adf9."
+      },
+      {
+        "command": "gh pr view 371; git pull --ff-only; git status --short --branch; git branch -vv; git ls-remote --heads origin",
+        "result": "MERGED; clean synced main; only main remains locally and remotely."
       }
     ],
     "owner_authorization": "Owner approved dependency addition, commit, merge, sync and branch cleanup.",
-    "not_run": ["build", "tests", "runtime/browser checks"],
-    "note": "Offline reconciliation of optional exact manifest pin failed due absent cached metadata; retained successfully installed ^1.3.1 declaration with exact 1.3.1 lockfile. No supply-chain policy bypass."
+    "not_run": ["tests", "local builds", "browser/runtime checks"]
   }
 }

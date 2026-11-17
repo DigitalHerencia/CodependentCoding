@@ -1327,6 +1327,13 @@
       "status": "accepted",
       "title": "Owner approves Toast dependency and delivery",
       "decision": "Owner approved @radix-ui/react-toast addition and commit/merge/sync/branch cleanup for PR #371. Preserve strict checks and merge after fresh CI succeeds."
+    },
+    {
+      "id": "CI-371-MERGED-2026-11-17",
+      "date": "2026-11-17",
+      "status": "accepted",
+      "title": "Verified UI/chart delivery merged and branches cleaned",
+      "decision": "Owner-approved PR #371 squash-merged as 59c256766681883d7d1f9694b707c177b2e40e09 after GitHub run 44155983387 passed. Local and remote main synchronized; merged topic branch deleted locally and remotely. No active implementation package remains."
     }
   ]
 }
