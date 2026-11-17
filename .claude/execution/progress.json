@@ -4005,6 +4005,11 @@
     ],
     "owner_authorization": "Owner approved dependency addition, commit, merge, sync and branch cleanup.",
     "not_run": ["build", "tests", "runtime/browser checks"],
-    "note": "Offline reconciliation of optional exact manifest pin failed due absent cached metadata; retained successfully installed ^1.3.1 declaration with exact 1.3.1 lockfile. No supply-chain policy bypass."
+    "note": "Offline reconciliation of optional exact manifest pin failed due absent cached metadata; retained successfully installed ^1.3.1 declaration with exact 1.3.1 lockfile. No supply-chain policy bypass.",
+    "format_followup": {
+      "failed_run": 44155606031,
+      "cause": "motion-core.ts was untracked during the initial local formatter file selection.",
+      "correction": "Formatted helper; full committed PR changed-file formatting and zero-warning lint both pass."
+    }
   }
 }

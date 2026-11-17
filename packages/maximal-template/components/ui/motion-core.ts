@@ -78,5 +78,7 @@ export function startViewTransition(
   document.documentElement.dataset.pageTransition = recipe;
   const start = document.startViewTransition?.bind(document);
   if (!start || prefersReducedMotion()) return callback();
-  return options?.types ? start({ update: callback, types: options.types }) : start(callback);
+  return options?.types
+    ? start({ update: callback, types: options.types })
+    : start(callback);
 }
