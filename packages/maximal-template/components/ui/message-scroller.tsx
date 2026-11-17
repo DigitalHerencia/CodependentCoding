@@ -1,6 +1,6 @@
-import * as React from 'react'
-import { ArrowDown } from 'lucide-react'
-import { cn } from '@/lib/utils'
+import * as React from "react";
+import { ArrowDown } from "lucide-react";
+import { cn } from "@/components/ui/utils";
 
 /*
  * MessageScroller — the scroll container for a conversation.
@@ -25,116 +25,143 @@ import { cn } from '@/lib/utils'
  */
 
 export interface MessageScrollerScrollOptions {
-  behavior?: ScrollBehavior
+  behavior?: ScrollBehavior;
 }
 
-export interface MessageScrollerScrollToMessageOptions
-  extends MessageScrollerScrollOptions {
-  block?: 'start' | 'center' | 'end'
+export interface MessageScrollerScrollToMessageOptions extends MessageScrollerScrollOptions {
+  block?: "start" | "center" | "end";
 }
 
 export interface MessageScrollerHandle {
   /** Scroll to the newest content and resume auto-follow. */
-  scrollToBottom: (options?: MessageScrollerScrollOptions) => void
+  scrollToBottom: (options?: MessageScrollerScrollOptions) => void;
   /** Scroll a `[data-message-id]` element into view. Returns false when not found. */
-  scrollToMessage: (id: string, options?: MessageScrollerScrollToMessageOptions) => boolean
+  scrollToMessage: (
+    id: string,
+    options?: MessageScrollerScrollToMessageOptions,
+  ) => boolean;
   /** Whether the viewport is currently within `threshold` of the bottom. */
-  isAtBottom: () => boolean
+  isAtBottom: () => boolean;
 }
 
 interface MessageScrollerContextValue {
-  setViewport: (node: HTMLDivElement | null) => void
-  setContent: (node: HTMLDivElement | null) => void
-  handleScroll: () => void
-  jumpToLatest: () => void
-  focusViewport: () => void
+  setViewport: (node: HTMLDivElement | null) => void;
+  setContent: (node: HTMLDivElement | null) => void;
+  handleScroll: () => void;
+  jumpToLatest: () => void;
+  focusViewport: () => void;
   /** +1 when a consumer-placed jump button mounts, -1 when it unmounts. */
-  registerJumpButton: (delta: number) => void
-  atBottom: boolean
-  unread: number
-  streaming: boolean
+  registerJumpButton: (delta: number) => void;
+  atBottom: boolean;
+  unread: number;
+  streaming: boolean;
 }
 
-const MessageScrollerContext = React.createContext<MessageScrollerContextValue | null>(null)
+const MessageScrollerContext =
+  React.createContext<MessageScrollerContextValue | null>(null);
 
 // True only around the root's own auto-placed jump button, so it doesn't
 // count as a consumer-placed one.
-const AutoJumpButtonContext = React.createContext(false)
+const AutoJumpButtonContext = React.createContext(false);
 
 function useMessageScrollerContext(part: string) {
-  const ctx = React.useContext(MessageScrollerContext)
-  if (!ctx) throw new Error(`<${part}> must be used within <MessageScroller>`)
-  return ctx
+  const ctx = React.useContext(MessageScrollerContext);
+  if (!ctx) throw new Error(`<${part}> must be used within <MessageScroller>`);
+  return ctx;
 }
 
 function prefersReducedMotion() {
   return (
-    typeof window !== 'undefined' &&
-    typeof window.matchMedia === 'function' &&
-    window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  )
+    typeof window !== "undefined" &&
+    typeof window.matchMedia === "function" &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  );
 }
 
-function scrollViewport(viewport: HTMLElement, top: number, behavior: ScrollBehavior) {
-  if (behavior === 'smooth' && !prefersReducedMotion() && typeof viewport.scrollTo === 'function') {
-    viewport.scrollTo({ top, behavior: 'smooth' })
+function scrollViewport(
+  viewport: HTMLElement,
+  top: number,
+  behavior: ScrollBehavior,
+) {
+  if (
+    behavior === "smooth" &&
+    !prefersReducedMotion() &&
+    typeof viewport.scrollTo === "function"
+  ) {
+    viewport.scrollTo({ top, behavior: "smooth" });
   } else {
-    viewport.scrollTop = top
+    viewport.scrollTop = top;
   }
 }
 
 function distanceFromBottom(el: HTMLElement) {
-  return el.scrollHeight - el.scrollTop - el.clientHeight
+  return el.scrollHeight - el.scrollTop - el.clientHeight;
 }
 
 function messageIds(content: HTMLElement) {
-  return Array.from(content.querySelectorAll('[data-message-id]'), (node) =>
-    node.getAttribute('data-message-id')
-  )
+  return Array.from(content.querySelectorAll("[data-message-id]"), (node) =>
+    node.getAttribute("data-message-id"),
+  );
 }
 
 export interface MessageScrollerProps extends React.HTMLAttributes<HTMLDivElement> {
   /** Marks the log `aria-busy` while a response is streaming. */
-  streaming?: boolean
+  streaming?: boolean;
   /** Distance in px from the bottom (and top) that still counts as "at" it. */
-  threshold?: number
+  threshold?: number;
   /** Called once each time the reader scrolls into the top `threshold` — load older history here. */
-  onReachTop?: () => void
+  onReachTop?: () => void;
 }
 
-const MessageScroller = React.forwardRef<MessageScrollerHandle, MessageScrollerProps>(
-  ({ className, children, streaming = false, threshold = 48, onReachTop, ...props }, ref) => {
+const MessageScroller = React.forwardRef<
+  MessageScrollerHandle,
+  MessageScrollerProps
+>(
+  (
+    {
+      className,
+      children,
+      streaming = false,
+      threshold = 48,
+      onReachTop,
+      ...props
+    },
+    ref,
+  ) => {
     // Elements live in refs (they're mutated — scrollTop). `attached` bumps
     // only when a *new* element mounts, so the observer effect re-runs then —
     // and an unstable consumer ref (null → same node each render) can't loop.
-    const viewportRef = React.useRef<HTMLDivElement | null>(null)
-    const contentRef = React.useRef<HTMLDivElement | null>(null)
-    const seenRef = React.useRef(new WeakSet<HTMLDivElement>())
-    const [attached, setAttached] = React.useState(0)
+    const viewportRef = React.useRef<HTMLDivElement | null>(null);
+    const contentRef = React.useRef<HTMLDivElement | null>(null);
+    const seenRef = React.useRef(new WeakSet<HTMLDivElement>());
+    const [attached, setAttached] = React.useState(0);
     const attach = React.useCallback(
-      (target: React.MutableRefObject<HTMLDivElement | null>, node: HTMLDivElement | null) => {
-        target.current = node
+      (
+        target: React.MutableRefObject<HTMLDivElement | null>,
+        node: HTMLDivElement | null,
+      ) => {
+        target.current = node;
         if (node && !seenRef.current.has(node)) {
-          seenRef.current.add(node)
-          setAttached((n) => n + 1)
+          seenRef.current.add(node);
+          setAttached((n) => n + 1);
         }
       },
-      []
-    )
+      [],
+    );
     const setViewport = React.useCallback(
       (node: HTMLDivElement | null) => attach(viewportRef, node),
-      [attach]
-    )
+      [attach],
+    );
     const setContent = React.useCallback(
       (node: HTMLDivElement | null) => attach(contentRef, node),
-      [attach]
-    )
+      [attach],
+    );
     // `atBottom` mirrors "following": false is what shows the jump button.
-    const [atBottom, setAtBottom] = React.useState(true)
-    const [unread, setUnread] = React.useState(0)
-    const [customJumpButtons, setCustomJumpButtons] = React.useState(0)
+    const [atBottom, setAtBottom] = React.useState(true);
+    const [unread, setUnread] = React.useState(0);
+    const [customJumpButtons, setCustomJumpButtons] = React.useState(0);
 
-    const followingRef = React.useRef(true)
+    const followingRef = React.useRef(true);
     // Last measured geometry + boundary ids. scrollHeight is only recorded by
     // `sync` (the ResizeObserver), never by the scroll handler, so a scroll
     // event landing between a prepend and its observation can't hide the delta.
@@ -146,125 +173,139 @@ const MessageScroller = React.forwardRef<MessageScrollerHandle, MessageScrollerP
       nearTop: true,
       // First message id when onReachTop last fired for non-overflowing content.
       reachTopFiredFor: undefined as string | null | undefined,
-    })
-    const onReachTopRef = React.useRef(onReachTop)
+    });
+    const onReachTopRef = React.useRef(onReachTop);
     React.useEffect(() => {
-      onReachTopRef.current = onReachTop
-    }, [onReachTop])
+      onReachTopRef.current = onReachTop;
+    }, [onReachTop]);
 
     const sync = React.useCallback(() => {
-      const viewport = viewportRef.current
-      const content = contentRef.current
-      if (!viewport || !content) return
-      const snap = snapshotRef.current
-      const ids = messageIds(content)
-      const firstId = ids[0] ?? null
-      const lastId = ids[ids.length - 1] ?? null
+      const viewport = viewportRef.current;
+      const content = contentRef.current;
+      if (!viewport || !content) return;
+      const snap = snapshotRef.current;
+      const ids = messageIds(content);
+      const firstId = ids[0] ?? null;
+      const lastId = ids[ids.length - 1] ?? null;
 
       // Messages appended after the previously-last one (for the unread badge).
-      let appended = 0
+      let appended = 0;
       if (snap.lastId !== null && lastId !== snap.lastId) {
-        const index = ids.lastIndexOf(snap.lastId)
-        if (index !== -1) appended = ids.length - 1 - index
+        const index = ids.lastIndexOf(snap.lastId);
+        if (index !== -1) appended = ids.length - 1 - index;
       }
       // History inserted above the previously-first message.
       const prepended =
-        snap.firstId !== null && firstId !== snap.firstId && ids.includes(snap.firstId)
+        snap.firstId !== null &&
+        firstId !== snap.firstId &&
+        ids.includes(snap.firstId);
 
       if (followingRef.current) {
-        viewport.scrollTop = viewport.scrollHeight
+        viewport.scrollTop = viewport.scrollHeight;
       } else if (prepended) {
-        viewport.scrollTop = snap.scrollTop + (viewport.scrollHeight - snap.scrollHeight)
+        viewport.scrollTop =
+          snap.scrollTop + (viewport.scrollHeight - snap.scrollHeight);
       }
 
-      if (distanceFromBottom(viewport) <= 1) followingRef.current = true
-      if (followingRef.current) setUnread(0)
-      else if (appended > 0) setUnread((n) => n + appended)
-      setAtBottom(followingRef.current)
+      if (distanceFromBottom(viewport) <= 1) followingRef.current = true;
+      if (followingRef.current) setUnread(0);
+      else if (appended > 0) setUnread((n) => n + appended);
+      setAtBottom(followingRef.current);
 
-      snap.scrollTop = viewport.scrollTop
-      snap.scrollHeight = viewport.scrollHeight
-      snap.firstId = firstId
-      snap.lastId = lastId
+      snap.scrollTop = viewport.scrollTop;
+      snap.scrollHeight = viewport.scrollHeight;
+      snap.firstId = firstId;
+      snap.lastId = lastId;
 
       // Nothing to scroll means no top-zone transition will ever happen, so ask
       // for more history directly — again only once the first message changed.
-      const fits = viewport.scrollHeight - viewport.clientHeight <= threshold
+      const fits = viewport.scrollHeight - viewport.clientHeight <= threshold;
       if (fits && snap.reachTopFiredFor !== firstId) {
-        snap.reachTopFiredFor = firstId
-        onReachTopRef.current?.()
+        snap.reachTopFiredFor = firstId;
+        onReachTopRef.current?.();
       }
-    }, [threshold])
+    }, [threshold]);
 
     React.useEffect(() => {
-      const viewport = viewportRef.current
-      const content = contentRef.current
-      if (!viewport || !content) return
-      sync()
-      if (typeof ResizeObserver === 'undefined') return
-      const observer = new ResizeObserver(() => sync())
-      observer.observe(content)
-      observer.observe(viewport)
-      return () => observer.disconnect()
-    }, [attached, sync])
+      const viewport = viewportRef.current;
+      const content = contentRef.current;
+      if (!viewport || !content) return;
+      sync();
+      if (typeof ResizeObserver === "undefined") return;
+      const observer = new ResizeObserver(() => sync());
+      observer.observe(content);
+      observer.observe(viewport);
+      return () => observer.disconnect();
+    }, [attached, sync]);
 
     const handleScroll = React.useCallback(() => {
-      const viewport = viewportRef.current
-      if (!viewport) return
-      const snap = snapshotRef.current
-      const top = viewport.scrollTop
-      const distance = distanceFromBottom(viewport)
+      const viewport = viewportRef.current;
+      if (!viewport) return;
+      const snap = snapshotRef.current;
+      const top = viewport.scrollTop;
+      const distance = distanceFromBottom(viewport);
       // Our own scrolls never read as upward: sync/prepend anchoring/
       // scrollToBottom only move down and record snap.scrollTop afterwards, and
       // a clamp from shrinking content lands exactly at the bottom.
-      if (distance <= 1) followingRef.current = true
-      else if (top < snap.scrollTop - 1) followingRef.current = false
-      else if (distance <= threshold) followingRef.current = true
-      if (followingRef.current) setUnread(0)
-      setAtBottom(followingRef.current)
-      snap.scrollTop = top
+      if (distance <= 1) followingRef.current = true;
+      else if (top < snap.scrollTop - 1) followingRef.current = false;
+      else if (distance <= threshold) followingRef.current = true;
+      if (followingRef.current) setUnread(0);
+      setAtBottom(followingRef.current);
+      snap.scrollTop = top;
 
-      const nearTop = top <= threshold
-      if (nearTop && !snap.nearTop) onReachTopRef.current?.()
-      snap.nearTop = nearTop
-    }, [threshold])
+      const nearTop = top <= threshold;
+      if (nearTop && !snap.nearTop) onReachTopRef.current?.();
+      snap.nearTop = nearTop;
+    }, [threshold]);
 
     const scrollToBottom = React.useCallback(
-      ({ behavior = 'smooth' }: MessageScrollerScrollOptions = {}) => {
-        const viewport = viewportRef.current
-        if (!viewport) return
-        followingRef.current = true
-        setUnread(0)
-        setAtBottom(true)
-        scrollViewport(viewport, viewport.scrollHeight, behavior)
-        snapshotRef.current.scrollTop = viewport.scrollTop
+      ({ behavior = "smooth" }: MessageScrollerScrollOptions = {}) => {
+        const viewport = viewportRef.current;
+        if (!viewport) return;
+        followingRef.current = true;
+        setUnread(0);
+        setAtBottom(true);
+        scrollViewport(viewport, viewport.scrollHeight, behavior);
+        snapshotRef.current.scrollTop = viewport.scrollTop;
       },
-      []
-    )
+      [],
+    );
 
     const scrollToMessage = React.useCallback(
-      (id: string, { behavior = 'smooth', block = 'start' }: MessageScrollerScrollToMessageOptions = {}) => {
-        const viewport = viewportRef.current
-        const content = contentRef.current
-        if (!viewport || !content) return false
-        const target = Array.from(content.querySelectorAll<HTMLElement>('[data-message-id]')).find(
-          (node) => node.getAttribute('data-message-id') === id
-        )
-        if (!target) return false
-        const rect = target.getBoundingClientRect()
-        let top = rect.top - viewport.getBoundingClientRect().top + viewport.scrollTop
-        if (block === 'center') top -= (viewport.clientHeight - rect.height) / 2
-        if (block === 'end') top -= viewport.clientHeight - rect.height
-        const maxTop = Math.max(0, viewport.scrollHeight - viewport.clientHeight)
-        top = Math.min(maxTop, Math.max(0, top))
-        followingRef.current = maxTop - top <= threshold
-        setAtBottom(followingRef.current)
-        scrollViewport(viewport, top, behavior)
-        snapshotRef.current.scrollTop = viewport.scrollTop
-        return true
+      (
+        id: string,
+        {
+          behavior = "smooth",
+          block = "start",
+        }: MessageScrollerScrollToMessageOptions = {},
+      ) => {
+        const viewport = viewportRef.current;
+        const content = contentRef.current;
+        if (!viewport || !content) return false;
+        const target = Array.from(
+          content.querySelectorAll<HTMLElement>("[data-message-id]"),
+        ).find((node) => node.getAttribute("data-message-id") === id);
+        if (!target) return false;
+        const rect = target.getBoundingClientRect();
+        let top =
+          rect.top - viewport.getBoundingClientRect().top + viewport.scrollTop;
+        if (block === "center")
+          top -= (viewport.clientHeight - rect.height) / 2;
+        if (block === "end") top -= viewport.clientHeight - rect.height;
+        const maxTop = Math.max(
+          0,
+          viewport.scrollHeight - viewport.clientHeight,
+        );
+        top = Math.min(maxTop, Math.max(0, top));
+        followingRef.current = maxTop - top <= threshold;
+        setAtBottom(followingRef.current);
+        scrollViewport(viewport, top, behavior);
+        snapshotRef.current.scrollTop = viewport.scrollTop;
+        return true;
       },
-      [threshold]
-    )
+      [threshold],
+    );
 
     React.useImperativeHandle(
       ref,
@@ -272,27 +313,29 @@ const MessageScroller = React.forwardRef<MessageScrollerHandle, MessageScrollerP
         scrollToBottom,
         scrollToMessage,
         isAtBottom: () =>
-          viewportRef.current ? distanceFromBottom(viewportRef.current) <= threshold : true,
+          viewportRef.current
+            ? distanceFromBottom(viewportRef.current) <= threshold
+            : true,
       }),
-      [scrollToBottom, scrollToMessage, threshold]
-    )
+      [scrollToBottom, scrollToMessage, threshold],
+    );
 
     const focusViewport = React.useCallback(
       () => viewportRef.current?.focus({ preventScroll: true }),
-      []
-    )
+      [],
+    );
     // Stable, so a consumer jump button's register effect runs once per mount.
     const registerJumpButton = React.useCallback(
       (delta: number) => setCustomJumpButtons((n) => n + delta),
-      []
-    )
+      [],
+    );
 
     const contextValue = React.useMemo<MessageScrollerContextValue>(
       () => ({
         setViewport,
         setContent,
         handleScroll,
-        jumpToLatest: () => scrollToBottom({ behavior: 'smooth' }),
+        jumpToLatest: () => scrollToBottom({ behavior: "smooth" }),
         focusViewport,
         registerJumpButton,
         atBottom,
@@ -309,15 +352,15 @@ const MessageScroller = React.forwardRef<MessageScrollerHandle, MessageScrollerP
         atBottom,
         unread,
         streaming,
-      ]
-    )
+      ],
+    );
 
     return (
       <MessageScrollerContext.Provider value={contextValue}>
         <div
           data-slot="message-scroller"
           data-at-bottom={atBottom}
-          className={cn('relative flex min-h-0 flex-col', className)}
+          className={cn("relative flex min-h-0 flex-col", className)}
           {...props}
         >
           {children}
@@ -329,25 +372,25 @@ const MessageScroller = React.forwardRef<MessageScrollerHandle, MessageScrollerP
           )}
         </div>
       </MessageScrollerContext.Provider>
-    )
-  }
-)
-MessageScroller.displayName = 'MessageScroller'
+    );
+  },
+);
+MessageScroller.displayName = "MessageScroller";
 
 const MessageScrollerContent = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
 >(({ className, children, onScroll, ...props }, ref) => {
   const { setViewport, setContent, handleScroll, streaming } =
-    useMessageScrollerContext('MessageScrollerContent')
+    useMessageScrollerContext("MessageScrollerContent");
   const viewportRef = React.useCallback(
     (node: HTMLDivElement | null) => {
-      setViewport(node)
-      if (typeof ref === 'function') ref(node)
-      else if (ref) ref.current = node
+      setViewport(node);
+      if (typeof ref === "function") ref(node);
+      else if (ref) ref.current = node;
     },
-    [setViewport, ref]
-  )
+    [setViewport, ref],
+  );
 
   return (
     <div
@@ -361,12 +404,12 @@ const MessageScrollerContent = React.forwardRef<
       {...props}
       aria-busy={streaming || undefined}
       onScroll={(event) => {
-        onScroll?.(event)
-        handleScroll()
+        onScroll?.(event);
+        handleScroll();
       }}
       className={cn(
-        'bk-scroll-fade min-h-0 flex-1 overflow-y-auto overscroll-contain [overflow-anchor:none] focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-inset focus-visible:ring-ring',
-        className
+        "bk-scroll-fade min-h-0 flex-1 overflow-y-auto overscroll-contain [overflow-anchor:none] focus-visible:ring-3 focus-visible:ring-ring focus-visible:outline-none focus-visible:ring-inset",
+        className,
       )}
     >
       <div
@@ -377,25 +420,25 @@ const MessageScrollerContent = React.forwardRef<
         {children}
       </div>
     </div>
-  )
-})
-MessageScrollerContent.displayName = 'MessageScrollerContent'
+  );
+});
+MessageScrollerContent.displayName = "MessageScrollerContent";
 
 const MessageScrollerJumpButton = React.forwardRef<
   HTMLButtonElement,
   React.ButtonHTMLAttributes<HTMLButtonElement>
 >(({ className, children, onClick, ...props }, ref) => {
-  const ctx = useMessageScrollerContext('MessageScrollerJumpButton')
-  const isAuto = React.useContext(AutoJumpButtonContext)
-  const { registerJumpButton } = ctx
+  const ctx = useMessageScrollerContext("MessageScrollerJumpButton");
+  const isAuto = React.useContext(AutoJumpButtonContext);
+  const { registerJumpButton } = ctx;
   React.useEffect(() => {
-    if (isAuto) return
-    registerJumpButton(1)
-    return () => registerJumpButton(-1)
-  }, [isAuto, registerJumpButton])
+    if (isAuto) return;
+    registerJumpButton(1);
+    return () => registerJumpButton(-1);
+  }, [isAuto, registerJumpButton]);
 
-  if (ctx.atBottom) return null
-  const count = ctx.unread > 99 ? '99+' : String(ctx.unread)
+  if (ctx.atBottom) return null;
+  const count = ctx.unread > 99 ? "99+" : String(ctx.unread);
 
   return (
     <button
@@ -405,34 +448,36 @@ const MessageScrollerJumpButton = React.forwardRef<
       aria-label={
         ctx.unread > 0
           ? `Jump to latest message, ${ctx.unread} new`
-          : 'Jump to latest message'
+          : "Jump to latest message"
       }
       {...props}
       onClick={(event) => {
-        onClick?.(event)
-        if (event.defaultPrevented) return
+        onClick?.(event);
+        if (event.defaultPrevented) return;
         // The button unmounts once following resumes; hand keyboard focus to
         // the log instead of letting it fall to <body>.
-        if (document.activeElement === event.currentTarget) ctx.focusViewport()
-        ctx.jumpToLatest()
+        if (document.activeElement === event.currentTarget) ctx.focusViewport();
+        ctx.jumpToLatest();
       }}
       className={cn(
-        'absolute bottom-4 right-4 z-10 inline-flex h-11 w-11 items-center justify-center border-3 border-foreground bg-primary text-primary-foreground shadow-[4px_4px_0px_hsl(var(--shadow-color))] transition duration-200 animate-in fade-in-0 slide-in-from-bottom-2 hover:translate-x-[4px] hover:translate-y-[4px] hover:shadow-none focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring focus-visible:ring-offset-2',
-        className
+        "absolute right-4 bottom-4 z-10 inline-flex h-11 w-11 animate-in items-center justify-center border-3 border-foreground bg-primary text-primary-foreground shadow-[4px_4px_0px_hsl(var(--shadow-color))] transition duration-200 fade-in-0 slide-in-from-bottom-2 hover:translate-x-[4px] hover:translate-y-[4px] hover:shadow-none focus-visible:ring-3 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none",
+        className,
       )}
     >
-      {children ?? <ArrowDown className="h-5 w-5" strokeWidth={3} aria-hidden="true" />}
+      {children ?? (
+        <ArrowDown className="h-5 w-5" strokeWidth={3} aria-hidden="true" />
+      )}
       {ctx.unread > 0 && (
         <span
           aria-hidden="true"
-          className="absolute -right-3 -top-3 flex h-6 min-w-6 items-center justify-center border-2 border-foreground bg-accent px-1 text-xs font-bold text-accent-foreground"
+          className="absolute -top-3 -right-3 flex h-6 min-w-6 items-center justify-center border-2 border-foreground bg-accent px-1 text-xs font-bold text-accent-foreground"
         >
           {count}
         </span>
       )}
     </button>
-  )
-})
-MessageScrollerJumpButton.displayName = 'MessageScrollerJumpButton'
+  );
+});
+MessageScrollerJumpButton.displayName = "MessageScrollerJumpButton";
 
-export { MessageScroller, MessageScrollerContent, MessageScrollerJumpButton }
+export { MessageScroller, MessageScrollerContent, MessageScrollerJumpButton };

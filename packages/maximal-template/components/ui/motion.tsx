@@ -1,4 +1,11 @@
-/* eslint-disable react-refresh/only-export-components */
+"use client";
+
+import type {
+  RevealOptions,
+  StaggerOptions,
+  PageTransition,
+} from "@/types/uiTypes";
+
 /**
  * BoldKit Motion — React adapter (L3).
  *
@@ -9,126 +16,148 @@
  * Requires `motion.css` (L2 recipes) to be loaded. If you're using
  * BoldKit's globals.css, the recipes are already included.
  */
-import * as React from 'react'
-import { cn } from '@/lib/utils'
+import * as React from "react";
+import { cn } from "@/components/ui/utils";
 import {
   observeReveal,
   staggerChildren,
   triggerAnimation,
   startViewTransition,
   prefersReducedMotion,
-  type RevealOptions,
-  type StaggerOptions,
-  type PageTransition,
-} from '@/lib/motion-core'
+} from "@/components/ui/motion-core";
 
 // ──────────────────────────────────────────────────────────────────
 // <Reveal> — scroll-triggered entrance
 // ──────────────────────────────────────────────────────────────────
 
-export type RevealDirection = 'up' | 'down' | 'left' | 'right'
+export type RevealDirection = "up" | "down" | "left" | "right";
 
 export interface RevealProps
-  extends React.HTMLAttributes<HTMLDivElement>,
-    Omit<RevealOptions, 'rootMargin'> {
+  extends
+    React.HTMLAttributes<HTMLDivElement>,
+    Omit<RevealOptions, "rootMargin"> {
   /** Direction to slide in from. Default 'up'. */
-  direction?: RevealDirection
+  direction?: RevealDirection;
   /** Custom IntersectionObserver rootMargin. */
-  rootMargin?: string
+  rootMargin?: string;
   /** Element tag to render. Default 'div'. */
-  as?: keyof React.JSX.IntrinsicElements
+  as?: keyof React.JSX.IntrinsicElements;
 }
 
 export const Reveal = React.forwardRef<HTMLDivElement, RevealProps>(
-  ({ direction = 'up', rootMargin, threshold, once, delay, as, className, children, ...rest }, ref) => {
-    const innerRef = React.useRef<HTMLDivElement | null>(null)
-    React.useImperativeHandle(ref, () => innerRef.current as HTMLDivElement)
+  (
+    {
+      direction = "up",
+      rootMargin,
+      threshold,
+      once,
+      delay,
+      as,
+      className,
+      children,
+      ...rest
+    },
+    ref,
+  ) => {
+    const innerRef = React.useRef<HTMLDivElement | null>(null);
+    React.useImperativeHandle(ref, () => innerRef.current as HTMLDivElement);
 
     React.useEffect(() => {
-      const el = innerRef.current
-      if (!el) return
-      return observeReveal(el, { rootMargin, threshold, once, delay })
-    }, [rootMargin, threshold, once, delay])
+      const el = innerRef.current;
+      if (!el) return;
+      return observeReveal(el, {
+        ...(rootMargin === undefined ? {} : { rootMargin }),
+        ...(threshold === undefined ? {} : { threshold }),
+        ...(once === undefined ? {} : { once }),
+        ...(delay === undefined ? {} : { delay }),
+      });
+    }, [rootMargin, threshold, once, delay]);
 
-    const Tag = (as ?? 'div') as React.ElementType
+    const Tag = (as ?? "div") as React.ElementType;
     return (
       <Tag
         ref={innerRef}
-        className={cn('bk-reveal', `bk-reveal-${direction}`, className)}
+        className={cn("bk-reveal", `bk-reveal-${direction}`, className)}
         {...rest}
       >
         {children}
       </Tag>
-    )
-  }
-)
-Reveal.displayName = 'Reveal'
+    );
+  },
+);
+Reveal.displayName = "Reveal";
 
 // ──────────────────────────────────────────────────────────────────
 // <Motion> — declarative recipe composition
 // ──────────────────────────────────────────────────────────────────
 
 export interface MotionProps extends React.HTMLAttributes<HTMLElement> {
-  as?: keyof React.JSX.IntrinsicElements
+  as?: keyof React.JSX.IntrinsicElements;
   /** Apply .bk-press for interactive shadow choreography. */
-  press?: boolean
+  press?: boolean;
   /** Apply .bk-stamp-in entrance. */
-  stamp?: boolean
+  stamp?: boolean;
   /** Apply .bk-pulse-shadow. */
-  pulse?: boolean
+  pulse?: boolean;
 }
 
 export const Motion = React.forwardRef<HTMLElement, MotionProps>(
   ({ as, press, stamp, pulse, className, children, ...rest }, ref) => {
-    const Tag = (as ?? 'div') as React.ElementType
+    const Tag = (as ?? "div") as React.ElementType;
     return (
       <Tag
         ref={ref}
         className={cn(
-          press && 'bk-press',
-          stamp && 'bk-stamp-in',
-          pulse && 'bk-pulse-shadow',
-          className
+          press && "bk-press",
+          stamp && "bk-stamp-in",
+          pulse && "bk-pulse-shadow",
+          className,
         )}
         {...rest}
       >
         {children}
       </Tag>
-    )
-  }
-)
-Motion.displayName = 'Motion'
+    );
+  },
+);
+Motion.displayName = "Motion";
 
 // ──────────────────────────────────────────────────────────────────
 // <Stagger> — sequence children entrance
 // ──────────────────────────────────────────────────────────────────
 
 export interface StaggerProps
-  extends React.HTMLAttributes<HTMLDivElement>,
-    StaggerOptions {
-  as?: keyof React.JSX.IntrinsicElements
+  extends React.HTMLAttributes<HTMLDivElement>, StaggerOptions {
+  as?: keyof React.JSX.IntrinsicElements;
 }
 
 export const Stagger = React.forwardRef<HTMLDivElement, StaggerProps>(
-  ({ delay, initialDelay, selector, as, className, children, ...rest }, ref) => {
-    const innerRef = React.useRef<HTMLDivElement | null>(null)
-    React.useImperativeHandle(ref, () => innerRef.current as HTMLDivElement)
+  (
+    { delay, initialDelay, selector, as, className, children, ...rest },
+    ref,
+  ) => {
+    const innerRef = React.useRef<HTMLDivElement | null>(null);
+    React.useImperativeHandle(ref, () => innerRef.current as HTMLDivElement);
 
     React.useEffect(() => {
-      const el = innerRef.current
-      if (!el) return
-      return staggerChildren(el, { delay, initialDelay, selector })
-    }, [delay, initialDelay, selector])
+      const el = innerRef.current;
+      if (!el) return;
+      return staggerChildren(el, {
+        ...(delay === undefined ? {} : { delay }),
+        ...(initialDelay === undefined ? {} : { initialDelay }),
+        ...(selector === undefined ? {} : { selector }),
+      });
+    }, [delay, initialDelay, selector]);
 
-    const Tag = (as ?? 'div') as React.ElementType
+    const Tag = (as ?? "div") as React.ElementType;
     return (
       <Tag ref={innerRef} className={className} {...rest}>
         {children}
       </Tag>
-    )
-  }
-)
-Stagger.displayName = 'Stagger'
+    );
+  },
+);
+Stagger.displayName = "Stagger";
 
 // ──────────────────────────────────────────────────────────────────
 // useShake — imperative shake-on-error
@@ -142,9 +171,9 @@ Stagger.displayName = 'Stagger'
  */
 export function useShake() {
   return React.useCallback(async (el: Element | null) => {
-    if (!el) return
-    await triggerAnimation(el, 'bk-shake-x')
-  }, [])
+    if (!el) return;
+    await triggerAnimation(el, "bk-shake-x");
+  }, []);
 }
 
 // ──────────────────────────────────────────────────────────────────
@@ -157,32 +186,36 @@ export function useShake() {
  */
 export function useViewTransition() {
   return React.useCallback(
-    (callback: () => void | Promise<void>, recipe?: PageTransition, options?: { types?: string[] }) => {
-      return startViewTransition(callback, recipe, options)
+    (
+      callback: () => void | Promise<void>,
+      recipe?: PageTransition,
+      options?: { types?: string[] },
+    ) => {
+      return startViewTransition(callback, recipe, options);
     },
-    []
-  )
+    [],
+  );
 }
 
 // ──────────────────────────────────────────────────────────────────
 // React 19.3 <ViewTransition> / addTransitionType
 // ──────────────────────────────────────────────────────────────────
 
-type ViewTransitionClass = string | Record<string, string>
+type ViewTransitionClass = string | Record<string, string>;
 export interface ViewTransitionProps {
-  children?: React.ReactNode
-  name?: string
-  default?: ViewTransitionClass
-  enter?: ViewTransitionClass
-  exit?: ViewTransitionClass
-  update?: ViewTransitionClass
-  share?: ViewTransitionClass
+  children?: React.ReactNode;
+  name?: string;
+  default?: ViewTransitionClass;
+  enter?: ViewTransitionClass;
+  exit?: ViewTransitionClass;
+  update?: ViewTransitionClass;
+  share?: ViewTransitionClass;
 }
 
 const ReactVT = React as unknown as {
-  ViewTransition?: React.ComponentType<ViewTransitionProps>
-  addTransitionType?: (type: string) => void
-}
+  ViewTransition?: React.ComponentType<ViewTransitionProps>;
+  addTransitionType?: (type: string) => void;
+};
 
 /**
  * React's `<ViewTransition>` (stable in 19.3). On older React it renders its
@@ -191,10 +224,12 @@ const ReactVT = React as unknown as {
  * `"bk-hard-wipe"`, `"bk-color-block"`.
  */
 export const ViewTransition: React.ComponentType<ViewTransitionProps> =
-  ReactVT.ViewTransition ?? (({ children }: ViewTransitionProps) => <>{children}</>)
+  ReactVT.ViewTransition ??
+  (({ children }: ViewTransitionProps) => <>{children}</>);
 
 /** `addTransitionType` on React 19.3+, a no-op before it. Call inside startTransition. */
-export const addTransitionType: (type: string) => void = ReactVT.addTransitionType ?? (() => {})
+export const addTransitionType: (type: string) => void =
+  ReactVT.addTransitionType ?? (() => {});
 
 // Re-export the core helper so consumers don't need a second import
-export { prefersReducedMotion }
+export { prefersReducedMotion };

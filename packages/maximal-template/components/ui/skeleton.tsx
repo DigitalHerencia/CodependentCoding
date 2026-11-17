@@ -1,30 +1,30 @@
-/* eslint-disable react-refresh/only-export-components */
-import * as React from 'react'
-import { cva, type VariantProps } from 'class-variance-authority'
-import { cn } from '@/lib/utils'
+import * as React from "react";
+import { cva, type VariantProps } from "class-variance-authority";
+import { cn } from "@/components/ui/utils";
 
-const skeletonVariants = cva('bg-muted border-2 border-foreground/20', {
+const skeletonVariants = cva("border-2 border-foreground/20 bg-muted", {
   variants: {
     variant: {
       /** Soft opacity breathe. The pre-v3.5 default. */
-      pulse: 'animate-pulse',
+      pulse: "animate-pulse",
       /** Hard on/off — no interpolated fade. */
-      stamp: 'bk-skeleton-stamp',
+      stamp: "bk-skeleton-stamp",
       /** Marching cells on a stepped loop. */
-      blocks: 'bk-skeleton-blocks',
+      blocks: "bk-skeleton-blocks",
       /** A hard bar sweeping across the block. */
-      scan: 'bk-skeleton-scan',
+      scan: "bk-skeleton-scan",
       /** No motion at all. */
-      none: '',
+      none: "",
     },
   },
   defaultVariants: {
-    variant: 'pulse',
+    variant: "pulse",
   },
-})
+});
 
 export interface SkeletonProps
-  extends React.HTMLAttributes<HTMLDivElement>,
+  extends
+    React.HTMLAttributes<HTMLDivElement>,
     VariantProps<typeof skeletonVariants> {}
 
 function Skeleton({ className, variant, ...props }: SkeletonProps) {
@@ -36,7 +36,7 @@ function Skeleton({ className, variant, ...props }: SkeletonProps) {
       className={cn(skeletonVariants({ variant }), className)}
       {...props}
     />
-  )
+  );
 }
 
-export { Skeleton, skeletonVariants }
+export { Skeleton, skeletonVariants };

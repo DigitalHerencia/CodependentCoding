@@ -1,50 +1,55 @@
-import * as React from 'react'
-import { cn } from '@/lib/utils'
+"use client";
+
+import * as React from "react";
+import { cn } from "@/components/ui/utils";
 import {
   RadialBarChart as RechartsRadialBarChart,
   RadialBar,
   PolarAngleAxis,
-} from 'recharts'
-import { ChartContainer, type ChartContainerProps } from './container'
-import { ChartEmpty } from './empty'
-import { ChartTooltip, ChartTooltipContent } from './tooltip'
-import { ChartLegend, ChartLegendContent } from './legend'
-import type { ChartConfig } from './types'
+} from "recharts";
+import { ChartContainer, type ChartContainerProps } from "./container";
+import { ChartEmpty } from "./empty";
+import { ChartTooltip, ChartTooltipContent } from "./tooltip";
+import { ChartLegend, ChartLegendContent } from "./legend";
+import type { ChartConfig } from "./types";
 
 export interface RadialBarChartData {
-  name: string
-  value: number
-  fill?: string
+  name: string;
+  value: number;
+  fill?: string;
 }
 
 export interface RadialBarChartProps extends React.HTMLAttributes<HTMLDivElement> {
-  data: RadialBarChartData[]
-  config: ChartConfig
-  variant?: 'default' | 'stacked' | 'nested'
+  data: RadialBarChartData[];
+  config: ChartConfig;
+  variant?: "default" | "stacked" | "nested";
   /** Container border/shadow style — `variant` here is the chart geometry. */
-  containerVariant?: ChartContainerProps['variant']
-  innerRadius?: string | number
-  outerRadius?: string | number
-  showLabel?: boolean
-  showBackground?: boolean
-  showLegend?: boolean
-  showTooltip?: boolean
-  startAngle?: number
-  endAngle?: number
-  animated?: boolean
-  maxValue?: number
-  emptyState?: React.ReactNode
+  containerVariant?: ChartContainerProps["variant"];
+  innerRadius?: string | number;
+  outerRadius?: string | number;
+  showLabel?: boolean;
+  showBackground?: boolean;
+  showLegend?: boolean;
+  showTooltip?: boolean;
+  startAngle?: number;
+  endAngle?: number;
+  animated?: boolean;
+  maxValue?: number;
+  emptyState?: React.ReactNode;
 }
 
-const RadialBarChartComponent = React.forwardRef<HTMLDivElement, RadialBarChartProps>(
+const RadialBarChartComponent = React.forwardRef<
+  HTMLDivElement,
+  RadialBarChartProps
+>(
   (
     {
       data,
       config,
-      variant = 'default',
+      variant = "default",
       containerVariant,
-      innerRadius = '30%',
-      outerRadius = '100%',
+      innerRadius = "30%",
+      outerRadius = "100%",
       showLabel = true,
       showBackground = true,
       showLegend = false,
@@ -57,24 +62,31 @@ const RadialBarChartComponent = React.forwardRef<HTMLDivElement, RadialBarChartP
       className,
       ...props
     },
-    ref
+    ref,
   ) => {
     // Calculate max value for the scale. Use reduce (not spread) to avoid a
     // RangeError on very large datasets, and floor at 1 so an all-negative or
     // empty dataset can't produce a non-positive domain.
     const calculatedMax =
-      maxValue ?? ((data ?? []).reduce((m, d) => Math.max(m, d.value), 0) || 1)
+      maxValue ?? ((data ?? []).reduce((m, d) => Math.max(m, d.value), 0) || 1);
 
     // Assign a chart color to each item that does not supply its own fill
     const chartData = React.useMemo(() => {
       return (data ?? []).map((item, index) => ({
         ...item,
         fill: item.fill || `hsl(var(--chart-${(index % 5) + 1}))`,
-      }))
-    }, [data])
+      }));
+    }, [data]);
 
     if (!data || data.length === 0) {
-      return <ChartEmpty ref={ref} message={emptyState} className={className} {...props} />
+      return (
+        <ChartEmpty
+          ref={ref}
+          message={emptyState}
+          className={className}
+          {...props}
+        />
+      );
     }
 
     return (
@@ -82,7 +94,7 @@ const RadialBarChartComponent = React.forwardRef<HTMLDivElement, RadialBarChartP
         ref={ref}
         config={config}
         variant={containerVariant}
-        className={cn('aspect-square max-h-[300px]', className)}
+        className={cn("aspect-square max-h-[300px]", className)}
         {...props}
       >
         <RechartsRadialBarChart
@@ -93,7 +105,7 @@ const RadialBarChartComponent = React.forwardRef<HTMLDivElement, RadialBarChartP
           data={chartData}
           startAngle={startAngle}
           endAngle={endAngle}
-          barSize={variant === 'nested' ? 15 : 20}
+          barSize={variant === "nested" ? 15 : 20}
         >
           <PolarAngleAxis
             type="number"
@@ -110,16 +122,18 @@ const RadialBarChartComponent = React.forwardRef<HTMLDivElement, RadialBarChartP
           )}
           <RadialBar
             dataKey="value"
-            background={showBackground ? { fill: 'hsl(var(--muted))' } : undefined}
+            {...(showBackground
+              ? { background: { fill: "hsl(var(--muted))" } }
+              : {})}
             cornerRadius={0}
             isAnimationActive={animated}
             animationDuration={400}
-            stackId={variant === 'stacked' ? 'stack' : undefined}
+            {...(variant === "stacked" ? { stackId: "stack" } : {})}
             label={
               showLabel
                 ? {
-                    position: 'insideStart',
-                    fill: 'hsl(var(--foreground))',
+                    position: "insideStart",
+                    fill: "hsl(var(--foreground))",
                     fontWeight: 700,
                     fontSize: 12,
                   }
@@ -134,9 +148,9 @@ const RadialBarChartComponent = React.forwardRef<HTMLDivElement, RadialBarChartP
           )}
         </RechartsRadialBarChart>
       </ChartContainer>
-    )
-  }
-)
-RadialBarChartComponent.displayName = 'RadialBarChart'
+    );
+  },
+);
+RadialBarChartComponent.displayName = "RadialBarChart";
 
-export { RadialBarChartComponent as RadialBarChart }
+export { RadialBarChartComponent as RadialBarChart };

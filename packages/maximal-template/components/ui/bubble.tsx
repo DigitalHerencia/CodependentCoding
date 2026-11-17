@@ -1,5 +1,5 @@
-import * as React from 'react'
-import { cn } from '@/lib/utils'
+import * as React from "react";
+import { cn } from "@/components/ui/utils";
 
 /*
  * Bubble — the hard-edged message surface. No tail: the offset shadow does the
@@ -8,54 +8,54 @@ import { cn } from '@/lib/utils'
  * <Message> via `group/message`.
  */
 
-export type BubbleVariant = 'default' | 'primary' | 'muted' | 'outline'
-export type BubbleAlign = 'auto' | 'start' | 'end'
+export type BubbleVariant = "default" | "primary" | "muted" | "outline";
+export type BubbleAlign = "auto" | "start" | "end";
 
 export interface BubbleReaction {
-  emoji: string
-  count: number
+  emoji: string;
+  count: number;
   /** Accessible name for the emoji, e.g. "thumbs up". Defaults to the emoji. */
-  label?: string
+  label?: string;
   /** The current user reacted with this emoji. */
-  active?: boolean
+  active?: boolean;
 }
 
 const variantClasses: Record<BubbleVariant, string> = {
-  default: 'bg-card text-card-foreground',
-  primary: 'bg-primary text-primary-foreground',
-  muted: 'bg-muted text-foreground',
-  outline: 'bg-transparent text-foreground',
-}
+  default: "bg-card text-card-foreground",
+  primary: "bg-primary text-primary-foreground",
+  muted: "bg-muted text-foreground",
+  outline: "bg-transparent text-foreground",
+};
 
-const shadowStart = 'shadow-[4px_4px_0px_hsl(var(--shadow-color))]'
-const shadowEnd = 'shadow-[-4px_4px_0px_hsl(var(--shadow-color))]'
+const shadowStart = "shadow-[4px_4px_0px_hsl(var(--shadow-color))]";
+const shadowEnd = "shadow-[-4px_4px_0px_hsl(var(--shadow-color))]";
 const alignClasses: Record<BubbleAlign, string> = {
   start: shadowStart,
   end: shadowEnd,
   auto: `${shadowStart} group-data-[from=user]/message:shadow-[-4px_4px_0px_hsl(var(--shadow-color))]`,
-}
+};
 
 export interface BubbleProps extends React.HTMLAttributes<HTMLDivElement> {
-  variant?: BubbleVariant
+  variant?: BubbleVariant;
   /** Which side the shadow falls towards. `auto` follows the enclosing Message. */
-  align?: BubbleAlign
+  align?: BubbleAlign;
   /** Clamp the content to this many lines with a "Show more" toggle when it overflows. */
-  collapsedLines?: number
-  reactions?: BubbleReaction[]
+  collapsedLines?: number;
+  reactions?: BubbleReaction[];
   /** Makes reaction chips toggle buttons. */
-  onReactionClick?: (reaction: BubbleReaction, index: number) => void
+  onReactionClick?: (reaction: BubbleReaction, index: number) => void;
   /** The reply hasn't started yet: shows hopping dots in place of the content. */
-  typing?: boolean
+  typing?: boolean;
   /** Content is still arriving: adds a blinking caret and marks the bubble busy. */
-  streaming?: boolean
+  streaming?: boolean;
 }
 
 const Bubble = React.forwardRef<HTMLDivElement, BubbleProps>(
   (
     {
       className,
-      variant = 'default',
-      align = 'auto',
+      variant = "default",
+      align = "auto",
       collapsedLines,
       reactions,
       onReactionClick,
@@ -64,27 +64,28 @@ const Bubble = React.forwardRef<HTMLDivElement, BubbleProps>(
       children,
       ...props
     },
-    ref
+    ref,
   ) => {
-    const contentId = React.useId()
-    const contentRef = React.useRef<HTMLDivElement>(null)
-    const [expanded, setExpanded] = React.useState(false)
-    const [overflowing, setOverflowing] = React.useState(false)
-    const collapsible = collapsedLines != null && collapsedLines > 0
-    const clamped = collapsible && !expanded
+    const contentId = React.useId();
+    const contentRef = React.useRef<HTMLDivElement>(null);
+    const [expanded, setExpanded] = React.useState(false);
+    const [overflowing, setOverflowing] = React.useState(false);
+    const collapsible = collapsedLines != null && collapsedLines > 0;
+    const clamped = collapsible && !expanded;
 
     // Only measurable while clamped; once expanded, the toggle must stay so
     // the reader can collapse again.
     React.useEffect(() => {
-      const el = contentRef.current
-      if (!el || !clamped) return
-      const measure = () => setOverflowing(el.scrollHeight > el.clientHeight + 1)
-      measure()
-      if (typeof ResizeObserver === 'undefined') return
-      const observer = new ResizeObserver(measure)
-      observer.observe(el)
-      return () => observer.disconnect()
-    }, [clamped, collapsedLines, children])
+      const el = contentRef.current;
+      if (!el || !clamped) return;
+      const measure = () =>
+        setOverflowing(el.scrollHeight > el.clientHeight + 1);
+      measure();
+      if (typeof ResizeObserver === "undefined") return;
+      const observer = new ResizeObserver(measure);
+      observer.observe(el);
+      return () => observer.disconnect();
+    }, [clamped, collapsedLines, children]);
 
     return (
       <div
@@ -93,13 +94,13 @@ const Bubble = React.forwardRef<HTMLDivElement, BubbleProps>(
         data-variant={variant}
         aria-busy={typing || streaming || undefined}
         className={cn(
-          'w-fit max-w-full border-3 border-foreground px-4 py-3 text-sm leading-relaxed break-words',
+          "w-fit max-w-full border-3 border-foreground px-4 py-3 text-sm leading-relaxed break-words",
           // Links and inline code inside message text.
-          '[&_a]:font-bold [&_a]:underline [&_a]:decoration-2 [&_a]:underline-offset-2 [&_a:hover]:decoration-4',
-          '[&_code]:border-2 [&_code]:border-current [&_code]:px-1 [&_code]:font-mono [&_code]:text-[0.9em]',
+          "[&_a]:font-bold [&_a]:underline [&_a]:decoration-2 [&_a]:underline-offset-2 [&_a:hover]:decoration-4",
+          "[&_code]:border-2 [&_code]:border-current [&_code]:px-1 [&_code]:font-mono [&_code]:text-[0.9em]",
           variantClasses[variant],
-          variant === 'outline' ? 'shadow-none' : alignClasses[align],
-          className
+          variant === "outline" ? "shadow-none" : alignClasses[align],
+          className,
         )}
         {...props}
       >
@@ -107,11 +108,21 @@ const Bubble = React.forwardRef<HTMLDivElement, BubbleProps>(
           ref={contentRef}
           id={contentId}
           data-slot="bubble-content"
-          data-state={collapsible ? (expanded ? 'expanded' : 'collapsed') : undefined}
-          className={cn('space-y-2', clamped && 'overflow-hidden', streaming && !typing && 'bk-stream-caret')}
+          data-state={
+            collapsible ? (expanded ? "expanded" : "collapsed") : undefined
+          }
+          className={cn(
+            "space-y-2",
+            clamped && "overflow-hidden",
+            streaming && !typing && "bk-stream-caret",
+          )}
           style={
             clamped
-              ? { display: '-webkit-box', WebkitBoxOrient: 'vertical', WebkitLineClamp: collapsedLines }
+              ? {
+                  display: "-webkit-box",
+                  WebkitBoxOrient: "vertical",
+                  WebkitLineClamp: collapsedLines,
+                }
               : undefined
           }
         >
@@ -135,9 +146,9 @@ const Bubble = React.forwardRef<HTMLDivElement, BubbleProps>(
             aria-expanded={expanded}
             aria-controls={contentId}
             onClick={() => setExpanded((v) => !v)}
-            className="mt-2 text-xs font-bold uppercase tracking-wide underline decoration-2 underline-offset-4 hover:decoration-4 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring"
+            className="mt-2 text-xs font-bold tracking-wide uppercase underline decoration-2 underline-offset-4 hover:decoration-4 focus-visible:ring-3 focus-visible:ring-ring focus-visible:outline-none"
           >
-            {expanded ? 'Show less' : 'Show more'}
+            {expanded ? "Show less" : "Show more"}
           </button>
         )}
 
@@ -145,12 +156,12 @@ const Bubble = React.forwardRef<HTMLDivElement, BubbleProps>(
           <ul aria-label="Reactions" className="mt-3 flex flex-wrap gap-1.5">
             {reactions.map((reaction, index) => {
               const chip = cn(
-                'inline-flex items-center gap-1 border-2 border-foreground px-1.5 py-0.5 text-xs font-bold',
+                "inline-flex items-center gap-1 border-2 border-foreground px-1.5 py-0.5 text-xs font-bold",
                 reaction.active
-                  ? 'bg-accent text-accent-foreground'
-                  : 'bg-background text-foreground'
-              )
-              const label = `${reaction.label ?? reaction.emoji}: ${reaction.count}`
+                  ? "bg-accent text-accent-foreground"
+                  : "bg-background text-foreground",
+              );
+              const label = `${reaction.label ?? reaction.emoji}: ${reaction.count}`;
               return (
                 <li key={`${reaction.emoji}-${index}`}>
                   {onReactionClick ? (
@@ -161,7 +172,7 @@ const Bubble = React.forwardRef<HTMLDivElement, BubbleProps>(
                       onClick={() => onReactionClick(reaction, index)}
                       className={cn(
                         chip,
-                        'shadow-[2px_2px_0px_hsl(var(--shadow-color))] transition duration-200 hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring'
+                        "shadow-[2px_2px_0px_hsl(var(--shadow-color))] transition duration-200 hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none focus-visible:ring-3 focus-visible:ring-ring focus-visible:outline-none",
                       )}
                     >
                       <span aria-hidden="true">{reaction.emoji}</span>
@@ -175,14 +186,14 @@ const Bubble = React.forwardRef<HTMLDivElement, BubbleProps>(
                     </span>
                   )}
                 </li>
-              )
+              );
             })}
           </ul>
         )}
       </div>
-    )
-  }
-)
-Bubble.displayName = 'Bubble'
+    );
+  },
+);
+Bubble.displayName = "Bubble";
 
-export { Bubble }
+export { Bubble };

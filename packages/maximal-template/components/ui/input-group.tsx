@@ -1,5 +1,5 @@
-import * as React from 'react'
-import { cn } from '@/lib/utils'
+import * as React from "react";
+import { cn } from "@/components/ui/utils";
 
 /**
  * A bordered container that joins an input with leading/trailing addons
@@ -12,13 +12,13 @@ const InputGroup = React.forwardRef<
   <div
     ref={ref}
     className={cn(
-      'flex items-stretch border-3 border-foreground bg-background shadow-[4px_4px_0px_hsl(var(--shadow-color))] transition focus-within:translate-x-[2px] focus-within:translate-y-[2px] focus-within:shadow-none',
-      className
+      "flex items-stretch border-3 border-foreground bg-background shadow-[4px_4px_0px_hsl(var(--shadow-color))] transition focus-within:translate-x-[2px] focus-within:translate-y-[2px] focus-within:shadow-none",
+      className,
     )}
     {...props}
   />
-))
-InputGroup.displayName = 'InputGroup'
+));
+InputGroup.displayName = "InputGroup";
 
 const InputGroupInput = React.forwardRef<
   HTMLInputElement,
@@ -27,32 +27,33 @@ const InputGroupInput = React.forwardRef<
   <input
     ref={ref}
     className={cn(
-      'w-full flex-1 bg-transparent px-3 py-2 text-sm font-medium outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50',
-      className
+      "w-full flex-1 bg-transparent px-3 py-2 text-sm font-medium outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50",
+      className,
     )}
     {...props}
   />
-))
-InputGroupInput.displayName = 'InputGroupInput'
+));
+InputGroupInput.displayName = "InputGroupInput";
 
-export interface InputGroupAddonProps
-  extends React.HTMLAttributes<HTMLDivElement> {
-  position?: 'leading' | 'trailing'
+export interface InputGroupAddonProps extends React.HTMLAttributes<HTMLDivElement> {
+  position?: "leading" | "trailing";
 }
 
 const InputGroupAddon = React.forwardRef<HTMLDivElement, InputGroupAddonProps>(
-  ({ className, position = 'leading', ...props }, ref) => (
+  ({ className, position = "leading", ...props }, ref) => (
     <div
       ref={ref}
       className={cn(
-        'flex items-center bg-muted px-3 text-sm font-bold uppercase tracking-wide text-muted-foreground [&_svg]:size-4 [&_svg]:shrink-0',
-        position === 'leading' ? 'border-r-3 border-foreground' : 'border-l-3 border-foreground',
-        className
+        "flex items-center bg-muted px-3 text-sm font-bold tracking-wide text-muted-foreground uppercase [&_svg]:size-4 [&_svg]:shrink-0",
+        position === "leading"
+          ? "border-r-3 border-foreground"
+          : "border-l-3 border-foreground",
+        className,
       )}
       {...props}
     />
-  )
-)
-InputGroupAddon.displayName = 'InputGroupAddon'
+  ),
+);
+InputGroupAddon.displayName = "InputGroupAddon";
 
-export { InputGroup, InputGroupInput, InputGroupAddon }
+export { InputGroup, InputGroupInput, InputGroupAddon };

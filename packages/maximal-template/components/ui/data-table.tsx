@@ -1,36 +1,50 @@
-/* eslint-disable react-refresh/only-export-components */
-import * as React from 'react'
+import * as React from "react";
 import {
   flexRender,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  useReactTable,
+  useTable,
   type ColumnDef,
   type ColumnFiltersState,
   type SortingState,
-  type VisibilityState,
   type Table as TanstackTable,
-} from '@tanstack/react-table'
-import { ArrowDown, ArrowUp, ArrowUpDown, ChevronDown, Search, Settings2 } from 'lucide-react'
-import { cn } from '@/lib/utils'
-import { Button } from '@/components/ui/button'
-import { Checkbox } from '@/components/ui/checkbox'
-import { Input } from '@/components/ui/input'
+  type Column,
+  type RowData,
+  type ColumnVisibilityState as VisibilityState,
+  tableFeatures,
+  columnFilteringFeature,
+  columnVisibilityFeature,
+  rowSortingFeature,
+  rowPaginationFeature,
+  rowSelectionFeature,
+  createCoreRowModel,
+  createFilteredRowModel,
+  createSortedRowModel,
+  createPaginatedRowModel,
+} from "@tanstack/react-table";
+import {
+  ArrowDown,
+  ArrowUp,
+  ArrowUpDown,
+  ChevronDown,
+  Search,
+  Settings2,
+} from "lucide-react";
+import { cn } from "@/components/ui/utils";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
+} from "@/components/ui/dropdown-menu";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
+} from "@/components/ui/select";
 import {
   Table,
   TableBody,
@@ -38,83 +52,99 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table'
+} from "@/components/ui/table";
+
+const features = tableFeatures({
+  columnFilteringFeature,
+  columnVisibilityFeature,
+  rowSortingFeature,
+  rowPaginationFeature,
+  rowSelectionFeature,
+  coreRowModel: createCoreRowModel(),
+  filteredRowModel: createFilteredRowModel(),
+  sortedRowModel: createSortedRowModel(),
+  paginatedRowModel: createPaginatedRowModel(),
+});
+type DataTableFeatures = typeof features;
 
 // DataTable Context
-interface DataTableContextValue<TData> {
-  table: TanstackTable<TData>
+interface DataTableContextValue<TData extends RowData> {
+  table: TanstackTable<DataTableFeatures, TData>;
 }
 
-const DataTableContext = React.createContext<DataTableContextValue<unknown> | null>(null)
+const DataTableContext =
+  React.createContext<DataTableContextValue<RowData> | null>(null);
 
-function useDataTable<TData>() {
-  const context = React.useContext(DataTableContext)
+function useDataTable<TData extends RowData>() {
+  const context = React.useContext(DataTableContext);
   if (!context) {
-    throw new Error('DataTable components must be used within a <DataTable />')
+    throw new Error("DataTable components must be used within a <DataTable />");
   }
-  return context as DataTableContextValue<TData>
+  return context as DataTableContextValue<TData>;
 }
 
 // Column Header with sorting
-interface DataTableColumnHeaderProps<TData, TValue>
-  extends React.HTMLAttributes<HTMLDivElement> {
-  column: import('@tanstack/react-table').Column<TData, TValue>
-  title: string
+interface DataTableColumnHeaderProps<
+  TData extends RowData,
+  TValue,
+> extends React.HTMLAttributes<HTMLDivElement> {
+  column: Column<DataTableFeatures, TData, TValue>;
+  title: string;
 }
 
-function DataTableColumnHeader<TData, TValue>({
+function DataTableColumnHeader<TData extends RowData, TValue>({
   column,
   title,
   className,
 }: DataTableColumnHeaderProps<TData, TValue>) {
   if (!column.getCanSort()) {
-    return <div className={cn(className)}>{title}</div>
+    return <div className={cn(className)}>{title}</div>;
   }
 
   return (
     <Button
       variant="ghost"
       size="sm"
-      className={cn('-ml-3 h-8 data-[state=open]:bg-accent', className)}
-      onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+      className={cn("-ml-3 h-8 data-[state=open]:bg-accent", className)}
+      onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
     >
       <span>{title}</span>
-      {column.getIsSorted() === 'desc' ? (
+      {column.getIsSorted() === "desc" ? (
         <ArrowDown className="ml-2 h-4 w-4" />
-      ) : column.getIsSorted() === 'asc' ? (
+      ) : column.getIsSorted() === "asc" ? (
         <ArrowUp className="ml-2 h-4 w-4" />
       ) : (
         <ArrowUpDown className="ml-2 h-4 w-4" />
       )}
     </Button>
-  )
+  );
 }
 
 // Toolbar
-interface DataTableToolbarProps<TData> {
-  table: TanstackTable<TData>
-  filterPlaceholder?: string
-  filterColumn?: string
-  showColumnVisibility?: boolean
+interface DataTableToolbarProps<TData extends RowData> {
+  table: TanstackTable<DataTableFeatures, TData>;
+  filterPlaceholder?: string;
+  filterColumn?: string;
+  showColumnVisibility?: boolean;
 }
 
-function DataTableToolbar<TData>({
+function DataTableToolbar<TData extends RowData>({
   table,
-  filterPlaceholder = 'Filter...',
+  filterPlaceholder = "Filter...",
   filterColumn,
   showColumnVisibility = true,
 }: DataTableToolbarProps<TData>) {
-  const column = filterColumn ? table.getColumn(filterColumn) : null
+  const column = filterColumn ? table.getColumn(filterColumn) : null;
 
   return (
     <div className="flex items-center justify-between py-4">
       <div className="flex flex-1 items-center space-x-2">
         {column && (
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               placeholder={filterPlaceholder}
-              value={String(column.getFilterValue() ?? '')}
+              value={String(column.getFilterValue() ?? "")}
               onChange={(event) => column.setFilterValue(event.target.value)}
               className="h-9 w-[150px] pl-9 lg:w-[250px]"
             />
@@ -140,26 +170,28 @@ function DataTableToolbar<TData>({
                     key={column.id}
                     className="capitalize"
                     checked={column.getIsVisible()}
-                    onCheckedChange={(value) => column.toggleVisibility(!!value)}
+                    onCheckedChange={(value) =>
+                      column.toggleVisibility(!!value)
+                    }
                   >
                     {column.id}
                   </DropdownMenuCheckboxItem>
-                )
+                );
               })}
           </DropdownMenuContent>
         </DropdownMenu>
       )}
     </div>
-  )
+  );
 }
 
 // Pagination
-interface DataTablePaginationProps<TData> {
-  table: TanstackTable<TData>
-  pageSizeOptions?: number[]
+interface DataTablePaginationProps<TData extends RowData> {
+  table: TanstackTable<DataTableFeatures, TData>;
+  pageSizeOptions?: number[];
 }
 
-function DataTablePagination<TData>({
+function DataTablePagination<TData extends RowData>({
   table,
   pageSizeOptions = [10, 20, 30, 50],
 }: DataTablePaginationProps<TData>) {
@@ -168,7 +200,7 @@ function DataTablePagination<TData>({
       <div className="flex-1 text-sm text-muted-foreground">
         {table.getFilteredSelectedRowModel().rows.length > 0 && (
           <>
-            {table.getFilteredSelectedRowModel().rows.length} of{' '}
+            {table.getFilteredSelectedRowModel().rows.length} of{" "}
             {table.getFilteredRowModel().rows.length} row(s) selected.
           </>
         )}
@@ -177,13 +209,15 @@ function DataTablePagination<TData>({
         <div className="flex items-center space-x-2">
           <p className="text-sm font-medium">Rows per page</p>
           <Select
-            value={`${table.getState().pagination.pageSize}`}
+            value={`${table.store.state.pagination.pageSize}`}
             onValueChange={(value) => {
-              table.setPageSize(Number(value))
+              table.setPageSize(Number(value));
             }}
           >
             <SelectTrigger className="h-9 w-[85px]">
-              <SelectValue placeholder={table.getState().pagination.pageSize} />
+              <SelectValue
+                placeholder={table.store.state.pagination.pageSize}
+              />
             </SelectTrigger>
             <SelectContent side="top">
               {pageSizeOptions.map((pageSize) => (
@@ -195,7 +229,7 @@ function DataTablePagination<TData>({
           </Select>
         </div>
         <div className="flex w-[100px] items-center justify-center text-sm font-medium">
-          Page {table.getState().pagination.pageIndex + 1} of{' '}
+          Page {table.store.state.pagination.pageIndex + 1} of{" "}
           {table.getPageCount()}
         </div>
         <div className="flex items-center space-x-2">
@@ -218,38 +252,38 @@ function DataTablePagination<TData>({
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 // Main DataTable component
-export interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[]
-  data: TData[]
+export interface DataTableProps<TData extends RowData> {
+  columns: ColumnDef<DataTableFeatures, TData>[];
+  data: TData[];
 
   // Features
-  enableSorting?: boolean
-  enableFiltering?: boolean
-  enableColumnVisibility?: boolean
-  enableRowSelection?: boolean
-  enablePagination?: boolean
+  enableSorting?: boolean;
+  enableFiltering?: boolean;
+  enableColumnVisibility?: boolean;
+  enableRowSelection?: boolean;
+  enablePagination?: boolean;
 
   // Pagination
-  pageSize?: number
-  pageSizeOptions?: number[]
+  pageSize?: number;
+  pageSizeOptions?: number[];
 
   // Search
-  filterColumn?: string
-  filterPlaceholder?: string
+  filterColumn?: string;
+  filterPlaceholder?: string;
 
   // Empty/Loading
-  emptyMessage?: string
-  isLoading?: boolean
+  emptyMessage?: string;
+  isLoading?: boolean;
 
   // Callbacks
-  onRowSelectionChange?: (selectedRows: TData[]) => void
+  onRowSelectionChange?: (selectedRows: TData[]) => void;
 }
 
-function DataTable<TData, TValue>({
+function DataTable<TData extends RowData>({
   columns,
   data,
   enableSorting = true,
@@ -260,27 +294,30 @@ function DataTable<TData, TValue>({
   pageSize = 10,
   pageSizeOptions = [10, 20, 30, 50],
   filterColumn,
-  filterPlaceholder = 'Filter...',
-  emptyMessage = 'No results.',
+  filterPlaceholder = "Filter...",
+  emptyMessage = "No results.",
   isLoading = false,
   onRowSelectionChange,
-}: DataTableProps<TData, TValue>) {
-  const [sorting, setSorting] = React.useState<SortingState>([])
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
-  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
-  const [rowSelection, setRowSelection] = React.useState({})
+}: DataTableProps<TData>) {
+  const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+    [],
+  );
+  const [columnVisibility, setColumnVisibility] =
+    React.useState<VisibilityState>({});
+  const [rowSelection, setRowSelection] = React.useState({});
 
   // Add selection column if row selection is enabled
   const tableColumns = React.useMemo(() => {
-    if (!enableRowSelection) return columns
+    if (!enableRowSelection) return columns;
 
-    const selectionColumn: ColumnDef<TData, unknown> = {
-      id: 'select',
+    const selectionColumn: ColumnDef<DataTableFeatures, TData, unknown> = {
+      id: "select",
       header: ({ table }) => (
         <Checkbox
           checked={
             table.getIsAllPageRowsSelected() ||
-            (table.getIsSomePageRowsSelected() && 'indeterminate')
+            (table.getIsSomePageRowsSelected() && "indeterminate")
           }
           onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
           aria-label="Select all"
@@ -295,20 +332,21 @@ function DataTable<TData, TValue>({
       ),
       enableSorting: false,
       enableHiding: false,
-    }
+    };
 
-    return [selectionColumn, ...columns]
-  }, [columns, enableRowSelection])
+    return [selectionColumn, ...columns];
+  }, [columns, enableRowSelection]);
 
-  const table = useReactTable({
+  const table = useTable({
+    features,
+    enableSorting,
+    enableFilters: enableFiltering,
+    enableRowSelection,
+    manualPagination: !enablePagination,
     data,
     columns: tableColumns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
-    getCoreRowModel: getCoreRowModel(),
-    ...(enablePagination && { getPaginationRowModel: getPaginationRowModel() }),
-    ...(enableSorting && { getSortedRowModel: getSortedRowModel() }),
-    ...(enableFiltering && { getFilteredRowModel: getFilteredRowModel() }),
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
     state: {
@@ -319,33 +357,36 @@ function DataTable<TData, TValue>({
     },
     initialState: {
       pagination: {
+        pageIndex: 0,
         pageSize,
       },
     },
-  })
+  });
 
   // Keep the latest callback in a ref so an inline `onRowSelectionChange` prop
   // does not re-run the effect on every render (which can loop if the parent
   // setStates from it).
-  const onRowSelectionChangeRef = React.useRef(onRowSelectionChange)
+  const onRowSelectionChangeRef = React.useRef(onRowSelectionChange);
   React.useEffect(() => {
-    onRowSelectionChangeRef.current = onRowSelectionChange
-  })
+    onRowSelectionChangeRef.current = onRowSelectionChange;
+  });
 
   // Notify parent of selection changes
   React.useEffect(() => {
-    const notify = onRowSelectionChangeRef.current
+    const notify = onRowSelectionChangeRef.current;
     if (notify) {
-      const selectedRows = table.getFilteredSelectedRowModel().rows.map((row) => row.original)
-      notify(selectedRows)
+      const selectedRows = table
+        .getFilteredSelectedRowModel()
+        .rows.map((row) => row.original);
+      notify(selectedRows);
     }
-  }, [rowSelection, table])
+  }, [rowSelection, table]);
 
   // Memoize context value to prevent unnecessary re-renders
   const contextValue = React.useMemo(
-    () => ({ table: table as TanstackTable<unknown> }),
-    [table]
-  )
+    () => ({ table: table as TanstackTable<DataTableFeatures, RowData> }),
+    [table],
+  );
 
   return (
     <DataTableContext.Provider value={contextValue}>
@@ -355,7 +396,7 @@ function DataTable<TData, TValue>({
           <DataTableToolbar
             table={table}
             filterPlaceholder={filterPlaceholder}
-            filterColumn={filterColumn}
+            {...(filterColumn === undefined ? {} : { filterColumn })}
             showColumnVisibility={enableColumnVisibility}
           />
         )}
@@ -372,10 +413,10 @@ function DataTable<TData, TValue>({
                         ? null
                         : flexRender(
                             header.column.columnDef.header,
-                            header.getContext()
+                            header.getContext(),
                           )}
                     </TableHead>
-                  )
+                  );
                 })}
               </TableRow>
             ))}
@@ -396,13 +437,13 @@ function DataTable<TData, TValue>({
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
-                  data-state={row.getIsSelected() && 'selected'}
+                  data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext()
+                        cell.getContext(),
                       )}
                     </TableCell>
                   ))}
@@ -423,11 +464,14 @@ function DataTable<TData, TValue>({
 
         {/* Pagination */}
         {enablePagination && (
-          <DataTablePagination table={table} pageSizeOptions={pageSizeOptions} />
+          <DataTablePagination
+            table={table}
+            pageSizeOptions={pageSizeOptions}
+          />
         )}
       </div>
     </DataTableContext.Provider>
-  )
+  );
 }
 
 export {
@@ -436,4 +480,4 @@ export {
   DataTableToolbar,
   DataTablePagination,
   useDataTable,
-}
+};

@@ -1,62 +1,63 @@
-import * as React from 'react'
-import { cn } from '@/lib/utils'
+import * as React from "react";
+import { cn } from "@/components/ui/utils";
 
 interface MarqueeProps extends React.HTMLAttributes<HTMLDivElement> {
   /** Content to display in the marquee */
-  children: React.ReactNode
+  children: React.ReactNode;
   /** Direction of the marquee animation */
-  direction?: 'left' | 'right'
+  direction?: "left" | "right";
   /** Speed of the animation: 'slow' | 'normal' | 'fast' */
-  speed?: 'slow' | 'normal' | 'fast'
+  speed?: "slow" | "normal" | "fast";
   /** Pause animation on hover */
-  pauseOnHover?: boolean
+  pauseOnHover?: boolean;
   /** Show neubrutalism border styling */
-  bordered?: boolean
+  bordered?: boolean;
   /** Number of times to repeat the content (for seamless loop) */
-  repeat?: number
+  repeat?: number;
 }
 
 const speedClasses = {
-  slow: 'animate-marquee-slow',
-  normal: 'animate-marquee',
-  fast: 'animate-marquee-fast',
-}
+  slow: "animate-marquee-slow",
+  normal: "animate-marquee",
+  fast: "animate-marquee-fast",
+};
 
 const Marquee = React.forwardRef<HTMLDivElement, MarqueeProps>(
   (
     {
       className,
       children,
-      direction = 'left',
-      speed = 'normal',
+      direction = "left",
+      speed = "normal",
       pauseOnHover = true,
       bordered = true,
       repeat = 4,
       ...props
     },
-    ref
+    ref,
   ) => {
     // Use the speed-based class for both directions so `speed` is always
     // honored; flip to a right-scroll via animation-direction (the dedicated
     // *-reverse speed classes were never defined in the CSS).
-    const animationClass = speedClasses[speed]
-    const animationDirection = direction === 'right' ? 'reverse' : undefined
+    const animationClass = speedClasses[speed];
+    const animationDirection = direction === "right" ? "reverse" : undefined;
 
     return (
       <div
         ref={ref}
         className={cn(
-          'flex overflow-hidden',
-          bordered && 'border-3 border-foreground bg-background',
-          className
+          "flex overflow-hidden",
+          bordered && "border-3 border-foreground bg-background",
+          className,
         )}
         {...props}
       >
         <div
           className={cn(
-            'marquee-content flex shrink-0 items-center gap-8 py-3',
+            "marquee-content flex shrink-0 items-center gap-8 py-3",
             animationClass,
-            pauseOnHover && 'hover:[animation-play-state:paused] focus-within:[animation-play-state:paused]'
+            pauseOnHover &&
+              "focus-within:[animation-play-state:paused] hover:[animation-play-state:paused]",
           )}
           style={{ animationDirection }}
         >
@@ -69,9 +70,10 @@ const Marquee = React.forwardRef<HTMLDivElement, MarqueeProps>(
             (axe `aria-hidden-focus`). */}
         <div
           className={cn(
-            'marquee-content flex shrink-0 items-center gap-8 py-3',
+            "marquee-content flex shrink-0 items-center gap-8 py-3",
             animationClass,
-            pauseOnHover && 'hover:[animation-play-state:paused] focus-within:[animation-play-state:paused]'
+            pauseOnHover &&
+              "focus-within:[animation-play-state:paused] hover:[animation-play-state:paused]",
           )}
           style={{ animationDirection }}
           aria-hidden="true"
@@ -82,13 +84,13 @@ const Marquee = React.forwardRef<HTMLDivElement, MarqueeProps>(
           ))}
         </div>
       </div>
-    )
-  }
-)
-Marquee.displayName = 'Marquee'
+    );
+  },
+);
+Marquee.displayName = "Marquee";
 
 interface MarqueeItemProps extends React.HTMLAttributes<HTMLSpanElement> {
-  children: React.ReactNode
+  children: React.ReactNode;
 }
 
 const MarqueeItem = React.forwardRef<HTMLSpanElement, MarqueeItemProps>(
@@ -97,36 +99,37 @@ const MarqueeItem = React.forwardRef<HTMLSpanElement, MarqueeItemProps>(
       <span
         ref={ref}
         className={cn(
-          'inline-flex items-center gap-2 whitespace-nowrap px-4 text-lg font-bold uppercase tracking-wide',
-          className
+          "inline-flex items-center gap-2 px-4 text-lg font-bold tracking-wide whitespace-nowrap uppercase",
+          className,
         )}
         {...props}
       >
         {children}
       </span>
-    )
-  }
-)
-MarqueeItem.displayName = 'MarqueeItem'
+    );
+  },
+);
+MarqueeItem.displayName = "MarqueeItem";
 
 interface MarqueeSeparatorProps extends React.HTMLAttributes<HTMLSpanElement> {
   /** Separator character or element */
-  children?: React.ReactNode
+  children?: React.ReactNode;
 }
 
-const MarqueeSeparator = React.forwardRef<HTMLSpanElement, MarqueeSeparatorProps>(
-  ({ className, children = '/', ...props }, ref) => {
-    return (
-      <span
-        ref={ref}
-        className={cn('text-2xl font-black text-muted-foreground', className)}
-        {...props}
-      >
-        {children}
-      </span>
-    )
-  }
-)
-MarqueeSeparator.displayName = 'MarqueeSeparator'
+const MarqueeSeparator = React.forwardRef<
+  HTMLSpanElement,
+  MarqueeSeparatorProps
+>(({ className, children = "/", ...props }, ref) => {
+  return (
+    <span
+      ref={ref}
+      className={cn("text-2xl font-black text-muted-foreground", className)}
+      {...props}
+    >
+      {children}
+    </span>
+  );
+});
+MarqueeSeparator.displayName = "MarqueeSeparator";
 
-export { Marquee, MarqueeItem, MarqueeSeparator }
+export { Marquee, MarqueeItem, MarqueeSeparator };

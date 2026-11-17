@@ -1313,6 +1313,20 @@
       "status": "accepted",
       "title": "Preserve owner-requested UI/chart snapshot separately from main",
       "decision": "Owner requested commit, sync and branch cleanup. Preserve all 108 pending files in a snapshot branch based on current main. TypeScript fails; do not merge. Remove only branches verified merged; preserve worktree files."
+    },
+    {
+      "id": "CI-371-COMPATIBILITY-2026-11-17",
+      "date": "2026-11-17",
+      "status": "accepted",
+      "title": "Repair snapshot CI using existing template contracts",
+      "decision": "Owner invoked /fix-ci for PR #371. Preserve UI replacements and adapt them to installed libraries, strict TypeScript and lint contracts. Do not disable checks. New Toast dependency requires owner choice before addition."
+    },
+    {
+      "id": "CI-371-TOAST-APPROVED-2026-11-17",
+      "date": "2026-11-17",
+      "status": "accepted",
+      "title": "Owner approves Toast dependency and delivery",
+      "decision": "Owner approved @radix-ui/react-toast addition and commit/merge/sync/branch cleanup for PR #371. Preserve strict checks and merge after fresh CI succeeds."
     }
   ]
 }

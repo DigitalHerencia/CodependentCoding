@@ -1,25 +1,27 @@
-import * as React from 'react'
-import { Download, Image, FileText, Maximize } from 'lucide-react'
-import { cn } from '@/lib/utils'
-import { Button } from '@/components/ui/button'
+"use client";
+
+import * as React from "react";
+import { Download, Image as ImageIcon, FileText, Maximize } from "lucide-react";
+import { cn } from "@/components/ui/utils";
+import { Button } from "@/components/ui/button";
 import {
   downloadCSV,
   exportPNG,
   exportSVG,
   toggleFullscreen,
-} from '@/lib/chart-export'
+} from "@/components/ui/chart-export";
 
 export interface ChartToolbarProps extends React.HTMLAttributes<HTMLDivElement> {
   /** Rows fed to the chart — enables the CSV export button when provided. */
-  data?: Array<Record<string, unknown>>
+  data?: Array<Record<string, unknown>>;
   /** Base filename (no extension) for exports. Default 'chart'. */
-  filename?: string
+  filename?: string;
   /** Show the PNG export button. Default true. */
-  png?: boolean
+  png?: boolean;
   /** Show the SVG export button. Default true (no-ops for canvas engines). */
-  svg?: boolean
+  svg?: boolean;
   /** Show the fullscreen toggle. Default true. */
-  fullscreen?: boolean
+  fullscreen?: boolean;
 }
 
 /**
@@ -33,20 +35,32 @@ export interface ChartToolbarProps extends React.HTMLAttributes<HTMLDivElement> 
  */
 export const ChartToolbar = React.forwardRef<HTMLDivElement, ChartToolbarProps>(
   (
-    { data, filename = 'chart', png = true, svg = true, fullscreen = true, className, children, ...props },
-    ref
+    {
+      data,
+      filename = "chart",
+      png = true,
+      svg = true,
+      fullscreen = true,
+      className,
+      children,
+      ...props
+    },
+    ref,
   ) => {
-    const innerRef = React.useRef<HTMLDivElement | null>(null)
-    React.useImperativeHandle(ref, () => innerRef.current as HTMLDivElement)
+    const innerRef = React.useRef<HTMLDivElement | null>(null);
+    React.useImperativeHandle(ref, () => innerRef.current as HTMLDivElement);
 
     const withContainer = (fn: (el: HTMLElement) => void) => () => {
-      const el = innerRef.current
-      if (el) fn(el)
-    }
+      const el = innerRef.current;
+      if (el) fn(el);
+    };
 
     return (
-      <div ref={innerRef} className={cn('relative', className)} {...props}>
-        <div data-chart-export-controls className="absolute right-2 top-2 z-10 flex gap-1">
+      <div ref={innerRef} className={cn("relative", className)} {...props}>
+        <div
+          data-chart-export-controls
+          className="absolute top-2 right-2 z-10 flex gap-1"
+        >
           {png && (
             <Button
               type="button"
@@ -55,9 +69,11 @@ export const ChartToolbar = React.forwardRef<HTMLDivElement, ChartToolbarProps>(
               className="h-8 w-8"
               aria-label="Export chart as PNG"
               title="Export PNG"
-              onClick={withContainer((el) => void exportPNG(el, `${filename}.png`))}
+              onClick={withContainer(
+                (el) => void exportPNG(el, `${filename}.png`),
+              )}
             >
-              <Image />
+              <ImageIcon />
             </Button>
           )}
           {svg && (
@@ -102,7 +118,7 @@ export const ChartToolbar = React.forwardRef<HTMLDivElement, ChartToolbarProps>(
         </div>
         {children}
       </div>
-    )
-  }
-)
-ChartToolbar.displayName = 'ChartToolbar'
+    );
+  },
+);
+ChartToolbar.displayName = "ChartToolbar";

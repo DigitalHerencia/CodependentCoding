@@ -1,24 +1,25 @@
-import * as React from 'react'
-import { cva, type VariantProps } from 'class-variance-authority'
-import { cn } from '@/lib/utils'
+import * as React from "react";
+import { cva, type VariantProps } from "class-variance-authority";
+import { cn } from "@/components/ui/utils";
 
 const alertVariants = cva(
-  'relative w-full border-3 border-foreground p-4 shadow-[4px_4px_0px_hsl(var(--shadow-color))] ease-out animate-in fade-in-0 slide-in-from-top-2 duration-300 transition [&>svg~*:not([data-alert-action])]:pl-8 [&>svg~[data-alert-action]]:ml-8 [&>svg+div]:translate-y-[-3px] [&>svg]:absolute [&>svg]:left-4 [&>svg]:top-4 [&>svg]:text-foreground',
+  "relative w-full animate-in border-3 border-foreground p-4 shadow-[4px_4px_0px_hsl(var(--shadow-color))] transition duration-300 ease-out fade-in-0 slide-in-from-top-2 [&>svg]:absolute [&>svg]:top-4 [&>svg]:left-4 [&>svg]:text-foreground [&>svg+div]:translate-y-[-3px] [&>svg~*:not([data-alert-action])]:pl-8 [&>svg~[data-alert-action]]:ml-8",
   {
     variants: {
       variant: {
-        default: 'bg-background text-foreground',
-        destructive: 'bg-destructive text-destructive-foreground [&>svg]:text-destructive-foreground',
-        success: 'bg-success text-success-foreground',
-        warning: 'bg-warning text-warning-foreground',
-        info: 'bg-info text-info-foreground',
+        default: "bg-background text-foreground",
+        destructive:
+          "bg-destructive text-destructive-foreground [&>svg]:text-destructive-foreground",
+        success: "bg-success text-success-foreground",
+        warning: "bg-warning text-warning-foreground",
+        info: "bg-info text-info-foreground",
       },
     },
     defaultVariants: {
-      variant: 'default',
+      variant: "default",
     },
-  }
-)
+  },
+);
 
 const Alert = React.forwardRef<
   HTMLDivElement,
@@ -30,8 +31,8 @@ const Alert = React.forwardRef<
     className={cn(alertVariants({ variant }), className)}
     {...props}
   />
-))
-Alert.displayName = 'Alert'
+));
+Alert.displayName = "Alert";
 
 const AlertTitle = React.forwardRef<
   HTMLHeadingElement,
@@ -39,11 +40,14 @@ const AlertTitle = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <h5
     ref={ref}
-    className={cn('mb-1 font-bold uppercase tracking-wide leading-none', className)}
+    className={cn(
+      "mb-1 leading-none font-bold tracking-wide uppercase",
+      className,
+    )}
     {...props}
   />
-))
-AlertTitle.displayName = 'AlertTitle'
+));
+AlertTitle.displayName = "AlertTitle";
 
 const AlertDescription = React.forwardRef<
   HTMLParagraphElement,
@@ -51,15 +55,15 @@ const AlertDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn('text-sm [&_p]:leading-relaxed', className)}
+    className={cn("text-sm [&_p]:leading-relaxed", className)}
     {...props}
   />
-))
-AlertDescription.displayName = 'AlertDescription'
+));
+AlertDescription.displayName = "AlertDescription";
 
 export interface AlertActionProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   /** Shows an inline spinner and disables the button automatically */
-  loading?: boolean
+  loading?: boolean;
 }
 
 const AlertAction = React.forwardRef<HTMLButtonElement, AlertActionProps>(
@@ -70,24 +74,24 @@ const AlertAction = React.forwardRef<HTMLButtonElement, AlertActionProps>(
       disabled={disabled || loading}
       className={cn(
         // layout
-        'mt-3 inline-flex items-center gap-1.5 max-w-full min-w-0',
+        "mt-3 inline-flex max-w-full min-w-0 items-center gap-1.5",
         // shape — no rounded corners, thin border inheriting text color
-        'rounded-none border border-current',
+        "rounded-none border border-current",
         // typography
-        'px-4 py-1 text-xs font-bold uppercase tracking-wide',
+        "px-4 py-1 text-xs font-bold tracking-wide uppercase",
         // transitions
-        'transition duration-150',
+        "transition duration-150",
         // hover
-        'hover:opacity-100 hover:bg-current/10',
+        "hover:bg-current/10 hover:opacity-100",
         // active
-        'active:scale-95',
+        "active:scale-95",
         // focus
-        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current focus-visible:ring-offset-1',
+        "focus-visible:ring-2 focus-visible:ring-current focus-visible:ring-offset-1 focus-visible:outline-none",
         // cursor + pointer-events when non-interactive
-        'disabled:cursor-not-allowed disabled:pointer-events-none',
+        "disabled:pointer-events-none disabled:cursor-not-allowed",
         // opacity: loading stays visible, truly-disabled fades out, default is 80%
-        loading ? 'opacity-80' : disabled ? 'opacity-40' : 'opacity-80',
-        className
+        loading ? "opacity-80" : disabled ? "opacity-40" : "opacity-80",
+        className,
       )}
       {...props}
     >
@@ -98,10 +102,12 @@ const AlertAction = React.forwardRef<HTMLButtonElement, AlertActionProps>(
           className="h-3 w-3 shrink-0 animate-spin rounded-full border-2 border-current border-t-transparent"
         />
       )}
-      <span className="inline-flex items-center gap-1.5 whitespace-nowrap overflow-hidden">{children}</span>
+      <span className="inline-flex items-center gap-1.5 overflow-hidden whitespace-nowrap">
+        {children}
+      </span>
     </button>
-  )
-)
-AlertAction.displayName = 'AlertAction'
+  ),
+);
+AlertAction.displayName = "AlertAction";
 
-export { Alert, AlertTitle, AlertDescription, AlertAction }
+export { Alert, AlertTitle, AlertDescription, AlertAction };

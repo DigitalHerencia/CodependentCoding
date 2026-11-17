@@ -58,3 +58,5 @@ TODO: from `context/docs/tech-requirements.md#cicd-and-deployment`.
 ## License
 
 See [LICENSE](LICENSE).
+
+Shared UI includes the Radix-backed Toast primitives in `components/ui/toast.tsx`; `@radix-ui/react-toast` is declared in the template dependencies. Existing Sonner notifications remain available through `components/ui/sonner.tsx`.

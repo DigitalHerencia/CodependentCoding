@@ -1,24 +1,28 @@
-import * as React from 'react'
-import { cn } from '@/lib/utils'
-import { X } from 'lucide-react'
+"use client";
+
+import * as React from "react";
+import { cn } from "@/components/ui/utils";
+import { X } from "lucide-react";
 
 export interface TagInputHandle {
-  focus: () => void
-  blur: () => void
-  get value(): string
-  set value(v: string)
+  focus: () => void;
+  blur: () => void;
+  get value(): string;
+  set value(v: string);
 }
 
-export interface TagInputProps
-  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'value' | 'defaultValue' | 'onChange'> {
-  value?: string[]
-  defaultValue?: string[]
-  onChange?: (tags: string[]) => void
-  suggestions?: string[]
-  maxTags?: number
-  allowDuplicates?: boolean
-  delimiter?: string | RegExp
-  validateTag?: (tag: string) => boolean | string
+export interface TagInputProps extends Omit<
+  React.InputHTMLAttributes<HTMLInputElement>,
+  "value" | "defaultValue" | "onChange"
+> {
+  value?: string[];
+  defaultValue?: string[];
+  onChange?: (tags: string[]) => void;
+  suggestions?: string[];
+  maxTags?: number;
+  allowDuplicates?: boolean;
+  delimiter?: string | RegExp;
+  validateTag?: (tag: string) => boolean | string;
 }
 
 const TagInput = React.forwardRef<TagInputHandle, TagInputProps>(
@@ -30,205 +34,221 @@ const TagInput = React.forwardRef<TagInputHandle, TagInputProps>(
       suggestions = [],
       maxTags,
       allowDuplicates = false,
-      delimiter = ',',
+      delimiter = ",",
       validateTag,
-      placeholder = 'Add tag...',
+      placeholder = "Add tag...",
       disabled,
       className,
       ...props
     },
-    ref
+    ref,
   ) => {
-    const [uncontrolledTags, setUncontrolledTags] = React.useState<string[]>(defaultValue)
-    const [inputValue, setInputValue] = React.useState('')
-    const [showSuggestions, setShowSuggestions] = React.useState(false)
-    const [error, setError] = React.useState<string | null>(null)
+    const [uncontrolledTags, setUncontrolledTags] =
+      React.useState<string[]>(defaultValue);
+    const [inputValue, setInputValue] = React.useState("");
+    const [showSuggestions, setShowSuggestions] = React.useState(false);
+    const [error, setError] = React.useState<string | null>(null);
 
     // Arrow-key highlighting and the validation errors were purely visual:
     // nothing announced that suggestions appeared, how many there were, which
     // one was active, or why an entry was rejected (WCAG 4.1.2 / 3.3.1).
-    const uid = React.useId()
-    const listboxId = `${uid}-suggestions`
-    const errorId = `${uid}-error`
-    const optionId = (index: number) => `${uid}-option-${index}`
-    const [selectedSuggestionIndex, setSelectedSuggestionIndex] = React.useState(-1)
+    const uid = React.useId();
+    const listboxId = `${uid}-suggestions`;
+    const errorId = `${uid}-error`;
+    const optionId = (index: number) => `${uid}-option-${index}`;
+    const [selectedSuggestionIndex, setSelectedSuggestionIndex] =
+      React.useState(-1);
 
-    const inputRef = React.useRef<HTMLInputElement>(null)
-    const containerRef = React.useRef<HTMLDivElement>(null)
+    const inputRef = React.useRef<HTMLInputElement>(null);
+    const containerRef = React.useRef<HTMLDivElement>(null);
 
     React.useImperativeHandle(ref, () => ({
       focus: () => inputRef.current?.focus(),
       blur: () => inputRef.current?.blur(),
-      get value() { return inputRef.current?.value ?? '' },
-      set value(v: string) { if (inputRef.current) inputRef.current.value = v },
-    }))
+      get value() {
+        return inputRef.current?.value ?? "";
+      },
+      set value(v: string) {
+        if (inputRef.current) inputRef.current.value = v;
+      },
+    }));
 
-    const isControlled = controlledValue !== undefined
-    const tags = isControlled ? controlledValue : uncontrolledTags
+    const isControlled = controlledValue !== undefined;
+    const tags = isControlled ? controlledValue : uncontrolledTags;
 
     const filteredSuggestions = React.useMemo(() => {
-      if (!inputValue.trim() || suggestions.length === 0) return []
-      const lowerInput = inputValue.toLowerCase()
+      if (!inputValue.trim() || suggestions.length === 0) return [];
+      const lowerInput = inputValue.toLowerCase();
       return suggestions.filter(
         (suggestion) =>
           suggestion.toLowerCase().includes(lowerInput) &&
-          (allowDuplicates || !tags.includes(suggestion))
-      )
-    }, [inputValue, suggestions, tags, allowDuplicates])
+          (allowDuplicates || !tags.includes(suggestion)),
+      );
+    }, [inputValue, suggestions, tags, allowDuplicates]);
 
     // Single source of truth for the listbox's open state — aria-expanded and
     // the rendered listbox must never disagree.
-    const suggestionsOpen = showSuggestions && filteredSuggestions.length > 0
+    const suggestionsOpen = showSuggestions && filteredSuggestions.length > 0;
 
     const updateTags = (newTags: string[]) => {
       if (!isControlled) {
-        setUncontrolledTags(newTags)
+        setUncontrolledTags(newTags);
       }
-      onChange?.(newTags)
-    }
+      onChange?.(newTags);
+    };
 
     // Adds one or more tags atomically. Validation (maxTags, duplicates, custom)
     // runs against a single working copy so a batched add (e.g. pasting
     // "a,b,c,") can't bypass limits or collapse to only the last value.
     const tryAddTags = (tagValues: string[]) => {
-      let working = tags
-      let added = false
-      let nextError: string | null = null
+      let working = tags;
+      let added = false;
+      let nextError: string | null = null;
 
       for (const tagValue of tagValues) {
-        const trimmedTag = tagValue.trim()
-        if (!trimmedTag) continue
+        const trimmedTag = tagValue.trim();
+        if (!trimmedTag) continue;
 
         if (maxTags && working.length >= maxTags) {
-          nextError = `Maximum ${maxTags} tags allowed`
-          break
+          nextError = `Maximum ${maxTags} tags allowed`;
+          break;
         }
         if (!allowDuplicates && working.includes(trimmedTag)) {
-          nextError = 'Tag already exists'
-          continue
+          nextError = "Tag already exists";
+          continue;
         }
         if (validateTag) {
-          const validationResult = validateTag(trimmedTag)
+          const validationResult = validateTag(trimmedTag);
           if (validationResult !== true) {
-            nextError = typeof validationResult === 'string' ? validationResult : 'Invalid tag'
-            continue
+            nextError =
+              typeof validationResult === "string"
+                ? validationResult
+                : "Invalid tag";
+            continue;
           }
         }
 
-        working = [...working, trimmedTag]
-        added = true
+        working = [...working, trimmedTag];
+        added = true;
       }
 
-      setError(nextError)
-      if (added) updateTags(working)
-      return added
-    }
+      setError(nextError);
+      if (added) updateTags(working);
+      return added;
+    };
 
-    const addTag = (tagValue: string) => tryAddTags([tagValue])
+    const addTag = (tagValue: string) => tryAddTags([tagValue]);
 
     const removeTag = (index: number) => {
-      if (disabled) return
-      const newTags = tags.filter((_, i) => i !== index)
-      updateTags(newTags)
-      setError(null)
-    }
+      if (disabled) return;
+      const newTags = tags.filter((_, i) => i !== index);
+      updateTags(newTags);
+      setError(null);
+    };
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value
-      setInputValue(value)
-      setShowSuggestions(true)
-      setSelectedSuggestionIndex(-1)
-      setError(null)
+      const value = e.target.value;
+      setInputValue(value);
+      setShowSuggestions(true);
+      setSelectedSuggestionIndex(-1);
+      setError(null);
 
       // Check for delimiter
       if (delimiter) {
-        const parts = value.split(delimiter)
+        const parts = value.split(delimiter);
 
         if (parts.length > 1) {
-          tryAddTags(parts.slice(0, -1))
-          setInputValue(parts[parts.length - 1])
+          tryAddTags(parts.slice(0, -1));
+          setInputValue(parts[parts.length - 1]!);
         }
       }
-    }
+    };
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
       switch (e.key) {
-        case 'Enter':
-          e.preventDefault()
-          if (selectedSuggestionIndex >= 0 && filteredSuggestions[selectedSuggestionIndex]) {
+        case "Enter":
+          e.preventDefault();
+          if (
+            selectedSuggestionIndex >= 0 &&
+            filteredSuggestions[selectedSuggestionIndex]
+          ) {
             if (addTag(filteredSuggestions[selectedSuggestionIndex])) {
-              setInputValue('')
-              setShowSuggestions(false)
-              setSelectedSuggestionIndex(-1)
+              setInputValue("");
+              setShowSuggestions(false);
+              setSelectedSuggestionIndex(-1);
             }
           } else if (inputValue.trim()) {
             if (addTag(inputValue)) {
-              setInputValue('')
+              setInputValue("");
             }
           }
-          break
-        case 'Backspace':
+          break;
+        case "Backspace":
           if (!inputValue && tags.length > 0) {
-            removeTag(tags.length - 1)
+            removeTag(tags.length - 1);
           }
-          break
-        case 'ArrowDown':
+          break;
+        case "ArrowDown":
           if (filteredSuggestions.length > 0) {
-            e.preventDefault()
+            e.preventDefault();
             setSelectedSuggestionIndex((prev) =>
-              prev < filteredSuggestions.length - 1 ? prev + 1 : 0
-            )
+              prev < filteredSuggestions.length - 1 ? prev + 1 : 0,
+            );
           }
-          break
-        case 'ArrowUp':
+          break;
+        case "ArrowUp":
           if (filteredSuggestions.length > 0) {
-            e.preventDefault()
+            e.preventDefault();
             setSelectedSuggestionIndex((prev) =>
-              prev > 0 ? prev - 1 : filteredSuggestions.length - 1
-            )
+              prev > 0 ? prev - 1 : filteredSuggestions.length - 1,
+            );
           }
-          break
-        case 'Escape':
-          setShowSuggestions(false)
-          setSelectedSuggestionIndex(-1)
-          break
+          break;
+        case "Escape":
+          setShowSuggestions(false);
+          setSelectedSuggestionIndex(-1);
+          break;
       }
-    }
+    };
 
     const handleSuggestionClick = (suggestion: string) => {
       if (addTag(suggestion)) {
-        setInputValue('')
-        setShowSuggestions(false)
-        inputRef.current?.focus()
+        setInputValue("");
+        setShowSuggestions(false);
+        inputRef.current?.focus();
       }
-    }
+    };
 
     const handleContainerClick = () => {
-      inputRef.current?.focus()
-    }
+      inputRef.current?.focus();
+    };
 
     // Close suggestions on click outside
     React.useEffect(() => {
       const handleClickOutside = (e: MouseEvent) => {
-        if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
-          setShowSuggestions(false)
+        if (
+          containerRef.current &&
+          !containerRef.current.contains(e.target as Node)
+        ) {
+          setShowSuggestions(false);
         }
-      }
-      document.addEventListener('mousedown', handleClickOutside)
-      return () => document.removeEventListener('mousedown', handleClickOutside)
-    }, [])
+      };
+      document.addEventListener("mousedown", handleClickOutside);
+      return () =>
+        document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
 
     return (
       <div ref={containerRef} className="relative">
         <div
           onClick={handleContainerClick}
           className={cn(
-            'flex flex-wrap items-center gap-2 min-h-11 w-full border-3 border-input bg-background px-3 py-2',
-            'shadow-[4px_4px_0px_hsl(var(--shadow-color))] transition duration-200',
-            'focus-within:translate-x-[4px] focus-within:translate-y-[4px] focus-within:shadow-none',
-            disabled && 'opacity-50 cursor-not-allowed',
-            error && 'border-destructive',
-            className
+            "flex min-h-11 w-full flex-wrap items-center gap-2 border-3 border-input bg-background px-3 py-2",
+            "shadow-[4px_4px_0px_hsl(var(--shadow-color))] transition duration-200",
+            "focus-within:translate-x-[4px] focus-within:translate-y-[4px] focus-within:shadow-none",
+            disabled && "cursor-not-allowed opacity-50",
+            error && "border-destructive",
+            className,
           )}
         >
           {/* Tags */}
@@ -236,9 +256,9 @@ const TagInput = React.forwardRef<TagInputHandle, TagInputProps>(
             <span
               key={`tag-${index}`}
               className={cn(
-                'inline-flex items-center gap-1 px-2 py-0.5 text-xs font-bold uppercase tracking-wide',
-                'border-2 border-foreground bg-primary text-primary-foreground',
-                'shadow-[2px_2px_0px_hsl(var(--shadow-color))]'
+                "inline-flex items-center gap-1 px-2 py-0.5 text-xs font-bold tracking-wide uppercase",
+                "border-2 border-foreground bg-primary text-primary-foreground",
+                "shadow-[2px_2px_0px_hsl(var(--shadow-color))]",
               )}
             >
               {tag}
@@ -246,10 +266,10 @@ const TagInput = React.forwardRef<TagInputHandle, TagInputProps>(
                 <button
                   type="button"
                   onClick={(e) => {
-                    e.stopPropagation()
-                    removeTag(index)
+                    e.stopPropagation();
+                    removeTag(index);
                   }}
-                  className="hover:bg-primary-foreground/20 rounded-sm p-0.5 transition-colors"
+                  className="rounded-sm p-0.5 transition-colors hover:bg-primary-foreground/20"
                   aria-label={`Remove ${tag}`}
                 >
                   <X className="h-3 w-3" />
@@ -277,11 +297,11 @@ const TagInput = React.forwardRef<TagInputHandle, TagInputProps>(
             onChange={handleInputChange}
             onKeyDown={handleKeyDown}
             onFocus={() => setShowSuggestions(true)}
-            placeholder={tags.length === 0 ? placeholder : ''}
+            placeholder={tags.length === 0 ? placeholder : ""}
             disabled={disabled}
             className={cn(
-              'flex-1 min-w-[120px] bg-transparent outline-none text-sm',
-              'placeholder:text-muted-foreground disabled:cursor-not-allowed'
+              "min-w-[120px] flex-1 bg-transparent text-sm outline-none",
+              "placeholder:text-muted-foreground disabled:cursor-not-allowed",
             )}
             {...props}
           />
@@ -289,7 +309,11 @@ const TagInput = React.forwardRef<TagInputHandle, TagInputProps>(
 
         {/* Error message */}
         {error && (
-          <p id={errorId} role="alert" className="mt-1 text-xs font-medium text-destructive">
+          <p
+            id={errorId}
+            role="alert"
+            className="mt-1 text-xs font-medium text-destructive"
+          >
             {error}
           </p>
         )}
@@ -301,9 +325,9 @@ const TagInput = React.forwardRef<TagInputHandle, TagInputProps>(
             role="listbox"
             aria-label="Suggestions"
             className={cn(
-              'absolute z-50 mt-1 w-full',
-              'border-3 border-foreground bg-popover',
-              'shadow-[4px_4px_0px_hsl(var(--shadow-color))]'
+              "absolute z-50 mt-1 w-full",
+              "border-3 border-foreground bg-popover",
+              "shadow-[4px_4px_0px_hsl(var(--shadow-color))]",
             )}
           >
             {filteredSuggestions.map((suggestion, index) => (
@@ -317,9 +341,9 @@ const TagInput = React.forwardRef<TagInputHandle, TagInputProps>(
                 onMouseDown={(e) => e.preventDefault()}
                 onClick={() => handleSuggestionClick(suggestion)}
                 className={cn(
-                  'w-full cursor-pointer px-3 py-2 text-left text-sm transition-colors',
-                  'hover:bg-muted',
-                  index === selectedSuggestionIndex && 'bg-accent'
+                  "w-full cursor-pointer px-3 py-2 text-left text-sm transition-colors",
+                  "hover:bg-muted",
+                  index === selectedSuggestionIndex && "bg-accent",
                 )}
               >
                 {suggestion}
@@ -328,9 +352,9 @@ const TagInput = React.forwardRef<TagInputHandle, TagInputProps>(
           </div>
         )}
       </div>
-    )
-  }
-)
-TagInput.displayName = 'TagInput'
+    );
+  },
+);
+TagInput.displayName = "TagInput";
 
-export { TagInput }
+export { TagInput };

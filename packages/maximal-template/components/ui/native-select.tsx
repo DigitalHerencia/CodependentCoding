@@ -1,6 +1,6 @@
-import * as React from 'react'
-import { ChevronDown } from 'lucide-react'
-import { cn } from '@/lib/utils'
+import * as React from "react";
+import { ChevronDown } from "lucide-react";
+import { cn } from "@/components/ui/utils";
 
 /**
  * A styled wrapper around the native <select> element — lightweight and
@@ -14,16 +14,20 @@ const NativeSelect = React.forwardRef<
     <select
       ref={ref}
       className={cn(
-        'bk-native-select h-11 w-full appearance-none border-3 border-foreground bg-background px-3 pr-10 text-sm font-bold uppercase tracking-wide shadow-[4px_4px_0px_hsl(var(--shadow-color))] outline-none transition focus-visible:translate-x-[2px] focus-visible:translate-y-[2px] focus-visible:shadow-none disabled:cursor-not-allowed disabled:opacity-50',
-        className
+        "bk-native-select h-11 w-full appearance-none border-3 border-foreground bg-background px-3 pr-10 text-sm font-bold tracking-wide uppercase shadow-[4px_4px_0px_hsl(var(--shadow-color))] transition outline-none focus-visible:translate-x-[2px] focus-visible:translate-y-[2px] focus-visible:shadow-none disabled:cursor-not-allowed disabled:opacity-50",
+        className,
       )}
       {...props}
     >
       {children}
     </select>
-    <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 stroke-[3]" />
+    <ChevronDown className="pointer-events-none absolute top-1/2 right-3 h-4 w-4 -translate-y-1/2 stroke-[3]" />
   </div>
-))
-NativeSelect.displayName = 'NativeSelect'
+));
+NativeSelect.displayName = "NativeSelect";
 
-export { NativeSelect }
+function NativeSelectOption(props: React.ComponentProps<"option">) {
+  return <option {...props} />;
+}
+
+export { NativeSelect, NativeSelectOption };
