@@ -1,71 +1,59 @@
-"use client";
-
-import { Progress } from "@/components/ui/progress";
-import { Spinner } from "@/components/ui/spinner";
-import { cn } from "@/components/ui/utils";
-import { cva, type VariantProps } from "class-variance-authority";
-import {
-  File,
-  FileAudio,
-  FileCode,
-  FileText,
-  FileVideo,
-  Image as ImageIcon,
-  Upload,
-  X,
-} from "lucide-react";
-import * as React from "react";
+/* eslint-disable react-refresh/only-export-components */
+import * as React from 'react'
+import { cva, type VariantProps } from 'class-variance-authority'
+import { cn } from '@/lib/utils'
+import { Progress } from '@/components/ui/progress'
+import { Spinner } from '@/components/ui/spinner'
+import { Upload, X, File, Image, FileText, FileCode, FileAudio, FileVideo } from 'lucide-react'
 
 // Types
 export interface FileRejection {
-  file: File;
-  errors: Array<{ code: string; message: string }>;
+  file: File
+  errors: Array<{ code: string; message: string }>
 }
 
 export interface DropzoneState {
-  isDragging: boolean;
-  isDisabled: boolean;
-  acceptedFiles: File[];
-  rejectedFiles: FileRejection[];
-  reset: () => void;
+  isDragging: boolean
+  isDisabled: boolean
+  acceptedFiles: File[]
+  rejectedFiles: FileRejection[]
+  reset: () => void
 }
 
 // Variants
 const dropzoneVariants = cva(
-  "relative flex cursor-pointer flex-col items-center justify-center border-3 border-dashed border-foreground transition duration-200",
+  'relative flex flex-col items-center justify-center border-3 border-dashed border-foreground transition duration-200 cursor-pointer',
   {
     variants: {
       state: {
-        idle: "bg-background shadow-[4px_4px_0px_hsl(var(--shadow-color))] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:bg-muted/30 hover:shadow-[6px_6px_0px_hsl(var(--shadow-color))]",
-        dragging:
-          "scale-[1.02] border-solid border-primary bg-primary/10 shadow-[8px_8px_0px_hsl(var(--primary))]",
-        disabled: "cursor-not-allowed opacity-50 shadow-none",
+        idle: 'bg-background hover:bg-muted/30 shadow-[4px_4px_0px_hsl(var(--shadow-color))] hover:shadow-[6px_6px_0px_hsl(var(--shadow-color))] hover:translate-x-[-2px] hover:translate-y-[-2px]',
+        dragging: 'border-solid border-primary bg-primary/10 scale-[1.02] shadow-[8px_8px_0px_hsl(var(--primary))]',
+        disabled: 'opacity-50 cursor-not-allowed shadow-none',
       },
       variant: {
-        default: "p-8",
-        compact: "p-6",
-        minimal: "border-2 p-3",
+        default: 'p-8',
+        compact: 'p-6',
+        minimal: 'p-3 border-2',
       },
     },
     defaultVariants: {
-      state: "idle",
-      variant: "default",
+      state: 'idle',
+      variant: 'default',
     },
-  },
-);
+  }
+)
 
 // Dropzone Props
 export interface DropzoneProps
-  extends
-    Omit<React.HTMLAttributes<HTMLDivElement>, "children">,
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>,
     VariantProps<typeof dropzoneVariants> {
-  onFilesAccepted: (files: File[]) => void;
-  onFilesRejected?: (files: FileRejection[]) => void;
-  accept?: Record<string, string[]>;
-  maxSize?: number;
-  maxFiles?: number;
-  disabled?: boolean;
-  children?: React.ReactNode | ((state: DropzoneState) => React.ReactNode);
+  onFilesAccepted: (files: File[]) => void
+  onFilesRejected?: (files: FileRejection[]) => void
+  accept?: Record<string, string[]>
+  maxSize?: number
+  maxFiles?: number
+  disabled?: boolean
+  children?: React.ReactNode | ((state: DropzoneState) => React.ReactNode)
 }
 
 const Dropzone = React.forwardRef<HTMLDivElement, DropzoneProps>(
@@ -82,21 +70,19 @@ const Dropzone = React.forwardRef<HTMLDivElement, DropzoneProps>(
       children,
       ...props
     },
-    ref,
+    ref
   ) => {
-    const [isDragging, setIsDragging] = React.useState(false);
-    const [isFocused, setIsFocused] = React.useState(false);
-    const [acceptedFiles, setAcceptedFiles] = React.useState<File[]>([]);
-    const [rejectedFiles, setRejectedFiles] = React.useState<FileRejection[]>(
-      [],
-    );
-    const inputRef = React.useRef<HTMLInputElement>(null);
+    const [isDragging, setIsDragging] = React.useState(false)
+    const [isFocused, setIsFocused] = React.useState(false)
+    const [acceptedFiles, setAcceptedFiles] = React.useState<File[]>([])
+    const [rejectedFiles, setRejectedFiles] = React.useState<FileRejection[]>([])
+    const inputRef = React.useRef<HTMLInputElement>(null)
 
     const reset = React.useCallback(() => {
-      setAcceptedFiles([]);
-      setRejectedFiles([]);
-      if (inputRef.current) inputRef.current.value = "";
-    }, []);
+      setAcceptedFiles([])
+      setRejectedFiles([])
+      if (inputRef.current) inputRef.current.value = ''
+    }, [])
 
     const state: DropzoneState = {
       isDragging,
@@ -104,168 +90,152 @@ const Dropzone = React.forwardRef<HTMLDivElement, DropzoneProps>(
       acceptedFiles,
       rejectedFiles,
       reset,
-    };
+    }
 
-    const stateVariant = disabled
-      ? "disabled"
-      : isDragging
-        ? "dragging"
-        : "idle";
+    const stateVariant = disabled ? 'disabled' : isDragging ? 'dragging' : 'idle'
 
     // Validate file
     const validateFile = (file: File): FileRejection | null => {
-      const errors: Array<{ code: string; message: string }> = [];
+      const errors: Array<{ code: string; message: string }> = []
 
       // Check file size
       if (file.size > maxSize) {
         errors.push({
-          code: "file-too-large",
+          code: 'file-too-large',
           message: `File is larger than ${formatBytes(maxSize)}`,
-        });
+        })
       }
 
       // Check file type
       if (accept) {
-        const acceptedTypes = Object.entries(accept).flatMap(
-          ([mimeType, extensions]) => {
-            return [mimeType, ...extensions];
-          },
-        );
+        const acceptedTypes = Object.entries(accept).flatMap(([mimeType, extensions]) => {
+          return [mimeType, ...extensions]
+        })
 
-        const fileType = file.type;
-        const fileExtension = `.${file.name.split(".").pop()?.toLowerCase()}`;
+        const fileType = file.type
+        const fileExtension = `.${file.name.split('.').pop()?.toLowerCase()}`
 
         const isAccepted = acceptedTypes.some((type) => {
-          if (type.startsWith(".")) {
-            return fileExtension === type.toLowerCase();
+          if (type.startsWith('.')) {
+            return fileExtension === type.toLowerCase()
           }
-          if (type.endsWith("/*")) {
-            return fileType.startsWith(type.replace("/*", "/"));
+          if (type.endsWith('/*')) {
+            return fileType.startsWith(type.replace('/*', '/'))
           }
-          return fileType === type;
-        });
+          return fileType === type
+        })
 
         if (!isAccepted) {
           errors.push({
-            code: "file-invalid-type",
-            message: "File type not accepted",
-          });
+            code: 'file-invalid-type',
+            message: 'File type not accepted',
+          })
         }
       }
 
-      return errors.length > 0 ? { file, errors } : null;
-    };
+      return errors.length > 0 ? { file, errors } : null
+    }
 
     // Process files
     const processFiles = (fileList: FileList | null) => {
-      if (!fileList || disabled) return;
+      if (!fileList || disabled) return
 
-      const allFiles = Array.from(fileList);
-      const accepted: File[] = [];
-      const rejected: FileRejection[] = [];
+      const allFiles = Array.from(fileList)
+      const accepted: File[] = []
+      const rejected: FileRejection[] = []
 
       allFiles.forEach((file) => {
-        const rejection = validateFile(file);
+        const rejection = validateFile(file)
         if (rejection) {
-          rejected.push(rejection);
+          rejected.push(rejection)
         } else if (accepted.length >= maxFiles) {
           rejected.push({
             file,
-            errors: [
-              {
-                code: "too-many-files",
-                message: `Too many files. Maximum is ${maxFiles}.`,
-              },
-            ],
-          });
+            errors: [{ code: 'too-many-files', message: `Too many files. Maximum is ${maxFiles}.` }],
+          })
         } else {
-          accepted.push(file);
+          accepted.push(file)
         }
-      });
+      })
 
-      setAcceptedFiles(accepted);
-      setRejectedFiles(rejected);
+      setAcceptedFiles(accepted)
+      setRejectedFiles(rejected)
 
       if (accepted.length > 0) {
-        onFilesAccepted(accepted);
+        onFilesAccepted(accepted)
       }
       if (rejected.length > 0) {
-        onFilesRejected?.(rejected);
+        onFilesRejected?.(rejected)
       }
-    };
+    }
 
     // Event handlers
     const handleDragEnter = (e: React.DragEvent) => {
-      e.preventDefault();
-      e.stopPropagation();
+      e.preventDefault()
+      e.stopPropagation()
       if (!disabled) {
-        setIsDragging(true);
+        setIsDragging(true)
       }
-    };
+    }
 
     const handleDragLeave = (e: React.DragEvent) => {
-      e.preventDefault();
-      e.stopPropagation();
+      e.preventDefault()
+      e.stopPropagation()
       // dragleave also fires when the cursor moves onto a child element; only
       // clear the highlight when the pointer actually leaves the dropzone.
-      if (
-        e.relatedTarget &&
-        e.currentTarget.contains(e.relatedTarget as Node)
-      ) {
-        return;
+      if (e.relatedTarget && e.currentTarget.contains(e.relatedTarget as Node)) {
+        return
       }
-      setIsDragging(false);
-    };
+      setIsDragging(false)
+    }
 
     const handleDragOver = (e: React.DragEvent) => {
-      e.preventDefault();
-      e.stopPropagation();
-    };
+      e.preventDefault()
+      e.stopPropagation()
+    }
 
     const handleDrop = (e: React.DragEvent) => {
-      e.preventDefault();
-      e.stopPropagation();
-      setIsDragging(false);
-      processFiles(e.dataTransfer.files);
-    };
+      e.preventDefault()
+      e.stopPropagation()
+      setIsDragging(false)
+      processFiles(e.dataTransfer.files)
+    }
 
     const handleClick = () => {
       if (!disabled) {
-        inputRef.current?.click();
+        inputRef.current?.click()
       }
-    };
+    }
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
-      if (!disabled && (e.key === "Enter" || e.key === " ")) {
-        e.preventDefault();
-        inputRef.current?.click();
+      if (!disabled && (e.key === 'Enter' || e.key === ' ')) {
+        e.preventDefault()
+        inputRef.current?.click()
       }
-    };
+    }
 
-    const handleFocus = () => setIsFocused(true);
-    const handleBlur = () => setIsFocused(false);
+    const handleFocus = () => setIsFocused(true)
+    const handleBlur = () => setIsFocused(false)
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      processFiles(e.target.files);
-      e.target.value = "";
-    };
+      processFiles(e.target.files)
+      e.target.value = ''
+    }
 
     // Build accept string for input
     const acceptString = accept
       ? Object.entries(accept)
           .flatMap(([mimeType, extensions]) => [mimeType, ...extensions])
-          .join(",")
-      : undefined;
+          .join(',')
+      : undefined
 
     return (
       <div
         ref={ref}
         className={cn(
           dropzoneVariants({ state: stateVariant, variant }),
-          isFocused &&
-            !disabled &&
-            "outline outline-2 outline-offset-2 outline-primary",
-          className,
+          isFocused && !disabled && 'outline outline-2 outline-offset-2 outline-primary',
+          className
         )}
         onDragEnter={handleDragEnter}
         onDragLeave={handleDragLeave}
@@ -291,9 +261,10 @@ const Dropzone = React.forwardRef<HTMLDivElement, DropzoneProps>(
           className="hidden"
         />
 
-        {typeof children === "function" ? (
-          // The render prop intentionally receives reset(), whose ref access
-          // occurs only if the consumer invokes it from an event.
+        {/* `state` is built entirely from useState values (isDragging,
+            acceptedFiles, rejectedFiles) plus a useCallback — no ref is
+            involved; the rule mis-flags the render-prop call. */}
+        {typeof children === 'function' ? (
           // eslint-disable-next-line react-hooks/refs
           children(state)
         ) : children ? (
@@ -302,171 +273,158 @@ const Dropzone = React.forwardRef<HTMLDivElement, DropzoneProps>(
           <DefaultDropzoneContent isDragging={isDragging} variant={variant} />
         )}
       </div>
-    );
-  },
-);
-Dropzone.displayName = "Dropzone";
+    )
+  }
+)
+Dropzone.displayName = 'Dropzone'
 
 // Default content
 function DefaultDropzoneContent({
   isDragging,
   variant,
 }: {
-  isDragging: boolean;
-  variant: DropzoneProps["variant"];
+  isDragging: boolean
+  variant: DropzoneProps['variant']
 }) {
   return (
     <div className="flex flex-col items-center gap-3 text-center">
       <div
         className={cn(
-          "flex h-16 w-16 items-center justify-center border-3 border-foreground bg-muted transition duration-200",
-          isDragging &&
-            "-translate-x-1 -translate-y-1 border-primary bg-primary shadow-[4px_4px_0px_hsl(var(--foreground))]",
+          'flex items-center justify-center w-16 h-16 border-3 border-foreground bg-muted transition duration-200',
+          isDragging && 'bg-primary border-primary shadow-[4px_4px_0px_hsl(var(--foreground))] -translate-x-1 -translate-y-1'
         )}
       >
         <Upload
           className={cn(
-            "h-8 w-8 transition duration-200",
-            isDragging
-              ? "animate-bounce text-primary-foreground"
-              : "text-foreground",
+            'h-8 w-8 transition duration-200',
+            isDragging ? 'text-primary-foreground animate-bounce' : 'text-foreground'
           )}
         />
       </div>
-      {variant !== "minimal" && (
+      {variant !== 'minimal' && (
         <>
-          <p className="text-lg font-black tracking-wide uppercase">
-            {isDragging ? "Drop files here" : "Drag & drop files"}
+          <p className="font-black uppercase tracking-wide text-lg">
+            {isDragging ? 'Drop files here' : 'Drag & drop files'}
           </p>
-          <p className="text-sm font-bold text-muted-foreground">
+          <p className="text-sm text-muted-foreground font-bold">
             or click to browse
           </p>
         </>
       )}
     </div>
-  );
+  )
 }
 
 // File List Component
 export interface FileListProps extends React.HTMLAttributes<HTMLDivElement> {
   files: Array<{
-    file: File;
-    progress?: number;
-    error?: string;
-    uploading?: boolean;
-  }>;
-  onRemove?: (file: File) => void;
+    file: File
+    progress?: number
+    error?: string
+    uploading?: boolean
+  }>
+  onRemove?: (file: File) => void
 }
 
 const FileList = React.forwardRef<HTMLDivElement, FileListProps>(
   ({ files, onRemove, className, ...props }, ref) => {
-    if (files.length === 0) return null;
+    if (files.length === 0) return null
 
     return (
-      <div ref={ref} className={cn("mt-4 space-y-2", className)} {...props}>
+      <div
+        ref={ref}
+        className={cn('space-y-2 mt-4', className)}
+        {...props}
+      >
         {files.map((item, index) => (
           <FileListItem
             key={`${item.file.name}-${index}`}
             file={item.file}
-            {...(item.progress === undefined
-              ? {}
-              : { progress: item.progress })}
-            {...(item.error === undefined ? {} : { error: item.error })}
-            {...(item.uploading === undefined
-              ? {}
-              : { uploading: item.uploading })}
-            {...(onRemove ? { onRemove: () => onRemove(item.file) } : {})}
+            progress={item.progress}
+            error={item.error}
+            uploading={item.uploading}
+            onRemove={onRemove ? () => onRemove(item.file) : undefined}
           />
         ))}
       </div>
-    );
-  },
-);
-FileList.displayName = "FileList";
+    )
+  }
+)
+FileList.displayName = 'FileList'
 
 // File List Item
 interface FileListItemProps {
-  file: File;
-  progress?: number;
-  error?: string;
-  uploading?: boolean;
-  onRemove?: () => void;
+  file: File
+  progress?: number
+  error?: string
+  uploading?: boolean
+  onRemove?: () => void
 }
 
-function FileListItem({
-  file,
-  progress,
-  error,
-  uploading,
-  onRemove,
-}: FileListItemProps) {
+function FileListItem({ file, progress, error, uploading, onRemove }: FileListItemProps) {
+  const Icon = getFileIcon(file.type)
+
   return (
     <div
       className={cn(
-        "flex items-center gap-3 border-3 border-foreground bg-background p-3 shadow-[3px_3px_0px_hsl(var(--shadow-color))]",
-        error &&
-          "border-destructive bg-destructive/10 shadow-[3px_3px_0px_hsl(var(--destructive))]",
+        'flex items-center gap-3 p-3 border-3 border-foreground bg-background shadow-[3px_3px_0px_hsl(var(--shadow-color))]',
+        error && 'border-destructive bg-destructive/10 shadow-[3px_3px_0px_hsl(var(--destructive))]'
       )}
     >
-      <div className="flex h-10 w-10 items-center justify-center border-3 border-foreground bg-muted">
-        {renderFileIcon(file.type)}
+      <div className="flex items-center justify-center w-10 h-10 bg-muted border-3 border-foreground">
+        {/* getFileIcon is a lookup returning one of seven module-level lucide
+            icons, not a factory — no component is created here. */}
+        {/* eslint-disable-next-line react-hooks/static-components */}
+        <Icon className="h-5 w-5" />
       </div>
 
-      <div className="min-w-0 flex-1">
-        <p className="truncate text-sm font-bold">{file.name}</p>
-        <p className="text-xs text-muted-foreground">
-          {formatBytes(file.size)}
-        </p>
-        {error && <p className="text-xs font-bold text-destructive">{error}</p>}
+      <div className="flex-1 min-w-0">
+        <p className="font-bold text-sm truncate">{file.name}</p>
+        <p className="text-xs text-muted-foreground">{formatBytes(file.size)}</p>
+        {error && <p className="text-xs text-destructive font-bold">{error}</p>}
         {uploading && progress !== undefined && (
-          <Progress value={progress} className="mt-1 h-2" />
+          <Progress value={progress} className="h-2 mt-1" />
         )}
       </div>
 
       {uploading ? (
         <Spinner size="sm" />
       ) : onRemove ? (
+        // Icon-only, so it needs a name that says WHICH file: with N files
+        // there would otherwise be N identically anonymous "button"s.
         <button
           type="button"
+          aria-label={`Remove ${file.name}`}
           onClick={(e) => {
-            e.stopPropagation();
-            onRemove();
+            e.stopPropagation()
+            onRemove()
           }}
-          className="flex h-8 w-8 items-center justify-center border-3 border-foreground bg-background transition hover:-translate-x-0.5 hover:-translate-y-0.5 hover:bg-destructive hover:text-destructive-foreground hover:shadow-[2px_2px_0px_hsl(var(--foreground))]"
+          className="flex items-center justify-center w-8 h-8 border-3 border-foreground bg-background hover:bg-destructive hover:text-destructive-foreground hover:shadow-[2px_2px_0px_hsl(var(--foreground))] hover:-translate-x-0.5 hover:-translate-y-0.5 transition"
         >
           <X className="h-4 w-4" />
         </button>
       ) : null}
     </div>
-  );
+  )
 }
 
 // Helpers
 function formatBytes(bytes: number): string {
-  if (bytes === 0) return "0 Bytes";
-  const k = 1024;
-  const sizes = ["Bytes", "KB", "MB", "GB", "TB"];
-  const i = Math.min(
-    Math.floor(Math.log(bytes) / Math.log(k)),
-    sizes.length - 1,
-  );
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
+  if (bytes === 0) return '0 Bytes'
+  const k = 1024
+  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB']
+  const i = Math.min(Math.floor(Math.log(bytes) / Math.log(k)), sizes.length - 1)
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
 }
 
-function renderFileIcon(mimeType: string) {
-  const className = "h-5 w-5";
-  if (mimeType.startsWith("image/")) return <ImageIcon className={className} />;
-  if (mimeType.startsWith("video/")) return <FileVideo className={className} />;
-  if (mimeType.startsWith("audio/")) return <FileAudio className={className} />;
-  if (mimeType.includes("pdf") || mimeType.includes("document"))
-    return <FileText className={className} />;
-  if (
-    mimeType.includes("code") ||
-    mimeType.includes("javascript") ||
-    mimeType.includes("json")
-  )
-    return <FileCode className={className} />;
-  return <File className={className} />;
+function getFileIcon(mimeType: string) {
+  if (mimeType.startsWith('image/')) return Image
+  if (mimeType.startsWith('video/')) return FileVideo
+  if (mimeType.startsWith('audio/')) return FileAudio
+  if (mimeType.includes('pdf') || mimeType.includes('document')) return FileText
+  if (mimeType.includes('code') || mimeType.includes('javascript') || mimeType.includes('json'))
+    return FileCode
+  return File
 }
 
-export { Dropzone, dropzoneVariants, FileList };
+export { Dropzone, FileList, dropzoneVariants }

@@ -1,71 +1,64 @@
-"use client";
+/* eslint-disable react-refresh/only-export-components */
+import * as React from 'react'
+import { cva, type VariantProps } from 'class-variance-authority'
+import { cn } from '@/lib/utils'
+import { ErrorBoundary } from '@/components/ErrorBoundary'
+import {
+  buildPath,
+  getPoint,
+  getAngle,
+  type ProgressCurveKey,
+} from '@/lib/math-curves'
 
-import { ErrorBoundary } from "@/components/ErrorBoundary";
-import { buildPath, getAngle, getPoint } from "@/components/ui/math-curves";
-import { cn } from "@/components/ui/utils";
-import type { ProgressCurveKey } from "@/types/uiTypes";
-import { cva, type VariantProps } from "class-variance-authority";
-import * as React from "react";
-
-const mathCurveProgressVariants = cva("", {
+const mathCurveProgressVariants = cva('', {
   variants: {
     size: {
-      sm: "h-12 w-12",
-      md: "h-16 w-16",
-      lg: "h-24 w-24",
+      sm: 'w-12 h-12',
+      md: 'w-16 h-16',
+      lg: 'w-24 h-24',
     },
   },
   defaultVariants: {
-    size: "md",
+    size: 'md',
   },
-});
+})
 
 export interface MathCurveProgressProps
-  extends
-    React.SVGAttributes<SVGSVGElement>,
+  extends React.SVGAttributes<SVGSVGElement>,
     VariantProps<typeof mathCurveProgressVariants> {
-  value: number;
-  curve?: ProgressCurveKey;
-  showValue?: boolean;
-  trackColor?: string;
-  fillColor?: string;
-  strokeWidth?: number;
+  value: number
+  curve?: ProgressCurveKey
+  showValue?: boolean
+  trackColor?: string
+  fillColor?: string
+  strokeWidth?: number
 }
 
-const MathCurveProgress = React.forwardRef<
-  SVGSVGElement,
-  MathCurveProgressProps
->(
+const MathCurveProgress = React.forwardRef<SVGSVGElement, MathCurveProgressProps>(
   (
     {
       className,
       size,
       value,
-      curve = "spiral",
+      curve = 'spiral',
       showValue = false,
       trackColor,
       fillColor,
       strokeWidth = 4,
       ...props
     },
-    ref,
+    ref
   ) => {
-    const clampedValue = Math.min(100, Math.max(0, value));
-    const progress = clampedValue / 100;
+    const clampedValue = Math.min(100, Math.max(0, value))
+    const progress = clampedValue / 100
 
-    const trackPath = React.useMemo(() => buildPath(curve, 1.0), [curve]);
-    const headPoint = React.useMemo(
-      () => getPoint(curve, progress),
-      [curve, progress],
-    );
-    const headAngle = React.useMemo(
-      () => getAngle(curve, progress),
-      [curve, progress],
-    );
-    const HEAD_SIZE = 8;
+    const trackPath = React.useMemo(() => buildPath(curve, 1.0), [curve])
+    const headPoint = React.useMemo(() => getPoint(curve, progress), [curve, progress])
+    const headAngle = React.useMemo(() => getAngle(curve, progress), [curve, progress])
+    const HEAD_SIZE = 8
 
-    const resolvedTrackStroke = trackColor ?? "currentColor";
-    const resolvedFillColor = fillColor ?? "hsl(var(--primary))";
+    const resolvedTrackStroke = trackColor ?? 'currentColor'
+    const resolvedFillColor = fillColor ?? 'hsl(var(--primary))'
 
     return (
       <ErrorBoundary>
@@ -101,10 +94,10 @@ const MathCurveProgress = React.forwardRef<
             stroke="currentColor"
             strokeWidth={1.5}
             style={{
-              transformBox: "fill-box",
-              transformOrigin: "center",
+              transformBox: 'fill-box',
+              transformOrigin: 'center',
               transform: `rotate(${headAngle}deg)`,
-              transition: "transform 300ms ease",
+              transition: 'transform 300ms ease',
             }}
           />
           {/* Optional numeric label */}
@@ -118,16 +111,16 @@ const MathCurveProgress = React.forwardRef<
               fontWeight={700}
               fill="currentColor"
               letterSpacing="0.05em"
-              style={{ userSelect: "none", fontFamily: "inherit" }}
+              style={{ userSelect: 'none', fontFamily: 'inherit' }}
             >
               {Math.round(clampedValue)}%
             </text>
           )}
         </svg>
       </ErrorBoundary>
-    );
-  },
-);
-MathCurveProgress.displayName = "MathCurveProgress";
+    )
+  }
+)
+MathCurveProgress.displayName = 'MathCurveProgress'
 
-export { MathCurveProgress, mathCurveProgressVariants };
+export { MathCurveProgress, mathCurveProgressVariants }

@@ -1,49 +1,48 @@
-"use client";
-
-import { ErrorBoundary } from "@/components/ErrorBoundary";
+/* eslint-disable react-refresh/only-export-components */
+import * as React from 'react'
+import { cva, type VariantProps } from 'class-variance-authority'
+import { cn } from '@/lib/utils'
+import { ErrorBoundary } from '@/components/ErrorBoundary'
+import { prefersReducedMotion, onReducedMotionChange } from '@/lib/motion-core'
 import {
   buildPath,
-  getAngle,
-  getCurvePulseDuration,
-  getDetailScale,
   getPoint,
-} from "@/components/ui/math-curves";
-import { cn } from "@/components/ui/utils";
-import type { LoaderCurveKey } from "@/types/uiTypes";
-import { cva, type VariantProps } from "class-variance-authority";
-import * as React from "react";
+  getAngle,
+  getDetailScale,
+  getCurvePulseDuration,
+  type LoaderCurveKey,
+} from '@/lib/math-curves'
 
-const mathCurveLoaderVariants = cva("", {
+const mathCurveLoaderVariants = cva('', {
   variants: {
     size: {
-      xs: "h-6 w-6",
-      sm: "h-8 w-8",
-      md: "h-12 w-12",
-      lg: "h-16 w-16",
-      xl: "h-24 w-24",
+      xs: 'w-6 h-6',
+      sm: 'w-8 h-8',
+      md: 'w-12 h-12',
+      lg: 'w-16 h-16',
+      xl: 'w-24 h-24',
     },
   },
   defaultVariants: {
-    size: "md",
+    size: 'md',
   },
-});
+})
 
 const SPEED_DURATION: Record<string, number> = {
   slow: 9000,
   normal: 5500,
   fast: 3000,
-};
+}
 
 export interface MathCurveLoaderProps
-  extends
-    React.SVGAttributes<SVGSVGElement>,
+  extends React.SVGAttributes<SVGSVGElement>,
     VariantProps<typeof mathCurveLoaderVariants> {
-  curve?: LoaderCurveKey;
-  speed?: "slow" | "normal" | "fast";
-  trackColor?: string;
-  headColor?: string;
-  strokeWidth?: number;
-  headSize?: number;
+  curve?: LoaderCurveKey
+  speed?: 'slow' | 'normal' | 'fast'
+  trackColor?: string
+  headColor?: string
+  strokeWidth?: number
+  headSize?: number
 }
 
 const MathCurveLoader = React.forwardRef<SVGSVGElement, MathCurveLoaderProps>(
@@ -51,68 +50,87 @@ const MathCurveLoader = React.forwardRef<SVGSVGElement, MathCurveLoaderProps>(
     {
       className,
       size,
-      curve = "rose",
-      speed = "normal",
+      curve = 'rose',
+      speed = 'normal',
       trackColor,
       headColor,
       strokeWidth = 4,
       headSize = 8,
-      "aria-label": ariaLabel = "Loading",
+      'aria-label': ariaLabel = 'Loading',
       ...props
     },
-    ref,
+    ref
   ) => {
-    const pathRef = React.useRef<SVGPathElement>(null);
-    const rectRef = React.useRef<SVGRectElement>(null);
-    const rafRef = React.useRef<number>(0);
-    const startTimeRef = React.useRef<number>(performance.now());
+    const pathRef = React.useRef<SVGPathElement>(null)
+    const rectRef = React.useRef<SVGRectElement>(null)
+    const rafRef = React.useRef<number>(0)
+    const startTimeRef = React.useRef<number>(performance.now())
 
-    const durationMs = SPEED_DURATION[speed] ?? 5500;
+    const durationMs = SPEED_DURATION[speed] ?? SPEED_DURATION.normal
 
     // Rebuild static track path when curve changes
-    const trackPath = React.useMemo(() => buildPath(curve, 1.0), [curve]);
+    const trackPath = React.useMemo(() => buildPath(curve, 1.0), [curve])
 
     React.useEffect(() => {
-      startTimeRef.current = performance.now();
+      startTimeRef.current = performance.now()
 
-      const tick = () => {
-        const now = performance.now();
-        const elapsed = (now - startTimeRef.current) % durationMs;
-        const progress = elapsed / durationMs;
-        const detailScale = getDetailScale(now, getCurvePulseDuration(curve));
+      // Draw one frame. Separated from scheduling so reduced motion can render
+      // a static frame without starting the loop.
+      const draw = () => {
+        const now = performance.now()
+        const elapsed = (now - startTimeRef.current) % durationMs
+        const progress = elapsed / durationMs
+        const detailScale = getDetailScale(now, getCurvePulseDuration(curve))
 
-        const { x, y } = getPoint(curve, progress, detailScale);
-        const angle = getAngle(curve, progress, detailScale);
+        const { x, y } = getPoint(curve, progress, detailScale)
+        const angle = getAngle(curve, progress, detailScale)
 
         // Update track path with breathing detail scale
         if (pathRef.current) {
-          pathRef.current.setAttribute("d", buildPath(curve, detailScale));
+          pathRef.current.setAttribute('d', buildPath(curve, detailScale))
         }
 
         // Update head rect position and rotation
         if (rectRef.current) {
-          const cx = x;
-          const cy = y;
-          rectRef.current.setAttribute("x", String(cx - headSize / 2));
-          rectRef.current.setAttribute("y", String(cy - headSize / 2));
-          rectRef.current.setAttribute(
-            "transform",
-            `rotate(${angle} ${cx} ${cy})`,
-          );
+          const cx = x
+          const cy = y
+          rectRef.current.setAttribute('x', String(cx - headSize / 2))
+          rectRef.current.setAttribute('y', String(cy - headSize / 2))
+          rectRef.current.setAttribute('transform', `rotate(${angle} ${cx} ${cy})`)
         }
 
-        rafRef.current = requestAnimationFrame(tick);
-      };
+      }
 
-      rafRef.current = requestAnimationFrame(tick);
+      const tick = () => {
+        draw()
+        rafRef.current = requestAnimationFrame(tick)
+      }
+
+      // A CSS media query can't stop a loop that mutates SVG attributes, so
+      // the reduced-motion preference has to be consulted here. Paint one
+      // static frame and stop; re-subscribing means flipping the OS setting
+      // mid-session starts or stops the loop without a remount.
+      const start = () => {
+        cancelAnimationFrame(rafRef.current)
+        rafRef.current = 0
+        if (prefersReducedMotion()) {
+          draw()
+          return
+        }
+        rafRef.current = requestAnimationFrame(tick)
+      }
+
+      start()
+      const unsubscribe = onReducedMotionChange(start)
 
       return () => {
-        cancelAnimationFrame(rafRef.current);
-      };
-    }, [curve, speed, durationMs, headSize]);
+        unsubscribe()
+        cancelAnimationFrame(rafRef.current)
+      }
+    }, [curve, speed, durationMs, headSize])
 
-    const resolvedTrackStroke = trackColor ?? "currentColor";
-    const resolvedHeadFill = headColor ?? "hsl(var(--primary))";
+    const resolvedTrackStroke = trackColor ?? 'currentColor'
+    const resolvedHeadFill = headColor ?? 'hsl(var(--primary))'
 
     return (
       <ErrorBoundary>
@@ -122,7 +140,11 @@ const MathCurveLoader = React.forwardRef<SVGSVGElement, MathCurveLoaderProps>(
           xmlns="http://www.w3.org/2000/svg"
           role="status"
           aria-label={ariaLabel}
-          className={cn(mathCurveLoaderVariants({ size }), "group", className)}
+          className={cn(
+            mathCurveLoaderVariants({ size }),
+            'group',
+            className
+          )}
           {...props}
         >
           {/* Track layer */}
@@ -135,7 +157,7 @@ const MathCurveLoader = React.forwardRef<SVGSVGElement, MathCurveLoaderProps>(
             strokeOpacity={0.2}
             strokeLinecap="square"
             strokeLinejoin="miter"
-            className="transition-[stroke-opacity] duration-200 group-hover:[stroke-opacity:0.4]"
+            className="group-hover:[stroke-opacity:0.4] transition-[stroke-opacity] duration-200"
           />
           {/* Head square */}
           <rect
@@ -150,9 +172,9 @@ const MathCurveLoader = React.forwardRef<SVGSVGElement, MathCurveLoaderProps>(
           />
         </svg>
       </ErrorBoundary>
-    );
-  },
-);
-MathCurveLoader.displayName = "MathCurveLoader";
+    )
+  }
+)
+MathCurveLoader.displayName = 'MathCurveLoader'
 
-export { MathCurveLoader, mathCurveLoaderVariants };
+export { MathCurveLoader, mathCurveLoaderVariants }

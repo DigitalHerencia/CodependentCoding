@@ -1,8 +1,8 @@
-import { cn } from "@/components/ui/utils";
-import * as CollapsiblePrimitive from "@radix-ui/react-collapsible";
-import * as React from "react";
+import * as React from 'react'
+import { Collapsible as CollapsiblePrimitive } from 'radix-ui'
+import { cn } from '@/lib/utils'
 
-const Collapsible = CollapsiblePrimitive.Root;
+const Collapsible = CollapsiblePrimitive.Root
 
 const CollapsibleTrigger = React.forwardRef<
   React.ElementRef<typeof CollapsiblePrimitive.CollapsibleTrigger>,
@@ -11,14 +11,13 @@ const CollapsibleTrigger = React.forwardRef<
   <CollapsiblePrimitive.CollapsibleTrigger
     ref={ref}
     className={cn(
-      "transition duration-150 [&[data-state=open]>svg]:rotate-180",
-      className,
+      'transition duration-150 [&[data-state=open]>svg]:rotate-180',
+      className
     )}
     {...props}
   />
-));
-CollapsibleTrigger.displayName =
-  CollapsiblePrimitive.CollapsibleTrigger.displayName;
+))
+CollapsibleTrigger.displayName = CollapsiblePrimitive.CollapsibleTrigger.displayName
 
 const CollapsibleContent = React.forwardRef<
   React.ElementRef<typeof CollapsiblePrimitive.CollapsibleContent>,
@@ -27,13 +26,12 @@ const CollapsibleContent = React.forwardRef<
   <CollapsiblePrimitive.CollapsibleContent
     ref={ref}
     className={cn(
-      "overflow-hidden transition data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down",
-      className,
+      'overflow-hidden transition data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down',
+      className
     )}
     {...props}
   />
-));
-CollapsibleContent.displayName =
-  CollapsiblePrimitive.CollapsibleContent.displayName;
+))
+CollapsibleContent.displayName = CollapsiblePrimitive.CollapsibleContent.displayName
 
-export { Collapsible, CollapsibleContent, CollapsibleTrigger };
+export { Collapsible, CollapsibleTrigger, CollapsibleContent }

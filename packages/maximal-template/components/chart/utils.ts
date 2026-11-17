@@ -1,40 +1,40 @@
-import type { ChartConfig } from "./types";
+import type { ChartConfig } from './types'
 
 // Helper to extract item config from a payload.
 export function getPayloadConfigFromPayload(
   config: ChartConfig,
   payload: unknown,
-  key: string,
+  key: string
 ) {
-  if (typeof payload !== "object" || payload === null) {
-    return undefined;
+  if (typeof payload !== 'object' || payload === null) {
+    return undefined
   }
 
   const payloadPayload =
-    "payload" in payload &&
-    typeof payload.payload === "object" &&
+    'payload' in payload &&
+    typeof payload.payload === 'object' &&
     payload.payload !== null
       ? payload.payload
-      : undefined;
+      : undefined
 
-  let configLabelKey: string = key;
+  let configLabelKey: string = key
 
   if (
     key in payload &&
-    typeof payload[key as keyof typeof payload] === "string"
+    typeof payload[key as keyof typeof payload] === 'string'
   ) {
-    configLabelKey = payload[key as keyof typeof payload] as string;
+    configLabelKey = payload[key as keyof typeof payload] as string
   } else if (
     payloadPayload &&
     key in payloadPayload &&
-    typeof payloadPayload[key as keyof typeof payloadPayload] === "string"
+    typeof payloadPayload[key as keyof typeof payloadPayload] === 'string'
   ) {
     configLabelKey = payloadPayload[
       key as keyof typeof payloadPayload
-    ] as string;
+    ] as string
   }
 
   return configLabelKey in config
     ? config[configLabelKey]
-    : config[key as keyof typeof config];
+    : config[key as keyof typeof config]
 }

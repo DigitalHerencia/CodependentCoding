@@ -1,63 +1,43 @@
-import { cn } from "@/components/ui/utils";
-import { GripVertical } from "lucide-react";
-import * as React from "react";
-import { Group, Panel, Separator } from "react-resizable-panels";
+import * as React from 'react'
+import { GripVertical } from 'lucide-react'
+import * as ResizablePrimitive from 'react-resizable-panels'
+import { cn } from '@/lib/utils'
 
-type ResizablePanelGroupProps = Omit<
-  React.ComponentProps<typeof Group>,
-  "orientation"
-> & {
-  /**
-   * Backward-compatible alias for the pre-v4 API.
-   * Prefer `orientation` in new code.
-   */
-  direction?: "horizontal" | "vertical";
-  orientation?: "horizontal" | "vertical";
-};
-
-function ResizablePanelGroup({
+const ResizablePanelGroup = ({
   className,
-  direction,
-  orientation,
   ...props
-}: ResizablePanelGroupProps) {
-  const resolvedOrientation = orientation ?? direction ?? "horizontal";
+}: React.ComponentProps<typeof ResizablePrimitive.PanelGroup>) => (
+  <ResizablePrimitive.PanelGroup
+    className={cn(
+      'flex h-full w-full data-[panel-group-direction=vertical]:flex-col',
+      className
+    )}
+    {...props}
+  />
+)
 
-  return (
-    <Group
-      orientation={resolvedOrientation}
-      className={cn("flex h-full w-full", className)}
-      {...props}
-    />
-  );
-}
+const ResizablePanel = ResizablePrimitive.Panel
 
-const ResizablePanel = Panel;
-
-type ResizableHandleProps = React.ComponentProps<typeof Separator> & {
-  withHandle?: boolean;
-};
-
-function ResizableHandle({
+const ResizableHandle = ({
   withHandle,
   className,
   ...props
-}: ResizableHandleProps) {
-  return (
-    <Separator
-      className={cn(
-        "relative flex w-[3px] items-center justify-center bg-foreground after:absolute after:inset-y-0 after:left-1/2 after:w-2 after:-translate-x-1/2 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:outline-none aria-[orientation=horizontal]:h-[3px] aria-[orientation=horizontal]:w-full aria-[orientation=horizontal]:after:left-0 aria-[orientation=horizontal]:after:h-2 aria-[orientation=horizontal]:after:w-full aria-[orientation=horizontal]:after:translate-x-0 aria-[orientation=horizontal]:after:-translate-y-1/2 [&[aria-orientation=horizontal]>div]:rotate-90",
-        className,
-      )}
-      {...props}
-    >
-      {withHandle ? (
-        <div className="z-10 flex h-6 w-3 items-center justify-center border-3 border-foreground bg-background shadow-[2px_2px_0px_hsl(var(--shadow-color))]">
-          <GripVertical className="h-2.5 w-2.5 stroke-[3]" />
-        </div>
-      ) : null}
-    </Separator>
-  );
-}
+}: React.ComponentProps<typeof ResizablePrimitive.PanelResizeHandle> & {
+  withHandle?: boolean
+}) => (
+  <ResizablePrimitive.PanelResizeHandle
+    className={cn(
+      'relative flex w-[3px] items-center justify-center bg-foreground after:absolute after:inset-y-0 after:left-1/2 after:w-2 after:-translate-x-1/2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 data-[panel-group-direction=vertical]:h-[3px] data-[panel-group-direction=vertical]:w-full data-[panel-group-direction=vertical]:after:left-0 data-[panel-group-direction=vertical]:after:h-2 data-[panel-group-direction=vertical]:after:w-full data-[panel-group-direction=vertical]:after:-translate-y-1/2 data-[panel-group-direction=vertical]:after:translate-x-0 [&[data-panel-group-direction=vertical]>div]:rotate-90',
+      className
+    )}
+    {...props}
+  >
+    {withHandle && (
+      <div className="z-10 flex h-6 w-3 items-center justify-center border-3 border-foreground bg-background shadow-[2px_2px_0px_hsl(var(--shadow-color))]">
+        <GripVertical className="h-2.5 w-2.5 stroke-[3]" />
+      </div>
+    )}
+  </ResizablePrimitive.PanelResizeHandle>
+)
 
-export { ResizableHandle, ResizablePanel, ResizablePanelGroup };
+export { ResizablePanelGroup, ResizablePanel, ResizableHandle }

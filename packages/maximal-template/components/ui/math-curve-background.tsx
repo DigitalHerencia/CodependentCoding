@@ -1,42 +1,38 @@
-"use client";
-
-import { ErrorBoundary } from "@/components/ErrorBoundary";
+import * as React from 'react'
+import { cn } from '@/lib/utils'
+import { ErrorBoundary } from '@/components/ErrorBoundary'
+import { prefersReducedMotion, onReducedMotionChange } from '@/lib/motion-core'
 import {
   buildPath,
-  getAngle,
-  getCurvePulseDuration,
-  getDetailScale,
   getPoint,
-} from "@/components/ui/math-curves";
-import { cn } from "@/components/ui/utils";
-import type { BackgroundCurveKey } from "@/types/uiTypes";
-import * as React from "react";
+  getAngle,
+  getDetailScale,
+  getCurvePulseDuration,
+  type BackgroundCurveKey,
+} from '@/lib/math-curves'
 
 const SPEED_DURATION: Record<string, number> = {
   slow: 9000,
   normal: 5500,
   fast: 3000,
-};
-
-export interface MathCurveBackgroundProps extends React.HTMLAttributes<HTMLDivElement> {
-  curve?: BackgroundCurveKey;
-  speed?: "slow" | "normal" | "fast";
-  opacity?: number;
-  trackColor?: string;
-  headColor?: string;
-  strokeWidth?: number;
-  children?: React.ReactNode;
 }
 
-const MathCurveBackground = React.forwardRef<
-  HTMLDivElement,
-  MathCurveBackgroundProps
->(
+export interface MathCurveBackgroundProps extends React.HTMLAttributes<HTMLDivElement> {
+  curve?: BackgroundCurveKey
+  speed?: 'slow' | 'normal' | 'fast'
+  opacity?: number
+  trackColor?: string
+  headColor?: string
+  strokeWidth?: number
+  children?: React.ReactNode
+}
+
+const MathCurveBackground = React.forwardRef<HTMLDivElement, MathCurveBackgroundProps>(
   (
     {
       className,
-      curve = "rose",
-      speed = "slow",
+      curve = 'rose',
+      speed = 'slow',
       opacity = 0.15,
       trackColor,
       headColor,
@@ -44,64 +40,82 @@ const MathCurveBackground = React.forwardRef<
       children,
       ...props
     },
-    ref,
+    ref
   ) => {
-    const pathRef = React.useRef<SVGPathElement>(null);
-    const rectRef = React.useRef<SVGRectElement>(null);
-    const rafRef = React.useRef<number>(0);
-    const startTimeRef = React.useRef<number>(performance.now());
+    const pathRef = React.useRef<SVGPathElement>(null)
+    const rectRef = React.useRef<SVGRectElement>(null)
+    const rafRef = React.useRef<number>(0)
+    const startTimeRef = React.useRef<number>(performance.now())
 
-    const durationMs = SPEED_DURATION[speed] ?? 9000;
-    const HEAD_SIZE = 8;
+    const durationMs = SPEED_DURATION[speed] ?? SPEED_DURATION.slow
+    const HEAD_SIZE = 8
 
-    const initialTrackPath = React.useMemo(
-      () => buildPath(curve, 1.0),
-      [curve],
-    );
+    const initialTrackPath = React.useMemo(() => buildPath(curve, 1.0), [curve])
 
     React.useEffect(() => {
-      startTimeRef.current = performance.now();
+      startTimeRef.current = performance.now()
 
-      const tick = () => {
-        const now = performance.now();
-        const elapsed = (now - startTimeRef.current) % durationMs;
-        const progress = elapsed / durationMs;
-        const detailScale = getDetailScale(now, getCurvePulseDuration(curve));
+      // Draw one frame. Separated from scheduling so reduced motion can render
+      // a static frame without starting the loop.
+      const draw = () => {
+        const now = performance.now()
+        const elapsed = (now - startTimeRef.current) % durationMs
+        const progress = elapsed / durationMs
+        const detailScale = getDetailScale(now, getCurvePulseDuration(curve))
 
-        const { x, y } = getPoint(curve, progress, detailScale);
-        const angle = getAngle(curve, progress, detailScale);
+        const { x, y } = getPoint(curve, progress, detailScale)
+        const angle = getAngle(curve, progress, detailScale)
 
         if (pathRef.current) {
-          pathRef.current.setAttribute("d", buildPath(curve, detailScale));
+          pathRef.current.setAttribute('d', buildPath(curve, detailScale))
         }
 
         if (rectRef.current) {
-          const cx = x;
-          const cy = y;
-          rectRef.current.setAttribute("x", String(cx - HEAD_SIZE / 2));
-          rectRef.current.setAttribute("y", String(cy - HEAD_SIZE / 2));
-          rectRef.current.setAttribute(
-            "transform",
-            `rotate(${angle} ${cx} ${cy})`,
-          );
+          const cx = x
+          const cy = y
+          rectRef.current.setAttribute('x', String(cx - HEAD_SIZE / 2))
+          rectRef.current.setAttribute('y', String(cy - HEAD_SIZE / 2))
+          rectRef.current.setAttribute('transform', `rotate(${angle} ${cx} ${cy})`)
         }
 
-        rafRef.current = requestAnimationFrame(tick);
-      };
+      }
 
-      rafRef.current = requestAnimationFrame(tick);
+      const tick = () => {
+        draw()
+        rafRef.current = requestAnimationFrame(tick)
+      }
+
+      // A CSS media query can't stop a loop that mutates SVG attributes, so
+      // the reduced-motion preference has to be consulted here.
+      const start = () => {
+        cancelAnimationFrame(rafRef.current)
+        rafRef.current = 0
+        if (prefersReducedMotion()) {
+          draw()
+          return
+        }
+        rafRef.current = requestAnimationFrame(tick)
+      }
+
+      start()
+      const unsubscribe = onReducedMotionChange(start)
 
       return () => {
-        cancelAnimationFrame(rafRef.current);
-      };
-    }, [curve, speed, durationMs, strokeWidth]);
+        unsubscribe()
+        cancelAnimationFrame(rafRef.current)
+      }
+    }, [curve, speed, durationMs, strokeWidth])
 
-    const resolvedTrackStroke = trackColor ?? "currentColor";
-    const resolvedHeadFill = headColor ?? "hsl(var(--primary))";
+    const resolvedTrackStroke = trackColor ?? 'currentColor'
+    const resolvedHeadFill = headColor ?? 'hsl(var(--primary))'
 
     return (
       <ErrorBoundary>
-        <div ref={ref} className={cn("relative", className)} {...props}>
+        <div
+          ref={ref}
+          className={cn('relative', className)}
+          {...props}
+        >
           {/* Animated SVG background layer */}
           <svg
             viewBox="0 0 100 100"
@@ -110,13 +124,13 @@ const MathCurveBackground = React.forwardRef<
             aria-hidden="true"
             opacity={opacity}
             style={{
-              position: "absolute",
+              position: 'absolute',
               inset: 0,
-              width: "100%",
-              height: "100%",
+              width: '100%',
+              height: '100%',
               zIndex: 0,
-              overflow: "hidden",
-              pointerEvents: "none",
+              overflow: 'hidden',
+              pointerEvents: 'none',
             }}
           >
             <path
@@ -141,12 +155,12 @@ const MathCurveBackground = React.forwardRef<
             />
           </svg>
           {/* Children sit above the SVG */}
-          <div style={{ position: "relative", zIndex: 1 }}>{children}</div>
+          <div style={{ position: 'relative', zIndex: 1 }}>{children}</div>
         </div>
       </ErrorBoundary>
-    );
-  },
-);
-MathCurveBackground.displayName = "MathCurveBackground";
+    )
+  }
+)
+MathCurveBackground.displayName = 'MathCurveBackground'
 
-export { MathCurveBackground };
+export { MathCurveBackground }

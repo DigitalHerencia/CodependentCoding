@@ -77,6 +77,13 @@
       "status": "accepted",
       "authority": "GitHub issue #366 and explicit owner continuation after merged #369.",
       "decision": "Implement tenant/admin navigation only, using one authenticated full-screen modal on phone/tablet (<64rem) and existing desktop side/header/footer structure. Remove duplicate bottom bars without invented quick actions. Reuse active own-profile/organization reads and existing Clerk/PWA account operations. Keep public/CRM paths, shared primitive contracts and authz/RLS/Prisma unchanged. Open one draft PR and stop for independent review."
-    }
-  ]
+    },
+{
+  "id": "GIT-MAINTENANCE-2026-11-17",
+  "date": "2026-11-17",
+  "status": "accepted",
+  "title": "Preserve owner-requested UI/chart snapshot separately from main",
+  "decision": "Owner requested commit, sync and branch cleanup. Preserve all 108 pending files in a snapshot branch based on current main. TypeScript fails; do not merge. Remove only branches verified merged; preserve worktree files."
+}
+]
 }
