@@ -1,10 +1,9 @@
-import { Dialog, DialogOverlay, DialogPortal } from "@/components/ui/dialog";
-import { cn } from "@/components/ui/utils";
+import * as React from "react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
-import { type DialogProps } from "@radix-ui/react-dialog";
 import { Command as CommandPrimitive } from "cmdk";
 import { Search } from "lucide-react";
-import * as React from "react";
+import { cn } from "@/components/ui/utils";
+import { Dialog, DialogPortal, DialogOverlay } from "@/components/ui/dialog";
 
 const Command = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive>,
@@ -21,7 +20,7 @@ const Command = React.forwardRef<
 ));
 Command.displayName = CommandPrimitive.displayName;
 
-interface CommandDialogProps extends DialogProps {
+interface CommandDialogProps extends DialogPrimitive.DialogProps {
   /** Accessible title for the dialog (visually hidden). */
   title?: string;
   /** Accessible description for the dialog (visually hidden). */
@@ -169,11 +168,11 @@ CommandShortcut.displayName = "CommandShortcut";
 export {
   Command,
   CommandDialog,
+  CommandInput,
+  CommandList,
   CommandEmpty,
   CommandGroup,
-  CommandInput,
   CommandItem,
-  CommandList,
-  CommandSeparator,
   CommandShortcut,
+  CommandSeparator,
 };

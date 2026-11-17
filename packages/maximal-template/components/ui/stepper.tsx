@@ -1,9 +1,9 @@
 "use client";
 
-import { cn } from "@/components/ui/utils";
-import { cva, type VariantProps } from "class-variance-authority";
-import { Check } from "lucide-react";
 import * as React from "react";
+import { cva, type VariantProps } from "class-variance-authority";
+import { cn } from "@/components/ui/utils";
+import { Check } from "lucide-react";
 
 // Context
 interface StepperContextValue {
@@ -48,11 +48,38 @@ const stepVariants = cva(
   },
 );
 
+/**
+ * Depth-first count of <StepperItem> descendants.
+ *
+ * Items are normally nested inside <StepperList>, so scanning only the root's
+ * direct children finds zero of them — which made `totalSteps` 0 and left
+ * `isLast` permanently false, so a wizard could never be completed.
+ */
+function countStepperItems(children: React.ReactNode): number {
+  let count = 0;
+  React.Children.forEach(children, (child) => {
+    if (!React.isValidElement(child)) return;
+    if (
+      (child.type as { _isBoldKitStepperItem?: boolean })
+        ._isBoldKitStepperItem === true
+    ) {
+      count++;
+      return;
+    }
+    count += countStepperItems(
+      (child.props as { children?: React.ReactNode }).children,
+    );
+  });
+  return count;
+}
+
 // Stepper Root
 export interface StepperProps extends React.HTMLAttributes<HTMLDivElement> {
   activeStep?: number;
   onStepChange?: (step: number) => void;
   orientation?: "horizontal" | "vertical";
+  /** Overrides the automatic <StepperItem> count — for dynamic or virtualized steps. */
+  totalSteps?: number;
 }
 
 const Stepper = React.forwardRef<HTMLDivElement, StepperProps>(
@@ -61,6 +88,7 @@ const Stepper = React.forwardRef<HTMLDivElement, StepperProps>(
       activeStep: controlledActiveStep,
       onStepChange,
       orientation = "horizontal",
+      totalSteps: totalStepsProp,
       className,
       children,
       ...props
@@ -85,14 +113,8 @@ const Stepper = React.forwardRef<HTMLDivElement, StepperProps>(
       [isControlled, onStepChange],
     );
 
-    // Count total steps from children
-    const totalSteps = React.Children.toArray(children).filter((child) => {
-      if (!React.isValidElement(child)) return false;
-      return (
-        (child.type as typeof StepperItem & { _isBoldKitStepperItem?: boolean })
-          ._isBoldKitStepperItem === true
-      );
-    }).length;
+    // Count total steps from children, at any nesting depth.
+    const totalSteps = totalStepsProp ?? countStepperItems(children);
 
     return (
       <StepperContext.Provider
@@ -125,7 +147,8 @@ const StepperList = React.forwardRef<HTMLDivElement, StepperListProps>(
     return (
       <div
         ref={ref}
-        role="tablist"
+        role="group"
+        aria-label="Progress"
         className={cn(
           "flex items-center",
           orientation === "horizontal" ? "flex-row" : "flex-col items-start",
@@ -217,8 +240,8 @@ const StepperTrigger = React.forwardRef<HTMLButtonElement, StepperTriggerProps>(
         ref={ref}
         id={triggerId}
         type="button"
-        role="tab"
-        aria-selected={state === "active"}
+        aria-current={state === "active" ? "step" : undefined}
+        aria-controls={`stepper-panel-${index}`}
         onClick={() => setActiveStep(index)}
         className={cn(stepVariants({ state, size }), className)}
         {...props}
@@ -244,9 +267,12 @@ const StepperSeparator = React.forwardRef<
   StepperSeparatorProps
 >(({ className, ...props }, ref) => {
   const { activeStep, orientation } = useStepperContext();
-  const { index } = useStepperItemContext();
-
-  const isCompleted = index < activeStep;
+  // Optional on purpose: a separator is just as valid *between* items inside
+  // <StepperList> as it is inside one, and that's the composition the docs
+  // show. Outside an item there's no index to compare, so it renders in the
+  // un-completed style rather than throwing.
+  const itemContext = React.useContext(StepperItemContext);
+  const isCompleted = itemContext != null && itemContext.index < activeStep;
 
   return (
     <div
@@ -282,7 +308,8 @@ const StepperContent = React.forwardRef<HTMLDivElement, StepperContentProps>(
     return (
       <div
         ref={ref}
-        role="tabpanel"
+        id={`stepper-panel-${index}`}
+        role="group"
         aria-labelledby={`stepper-trigger-${index}`}
         className={cn(
           "mt-4 animate-[slide-in-from-bottom_200ms_ease-out]",
@@ -381,12 +408,12 @@ StepperActions.displayName = "StepperActions";
 
 export {
   Stepper,
-  StepperActions,
-  StepperContent,
-  StepperItem,
   StepperList,
-  StepperSeparator,
+  StepperItem,
   StepperTrigger,
+  StepperSeparator,
+  StepperContent,
+  StepperActions,
   stepVariants,
   useStepperContext,
 };

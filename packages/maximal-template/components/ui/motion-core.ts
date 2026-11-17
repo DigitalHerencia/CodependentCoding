@@ -8,6 +8,12 @@ export function prefersReducedMotion(): boolean {
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 
+export function onReducedMotionChange(callback: () => void): () => void {
+  const query = window.matchMedia("(prefers-reduced-motion: reduce)");
+  query.addEventListener("change", callback);
+  return () => query.removeEventListener("change", callback);
+}
+
 export function observeReveal(
   element: HTMLElement,
   options: RevealOptions = {},
@@ -67,9 +73,12 @@ export async function triggerAnimation(
 export function startViewTransition(
   callback: () => void | Promise<void>,
   recipe: PageTransition = "default",
+  options?: { types?: string[] },
 ): unknown {
   document.documentElement.dataset.pageTransition = recipe;
   const start = document.startViewTransition?.bind(document);
   if (!start || prefersReducedMotion()) return callback();
-  return start(callback);
+  return options?.types
+    ? start({ update: callback, types: options.types })
+    : start(callback);
 }

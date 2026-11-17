@@ -1,6 +1,6 @@
-import { cn } from "@/components/ui/utils";
-import { ChevronDown } from "lucide-react";
 import * as React from "react";
+import { ChevronDown } from "lucide-react";
+import { cn } from "@/components/ui/utils";
 
 /**
  * A styled wrapper around the native <select> element — lightweight and
@@ -14,7 +14,7 @@ const NativeSelect = React.forwardRef<
     <select
       ref={ref}
       className={cn(
-        "h-11 w-full appearance-none border-3 border-foreground bg-background px-3 pr-10 text-sm font-bold tracking-wide uppercase shadow-[4px_4px_0px_hsl(var(--shadow-color))] transition outline-none focus-visible:translate-x-[2px] focus-visible:translate-y-[2px] focus-visible:shadow-none disabled:cursor-not-allowed disabled:opacity-50",
+        "bk-native-select h-11 w-full appearance-none border-3 border-foreground bg-background px-3 pr-10 text-sm font-bold tracking-wide uppercase shadow-[4px_4px_0px_hsl(var(--shadow-color))] transition outline-none focus-visible:translate-x-[2px] focus-visible:translate-y-[2px] focus-visible:shadow-none disabled:cursor-not-allowed disabled:opacity-50",
         className,
       )}
       {...props}

@@ -1,18 +1,23 @@
 "use client";
 
+import type { BackgroundCurveKey } from "@/types/uiTypes";
+
+import * as React from "react";
+import { cn } from "@/components/ui/utils";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import {
+  prefersReducedMotion,
+  onReducedMotionChange,
+} from "@/components/ui/motion-core";
+import {
   buildPath,
-  getAngle,
-  getCurvePulseDuration,
-  getDetailScale,
   getPoint,
+  getAngle,
+  getDetailScale,
+  getCurvePulseDuration,
 } from "@/components/ui/math-curves";
-import { cn } from "@/components/ui/utils";
-import type { BackgroundCurveKey } from "@/types/uiTypes";
-import * as React from "react";
 
-const SPEED_DURATION: Record<string, number> = {
+const SPEED_DURATION: Record<"slow" | "normal" | "fast", number> = {
   slow: 9000,
   normal: 5500,
   fast: 3000,
@@ -51,7 +56,7 @@ const MathCurveBackground = React.forwardRef<
     const rafRef = React.useRef<number>(0);
     const startTimeRef = React.useRef<number>(performance.now());
 
-    const durationMs = SPEED_DURATION[speed] ?? 9000;
+    const durationMs = SPEED_DURATION[speed] ?? SPEED_DURATION.slow;
     const HEAD_SIZE = 8;
 
     const initialTrackPath = React.useMemo(
@@ -62,7 +67,9 @@ const MathCurveBackground = React.forwardRef<
     React.useEffect(() => {
       startTimeRef.current = performance.now();
 
-      const tick = () => {
+      // Draw one frame. Separated from scheduling so reduced motion can render
+      // a static frame without starting the loop.
+      const draw = () => {
         const now = performance.now();
         const elapsed = (now - startTimeRef.current) % durationMs;
         const progress = elapsed / durationMs;
@@ -85,13 +92,30 @@ const MathCurveBackground = React.forwardRef<
             `rotate(${angle} ${cx} ${cy})`,
           );
         }
+      };
 
+      const tick = () => {
+        draw();
         rafRef.current = requestAnimationFrame(tick);
       };
 
-      rafRef.current = requestAnimationFrame(tick);
+      // A CSS media query can't stop a loop that mutates SVG attributes, so
+      // the reduced-motion preference has to be consulted here.
+      const start = () => {
+        cancelAnimationFrame(rafRef.current);
+        rafRef.current = 0;
+        if (prefersReducedMotion()) {
+          draw();
+          return;
+        }
+        rafRef.current = requestAnimationFrame(tick);
+      };
+
+      start();
+      const unsubscribe = onReducedMotionChange(start);
 
       return () => {
+        unsubscribe();
         cancelAnimationFrame(rafRef.current);
       };
     }, [curve, speed, durationMs, strokeWidth]);

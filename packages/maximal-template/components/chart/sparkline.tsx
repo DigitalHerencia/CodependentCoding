@@ -1,7 +1,7 @@
 "use client";
 
-import { cn } from "@/components/ui/utils";
 import * as React from "react";
+import { cn } from "@/components/ui/utils";
 import {
   Area,
   AreaChart,
@@ -22,6 +22,9 @@ export interface SparklineProps extends React.HTMLAttributes<HTMLDivElement> {
   strokeWidth?: number;
   trend?: "up" | "down" | "neutral";
   animated?: boolean;
+  /** Accessible name. A sparkline conveys a trend, which is invisible to AT
+   *  without one; defaults to a summary of the series. */
+  ariaLabel?: string;
 }
 
 const Sparkline = React.forwardRef<HTMLDivElement, SparklineProps>(
@@ -36,11 +39,20 @@ const Sparkline = React.forwardRef<HTMLDivElement, SparklineProps>(
       strokeWidth = 2,
       trend,
       animated = true,
+      ariaLabel,
       className,
       ...props
     },
     ref,
   ) => {
+    // `aria-label` on a plain <div> is ignored by most AT — it needs a role.
+    // Default the name to something useful rather than leaving the trend
+    // entirely invisible.
+    const accessibleLabel =
+      ariaLabel ??
+      (data && data.length
+        ? `Sparkline, ${data.length} points, from ${data[0]} to ${data[data.length - 1]}`
+        : "Sparkline, no data");
     // Unique ID per instance prevents gradient collision when multiple sparklines render on the same page
     const uid = React.useId().replace(/:/g, "");
 
@@ -59,7 +71,8 @@ const Sparkline = React.forwardRef<HTMLDivElement, SparklineProps>(
       return (
         <div
           ref={ref}
-          aria-label="No data"
+          role="img"
+          aria-label={ariaLabel ?? "Sparkline, no data"}
           className={cn(
             "inline-block border-b-2 border-dashed border-foreground/30",
             className,
@@ -101,6 +114,8 @@ const Sparkline = React.forwardRef<HTMLDivElement, SparklineProps>(
       return (
         <div
           ref={ref}
+          role="img"
+          aria-label={accessibleLabel}
           className={cn("inline-block", className)}
           style={{ width, height }}
           {...props}
@@ -128,6 +143,8 @@ const Sparkline = React.forwardRef<HTMLDivElement, SparklineProps>(
       return (
         <div
           ref={ref}
+          role="img"
+          aria-label={accessibleLabel}
           className={cn("inline-block", className)}
           style={{ width, height }}
           {...props}
@@ -178,6 +195,8 @@ const Sparkline = React.forwardRef<HTMLDivElement, SparklineProps>(
     return (
       <div
         ref={ref}
+        role="img"
+        aria-label={accessibleLabel}
         className={cn("inline-block", className)}
         style={{ width, height }}
         {...props}

@@ -1,6 +1,6 @@
-import { cn } from "@/components/ui/utils";
-import { cva, type VariantProps } from "class-variance-authority";
 import * as React from "react";
+import { cva, type VariantProps } from "class-variance-authority";
+import { cn } from "@/components/ui/utils";
 
 // Timeline Context
 interface TimelineContextValue {
@@ -261,16 +261,16 @@ TimelineCard.displayName = "TimelineCard";
 
 export {
   Timeline,
-  TimelineCard,
-  TimelineConnector,
-  timelineConnectorVariants,
-  TimelineContent,
-  TimelineDescription,
-  TimelineDot,
-  timelineDotVariants,
-  TimelineHeader,
   TimelineItem,
-  timelineItemVariants,
-  TimelineTime,
+  TimelineDot,
+  TimelineConnector,
+  TimelineContent,
+  TimelineHeader,
   TimelineTitle,
+  TimelineDescription,
+  TimelineTime,
+  TimelineCard,
+  timelineItemVariants,
+  timelineDotVariants,
+  timelineConnectorVariants,
 };

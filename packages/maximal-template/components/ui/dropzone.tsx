@@ -1,20 +1,20 @@
 "use client";
 
+import * as React from "react";
+import { cva, type VariantProps } from "class-variance-authority";
+import { cn } from "@/components/ui/utils";
 import { Progress } from "@/components/ui/progress";
 import { Spinner } from "@/components/ui/spinner";
-import { cn } from "@/components/ui/utils";
-import { cva, type VariantProps } from "class-variance-authority";
 import {
-  File,
-  FileAudio,
-  FileCode,
-  FileText,
-  FileVideo,
-  Image as ImageIcon,
   Upload,
   X,
+  File,
+  Image,
+  FileText,
+  FileCode,
+  FileAudio,
+  FileVideo,
 } from "lucide-react";
-import * as React from "react";
 
 // Types
 export interface FileRejection {
@@ -291,9 +291,10 @@ const Dropzone = React.forwardRef<HTMLDivElement, DropzoneProps>(
           className="hidden"
         />
 
+        {/* `state` is built entirely from useState values (isDragging,
+            acceptedFiles, rejectedFiles) plus a useCallback — no ref is
+            involved; the rule mis-flags the render-prop call. */}
         {typeof children === "function" ? (
-          // The render prop intentionally receives reset(), whose ref access
-          // occurs only if the consumer invokes it from an event.
           // eslint-disable-next-line react-hooks/refs
           children(state)
         ) : children ? (
@@ -400,6 +401,8 @@ function FileListItem({
   uploading,
   onRemove,
 }: FileListItemProps) {
+  const Icon = getFileIcon(file.type);
+
   return (
     <div
       className={cn(
@@ -409,7 +412,10 @@ function FileListItem({
       )}
     >
       <div className="flex h-10 w-10 items-center justify-center border-3 border-foreground bg-muted">
-        {renderFileIcon(file.type)}
+        {/* getFileIcon is a lookup returning one of seven module-level lucide
+            icons, not a factory — no component is created here. */}
+        {/* eslint-disable-next-line react-hooks/static-components */}
+        <Icon className="h-5 w-5" />
       </div>
 
       <div className="min-w-0 flex-1">
@@ -426,8 +432,11 @@ function FileListItem({
       {uploading ? (
         <Spinner size="sm" />
       ) : onRemove ? (
+        // Icon-only, so it needs a name that says WHICH file: with N files
+        // there would otherwise be N identically anonymous "button"s.
         <button
           type="button"
+          aria-label={`Remove ${file.name}`}
           onClick={(e) => {
             e.stopPropagation();
             onRemove();
@@ -453,20 +462,19 @@ function formatBytes(bytes: number): string {
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
 }
 
-function renderFileIcon(mimeType: string) {
-  const className = "h-5 w-5";
-  if (mimeType.startsWith("image/")) return <ImageIcon className={className} />;
-  if (mimeType.startsWith("video/")) return <FileVideo className={className} />;
-  if (mimeType.startsWith("audio/")) return <FileAudio className={className} />;
+function getFileIcon(mimeType: string) {
+  if (mimeType.startsWith("image/")) return Image;
+  if (mimeType.startsWith("video/")) return FileVideo;
+  if (mimeType.startsWith("audio/")) return FileAudio;
   if (mimeType.includes("pdf") || mimeType.includes("document"))
-    return <FileText className={className} />;
+    return FileText;
   if (
     mimeType.includes("code") ||
     mimeType.includes("javascript") ||
     mimeType.includes("json")
   )
-    return <FileCode className={className} />;
-  return <File className={className} />;
+    return FileCode;
+  return File;
 }
 
-export { Dropzone, dropzoneVariants, FileList };
+export { Dropzone, FileList, dropzoneVariants };

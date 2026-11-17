@@ -1,9 +1,9 @@
+import * as React from "react";
+import { cva, type VariantProps } from "class-variance-authority";
+import { cn } from "@/components/ui/utils";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { cn } from "@/components/ui/utils";
-import { cva, type VariantProps } from "class-variance-authority";
-import { Minus, TrendingDown, TrendingUp } from "lucide-react";
-import * as React from "react";
+import { TrendingUp, TrendingDown, Minus } from "lucide-react";
 
 const statCardVariants = cva("relative overflow-hidden", {
   variants: {

@@ -10,7 +10,7 @@ const Toaster = ({ ...props }: ToasterProps) => {
 
   return (
     <Sonner
-      theme={(resolvedTheme ?? "system") as NonNullable<ToasterProps["theme"]>}
+      theme={resolvedTheme === "dark" ? "dark" : "light"}
       className="toaster group"
       toastOptions={{
         classNames: {

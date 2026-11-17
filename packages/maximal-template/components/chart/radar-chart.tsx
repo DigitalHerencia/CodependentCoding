@@ -1,16 +1,16 @@
-import { cn } from "@/components/ui/utils";
 import * as React from "react";
+import { cn } from "@/components/ui/utils";
 import {
-  PolarAngleAxis,
-  PolarGrid,
-  PolarRadiusAxis,
   Radar,
   RadarChart as RechartsRadarChart,
+  PolarGrid,
+  PolarAngleAxis,
+  PolarRadiusAxis,
 } from "recharts";
-import { ChartContainer } from "./container";
+import { ChartContainer, type ChartContainerProps } from "./container";
 import { ChartEmpty } from "./empty";
-import { ChartLegend, ChartLegendContent } from "./legend";
 import { ChartTooltip, ChartTooltipContent } from "./tooltip";
+import { ChartLegend, ChartLegendContent } from "./legend";
 import type { ChartConfig } from "./types";
 
 export interface RadarChartData {
@@ -23,6 +23,8 @@ export interface RadarChartProps extends React.HTMLAttributes<HTMLDivElement> {
   dataKeys: string[];
   config: ChartConfig;
   variant?: "default" | "filled" | "outlined";
+  /** Container border/shadow style — `variant` here is the chart geometry. */
+  containerVariant?: ChartContainerProps["variant"];
   showLegend?: boolean;
   showGrid?: boolean;
   showTooltip?: boolean;
@@ -38,6 +40,7 @@ const RadarChartComponent = React.forwardRef<HTMLDivElement, RadarChartProps>(
       dataKeys,
       config,
       variant = "default",
+      containerVariant,
       showLegend = true,
       showGrid = true,
       showTooltip = true,
@@ -93,6 +96,7 @@ const RadarChartComponent = React.forwardRef<HTMLDivElement, RadarChartProps>(
       <ChartContainer
         ref={ref}
         config={config}
+        variant={containerVariant}
         className={cn("aspect-square max-h-[300px]", className)}
         {...props}
       >

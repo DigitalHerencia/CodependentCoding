@@ -1,10 +1,10 @@
-import { cn } from "@/components/ui/utils";
+import * as React from "react";
 import * as LabelPrimitive from "@radix-ui/react-label";
 import { cva, type VariantProps } from "class-variance-authority";
-import * as React from "react";
+import { cn } from "@/components/ui/utils";
 
 const labelVariants = cva(
-  "inline-block text-left type-label peer-disabled:cursor-not-allowed peer-disabled:opacity-70",
+  "text-sm leading-none font-bold tracking-wide uppercase peer-disabled:cursor-not-allowed peer-disabled:opacity-70",
 );
 
 const Label = React.forwardRef<

@@ -11,18 +11,20 @@ export const CHART_PALETTES = {
     "hsl(var(--info))",
   ],
   vibrant: [
-    "hsl(var(--chart-1))",
-    "hsl(var(--chart-2))",
-    "hsl(var(--chart-3))",
-    "hsl(var(--chart-4))",
-    "hsl(var(--chart-5))",
+    "hsl(0 84% 60%)", // Coral red
+    "hsl(174 62% 50%)", // Teal
+    "hsl(49 100% 60%)", // Yellow
+    "hsl(280 65% 60%)", // Purple
+    "hsl(145 63% 49%)", // Green
+    "hsl(212 100% 60%)", // Blue
   ],
   pastel: [
-    "hsl(var(--chart-1) / 0.72)",
-    "hsl(var(--chart-2) / 0.72)",
-    "hsl(var(--chart-3) / 0.72)",
-    "hsl(var(--chart-4) / 0.72)",
-    "hsl(var(--chart-5) / 0.72)",
+    "hsl(0 84% 75%)", // Light coral
+    "hsl(174 62% 70%)", // Light teal
+    "hsl(49 100% 75%)", // Light yellow
+    "hsl(280 65% 75%)", // Light purple
+    "hsl(145 63% 70%)", // Light green
+    "hsl(212 100% 75%)", // Light blue
   ],
   monochrome: [
     "hsl(var(--foreground))",

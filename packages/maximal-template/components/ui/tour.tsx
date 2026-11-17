@@ -1,10 +1,15 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { cn } from "@/components/ui/utils";
-import { X } from "lucide-react";
 import * as React from "react";
 import { createPortal } from "react-dom";
+import { X } from "lucide-react";
+import { cn } from "@/components/ui/utils";
+import { Button } from "@/components/ui/button";
+
+// Typed here so the dev-only guards compile without @types/node (Vite's
+// default tsconfig has none). `declare` emits nothing: bundlers still
+// replace the literal process.env.NODE_ENV.
+declare const process: { env: { NODE_ENV?: string } };
 
 export interface TourStep {
   target: string | HTMLElement | React.RefObject<HTMLElement>;
@@ -187,9 +192,72 @@ function TourPopover({
     useTour();
   const popoverRef = React.useRef<HTMLDivElement>(null);
   const [position, setPosition] = React.useState({ top: 0, left: 0 });
+  const titleId = React.useId();
+  const descriptionId = React.useId();
 
   const isFirst = currentStep === 0;
   const isLast = currentStep === totalSteps - 1;
+
+  // The tour visually covers the page with an opaque scrim, so it has to
+  // behave like the modal dialog it looks like: focus moves in, Tab stays in,
+  // Escape closes, and focus returns where it came from. Previously focus
+  // stayed on the obscured page behind the scrim and Escape did nothing
+  // (WCAG 2.1.2 / 4.1.2). Every other overlay in the library gets this from
+  // Radix; Tour hand-rolls its portal, so it has to do it itself.
+  React.useEffect(() => {
+    const previouslyFocused = document.activeElement as HTMLElement | null;
+    popoverRef.current?.focus();
+
+    const focusableIn = (root: HTMLElement) =>
+      [
+        ...root.querySelectorAll<HTMLElement>(
+          'a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])',
+        ),
+      ].filter(
+        (el) => el.offsetParent !== null || el === document.activeElement,
+      );
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        close();
+        return;
+      }
+      if (e.key !== "Tab") return;
+
+      const root = popoverRef.current;
+      if (!root) return;
+      const focusable = focusableIn(root);
+      if (!focusable.length) {
+        e.preventDefault();
+        root.focus();
+        return;
+      }
+      const first = focusable[0]!;
+      const last = focusable[focusable.length - 1]!;
+      const active = document.activeElement;
+
+      // `active === root` on open (the container holds initial focus but is
+      // tabindex=-1, so it isn't in `focusable`) — without this the very first
+      // Shift+Tab walked straight out of the dialog.
+      if (!root.contains(active) || active === root) {
+        e.preventDefault();
+        (e.shiftKey ? last : first).focus();
+      } else if (e.shiftKey && active === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && active === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
+
+    document.addEventListener("keydown", onKeyDown, true);
+    return () => {
+      document.removeEventListener("keydown", onKeyDown, true);
+      previouslyFocused?.focus?.();
+    };
+  }, [close]);
 
   // Calculate position
   React.useEffect(() => {
@@ -216,10 +284,16 @@ function TourPopover({
   return (
     <div
       ref={popoverRef}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby={titleId}
+      aria-describedby={descriptionId}
+      tabIndex={-1}
       className={cn(
         "fixed z-[9999] w-80 border-3 border-foreground bg-popover p-4",
         "shadow-[8px_8px_0px_hsl(var(--shadow-color))]",
         "animate-in duration-200 ease-out fade-in-0 zoom-in-95",
+        "focus:outline-none",
       )}
       style={{ top: position.top, left: position.left }}
     >
@@ -240,10 +314,15 @@ function TourPopover({
 
       {/* Content */}
       <div className="space-y-3">
-        <h3 className="text-base font-bold tracking-wide uppercase">
+        <h3
+          id={titleId}
+          className="text-base font-bold tracking-wide uppercase"
+        >
           {step.title}
         </h3>
-        <p className="text-sm text-muted-foreground">{step.description}</p>
+        <p id={descriptionId} className="text-sm text-muted-foreground">
+          {step.description}
+        </p>
         {step.content}
       </div>
 
@@ -314,9 +393,6 @@ const Tour = React.forwardRef<HTMLDivElement, TourProps>(
 
     const setOpen = React.useCallback(
       (value: boolean) => {
-        if (!value) {
-          setCurrentStep(0);
-        }
         if (!isControlled) {
           setUncontrolledOpen(value);
         }
@@ -331,35 +407,59 @@ const Tour = React.forwardRef<HTMLDivElement, TourProps>(
     React.useEffect(() => {
       if (!open || !currentStepData) return;
 
-      const updateRect = () => {
+      // Measure only. This runs on every scroll event, so it must NOT scroll:
+      // calling scrollIntoView here re-entered itself through its own smooth
+      // animation and pinned the page to the spotlight, fighting the user.
+      const measure = () => {
         const element = getTargetElement(currentStepData.target);
         if (element) {
-          const rect = element.getBoundingClientRect();
-          setTargetRect(rect);
-
-          // Scroll element into view
-          element.scrollIntoView({
-            behavior: "smooth",
-            block: "center",
-          });
+          setTargetRect(element.getBoundingClientRect());
         } else {
           // Target not found — fall back to center placement
-          console.warn("[Tour] Step target was not found in the document.");
+          if (process.env.NODE_ENV === "development") {
+            console.warn(
+              `[Tour] Step target "${currentStepData.target}" not found in DOM`,
+            );
+          }
           setTargetRect(null);
         }
       };
 
-      updateRect();
+      // Scrolling belongs to the step transition, not to measurement.
+      getTargetElement(currentStepData.target)?.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+      measure();
 
-      // Update on resize/scroll
-      window.addEventListener("resize", updateRect);
-      window.addEventListener("scroll", updateRect, true);
+      // Coalesce to one measurement per frame — a capture-phase scroll handler
+      // otherwise fires a setState per scroll event.
+      let frame = 0;
+      const onViewportChange = () => {
+        if (frame) return;
+        frame = requestAnimationFrame(() => {
+          frame = 0;
+          measure();
+        });
+      };
+
+      window.addEventListener("resize", onViewportChange);
+      window.addEventListener("scroll", onViewportChange, true);
 
       return () => {
-        window.removeEventListener("resize", updateRect);
-        window.removeEventListener("scroll", updateRect, true);
+        if (frame) cancelAnimationFrame(frame);
+        window.removeEventListener("resize", onViewportChange);
+        window.removeEventListener("scroll", onViewportChange, true);
       };
     }, [open, currentStep, currentStepData]);
+
+    // Reset to the first step when the tour closes. Adjusted during render
+    // rather than in an effect — reopening then never flashes the old step.
+    const [prevOpen, setPrevOpen] = React.useState(open);
+    if (prevOpen !== open) {
+      setPrevOpen(open);
+      if (!open) setCurrentStep(0);
+    }
 
     const nextStep = React.useCallback(() => {
       if (currentStep < steps.length - 1) {

@@ -1,7 +1,11 @@
 "use client";
 
-import { cn } from "@/components/ui/utils";
 import * as React from "react";
+import { cn } from "@/components/ui/utils";
+import {
+  prefersReducedMotion,
+  onReducedMotionChange,
+} from "@/components/ui/motion-core";
 
 // ============================================================================
 // Types
@@ -262,8 +266,8 @@ function drawMatrix(
   state: ColState[],
 ): void {
   for (let c = 0; c < cols; c++) {
-    const column = state[c]!;
-    const colT = (t * 0.001 * column.speed + column.offset) % (rows * 1.8);
+    const colT =
+      (t * 0.001 * state[c]!.speed + state[c]!.offset) % (rows * 1.8);
     for (let r = 0; r < rows; r++) {
       const distFromHead = colT - r;
       if (distFromHead >= 0 && distFromHead < 1) {
@@ -490,7 +494,7 @@ function drawCube(
   ];
 
   for (const [norm, ptFn] of faces) {
-    const [rnx, rny, rnz] = rot(norm[0], norm[1], norm[2]);
+    const [rnx, rny, rnz] = rot(norm[0]!, norm[1]!, norm[2]!);
     const L = Math.max(0, rnx * lx + rny * ly + rnz * lz);
     if (L < 0.02) continue;
     const ch =
@@ -815,8 +819,8 @@ function drawGeodesicDome(
     lz = -0.577;
 
   function norm3(v: [number, number, number]): [number, number, number] {
-    const len = Math.sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
-    return [v[0] / len, v[1] / len, v[2] / len];
+    const len = Math.sqrt(v[0]! * v[0]! + v[1]! * v[1]! + v[2]! * v[2]!);
+    return [v[0]! / len, v[1]! / len, v[2]! / len];
   }
 
   function rotYX(px: number, py: number, pz: number): [number, number, number] {
@@ -870,12 +874,12 @@ function drawGeodesicDome(
     v1: [number, number, number],
     v2: [number, number, number],
   ) {
-    if (v1[1] < -0.3 && v2[1] < -0.3) return;
+    if (v1[1]! < -0.3 && v2[1]! < -0.3) return;
     for (let s = 0; s <= 28; s++) {
       const f = s / 28;
-      const px = v1[0] + f * (v2[0] - v1[0]);
-      const py = v1[1] + f * (v2[1] - v1[1]);
-      const pz = v1[2] + f * (v2[2] - v1[2]);
+      const px = v1[0]! + f * (v2[0]! - v1[0]!);
+      const py = v1[1]! + f * (v2[1]! - v1[1]!);
+      const pz = v1[2]! + f * (v2[2]! - v1[2]!);
       const [rx, ry, rz] = rotYX(px, py, pz);
       const zDist = K2 - rz;
       if (zDist <= 0) continue;
@@ -901,13 +905,13 @@ function drawGeodesicDome(
       vc = norm3(rawV[ci]!);
     const pts: [number, number, number][][] = [];
     for (let i = 0; i <= freq; i++) {
-      pts[i] = [];
+      pts[i]! = [];
       for (let j = 0; j <= freq - i; j++) {
         const k = freq - i - j;
         pts[i]![j] = norm3([
-          (i * va[0] + j * vb[0] + k * vc[0]) / freq,
-          (i * va[1] + j * vb[1] + k * vc[1]) / freq,
-          (i * va[2] + j * vb[2] + k * vc[2]) / freq,
+          (i * va[0]! + j * vb[0]! + k * vc[0]!) / freq,
+          (i * va[1]! + j * vb[1]! + k * vc[1]!) / freq,
+          (i * va[2]! + j * vb[2]! + k * vc[2]!) / freq,
         ]);
       }
     }
@@ -1304,112 +1308,155 @@ function makeAsciiComponent(
   drawFn: DrawFn,
   defaultCharset: AsciiCharset = "classic",
 ) {
-  // Each exported factory result receives a concrete displayName below.
-  // eslint-disable-next-line react/display-name
-  return React.forwardRef<HTMLPreElement, AsciiShapeProps>(
-    (
-      {
-        size = "md",
-        charset = defaultCharset,
-        color,
-        speed = "normal",
-        animated = true,
-        multicolor = false,
-        className,
-        ...props
-      },
-      ref,
-    ) => {
-      const { cols, rows } = SIZE_MAP[size];
-      const chars = CHARSETS[charset];
-      const speedMul = SPEED_MAP[speed];
-      const matrixStateRef = React.useRef<ColState[]>(makeMatrixState(cols));
-      const preRef = React.useRef<HTMLPreElement | null>(null);
-      const spanRefs = React.useRef<(HTMLSpanElement | null)[]>([]);
+  return React.forwardRef<HTMLPreElement, AsciiShapeProps>(function AsciiShape(
+    {
+      size = "md",
+      charset = defaultCharset,
+      color,
+      speed = "normal",
+      animated = true,
+      multicolor = false,
+      className,
+      ...props
+    },
+    ref,
+  ) {
+    const { cols, rows } = SIZE_MAP[size]!;
+    const chars = CHARSETS[charset]!;
+    const speedMul = SPEED_MAP[speed]!;
+    const matrixStateRef = React.useRef<ColState[]>(makeMatrixState(cols));
+    const preRef = React.useRef<HTMLPreElement | null>(null);
+    const spanRefs = React.useRef<(HTMLSpanElement | null)[]>([]);
 
-      // Compute first frame for initial paint only — never triggers re-renders
-      const initialLines = React.useMemo(() => {
-        matrixStateRef.current = makeMatrixState(cols);
-        const g = makeGrid(cols, rows);
-        drawFn(g, cols, rows, 0, chars, matrixStateRef.current);
-        return gridToLines(g);
-      }, [cols, rows, chars]);
+    // Compute first frame for initial paint only — never triggers re-renders
+    const initialLines = React.useMemo(() => {
+      matrixStateRef.current = makeMatrixState(cols);
+      const g = makeGrid(cols, rows);
+      drawFn(g, cols, rows, 0, chars, matrixStateRef.current);
+      return gridToLines(g);
+    }, [cols, rows, chars]);
 
-      React.useEffect(() => {
-        const pre = preRef.current;
-        if (!pre) return;
+    React.useEffect(() => {
+      const pre = preRef.current;
+      if (!pre) return;
 
-        function writeLines(lines: string[]) {
-          if (multicolor) {
-            spanRefs.current.forEach((span, i) => {
-              if (span) span.textContent = lines[i] ?? "";
-            });
-          } else {
-            pre!.textContent = lines.join("\n");
-          }
+      const writeLines = (lines: string[]) => {
+        if (multicolor) {
+          spanRefs.current.forEach((span, i) => {
+            if (span) span.textContent = lines[i]! ?? "";
+          });
+        } else {
+          pre.textContent = lines.join("\n");
         }
+      };
 
-        if (!animated) {
-          writeLines(initialLines);
-          return;
-        }
-
-        const startTime = performance.now();
-        let rafId: number;
-
-        function frame(now: number) {
-          const t = (now - startTime) * speedMul;
-          const g = makeGrid(cols, rows);
-          drawFn(g, cols, rows, t, chars, matrixStateRef.current);
-          writeLines(gridToLines(g));
-          rafId = requestAnimationFrame(frame);
-        }
-
-        rafId = requestAnimationFrame(frame);
-        return () => cancelAnimationFrame(rafId);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-      }, [size, charset, speed, animated, multicolor]);
-
-      function combineRef(el: HTMLPreElement | null) {
-        preRef.current = el;
-        if (typeof ref === "function") ref(el);
-        else if (ref)
-          (ref as React.MutableRefObject<HTMLPreElement | null>).current = el;
+      if (!animated) {
+        writeLines(initialLines);
+        return;
       }
 
-      return (
-        <pre
-          aria-hidden="true"
-          ref={combineRef}
-          className={cn(
-            "inline-block overflow-hidden border-3 border-foreground bg-background shadow-[4px_4px_0px_hsl(var(--shadow-color))]",
-            "p-1 font-mono text-xs leading-none tracking-tight select-none",
-            className,
-          )}
-          style={multicolor ? undefined : { color: color || "currentColor" }}
-          {...props}
-        >
-          {multicolor
-            ? initialLines.map((line, i) => (
-                <React.Fragment key={i}>
-                  <span
-                    ref={(el) => {
-                      spanRefs.current[i] = el;
-                    }}
-                    style={{
-                      color: MULTICOLOR_PALETTE[i % MULTICOLOR_PALETTE.length],
-                    }}
-                  >
-                    {line}
-                  </span>
-                  {i < initialLines.length - 1 && "\n"}
-                </React.Fragment>
-              ))
-            : initialLines.join("\n")}
-        </pre>
-      );
-    },
-  );
+      const startTime = performance.now();
+      let rafId = 0;
+      let onScreen = true;
+
+      // One frame, without scheduling the next.
+      function draw(now: number) {
+        const t = (now - startTime) * speedMul;
+        const g = makeGrid(cols, rows);
+        drawFn(g, cols, rows, t, chars, matrixStateRef.current);
+        writeLines(gridToLines(g));
+      }
+
+      function frame(now: number) {
+        draw(now);
+        rafId = requestAnimationFrame(frame);
+      }
+
+      // A rAF loop that rewrites textContent every frame is invisible to a
+      // CSS reduced-motion query, keeps allocating a cols×rows grid while
+      // scrolled off-screen, and keeps ticking in a background tab. The
+      // canvas effects already centralise all three concerns in
+      // canvas-effect-core; this brings the ASCII loop up to the same bar.
+      function shouldAnimate() {
+        return onScreen && !document.hidden && !prefersReducedMotion();
+      }
+
+      function syncLoop() {
+        if (shouldAnimate()) {
+          if (!rafId) rafId = requestAnimationFrame(frame);
+        } else if (rafId) {
+          cancelAnimationFrame(rafId);
+          rafId = 0;
+        }
+      }
+
+      // Always paint one frame so a paused/reduced-motion shape isn't blank.
+      draw(performance.now());
+      syncLoop();
+
+      const observer =
+        typeof IntersectionObserver !== "undefined"
+          ? new IntersectionObserver((entries) => {
+              onScreen = entries.some((e) => e.isIntersecting);
+              syncLoop();
+            })
+          : null;
+      observer?.observe(pre);
+
+      document.addEventListener("visibilitychange", syncLoop);
+      const unsubscribeMotion = onReducedMotionChange(syncLoop);
+
+      return () => {
+        if (rafId) cancelAnimationFrame(rafId);
+        observer?.disconnect();
+        document.removeEventListener("visibilitychange", syncLoop);
+        unsubscribeMotion();
+      };
+      // Keyed on the public props: cols/rows/chars/speedMul/initialLines are
+      // all derived from them, and listing the derived values would restart
+      // the loop on every render.
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [size, charset, speed, animated, multicolor]);
+
+    function combineRef(el: HTMLPreElement | null) {
+      preRef.current = el;
+      if (typeof ref === "function") ref(el);
+      else if (ref)
+        (ref as React.MutableRefObject<HTMLPreElement | null>).current = el;
+    }
+
+    return (
+      <pre
+        aria-hidden="true"
+        ref={combineRef}
+        className={cn(
+          "inline-block overflow-hidden border-3 border-foreground bg-background shadow-[4px_4px_0px_hsl(var(--shadow-color))]",
+          "p-1 font-mono text-xs leading-none tracking-tight select-none",
+          className,
+        )}
+        style={multicolor ? undefined : { color: color || "currentColor" }}
+        {...props}
+      >
+        {multicolor
+          ? initialLines.map((line, i) => (
+              <React.Fragment key={i}>
+                <span
+                  ref={(el) => {
+                    spanRefs.current[i] = el;
+                  }}
+                  style={{
+                    color: MULTICOLOR_PALETTE[i % MULTICOLOR_PALETTE.length]!,
+                  }}
+                >
+                  {line}
+                </span>
+                {i < initialLines.length - 1 && "\n"}
+              </React.Fragment>
+            ))
+          : initialLines.join("\n")}
+      </pre>
+    );
+  });
 }
 
 // ============================================================================

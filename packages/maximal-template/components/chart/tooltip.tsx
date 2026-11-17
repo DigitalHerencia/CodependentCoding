@@ -1,8 +1,8 @@
 "use client";
 
-import { cn } from "@/components/ui/utils";
 import * as React from "react";
 import * as RechartsPrimitive from "recharts";
+import { cn } from "@/components/ui/utils";
 import { useChart } from "./types";
 import { getPayloadConfigFromPayload } from "./utils";
 

@@ -1,5 +1,9 @@
 "use client";
 
+import * as React from "react";
+import { cva, type VariantProps } from "class-variance-authority";
+import { PanelLeft } from "lucide-react";
+import { cn } from "@/components/ui/utils";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import {
@@ -7,10 +11,6 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { cn } from "@/components/ui/utils";
-import { cva, type VariantProps } from "class-variance-authority";
-import { PanelLeft } from "lucide-react";
-import * as React from "react";
 
 const SIDEBAR_COOKIE_NAME = "sidebar:state";
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7; // 7 days
@@ -215,7 +215,17 @@ const Sidebar = React.forwardRef<HTMLDivElement, SidebarProps>(
               } as React.CSSProperties & Record<string, string>
             }
           >
-            <div className="flex h-full flex-col">{children}</div>
+            {/* Same prop contract as the desktop branch below. This branch
+                used to drop ref, className AND ...props entirely, so the same
+                component honoured different props depending on viewport width
+                — and any ref silently became null on small screens. */}
+            <div
+              ref={ref}
+              className={cn("flex h-full flex-col", className)}
+              {...props}
+            >
+              {children}
+            </div>
           </SheetContent>
         </Sheet>
       );
@@ -428,17 +438,17 @@ SidebarInset.displayName = "SidebarInset";
 
 export {
   Sidebar,
+  SidebarProvider,
+  SidebarHeader,
   SidebarContent,
   SidebarFooter,
   SidebarGroup,
   SidebarGroupLabel,
-  SidebarHeader,
-  SidebarInset,
   SidebarItem,
-  sidebarItemVariants,
-  SidebarProvider,
   SidebarSeparator,
   SidebarToggle,
-  sidebarVariants,
+  SidebarInset,
   useSidebar,
+  sidebarVariants,
+  sidebarItemVariants,
 };

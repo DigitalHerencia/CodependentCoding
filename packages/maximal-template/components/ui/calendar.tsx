@@ -1,8 +1,8 @@
-import { buttonVariants } from "@/components/ui/button";
-import { cn } from "@/components/ui/utils";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import * as React from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { DayPicker } from "react-day-picker";
+import { cn } from "@/components/ui/utils";
+import { buttonVariants } from "@/components/ui/button";
 
 export type CalendarProps = React.ComponentProps<typeof DayPicker>;
 
@@ -20,18 +20,18 @@ function Calendar({
         className,
       )}
       classNames={{
-        months: "flex flex-col sm:flex-row gap-4",
+        months: "relative flex flex-col sm:flex-row gap-4",
         month: "flex flex-col gap-4",
         month_caption: "flex justify-center pt-1 relative items-center px-10",
         caption_label: "text-sm font-bold uppercase tracking-wide",
         nav: "flex items-center gap-1",
         button_previous: cn(
           buttonVariants({ variant: "outline" }),
-          "absolute left-0 h-7 w-7 bg-transparent p-0 hover:translate-x-0 hover:translate-y-0 hover:scale-110",
+          "absolute top-0 left-0 h-7 w-7 bg-transparent p-0 hover:translate-x-0 hover:translate-y-0 hover:scale-110",
         ),
         button_next: cn(
           buttonVariants({ variant: "outline" }),
-          "absolute right-0 h-7 w-7 bg-transparent p-0 hover:translate-x-0 hover:translate-y-0 hover:scale-110",
+          "absolute top-0 right-0 h-7 w-7 bg-transparent p-0 hover:translate-x-0 hover:translate-y-0 hover:scale-110",
         ),
         month_grid: "w-full border-collapse space-y-1",
         weekdays: "flex",

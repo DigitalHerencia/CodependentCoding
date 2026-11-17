@@ -1,6 +1,6 @@
-import { cn } from "@/components/ui/utils";
-import { cva, type VariantProps } from "class-variance-authority";
 import * as React from "react";
+import { cva, type VariantProps } from "class-variance-authority";
+import { cn } from "@/components/ui/utils";
 
 const alertVariants = cva(
   "relative w-full animate-in border-3 border-foreground p-4 shadow-[4px_4px_0px_hsl(var(--shadow-color))] transition duration-300 ease-out fade-in-0 slide-in-from-top-2 [&>svg]:absolute [&>svg]:top-4 [&>svg]:left-4 [&>svg]:text-foreground [&>svg+div]:translate-y-[-3px] [&>svg~*:not([data-alert-action])]:pl-8 [&>svg~[data-alert-action]]:ml-8",
@@ -110,4 +110,4 @@ const AlertAction = React.forwardRef<HTMLButtonElement, AlertActionProps>(
 );
 AlertAction.displayName = "AlertAction";
 
-export { Alert, AlertAction, AlertDescription, AlertTitle };
+export { Alert, AlertTitle, AlertDescription, AlertAction };

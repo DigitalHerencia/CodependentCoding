@@ -1,7 +1,7 @@
 "use client";
 
-import { cn } from "@/components/ui/utils";
 import * as React from "react";
+import { cn } from "@/components/ui/utils";
 
 // ── Icons ────────────────────────────────────────────────────────────────────
 
@@ -94,7 +94,10 @@ function CircleIcon({ filled }: { filled: boolean }) {
 type IconType = "star" | "heart" | "circle";
 type SizeVariant = "sm" | "md" | "lg" | "xl";
 
-interface RatingProps {
+interface RatingProps extends Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "onChange" | "defaultValue"
+> {
   /** Controlled value */
   value?: number;
   /** Uncontrolled default value */
@@ -137,131 +140,165 @@ const iconLabelFor = (icon: IconType, count: number) =>
 
 // ── Component ────────────────────────────────────────────────────────────────
 
-export function Rating({
-  value: controlledValue,
-  defaultValue = 0,
-  max = 5,
-  precision = 1,
-  icon = "star",
-  size = "md",
-  readOnly = false,
-  disabled = false,
-  onChange,
-  onHoverChange,
-  className,
-}: RatingProps) {
-  const isControlled = controlledValue !== undefined;
-  const [internalValue, setInternalValue] = React.useState(defaultValue);
-  // Unique gradient id per instance so multiple ratings don't share/clobber the
-  // half-star <linearGradient> definition (duplicate DOM ids).
-  const gradientId = `rating-half-${React.useId().replace(/:/g, "")}`;
+export const Rating = React.forwardRef<HTMLDivElement, RatingProps>(
+  function Rating(
+    {
+      value: controlledValue,
+      defaultValue = 0,
+      max = 5,
+      precision = 1,
+      icon = "star",
+      size = "md",
+      readOnly = false,
+      disabled = false,
+      onChange,
+      onHoverChange,
+      className,
+      ...props
+    },
+    ref,
+  ) {
+    const isControlled = controlledValue !== undefined;
+    const [internalValue, setInternalValue] = React.useState(defaultValue);
+    // Unique gradient id per instance so multiple ratings don't share/clobber the
+    // half-star <linearGradient> definition (duplicate DOM ids).
+    const gradientId = `rating-half-${React.useId().replace(/:/g, "")}`;
 
-  const currentValue = isControlled ? controlledValue! : internalValue;
+    const currentValue = isControlled ? controlledValue : internalValue;
 
-  const setValue = (next: number) => {
-    if (!isControlled) setInternalValue(next);
-    onChange?.(next);
-  };
+    const setValue = (next: number) => {
+      if (!isControlled) setInternalValue(next);
+      onChange?.(next);
+    };
 
-  const interactive = !readOnly && !disabled;
+    const interactive = !readOnly && !disabled;
+    const groupRef = React.useRef<HTMLDivElement>(null);
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (!interactive) return;
-    const step = precision;
-    let next = currentValue;
-    if (e.key === "ArrowRight" || e.key === "ArrowUp") {
-      next = Math.min(max, currentValue + step);
-      e.preventDefault();
-    } else if (e.key === "ArrowLeft" || e.key === "ArrowDown") {
-      next = Math.max(0, currentValue - step);
-      e.preventDefault();
-    } else if (e.key === "Home") {
-      next = 0;
-      e.preventDefault();
-    } else if (e.key === "End") {
-      next = max;
-      e.preventDefault();
-    } else {
-      return;
+    /**
+     * Move DOM focus onto whichever star now holds the roving tabindex.
+     *
+     * Without this the focus ring stopped tracking the value after the first
+     * arrow press, and Tab-ing back re-entered at a different star than the one
+     * that looked focused — the classic broken roving-tabindex symptom.
+     */
+    const focusActiveStar = (next: number) => {
+      const index = Math.min(Math.max(Math.ceil(next), 1), max);
+      const stars =
+        groupRef.current?.querySelectorAll<HTMLButtonElement>("button");
+      stars?.[index - 1]?.focus();
+    };
+
+    const handleKeyDown = (e: React.KeyboardEvent) => {
+      if (!interactive) return;
+      const step = precision;
+      let next = currentValue;
+      if (e.key === "ArrowRight" || e.key === "ArrowUp") {
+        next = Math.min(max, currentValue + step);
+        e.preventDefault();
+      } else if (e.key === "ArrowLeft" || e.key === "ArrowDown") {
+        next = Math.max(0, currentValue - step);
+        e.preventDefault();
+      } else if (e.key === "Home") {
+        next = 0;
+        e.preventDefault();
+      } else if (e.key === "End") {
+        next = max;
+        e.preventDefault();
+      } else {
+        return;
+      }
+      setValue(next);
+      // The roving tabindex moves with the value; DOM focus has to follow it.
+      focusActiveStar(next);
+    };
+
+    const handleMouseLeave = () => {
+      onHoverChange?.(null);
+    };
+
+    const handleStarMouseMove = (
+      _e: React.MouseEvent<HTMLButtonElement>,
+      starIndex: number,
+    ) => {
+      if (!interactive) return;
+      onHoverChange?.(starIndex);
+    };
+
+    const handleStarClick = (starIndex: number) => {
+      if (!interactive) return;
+      setValue(starIndex);
+    };
+
+    const valueText =
+      icon === "heart"
+        ? `${currentValue} out of ${max} hearts`
+        : icon === "circle"
+          ? `${currentValue} out of ${max} circles`
+          : `${currentValue} out of ${max} stars`;
+
+    function renderIcon(index: number) {
+      const filled = index <= currentValue;
+      const half = !filled && index - 0.5 <= currentValue && precision === 0.5;
+      if (icon === "heart") return <HeartIcon filled={filled} />;
+      if (icon === "circle") return <CircleIcon filled={filled} />;
+      return <StarIcon filled={filled} half={half} gradientId={gradientId} />;
     }
-    setValue(next);
-  };
 
-  const handleMouseLeave = () => {
-    onHoverChange?.(null);
-  };
-
-  const handleStarMouseMove = (
-    _e: React.MouseEvent<HTMLButtonElement>,
-    starIndex: number,
-  ) => {
-    if (!interactive) return;
-    onHoverChange?.(starIndex);
-  };
-
-  const handleStarClick = (starIndex: number) => {
-    if (!interactive) return;
-    setValue(starIndex);
-  };
-
-  const valueText =
-    icon === "heart"
-      ? `${currentValue} out of ${max} hearts`
-      : icon === "circle"
-        ? `${currentValue} out of ${max} circles`
-        : `${currentValue} out of ${max} stars`;
-
-  function renderIcon(index: number) {
-    const filled = index <= currentValue;
-    const half = !filled && index - 0.5 <= currentValue && precision === 0.5;
-    if (icon === "heart") return <HeartIcon filled={filled} />;
-    if (icon === "circle") return <CircleIcon filled={filled} />;
-    return <StarIcon filled={filled} half={half} gradientId={gradientId} />;
-  }
-
-  return (
-    // role="group" of toggle buttons (roving tabindex), not role="slider": a
-    // focusable slider wrapping focusable buttons is a nested-interactive
-    // violation (axe). Arrow keys still work — keydown bubbles from the stars.
-    <div
-      role="group"
-      aria-label={`Rating: ${valueText}`}
-      onKeyDown={handleKeyDown}
-      onMouseLeave={handleMouseLeave}
-      className={cn(
-        "flex items-center gap-0.5 outline-none",
-        sizeClasses[size],
-        disabled && "pointer-events-none opacity-50",
-        className,
-      )}
-    >
-      {Array.from({ length: max }, (_, i) => {
-        const starIndex = i + 1;
-        // Roving tabindex: exactly one star must be tabbable. Clamp first —
-        // an out-of-range value would match no star and make the whole group
-        // unreachable by keyboard.
-        const activeIndex = Math.min(Math.max(Math.ceil(currentValue), 1), max);
-        const isFocusable = interactive && starIndex === activeIndex;
-        return (
-          <button
-            key={starIndex}
-            type="button"
-            tabIndex={isFocusable ? 0 : -1}
-            disabled={disabled}
-            aria-label={`${starIndex} ${iconLabelFor(icon, starIndex)}`}
-            aria-pressed={starIndex <= currentValue}
-            onClick={() => handleStarClick(starIndex)}
-            onMouseMove={(e) => handleStarMouseMove(e, starIndex)}
-            className={cn(
-              "flex items-center justify-center transition-transform focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-              interactive && "cursor-pointer hover:scale-110",
-              !interactive && "cursor-default",
-            )}
-          >
-            {renderIcon(starIndex)}
-          </button>
-        );
-      })}
-    </div>
-  );
-}
+    return (
+      // role="group" of toggle buttons (roving tabindex), not role="slider": a
+      // focusable slider wrapping focusable buttons is a nested-interactive
+      // violation (axe). Arrow keys still work — keydown bubbles from the stars.
+      <div
+        ref={(node) => {
+          groupRef.current = node;
+          if (typeof ref === "function") ref(node);
+          else if (ref) ref.current = node;
+        }}
+        role="group"
+        aria-label={`Rating: ${valueText}${readOnly ? ", read only" : ""}`}
+        aria-disabled={disabled || undefined}
+        onKeyDown={handleKeyDown}
+        onMouseLeave={handleMouseLeave}
+        {...props}
+        className={cn(
+          "flex items-center gap-0.5 outline-none",
+          sizeClasses[size],
+          disabled && "pointer-events-none opacity-50",
+          className,
+        )}
+      >
+        {Array.from({ length: max }, (_, i) => {
+          const starIndex = i + 1;
+          // Roving tabindex: exactly one star must be tabbable. Clamp first —
+          // an out-of-range value would match no star and make the whole group
+          // unreachable by keyboard.
+          const activeIndex = Math.min(
+            Math.max(Math.ceil(currentValue), 1),
+            max,
+          );
+          const isFocusable = interactive && starIndex === activeIndex;
+          return (
+            <button
+              key={starIndex}
+              type="button"
+              tabIndex={isFocusable ? 0 : -1}
+              disabled={disabled}
+              aria-label={`${starIndex} ${iconLabelFor(icon, starIndex)}`}
+              aria-pressed={starIndex <= currentValue}
+              onClick={() => handleStarClick(starIndex)}
+              onMouseMove={(e) => handleStarMouseMove(e, starIndex)}
+              className={cn(
+                "flex items-center justify-center transition-transform focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+                interactive && "cursor-pointer hover:scale-110",
+                !interactive && "cursor-default",
+              )}
+            >
+              {renderIcon(starIndex)}
+            </button>
+          );
+        })}
+      </div>
+    );
+  },
+);
+Rating.displayName = "Rating";

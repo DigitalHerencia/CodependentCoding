@@ -1,5 +1,8 @@
 "use client";
 
+import * as React from "react";
+import { cn } from "@/components/ui/utils";
+import { Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Popover,
@@ -7,11 +10,16 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { cn } from "@/components/ui/utils";
-import { Clock } from "lucide-react";
-import * as React from "react";
 
-export interface TimePickerProps {
+// Typed here so the dev-only guards compile without @types/node (Vite's
+// default tsconfig has none). `declare` emits nothing: bundlers still
+// replace the literal process.env.NODE_ENV.
+declare const process: { env: { NODE_ENV?: string } };
+
+export interface TimePickerProps extends Omit<
+  React.ComponentPropsWithoutRef<typeof Button>,
+  "onChange" | "value" | "defaultValue"
+> {
   value?: Date;
   defaultValue?: Date;
   onChange?: (date: Date | undefined) => void;
@@ -26,8 +34,15 @@ export interface TimePickerProps {
 }
 
 const TimePicker = React.forwardRef<HTMLButtonElement, TimePickerProps>(
-  (
-    {
+  (allProps, ref) => {
+    // Controlled-ness is decided by whether the `value` PROP IS PRESENT,
+    // latched on first render — not by whether it is defined. `undefined` is a
+    // legal controlled value for an optional date, so the ordinary
+    // `useState<Date>()` + `value` pattern used to start uncontrolled and
+    // silently flip on the first pick.
+    const isControlled = React.useRef("value" in allProps).current;
+
+    const {
       value: controlledValue,
       defaultValue,
       onChange,
@@ -39,15 +54,22 @@ const TimePicker = React.forwardRef<HTMLButtonElement, TimePickerProps>(
       disabled = false,
       placeholder = "Select time",
       className,
-    },
-    ref,
-  ) => {
+      ...props
+    } = allProps;
+
     const [open, setOpen] = React.useState(false);
     const [uncontrolledValue, setUncontrolledValue] = React.useState<
       Date | undefined
     >(defaultValue);
 
-    const isControlled = controlledValue !== undefined;
+    if (process.env.NODE_ENV !== "production") {
+      if (isControlled !== "value" in allProps) {
+        console.warn(
+          "[TimePicker] Switching between controlled and uncontrolled is not supported. " +
+            "Pass `defaultValue` for uncontrolled use.",
+        );
+      }
+    }
     const selectedTime = isControlled ? controlledValue : uncontrolledValue;
 
     const hours = format === "12h" ? 12 : 24;
@@ -110,18 +132,13 @@ const TimePicker = React.forwardRef<HTMLButtonElement, TimePickerProps>(
         newDate.setHours(h);
       }
 
-      // Check min/max time
-      if (minTime) {
-        const minMinutes = minTime.getHours() * 60 + minTime.getMinutes();
-        const newMinutes = newDate.getHours() * 60 + newDate.getMinutes();
-        if (newMinutes < minMinutes) return;
-      }
-
-      if (maxTime) {
-        const maxMinutes = maxTime.getHours() * 60 + maxTime.getMinutes();
-        const newMinutes = newDate.getHours() * 60 + newDate.getMinutes();
-        if (newMinutes > maxMinutes) return;
-      }
+      // Check min/max time, in seconds so showSeconds isn't ignored.
+      const toSeconds = (d: Date) =>
+        d.getHours() * 3600 +
+        d.getMinutes() * 60 +
+        (showSeconds ? d.getSeconds() : 0);
+      if (minTime && toSeconds(newDate) < toSeconds(minTime)) return;
+      if (maxTime && toSeconds(newDate) > toSeconds(maxTime)) return;
 
       if (!isControlled) {
         setUncontrolledValue(newDate);
@@ -150,16 +167,21 @@ const TimePicker = React.forwardRef<HTMLButtonElement, TimePickerProps>(
         else if (selectedPeriod === "AM" && hour === 12) h = 0;
       }
 
-      const timeMinutes = h * 60 + minute;
+      // Compare in seconds, not minutes: with showSeconds the bound was
+      // otherwise off by up to 59 seconds in both directions.
+      const asSeconds = (d: Date) =>
+        d.getHours() * 3600 +
+        d.getMinutes() * 60 +
+        (showSeconds ? d.getSeconds() : 0);
+      const timeSeconds =
+        h * 3600 + minute * 60 + (showSeconds ? (selectedSecond ?? 0) : 0);
 
       if (minTime) {
-        const minMinutes = minTime.getHours() * 60 + minTime.getMinutes();
-        if (timeMinutes < minMinutes) return true;
+        if (timeSeconds < asSeconds(minTime)) return true;
       }
 
       if (maxTime) {
-        const maxMinutes = maxTime.getHours() * 60 + maxTime.getMinutes();
-        if (timeMinutes > maxMinutes) return true;
+        if (timeSeconds > asSeconds(maxTime)) return true;
       }
 
       return false;
@@ -175,6 +197,7 @@ const TimePicker = React.forwardRef<HTMLButtonElement, TimePickerProps>(
             ref={ref}
             variant="outline"
             disabled={disabled}
+            {...props}
             className={cn(
               "w-[180px] justify-start text-left font-normal",
               !selectedTime && "text-muted-foreground",
@@ -212,11 +235,16 @@ const TimePicker = React.forwardRef<HTMLButtonElement, TimePickerProps>(
                 Hour
               </div>
               <ScrollArea className="h-[200px]">
-                <div className="p-1">
+                <div className="p-1" role="listbox" aria-label="Hour">
                   {hoursArray.map((hour) => (
                     <button
                       key={hour}
                       type="button"
+                      role="option"
+                      aria-selected={selectedHour === hour}
+                      // Was styled as disabled but still clickable, and
+                      // activating it silently did nothing.
+                      disabled={isTimeDisabled(hour, selectedMinute ?? 0)}
                       onClick={() => updateTime(hour)}
                       className={cn(
                         "w-full px-2 py-1.5 text-center text-sm",
@@ -225,8 +253,7 @@ const TimePicker = React.forwardRef<HTMLButtonElement, TimePickerProps>(
                         "focus:bg-muted focus:outline-none",
                         selectedHour === hour &&
                           "scale-105 bg-primary text-primary-foreground shadow-[2px_2px_0px_hsl(var(--shadow-color))]",
-                        isTimeDisabled(hour, selectedMinute ?? 0) &&
-                          "cursor-not-allowed opacity-50 hover:scale-100",
+                        "disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100",
                       )}
                     >
                       {format === "12h"
@@ -250,11 +277,16 @@ const TimePicker = React.forwardRef<HTMLButtonElement, TimePickerProps>(
                 Min
               </div>
               <ScrollArea className="h-[200px]">
-                <div className="p-1">
+                <div className="p-1" role="listbox" aria-label="Minute">
                   {minutesArray.map((minute) => (
                     <button
                       key={minute}
                       type="button"
+                      role="option"
+                      aria-selected={selectedMinute === minute}
+                      // The minute column never consulted isTimeDisabled, so
+                      // out-of-range minutes were selectable under minTime/maxTime.
+                      disabled={isTimeDisabled(selectedHour ?? 0, minute)}
                       onClick={() => updateTime(undefined, minute)}
                       className={cn(
                         "w-full px-2 py-1.5 text-center text-sm",
@@ -263,6 +295,7 @@ const TimePicker = React.forwardRef<HTMLButtonElement, TimePickerProps>(
                         "focus:bg-muted focus:outline-none",
                         selectedMinute === minute &&
                           "scale-105 bg-primary text-primary-foreground shadow-[2px_2px_0px_hsl(var(--shadow-color))]",
+                        "disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100",
                       )}
                     >
                       {minute.toString().padStart(2, "0")}
@@ -284,11 +317,13 @@ const TimePicker = React.forwardRef<HTMLButtonElement, TimePickerProps>(
                   Sec
                 </div>
                 <ScrollArea className="h-[200px]">
-                  <div className="p-1">
+                  <div className="p-1" role="listbox" aria-label="Second">
                     {secondsArray.map((second) => (
                       <button
                         key={second}
                         type="button"
+                        role="option"
+                        aria-selected={selectedSecond === second}
                         onClick={() => updateTime(undefined, undefined, second)}
                         className={cn(
                           "w-full px-2 py-1.5 text-center text-sm",

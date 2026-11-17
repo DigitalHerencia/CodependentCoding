@@ -1,6 +1,6 @@
-import { cn } from "@/components/ui/utils";
 import * as React from "react";
 import { Drawer as DrawerPrimitive } from "vaul";
+import { cn } from "@/components/ui/utils";
 
 const Drawer = ({
   shouldScaleBackground = true,
@@ -103,13 +103,13 @@ DrawerDescription.displayName = DrawerPrimitive.Description.displayName;
 
 export {
   Drawer,
+  DrawerPortal,
+  DrawerOverlay,
+  DrawerTrigger,
   DrawerClose,
   DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
   DrawerHeader,
-  DrawerOverlay,
-  DrawerPortal,
+  DrawerFooter,
   DrawerTitle,
-  DrawerTrigger,
+  DrawerDescription,
 };

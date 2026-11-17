@@ -1100,5 +1100,57 @@
         "No GitHub Project item exists for #366."
       ]
     }
-  ]
+  ],
+  "git_maintenance_2026_11_17": {
+    "date": "2026-11-17",
+    "request": "Commit changes, sync, and clean up local and remote branches.",
+    "branch": "chore/ui-chart-snapshot",
+    "status": "snapshot-not-ready-to-merge",
+    "scope": "108 existing UI/chart changed files preserved; snapshot rebased onto origin/main b8dde52.",
+    "evidence": [
+      {
+        "command": "git diff --cached --check",
+        "result": "PASS before commit"
+      },
+      {
+        "command": "prettier --check existing changed files",
+        "result": "PASS for matched files before rebase"
+      },
+      {
+        "command": "tsc --noEmit --incremental false --pretty false",
+        "result": "FAIL exit 1 before rebase: missing ui/utils imports and incompatible component props; 482 diagnostic output lines."
+      }
+    ],
+    "not_run": ["tests", "builds", "runtime/browser checks"],
+    "delivery": "Push snapshot branch; retain failing changes outside main. PRs #370 and #363 verified merged. Remote has only main before snapshot push."
+  },
+  "ci_fix_pr_371": {
+    "date": "2026-11-17",
+    "pr": 371,
+    "status": "ready-for-ci",
+    "changes": [
+      "Formatted template-local changed files.",
+      "Restored shared helpers, existing UI contracts, installed Radix imports, client boundaries and strict-safe indexing.",
+      "Adapted DataTable to installed TanStack v9 and panels to installed v4.",
+      "Added owner-approved @radix-ui/react-toast 1.3.1 with lockfile and corrected Toast import."
+    ],
+    "evidence": [
+      {
+        "command": "pnpm.cmd typecheck",
+        "result": "PASS exit 0: Prisma Client generation, Next route type generation and tsc --noEmit."
+      },
+      {
+        "command": "Template-local prettier --write and eslint --max-warnings=0 on PR changed files",
+        "result": "PASS before final Toast import; final changed-file verification follows."
+      }
+    ],
+    "owner_authorization": "Owner approved dependency addition, commit, merge, sync and branch cleanup.",
+    "not_run": ["build", "tests", "runtime/browser checks"],
+    "note": "Offline reconciliation of optional exact manifest pin failed due absent cached metadata; retained successfully installed ^1.3.1 declaration with exact 1.3.1 lockfile. No supply-chain policy bypass.",
+    "format_followup": {
+      "failed_run": 44155606031,
+      "cause": "motion-core.ts was untracked during the initial local formatter file selection.",
+      "correction": "Formatted helper; full committed PR changed-file formatting and zero-warning lint both pass."
+    }
+  }
 }

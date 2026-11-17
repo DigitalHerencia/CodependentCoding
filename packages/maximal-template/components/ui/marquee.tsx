@@ -1,5 +1,5 @@
-import { cn } from "@/components/ui/utils";
 import * as React from "react";
+import { cn } from "@/components/ui/utils";
 
 interface MarqueeProps extends React.HTMLAttributes<HTMLDivElement> {
   /** Content to display in the marquee */
@@ -56,7 +56,8 @@ const Marquee = React.forwardRef<HTMLDivElement, MarqueeProps>(
           className={cn(
             "marquee-content flex shrink-0 items-center gap-8 py-3",
             animationClass,
-            pauseOnHover && "hover:[animation-play-state:paused]",
+            pauseOnHover &&
+              "focus-within:[animation-play-state:paused] hover:[animation-play-state:paused]",
           )}
           style={{ animationDirection }}
         >
@@ -64,14 +65,19 @@ const Marquee = React.forwardRef<HTMLDivElement, MarqueeProps>(
             <React.Fragment key={i}>{children}</React.Fragment>
           ))}
         </div>
+        {/* Visual duplicate. `inert` as well as aria-hidden, or anything
+            focusable inside it is a tab stop within an aria-hidden subtree
+            (axe `aria-hidden-focus`). */}
         <div
           className={cn(
             "marquee-content flex shrink-0 items-center gap-8 py-3",
             animationClass,
-            pauseOnHover && "hover:[animation-play-state:paused]",
+            pauseOnHover &&
+              "focus-within:[animation-play-state:paused] hover:[animation-play-state:paused]",
           )}
           style={{ animationDirection }}
           aria-hidden="true"
+          inert
         >
           {Array.from({ length: repeat }).map((_, i) => (
             <React.Fragment key={i}>{children}</React.Fragment>

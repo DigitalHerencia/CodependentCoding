@@ -1,9 +1,9 @@
-import { cn, sanitizeCssValue } from "@/components/ui/utils";
-import { cva, type VariantProps } from "class-variance-authority";
 import * as React from "react";
 import * as RechartsPrimitive from "recharts";
-import { ChartLoading } from "./loading";
+import { cva, type VariantProps } from "class-variance-authority";
+import { cn, sanitizeCssValue } from "@/components/ui/utils";
 import { ChartContext, THEMES, type ChartConfig } from "./types";
+import { ChartLoading } from "./loading";
 
 export const chartContainerVariants = cva(
   'flex aspect-video justify-center overflow-hidden text-xs [&_.recharts-cartesian-axis-tick_text]:fill-foreground [&_.recharts-cartesian-grid_line[stroke="#ccc"]]:stroke-muted-foreground/30 [&_.recharts-curve.recharts-tooltip-cursor]:stroke-muted-foreground [&_.recharts-dot[stroke="#fff"]]:stroke-transparent [&_.recharts-layer_path]:[stroke:hsl(var(--foreground))] [&_.recharts-layer_path]:[stroke-width:3] [&_.recharts-layer_path]:[fill-opacity:1] [&_.recharts-polar-grid_[stroke="#ccc"]]:stroke-foreground [&_.recharts-reference-line_[stroke="#ccc"]]:stroke-foreground [&_.recharts-sector]:outline-hidden [&_.recharts-sector[stroke="#fff"]]:stroke-foreground [&_.recharts-surface]:outline-hidden',
@@ -43,9 +43,9 @@ export interface ChartContainerProps
   /** ID of element that labels this chart */
   "aria-labelledby"?: string | undefined;
   /** Render a brutalist placeholder instead of the chart while data is pending. */
-  loading?: boolean | undefined;
+  loading?: boolean;
   /** Announced while `loading` is true. */
-  loadingLabel?: string | undefined;
+  loadingLabel?: string;
 }
 
 export function ChartContainer({

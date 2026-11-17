@@ -1,8 +1,13 @@
 "use client";
 
-import { cn } from "@/components/ui/utils";
 import * as React from "react";
+import { cn } from "@/components/ui/utils";
 import { ChartEmpty } from "./empty";
+
+// Typed here so the dev-only guards compile without @types/node (Vite's
+// default tsconfig has none). `declare` emits nothing: bundlers still
+// replace the literal process.env.NODE_ENV.
+declare const process: { env: { NODE_ENV?: string } };
 
 export interface SankeyNode {
   id: string;
@@ -99,11 +104,17 @@ function computeLayout(
     }
   }
 
-  const droppedNodes = nodes.filter((node) => !depth.has(node.id));
-  if (droppedNodes.length > 0) {
-    console.warn(
-      "[SankeyChart] Nodes were dropped because they are cyclic or unreachable.",
-    );
+  // Warn about nodes dropped due to cycles (nodes not reachable from any source)
+  if (
+    typeof process !== "undefined" &&
+    process.env?.NODE_ENV === "development"
+  ) {
+    const droppedNodes = nodes.filter((n) => !depth.has(n.id));
+    if (droppedNodes.length > 0) {
+      console.warn(
+        `[SankeyChart] ${droppedNodes.length} node(s) were dropped because they are part of a cycle or unreachable from source nodes: ${droppedNodes.map((n) => n.id).join(", ")}`,
+      );
+    }
   }
 
   // Guard against an empty depth map (e.g. a fully-cyclic graph with no source
@@ -224,8 +235,11 @@ function computeLayout(
 const SankeyChart = React.forwardRef<HTMLDivElement, SankeyChartProps>(
   (
     {
-      nodes,
-      links,
+      // Defaulted at the destructure: computeLayout() runs *above* the empty
+      // guard, so `undefined` (the shape a still-loading fetch passes) would
+      // throw before the guard could render <ChartEmpty>.
+      nodes = [],
+      links = [],
       height = 320,
       showTooltip = true,
       showLabels = true,
@@ -256,8 +270,7 @@ const SankeyChart = React.forwardRef<HTMLDivElement, SankeyChartProps>(
       if (!containerRef.current) return;
       const ro = new ResizeObserver((entries) => {
         if (mountedRef.current) {
-          const entry = entries[0];
-          if (entry) setWidth(entry.contentRect.width);
+          setWidth(entries[0]!.contentRect.width);
         }
       });
       ro.observe(containerRef.current);
@@ -287,12 +300,34 @@ const SankeyChart = React.forwardRef<HTMLDivElement, SankeyChartProps>(
     return (
       <div
         ref={ref}
-        role="img"
+        role="group"
         aria-label={ariaLabel}
         className={cn("relative w-full", className)}
         {...props}
       >
-        <div ref={containerRef} style={{ height }}>
+        {/* Text alternative. The diagram's only data affordance is a mouse
+            hover tooltip, so without this the flows are unreadable to anyone
+            not using a pointer. Visually hidden, fully announced. */}
+        <table className="sr-only">
+          <caption>{ariaLabel}</caption>
+          <thead>
+            <tr>
+              <th scope="col">From</th>
+              <th scope="col">To</th>
+              <th scope="col">Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            {links.map((link, i) => (
+              <tr key={`${link.source}-${link.target}-${i}`}>
+                <td>{link.source}</td>
+                <td>{link.target}</td>
+                <td>{link.value}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <div ref={containerRef} aria-hidden="true" style={{ height }}>
           <svg width="100%" height={height}>
             {/* Links */}
             {computedLinks.map((link, i) => (

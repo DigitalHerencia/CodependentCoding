@@ -1,16 +1,16 @@
 "use client";
 
-import { cn } from "@/components/ui/utils";
 import * as React from "react";
+import { cn } from "@/components/ui/utils";
 import {
-  PolarAngleAxis,
-  RadialBar,
   RadialBarChart as RechartsRadialBarChart,
+  RadialBar,
+  PolarAngleAxis,
 } from "recharts";
-import { ChartContainer } from "./container";
+import { ChartContainer, type ChartContainerProps } from "./container";
 import { ChartEmpty } from "./empty";
-import { ChartLegend, ChartLegendContent } from "./legend";
 import { ChartTooltip, ChartTooltipContent } from "./tooltip";
+import { ChartLegend, ChartLegendContent } from "./legend";
 import type { ChartConfig } from "./types";
 
 export interface RadialBarChartData {
@@ -23,6 +23,8 @@ export interface RadialBarChartProps extends React.HTMLAttributes<HTMLDivElement
   data: RadialBarChartData[];
   config: ChartConfig;
   variant?: "default" | "stacked" | "nested";
+  /** Container border/shadow style — `variant` here is the chart geometry. */
+  containerVariant?: ChartContainerProps["variant"];
   innerRadius?: string | number;
   outerRadius?: string | number;
   showLabel?: boolean;
@@ -45,6 +47,7 @@ const RadialBarChartComponent = React.forwardRef<
       data,
       config,
       variant = "default",
+      containerVariant,
       innerRadius = "30%",
       outerRadius = "100%",
       showLabel = true,
@@ -90,6 +93,7 @@ const RadialBarChartComponent = React.forwardRef<
       <ChartContainer
         ref={ref}
         config={config}
+        variant={containerVariant}
         className={cn("aspect-square max-h-[300px]", className)}
         {...props}
       >

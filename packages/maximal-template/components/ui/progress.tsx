@@ -1,6 +1,6 @@
-import { cn } from "@/components/ui/utils";
-import * as ProgressPrimitive from "@radix-ui/react-progress";
 import * as React from "react";
+import * as ProgressPrimitive from "@radix-ui/react-progress";
+import { cn } from "@/components/ui/utils";
 
 type ProgressVariant =
   /** Continuous fill. The pre-v3.5 default. */

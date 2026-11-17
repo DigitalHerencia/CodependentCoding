@@ -32,7 +32,7 @@ export type ChartAnnotation =
   | ({ kind: "arrow" } & ChartArrowSpec);
 
 // Format: { THEME_NAME: CSS_SELECTOR }
-export const THEMES = { dark: "" } as const;
+export const THEMES = { light: "", dark: ".dark" } as const;
 
 export type ChartConfig = {
   [k in string]: {
