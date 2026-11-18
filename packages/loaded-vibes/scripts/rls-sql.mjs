@@ -1,6 +1,6 @@
 /**
  * RLS SQL shipped by each owner: `prisma/rls/identity.sql` first (it also
- * creates the app_runtime and app_system roles), then auth and authz, then each manifest module's
+ * creates the app_runtime and app_system roles), then auth, authz and the shared admin audit policies, then each manifest module's
  * file that exists, in manifest order.
  *
  * The files are the readable source; the database only ever receives them as a
@@ -26,6 +26,7 @@ export function rlsFiles(root) {
       "identity",
       "auth",
       "authz",
+      "admin",
       ...manifest.modules.map(({ id }) => id),
     ]),
   ]

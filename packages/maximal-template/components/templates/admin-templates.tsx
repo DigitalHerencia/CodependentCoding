@@ -1,78 +1,125 @@
+/** One presentation template per admin page; only blocks resolve copy and primitives. */
+import { AdminShell } from "@/components/shells/admin-shell";
 import {
+  AdminPageBlock,
+  AdminHeaderBlock,
+  AdminFooterBlock,
+  AdminSkipLinkBlock,
+  AdminSearchToolbarBlock,
+  AdminPaginationBlock,
   AdminAuditContentBlock,
-  AdminAuditToolbarBlock,
-  AdminRecordDetailContentBlock,
   AdminRecordsContentBlock,
+  AdminRecordDetailContentBlock,
   AdminUserDetailContentBlock,
   AdminUsersContentBlock,
-  AdminUsersToolbarBlock,
-} from "@/components/blocks/admin-page-blocks";
-import { DashboardLayout } from "@/components/blocks/shared-blocks";
-import { adminPresentationCopy } from "@/content/admin";
-import type { ComponentProps } from "react";
-
-export function AdminAuditTemplate(
-  props: ComponentProps<typeof AdminAuditContentBlock>,
-) {
+  AdminNewUserFormBlock,
+  AdminEditUserFormBlock,
+  AdminFormFeedbackBlock,
+} from "@/components/blocks/admin-blocks";
+import type {
+  AdminAuditTemplateProps,
+  AdminUsersTemplateProps,
+  AdminRecordsProps,
+  AdminRecordDetailProps,
+  AdminMembershipProps,
+  AdminNewUserTemplateProps,
+  AdminEditUserTemplateProps,
+  AdminShellTemplateProps,
+} from "@/types/adminTypes";
+/** Compose shell presentation; the feature performs all identity and access checks. */
+export function AdminShellTemplate({
+  children,
+  accountMenu,
+  mobileAccountMenu,
+}: AdminShellTemplateProps) {
   return (
-    <DashboardLayout
-      title={adminPresentationCopy.auditTrail}
-      nav={[]}
-      toolbar={<AdminAuditToolbarBlock {...props} />}
-    >
-      <AdminAuditContentBlock {...props} />
-    </DashboardLayout>
-  );
-}
-export function AdminRecordDetailTemplate(
-  props: ComponentProps<typeof AdminRecordDetailContentBlock>,
-) {
-  const { record } = props;
-  return (
-    <DashboardLayout title={record.resource} nav={[]}>
-      <AdminRecordDetailContentBlock {...props} />
-    </DashboardLayout>
-  );
-}
-export function AdminRecordsTemplate(
-  props: ComponentProps<typeof AdminRecordsContentBlock>,
-) {
-  return (
-    <DashboardLayout
-      title={adminPresentationCopy.workspaceRecordInventory}
-      nav={[]}
-    >
-      <AdminRecordsContentBlock {...props} />
-    </DashboardLayout>
-  );
-}
-export function AdminUserDetailTemplate(
-  props: ComponentProps<typeof AdminUserDetailContentBlock>,
-) {
-  const { membership } = props;
-  return (
-    <DashboardLayout
-      title={
-        membership.user.displayName ??
-        membership.user.email ??
-        adminPresentationCopy.member
+    <AdminShell
+      skipLink={<AdminSkipLinkBlock />}
+      header={
+        <AdminHeaderBlock
+          accountMenu={accountMenu}
+          mobileAccountMenu={mobileAccountMenu}
+        />
       }
-      nav={[]}
+      footer={<AdminFooterBlock />}
+    >
+      {children}
+    </AdminShell>
+  );
+}
+/** Audit route presentation. */
+export function AdminAuditTemplate(props: AdminAuditTemplateProps) {
+  return (
+    <AdminPageBlock
+      variant="audit"
+      toolbar={<AdminSearchToolbarBlock variant="audit" {...props} />}
+    >
+      <AdminAuditContentBlock events={props.events} />
+      <AdminPaginationBlock {...props.pagination} />
+    </AdminPageBlock>
+  );
+}
+/** Records route presentation. */
+export function AdminRecordsTemplate(props: AdminRecordsProps) {
+  return (
+    <AdminPageBlock variant="records">
+      <AdminRecordsContentBlock {...props} />
+    </AdminPageBlock>
+  );
+}
+/** Record detail route presentation. */
+export function AdminRecordDetailTemplate(props: AdminRecordDetailProps) {
+  return (
+    <AdminPageBlock variant="record" title={props.record.resource}>
+      <AdminRecordDetailContentBlock {...props} />
+    </AdminPageBlock>
+  );
+}
+/** Users route presentation. */
+export function AdminUsersTemplate(props: AdminUsersTemplateProps) {
+  return (
+    <AdminPageBlock
+      variant="users"
+      toolbar={<AdminSearchToolbarBlock variant="users" {...props} />}
+    >
+      <AdminUsersContentBlock memberships={props.memberships} />
+      <AdminPaginationBlock {...props.pagination} />
+    </AdminPageBlock>
+  );
+}
+/** User detail route presentation, independent of the edit form. */
+export function AdminUserDetailTemplate(props: AdminMembershipProps) {
+  return (
+    <AdminPageBlock
+      variant="user"
+      title={
+        props.membership.user.displayName ??
+        props.membership.user.email ??
+        undefined
+      }
     >
       <AdminUserDetailContentBlock {...props} />
-    </DashboardLayout>
+    </AdminPageBlock>
   );
 }
-export function AdminUsersTemplate(
-  props: ComponentProps<typeof AdminUsersContentBlock>,
-) {
+/** New membership approval route presentation. */
+export function AdminNewUserTemplate(props: AdminNewUserTemplateProps) {
   return (
-    <DashboardLayout
-      title={adminPresentationCopy.memberAdministration}
-      nav={[]}
-      toolbar={<AdminUsersToolbarBlock {...props} />}
-    >
-      <AdminUsersContentBlock {...props} />
-    </DashboardLayout>
+    <AdminPageBlock variant="new">
+      <AdminNewUserFormBlock {...props} />
+      <AdminFormFeedbackBlock
+        error={props.errors.root}
+        approved={props.approved}
+      />
+    </AdminPageBlock>
+  );
+}
+/** Membership edit route presentation. */
+export function AdminEditUserTemplate(props: AdminEditUserTemplateProps) {
+  return (
+    <AdminPageBlock variant="edit">
+      <AdminEditUserFormBlock {...props} />
+      <AdminFormFeedbackBlock error={props.errors.root} result={props.result} />
+    </AdminPageBlock>
   );
 }

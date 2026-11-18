@@ -1,31 +1,41 @@
+/** Atomic administration helpers run only inside authenticated tenant transactions. */
 import "server-only";
 
 import { randomBytes } from "node:crypto";
 
+import type { Prisma } from "@/generated/prisma/client";
 import type {
-  MembershipRole,
-  MembershipStatus,
-  Prisma,
-} from "@/generated/prisma/client";
+  AdminActorContext,
+  AdminActorRecord,
+  AdminMembershipUpdate,
+  AdminAccessApproval,
+} from "@/types/adminTypes";
 
 import { INVITATION_TTL_DAYS } from "@/lib/constants/invitations";
 import { SINGLE_ORGANIZATION_ID, tenancy } from "@/lib/authz/mode";
 import { invitableRoles, isPrivilegedRole } from "@/lib/authz/roles";
 import { assertInvitationsAllowed } from "@/lib/authz/tenancy";
-import { hashInvitationToken } from "./invitationTx";
-import { adminMembershipSelect } from "@/lib/db/selects/adminSelects";
-import { InvariantViolationError, ResourceNotFoundError } from "./errors";
+import { hashInvitationToken } from "@/lib/db/transactions/invitationTx";
+import {
+  adminMembershipSelect,
+  adminMembershipTargetSelect,
+  adminApprovalSelect,
+} from "@/lib/db/selects/adminSelects";
+import {
+  InvariantViolationError,
+  ResourceNotFoundError,
+} from "@/lib/db/transactions/errors";
 
 /** Re-read and lock the actor in the server-selected organization before mutation. */
 export async function assertMembershipAdministratorTx(
   tx: Prisma.TransactionClient,
-  input: { organizationId: string; actorUserId: string },
+  input: AdminActorContext,
 ): Promise<void> {
   if (tenancy === "single" && input.organizationId !== SINGLE_ORGANIZATION_ID)
     throw new ResourceNotFoundError("Organization");
   const lockKey = `membership-administration:${input.organizationId}`;
   await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtextextended(${lockKey}, 0))`;
-  const [actor] = await tx.$queryRaw<{ role: MembershipRole; status: MembershipStatus }[]>`
+  const [actor] = await tx.$queryRaw<AdminActorRecord[]>`
     SELECT "role", "status" FROM "Membership"
     WHERE "organizationId" = ${input.organizationId}::uuid AND "userId" = ${input.actorUserId}
     FOR UPDATE
@@ -34,15 +44,10 @@ export async function assertMembershipAdministratorTx(
     throw new ResourceNotFoundError("Administrator membership");
 }
 
+/** Serialize administration per organization, recheck access, update and append audit atomically. */
 export async function updateMembershipAdministrationTx(
   tx: Prisma.TransactionClient,
-  input: {
-    organizationId: string;
-    actorUserId: string;
-    membershipId: string;
-    role?: MembershipRole;
-    status?: MembershipStatus;
-  },
+  input: AdminMembershipUpdate,
 ) {
   await assertMembershipAdministratorTx(tx, input);
   const membership = await tx.membership.findFirst({
@@ -50,17 +55,21 @@ export async function updateMembershipAdministrationTx(
       id: input.membershipId,
       organizationId: input.organizationId,
     },
-    select: { id: true, userId: true, role: true, status: true },
+    select: adminMembershipTargetSelect,
   });
   if (!membership) throw new ResourceNotFoundError("Membership");
   // Routine administration never grants, removes or transfers ownership.
   if (membership.role === "OWNER" || input.role === "OWNER")
-    throw new InvariantViolationError("Ownership cannot be changed through routine membership administration.");
+    throw new InvariantViolationError(
+      "Ownership cannot be changed through routine membership administration.",
+    );
   if (membership.userId === input.actorUserId)
-    throw new InvariantViolationError("An administrator cannot change their own membership.");
+    throw new InvariantViolationError(
+      "An administrator cannot change their own membership.",
+    );
 
   const updated = await tx.membership.update({
-    where: { id: membership.id },
+    where: { id: membership.id, organizationId: input.organizationId },
     data: {
       ...(input.role ? { role: input.role } : {}),
       ...(input.status ? { status: input.status } : {}),
@@ -85,14 +94,10 @@ export async function updateMembershipAdministrationTx(
   return updated;
 }
 
+/** Preserve existing verified-email access approval, with atomic supersession and append-only audit. */
 export async function approveWorkspaceAccessTx(
   tx: Prisma.TransactionClient,
-  input: {
-    organizationId: string;
-    actorUserId: string;
-    email: string;
-    role: Exclude<MembershipRole, "OWNER">;
-  },
+  input: AdminAccessApproval,
 ) {
   assertInvitationsAllowed();
   await assertMembershipAdministratorTx(tx, input);
@@ -119,7 +124,7 @@ export async function approveWorkspaceAccessTx(
       tokenHash: hashInvitationToken(randomBytes(32).toString("base64url")),
       expiresAt: new Date(Date.now() + INVITATION_TTL_DAYS * 86_400_000),
     },
-    select: { id: true },
+    select: adminApprovalSelect,
   });
   await tx.auditEvent.create({
     data: {

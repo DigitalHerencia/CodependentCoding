@@ -1,23 +1,17 @@
 "use client";
-
+/** Browser navigation tracks the active admin route without application dependencies. */
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  adminNavigationCopy,
-  adminNavigationItems,
-} from "@/content/admin-navigation";
-
-export const adminNavItems = adminNavigationItems;
-
-/** Link visibility is discovery only; AdminGateFeature and server commands remain authoritative. */
-export function AdminNavLinks() {
+import type { AdminNavigationProps } from "@/types/adminTypes";
+/** Navigation visibility is discovery; workflows enforce access independently. */
+export function AdminNavigation({ label, items }: AdminNavigationProps) {
   const pathname = usePathname();
   return (
     <nav
-      aria-label={adminNavigationCopy.navigation}
+      aria-label={label}
       className="flex min-w-0 flex-col gap-2 lg:flex-row lg:flex-wrap lg:gap-4"
     >
-      {adminNavItems.map((item) => (
+      {items.map((item) => (
         <Link
           key={item.href}
           href={item.href}

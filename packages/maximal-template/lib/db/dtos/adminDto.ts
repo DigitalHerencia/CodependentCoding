@@ -1,18 +1,20 @@
+/** Admin DTO mapping; persistence records never cross directly into presentation. */
 import "server-only";
 
-import type { AdminMembershipDTO, AuditEventDTO } from "@/types/adminTypes";
 import type {
+  AdminMembershipDTO,
+  AuditEventDTO,
   AdminMembershipRecord,
   AuditEventRecord,
-} from "@/lib/db/selects/adminSelects";
+} from "@/types/adminTypes";
 
+/** Convert persisted audit data into a serializable authorized projection. */
 export function toAuditEventDTO(record: AuditEventRecord): AuditEventDTO {
   return {
     id: record.id,
     action: record.action,
     resourceType: record.resourceType,
     resourceId: record.resourceId,
-    metadata: record.metadata,
     actor: record.actor
       ? {
           id: record.actor.id,
@@ -24,12 +26,15 @@ export function toAuditEventDTO(record: AuditEventRecord): AuditEventDTO {
   };
 }
 
+/** Project a membership and actor-specific editability without exposing the actor ID. */
 export function toAdminMembershipDTO(
   record: AdminMembershipRecord,
+  actorUserId: string,
 ): AdminMembershipDTO {
   return {
     id: record.id,
     role: record.role,
+    canManage: record.role !== "OWNER" && record.user.id !== actorUserId,
     status: record.status,
     user: record.user,
     createdAt: record.createdAt.toISOString(),

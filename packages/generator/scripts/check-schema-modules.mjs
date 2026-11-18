@@ -6,7 +6,8 @@ import {
  * For every module with a `prisma/schema/<id>.prisma` file, removes that file,
  * the files of modules that depend on it, and every line tagged
  * `// @module <removed id>`, then runs `prisma validate` on what is left.
- * This is what the CLI does when a module is not selected (FR-MOD-4).
+ * Shared audit persistence remains installed when admin presentation is omitted,
+ * matching the CLI composition policy (FR-MOD-4).
  *
  *   node scripts/check-schema-modules.mjs
  */
@@ -22,6 +23,8 @@ import {
 } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+
+import { CORE_AUDIT_FILES } from "@codependent/generator/compose.mjs";
 
 import { validateManifest } from "@codependent/generator/modules-schema.mjs";
 
@@ -59,7 +62,7 @@ function removalSet(id) {
 function strip(dir, removed) {
   for (const file of readdirSync(dir)) {
     const id = file.replace(/\.prisma$/, "");
-    if (removed.has(id)) {
+    if (removed.has(id) && !CORE_AUDIT_FILES.has(`prisma/schema/${file}`)) {
       rmSync(join(dir, file));
       continue;
     }

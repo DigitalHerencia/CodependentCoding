@@ -25,7 +25,7 @@ import {
   acceptInvitationTx,
   hashInvitationToken,
 } from "@/lib/db/transactions/invitationTx";
-import { assertMembershipAdministratorTx } from "@/lib/db/transactions/adminTx";
+import { assertMembershipAdministratorTx } from "@/lib/db/selects/adminTx";
 import { toActionResult } from "@/lib/utils/actionResult";
 
 /** Invites an email with a role; returns the one-time link path to share. */

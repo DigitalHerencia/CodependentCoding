@@ -1,6 +1,6 @@
 /**
  * Manual compose (CC-026), the file steps of `hipster new` until the CLI exists
- * (application.yaml → cli.new.pipeline): copy the template, delete files owned
+ * (application.yaml â†’ cli.new.pipeline): copy the template, delete files owned
  * by unselected modules, strip `// @module <removed>` lines, rewrite the
  * registry and the manifest, rebuild .env.example. No install, no git.
  *
@@ -29,6 +29,12 @@ import {
 } from "./paths.mjs";
 
 const REGISTRY = "lib/modules/registry.ts";
+/** Audit persistence is required by all domains, even when admin presentation is deselected. */
+export const CORE_AUDIT_FILES = new Set([
+  "prisma/schema/admin.prisma",
+  "prisma/rls/admin.sql",
+  "prisma/seeds/admin.ts",
+]);
 
 /**
  * The selection plus everything it depends on, in manifest order. Throws on an
@@ -114,7 +120,12 @@ export function compose(root, outDir, selected, { exclude = [] } = {}) {
     if (!existsSync(source)) continue;
     if (exclude.some((prefix) => file.startsWith(prefix))) continue;
     const { owner } = ownerOf(file, manifest);
-    if (owner !== BASE && owner !== null && removedIds.has(owner)) {
+    if (
+      owner !== BASE &&
+      owner !== null &&
+      removedIds.has(owner) &&
+      !CORE_AUDIT_FILES.has(file)
+    ) {
       removed += 1;
       continue;
     }

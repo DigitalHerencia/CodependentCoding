@@ -1,17 +1,13 @@
+/** users/[userId]/edit route delegates data and UI orchestration to its feature. */
 import { Suspense } from "react";
-
-import { AdminEditUserForm } from "@/features/admin/admin-edit-user-form";
-import { AdminUserDetailSkeleton } from "@/features/admin/admin-user-detail-skeleton";
-
-export default async function Page({
-  params,
-}: {
-  params: Promise<{ userId: string }>;
-}) {
-  const { userId } = await params;
+import { AdminEditUserFeature } from "@/features/admin/admin-edit-user-feature";
+import { AdminFormSkeleton } from "@/features/admin/admin-form-skeleton";
+import type { AdminUserRouteProps } from "@/types/adminTypes";
+/** Stream the page feature behind its accessible skeleton. */
+export default function Page({ params }: AdminUserRouteProps) {
   return (
-    <Suspense fallback={<AdminUserDetailSkeleton />}>
-      <AdminEditUserForm userId={userId} />
+    <Suspense fallback={<AdminFormSkeleton />}>
+      <AdminEditUserFeature params={params} />
     </Suspense>
   );
 }

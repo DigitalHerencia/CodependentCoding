@@ -1,9 +1,14 @@
+/** Server feature resolves list reads inside Suspense. */
 import { loadAdminUsersWorkflow } from "@/lib/workflows/adminWorkflows";
 import { AdminUsersFeatureClient } from "./admin-users-feature.client";
-
-export async function AdminUsersFeature({ criteria }: { criteria: unknown }) {
-  const { page } = await loadAdminUsersWorkflow({ criteria });
+import type { AdminListFeatureProps } from "@/types/adminTypes";
+/** Orchestrate authorized list data and interactive presentation. */
+export async function AdminUsersFeature({ criteria }: AdminListFeatureProps) {
+  const view = await loadAdminUsersWorkflow({ criteria });
   return (
-    <AdminUsersFeatureClient key={page.query + "-" + page.page} page={page} />
+    <AdminUsersFeatureClient
+      key={`${view.page.query}-${view.page.page}`}
+      {...view}
+    />
   );
 }

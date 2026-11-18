@@ -1,39 +1,25 @@
 "use client";
-
+/** Interactive list behavior consumes only authorized transport data. */
 import { AdminUsersTemplate } from "@/components/templates/admin-templates";
-import { getAdminUsersNavigationWorkflow } from "@/lib/workflows/adminClientWorkflows";
-import type { AdminMembershipDTO } from "@/types/adminTypes";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-
+import type { AdminListView, AdminMembershipDTO } from "@/types/adminTypes";
+/** Search navigation resets pagination and encodes the query. */
 export function AdminUsersFeatureClient({
   page,
-}: {
-  page: {
-    items: AdminMembershipDTO[];
-    query: string;
-    page: number;
-    hasMore: boolean;
-  };
-}) {
+  pagination,
+}: AdminListView<AdminMembershipDTO>) {
   const router = useRouter();
   const [query, setQuery] = useState(page.query);
   return (
-    <>
-      <AdminUsersTemplate
-        pagination={{
-          path: "/admin/users",
-          page: page.page,
-          query: page.query,
-          hasMore: page.hasMore,
-        }}
-        memberships={page.items}
-        toolbarProps={{
-          query: query,
-          onQueryChange: setQuery,
-          onSearch: () => router.push(getAdminUsersNavigationWorkflow(query)),
-        }}
-      />
-    </>
+    <AdminUsersTemplate
+      memberships={page.items}
+      pagination={pagination}
+      query={query}
+      onQueryChange={setQuery}
+      onSearch={() =>
+        router.push(`/admin/users?${new URLSearchParams({ query })}`)
+      }
+    />
   );
 }

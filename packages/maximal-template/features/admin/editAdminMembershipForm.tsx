@@ -1,123 +1,84 @@
 "use client";
-
-import { adminMembershipCopy } from "@/content/admin";
-import {
-  NativeSelect,
-  NativeSelectOption,
-} from "@/components/ui/native-select";
-import { Button } from "@/components/ui/button";
-import { Field, FieldError, FieldLabel } from "@/components/ui/field";
-import { formResultCopy } from "@/content/application";
-import {
-  changeAdminMembership,
-  restoreAdminMembership,
-  suspendAdminMembership,
-} from "@/lib/actions/adminActions";
-import { appRoles } from "@/lib/authz/roles";
-import { changeAdminMembershipSchema } from "@/schemas/adminSchemas";
-import type { AdminMembershipDTO } from "@/types/adminTypes";
-import { zodResolver } from "@hookform/resolvers/zod";
+/** RHF membership editing orchestrates presentation and the single admin workflow API. */
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
-import { Controller, useForm } from "react-hook-form";
-import type { z } from "zod";
-
-export function EditAdminMembershipForm({
-  membership,
-}: {
-  membership: AdminMembershipDTO;
-}) {
+import { useForm, useController } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { AdminEditUserTemplate } from "@/components/templates/admin-templates";
+import {
+  changeAdminMembershipWorkflow,
+  restoreAdminMembershipWorkflow,
+  suspendAdminMembershipWorkflow,
+} from "@/lib/workflows/adminWorkflows";
+import {
+  changeAdminMembershipSchema,
+  adminRoleSchema,
+} from "@/schemas/adminSchemas";
+import type {
+  AdminMembershipProps,
+  ChangeAdminMembershipCommand,
+  AdminEditUserTemplateProps,
+} from "@/types/adminTypes";
+/** Server-derived editability is checked before this form is mounted; actions recheck it atomically. */
+export function EditAdminMembershipForm({ membership }: AdminMembershipProps) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
-  const [message, setMessage] = useState("");
-  const form = useForm<z.input<typeof changeAdminMembershipSchema>>({
+  const [result, setResult] =
+    useState<AdminEditUserTemplateProps["result"]>(null);
+  const form = useForm<ChangeAdminMembershipCommand>({
     resolver: zodResolver(changeAdminMembershipSchema),
-    defaultValues: { membershipId: membership.id, role: membership.role },
+    defaultValues: {
+      membershipId: membership.id,
+      role: adminRoleSchema.parse(membership.role),
+    },
   });
+  const role = useController({ name: "role", control: form.control });
   return (
-    <div className="space-y-5">
-      <form
-        className="space-y-3"
-        onSubmit={form.handleSubmit(async (values) => {
-          setMessage("");
-          try {
-            const result = await changeAdminMembership(values);
-            if (result.ok) {
-              setMessage(adminMembershipCopy.roleUpdated);
-              router.refresh();
-            } else {
-              for (const name of ["membershipId", "role"] as const) {
-                const message = result.error.fieldErrors?.[name]?.[0];
-                if (message) form.setError(name, { message });
-              }
-              form.setError("root", { message: result.error.message });
-            }
-          } catch {
-            form.setError("root", { message: formResultCopy.failed });
+    <AdminEditUserTemplate
+      membership={membership}
+      role={role.field}
+      roles={adminRoleSchema.options}
+      errors={form.formState.errors}
+      result={result}
+      pending={pending || form.formState.isSubmitting}
+      onSubmit={form.handleSubmit(async (values) => {
+        setResult(null);
+        form.clearErrors("root");
+        try {
+          const response = await changeAdminMembershipWorkflow(values);
+          if (response.ok) {
+            setResult("role");
+            router.refresh();
+            return;
           }
-        })}
-        noValidate
-      >
-        <Controller
-          name="role"
-          control={form.control}
-          render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor="member-role">
-                {adminMembershipCopy.role}
-              </FieldLabel>
-              <NativeSelect
-                {...field}
-                id="member-role"
-                className="control-field"
-                aria-invalid={fieldState.invalid}
-              >
-                {appRoles.map((role) => (
-                  <NativeSelectOption key={role}>{role}</NativeSelectOption>
-                ))}
-              </NativeSelect>
-              {fieldState.error && (
-                <FieldError>{fieldState.error.message}</FieldError>
-              )}
-            </Field>
-          )}
-        />
-        {form.formState.errors.root && (
-          <FieldError>{form.formState.errors.root.message}</FieldError>
-        )}
-        <Button type="submit" disabled={pending || form.formState.isSubmitting}>
-          {adminMembershipCopy.saveRole}
-        </Button>
-      </form>
-      <Button
-        variant="outline"
-        disabled={pending || form.formState.isSubmitting}
-        onClick={() =>
-          startTransition(async () => {
-            setMessage("");
-            try {
-              const result = await (
-                membership.status === "SUSPENDED"
-                  ? restoreAdminMembership
-                  : suspendAdminMembership
-              )({ membershipId: membership.id });
-              setMessage(
-                result.ok
-                  ? adminMembershipCopy.accessUpdated
-                  : result.error.message,
-              );
-              if (result.ok) router.refresh();
-            } catch {
-              setMessage(formResultCopy.failed);
-            }
-          })
+          for (const name of ["membershipId", "role"] as const) {
+            const message = response.error.fieldErrors?.[name]?.[0];
+            if (message) form.setError(name, { message });
+          }
+          form.setError("root", { message: response.error.message });
+        } catch {
+          form.setError("root", { type: "server" });
         }
-      >
-        {membership.status === "SUSPENDED"
-          ? adminMembershipCopy.restore
-          : adminMembershipCopy.suspend}
-      </Button>
-      <p role="status">{message}</p>
-    </div>
+      })}
+      onToggleAccess={() =>
+        startTransition(async () => {
+          setResult(null);
+          form.clearErrors("root");
+          try {
+            const response = await (
+              membership.status === "SUSPENDED"
+                ? restoreAdminMembershipWorkflow
+                : suspendAdminMembershipWorkflow
+            )({ membershipId: membership.id });
+            if (response.ok) {
+              setResult("access");
+              router.refresh();
+            } else form.setError("root", { message: response.error.message });
+          } catch {
+            setResult("failed");
+          }
+        })
+      }
+    />
   );
 }

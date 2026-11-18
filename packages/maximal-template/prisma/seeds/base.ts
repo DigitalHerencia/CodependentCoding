@@ -41,36 +41,3 @@ export async function seedBase(
 
   return { tx, owner, agent, organization, ownerMembership, agentMembership };
 }
-
-/** Records which owners were seeded (base audit trail). */
-export async function seedAudit(
-  { tx, owner, organization }: SeedContext,
-  seeded: readonly string[],
-): Promise<void> {
-  await tx.auditEvent.upsert({
-    where: {
-      id: seedIds.auditEvent,
-    },
-    update: {
-      organizationId: organization.id,
-      actorUserId: owner.id,
-      action: "seed.completed",
-      resourceType: "Organization",
-      resourceId: organization.id,
-      metadata: {
-        recipes: [...seeded],
-      },
-    },
-    create: {
-      id: seedIds.auditEvent,
-      organizationId: organization.id,
-      actorUserId: owner.id,
-      action: "seed.completed",
-      resourceType: "Organization",
-      resourceId: organization.id,
-      metadata: {
-        recipes: [...seeded],
-      },
-    },
-  });
-}

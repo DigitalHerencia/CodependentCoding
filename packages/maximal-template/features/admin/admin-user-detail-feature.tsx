@@ -1,15 +1,12 @@
+/** Member detail has its own read-only route template. */
 import { AdminUserDetailTemplate } from "@/components/templates/admin-templates";
 import { loadAdminUserDetailWorkflow } from "@/lib/workflows/adminWorkflows";
-import { EditAdminMembershipForm } from "./editAdminMembershipForm";
-
-export async function AdminUserDetailFeature({ userId }: { userId: string }) {
-  const { membership } = await loadAdminUserDetailWorkflow({ userId });
+import type { AdminUserRouteProps } from "@/types/adminTypes";
+/** Resolve membership and server-derived editability inside Suspense. */
+export async function AdminUserDetailFeature({ params }: AdminUserRouteProps) {
   return (
-    <AdminUserDetailTemplate membership={membership}>
-      <EditAdminMembershipForm
-        key={`${membership.role}-${membership.status}`}
-        membership={membership}
-      />
-    </AdminUserDetailTemplate>
+    <AdminUserDetailTemplate
+      {...await loadAdminUserDetailWorkflow(await params)}
+    />
   );
 }

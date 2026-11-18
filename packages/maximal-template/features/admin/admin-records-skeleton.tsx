@@ -1,5 +1,6 @@
-import { WorkspaceLoadingTemplate } from "@/components/templates/shared-templates";
-
+/** Accessible records fallback with no application imports or skeleton template. */
+import { AdminSkeletonBlock } from "@/components/blocks/admin-blocks";
+/** Announce the pending records route while its feature streams. */
 export function AdminRecordsSkeleton() {
-  return <WorkspaceLoadingTemplate route="/admin/records" />;
+  return <AdminSkeletonBlock variant="records" />;
 }
