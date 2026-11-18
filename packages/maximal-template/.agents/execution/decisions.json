@@ -133,6 +133,13 @@
       "status": "accepted",
       "title": "Responsive administration and account ownership",
       "decision": "The owner prompt supersedes earlier specs. CRM remains read-only. Preserve the admin data model and authorization safeguards. Consolidate admin files; use the existing BoldKit responsive sidebar for admin/tenant and remove the old overlay/popover. Auth owns identity/profile account presentation; authz owns role/organization switching; onboardingEditForm owns RHF profile editing. Dashboard metrics use persisted data and explicitly label paginated scope. No sample revenue, new persistence contracts or database execution. Only format:write, lint:fix, typegen and typecheck; delivery through Issue #376, PR, CI, merge and branch cleanup is authorized."
+    },
+    {
+      "id": "ADMIN-376-MERGED-2026-11-18",
+      "date": "2026-11-18",
+      "status": "accepted",
+      "title": "Verified responsive administration delivery merged",
+      "decision": "Owner-authorized PR #377 squash-merged as 126b2046c7b776eb4586dd09d326e3d45202b2e5 after final head 9effbc49f1c22d2cc8727f49e3ae05ce4bd659b1 passed GitHub Changed-file checks (run 44389472690), Vercel and Preview Comments. Issue #376 closed and Project item Done. Admin/tenant responsive sidebar and auth-owned account sheet replace the old mobile overlay/popover. Authz retains role/organization switching, onboardingEditForm retains RHF profile editing, and auth owns identity operations with PWA cache-aware explicit sign-out. CRM source and persistence schema/RLS/seed sources are unchanged. No tests, local builds, dev servers, browser checks, migrations or seeds executed. Runtime/visual fidelity remains unverified under owner limits. Execution records are finalized after merge; branch cleanup and main synchronization are verified separately."
     }
   ]
 }

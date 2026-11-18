@@ -1102,10 +1102,10 @@
     },
     {
       "spec_id": "ADMIN-376-OWNER-PROMPT",
-      "status": "checks-passed",
+      "status": "merged-verified",
       "issue_number": 376,
       "branch": "feat/376-admin-sidebar-account",
-      "pr_numbers": [],
+      "pr_numbers": [377],
       "source_of_truth": "Owner-approved admin dashboard/account/navigation prompt, recorded in Issue #376; supersedes older specifications.",
       "scope": [
         "Admin slice consolidation and dashboard presentation",
@@ -1137,6 +1137,16 @@
         {
           "command": "pnpm --dir packages/maximal-template run typecheck",
           "result": "PASS"
+        },
+        {
+          "command": "gh pr view 377 --json headRefOid,statusCheckRollup,mergeable; gh run view 44389472690",
+          "result": "PASS: Changed-file checks, Vercel and Vercel Preview Comments succeeded on the verified PR head.",
+          "verified_commit": "9effbc49f1c22d2cc8727f49e3ae05ce4bd659b1",
+          "ci_run": 44389472690
+        },
+        {
+          "command": "gh pr merge 377 --squash --delete-branch --match-head-commit 9effbc49f1c22d2cc8727f49e3ae05ce4bd659b1; gh pr view 377; gh issue view 376",
+          "result": "MERGED as 126b2046c7b776eb4586dd09d326e3d45202b2e5; Issue #376 CLOSED; Project item Done; remote/local task branches deleted; only main remains. git fetch --prune and git ls-remote verified deletion. Main and origin/main matched the merge commit before publishing the final metadata."
         }
       ],
       "NOT_RUN": [
@@ -1150,7 +1160,24 @@
         "Only a dashboard screenshot was attached; no dashboard source file was available. Existing registry primitives implement the reference hierarchy.",
         "Context7 was unavailable; official Clerk/shadcn/BoldKit documentation and installed types were consulted."
       ],
-      "last_updated": "2026-11-18T20:16:24.018082+00:00"
+      "last_updated": "2026-11-18T20:19:44.991910+00:00",
+      "pr_url": "https://github.com/DigitalHerencia/CodependentCoding/pull/377",
+      "checked_source_commit": "9effbc49f1c22d2cc8727f49e3ae05ce4bd659b1",
+      "merge_commit": "126b2046c7b776eb4586dd09d326e3d45202b2e5",
+      "project_status": "Done",
+      "completed_at": "2026-11-18T20:19:44.991910+00:00",
+      "remaining_source_work": [],
+      "source_review": [
+        "CRM changed-file count zero.",
+        "Schema/RLS/seed changed-file count zero.",
+        "Replaced overlay/popover/PWA account presentation removed; existing test-source API/import alignment only, no tests added or executed.",
+        "Only the four owner-permitted checks ran locally. CI uses the same permitted check categories."
+      ],
+      "prior_failures_resolved": [
+        "Windows batch route-path parsing: invoked installed Corepack JavaScript entry.",
+        "Strict optional Link handler type corrected.",
+        "Retired PWA hook consumer removed with its unused presentation."
+      ]
     }
   ],
   "git_maintenance_2026_11_17": {

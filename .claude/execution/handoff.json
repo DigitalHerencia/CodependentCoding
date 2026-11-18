@@ -1,39 +1,16 @@
 {
   "$schema": "codependent-coding/execution/handoff/v1",
-  "updated": "2026-11-18T20:16:24.018082+00:00",
+  "updated": "2026-11-18T20:19:44.991910+00:00",
   "format": "One current package; history is in progress.json, decisions.json and git.",
-  "status": "checks-passed",
+  "status": "merged-verified",
   "milestone": "M-T",
-  "current_issue": 376,
+  "current_issue": null,
   "next_issue": null,
   "queue": ["CC-050", "CC-052", "CC-053", "CC-063"],
-  "branch": "feat/376-admin-sidebar-account",
-  "active_package": {
-    "spec_id": "ADMIN-376-OWNER-PROMPT",
-    "issue": 376,
-    "status": "checks-passed",
-    "verification": [
-      {
-        "command": "pnpm --dir packages/maximal-template run lint:fix <affected source files>",
-        "result": "PASS: zero warnings"
-      },
-      {
-        "command": "pnpm --dir packages/maximal-template run format:write --ignore-unknown <affected files>",
-        "result": "PASS"
-      },
-      {
-        "command": "pnpm --dir packages/maximal-template run typegen",
-        "result": "PASS: Prisma Client and Next route types generated"
-      },
-      {
-        "command": "pnpm --dir packages/maximal-template run typecheck",
-        "result": "PASS"
-      }
-    ],
-    "next": "Complete allowed checks, open PR, verify CI, merge and sync main."
-  },
-  "source_commit": "f513865b392b54525d96eeeaefcc2f85487bb87a",
-  "completion": "PR #375 merged after green final-head CI; Issue #374 Done; task branch deleted remotely and locally; main synchronized. No active implementation package.",
+  "branch": "main",
+  "active_package": null,
+  "source_commit": "126b2046c7b776eb4586dd09d326e3d45202b2e5",
+  "completion": "PR #377 merged after green final-head CI; Issue #376 closed and Project item Done. No active implementation package. Execution records finalized after merge; main synchronization follows the metadata commit.",
   "in_flight": [
     "CC-050 token consolidation implemented; focused static checks passed. Affected-site CI and owner browser contrast/reduced-motion verification pending. CC-049 merged in #351; main synced and branch deleted.",
     "Homepage PR #349 has passing CI and ready preview; owner desktop/mobile verification remains pending.",
@@ -122,34 +99,30 @@
   "next_actions": [],
   "verification_summary": [
     {
+      "command": "pnpm --dir packages/maximal-template run lint:fix <affected source files>",
+      "result": "PASS: zero warnings"
+    },
+    {
       "command": "pnpm --dir packages/maximal-template run format:write --ignore-unknown <affected files>",
-      "result": "PASS: 169 affected files formatted; subsequent affected source/root-package formatting passed."
-    },
-    {
-      "command": "pnpm --dir packages/maximal-template run lint:fix <affected template files>",
-      "result": "PASS: 149 affected source files; subsequent affected selector/transaction/schema files passed with zero warnings."
-    },
-    {
-      "command": "pnpm run lint:fix packages/generator/src/compose.mjs packages/loaded-vibes/scripts/rls-sql.mjs",
-      "result": "PASS: zero warnings. A prior template-context attempt ignored sibling files; this root-context run checks them."
+      "result": "PASS"
     },
     {
       "command": "pnpm --dir packages/maximal-template run typegen",
-      "result": "PASS: Prisma Client 7.10.1 and Next route types."
+      "result": "PASS: Prisma Client and Next route types generated"
     },
     {
       "command": "pnpm --dir packages/maximal-template run typecheck",
-      "result": "PASS on final source after strict OTP/provider contracts, import moves and selector extraction."
+      "result": "PASS"
     },
     {
-      "command": "gh pr view 373 --json headRefOid,statusCheckRollup,mergeable",
-      "result": "PASS: Changed-file checks, Vercel and Vercel Preview Comments succeeded on final head c39f8a7ff125aa670bc692e1d10324206aa77710",
-      "ci_run": 44270094130,
-      "verified_commit": "c39f8a7ff125aa670bc692e1d10324206aa77710"
+      "command": "gh pr view 377 --json headRefOid,statusCheckRollup,mergeable; gh run view 44389472690",
+      "result": "PASS: Changed-file checks, Vercel and Vercel Preview Comments succeeded on the verified PR head.",
+      "verified_commit": "9effbc49f1c22d2cc8727f49e3ae05ce4bd659b1",
+      "ci_run": 44389472690
     },
     {
-      "command": "gh pr merge 373 --squash --delete-branch --match-head-commit c39f8a7ff125aa670bc692e1d10324206aa77710; gh pr view 373; git status --short --branch; git branch -vv",
-      "result": "MERGED as 59ad92417dd5681a6fa831c4ba8d399cbc8f6277; task branch removed; local main synchronized with origin/main."
+      "command": "gh pr merge 377 --squash --delete-branch --match-head-commit 9effbc49f1c22d2cc8727f49e3ae05ce4bd659b1; gh pr view 377; gh issue view 376",
+      "result": "MERGED as 126b2046c7b776eb4586dd09d326e3d45202b2e5; Issue #376 CLOSED; Project item Done; task branch deletion requested by successful merge."
     }
   ],
   "delivery": {
@@ -162,6 +135,6 @@
     "verified_head": "c39f8a7ff125aa670bc692e1d10324206aa77710"
   },
   "updated_at": "2026-11-18T08:50:17.096543+00:00",
-  "active_spec_id": "ADMIN-376-OWNER-PROMPT",
+  "active_spec_id": null,
   "next_spec_id": null
 }
