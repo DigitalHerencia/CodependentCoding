@@ -1,10 +1,10 @@
+/** Canonical destinations shared by application navigation. */
 export const routes = {
   home: "/",
   pricing: "/pricing",
   contact: "/contact",
   signIn: "/sign-in",
   signUp: "/sign-up",
-  onboarding: "/onboarding",
   dashboard: "/dashboard",
-  settings: "/settings/profile",
+  settings: "/settings/members",
 } as const;

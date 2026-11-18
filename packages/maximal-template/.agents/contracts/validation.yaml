@@ -77,3 +77,11 @@ evidence:
     - result
     - date
     - spec_id
+
+owner_auth_route_override:
+  source: context/specs/issues/CC-080-auth-route-slices.md
+  approved: 2026-11-18
+  scope: packages/maximal-template auth and onboarding
+  commands: [lint:fix, format:write, typegen, typecheck]
+  prohibited: [tests, builds, dev_servers, database_execution]
+  import_enforcement: packages/maximal-template/eslint.config.mjs

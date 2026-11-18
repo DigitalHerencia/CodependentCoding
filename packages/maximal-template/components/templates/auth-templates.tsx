@@ -1,34 +1,38 @@
+/** Auth presentation composes blocks; each page has exactly one template. */
 import {
-  AuthErrorBlock,
+  AuthHeadingBlock,
+  AuthFieldsBlock,
   AuthFormBlock,
-  AuthFormPanel,
-  AuthLoadingBlock,
+  AuthControlsBlock,
+  AuthFooterLinksBlock,
+  AuthManagedBlock,
 } from "@/components/blocks/auth-blocks";
-import type { AuthFormTemplateProps } from "@/types/authTypes";
-
-/** Compose editorial heading, controlled fields, challenge and secondary actions. */
-export function AuthFormTemplate({
-  title,
-  description,
-  variant,
-  ...form
-}: AuthFormTemplateProps) {
+import type {
+  AuthPageTemplateProps,
+  AuthRouteVariantProps,
+} from "@/types/authTypes";
+/** Shared arrangement for the two route templates; no application decisions. */
+function AuthRoutePresentation(props: AuthRouteVariantProps) {
+  if (props.managed) return <AuthManagedBlock variant={props.variant} />;
   return (
-    <AuthFormPanel
-      title={title}
-      description={description}
-      {...(variant ? { variant } : {})}
+    <div
+      data-auth-variant={props.variant}
+      className="w-full space-y-6 bg-transparent text-left"
     >
-      <AuthFormBlock {...form} />
-    </AuthFormPanel>
+      <AuthHeadingBlock {...props} />
+      <AuthFormBlock {...props}>
+        <AuthFieldsBlock {...props} />
+        <AuthControlsBlock {...props} />
+      </AuthFormBlock>
+      <AuthFooterLinksBlock variant={props.variant} />
+    </div>
   );
 }
-
-/** Auth boundaries keep the surrounding split shell supplied by the layout. */
-export function AuthLoadingTemplate() {
-  return <AuthLoadingBlock />;
+/** The sign-in route's sole presentation entry. */
+export function AuthSignInTemplate(props: AuthPageTemplateProps) {
+  return <AuthRoutePresentation {...props} variant="signIn" />;
 }
-
-export function AuthErrorTemplate({ reset }: { reset: () => void }) {
-  return <AuthErrorBlock reset={reset} />;
+/** The sign-up route's sole presentation entry. */
+export function AuthSignUpTemplate(props: AuthPageTemplateProps) {
+  return <AuthRoutePresentation {...props} variant="signUp" />;
 }

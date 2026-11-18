@@ -1,3 +1,4 @@
+/** Support Fetchers contracts and composition for the owning application slice. */
 import {
   persistedReadLimitSchema,
   persistedRecordIdSchema,
@@ -14,7 +15,7 @@ import {
   knowledgeArticleSelect,
   supportTicketSelect,
 } from "@/lib/db/selects/supportSelects";
-import { withAuthenticatedRead } from "@/lib/db/tenant";
+import { withAuthenticatedRead } from "@/lib/db/tenancy";
 
 export async function getSupportInbox(rawLimit: unknown = 100) {
   return withAuthenticatedRead(async (tx, access) => {

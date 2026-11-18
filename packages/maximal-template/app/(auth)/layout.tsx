@@ -1,9 +1,10 @@
+/** Layout contracts and composition for the owning application slice. */
 import type { ReactNode } from "react";
 
-import { AuthShell } from "@/components/shells/auth-shell";
+import { AuthShellFeature } from "@/features/auth/authShellFeature";
 
 export default function AuthLayout({
   children,
 }: Readonly<{ children: ReactNode }>) {
-  return <AuthShell>{children}</AuthShell>;
+  return <AuthShellFeature>{children}</AuthShellFeature>;
 }

@@ -1,3 +1,4 @@
+/** Auth.spec contracts for the owning application slice. */
 import { expect, test } from "@playwright/test";
 
 // Authored only. The owner must configure a Clerk development instance before running.
@@ -84,7 +85,7 @@ test("sign-up validation and password visibility retain accessible controls", as
 test("the signed-out invitation entry retains its sign-in gate", async ({
   request,
 }) => {
-  const response = await request.get("/invite/fixture-untrusted-token", {
+  const response = await request.get("/invitations/fixture-untrusted-token", {
     maxRedirects: 0,
   });
   expect(response.status()).toBeGreaterThanOrEqual(300);

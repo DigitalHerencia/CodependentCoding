@@ -1,14 +1,16 @@
+/** Known authorization resources and supported permission actions. */
 import "server-only";
 
 import { installedModules } from "@/lib/modules/registry";
-import type { ResourceKind } from "@/types/accessTypes";
+import type { ResourceKind } from "@/types/authzTypes";
 import type { PermissionAction } from "@/types/moduleTypes";
 
 export type {
   ResourceAccessDescriptor,
   ResourceKind,
-} from "@/types/accessTypes";
+} from "@/types/authzTypes";
 
+/** Supported actions that can be granted for a known authorization resource. */
 export const permissionActions = [
   "read",
   "create",
@@ -19,9 +21,6 @@ export const permissionActions = [
 
 /** Resources every app has (AUTH.md §5.2); billing joins when its module is installed. */
 export const baseResources = [
-  "base.organization",
-  "base.membership",
-  "base.settings",
   "base.dashboard",
 ] as const satisfies readonly ResourceKind[];
 

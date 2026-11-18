@@ -1,3 +1,4 @@
+/** Ai Fetchers contracts and composition for the owning application slice. */
 import { persistedReadLimitSchema } from "@/schemas/commonSchemas";
 import "server-only";
 
@@ -6,7 +7,7 @@ import { Prisma } from "@/generated/prisma/client";
 import { assertPermission } from "@/lib/authz/permissions";
 import { toAiGenerationDTO, toAiUsageSummaryDTO } from "@/lib/db/dtos/aiDtos";
 import { aiGenerationSelect } from "@/lib/db/selects/aiSelects";
-import { withAuthenticatedRead } from "@/lib/db/tenant";
+import { withAuthenticatedRead } from "@/lib/db/tenancy";
 
 export async function assertAiReadAccess() {
   await withAuthenticatedRead(async (_tx, access) => {

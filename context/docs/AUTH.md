@@ -217,3 +217,9 @@ Admin pages live directly beneath (admin); rewrites preserve /admin URLs. The la
 Membership administration uses soft suspension/restoration and atomic audit events with the affected identity and previous/next values. Clerk deletion anonymizes the retained user and suspends memberships. WebhookEvent remains a separate delivery ledger. Admin list reads apply validated search and bounded pagination in SQL, and detail reads retrieve only the requested identity. Tenant identity/RLS context remains on the protected transaction connection; no additional admin database URL is required by the supplied reference.
 
 User IDs and their relationships use Clerk string identifiers. Organizations and memberships retain UUID identifiers. Source migration 20261104010000_clerk_identity_primary_key converts existing UUID relationships without discarding rows; it must be reviewed and applied by the owner before running this source against an older database.
+
+## Auth/authz ownership update (CC-080, approved 2026-11-18)
+
+For Maximal Template, the owner-approved [CC-080 specification](../specs/issues/CC-080-auth-route-slices.md) supersedes previous profile/onboarding details. Auth owns identity, Clerk sessions, and a local profile stored in nullable User columns. An explicit completion timestamp makes empty optional profiles complete. Mandatory onboarding is a modal, independent of tenancy, with no profile page or edit trigger yet. Authz owns organizations, permissions and tenancy.
+
+Auth and onboarding workflows compose application logic; credential templates compose blocks; blocks compose shadcn primitives and copy. Auth page routes only wrap features in Suspense. Scoped import boundaries are enforced in the template ESLint configuration. Auth/authz Prisma, RLS and seed ownership follow the same split.

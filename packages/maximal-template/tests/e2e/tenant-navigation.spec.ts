@@ -1,3 +1,4 @@
+/** Existing browser contracts aligned with modal onboarding and live tenant destinations. */
 import { expect, test } from "@playwright/test";
 
 // Authored only; these fixtures must be disposable Clerk sessions for the indicated role/state.
@@ -70,10 +71,8 @@ test.describe("authenticated workspace navigation", () => {
       await expect(dialog).toHaveCount(0);
       await expect(trigger).toBeFocused();
       await trigger.click();
-      await dialog
-        .getByRole("link", { name: "Edit profile", exact: true })
-        .click();
-      await expect(page).toHaveURL(/\/onboarding\/profile$/);
+      await dialog.getByRole("link", { name: "Members", exact: true }).click();
+      await expect(page).toHaveURL(/\/settings\/members$/);
       await expect(page.getByRole("dialog")).toHaveCount(0);
     });
   }

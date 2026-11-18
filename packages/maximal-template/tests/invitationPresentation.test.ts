@@ -1,10 +1,11 @@
+/** Invitation Presentation.test contracts for the owning application slice. */
+import { InvitationLoadingBlock } from "@/components/blocks/invitation-blocks";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { expect, test } from "vitest";
 import {
   InvitationAcceptanceTemplate,
   InvitationCreateTemplate,
-  InvitationLoadingTemplate,
 } from "@/components/templates/invitation-templates";
 import { InvitationRoleFieldBlock } from "@/components/blocks/invitation-blocks";
 
@@ -40,16 +41,16 @@ test("creation exposes only the one-time path returned by the authorized workflo
     InvitationCreateTemplate({
       onSubmit: () => {},
       busy: false,
-      link: "https://example.test/invite/fixture",
+      link: "https://example.test/invitations/fixture",
       children: null,
     }),
   );
   expect(html).toContain('role="status"');
-  expect(html).toContain("https://example.test/invite/fixture");
+  expect(html).toContain("https://example.test/invitations/fixture");
 });
 
 test("the invitation route's independent loading state is announced", () => {
-  const html = renderToStaticMarkup(createElement(InvitationLoadingTemplate));
+  const html = renderToStaticMarkup(createElement(InvitationLoadingBlock));
   expect(html).toContain('aria-label="Loading invitation"');
   expect(html).toContain('aria-hidden="true"');
 });

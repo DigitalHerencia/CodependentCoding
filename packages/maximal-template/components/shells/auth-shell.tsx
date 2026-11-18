@@ -1,11 +1,6 @@
-// components/shells/auth-shell.tsx
+/** Auth shell contracts and composition for the owning application slice. */
+import type { AuthShellProps } from "@/types/authTypes";
 
-import type { ReactNode } from "react";
-
-import { LogoLockup } from "@/components/brand/logo-lockup";
-import { AuthFooter } from "@/components/nav/auth-footer";
-import { AuthHeader } from "@/components/nav/auth-header";
-import { authContent } from "@/content/auth";
 import styles from "@/components/shells/auth-shell.module.css";
 
 /**
@@ -13,32 +8,28 @@ import styles from "@/components/shells/auth-shell.module.css";
  * the headline; the form side carries the page and the footer. Sign-up mirrors
  * sign-in through CSS (`data-auth-variant` on the form panel), not the URL.
  */
-export function AuthShell({ children }: { children: ReactNode }) {
+export function AuthShell({
+  children,
+  header,
+  brand,
+  logo,
+  footer,
+}: AuthShellProps) {
   return (
     <div className={`auth-layout ${styles.layout}`}>
       <section className="auth-brand-panel auth-panel">
-        <AuthHeader />
-        <div className="auth-copy-placement">
-          <div className="auth-content space-y-5">
-            <p className="eyebrow text-muted-primary">{authContent.eyebrow}</p>
-            <h1 className="uppercase">{authContent.title}</h1>
-            <p className="reading-copy text-foreground/80">
-              {authContent.description}
-            </p>
-          </div>
-        </div>
+        {header}
+        <div className="auth-copy-placement">{brand}</div>
       </section>
       <section className="auth-form-column auth-panel bg-primary/10 text-foreground">
         <div aria-hidden className="auth-header-spacer" />
         <main className="auth-form-placement">
           <div className="auth-content">
-            <div className="auth-brand-placement">
-              <LogoLockup size="auth" />
-            </div>
+            <div className="auth-brand-placement">{logo}</div>
             {children}
           </div>
         </main>
-        <AuthFooter />
+        {footer}
       </section>
     </div>
   );

@@ -1,9 +1,8 @@
 "use client";
-import { AuthErrorTemplate } from "@/components/templates/auth-templates";
-
-// Route-group errors need a client boundary; recovery presentation remains a block.
-export default function RouteError({
-  reset,
-}: Readonly<{ error: Error & { digest?: string }; reset: () => void }>) {
-  return <AuthErrorTemplate reset={reset} />;
+/** Auth route recovery composes the owned error block directly. */
+import { AuthErrorBlock } from "@/components/blocks/auth-blocks";
+import type { AuthErrorProps } from "@/types/authTypes";
+/** Retry without exposing provider or server exception contents. */
+export default function RouteError({ reset }: AuthErrorProps) {
+  return <AuthErrorBlock reset={reset} />;
 }

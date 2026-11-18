@@ -1,4 +1,6 @@
-// Why: pins the active-org cookie (AUTH.md §4.1). A user with two memberships
+/** Active Organization.test contracts for the owning application slice. */
+import type * as AuthzModeModule from "@/lib/authz/mode";
+// Why: pins the active-org cookie (AUTH.md �4.1). A user with two memberships
 // can switch, every read follows the cookie, and the cookie is only a
 // preference: the tenancy wrapper re-validates it on every request.
 import assert from "node:assert/strict";
@@ -7,7 +9,7 @@ import { beforeEach, test, vi } from "vitest";
 import { ACTIVE_ORGANIZATION_COOKIE } from "@/lib/authz/tenancy";
 
 vi.mock("@/lib/authz/mode", async (importOriginal) => ({
-  ...(await importOriginal<typeof import("@/lib/authz/mode")>()),
+  ...(await importOriginal<typeof AuthzModeModule>()),
   tenancy: "multi",
   activeMembershipScope: (userId: string) => ({ userId, status: "ACTIVE" }),
 }));
@@ -31,6 +33,9 @@ const state = vi.hoisted(() => ({
   invalidated: 0,
 }));
 
+// Request scheduling is supplied by Next in production; this unit harness owns it.
+vi.mock("next/server", () => ({ connection: async () => {} }));
+
 vi.mock("next/headers", () => ({
   cookies: async () => ({
     get: (name: string) => {
@@ -43,7 +48,7 @@ vi.mock("next/headers", () => ({
   }),
 }));
 
-vi.mock("@/lib/auth/auth", () => ({
+vi.mock("@/lib/integrations/clerk/server", () => ({
   requireIdentity: async () => ({ clerkUserId: "user_1" }),
 }));
 
@@ -88,8 +93,8 @@ vi.mock("@/lib/db/client", () => ({
   },
 }));
 
-const { withAuthenticatedRead } = await import("@/lib/db/tenant");
-const { switchOrganization } = await import("@/lib/actions/commonActions");
+const { withAuthenticatedRead } = await import("@/lib/db/tenancy");
+const { switchOrganization } = await import("@/lib/actions/authzActions");
 
 const activeOrganization = () =>
   withAuthenticatedRead(async (_tx, access) => access.organizationId);

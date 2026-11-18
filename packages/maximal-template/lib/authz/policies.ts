@@ -1,13 +1,17 @@
+/** Resource authorization combining role and attribute checks. */
 import "server-only";
 
 import type {
   AccessContext,
   Permission,
   ResourceAccessDescriptor,
-} from "@/types/accessTypes";
+} from "@/types/authzTypes";
 
 import { assertPermission } from "./permissions";
-import { hasCustomerRelationship, limitedToCustomerRecords } from "./attributes";
+import {
+  hasCustomerRelationship,
+  limitedToCustomerRecords,
+} from "./attributes";
 
 /**
  * RBAC (the default): the role's permissions decide, and the one record rule
@@ -64,9 +68,11 @@ export function canReadResource(
   context: AccessContext,
   resource: ResourceAccessDescriptor,
 ): boolean {
-  return isSameTenant(context, resource) && (
-    resource.kind.startsWith("crm.") || !limitedToOwnRecords(context) ||
-    hasCustomerRelationship(context, resource)
+  return (
+    isSameTenant(context, resource) &&
+    (resource.kind.startsWith("crm.") ||
+      !limitedToOwnRecords(context) ||
+      hasCustomerRelationship(context, resource))
   );
 }
 

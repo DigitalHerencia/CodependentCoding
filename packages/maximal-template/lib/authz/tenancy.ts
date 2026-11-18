@@ -1,13 +1,17 @@
+/** Validated active-organization preferences for authenticated requests. */
 import "server-only";
 
 import { cookies } from "next/headers";
-import { organizationIdSchema } from "@/schemas/accessSchemas";
+import { organizationIdSchema } from "@/schemas/authzSchemas";
 import { tenancy } from "./mode";
 
 /** Single tenancy never accepts invitations or administrator approvals. */
 export function assertInvitationsAllowed(): void {
   if (tenancy === "single")
-    throw Object.assign(new Error("Invitations are unavailable in single tenancy."), { code: "FORBIDDEN" });
+    throw Object.assign(
+      new Error("Invitations are unavailable in single tenancy."),
+      { code: "FORBIDDEN" },
+    );
 }
 
 /** httpOnly cookie holding the organization the user last chose (AUTH.md §4.1). */
@@ -15,7 +19,7 @@ export const ACTIVE_ORGANIZATION_COOKIE = "active-org";
 
 /**
  * The organization the user prefers. A preference, not authority: the
- * tenancy wrapper (lib/db/tenant.ts) re-validates it against an ACTIVE
+ * tenancy wrapper (lib/db/tenancy.ts) re-validates it against an ACTIVE
  * membership on every request and falls back to the oldest one.
  */
 export async function getActiveOrganizationPreference(): Promise<

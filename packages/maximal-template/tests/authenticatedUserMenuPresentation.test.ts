@@ -1,3 +1,4 @@
+/** Authenticated User Menu Presentation.test contracts for the owning application slice. */
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { expect, test, vi } from "vitest";
@@ -19,15 +20,11 @@ vi.mock("@/lib/workflows/pwaClientWorkflows", () => ({
     onSignOut: vi.fn(),
   }),
 }));
-vi.mock("@/features/settings/organization-switcher-feature.client", () => ({
-  OrganizationSwitcherFeatureClient: () =>
+vi.mock("@/features/authz/authzOrganizationSwitcherFeatureClient", () => ({
+  AuthzOrganizationSwitcherFeatureClient: () =>
     createElement("select", { "aria-label": "Organization fixture" }),
 }));
 
-const profile = {
-  displayName: "Fixture name",
-  profileCompletedAt: "2026-01-01T00:00:00.000Z",
-};
 const orgA = { id: "org_a", name: "A" };
 const orgB = { id: "org_b", name: "B" };
 
@@ -36,7 +33,6 @@ test.each([1, 2])(
   (count) => {
     const html = renderToStaticMarkup(
       createElement(AuthenticatedUserMenu, {
-        profile,
         role: "MEMBER",
         presentation: "panel",
         switcher: {
@@ -46,11 +42,9 @@ test.each([1, 2])(
       }),
     );
     expect(html.includes("Organization fixture")).toBe(count > 1);
-    expect(html).toContain("Fixture name");
     expect(html).toContain("MEMBER");
-    expect(html).toContain("<dd>A</dd>");
+    expect(html).toMatch(/<dd\b[^>]*>A<\/dd>/);
     expect(html).toContain("member@example.test");
-    expect(html).toContain('href="/onboarding/profile"');
     expect(html).toContain("Manage account");
     expect(html).toContain("Sign out");
     expect(html).not.toContain("Ownership");

@@ -1,6 +1,6 @@
--- Why: row-level security for the projects module (AUTH.md ยง6): containment if an app predicate is ever missed.
+-- Why: row-level security for the projects module (AUTH.md ง6): containment if an app predicate is ever missed.
 -- Readable source: `pnpm db:rls` writes it into a migration (CC-MIG-001). Idempotent.
--- Policies read app.organization_id / app.clerk_user_id set per transaction by lib/db/tenant.ts.
+-- Policies read app.organization_id / app.clerk_user_id set per transaction by lib/db/tenancy.ts.
 
 ALTER TABLE "Milestone" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "Milestone" FORCE ROW LEVEL SECURITY;

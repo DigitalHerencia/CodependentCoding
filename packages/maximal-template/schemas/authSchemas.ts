@@ -1,3 +1,4 @@
+/** Auth Schemas contracts and composition for the owning application slice. */
 import { z } from "zod";
 import type { AuthSignInStep } from "@/types/authTypes";
 const fields = z.object({
@@ -5,6 +6,7 @@ const fields = z.object({
   password: z.string().default(""),
   code: z.string().default(""),
 });
+/** Validate the current credential, recovery, or MFA form stage. */
 export function getSignInFormSchema(step: AuthSignInStep) {
   return fields.superRefine((values, ctx) => {
     const required =
@@ -24,6 +26,7 @@ export function getSignInFormSchema(step: AuthSignInStep) {
         });
   });
 }
+/** Validate account creation separately from its email verification stage. */
 export function getSignUpFormSchema(verifying: boolean) {
   return z
     .object({
@@ -50,3 +53,32 @@ export function getSignUpFormSchema(verifying: boolean) {
         });
     });
 }
+
+/** Blank optional profile input is persisted as SQL NULL; completion is separate. */
+const optionalProfileText = (max: number) =>
+  z
+    .string()
+    .trim()
+    .max(max)
+    .nullish()
+    .transform((value) => value || null);
+/** The caller cannot submit identity, tenancy, roles, or a completion timestamp. */
+export const onboardingSchema = z
+  .object({
+    firstName: optionalProfileText(100),
+    lastName: optionalProfileText(100),
+    bio: optionalProfileText(2000),
+    phoneNumber: z
+      .string()
+      .trim()
+      .max(32)
+      .nullish()
+      .transform((value) => (value ? value.replace(/[\s().-]/g, "") : null))
+      .pipe(
+        z
+          .string()
+          .regex(/^\+?\d{7,15}$/, "Enter a valid phone number.")
+          .nullable(),
+      ),
+  })
+  .strict();

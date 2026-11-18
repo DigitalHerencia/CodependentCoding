@@ -1,16 +1,17 @@
 "use server";
 
+/** Admin Actions contracts and composition for the owning application slice. */
 import {
   addAdminMembershipSchema,
   adminBulkOperationSchema,
   changeAdminMembershipSchema,
   updateAdminMembershipStatusSchema,
 } from "@/schemas/adminSchemas";
-import { requireIdentity } from "@/lib/auth/auth";
+import { requireIdentity } from "@/lib/integrations/clerk/server";
 import { assertPermission } from "@/lib/authz/permissions";
 import { assertInvitationsAllowed } from "@/lib/authz/tenancy";
 import { toAdminMembershipDTO } from "@/lib/db/dtos/adminDtos";
-import { withTenantTransaction } from "@/lib/db/tenant";
+import { withTenantTransaction } from "@/lib/db/tenancy";
 import {
   approveWorkspaceAccessTx,
   updateMembershipAdministrationTx,

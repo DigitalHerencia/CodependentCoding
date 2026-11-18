@@ -11,7 +11,7 @@ import type {
   AccessContext,
   AppRole,
   ResourceAccessDescriptor,
-} from "@/types/accessTypes";
+} from "@/types/authzTypes";
 
 const as = (role: AppRole): AccessContext => ({
   clerkUserId: "clerk_1",

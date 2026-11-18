@@ -1,11 +1,13 @@
+/** Clerk Provisioning Identity.test contracts for the owning application slice. */
 import { expect, test, vi } from "vitest";
 import type { Prisma } from "@/generated/prisma/client";
-import { projectClerkUser } from "@/lib/auth/clerkWebhooks";
-import { syncClerkUserTx } from "@/lib/workflows/authWorkflows";
-import { provisionWorkspaceAccessTx } from "@/lib/db/transactions/onboardingTx";
+import { projectClerkUser } from "@/lib/integrations/clerk/webhooks";
+import { syncClerkUserTx } from "@/lib/db/selects/authTx";
+import { provisionWorkspaceAccessTx } from "@/lib/db/selects/authzTx";
 
-vi.mock("@/lib/db/transactions/onboardingTx", () => ({
+vi.mock("@/lib/db/selects/authzTx", () => ({
   provisionWorkspaceAccessTx: vi.fn(async () => true),
+  suspendAuthzMembershipsTx: vi.fn(async () => {}),
 }));
 
 const user = {

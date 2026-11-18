@@ -1,13 +1,4 @@
-export type ClerkUserProjection = {
-  clerkUserId: string;
-  email: string | null;
-  /** Only provider-verified email may match a pending invitation. */
-  verifiedEmail: string | null;
-  displayName: string | null;
-  imageUrl: string | null;
-  username: string | null;
-};
-
+/** Integration Types contracts and composition for the owning application slice. */
 export type IntegrationStatus = {
   name: string;
   purpose: string;

@@ -1,7 +1,8 @@
+/** Dashboard Fetchers contracts and composition for the owning application slice. */
 import "server-only";
 
 import { assertPermission } from "@/lib/authz/permissions";
-import { withAuthenticatedRead } from "@/lib/db/tenant";
+import { withAuthenticatedRead } from "@/lib/db/tenancy";
 import {
   toDashboardActivityDTO,
   toDashboardOrganizationDTO,

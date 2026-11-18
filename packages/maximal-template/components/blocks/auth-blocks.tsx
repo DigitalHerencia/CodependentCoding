@@ -1,167 +1,247 @@
-import { cn } from "@/components/ui/utils";
-import { type ReactNode } from "react";
+/** BoldKit login, signup, OTP, loading and server-error patterns composed from local shadcn primitives.
+ * @see https://boldkit.dev
+ */
+import type { ReactNode } from "react";
+import { SignIn, SignUp } from "@clerk/nextjs";
+import Link from "next/link";
+import { RefreshCw, ServerCrash } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+} from "@/components/ui/input-otp";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
-import { authPresentationCopy, authStateContent } from "@/content/auth";
+import {
+  authAppearance,
+  authPresentationCopy,
+  authRemainingCopy,
+  authStateContent,
+} from "@/content/auth";
 import type {
-  AuthFormBlockProps,
+  AuthPageTemplateProps,
+  AuthInputTemplateProps,
   AuthInputBlockProps,
+  AuthRouteVariantProps,
 } from "@/types/authTypes";
-import { RefreshCw, ServerCrash } from "lucide-react";
-import Link from "next/link";
 
-type AuthFormPanelProps = {
-  children: ReactNode;
-  title: string;
-  description: string;
-  /** Sign-up mirrors the auth shell (see globals.css). */
-  variant?: "signIn" | "signUp";
-};
-
-export function AuthFormPanel({
-  children,
-  title,
-  description,
-  variant = "signIn",
-}: AuthFormPanelProps) {
+/** A route-specific heading with copy resolved only in the block layer. */
+export function AuthHeadingBlock({
+  titleKey,
+  descriptionKey,
+}: Pick<AuthPageTemplateProps, "titleKey" | "descriptionKey">) {
   return (
-    <div
-      data-auth-variant={variant}
-      className="w-full space-y-6 bg-transparent text-left"
-    >
-      <div className="space-y-2">
-        <h2 className="type-title uppercase">{title}</h2>
-        <p className="max-w-prose type-body">{description}</p>
-      </div>
-      {children}
+    <div className="space-y-2">
+      <h2 className="type-title uppercase">{authPresentationCopy[titleKey]}</h2>
+      <p className="max-w-prose type-body">
+        {authPresentationCopy[descriptionKey]}
+      </p>
     </div>
   );
 }
-
-export type AuthSplitLayoutProps = {
-  children: ReactNode;
-  brandContent?: ReactNode;
-  brandBackground?: string;
-  position?: "left" | "right";
-  className?: string;
-};
-
-export function AuthSplitLayout({
-  children,
-  brandContent,
-  brandBackground = "bg-primary",
-  position = "left",
-  className,
-}: AuthSplitLayoutProps) {
-  return (
-    <div className={cn("flex min-h-screen", className)}>
-      {position === "left" && brandContent && (
-        <div
-          className={cn(
-            "hidden flex-col justify-center p-12 lg:flex lg:w-1/2",
-            brandBackground,
-          )}
-        >
-          {brandContent}
-        </div>
-      )}
-
-      <div className="flex flex-1 items-center justify-center p-4 md:p-8">
-        {children}
-      </div>
-
-      {position === "right" && brandContent && (
-        <div
-          className={cn(
-            "hidden flex-col justify-center p-12 lg:flex lg:w-1/2",
-            brandBackground,
-          )}
-        >
-          {brandContent}
-        </div>
-      )}
-    </div>
-  );
-}
-
-/** BoldKit auth-forms presentation; authentication and RHF remain in the feature. */
+/** Compose labels, errors and custom OTP controls through one reusable field block. */
 export function AuthInputBlock({
+  id,
   label,
   labelAction,
   error,
   invalid,
-  id,
+  control,
   ...input
 }: AuthInputBlockProps) {
   return (
-    <Field data-invalid={invalid}>
+    <Field data-invalid={invalid ?? Boolean(error)}>
       <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
         <FieldLabel htmlFor={id}>{label}</FieldLabel>
         {labelAction}
       </div>
-      <Input
-        {...input}
-        id={id}
-        aria-invalid={invalid}
-        aria-describedby={error ? `${id}-error` : undefined}
-      />
-      {error && <FieldError id={`${id}-error`}>{error}</FieldError>}
+      {control ?? (
+        <Input
+          {...input}
+          id={id}
+          aria-invalid={invalid ?? Boolean(error)}
+          aria-describedby={error ? id + "-error" : undefined}
+        />
+      )}
+      {error && <FieldError id={id + "-error"}>{error}</FieldError>}
     </Field>
   );
 }
-
-export function AuthPasswordToggleBlock({
+/** RHF supplies input bindings; blocks own copy, password visibility and OTP primitives. */
+export function AuthFieldsBlock({
+  fields,
   shown,
-  onToggle,
-}: {
-  shown: boolean;
-  onToggle: () => void;
-}) {
-  return (
-    <Button
-      type="button"
-      variant="link"
-      size="sm"
-      className="h-auto min-h-8 px-0 py-1"
-      aria-pressed={shown}
-      onClick={onToggle}
-    >
-      {shown
-        ? authPresentationCopy.hidePassword
-        : authPresentationCopy.showPassword}
-    </Button>
+  onTogglePassword,
+}: Pick<AuthPageTemplateProps, "fields" | "shown" | "onTogglePassword">) {
+  return fields.map(
+    ({ labelKey, error, onValueChange, ...field }: AuthInputTemplateProps) => (
+      <AuthInputBlock
+        {...field}
+        key={field.id}
+        label={authPresentationCopy[labelKey]}
+        error={error}
+        labelAction={
+          field.name === "password" ? (
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              aria-pressed={shown}
+              onClick={onTogglePassword}
+            >
+              {shown
+                ? authPresentationCopy.hidePassword
+                : authPresentationCopy.showPassword}
+            </Button>
+          ) : undefined
+        }
+        control={
+          field.name === "code" &&
+          field.inputMode === "numeric" &&
+          onValueChange ? (
+            <InputOTP
+              id={field.id}
+              name={field.name}
+              ref={field.ref}
+              value={typeof field.value === "string" ? field.value : ""}
+              onChange={onValueChange}
+              onBlur={field.onBlur}
+              maxLength={6}
+              pattern="[0-9]*"
+              inputMode="numeric"
+              autoComplete="one-time-code"
+              required
+              aria-invalid={Boolean(error)}
+              aria-describedby={error ? field.id + "-error" : undefined}
+            >
+              <InputOTPGroup>
+                {Array.from({ length: 6 }, (_, index) => (
+                  <InputOTPSlot key={index} index={index} />
+                ))}
+              </InputOTPGroup>
+            </InputOTP>
+          ) : undefined
+        }
+      />
+    ),
   );
 }
-
-/** Explicit POST and pre-hydration disabling prevent native GET credential leakage. */
+/** Native POST and disabled controls prevent pre-hydration credential leakage. */
 export function AuthFormBlock({
-  action,
   onSubmit,
   busy,
   children,
-  footer,
-  challenge,
-}: AuthFormBlockProps) {
+  variant,
+}: AuthRouteVariantProps & { children: ReactNode }) {
   return (
     <form
       method="post"
-      action={action}
+      action={variant === "signIn" ? "/sign-in" : "/sign-up"}
       onSubmit={onSubmit}
-      className="space-y-4"
       aria-busy={busy}
+      className="space-y-4"
       noValidate
     >
       <fieldset disabled={busy} className="space-y-4 disabled:opacity-70">
         {children}
       </fieldset>
-      {challenge}
-      {footer}
+      {variant === "signUp" && <div id="clerk-captcha" />}
     </form>
   );
 }
-
+/** Keep all feedback, submission and verification controls within the disabled fieldset. */
+export function AuthControlsBlock({
+  message,
+  busy,
+  submitKey,
+  actions,
+  factors,
+}: AuthPageTemplateProps) {
+  const labels = {
+    totp: authRemainingCopy.authenticatorApp,
+    email_code: authRemainingCopy.emailCode,
+    phone_code: authRemainingCopy.sMSCode,
+    backup_code: authRemainingCopy.backupCode,
+  };
+  return (
+    <>
+      {message && (
+        <p role="alert" className="text-left text-sm leading-relaxed">
+          {typeof message === "string"
+            ? message
+            : authPresentationCopy[message.copy]}
+        </p>
+      )}
+      <Button type="submit" className="w-full">
+        {authPresentationCopy[busy ? "pleaseWait" : submitKey]}
+      </Button>
+      {actions?.map((action) => (
+        <Button
+          key={action.key}
+          type="button"
+          variant="link"
+          onClick={action.onClick}
+        >
+          {authPresentationCopy[action.label]}
+        </Button>
+      ))}
+      {factors?.map(({ factor, onClick }) => (
+        <Button key={factor} type="button" variant="link" onClick={onClick}>
+          {labels[factor]}
+        </Button>
+      ))}
+    </>
+  );
+}
+/** Navigation copy remains owned by blocks for both authentication routes. */
+export function AuthFooterLinksBlock({
+  variant,
+}: Pick<AuthRouteVariantProps, "variant">) {
+  return (
+    <p className="auth-secondary-actions">
+      {
+        authPresentationCopy[
+          variant === "signIn" ? "newHere" : "alreadyHaveAnAccount"
+        ]
+      }{" "}
+      <Link
+        href={variant === "signIn" ? "/sign-up" : "/sign-in"}
+        className="type-link"
+      >
+        {
+          authPresentationCopy[
+            variant === "signIn" ? "createAnAccount" : "signIn"
+          ]
+        }
+      </Link>
+    </p>
+  );
+}
+/** Clerk retains support for instance-specific requirements and session tasks. */
+export function AuthManagedBlock({
+  variant,
+}: Pick<AuthRouteVariantProps, "variant">) {
+  return variant === "signIn" ? (
+    <SignIn
+      path="/sign-in"
+      routing="path"
+      appearance={authAppearance}
+      signUpUrl="/sign-up"
+      fallbackRedirectUrl="/dashboard"
+    />
+  ) : (
+    <SignUp
+      path="/sign-up"
+      routing="path"
+      appearance={authAppearance}
+      signInUrl="/sign-in"
+      fallbackRedirectUrl="/dashboard"
+    />
+  );
+}
+/** Announce loading while skeleton shapes remain hidden from assistive technology. */
 export function AuthLoadingBlock() {
   return (
     <div
@@ -171,25 +251,16 @@ export function AuthLoadingBlock() {
     >
       <span className="sr-only">{authStateContent.loading}</span>
       <div aria-hidden className="space-y-6">
-        <div className="space-y-2">
-          <Skeleton className="h-8 w-2/3" />
-          <Skeleton className="h-5 w-full" />
-        </div>
-        <div className="space-y-2">
-          <Skeleton className="h-4 w-1/4" />
-          <Skeleton className="h-10 w-full" />
-        </div>
-        <div className="space-y-2">
-          <Skeleton className="h-4 w-1/4" />
-          <Skeleton className="h-10 w-full" />
-        </div>
+        <Skeleton className="h-8 w-2/3" />
+        <Skeleton className="h-5 w-full" />
+        <Skeleton className="h-10 w-full" />
+        <Skeleton className="h-10 w-full" />
         <Skeleton className="h-10 w-full" />
       </div>
     </div>
   );
 }
-
-/** Adapt BoldKit ServerErrorPage; this boundary never impersonates a 404. */
+/** A retryable server error never exposes exception content or impersonates a 404. */
 export function AuthErrorBlock({ reset }: { reset: () => void }) {
   return (
     <section

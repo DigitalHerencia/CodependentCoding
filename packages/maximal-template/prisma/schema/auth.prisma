@@ -1,0 +1,26 @@
+/// Clerk identity projection and the single application-owned local profile.
+model User {
+  id          String  @id
+  email       String?
+  username    String?
+  displayName String?
+  /// Local profile fields are never synchronized from Clerk.
+  firstName String?
+  lastName String?
+  bio String?
+  phoneNumber String?
+  /// Explicit completion supports empty optional profiles.
+  profileCompletedAt DateTime? @db.Timestamptz(6)
+  imageUrl    String?
+
+  memberships             Membership[]
+  supportTicketsRequested SupportTicket[] @relation("SupportRequester") // @module support
+  aiGenerations           AiGeneration[]  @relation("AiGenerationUser") // @module ai
+  aiUsage                 AiUsageLedger[] @relation("AiUsageUser") // @module ai
+  auditEvents             AuditEvent[]    @relation("AuditActor")
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
+
+  @@index([email])
+}

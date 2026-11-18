@@ -1,7 +1,10 @@
+/** Invitation templates contracts and composition for the owning application slice. */
+import type { ComponentProps } from "react";
 import {
   InvitationAcceptanceBlock,
   InvitationCreateBlock,
-  InvitationLoadingBlock,
+  InvitationEmailFieldBlock,
+  InvitationRoleFieldBlock,
   InvitationsBlock,
 } from "@/components/blocks/invitation-blocks";
 import type {
@@ -22,6 +25,13 @@ export function InvitationsTemplate(props: InvitationListProps) {
   return <InvitationsBlock {...props} />;
 }
 
-export function InvitationLoadingTemplate() {
-  return <InvitationLoadingBlock />;
+export function InvitationEmailFieldTemplate(
+  props: ComponentProps<typeof InvitationEmailFieldBlock>,
+) {
+  return <InvitationEmailFieldBlock {...props} />;
+}
+export function InvitationRoleFieldTemplate(
+  props: ComponentProps<typeof InvitationRoleFieldBlock>,
+) {
+  return <InvitationRoleFieldBlock {...props} />;
 }

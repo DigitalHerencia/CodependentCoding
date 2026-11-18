@@ -1,11 +1,12 @@
-import { AuthEntryFeature } from "@/features/auth/auth-entry-feature";
-import { AuthSignUpForm } from "@/features/auth/authSignUpForm";
-
-// URL ownership stops here; orchestration is delegated to the feature.
+/** Thin streaming entry for the sign-up route. */
+import { Suspense } from "react";
+import { AuthSignUpFeature } from "@/features/auth/authSignUpFeature";
+import { AuthFormSkeleton } from "@/features/auth/authFormSkeleton";
+/** Route ownership ends at the feature and its accessible loading boundary. */
 export default function Page() {
   return (
-    <AuthEntryFeature>
-      <AuthSignUpForm />
-    </AuthEntryFeature>
+    <Suspense fallback={<AuthFormSkeleton />}>
+      <AuthSignUpFeature />
+    </Suspense>
   );
 }

@@ -1,8 +1,9 @@
 "use server";
 
-import { requireIdentity } from "@/lib/auth/auth";
+/** Ai Actions contracts and composition for the owning application slice. */
+import { requireIdentity } from "@/lib/integrations/clerk/server";
 import { assertPermission } from "@/lib/authz/permissions";
-import { withTenantTransaction } from "@/lib/db/tenant";
+import { withTenantTransaction } from "@/lib/db/tenancy";
 import { completeAiGenerationTx } from "@/lib/db/transactions/aiCompleteGenerationTx";
 import {
   createAiGenerationTx,

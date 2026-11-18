@@ -17,14 +17,14 @@ import {
 import type { ActionResult } from "@/types/actionTypes";
 import type { ProjectSummaryDTO, TaskDTO } from "@/types/projectsTypes";
 import { toActionResult } from "@/lib/utils/actionResult";
-import { requireIdentity } from "@/lib/auth/auth";
+import { requireIdentity } from "@/lib/integrations/clerk/server";
 import { assertPermission } from "@/lib/authz/permissions";
 import { toProjectSummaryDTO, toTaskDTO } from "@/lib/db/dtos/projectsDtos";
 import {
   projectSummarySelect,
   taskSelect,
 } from "@/lib/db/selects/projectsSelects";
-import { withTenantTransaction } from "@/lib/db/tenant";
+import { withTenantTransaction } from "@/lib/db/tenancy";
 import { invalidatePaths } from "@/lib/cache/invalidate";
 import {
   ResourceNotFoundError,

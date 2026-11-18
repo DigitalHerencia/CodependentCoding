@@ -1,9 +1,10 @@
+/** Validated application tenancy configuration and membership scoping. */
 import "server-only";
 
-import { tenancySchema } from "@/schemas/accessSchemas";
-import type { Tenancy } from "@/types/accessTypes";
-export type { Tenancy } from "@/types/accessTypes";
-export { tenancies } from "@/schemas/accessSchemas";
+import { tenancySchema } from "@/schemas/authzSchemas";
+import type { Tenancy } from "@/types/authzTypes";
+export type { Tenancy } from "@/types/authzTypes";
+export { tenancies } from "@/lib/constants/authzConstants";
 
 /**
  * Organization mode (AUTH.md §4.3). `hipster-stack new --tenancy` writes it;

@@ -1,3 +1,4 @@
+/** Auth webhooks.integration.test contracts for the owning application slice. */
 import assert from "node:assert/strict";
 import { createHmac, randomBytes, randomUUID } from "node:crypto";
 import { test } from "vitest";
@@ -7,10 +8,7 @@ import { PrismaNeon } from "@prisma/adapter-neon";
 import { config } from "dotenv";
 import { PrismaClient } from "@/generated/prisma/client";
 import { baseEnv } from "@/lib/utils/env";
-import {
-  syncClerkUserTx,
-  anonymizeClerkUserTx,
-} from "@/lib/workflows/authWorkflows";
+import { syncClerkUserTx, anonymizeClerkUserTx } from "@/lib/db/selects/authTx";
 import {
   claimWebhookEventTx,
   completeWebhookEventTx,

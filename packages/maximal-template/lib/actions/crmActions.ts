@@ -1,5 +1,6 @@
 "use server";
 
+/** Crm Actions contracts and composition for the owning application slice. */
 import {
   contactIdSchema,
   crmAccountFormSchema,
@@ -10,7 +11,7 @@ import {
   updateContactSchema,
   updateCrmDealStageSchema,
 } from "@/schemas/crmSchemas";
-import { requireIdentity } from "@/lib/auth/auth";
+import { requireIdentity } from "@/lib/integrations/clerk/server";
 import { invalidatePaths } from "@/lib/cache/invalidate";
 import { assertPermission } from "@/lib/authz/permissions";
 import { authorizeOwnedOrAssignedWrite } from "@/lib/authz/policies";
@@ -25,7 +26,7 @@ import {
   crmContactSelect,
   crmDealDetailSelect,
 } from "@/lib/db/selects/crmSelects";
-import { withTenantTransaction } from "@/lib/db/tenant";
+import { withTenantTransaction } from "@/lib/db/tenancy";
 import {
   ConcurrencyConflictError,
   InvariantViolationError,
@@ -83,7 +84,11 @@ export async function qualifyCrmLead(rawContactId: unknown) {
       });
       return toCrmContactDTO(record);
     });
-    invalidateCrmViews(saved && "id" in saved ? [`/crm/contacts/${saved.id}`, `/crm/leads/${saved.id}`] : []);
+    invalidateCrmViews(
+      saved && "id" in saved
+        ? [`/crm/contacts/${saved.id}`, `/crm/leads/${saved.id}`]
+        : [],
+    );
     return saved;
   });
 }
@@ -227,7 +232,11 @@ export async function createContact(rawInput: unknown) {
       });
       return toCrmContactDTO(record);
     });
-    invalidateCrmViews(saved && "id" in saved ? [`/crm/contacts/${saved.id}`, `/crm/leads/${saved.id}`] : []);
+    invalidateCrmViews(
+      saved && "id" in saved
+        ? [`/crm/contacts/${saved.id}`, `/crm/leads/${saved.id}`]
+        : [],
+    );
     return saved;
   });
 }
@@ -253,7 +262,9 @@ export async function updateContact(rawInput: unknown) {
         ownerMembershipId: existing.ownerMembershipId,
       });
       if (existing.status === "LEAD" && input.status !== "LEAD")
-        throw new InvariantViolationError("Qualify the lead through the dedicated CRM workflow.");
+        throw new InvariantViolationError(
+          "Qualify the lead through the dedicated CRM workflow.",
+        );
       if (existing.updatedAt.getTime() !== input.expectedUpdatedAt.getTime())
         throw new ConcurrencyConflictError("CRM contact");
       const result = await tx.crmContact.updateMany({
@@ -293,7 +304,11 @@ export async function updateContact(rawInput: unknown) {
       });
       return toCrmContactDTO(record);
     });
-    invalidateCrmViews(saved && "id" in saved ? [`/crm/contacts/${saved.id}`, `/crm/leads/${saved.id}`] : []);
+    invalidateCrmViews(
+      saved && "id" in saved
+        ? [`/crm/contacts/${saved.id}`, `/crm/leads/${saved.id}`]
+        : [],
+    );
     return saved;
   });
 }
@@ -341,7 +356,11 @@ export async function archiveContact(rawInput: unknown) {
       });
       return { id: existing.id };
     });
-    invalidateCrmViews(saved && "id" in saved ? [`/crm/contacts/${saved.id}`, `/crm/leads/${saved.id}`] : []);
+    invalidateCrmViews(
+      saved && "id" in saved
+        ? [`/crm/contacts/${saved.id}`, `/crm/leads/${saved.id}`]
+        : [],
+    );
     return saved;
   });
 }
@@ -379,7 +398,9 @@ export async function createCrmAccount(rawInput: unknown) {
       });
       return toCrmAccountDTO(record);
     });
-    invalidateCrmViews(saved && "id" in saved ? [`/crm/accounts/${saved.id}`] : []);
+    invalidateCrmViews(
+      saved && "id" in saved ? [`/crm/accounts/${saved.id}`] : [],
+    );
     return saved;
   });
 }
@@ -418,7 +439,11 @@ export async function updateCrmAccount(rawInput: unknown) {
       });
       if (result.count !== 1) throw new ConcurrencyConflictError("Account");
       const record = await tx.crmAccount.findFirstOrThrow({
-        where: { id: input.accountId, organizationId: access.organizationId, archivedAt: null },
+        where: {
+          id: input.accountId,
+          organizationId: access.organizationId,
+          archivedAt: null,
+        },
         select: crmAccountSelect,
       });
       await tx.auditEvent.create({
@@ -432,7 +457,9 @@ export async function updateCrmAccount(rawInput: unknown) {
       });
       return toCrmAccountDTO(record);
     });
-    invalidateCrmViews(saved && "id" in saved ? [`/crm/accounts/${saved.id}`] : []);
+    invalidateCrmViews(
+      saved && "id" in saved ? [`/crm/accounts/${saved.id}`] : [],
+    );
     return saved;
   });
 }

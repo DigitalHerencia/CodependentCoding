@@ -1,6 +1,6 @@
--- Row-level security for the billing module (AUTH.md ยง6).
+-- Row-level security for the billing module (AUTH.md ง6).
 -- Readable source: `pnpm db:rls` writes it into a migration (CC-MIG-001). Idempotent.
--- Policies read app.organization_id / app.clerk_user_id set per transaction by lib/db/tenant.ts.
+-- Policies read app.organization_id / app.clerk_user_id set per transaction by lib/db/tenancy.ts.
 
 ALTER TABLE "BillingSubscription" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "BillingSubscription" FORCE ROW LEVEL SECURITY;

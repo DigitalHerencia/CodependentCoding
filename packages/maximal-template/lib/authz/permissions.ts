@@ -1,6 +1,7 @@
+/** Role permissions assembled from installed domain modules. */
 import "server-only";
 
-import type { AccessContext, AppRole, Permission } from "@/types/accessTypes";
+import type { AccessContext, AppRole, Permission } from "@/types/authzTypes";
 import type { ModulePermissions, PermissionAction } from "@/types/moduleTypes";
 
 import { installedModules } from "@/lib/modules/registry";
@@ -49,6 +50,7 @@ export const grants = Object.fromEntries(
   appRoles.map((role) => [role, grantsFor(role)]),
 ) as Record<AppRole, ReadonlySet<Permission>>;
 
+/** Reject a permission that the current membership has not been granted. */
 export class AuthorizationError extends Error {
   readonly code = "FORBIDDEN";
 
@@ -66,6 +68,7 @@ export function hasPermission(
   return grants[context.role].has(permission);
 }
 
+/** Reject access unless the membership role grants the required permission. */
 export function assertPermission(
   context: AccessContext,
   permission: Permission,

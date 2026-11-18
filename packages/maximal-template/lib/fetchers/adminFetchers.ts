@@ -1,3 +1,4 @@
+/** Admin Fetchers contracts and composition for the owning application slice. */
 import "server-only";
 
 import {
@@ -11,7 +12,7 @@ import {
   adminMembershipSelect,
   auditEventSelect,
 } from "@/lib/db/selects/adminSelects";
-import { withAuthenticatedRead } from "@/lib/db/tenant";
+import { withAuthenticatedRead } from "@/lib/db/tenancy";
 import { installedModules } from "@/lib/modules/registry";
 
 /** Every `records` model is a tenant table, so each delegate takes this count. */

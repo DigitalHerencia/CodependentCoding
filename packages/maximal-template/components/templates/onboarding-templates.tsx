@@ -1,61 +1,19 @@
+/** Modal profile presentation composes owned blocks without persistence decisions. */
 import {
+  OnboardingModalBlock,
+  OnboardingFieldsBlock,
   OnboardingFormBlock,
-  OnboardingLoadingBlock,
-  OnboardingProfileCardBlock,
-  OnboardingProfileHeadingBlock,
   OnboardingResultBlock,
-  OnboardingStatusBlock,
-  OnboardingSubmitBlock,
 } from "@/components/blocks/onboarding-blocks";
-import type {
-  OnboardingFormTemplateProps,
-  OnboardingProfileDTO,
-} from "@/types/onboardingTypes";
-import type { ReactNode } from "react";
-
-/** Templates arrange owned block slots; RHF remains in the form feature. */
-export function OnboardingProfileFormTemplate({
-  mode,
-  review,
-  pending,
-  onSubmit,
-  field,
-  reviewContent,
-  error,
-  saved,
-}: OnboardingFormTemplateProps) {
+import type { OnboardingTemplateProps } from "@/types/authTypes";
+/** New and edit forms share one profile presentation contract. */
+export function OnboardingTemplate(props: OnboardingTemplateProps) {
   return (
-    <OnboardingFormBlock onSubmit={onSubmit} pending={pending}>
-      <OnboardingProfileHeadingBlock mode={mode} review={review} />
-      {review ? reviewContent : field}
-      <OnboardingResultBlock error={error} saved={saved} />
-      <OnboardingSubmitBlock review={review} pending={pending} />
-    </OnboardingFormBlock>
+    <OnboardingModalBlock {...props}>
+      <OnboardingFormBlock {...props}>
+        <OnboardingFieldsBlock fields={props.fields} />
+        <OnboardingResultBlock {...props} />
+      </OnboardingFormBlock>
+    </OnboardingModalBlock>
   );
-}
-export function OnboardingStatusTemplate({
-  title,
-  description,
-}: {
-  title: string;
-  description: string;
-}) {
-  return <OnboardingStatusBlock title={title} description={description} />;
-}
-export function OnboardingProfileTemplate({
-  profile,
-  form,
-}: {
-  profile: OnboardingProfileDTO;
-  form: ReactNode;
-}) {
-  return (
-    <div className="space-y-6">
-      <OnboardingProfileCardBlock profile={profile} showEditLink={false} />
-      {form}
-    </div>
-  );
-}
-export function OnboardingLoadingTemplate() {
-  return <OnboardingLoadingBlock />;
 }

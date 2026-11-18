@@ -1,3 +1,4 @@
+/** Crm Fetchers contracts and composition for the owning application slice. */
 import type { Prisma } from "@/generated/prisma/client";
 import "server-only";
 
@@ -26,7 +27,7 @@ import {
   crmDealDetailSelect,
   crmDealSummarySelect,
 } from "@/lib/db/selects/crmSelects";
-import { withAuthenticatedRead } from "@/lib/db/tenant";
+import { withAuthenticatedRead } from "@/lib/db/tenancy";
 
 // -----------------------------------------------------------------------------
 // CRM opportunity reads
@@ -247,13 +248,15 @@ export async function getCrmAccountsPage(rawCriteria: unknown = {}) {
       organizationId: access.organizationId,
       archivedAt: null,
       ...(criteria.status ? { status: criteria.status } : {}),
-      ...(criteria.q ? {
-        OR: [
-          { name: { contains: criteria.q, mode: "insensitive" } },
-          { industry: { contains: criteria.q, mode: "insensitive" } },
-          { website: { contains: criteria.q, mode: "insensitive" } },
-        ],
-      } : {}),
+      ...(criteria.q
+        ? {
+            OR: [
+              { name: { contains: criteria.q, mode: "insensitive" } },
+              { industry: { contains: criteria.q, mode: "insensitive" } },
+              { website: { contains: criteria.q, mode: "insensitive" } },
+            ],
+          }
+        : {}),
     };
     const orderBy: Prisma.CrmAccountOrderByWithRelationInput[] =
       criteria.sort === "updated-desc"
@@ -264,7 +267,8 @@ export async function getCrmAccountsPage(rawCriteria: unknown = {}) {
     const [total, rows] = await Promise.all([
       tx.crmAccount.count({ where }),
       tx.crmAccount.findMany({
-        where, orderBy,
+        where,
+        orderBy,
         skip: (criteria.page - 1) * criteria.pageSize,
         take: criteria.pageSize,
         select: crmAccountSelect,
@@ -291,14 +295,20 @@ export async function getCrmContactsPage(rawCriteria: unknown = {}) {
       organizationId: access.organizationId,
       archivedAt: null,
       ...(criteria.status ? { status: criteria.status } : {}),
-      ...(criteria.q ? {
-        OR: [
-          { firstName: { contains: criteria.q, mode: "insensitive" } },
-          { lastName: { contains: criteria.q, mode: "insensitive" } },
-          { email: { contains: criteria.q, mode: "insensitive" } },
-          { account: { name: { contains: criteria.q, mode: "insensitive" } } },
-        ],
-      } : {}),
+      ...(criteria.q
+        ? {
+            OR: [
+              { firstName: { contains: criteria.q, mode: "insensitive" } },
+              { lastName: { contains: criteria.q, mode: "insensitive" } },
+              { email: { contains: criteria.q, mode: "insensitive" } },
+              {
+                account: {
+                  name: { contains: criteria.q, mode: "insensitive" },
+                },
+              },
+            ],
+          }
+        : {}),
     };
     const orderBy: Prisma.CrmContactOrderByWithRelationInput[] =
       criteria.sort === "updated-desc"
@@ -309,7 +319,8 @@ export async function getCrmContactsPage(rawCriteria: unknown = {}) {
     const [total, rows] = await Promise.all([
       tx.crmContact.count({ where }),
       tx.crmContact.findMany({
-        where, orderBy,
+        where,
+        orderBy,
         skip: (criteria.page - 1) * criteria.pageSize,
         take: criteria.pageSize,
         select: crmContactSelect,
@@ -336,13 +347,25 @@ export async function getCrmDealsPage(rawCriteria: unknown = {}) {
       organizationId: access.organizationId,
       archivedAt: null,
       ...(criteria.stage ? { stage: criteria.stage } : {}),
-      ...(criteria.q ? {
-        OR: [
-          { name: { contains: criteria.q, mode: "insensitive" } },
-          { account: { name: { contains: criteria.q, mode: "insensitive" } } },
-          { owner: { user: { displayName: { contains: criteria.q, mode: "insensitive" } } } },
-        ],
-      } : {}),
+      ...(criteria.q
+        ? {
+            OR: [
+              { name: { contains: criteria.q, mode: "insensitive" } },
+              {
+                account: {
+                  name: { contains: criteria.q, mode: "insensitive" },
+                },
+              },
+              {
+                owner: {
+                  user: {
+                    displayName: { contains: criteria.q, mode: "insensitive" },
+                  },
+                },
+              },
+            ],
+          }
+        : {}),
     };
     const orderBy: Prisma.CrmDealOrderByWithRelationInput[] =
       criteria.sort === "updated-desc"
@@ -353,7 +376,8 @@ export async function getCrmDealsPage(rawCriteria: unknown = {}) {
     const [total, rows] = await Promise.all([
       tx.crmDeal.count({ where }),
       tx.crmDeal.findMany({
-        where, orderBy,
+        where,
+        orderBy,
         skip: (criteria.page - 1) * criteria.pageSize,
         take: criteria.pageSize,
         select: crmDealSummarySelect,

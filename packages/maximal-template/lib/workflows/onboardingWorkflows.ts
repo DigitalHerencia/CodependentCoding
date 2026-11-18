@@ -1,26 +1,22 @@
-import { provisionWorkspaceAccess } from "@/lib/actions/onboardingActions";
+/** Profile onboarding orchestration, independent of tenancy and provider metadata. */
 import {
-  getOnboardingState,
-  getOwnOnboardingProfile,
-} from "@/lib/fetchers/onboardingFetchers";
-import { redirect } from "next/navigation";
-import "server-only";
+  completeOnboarding,
+  updateOwnOnboardingProfile,
+  requireAuthIdentityAction,
+  loadOwnAuthProfileAction,
+} from "@/lib/actions/authActions";
+import type { AuthProfileFormValues } from "@/types/authTypes";
 
+/** Authenticate before loading the one local profile for the mandatory modal. */
 export async function loadOnboardingWorkflow() {
-  const state = await getOnboardingState();
-  if (state.status === "active") redirect("/dashboard");
-  // A finished profile without access (or a bootstrap owner not yet OWNER)
-  // is provisioned here; no button. It stays pending only when suspended,
-  // revoked, or (multi tenancy) an invitation link is waiting.
-  if (state.status === "pending" && (await provisionWorkspaceAccess()).ok)
-    redirect("/dashboard");
-  return { state };
+  await requireAuthIdentityAction();
+  return { profile: await loadOwnAuthProfileAction() };
 }
-
-export async function guardOnboardingWorkflow() {
-  if ((await getOnboardingState()).status !== "active") redirect("/onboarding");
+/** Compose new-profile persistence through the authenticated action boundary. */
+export async function completeOnboardingWorkflow(input: AuthProfileFormValues) {
+  return completeOnboarding(input);
 }
-
-export async function loadOwnOnboardingProfileWorkflow() {
-  return { profile: await getOwnOnboardingProfile() };
+/** Compose profile edits without accepting another user's identifier. */
+export async function editOnboardingWorkflow(input: AuthProfileFormValues) {
+  return updateOwnOnboardingProfile(input);
 }

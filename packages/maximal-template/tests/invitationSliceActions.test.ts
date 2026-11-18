@@ -1,3 +1,4 @@
+/** Invitation Slice Actions.test contracts for the owning application slice. */
 import { createHash } from "node:crypto";
 import { beforeEach, expect, test, vi } from "vitest";
 import {
@@ -7,7 +8,7 @@ import {
 } from "@/lib/actions/invitationActions";
 import { getPendingInvitations } from "@/lib/fetchers/invitationFetchers";
 import type { Prisma } from "@/generated/prisma/client";
-import type { AccessContext } from "@/types/accessTypes";
+import type { AccessContext } from "@/types/authzTypes";
 
 const state = vi.hoisted(() => ({
   tenancy: "multi",
@@ -21,7 +22,7 @@ const state = vi.hoisted(() => ({
   admin: vi.fn(),
   accept: vi.fn(),
 }));
-vi.mock("@/lib/auth/auth", () => ({
+vi.mock("@/lib/integrations/clerk/server", () => ({
   requireIdentity: async () => ({ clerkUserId: "actor" }),
   getVerifiedPrimaryEmail: async () => state.verifiedEmail,
 }));
@@ -40,9 +41,9 @@ vi.mock("@/lib/authz/permissions", () => ({
   assertPermission: vi.fn(),
   hasPermission: () => state.permission,
 }));
-vi.mock("@/lib/db/tenant", () => ({
+vi.mock("@/lib/db/rls", () => ({ withIdentityTransaction: state.identity }));
+vi.mock("@/lib/db/tenancy", () => ({
   withTenantTransaction: state.tenant,
-  withIdentityTransaction: state.identity,
   withAuthenticatedRead: state.read,
 }));
 vi.mock("@/lib/db/transactions/adminTx", () => ({

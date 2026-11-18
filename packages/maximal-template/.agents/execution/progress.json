@@ -1151,5 +1151,59 @@
     ],
     "owner_authorization": "Owner approved dependency addition, commit, merge, sync and branch cleanup.",
     "not_run": ["tests", "local builds", "browser/runtime checks"]
+  },
+  "auth_route_slices": {
+    "issue": 372,
+    "spec": "CC-080",
+    "branch": "refactor/372-auth-authz-profile-modal",
+    "status": "in-review",
+    "source_of_truth": "Owner prompt 2026-11-18",
+    "verification": [
+      {
+        "command": "pnpm --dir packages/maximal-template run format:write --ignore-unknown <affected files>",
+        "result": "PASS: 169 affected files formatted; subsequent affected source/root-package formatting passed."
+      },
+      {
+        "command": "pnpm --dir packages/maximal-template run lint:fix <affected template files>",
+        "result": "PASS: 149 affected source files; subsequent affected selector/transaction/schema files passed with zero warnings."
+      },
+      {
+        "command": "pnpm run lint:fix packages/generator/src/compose.mjs packages/loaded-vibes/scripts/rls-sql.mjs",
+        "result": "PASS: zero warnings. A prior template-context attempt ignored sibling files; this root-context run checks them."
+      },
+      {
+        "command": "pnpm --dir packages/maximal-template run typegen",
+        "result": "PASS: Prisma Client 7.10.1 and Next route types."
+      },
+      {
+        "command": "pnpm --dir packages/maximal-template run typecheck",
+        "result": "PASS on final source after strict OTP/provider contracts, import moves and selector extraction."
+      }
+    ],
+    "not_run": [
+      "tests",
+      "builds",
+      "development servers",
+      "browser/runtime checks",
+      "database migrations/seeds"
+    ],
+    "implementation": [
+      "Required auth/authz module ownership, workflow and provider integration boundaries",
+      "Named auth route features, RHF forms, one page template each, direct block loading/error/skeleton boundaries",
+      "Mandatory new/edit local-profile modal; optional nullable User fields with explicit completion",
+      "Signed current-provider webhook sync, identity-only profile RLS, authz readiness recovery",
+      "Auth/authz Prisma/RLS/seed sources and additive profile migration; generator preserves core domains"
+    ],
+    "prior_failures_resolved": [
+      "Windows pnpm argument length/path quoting launcher issues",
+      "Lint type-import annotations",
+      "Strict OTP props, provider nullable/type contracts and stale API imports",
+      "Sibling lint base path corrected using the root script"
+    ],
+    "pr": 373,
+    "pr_url": "https://github.com/DigitalHerencia/CodependentCoding/pull/373",
+    "checked_source_commit": "dfdf0f0d8b6f945421665d70fbd2667f9c68ad0f",
+    "source_review": "Existing browser expectations aligned with retired routes/modal contracts without executing tests.",
+    "project_status": "In review"
   }
 }
