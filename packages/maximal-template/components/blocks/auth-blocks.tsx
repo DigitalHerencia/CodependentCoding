@@ -1,6 +1,17 @@
 /** BoldKit login, signup, OTP, loading and server-error patterns composed from local shadcn primitives.
  * @see https://boldkit.dev
  */
+import { UserAvatar, UserButton } from "@clerk/nextjs";
+import {
+  Sheet,
+  SheetTrigger,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription,
+} from "@/components/ui/sheet";
+import { authAccountCopy } from "@/content/auth";
+import type { AuthAccountTemplateProps } from "@/types/authTypes";
 import type { ReactNode } from "react";
 import { SignIn, SignUp } from "@clerk/nextjs";
 import Link from "next/link";
@@ -281,5 +292,84 @@ export function AuthErrorBlock({ reset }: { reset: () => void }) {
         </Button>
       </div>
     </section>
+  );
+}
+
+/** Clerk's provider avatar/menu stays in auth; the organization slot belongs to authz.
+ * @see https://clerk.com/docs/nextjs/reference/components/user/user-button
+ */
+export function AuthAccountBlock({
+  profile,
+  organizationSwitcher,
+  open,
+  onOpenChange,
+  triggerRef,
+  pending,
+  failed,
+  onAfterClose,
+  onViewProfile,
+  onEditProfile,
+  onSignOut,
+}: AuthAccountTemplateProps) {
+  return (
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      <SheetTrigger asChild>
+        <Button
+          ref={triggerRef}
+          type="button"
+          variant="ghost"
+          className="w-full justify-start gap-3"
+          aria-label={authAccountCopy.title}
+        >
+          <UserAvatar />
+          <span className="truncate">
+            {profile.firstName || authAccountCopy.account}
+          </span>
+        </Button>
+      </SheetTrigger>
+      <SheetContent
+        className="w-full space-y-6 overflow-y-auto sm:max-w-md"
+        onCloseAutoFocus={(event) => {
+          if (onAfterClose()) event.preventDefault();
+        }}
+      >
+        <SheetHeader>
+          <SheetTitle>{authAccountCopy.title}</SheetTitle>
+          <SheetDescription>{authAccountCopy.description}</SheetDescription>
+        </SheetHeader>
+        <div className="flex items-center gap-3">
+          <UserButton userProfileMode="modal" />
+          <p className="font-bold">
+            {profile.firstName} {profile.lastName}
+          </p>
+        </div>
+        {profile.bio && (
+          <p className="break-words text-muted-foreground">{profile.bio}</p>
+        )}
+        {organizationSwitcher}
+        <div className="flex flex-col gap-3">
+          <Button
+            type="button"
+            variant="outline"
+            disabled={pending}
+            onClick={onViewProfile}
+          >
+            {authAccountCopy.viewProfile}
+          </Button>
+          <Button type="button" disabled={pending} onClick={onEditProfile}>
+            {authAccountCopy.editProfile}
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            disabled={pending}
+            onClick={onSignOut}
+          >
+            {pending ? authAccountCopy.signingOut : authAccountCopy.signOut}
+          </Button>
+        </div>
+        {failed && <p role="alert">{authAccountCopy.signOutFailed}</p>}
+      </SheetContent>
+    </Sheet>
   );
 }

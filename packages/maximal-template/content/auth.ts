@@ -86,3 +86,15 @@ export const authRemainingCopy = {
   sMSCode: "SMS code",
   backupCode: "Backup code",
 } as const;
+
+/** Account copy is resolved only by the auth block. */
+export const authAccountCopy = {
+  title: "Your account",
+  description: "Manage your profile and active workspace.",
+  account: "Account",
+  viewProfile: "User profile",
+  editProfile: "Edit profile",
+  signOut: "Sign out",
+  signingOut: "Signing out…",
+  signOutFailed: "Sign-out failed. Please try again.",
+};

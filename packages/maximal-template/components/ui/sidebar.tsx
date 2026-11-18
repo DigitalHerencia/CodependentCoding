@@ -5,7 +5,12 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { PanelLeft } from "lucide-react";
 import { cn } from "@/components/ui/utils";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetTitle,
+  SheetDescription,
+} from "@/components/ui/sheet";
 import {
   Tooltip,
   TooltipContent,
@@ -215,6 +220,10 @@ const Sidebar = React.forwardRef<HTMLDivElement, SidebarProps>(
               } as React.CSSProperties & Record<string, string>
             }
           >
+            <SheetTitle className="sr-only">Navigation</SheetTitle>
+            <SheetDescription className="sr-only">
+              Choose a destination or open your account.
+            </SheetDescription>
             {/* Same prop contract as the desktop branch below. This branch
                 used to drop ref, className AND ...props entirely, so the same
                 component honoured different props depending on viewport width

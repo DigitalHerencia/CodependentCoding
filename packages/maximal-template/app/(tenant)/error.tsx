@@ -1,14 +1,8 @@
 "use client";
-
-import { TenantErrorTemplate } from "@/components/templates/tenant-templates";
+/** Recover child-route errors without exposing private provider details. */
+import { TenantErrorBlock } from "@/components/blocks/tenant-blocks";
 import type { TenantErrorBoundaryProps } from "@/types/tenantTypes";
-
-/**
- * Recover from child-route errors within the authenticated tenant group.
- *
- * @remarks
- * Layout authentication and onboarding failures are outside this boundary.
- */
+/** Next owns the reset handler; the block owns presentation and copy. */
 export default function TenantRouteError({ reset }: TenantErrorBoundaryProps) {
-  return <TenantErrorTemplate onRetry={reset} />;
+  return <TenantErrorBlock onRetry={reset} />;
 }

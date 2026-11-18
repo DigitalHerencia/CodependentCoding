@@ -1,7 +1,7 @@
 import { afterEach, expect, test, vi } from "vitest";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import { usePwaAccountMenuWorkflow } from "@/lib/workflows/pwaClientWorkflows";
+import { useAuthAccountWorkflow as usePwaAccountMenuWorkflow } from "@/lib/workflows/authWorkflows";
 
 const clerk = vi.hoisted(() => ({
   openUserProfile: vi.fn(),

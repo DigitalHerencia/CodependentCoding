@@ -1384,6 +1384,13 @@
       "status": "accepted",
       "title": "Verified admin conformance delivery merged",
       "decision": "Owner-authorized PR #375 squash-merged as f513865b392b54525d96eeeaefcc2f85487bb87a after final head 04e83715a79f7753eb32a95f99df221e85cd8020 passed GitHub Changed-file checks (run 44377530941), Vercel and Preview Comments. Issue #374 closed and Project item Done; remote/local task branches deleted and main synchronized. CRM changed-file count zero. No tests, builds, dev servers, browser checks, migrations or seeds executed. Audit schema/policies moved without database contract changes; append-only seed ownership and optional-generator retention recorded."
+    },
+    {
+      "id": "ADMIN-376-OWNER-2026-11-18",
+      "date": "2026-11-18",
+      "status": "accepted",
+      "title": "Responsive administration and account ownership",
+      "decision": "The owner prompt supersedes earlier specs. CRM remains read-only. Preserve the admin data model and authorization safeguards. Consolidate admin files; use the existing BoldKit responsive sidebar for admin/tenant and remove the old overlay/popover. Auth owns identity/profile account presentation; authz owns role/organization switching; onboardingEditForm owns RHF profile editing. Dashboard metrics use persisted data and explicitly label paginated scope. No sample revenue, new persistence contracts or database execution. Only format:write, lint:fix, typegen and typecheck; delivery through Issue #376, PR, CI, merge and branch cleanup is authorized."
     }
   ]
 }

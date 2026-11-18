@@ -188,7 +188,7 @@ export default defineConfig([
     files: [
       "app/(admin)/**/loading.tsx",
       "app/(admin)/**/error.tsx",
-      "features/admin/*-skeleton.tsx",
+      "features/admin/*Skeleton.tsx",
     ],
     rules: authImportRules([
       authApplicationImports,
@@ -220,7 +220,72 @@ export default defineConfig([
   {
     name: "codependent/admin-feature-boundaries",
     files: ["features/admin/**/*.{ts,tsx}"],
-    ignores: ["features/admin/*-skeleton.tsx"],
+    ignores: ["features/admin/*Skeleton.tsx"],
+    rules: authImportRules([
+      authApplicationImports,
+      ...authBlockOnlyImports,
+      authBlockImports,
+    ]),
+  },
+  {
+    name: "codependent/tenant-shell-boundaries",
+    files: [
+      "app/(tenant)/layout.tsx",
+      "components/shells/tenant-shell.tsx",
+      "components/nav/tenant-*.tsx",
+    ],
+    rules: authImportRules([
+      authApplicationImports,
+      ...authBlockOnlyImports,
+      authBlockImports,
+      authTemplateImports,
+      authWorkflowImports,
+    ]),
+  },
+  {
+    name: "codependent/tenant-fallback-boundaries",
+    files: [
+      "app/(tenant)/loading.tsx",
+      "app/(tenant)/error.tsx",
+      "features/tenant/*Skeleton.tsx",
+    ],
+    rules: authImportRules([
+      authApplicationImports,
+      ...authBlockOnlyImports,
+      authTemplateImports,
+      authWorkflowImports,
+    ]),
+  },
+  {
+    name: "codependent/tenant-block-boundaries",
+    files: [
+      "components/blocks/tenant-blocks.tsx",
+      "components/blocks/authz-blocks.tsx",
+    ],
+    rules: authImportRules([
+      authApplicationImports,
+      authBlockImports,
+      authTemplateImports,
+      authWorkflowImports,
+    ]),
+  },
+  {
+    name: "codependent/tenant-template-boundaries",
+    files: [
+      "components/templates/tenant-templates.tsx",
+      "components/templates/authz-templates.tsx",
+    ],
+    rules: authImportRules([
+      authApplicationImports,
+      ...authBlockOnlyImports,
+      authTemplateImports,
+      authWorkflowImports,
+    ]),
+  },
+  {
+    name: "codependent/tenant-feature-boundaries",
+    files: ["features/tenant/**/*.tsx", "features/authz/**/*.tsx"],
+    ignores: ["features/tenant/*Skeleton.tsx"],
     rules: authImportRules([
       authApplicationImports,
       ...authBlockOnlyImports,

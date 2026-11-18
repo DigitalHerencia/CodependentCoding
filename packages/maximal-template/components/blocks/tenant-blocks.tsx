@@ -1,247 +1,132 @@
-import {
-  Brain,
-  BriefcaseBusiness,
-  Building2,
-  CreditCard,
-  FolderKanban,
-  Headphones,
-  LayoutDashboard,
-  Megaphone,
-  PanelLeftClose,
-  PanelLeftOpen,
-  Settings,
-  Users,
-} from "lucide-react";
+"use client";
+/** BoldKit workspace compositions; presentation copy and primitives terminate here. */
 import Link from "next/link";
-import type { ReactNode } from "react";
-
+import { usePathname } from "next/navigation";
 import { Wordmark } from "@/components/brand/wordmark";
+import { TenantHeader } from "@/components/nav/tenant-header";
+import { TenantFooter } from "@/components/nav/tenant-footer";
+import { TenantNavigation } from "@/components/nav/tenant-navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { TreeView, type TreeNode } from "@/components/ui/tree-view";
-import { cn } from "@/components/ui/utils";
+import {
+  SidebarProvider,
+  Sidebar,
+  SidebarHeader,
+  SidebarContent,
+  SidebarFooter,
+  SidebarToggle,
+  useSidebar,
+} from "@/components/ui/sidebar";
 import { applicationProduct } from "@/content/application";
 import { tenantCopy, tenantFooterLinks } from "@/content/tenant";
 import type {
-  TenantErrorBlockProps,
-  TenantHeaderBlockProps,
-  TenantLoadingBlockProps,
-  TenantNavigationBlockProps,
-  TenantNavigationIcon,
+  TenantChildrenProps,
   TenantSidebarBlockProps,
+  TenantErrorBlockProps,
+  TenantLoadingBlockProps,
 } from "@/types/tenantTypes";
-
-// ============================================================================
-// SHARED NAVIGATION ICONS
-// ============================================================================
-
-const navigationIcons: Record<TenantNavigationIcon, ReactNode> = {
-  brain: <Brain className="size-4" />,
-  briefcase: <BriefcaseBusiness className="size-4" />,
-  building: <Building2 className="size-4" />,
-  "credit-card": <CreditCard className="size-4" />,
-  "folder-kanban": <FolderKanban className="size-4" />,
-  headphones: <Headphones className="size-4" />,
-  megaphone: <Megaphone className="size-4" />,
-  users: <Users className="size-4" />,
-  settings: <Settings className="size-4" />,
-};
-
-// ============================================================================
-// HEADER
-// ============================================================================
-
-/** Branded header with an accessible, client-controlled mobile menu toggle. */
-export function TenantHeaderBlock({
-  sidebar,
-  mobileMenu,
-}: TenantHeaderBlockProps) {
+/** Provider supplies the responsive drawer and desktop collapse state. */
+export function TenantFrameBlock({ children }: TenantChildrenProps) {
+  return <SidebarProvider>{children}</SidebarProvider>;
+}
+/** Branded header uses the existing sidebar toggle at every viewport width. */
+export function TenantHeaderBlock() {
   return (
-    <header
-      className={cn(
-        "sticky top-0 z-40 flex min-h-16 min-w-0 items-center justify-between gap-2 border-b bg-background px-4 py-3",
-        sidebar && "lg:hidden",
-      )}
-    >
-      <Wordmark compact />
-      {mobileMenu}
-    </header>
+    <TenantHeader
+      brand={<Wordmark />}
+      controls={<SidebarToggle aria-label={tenantCopy.headerNavigation} />}
+    />
   );
 }
-
-// ============================================================================
-// EXPANDED AND COLLAPSED NAVIGATION
-// ============================================================================
-
-/** Domain navigation reused by both the desktop sidebar and mobile drawer. */
-export function TenantNavigationBlock({
-  navigation,
-  pathname,
-  expandedIds,
-  onExpandedChange,
-  onNavigate,
-}: TenantNavigationBlockProps) {
-  const routeMatch = navigation.groups
-    .flatMap((group) => group.links)
-    .filter(
-      (link) => pathname === link.href || pathname.startsWith(link.href + "/"),
-    )
-    .sort((left, right) => right.href.length - left.href.length)[0];
-
-  const nodes: TreeNode[] = navigation.groups.map((group) => ({
-    id: group.id,
-    label: group.label,
-    icon: navigationIcons[group.icon],
-    children: group.links.map((link) => ({
-      id: link.href,
-      label: link.label,
-      href: link.href,
-    })),
-  }));
-
+/** Keyboard access bypasses repeated workspace navigation. */
+export function TenantSkipLinkBlock() {
   return (
-    <nav
-      aria-label={tenantCopy.headerNavigation}
-      className="min-h-0 flex-1 overflow-y-auto"
-      onClick={(event) => {
-        if ((event.target as HTMLElement).closest("a")) onNavigate?.();
-      }}
+    <a
+      href="#tenant-main-content"
+      className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[60] focus:bg-background focus:px-4 focus:py-2"
     >
-      <Link
-        href="/dashboard"
-        aria-current={pathname === "/dashboard" ? "page" : undefined}
-        className={cn(
-          "mb-3 navigation-item",
-          pathname === "/dashboard" && "navigation-active",
-        )}
-      >
-        <LayoutDashboard className="size-4" aria-hidden="true" />
-        {tenantCopy.dashboard}
-      </Link>
-      <p className="px-3 pb-2 eyebrow text-muted-primary">
-        {tenantCopy.domains}
-      </p>
-      <TreeView
-        aria-label={tenantCopy.domains}
-        data={nodes}
-        expandedIds={expandedIds}
-        onExpandedChange={onExpandedChange}
-        selectedIds={routeMatch ? [routeMatch.href] : []}
-        className="border-0 p-0 shadow-none"
-      />
-    </nav>
+      {tenantCopy.skipToContent}
+    </a>
   );
 }
-
-/** Compact sidebar uses the same authorized domain list and expands on demand. */
-export function TenantCollapsedNavigationBlock({
-  navigation,
-  pathname,
-  onExpand,
-}: {
-  navigation: TenantSidebarBlockProps["navigation"];
-  pathname: string;
-  onExpand: (groupId: string) => void;
-}) {
-  return (
-    <nav
-      aria-label={tenantCopy.collapsedNavigation}
-      className="min-h-0 flex-1 space-y-1 overflow-y-auto"
-    >
-      <Button asChild variant="ghost" size="icon">
-        <Link
-          href="/dashboard"
-          title={tenantCopy.dashboard}
-          aria-label={tenantCopy.dashboard}
-          aria-current={pathname === "/dashboard" ? "page" : undefined}
-        >
-          <LayoutDashboard aria-hidden="true" />
-        </Link>
-      </Button>
-      {navigation.groups.map((group) => (
-        <Button
-          key={group.id}
-          type="button"
-          variant="ghost"
-          size="icon"
-          title={group.label}
-          aria-label={"Expand " + group.label + " navigation"}
-          onClick={() => onExpand(group.id)}
-        >
-          {navigationIcons[group.icon]}
-        </Button>
-      ))}
-    </nav>
-  );
-}
-
-/** Shared sidebar composition; state and authorization remain outside the block. */
+/** Render only authorized navigation; close the same responsive sidebar after link activation. */
 export function TenantSidebarBlock({
   navigation,
-  pathname,
-  expandedIds,
-  onExpandedChange,
-  onNavigate,
-  collapsed,
-  onToggleCollapsed,
-  onExpand,
-  organizationSwitcher,
   accountMenu,
 }: TenantSidebarBlockProps) {
+  const pathname = usePathname();
+  const { setOpenMobile } = useSidebar();
   return (
-    <aside
-      aria-label={tenantCopy.sidebar}
-      className="sticky top-0 hidden h-dvh min-w-0 flex-col gap-5 border-r bg-background p-3 lg:flex"
-    >
-      <Wordmark collapsed={collapsed} compact />
-      <Button
-        type="button"
-        variant="ghost"
-        size="icon"
-        aria-label={
-          collapsed ? tenantCopy.expandSidebar : tenantCopy.collapseSidebar
-        }
-        aria-expanded={!collapsed}
-        onClick={onToggleCollapsed}
-      >
-        {collapsed ? (
-          <PanelLeftOpen aria-hidden="true" />
-        ) : (
-          <PanelLeftClose aria-hidden="true" />
-        )}
-      </Button>
-      {collapsed ? (
-        <TenantCollapsedNavigationBlock
-          navigation={navigation}
-          pathname={pathname}
-          onExpand={onExpand}
-        />
-      ) : (
-        <TenantNavigationBlock
-          navigation={navigation}
-          pathname={pathname}
-          expandedIds={expandedIds}
-          onExpandedChange={onExpandedChange}
-          onNavigate={onNavigate}
-        />
-      )}
-      <div className="space-y-3 border-t pt-4">
-        {!collapsed && organizationSwitcher}
-        {accountMenu}
-      </div>
-    </aside>
+    <TenantNavigation label={tenantCopy.headerNavigation}>
+      <Sidebar collapsible="hidden" className="sticky top-0 h-dvh">
+        <SidebarHeader>
+          <span className="type-heading">{applicationProduct.brand.title}</span>
+        </SidebarHeader>
+        <SidebarContent className="space-y-5">
+          <Button
+            asChild
+            variant={pathname === "/dashboard" ? "default" : "ghost"}
+            className="w-full justify-start"
+          >
+            <Link
+              href="/dashboard"
+              aria-current={pathname === "/dashboard" ? "page" : undefined}
+              onClick={() => setOpenMobile(false)}
+            >
+              {tenantCopy.dashboard}
+            </Link>
+          </Button>
+          {navigation.groups.map((group) => (
+            <section key={group.id} className="space-y-2">
+              <h2 className="text-sm font-bold uppercase">
+                {group.id === "settings" ? tenantCopy.settings : group.label}
+              </h2>
+              <ul className="space-y-1">
+                {group.links.map((link) => (
+                  <li key={link.href}>
+                    <Button
+                      asChild
+                      variant={
+                        pathname === link.href ||
+                        pathname.startsWith(link.href + "/")
+                          ? "default"
+                          : "ghost"
+                      }
+                      className="w-full justify-start"
+                    >
+                      <Link
+                        href={link.href}
+                        aria-current={
+                          pathname === link.href ||
+                          pathname.startsWith(link.href + "/")
+                            ? "page"
+                            : undefined
+                        }
+                        onClick={() => setOpenMobile(false)}
+                      >
+                        {link.label}
+                      </Link>
+                    </Button>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ))}
+        </SidebarContent>
+        <SidebarFooter className="mt-auto">{accountMenu}</SidebarFooter>
+      </Sidebar>
+    </TenantNavigation>
   );
 }
-
 // ============================================================================
-// FOOTER AND MOBILE BOTTOM NAVIGATION
+// FOOTER
 // ============================================================================
 
 /** Tenant-owned footer, without public header or public-footer dependencies. */
 export function TenantFooterBlock() {
   return (
-    <footer className="flex flex-wrap items-center justify-between gap-3 border-t px-4 py-5 text-sm text-muted-foreground">
+    <TenantFooter>
       <p>
         {applicationProduct.brand.title} · {tenantCopy.footerDescription}
       </p>
@@ -259,7 +144,7 @@ export function TenantFooterBlock() {
           ))}
         </ul>
       </nav>
-    </footer>
+    </TenantFooter>
   );
 }
 

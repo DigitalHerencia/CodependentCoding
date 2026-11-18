@@ -1,7 +1,6 @@
-import { TenantLoadingTemplate } from "@/components/templates/tenant-templates";
-import { tenantCopy } from "@/content/tenant";
-
-/** Tenant-only route fallback; the route-group layout supplies the shell. */
+/** Tenant-only fallback; the group layout supplies its own shell. */
+import { TenantLoadingBlock } from "@/components/blocks/tenant-blocks";
+/** Import skeleton blocks directly without a skeleton template. */
 export default function TenantLoading() {
-  return <TenantLoadingTemplate label={tenantCopy.loadingContent} />;
+  return <TenantLoadingBlock />;
 }

@@ -2,8 +2,8 @@
 import { requireAdminIdentityWorkflow } from "@/lib/workflows/adminWorkflows";
 import { AdminShellTemplate } from "@/components/templates/admin-templates";
 import { OnboardingGateFeature } from "@/features/onboarding/onboarding-gate-feature";
-import { AuthenticatedUserMenuFeature } from "@/features/navigation/authenticated-user-menu-feature";
-import { AdminGateFeature } from "./admin-gate-feature";
+import { AuthAccountFeature } from "@/features/auth/authAccountFeature";
+import { AdminGateFeature } from "./adminGateFeature";
 import type { AdminChildrenProps } from "@/types/adminTypes";
 /** Keep provider identity and tenancy reads behind the route's Suspense boundary. */
 export async function AdminLayoutFeature({ children }: AdminChildrenProps) {
@@ -11,12 +11,7 @@ export async function AdminLayoutFeature({ children }: AdminChildrenProps) {
   return (
     <OnboardingGateFeature>
       <AdminGateFeature>
-        <AdminShellTemplate
-          accountMenu={<AuthenticatedUserMenuFeature />}
-          mobileAccountMenu={
-            <AuthenticatedUserMenuFeature presentation="panel" />
-          }
-        >
+        <AdminShellTemplate accountMenu={<AuthAccountFeature />}>
           {children}
         </AdminShellTemplate>
       </AdminGateFeature>

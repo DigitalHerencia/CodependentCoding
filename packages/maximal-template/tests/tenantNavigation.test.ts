@@ -69,14 +69,6 @@ describe("tenant navigation projection", () => {
       viewer.groups[0]?.links.some((link) => link.href === "/settings/profile"),
     ).toBe(false);
   });
-
-  it("retains stable, local bottom navigation", () => {
-    const navigation = buildTenantNavigation(access("VIEWER"), modules);
-    expect(navigation.mobile.map((item) => item.href)).toEqual([
-      "/dashboard",
-      "/settings/members",
-    ]);
-  });
 });
 
 describe("tenant navigation schema", () => {
@@ -87,15 +79,12 @@ describe("tenant navigation schema", () => {
       icon: "settings",
       links: [{ label: "Offsite", href: "https://example.test" }],
     };
-    expect(() =>
-      tenantNavigationSchema.parse({ groups: [group], mobile: [] }),
-    ).toThrow();
+    expect(() => tenantNavigationSchema.parse({ groups: [group] })).toThrow();
     expect(() =>
       tenantNavigationSchema.parse({
         groups: [
           { ...group, links: [{ label: "Offsite", href: "//example.test" }] },
         ],
-        mobile: [],
       }),
     ).toThrow();
   });
@@ -104,7 +93,7 @@ describe("tenant navigation schema", () => {
     expect(() =>
       tenantNavigationSchema.parse({
         groups: [],
-        mobile: [],
+
         organizationId: "forged",
       }),
     ).toThrow();

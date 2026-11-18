@@ -1,6 +1,7 @@
 /** Auth presentation composes blocks; each page has exactly one template. */
 import {
   AuthHeadingBlock,
+  AuthAccountBlock,
   AuthFieldsBlock,
   AuthFormBlock,
   AuthControlsBlock,
@@ -9,6 +10,7 @@ import {
 } from "@/components/blocks/auth-blocks";
 import type {
   AuthPageTemplateProps,
+  AuthAccountTemplateProps,
   AuthRouteVariantProps,
 } from "@/types/authTypes";
 /** Shared arrangement for the two route templates; no application decisions. */
@@ -35,4 +37,9 @@ export function AuthSignInTemplate(props: AuthPageTemplateProps) {
 /** The sign-up route's sole presentation entry. */
 export function AuthSignUpTemplate(props: AuthPageTemplateProps) {
   return <AuthRoutePresentation {...props} variant="signUp" />;
+}
+
+/** Account sheet presentation remains independent of onboarding and authorization logic. */
+export function AuthAccountTemplate(props: AuthAccountTemplateProps) {
+  return <AuthAccountBlock {...props} />;
 }

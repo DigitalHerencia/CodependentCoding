@@ -1,8 +1,12 @@
 /** One presentation template per admin page; only blocks resolve copy and primitives. */
+import { AdminNavigation } from "@/components/nav/admin-navigation";
 import { AdminShell } from "@/components/shells/admin-shell";
 import {
   AdminPageBlock,
   AdminHeaderBlock,
+  AdminFrameBlock,
+  AdminSidebarBlock,
+  AdminMetricsBlock,
   AdminFooterBlock,
   AdminSkipLinkBlock,
   AdminSearchToolbarBlock,
@@ -30,21 +34,22 @@ import type {
 export function AdminShellTemplate({
   children,
   accountMenu,
-  mobileAccountMenu,
 }: AdminShellTemplateProps) {
   return (
-    <AdminShell
-      skipLink={<AdminSkipLinkBlock />}
-      header={
-        <AdminHeaderBlock
-          accountMenu={accountMenu}
-          mobileAccountMenu={mobileAccountMenu}
-        />
-      }
-      footer={<AdminFooterBlock />}
-    >
-      {children}
-    </AdminShell>
+    <AdminFrameBlock>
+      <AdminShell
+        skipLink={<AdminSkipLinkBlock />}
+        navigation={
+          <AdminNavigation>
+            <AdminSidebarBlock accountMenu={accountMenu} />
+          </AdminNavigation>
+        }
+        header={<AdminHeaderBlock />}
+        footer={<AdminFooterBlock />}
+      >
+        {children}
+      </AdminShell>
+    </AdminFrameBlock>
   );
 }
 /** Audit route presentation. */
@@ -54,6 +59,7 @@ export function AdminAuditTemplate(props: AdminAuditTemplateProps) {
       variant="audit"
       toolbar={<AdminSearchToolbarBlock variant="audit" {...props} />}
     >
+      <AdminMetricsBlock metrics={props.metrics} />
       <AdminAuditContentBlock events={props.events} />
       <AdminPaginationBlock {...props.pagination} />
     </AdminPageBlock>
@@ -63,6 +69,7 @@ export function AdminAuditTemplate(props: AdminAuditTemplateProps) {
 export function AdminRecordsTemplate(props: AdminRecordsProps) {
   return (
     <AdminPageBlock variant="records">
+      <AdminMetricsBlock metrics={props.metrics} />
       <AdminRecordsContentBlock {...props} />
     </AdminPageBlock>
   );
@@ -82,6 +89,7 @@ export function AdminUsersTemplate(props: AdminUsersTemplateProps) {
       variant="users"
       toolbar={<AdminSearchToolbarBlock variant="users" {...props} />}
     >
+      <AdminMetricsBlock metrics={props.metrics} />
       <AdminUsersContentBlock memberships={props.memberships} />
       <AdminPaginationBlock {...props.pagination} />
     </AdminPageBlock>

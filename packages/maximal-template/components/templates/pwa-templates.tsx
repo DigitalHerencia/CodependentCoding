@@ -1,17 +1,8 @@
-import {
-  PwaAccountMenuBlock,
-  PwaInstallBlock,
-} from "@/components/blocks/pwa-blocks";
-import type { ComponentProps } from "react";
-
-export function PwaAccountMenuTemplate(
-  props: ComponentProps<typeof PwaAccountMenuBlock>,
-) {
-  return <PwaAccountMenuBlock {...props} />;
-}
-export function PwaInstallTemplate(
-  props: ComponentProps<typeof PwaInstallBlock>,
-) {
+/** PWA install presentation composes its owned block. */
+import { PwaInstallBlock } from "@/components/blocks/pwa-blocks";
+import type { PwaInstallProps } from "@/types/pwaTypes";
+/** Hide unavailable installation controls while retaining the existing iOS instructions. */
+export function PwaInstallTemplate(props: PwaInstallProps) {
   return props.canInstall || props.showIosInstructions ? (
     <PwaInstallBlock {...props} />
   ) : null;

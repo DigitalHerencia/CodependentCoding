@@ -1,11 +1,7 @@
-import { useClerk } from "@clerk/nextjs";
+/** Browser installation and cache capabilities; auth owns provider identity operations. */
 import { isDevelopment } from "@/lib/constants/mode";
 import { useEffect, useRef, useState } from "react";
-
-type InstallPromptEvent = Event & {
-  prompt: () => Promise<void>;
-  userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
-};
+import type { PwaInstallPromptEvent } from "@/types/pwaTypes";
 
 const VISITED_KEY = "pwa-visited";
 const DISMISSED_KEY = "pwa-install-dismissed";
@@ -20,7 +16,7 @@ function isIosSafari() {
 
 /** Registers the worker and offers a non-modal install affordance after visit one. */
 export function usePwaInstallWorkflow() {
-  const promptEvent = useRef<InstallPromptEvent | null>(null);
+  const promptEvent = useRef<PwaInstallPromptEvent | null>(null);
   const [canInstall, setCanInstall] = useState(false);
   const [showIosInstructions, setShowIosInstructions] = useState(false);
 
@@ -67,7 +63,7 @@ export function usePwaInstallWorkflow() {
 
     const onBeforeInstallPrompt = (event: Event) => {
       event.preventDefault();
-      promptEvent.current = event as InstallPromptEvent;
+      promptEvent.current = event as PwaInstallPromptEvent;
       setCanInstall(true);
     };
 
@@ -107,6 +103,7 @@ export function usePwaInstallWorkflow() {
   };
 }
 
+/** Wait for the worker to stop in-flight cache writes before purging browser caches. */
 async function clearCaches(worker: ServiceWorker | null | undefined) {
   if (worker) {
     await new Promise<void>((resolve, reject) => {
@@ -123,14 +120,10 @@ async function clearCaches(worker: ServiceWorker | null | undefined) {
     await Promise.all((await caches.keys()).map((key) => caches.delete(key)));
 }
 
-export function usePwaAccountMenuWorkflow() {
-  const { openUserProfile, signOut } = useClerk();
-  const safeSignOut = async () => {
-    const registration = await navigator.serviceWorker?.getRegistration();
-    await clearCaches(
-      navigator.serviceWorker?.controller ?? registration?.active,
-    );
-    await signOut({ redirectUrl: "/sign-in" });
-  };
-  return { onManageAccount: () => openUserProfile(), onSignOut: safeSignOut };
+/** Clear account-related browser caches before an identity signs out. */
+export async function clearPwaAccountCachesWorkflow() {
+  const registration = await navigator.serviceWorker?.getRegistration();
+  await clearCaches(
+    navigator.serviceWorker?.controller ?? registration?.active,
+  );
 }

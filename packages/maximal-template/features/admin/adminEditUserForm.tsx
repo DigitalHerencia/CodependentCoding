@@ -1,7 +1,7 @@
 "use client";
 /** RHF membership editing orchestrates presentation and the single admin workflow API. */
 import { useRouter } from "next/navigation";
-import { useState, useTransition } from "react";
+import { useState, useTransition, useSyncExternalStore } from "react";
 import { useForm, useController } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AdminEditUserTemplate } from "@/components/templates/admin-templates";
@@ -19,8 +19,15 @@ import type {
   ChangeAdminMembershipCommand,
   AdminEditUserTemplateProps,
 } from "@/types/adminTypes";
+/** A stable subscription disables native submission until RHF handlers are hydrated. */
+const subscribeToHydration = () => () => {};
 /** Server-derived editability is checked before this form is mounted; actions recheck it atomically. */
-export function EditAdminMembershipForm({ membership }: AdminMembershipProps) {
+export function AdminEditUserForm({ membership }: AdminMembershipProps) {
+  const hydrated = useSyncExternalStore(
+    subscribeToHydration,
+    () => true,
+    () => false,
+  );
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [result, setResult] =
@@ -40,7 +47,7 @@ export function EditAdminMembershipForm({ membership }: AdminMembershipProps) {
       roles={adminRoleSchema.options}
       errors={form.formState.errors}
       result={result}
-      pending={pending || form.formState.isSubmitting}
+      pending={!hydrated || pending || form.formState.isSubmitting}
       onSubmit={form.handleSubmit(async (values) => {
         setResult(null);
         form.clearErrors("root");

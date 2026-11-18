@@ -1,6 +1,5 @@
+/** PWA installation copy consumed only by its presentation block. */
 export const pwaBlockCopy = {
-  manageAccount: "Manage account",
-  signOut: "Sign out",
   installThisApp: "Install this app",
   useShareThenAddToHomeScreen: "Use Share, then Add to Home Screen.",
   install: "Install",

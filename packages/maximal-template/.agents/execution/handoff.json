@@ -7,7 +7,7 @@
     ".agents/contracts/validation.yaml"
   ],
   "spec_catalog": "context/specs/catalog.json",
-  "active_spec_id": null,
+  "active_spec_id": "ADMIN-376-OWNER-PROMPT",
   "next_spec_id": null,
   "completed_spec_ids": ["TYPESCRIPTION-T2", "TYPESCRIPTION-T3", "CC-080"],
   "blocked_spec_ids": [],
@@ -110,8 +110,34 @@
     "owner_authorization": "Owner approved dependency addition, commit, merge, sync and branch cleanup.",
     "not_run": ["tests", "local builds", "browser/runtime checks"]
   },
-  "status": "merged-verified",
-  "branch": "main",
+  "status": "checks-passed",
+  "branch": "feat/376-admin-sidebar-account",
   "completion": "PR #373 merged after green final-head CI; Issue #372 done; task branch deleted; main synchronized. No active implementation package.",
-  "milestone": "M-T"
+  "milestone": "M-T",
+  "updated": "2026-11-18T20:16:24.018082+00:00",
+  "current_issue": 376,
+  "active_package": {
+    "spec_id": "ADMIN-376-OWNER-PROMPT",
+    "issue": 376,
+    "status": "checks-passed",
+    "verification": [
+      {
+        "command": "pnpm --dir packages/maximal-template run lint:fix <affected source files>",
+        "result": "PASS: zero warnings"
+      },
+      {
+        "command": "pnpm --dir packages/maximal-template run format:write --ignore-unknown <affected files>",
+        "result": "PASS"
+      },
+      {
+        "command": "pnpm --dir packages/maximal-template run typegen",
+        "result": "PASS: Prisma Client and Next route types generated"
+      },
+      {
+        "command": "pnpm --dir packages/maximal-template run typecheck",
+        "result": "PASS"
+      }
+    ],
+    "next": "Complete allowed checks, open PR, verify CI, merge and sync main."
+  }
 }

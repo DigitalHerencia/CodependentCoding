@@ -1,9 +1,15 @@
 /** Auth route orchestration shared safely across server entry and browser forms. */
 import {
   guardAuthEntryAction,
+  loadOwnAuthProfileAction,
   requireAuthIdentityAction,
 } from "@/lib/actions/authActions";
-import { useSignIn, useSignUp } from "@/lib/integrations/clerk/client";
+import { clearPwaAccountCachesWorkflow } from "@/lib/workflows/pwaClientWorkflows";
+import {
+  useSignIn,
+  useSignUp,
+  useClerk,
+} from "@/lib/integrations/clerk/client";
 import type { NextRequest } from "next/server";
 import type {
   AuthSignInTransition,
@@ -220,4 +226,21 @@ export async function advanceAuthSignUpWorkflow(
   )
     return { kind: "verify", result: await sendAuthSignUpCodeWorkflow(signUp) };
   return { kind: "managed" };
+}
+
+/** Read the caller's local profile through the authenticated auth boundary. */
+export async function loadAuthAccountWorkflow() {
+  return { profile: await loadOwnAuthProfileAction() };
+}
+
+/** Retain secure PWA cache clearing before Clerk signs out the identity. */
+export function useAuthAccountWorkflow() {
+  const { openUserProfile, signOut } = useClerk();
+  return {
+    onManageAccount: () => openUserProfile(),
+    onSignOut: async () => {
+      await clearPwaAccountCachesWorkflow();
+      await signOut({ redirectUrl: "/sign-in" });
+    },
+  };
 }

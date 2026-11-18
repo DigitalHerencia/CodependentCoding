@@ -60,11 +60,16 @@ export type AuthzSeedIdentityContext = {
 };
 
 /** Presentation state and event contract for organization selection. */
-export type OrganizationSwitcherBlockProps = OrganizationSwitcherDTO & {
-  pending: boolean;
-  error: string;
-  onOrganizationChange: (event: ChangeEvent<HTMLSelectElement>) => void;
+/** The account view includes only the active membership's role. */
+export type OrganizationSwitcherFeatureProps = OrganizationSwitcherDTO & {
+  role: AppRole;
 };
+export type OrganizationSwitcherBlockProps =
+  OrganizationSwitcherFeatureProps & {
+    pending: boolean;
+    error: string;
+    onOrganizationChange: (event: ChangeEvent<HTMLSelectElement>) => void;
+  };
 
 /** Membership roles that administrators may grant through invitations. */
 export type InvitableRole = Exclude<AppRole, "OWNER">;
