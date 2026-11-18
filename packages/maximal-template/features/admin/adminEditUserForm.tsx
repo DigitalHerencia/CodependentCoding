@@ -15,14 +15,18 @@ import {
   adminRoleSchema,
 } from "@/schemas/adminSchemas";
 import type {
-  AdminMembershipProps,
+  AdminUserEditView,
   ChangeAdminMembershipCommand,
   AdminEditUserTemplateProps,
 } from "@/types/adminTypes";
 /** A stable subscription disables native submission until RHF handlers are hydrated. */
 const subscribeToHydration = () => () => {};
 /** Server-derived editability is checked before this form is mounted; actions recheck it atomically. */
-export function AdminEditUserForm({ membership }: AdminMembershipProps) {
+export function AdminEditUserForm({
+  membership,
+  organizations,
+  permissions,
+}: AdminUserEditView) {
   const hydrated = useSyncExternalStore(
     subscribeToHydration,
     () => true,
@@ -37,13 +41,27 @@ export function AdminEditUserForm({ membership }: AdminMembershipProps) {
     defaultValues: {
       membershipId: membership.id,
       role: adminRoleSchema.parse(membership.role),
+      organizationId: membership.organizationId,
+      deniedPermissions: membership.deniedPermissions,
     },
   });
   const role = useController({ name: "role", control: form.control });
+  const organizationId = useController({
+    name: "organizationId",
+    control: form.control,
+  });
+  const deniedPermissions = useController({
+    name: "deniedPermissions",
+    control: form.control,
+  });
   return (
     <AdminEditUserTemplate
       membership={membership}
       role={role.field}
+      organizationId={organizationId.field}
+      deniedPermissions={deniedPermissions.field}
+      organizations={organizations}
+      permissions={permissions}
       roles={adminRoleSchema.options}
       errors={form.formState.errors}
       result={result}
@@ -58,7 +76,12 @@ export function AdminEditUserForm({ membership }: AdminMembershipProps) {
             router.refresh();
             return;
           }
-          for (const name of ["membershipId", "role"] as const) {
+          for (const name of [
+            "membershipId",
+            "role",
+            "organizationId",
+            "deniedPermissions",
+          ] as const) {
             const message = response.error.fieldErrors?.[name]?.[0];
             if (message) form.setError(name, { message });
           }

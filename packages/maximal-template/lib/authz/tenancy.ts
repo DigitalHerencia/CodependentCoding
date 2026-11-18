@@ -3,15 +3,15 @@ import "server-only";
 
 import { cookies } from "next/headers";
 import { organizationIdSchema } from "@/schemas/authzSchemas";
-import { tenancy } from "./mode";
+import { SINGLE_ORGANIZATION_ID, tenancy } from "./mode";
 
-/** Single tenancy never accepts invitations or administrator approvals. */
-export function assertInvitationsAllowed(): void {
-  if (tenancy === "single")
-    throw Object.assign(
-      new Error("Invitations are unavailable in single tenancy."),
-      { code: "FORBIDDEN" },
-    );
+/** Validate the invitation's trusted tenant context in either tenancy mode. */
+export function assertInvitationsAllowed(organizationId: string): void {
+  const id = organizationIdSchema.parse(organizationId);
+  if (tenancy === "single" && id !== SINGLE_ORGANIZATION_ID)
+    throw Object.assign(new Error("Invitation organization is unavailable."), {
+      code: "FORBIDDEN",
+    });
 }
 
 /** httpOnly cookie holding the organization the user last chose (AUTH.md §4.1). */

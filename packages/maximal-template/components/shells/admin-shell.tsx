@@ -1,24 +1,13 @@
-/** Slot-only administration frame; workflows own all identity and access decisions. */
-import type { AdminShellProps } from "@/types/adminTypes";
-/** The shared responsive sidebar sits alongside a flexible, keyboard-accessible main region. */
-export function AdminShell({
-  children,
-  navigation,
-  header,
-  footer,
-  skipLink,
-}: AdminShellProps) {
+/** Admin shell feature orchestrates the frame after layout authorization. */
+import { AdminShellTemplate } from "@/components/templates/admin-templates";
+import { AuthAccountFeature } from "@/features/auth/authAccountFeature";
+import type { AdminChildrenProps } from "@/types/adminTypes";
+
+/** Keep presentation in templates and profile/identity behavior in auth. */
+export function AdminShellFeature({ children }: AdminChildrenProps) {
   return (
-    <>
-      {skipLink}
-      {navigation}
-      <div className="flex min-h-dvh min-w-0 flex-1 flex-col">
-        {header}
-        <main id="admin-main-content" tabIndex={-1} className="min-w-0 flex-1">
-          {children}
-        </main>
-        {footer}
-      </div>
-    </>
+    <AdminShellTemplate accountMenu={<AuthAccountFeature />}>
+      {children}
+    </AdminShellTemplate>
   );
 }

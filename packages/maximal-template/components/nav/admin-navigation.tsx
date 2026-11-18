@@ -19,9 +19,10 @@ export function AdminNavigationLinks({
         <Link
           key={item.href}
           href={item.href}
-          onClick={() => onNavigate?.()}
+          {...(onNavigate ? { onClick: onNavigate } : {})}
           aria-current={
-            pathname === item.href || pathname.startsWith(`${item.href}/`)
+            pathname === item.href ||
+            (item.href !== "/admin" && pathname.startsWith(`${item.href}/`))
               ? "page"
               : undefined
           }
@@ -36,5 +37,7 @@ export function AdminNavigationLinks({
 
 /** Own the responsive sidebar's location while blocks supply its primitive composition. */
 export function AdminNavigation({ children }: AdminChildrenProps) {
-  return <aside className="contents">{children}</aside>;
+  return (
+    <aside className="sticky top-0 h-dvh shrink-0 self-start">{children}</aside>
+  );
 }

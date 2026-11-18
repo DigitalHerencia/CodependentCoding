@@ -8,6 +8,7 @@ export const adminModule = {
     label: "Admin",
     icon: "building",
     links: [
+      { label: "Dashboard", href: "/admin" },
       { label: "Users", href: "/admin/users" },
       { label: "Records", href: "/admin/records" },
       { label: "Audit", href: "/admin/audit" },

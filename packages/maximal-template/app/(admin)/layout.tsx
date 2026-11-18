@@ -1,13 +1,35 @@
-/** Admin route group streams identity, mandatory onboarding and tenant authorization. */
+/** Admin access is checked here before the shell or protected children render. */
 import { Suspense } from "react";
-import { AdminLayoutFeature } from "@/features/admin/adminLayoutFeature";
+import { AdminShellFeature } from "@/components/shells/admin-shell";
 import { AdminLayoutSkeleton } from "@/features/admin/adminLayoutSkeleton";
+import { OnboardingGateFeature } from "@/features/onboarding/onboarding-gate-feature";
+import {
+  guardAdminWorkflow,
+  requireAdminIdentityWorkflow,
+} from "@/lib/workflows/adminWorkflows";
 import type { AdminChildrenProps } from "@/types/adminTypes";
-/** Keep session and organization reads behind a static shell fallback. */
+
+/** Authorize after the mandatory profile gate has allowed rendering. */
+async function AuthorizedAdminLayout({ children }: AdminChildrenProps) {
+  await guardAdminWorkflow();
+  return <AdminShellFeature>{children}</AdminShellFeature>;
+}
+
+/** Identity precedes onboarding, and organization authorization precedes the shell. */
+async function AdminIdentityLayout({ children }: AdminChildrenProps) {
+  await requireAdminIdentityWorkflow();
+  return (
+    <OnboardingGateFeature>
+      <AuthorizedAdminLayout>{children}</AuthorizedAdminLayout>
+    </OnboardingGateFeature>
+  );
+}
+
+/** Stream identity-dependent layout work behind its accessible fallback. */
 export default function AdminLayout({ children }: AdminChildrenProps) {
   return (
     <Suspense fallback={<AdminLayoutSkeleton />}>
-      <AdminLayoutFeature>{children}</AdminLayoutFeature>
+      <AdminIdentityLayout>{children}</AdminIdentityLayout>
     </Suspense>
   );
 }

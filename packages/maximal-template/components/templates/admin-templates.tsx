@@ -1,6 +1,5 @@
 /** One presentation template per admin page; only blocks resolve copy and primitives. */
 import { AdminNavigation } from "@/components/nav/admin-navigation";
-import { AdminShell } from "@/components/shells/admin-shell";
 import {
   AdminPageBlock,
   AdminHeaderBlock,
@@ -16,9 +15,11 @@ import {
   AdminRecordDetailContentBlock,
   AdminUserDetailContentBlock,
   AdminUsersContentBlock,
-  AdminNewUserFormBlock,
   AdminEditUserFormBlock,
   AdminFormFeedbackBlock,
+  AdminDashboardToolbarBlock,
+  AdminDashboardContentBlock,
+  AdminInvitationsSectionBlock,
 } from "@/components/blocks/admin-blocks";
 import type {
   AdminAuditTemplateProps,
@@ -26,9 +27,10 @@ import type {
   AdminRecordsProps,
   AdminRecordDetailProps,
   AdminMembershipProps,
-  AdminNewUserTemplateProps,
   AdminEditUserTemplateProps,
   AdminShellTemplateProps,
+  AdminDashboardView,
+  AdminChildrenProps,
 } from "@/types/adminTypes";
 /** Compose shell presentation; the feature performs all identity and access checks. */
 export function AdminShellTemplate({
@@ -37,19 +39,30 @@ export function AdminShellTemplate({
 }: AdminShellTemplateProps) {
   return (
     <AdminFrameBlock>
-      <AdminShell
-        skipLink={<AdminSkipLinkBlock />}
-        navigation={
-          <AdminNavigation>
-            <AdminSidebarBlock accountMenu={accountMenu} />
-          </AdminNavigation>
-        }
-        header={<AdminHeaderBlock />}
-        footer={<AdminFooterBlock />}
-      >
-        {children}
-      </AdminShell>
+      <AdminSkipLinkBlock />
+      <AdminNavigation>
+        <AdminSidebarBlock accountMenu={accountMenu} />
+      </AdminNavigation>
+      <div className="flex min-h-dvh min-w-0 flex-1 flex-col">
+        <AdminHeaderBlock />
+        <main id="admin-main-content" tabIndex={-1} className="min-w-0 flex-1">
+          {children}
+        </main>
+        <AdminFooterBlock />
+      </div>
     </AdminFrameBlock>
+  );
+}
+
+/** The overview's only presentation entry, adapted from the supplied BoldKit dashboard. */
+export function AdminDashboardTemplate(props: AdminDashboardView) {
+  return (
+    <AdminPageBlock
+      variant="dashboard"
+      toolbar={<AdminDashboardToolbarBlock />}
+    >
+      <AdminDashboardContentBlock {...props} />
+    </AdminPageBlock>
   );
 }
 /** Audit route presentation. */
@@ -91,6 +104,11 @@ export function AdminUsersTemplate(props: AdminUsersTemplateProps) {
     >
       <AdminMetricsBlock metrics={props.metrics} />
       <AdminUsersContentBlock memberships={props.memberships} />
+      {props.invitations && (
+        <AdminInvitationsSectionBlock>
+          {props.invitations}
+        </AdminInvitationsSectionBlock>
+      )}
       <AdminPaginationBlock {...props.pagination} />
     </AdminPageBlock>
   );
@@ -110,17 +128,9 @@ export function AdminUserDetailTemplate(props: AdminMembershipProps) {
     </AdminPageBlock>
   );
 }
-/** New membership approval route presentation. */
-export function AdminNewUserTemplate(props: AdminNewUserTemplateProps) {
-  return (
-    <AdminPageBlock variant="new">
-      <AdminNewUserFormBlock {...props} />
-      <AdminFormFeedbackBlock
-        error={props.errors.root}
-        approved={props.approved}
-      />
-    </AdminPageBlock>
-  );
+/** The new-user route delegates invitation fields and behavior to its owning slice. */
+export function AdminNewUserTemplate({ children }: AdminChildrenProps) {
+  return <AdminPageBlock variant="new">{children}</AdminPageBlock>;
 }
 /** Membership edit route presentation. */
 export function AdminEditUserTemplate(props: AdminEditUserTemplateProps) {

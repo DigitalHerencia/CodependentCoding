@@ -169,17 +169,38 @@ export default defineConfig([
   },
   {
     name: "codependent/admin-route-boundaries",
-    files: [
-      "app/(admin)/**/*.{ts,tsx}",
-      "components/shells/admin-shell.tsx",
-      "components/nav/admin-*.{ts,tsx}",
+    files: ["app/(admin)/**/*.{ts,tsx}", "components/nav/admin-*.{ts,tsx}"],
+    ignores: [
+      "app/(admin)/**/loading.tsx",
+      "app/(admin)/**/error.tsx",
+      "app/(admin)/layout.tsx",
     ],
-    ignores: ["app/(admin)/**/loading.tsx", "app/(admin)/**/error.tsx"],
     rules: authImportRules([
       authApplicationImports,
       ...authBlockOnlyImports,
       authBlockImports,
       authTemplateImports,
+      authWorkflowImports,
+    ]),
+  },
+  {
+    // The owner requires access orchestration in the layout and shell feature composition.
+    name: "codependent/admin-layout-access",
+    files: ["app/(admin)/layout.tsx"],
+    rules: authImportRules([
+      authApplicationImports,
+      ...authBlockOnlyImports,
+      authBlockImports,
+      authTemplateImports,
+    ]),
+  },
+  {
+    name: "codependent/admin-shell-feature",
+    files: ["components/shells/admin-shell.tsx"],
+    rules: authImportRules([
+      authApplicationImports,
+      ...authBlockOnlyImports,
+      authBlockImports,
       authWorkflowImports,
     ]),
   },

@@ -5,10 +5,13 @@ import {
   createInvitation,
   acceptInvitation,
   revokeInvitation,
+  editInvitation,
 } from "@/lib/actions/invitationActions";
 import { getPendingInvitations } from "@/lib/fetchers/invitationFetchers";
 import type { Prisma } from "@/generated/prisma/client";
 import type { AccessContext } from "@/types/authzTypes";
+import type * as AuthzTransactions from "@/lib/db/selects/authzTx";
+import type * as InvitationTransactions from "@/lib/db/selects/invitationTx";
 
 const state = vi.hoisted(() => ({
   tenancy: "multi",
@@ -32,9 +35,14 @@ vi.mock("@/lib/authz/mode", () => ({
   },
 }));
 vi.mock("@/lib/authz/tenancy", () => ({
-  assertInvitationsAllowed: () => {
-    if (state.tenancy === "single")
-      throw Object.assign(new Error("single tenancy"), { code: "FORBIDDEN" });
+  assertInvitationsAllowed: (organizationId: string) => {
+    if (
+      state.tenancy === "single" &&
+      organizationId !== "10000000-0000-4000-8000-000000000001"
+    )
+      throw Object.assign(new Error("Wrong organization"), {
+        code: "FORBIDDEN",
+      });
   },
 }));
 vi.mock("@/lib/authz/permissions", () => ({
@@ -46,10 +54,12 @@ vi.mock("@/lib/db/tenancy", () => ({
   withTenantTransaction: state.tenant,
   withAuthenticatedRead: state.read,
 }));
-vi.mock("@/lib/db/selects/adminTx", () => ({
+vi.mock("@/lib/db/selects/authzTx", async (importOriginal) => ({
+  ...(await importOriginal<typeof AuthzTransactions>()),
   assertMembershipAdministratorTx: state.admin,
 }));
-vi.mock("@/lib/db/transactions/invitationTx", () => ({
+vi.mock("@/lib/db/selects/invitationTx", async (importOriginal) => ({
+  ...(await importOriginal<typeof InvitationTransactions>()),
   acceptInvitationTx: state.accept,
   hashInvitationToken: (value: string) =>
     createHash("sha256").update(value).digest("hex"),
@@ -72,6 +82,7 @@ const tx = {
     create: vi.fn(),
     updateMany: vi.fn(),
     findUnique: vi.fn(),
+    findUniqueOrThrow: vi.fn(),
     findMany: vi.fn(),
   },
   auditEvent: { create: vi.fn() },
@@ -124,6 +135,7 @@ beforeEach(() => {
   });
   tx.invitation.create.mockResolvedValue(record);
   tx.invitation.findUnique.mockResolvedValue(record);
+  tx.invitation.findUniqueOrThrow.mockResolvedValue(record);
   tx.invitation.updateMany.mockResolvedValue({ count: 1 });
   tx.invitation.findMany.mockResolvedValue([record]);
 });
@@ -178,21 +190,59 @@ test("client organization overrides are rejected by strict validation", async ()
   expect(tx.invitation.create).not.toHaveBeenCalled();
 });
 
-test.each(["create", "revoke", "accept"])(
-  "single tenancy blocks %s before persistence",
-  async (command) => {
-    state.tenancy = "single";
-    const result =
-      command === "create"
-        ? await createInvitation({ email: record.email, role: "MEMBER" })
-        : command === "revoke"
-          ? await revokeInvitation({ invitationId })
-          : await acceptInvitation({ token: "x".repeat(43) });
-    expect(result).toMatchObject({ ok: false, error: { code: "FORBIDDEN" } });
-    expect(state.tenant).not.toHaveBeenCalled();
-    expect(state.identity).not.toHaveBeenCalled();
-  },
-);
+test("single tenancy creates and lists invitations in the configured tenant", async () => {
+  state.tenancy = "single";
+  expect(
+    (await createInvitation({ email: record.email, role: "MEMBER" })).ok,
+  ).toBe(true);
+  expect((await getPendingInvitations()).canInvite).toBe(true);
+  expect(tx.invitation.create).toHaveBeenCalledWith(
+    expect.objectContaining({
+      data: expect.objectContaining({ organizationId: org }),
+    }),
+  );
+});
+
+test("editing a pending invitation preserves its token, expiry and tenant", async () => {
+  const result = await editInvitation({
+    invitationId,
+    email: "replacement@example.test",
+    role: "VIEWER",
+  });
+  expect(result.ok).toBe(true);
+  expect(tx.invitation.updateMany).toHaveBeenCalledWith({
+    where: {
+      id: invitationId,
+      organizationId: org,
+      status: "PENDING",
+      requiresToken: true,
+      expiresAt: { gt: expect.any(Date) },
+    },
+    data: { email: "replacement@example.test", role: "VIEWER" },
+  });
+  expect(tx.auditEvent.create).toHaveBeenCalledWith(
+    expect.objectContaining({
+      data: expect.objectContaining({
+        action: "membership.invitation.updated",
+        resourceId: invitationId,
+      }),
+    }),
+  );
+});
+
+test("accepted, expired and foreign invitations cannot be edited", async () => {
+  tx.invitation.updateMany.mockResolvedValueOnce({ count: 0 });
+  expect(
+    (
+      await editInvitation({
+        invitationId,
+        email: record.email,
+        role: "MEMBER",
+      })
+    ).ok,
+  ).toBe(false);
+  expect(tx.auditEvent.create).not.toHaveBeenCalled();
+});
 
 test.each(["create", "revoke"])(
   "%s rechecks administrator authority inside the active tenant",
@@ -285,6 +335,7 @@ test("admin list is limited to unexpired pending invitations in the active organ
       where: {
         organizationId: org,
         status: "PENDING",
+        requiresToken: true,
         expiresAt: { gt: expect.any(Date) },
       },
     }),

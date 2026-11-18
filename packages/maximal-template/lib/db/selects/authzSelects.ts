@@ -7,11 +7,19 @@ export const authorizationMembershipSelect = {
   id: true,
   organizationId: true,
   role: true,
+  deniedPermissions: true,
 } satisfies Prisma.MembershipSelect;
 
 /** Public organization choices derived from the caller's active memberships. */
 export const organizationSwitcherMembershipSelect = {
   organization: { select: { id: true, name: true } },
+} satisfies Prisma.MembershipSelect;
+
+/** Destination choices expose only organizations and the caller's authority to manage them. */
+export const manageableOrganizationMembershipSelect = {
+  ...organizationSwitcherMembershipSelect,
+  role: true,
+  deniedPermissions: true,
 } satisfies Prisma.MembershipSelect;
 
 /** Directory projection without user contact details or identity provider metadata. */
@@ -28,8 +36,12 @@ export const authzIdSelect = { id: true } satisfies Prisma.MembershipSelect &
   Prisma.AuditEventSelect;
 
 /** Approval fields required by the existing invitation acceptance transaction. */
-export const pendingInvitationAccessSelect =
-  authorizationMembershipSelect satisfies Prisma.InvitationSelect;
+export const pendingInvitationAccessSelect = {
+  id: true,
+  organizationId: true,
+  role: true,
+  email: true,
+} satisfies Prisma.InvitationSelect;
 
 /** Preserve the existing role and activation status during single-tenant provisioning. */
 export const membershipRoleStatusSelect = {

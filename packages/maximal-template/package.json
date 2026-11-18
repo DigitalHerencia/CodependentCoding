@@ -24,7 +24,10 @@
     "governance:project": "node scripts/create-project.mjs",
     "governance:publish": "node scripts/publish-issues.mjs",
     "format:write": "prettier --write",
-    "typegen": "prisma generate && next typegen"
+    "typegen": "prisma generate && next typegen",
+    "test:admin:unit": "vitest run --project unit tests/membershipAdministration.test.ts tests/adminNavigationPresentation.test.ts tests/invitationActions.test.ts tests/invitationSliceActions.test.ts tests/invitations.test.ts tests/invitationPresentation.test.ts",
+    "test:admin:integration": "vitest run --project unit tests/invitation-lifecycle.integration.test.ts",
+    "test:admin:e2e": "playwright test tests/e2e/admin-navigation.spec.ts tests/e2e/invitations.spec.ts"
   },
   "packageManager": "pnpm@12.16.1",
   "engines": {

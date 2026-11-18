@@ -16,7 +16,7 @@ export async function seedAdminAudit(
         action: "seed.completed",
         resourceType: "Organization",
         resourceId: organization.id,
-        metadata: { recipes: [...seeded] },
+        metadata: { recipes: [...seeded], source: "admin.seed" },
       },
     ],
   });

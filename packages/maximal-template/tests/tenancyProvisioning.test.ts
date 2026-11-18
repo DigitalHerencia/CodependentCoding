@@ -6,7 +6,7 @@ import { SINGLE_ORGANIZATION_ID } from "@/lib/authz/mode";
 import type * as AuthzMode from "@/lib/authz/mode";
 import type { AppRole } from "@/types/authzTypes";
 import { syncClerkUserTx } from "@/lib/db/selects/authTx";
-import { acceptInvitationTx } from "@/lib/db/transactions/invitationTx";
+import { acceptInvitationTx } from "@/lib/db/selects/invitationTx";
 
 const mode = vi.hoisted(() => ({ tenancy: "single" }));
 vi.mock("@/lib/authz/mode", async (importOriginal) => ({

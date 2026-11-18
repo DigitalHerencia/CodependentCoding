@@ -1,55 +1,40 @@
 /** Atomic administration helpers run only inside authenticated tenant transactions. */
 import "server-only";
 
-import { randomBytes } from "node:crypto";
-
 import type { Prisma } from "@/generated/prisma/client";
-import type {
-  AdminActorContext,
-  AdminActorRecord,
-  AdminMembershipUpdate,
-  AdminAccessApproval,
-} from "@/types/adminTypes";
+import type { AdminMembershipUpdate } from "@/types/adminTypes";
 
-import { INVITATION_TTL_DAYS } from "@/lib/constants/invitations";
-import { SINGLE_ORGANIZATION_ID, tenancy } from "@/lib/authz/mode";
-import { invitableRoles, isPrivilegedRole } from "@/lib/authz/roles";
-import { assertInvitationsAllowed } from "@/lib/authz/tenancy";
-import { hashInvitationToken } from "@/lib/db/transactions/invitationTx";
+import { permissions } from "@/lib/authz/permissions";
+import {
+  transferOrganizationMembershipTx,
+  assertMembershipAdministratorTx,
+} from "@/lib/db/selects/authzTx";
 import {
   adminMembershipSelect,
   adminMembershipTargetSelect,
-  adminApprovalSelect,
 } from "@/lib/db/selects/adminSelects";
 import {
   InvariantViolationError,
   ResourceNotFoundError,
 } from "@/lib/db/transactions/errors";
 
-/** Re-read and lock the actor in the server-selected organization before mutation. */
-export async function assertMembershipAdministratorTx(
-  tx: Prisma.TransactionClient,
-  input: AdminActorContext,
-): Promise<void> {
-  if (tenancy === "single" && input.organizationId !== SINGLE_ORGANIZATION_ID)
-    throw new ResourceNotFoundError("Organization");
-  const lockKey = `membership-administration:${input.organizationId}`;
-  await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtextextended(${lockKey}, 0))`;
-  const [actor] = await tx.$queryRaw<AdminActorRecord[]>`
-    SELECT "role", "status" FROM "Membership"
-    WHERE "organizationId" = ${input.organizationId}::uuid AND "userId" = ${input.actorUserId}
-    FOR UPDATE
-  `;
-  if (!actor || actor.status !== "ACTIVE" || !isPrivilegedRole(actor.role))
-    throw new ResourceNotFoundError("Administrator membership");
-}
-
 /** Serialize administration per organization, recheck access, update and append audit atomically. */
 export async function updateMembershipAdministrationTx(
   tx: Prisma.TransactionClient,
   input: AdminMembershipUpdate,
 ) {
+  // Acquire multiple organization locks in a stable order before either membership changes.
+  for (const organizationId of [
+    ...new Set([
+      input.organizationId,
+      input.targetOrganizationId ?? input.organizationId,
+    ]),
+  ].sort()) {
+    const key = `membership-administration:${organizationId}`;
+    await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtextextended(${key}, 0))`;
+  }
   await assertMembershipAdministratorTx(tx, input);
+  await tx.$queryRaw`SELECT "id" FROM "Membership" WHERE "id" = ${input.membershipId}::uuid AND "organizationId" = ${input.organizationId}::uuid FOR UPDATE`;
   const membership = await tx.membership.findFirst({
     where: {
       id: input.membershipId,
@@ -68,11 +53,38 @@ export async function updateMembershipAdministrationTx(
       "An administrator cannot change their own membership.",
     );
 
+  if (
+    input.deniedPermissions?.some(
+      (permission) => !permissions.some((known) => known === permission),
+    )
+  )
+    throw new InvariantViolationError("Unknown permission restriction.");
+
+  const targetOrganizationId =
+    input.targetOrganizationId ?? input.organizationId;
+  const moving = targetOrganizationId !== input.organizationId;
+  if (moving) {
+    await transferOrganizationMembershipTx(tx, {
+      sourceOrganizationId: input.organizationId,
+      organizationId: targetOrganizationId,
+      actorUserId: input.actorUserId,
+      userId: membership.userId,
+      role: input.role ?? membership.role,
+      status: membership.status,
+      deniedPermissions:
+        input.deniedPermissions ?? membership.deniedPermissions,
+    });
+  }
+
   const updated = await tx.membership.update({
     where: { id: membership.id, organizationId: input.organizationId },
     data: {
       ...(input.role ? { role: input.role } : {}),
       ...(input.status ? { status: input.status } : {}),
+      ...(input.deniedPermissions
+        ? { deniedPermissions: [...new Set(input.deniedPermissions)] }
+        : {}),
+      ...(moving ? { status: "SUSPENDED" } : {}),
     },
     select: adminMembershipSelect,
   });
@@ -86,54 +98,19 @@ export async function updateMembershipAdministrationTx(
       metadata: {
         source: "server-action",
         affectedUserId: membership.userId,
-        previous: { role: membership.role, status: membership.status },
-        next: { role: updated.role, status: updated.status },
+        previous: {
+          role: membership.role,
+          status: membership.status,
+          deniedPermissions: membership.deniedPermissions,
+        },
+        next: {
+          role: updated.role,
+          status: updated.status,
+          deniedPermissions: updated.deniedPermissions,
+        },
+        ...(moving ? { targetOrganizationId: input.targetOrganizationId } : {}),
       },
     },
   });
   return updated;
-}
-
-/** Preserve existing verified-email access approval, with atomic supersession and append-only audit. */
-export async function approveWorkspaceAccessTx(
-  tx: Prisma.TransactionClient,
-  input: AdminAccessApproval,
-) {
-  assertInvitationsAllowed();
-  await assertMembershipAdministratorTx(tx, input);
-  if (!invitableRoles.some((role) => role === input.role))
-    throw new InvariantViolationError("An invitation cannot grant ownership.");
-  const approvalKey = `workspace-approval:${input.organizationId}:${input.email}`;
-  await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtextextended(${approvalKey}, 0))`;
-  await tx.invitation.updateMany({
-    where: {
-      organizationId: input.organizationId,
-      email: input.email,
-      requiresToken: false,
-      status: "PENDING",
-    },
-    data: { status: "REVOKED" },
-  });
-  const approval = await tx.invitation.create({
-    data: {
-      organizationId: input.organizationId,
-      email: input.email,
-      role: input.role,
-      invitedByUserId: input.actorUserId,
-      requiresToken: false,
-      tokenHash: hashInvitationToken(randomBytes(32).toString("base64url")),
-      expiresAt: new Date(Date.now() + INVITATION_TTL_DAYS * 86_400_000),
-    },
-    select: adminApprovalSelect,
-  });
-  await tx.auditEvent.create({
-    data: {
-      organizationId: input.organizationId,
-      actorUserId: input.actorUserId,
-      action: "admin.membership.approved",
-      resourceType: "Invitation",
-      resourceId: approval.id,
-      metadata: { role: input.role, source: "server-action" },
-    },
-  });
 }

@@ -5,7 +5,6 @@
 import { notFound } from "next/navigation";
 import { requireAuthIdentityAction } from "@/lib/actions/authActions";
 import {
-  addAdminMembership,
   changeAdminMembership,
   restoreAdminMembership,
   suspendAdminMembership,
@@ -16,8 +15,12 @@ import {
   getAdminMemberships,
   getAdminRecordSummary,
   getAuditEvents,
+  getAdminDashboardSummary,
 } from "@/lib/fetchers/adminFetchers";
 import { adminRecordIdSchema } from "@/schemas/adminSchemas";
+import { permissions } from "@/lib/authz/permissions";
+import { getManagedOrganizationOptions } from "@/lib/fetchers/authzFetchers";
+import { getPendingInvitations } from "@/lib/fetchers/invitationFetchers";
 import type {
   AdminRecordLookup,
   AdminUserLookup,
@@ -101,9 +104,13 @@ export async function loadAdminUserDetailWorkflow({ userId }: AdminUserLookup) {
 export async function loadAdminUsersWorkflow({
   criteria,
 }: AdminListFeatureProps) {
-  const page = await getAdminMemberships(await criteria);
+  const [page, pending] = await Promise.all([
+    getAdminMemberships(await criteria),
+    getPendingInvitations(),
+  ]);
   return {
     page,
+    pending,
     pagination: pagination("/admin/users", page),
     metrics: [
       { label: "members", value: page.items.length },
@@ -113,10 +120,6 @@ export async function loadAdminUsersWorkflow({
       },
     ] satisfies AdminMetric[],
   };
-}
-/** Preserve existing verified-email workspace access approval. */
-export async function addAdminMembershipWorkflow(input: unknown) {
-  return addAdminMembership(input);
 }
 /** Dispatch role updates through the authenticated atomic action. */
 export async function changeAdminMembershipWorkflow(input: unknown) {
@@ -135,5 +138,14 @@ export async function restoreAdminMembershipWorkflow(input: unknown) {
 export async function loadAdminUserEditWorkflow(input: AdminUserLookup) {
   const result = await loadAdminUserDetailWorkflow(input);
   if (!result.membership.canManage) notFound();
-  return result;
+  return {
+    ...result,
+    organizations: await getManagedOrganizationOptions(),
+    permissions,
+  };
+}
+
+/** Compose the overview from one authorized tenant summary, with no fabricated performance data. */
+export async function loadAdminDashboardWorkflow() {
+  return getAdminDashboardSummary();
 }

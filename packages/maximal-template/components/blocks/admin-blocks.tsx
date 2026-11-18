@@ -4,15 +4,43 @@
  * @see https://boldkit.dev
  */
 import Link from "next/link";
-import { RefreshCw, ServerCrash } from "lucide-react";
+import {
+  RefreshCw,
+  ServerCrash,
+  Download,
+  UserPlus,
+  Users,
+  Activity,
+  Mail,
+} from "lucide-react";
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "@/components/ui/chart";
+import { Progress } from "@/components/ui/progress";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Field, FieldError, FieldLabel } from "@/components/ui/field";
+import {
+  Field,
+  FieldError,
+  FieldLabel,
+  FieldGroup,
+  FieldDescription,
+} from "@/components/ui/field";
 import {
   NativeSelect,
   NativeSelectOption,
 } from "@/components/ui/native-select";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
@@ -36,12 +64,12 @@ import {
   SidebarToggle,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { CardDescription } from "@/components/ui/card";
-import { adminNavigationCopy, adminNavigationItems } from "@/content/admin";
 import {
   adminCopy as copy,
   adminPageCopy,
   adminLoadingCopy,
+  adminNavigationCopy,
+  adminNavigationItems,
 } from "@/content/admin";
 import { formResultCopy } from "@/content/application";
 import type {
@@ -56,12 +84,153 @@ import type {
   AdminRecordsProps,
   AdminRecordDetailProps,
   AdminMembershipProps,
-  AdminNewUserTemplateProps,
   AdminEditUserTemplateProps,
   AdminFormFeedbackProps,
   AdminSkeletonProps,
   AdminErrorProps,
+  AdminDashboardView,
 } from "@/types/adminTypes";
+
+/** Overview actions retain the supplied export affordance as navigation to the authorized audit report. */
+export function AdminDashboardToolbarBlock() {
+  return (
+    <div className="flex flex-wrap gap-3">
+      <Button variant="outline" asChild>
+        <Link href="/admin/audit">
+          <Download aria-hidden />
+          {copy.export}
+        </Link>
+      </Button>
+      <Button asChild>
+        <Link href="/admin/users/new">
+          <UserPlus aria-hidden />
+          {copy.inviteUser}
+        </Link>
+      </Button>
+    </div>
+  );
+}
+
+/** Admin owns the invitation section's location; invitations owns its form and commands. */
+export function AdminInvitationsSectionBlock({ children }: AdminChildrenProps) {
+  return (
+    <section className="flex flex-col gap-5">
+      <h2 className="type-heading">{copy.sentInvitations}</h2>
+      {children}
+    </section>
+  );
+}
+
+/** Adapt the supplied statistics and chart using real workspace data and installed BoldKit primitives.
+ * @see https://recharts.github.io/en-US/api/BarChart/
+ */
+export function AdminDashboardContentBlock({
+  members,
+  activeMembers,
+  invitations,
+  events,
+  activity,
+}: AdminDashboardView) {
+  const statistics = [
+    { label: copy.totalMembers, value: members, icon: Users },
+    { label: copy.activeMembers, value: activeMembers, icon: Activity },
+    { label: copy.pendingInvitations, value: invitations, icon: Mail },
+    { label: copy.recentEvents, value: events, icon: Activity },
+  ];
+  return (
+    <div className="flex flex-col gap-8">
+      <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
+        {statistics.map(({ label, value, icon: Icon }) => (
+          <Card key={label}>
+            <CardHeader className="flex-row items-center justify-between gap-3">
+              <CardDescription className="font-bold uppercase">
+                {label}
+              </CardDescription>
+              <Icon aria-hidden className="size-8 shrink-0 text-primary" />
+            </CardHeader>
+            <CardContent>
+              <p className="text-4xl font-black tabular-nums">{value}</p>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+      <div className="grid gap-5 xl:grid-cols-3">
+        <Card className="min-w-0 xl:col-span-2">
+          <CardHeader>
+            <CardTitle>{copy.activityOverview}</CardTitle>
+            <CardDescription>{copy.activityDescription}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <ChartContainer
+              aria-label={copy.activityDescription}
+              config={{
+                count: { label: copy.events, color: "var(--primary)" },
+              }}
+              className="h-64 w-full"
+            >
+              <BarChart data={activity} accessibilityLayer>
+                <CartesianGrid vertical={false} />
+                <XAxis
+                  dataKey="date"
+                  tickFormatter={(date: string) => date.slice(5)}
+                  tickLine={false}
+                  axisLine={false}
+                />
+                <YAxis allowDecimals={false} width={40} />
+                <ChartTooltip content={<ChartTooltipContent />} />
+                <Bar
+                  dataKey="count"
+                  fill="var(--color-count)"
+                  isAnimationActive={false}
+                />
+              </BarChart>
+            </ChartContainer>
+            <details>
+              <summary className="type-link cursor-pointer">
+                {copy.activityOverview}
+              </summary>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>{copy.date}</TableHead>
+                    <TableHead>{copy.events}</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {activity.map((row) => (
+                    <TableRow key={row.date}>
+                      <TableCell>{row.date}</TableCell>
+                      <TableCell>{row.count}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </details>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>{copy.membershipOverview}</CardTitle>
+          </CardHeader>
+          <CardContent className="flex flex-col gap-5">
+            <p>
+              {copy.activeMembers}: {activeMembers} / {members}
+            </p>
+            <Progress
+              value={activeMembers}
+              max={Math.max(members, 1)}
+              aria-label={copy.activeMembers}
+            />
+            <p>{copy.invitationsDescription}</p>
+            <Button asChild variant="outline">
+              <Link href="/admin/users">{copy.memberAdministration}</Link>
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+}
 
 /** Consistent page frame with headings and a route-specific toolbar. */
 export function AdminPageBlock({
@@ -71,8 +240,8 @@ export function AdminPageBlock({
   children,
 }: AdminPageFrameProps) {
   return (
-    <section className="mx-auto max-w-7xl space-y-8 p-4 md:p-8">
-      <header className="space-y-4">
+    <section className="mx-auto flex max-w-7xl flex-col gap-8 p-4 md:p-8">
+      <header className="flex flex-col gap-4">
         <h1 className="type-title uppercase">
           {title ?? adminPageCopy[variant]}
         </h1>
@@ -94,7 +263,20 @@ export function AdminHeaderBlock() {
   return (
     <AdminHeader
       brand={<Wordmark />}
-      controls={<SidebarToggle aria-label={adminNavigationCopy.navigation} />}
+      controls={
+        <>
+          <SidebarToggle aria-label={adminNavigationCopy.navigation} />
+          <form action="/admin/users" method="get" className="min-w-0 flex-1">
+            <Input
+              type="search"
+              name="query"
+              maxLength={200}
+              aria-label={copy.searchMembers}
+              placeholder={copy.searchNameOrEmail}
+            />
+          </form>
+        </>
+      }
     />
   );
 }
@@ -113,7 +295,9 @@ export function AdminSidebarBlock({ accountMenu }: AdminHeaderBlockProps) {
           onNavigate={() => setOpenMobile(false)}
         />
       </SidebarContent>
-      <SidebarFooter className="mt-auto">{accountMenu}</SidebarFooter>
+      <SidebarFooter className="mt-auto border-t-3 border-foreground">
+        {accountMenu}
+      </SidebarFooter>
     </Sidebar>
   );
 }
@@ -140,9 +324,12 @@ export function AdminMetricsBlock({ metrics }: AdminMetricsProps) {
 export function AdminFooterBlock() {
   return (
     <AdminFooter>
-      <p>{copy.footer}</p>
+      <div className="flex flex-wrap items-center gap-4">
+        <Wordmark compact />
+        <p>{copy.footerCopyright}</p>
+      </div>
       <Link href="/dashboard" className="type-link">
-        {adminNavigationItems[3].label}
+        {copy.workspace}
       </Link>
     </AdminFooter>
   );
@@ -176,7 +363,7 @@ export function AdminSearchToolbarBlock({
     >
       {!audit && (
         <Button asChild variant="outline">
-          <Link href="/admin/users/new">{copy.addRegisteredMember}</Link>
+          <Link href="/admin/users/new">{copy.inviteUser}</Link>
         </Button>
       )}
       <Input
@@ -220,14 +407,14 @@ export function AdminPaginationBlock({
 /** Audit data is escaped text; metadata never renders as arbitrary markup. */
 export function AdminAuditContentBlock({ events }: AdminAuditContentProps) {
   return events.length ? (
-    <ol className="space-y-3 border-l-4 border-primary pl-5">
+    <ol className="flex flex-col gap-3 border-l-4 border-primary pl-5">
       {events.map((event) => (
         <li key={event.id}>
           <Card>
             <CardHeader>
               <CardTitle>{event.action}</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-2">
+            <CardContent className="flex flex-col gap-2">
               <p>
                 {event.actor?.displayName ?? event.actor?.email ?? copy.system}
                 {copy.separator}
@@ -256,26 +443,46 @@ export function AdminAuditContentBlock({ events }: AdminAuditContentProps) {
 export function AdminRecordsContentBlock({
   records,
 }: Pick<AdminRecordsProps, "records">) {
-  return records.length ? (
-    <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-      {records.map((record) => (
-        <Card key={record.id}>
-          <CardHeader>
-            <CardTitle>{record.resource}</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <p className="text-3xl">{record.count}</p>
-            <Button asChild variant="outline">
-              <Link href={`/admin/records/${encodeURIComponent(record.id)}`}>
-                {copy.inspectResource}
-              </Link>
-            </Button>
-          </CardContent>
-        </Card>
-      ))}
-    </div>
-  ) : (
-    <p role="status">{copy.noRecords}</p>
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>{copy.workspaceRecordInventory}</CardTitle>
+        <CardDescription>
+          {copy.persistedRecordsInTheActiveWorkspace}
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <Table>
+          <TableCaption>
+            {records.length ? copy.tenantInventory : copy.noRecords}
+          </TableCaption>
+          <TableHeader>
+            <TableRow>
+              <TableHead>{copy.resource}</TableHead>
+              <TableHead>{copy.records}</TableHead>
+              <TableHead>{copy.inspect}</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {records.map((record) => (
+              <TableRow key={record.id}>
+                <TableCell>{record.resource}</TableCell>
+                <TableCell className="tabular-nums">{record.count}</TableCell>
+                <TableCell>
+                  <Button asChild variant="outline">
+                    <Link
+                      href={`/admin/records/${encodeURIComponent(record.id)}`}
+                    >
+                      {copy.inspectResource}
+                    </Link>
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </CardContent>
+    </Card>
   );
 }
 /** One organization's persisted count, with no mutation affordance. */
@@ -287,7 +494,7 @@ export function AdminRecordDetailContentBlock({
       <CardHeader>
         <CardTitle>{copy.tenantInventory}</CardTitle>
       </CardHeader>
-      <CardContent className="space-y-3">
+      <CardContent className="flex flex-col gap-3">
         <p className="text-3xl">{record.count}</p>
         <p>{copy.persistedRecordsInTheActiveWorkspace}</p>
       </CardContent>
@@ -303,7 +510,7 @@ export function AdminUserDetailContentBlock({
       <CardHeader>
         <CardTitle>{copy.identity}</CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="flex flex-col gap-4">
         <p>{membership.user.email ?? copy.emptyValue}</p>
         <p>
           {copy.joined}
@@ -385,7 +592,6 @@ export function AdminUsersContentBlock({
 /** Server validation errors and safe transport failure copy have a single presentation owner. */
 export function AdminFormFeedbackBlock({
   error,
-  approved,
   result,
 }: AdminFormFeedbackProps) {
   return (
@@ -395,81 +601,13 @@ export function AdminFormFeedbackBlock({
       )}
       {result === "failed" && <FieldError>{formResultCopy.failed}</FieldError>}
       <p role="status" aria-live="polite">
-        {approved
-          ? copy.approvalComplete
-          : result === "role"
-            ? copy.roleUpdated
-            : result === "access"
-              ? copy.accessUpdated
-              : null}
+        {result === "role"
+          ? copy.roleUpdated
+          : result === "access"
+            ? copy.accessUpdated
+            : null}
       </p>
     </>
-  );
-}
-/** New-access form binds presentation to RHF-controlled fields supplied by the form island. */
-export function AdminNewUserFormBlock({
-  email,
-  role,
-  errors,
-  roles,
-  pending,
-  onSubmit,
-}: AdminNewUserTemplateProps) {
-  return (
-    <form
-      id="admin-new-user"
-      method="post"
-      className="max-w-3xl space-y-5"
-      onSubmit={onSubmit}
-      noValidate
-      aria-busy={pending}
-    >
-      <p>{copy.approvalDescription}</p>
-      <Field data-invalid={Boolean(errors.email)}>
-        <FieldLabel htmlFor="member-email">{copy.registeredEmail}</FieldLabel>
-        <Input
-          {...email}
-          id="member-email"
-          type="email"
-          autoComplete="email"
-          maxLength={254}
-          disabled={pending}
-          aria-invalid={Boolean(errors.email)}
-          aria-describedby={errors.email ? "member-email-error" : undefined}
-        />
-        {errors.email && (
-          <FieldError id="member-email-error">
-            {errors.email.message}
-          </FieldError>
-        )}
-      </Field>
-      <Field data-invalid={Boolean(errors.role)}>
-        <FieldLabel htmlFor="new-member-role">
-          {copy.applicationRole}
-        </FieldLabel>
-        <NativeSelect
-          {...role}
-          id="new-member-role"
-          disabled={pending}
-          aria-invalid={Boolean(errors.role)}
-          aria-describedby={errors.role ? "new-member-role-error" : undefined}
-        >
-          {roles.map((value) => (
-            <NativeSelectOption key={value} value={value}>
-              {value}
-            </NativeSelectOption>
-          ))}
-        </NativeSelect>
-        {errors.role && (
-          <FieldError id="new-member-role-error">
-            {errors.role.message}
-          </FieldError>
-        )}
-      </Field>
-      <Button type="submit" disabled={pending}>
-        {copy.approveAccess}
-      </Button>
-    </form>
   );
 }
 /** Membership edit presentation excludes ownership from assignable roles. */
@@ -481,40 +619,110 @@ export function AdminEditUserFormBlock({
   pending,
   onSubmit,
   onToggleAccess,
+  organizationId,
+  organizations,
+  deniedPermissions,
+  permissions,
 }: AdminEditUserTemplateProps) {
   return (
-    <div className="max-w-3xl space-y-5">
+    <div className="flex max-w-3xl flex-col gap-5">
       <p>
         {membership.user.displayName ?? membership.user.email ?? copy.member}
       </p>
       <form
         method="post"
-        className="space-y-3"
+        className="flex flex-col gap-3"
         onSubmit={onSubmit}
         noValidate
         aria-busy={pending}
       >
-        <Field data-invalid={Boolean(errors.role)}>
-          <FieldLabel htmlFor="member-role">{copy.applicationRole}</FieldLabel>
-          <NativeSelect
-            {...role}
-            id="member-role"
-            disabled={pending}
-            aria-invalid={Boolean(errors.role)}
-            aria-describedby={errors.role ? "member-role-error" : undefined}
-          >
-            {roles.map((value) => (
-              <NativeSelectOption key={value} value={value}>
-                {value}
-              </NativeSelectOption>
-            ))}
-          </NativeSelect>
-          {errors.role && (
-            <FieldError id="member-role-error">
-              {errors.role.message}
+        <FieldGroup>
+          <Field data-invalid={Boolean(errors.role)}>
+            <FieldLabel htmlFor="member-role">
+              {copy.applicationRole}
+            </FieldLabel>
+            <NativeSelect
+              {...role}
+              id="member-role"
+              disabled={pending}
+              aria-invalid={Boolean(errors.role)}
+              aria-describedby={errors.role ? "member-role-error" : undefined}
+            >
+              {roles.map((value) => (
+                <NativeSelectOption key={value} value={value}>
+                  {value}
+                </NativeSelectOption>
+              ))}
+            </NativeSelect>
+            {errors.role && (
+              <FieldError id="member-role-error">
+                {errors.role.message}
+              </FieldError>
+            )}
+          </Field>
+          <Field data-invalid={Boolean(errors.organizationId)}>
+            <FieldLabel htmlFor="member-organization">
+              {copy.organization}
+            </FieldLabel>
+            <NativeSelect
+              {...organizationId}
+              id="member-organization"
+              disabled={pending}
+              aria-invalid={Boolean(errors.organizationId)}
+              aria-describedby="member-organization-help member-organization-error"
+            >
+              {organizations.map((organization) => (
+                <NativeSelectOption
+                  key={organization.id}
+                  value={organization.id}
+                >
+                  {organization.name}
+                </NativeSelectOption>
+              ))}
+            </NativeSelect>
+            <FieldDescription id="member-organization-help">
+              {copy.organizationHelp}
+            </FieldDescription>
+            <FieldError id="member-organization-error">
+              {errors.organizationId?.message}
             </FieldError>
-          )}
-        </Field>
+          </Field>
+          <fieldset
+            disabled={pending}
+            className="flex flex-col gap-3"
+            aria-describedby="member-permissions-help member-permissions-error"
+          >
+            <legend className="font-bold">{copy.permissionRestrictions}</legend>
+            <FieldDescription id="member-permissions-help">
+              {copy.permissionHelp}
+            </FieldDescription>
+            <div className="grid max-h-64 gap-3 overflow-y-auto sm:grid-cols-2">
+              {permissions.map((permission) => (
+                <Field key={permission}>
+                  <FieldLabel className="flex items-center gap-2">
+                    <Checkbox
+                      checked={deniedPermissions.value.includes(permission)}
+                      onCheckedChange={(checked) =>
+                        deniedPermissions.onChange(
+                          checked === true
+                            ? [...deniedPermissions.value, permission]
+                            : deniedPermissions.value.filter(
+                                (value) => value !== permission,
+                              ),
+                        )
+                      }
+                      onBlur={deniedPermissions.onBlur}
+                    />
+                    {permission}
+                  </FieldLabel>
+                </Field>
+              ))}
+            </div>
+            <FieldError id="member-permissions-error">
+              {errors.deniedPermissions?.message}
+            </FieldError>
+          </fieldset>
+        </FieldGroup>
         <Button type="submit" disabled={pending}>
           {copy.saveRole}
         </Button>
@@ -542,10 +750,10 @@ export function AdminSkeletonBlock({ variant }: AdminSkeletonProps) {
       role="status"
       aria-busy="true"
       aria-label={label}
-      className="space-y-4 p-4"
+      className="flex flex-col gap-4 p-4"
     >
       <span className="sr-only">{label}</span>
-      <div aria-hidden="true" className="space-y-4">
+      <div aria-hidden="true" className="flex flex-col gap-4">
         <Skeleton className="h-9 w-56 max-w-full" />
         <Skeleton className="h-12 w-full" />
         <Skeleton className="h-48 w-full" />
@@ -560,17 +768,23 @@ export function AdminErrorBlock({ reset }: AdminErrorProps) {
   return (
     <section
       role="alert"
-      className="mx-auto flex min-h-[60vh] max-w-3xl items-center p-4"
+      className="mx-auto flex min-h-[70vh] max-w-3xl items-center p-4 text-center"
     >
       <Card className="w-full">
         <CardHeader>
+          <p
+            aria-hidden
+            className="text-8xl font-black text-muted-foreground/30"
+          >
+            {copy.errorCode}
+          </p>
           <ServerCrash
             aria-hidden
             className="mx-auto size-12 text-destructive"
           />
           <CardTitle>{adminNavigationCopy.errorTitle}</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="flex flex-col gap-4">
           <p>{adminNavigationCopy.errorDescription}</p>
           <div className="flex flex-wrap gap-3">
             <Button type="button" onClick={reset}>
@@ -578,9 +792,7 @@ export function AdminErrorBlock({ reset }: AdminErrorProps) {
               {adminNavigationCopy.tryAgain}
             </Button>
             <Button asChild variant="outline">
-              <Link href="/admin/users">
-                {adminNavigationCopy.returnToAdmin}
-              </Link>
+              <Link href="/admin">{adminNavigationCopy.returnToAdmin}</Link>
             </Button>
           </div>
         </CardContent>

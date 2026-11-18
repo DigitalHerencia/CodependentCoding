@@ -3,17 +3,18 @@ import { beforeEach, expect, test, vi } from "vitest";
 import type { Prisma } from "@/generated/prisma/client";
 import type { AccessContext } from "@/types/authzTypes";
 import {
-  acceptInvitation,
   createInvitation,
   revokeInvitation,
 } from "@/lib/actions/invitationActions";
 import type * as AuthzMode from "@/lib/authz/mode";
-import { addAdminMembership } from "@/lib/actions/adminActions";
+import { SINGLE_ORGANIZATION_ID } from "@/lib/authz/mode";
 
 const state = vi.hoisted(() => ({ tenancy: "single", role: "OWNER" }));
 const tx = vi.hoisted(() => ({
   $executeRaw: vi.fn(async () => 0),
-  $queryRaw: vi.fn(async () => [{ role: state.role, status: "ACTIVE" }]),
+  $queryRaw: vi.fn(async () => [
+    { role: state.role, status: "ACTIVE", deniedPermissions: [] },
+  ]),
   invitation: {
     create: vi.fn(),
     findUnique: vi.fn(),
@@ -21,7 +22,7 @@ const tx = vi.hoisted(() => ({
   },
   auditEvent: { create: vi.fn(async () => ({})) },
 }));
-const organizationId = "00000000-0000-4000-8000-000000000010";
+const organizationId = SINGLE_ORGANIZATION_ID;
 const invitationId = "00000000-0000-4000-8000-000000000021";
 
 vi.mock("@/lib/authz/mode", async (importOriginal) => ({
@@ -72,32 +73,34 @@ beforeEach(() => {
   tx.invitation.updateMany.mockResolvedValue({ count: 1 });
 });
 
-test.each([
-  {
-    name: "create",
-    run: () =>
-      createInvitation({ email: "invitee@example.test", role: "MEMBER" }),
-  },
-  {
-    name: "approve",
-    run: () =>
-      addAdminMembership({ email: "invitee@example.test", role: "MEMBER" }),
-  },
-  { name: "accept", run: () => acceptInvitation({ token: "a".repeat(43) }) },
-  { name: "revoke", run: () => revokeInvitation({ invitationId }) },
-])(
-  "single tenancy forbids invitation $name before invitation persistence",
-  async ({ run }) => {
-    expect(await run()).toMatchObject({
-      ok: false,
-      error: { code: "FORBIDDEN" },
-    });
-    expect(tx.invitation.create).not.toHaveBeenCalled();
-    expect(tx.invitation.findUnique).not.toHaveBeenCalled();
-    expect(tx.invitation.updateMany).not.toHaveBeenCalled();
-    expect(tx.auditEvent.create).not.toHaveBeenCalled();
-  },
-);
+test("single tenancy permits an administrator invitation inside the configured organization", async () => {
+  tx.invitation.create.mockResolvedValueOnce({
+    id: invitationId,
+    email: "invitee@example.test",
+    role: "MEMBER",
+    status: "PENDING",
+    createdAt: new Date(),
+    expiresAt: new Date(Date.now() + 60_000),
+  });
+  const result = await createInvitation({
+    email: "invitee@example.test",
+    role: "MEMBER",
+  });
+  expect(result.ok).toBe(true);
+  expect(tx.invitation.create).toHaveBeenCalledWith(
+    expect.objectContaining({
+      data: expect.objectContaining({ organizationId, role: "MEMBER" }),
+    }),
+  );
+  expect(tx.auditEvent.create).toHaveBeenCalledWith(
+    expect.objectContaining({
+      data: expect.objectContaining({
+        action: "membership.invitation.created",
+        organizationId,
+      }),
+    }),
+  );
+});
 
 test("multi tenancy permits an administrator to revoke only in the active organization", async () => {
   state.tenancy = "multi";

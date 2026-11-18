@@ -5,7 +5,7 @@ import {
   adminListCriteriaSchema,
   adminUserIdSchema,
 } from "@/schemas/adminSchemas";
-import { assertPermission } from "@/lib/authz/permissions";
+import { assertPermission, hasPermission } from "@/lib/authz/permissions";
 import { isPrivilegedRole } from "@/lib/authz/roles";
 import { toAdminMembershipDTO, toAuditEventDTO } from "@/lib/db/dtos/adminDtos";
 import {
@@ -15,14 +15,66 @@ import {
 import { withAuthenticatedRead } from "@/lib/db/tenancy";
 import { installedModules } from "@/lib/modules/registry";
 
-import type { AdminTenantCounter } from "@/types/adminTypes";
+import type {
+  AdminTenantCounter,
+  AdminDashboardView,
+  AdminActivityRecord,
+} from "@/types/adminTypes";
 import { ADMIN_PAGE_SIZE } from "@/lib/constants/adminConstants";
 
 /** Resolve the active organization and reject nonprivileged memberships. */
 export async function canAccessAdmin() {
-  return withAuthenticatedRead(async (_tx, access) =>
-    isPrivilegedRole(access.role),
+  return withAuthenticatedRead(
+    async (_tx, access) =>
+      isPrivilegedRole(access.role) &&
+      hasPermission(access, "admin.membership:read") &&
+      hasPermission(access, "admin.record:read") &&
+      hasPermission(access, "admin.audit-event:read"),
   );
+}
+
+/** Aggregate fourteen UTC days in SQL; no unbounded audit rows cross the database boundary. */
+export async function getAdminDashboardSummary(): Promise<AdminDashboardView> {
+  return withAuthenticatedRead(async (tx, access) => {
+    for (const permission of [
+      "admin.membership:read",
+      "admin.audit-event:read",
+      "base.membership:read",
+    ] as const)
+      assertPermission(access, permission);
+    const today = new Date();
+    today.setUTCHours(0, 0, 0, 0);
+    const start = new Date(today.getTime() - 13 * 86_400_000);
+    const end = new Date(today.getTime() + 86_400_000);
+    const where = { organizationId: access.organizationId };
+    const [members, activeMembers, invitations, daily] = await Promise.all([
+      tx.membership.count({ where }),
+      tx.membership.count({ where: { ...where, status: "ACTIVE" } }),
+      tx.invitation.count({
+        where: { ...where, status: "PENDING", expiresAt: { gt: new Date() } },
+      }),
+      tx.$queryRaw<AdminActivityRecord[]>`
+        SELECT to_char("createdAt" AT TIME ZONE 'UTC', 'YYYY-MM-DD') AS "date", COUNT(*)::int AS "count"
+        FROM "AuditEvent"
+        WHERE "organizationId" = ${access.organizationId}::uuid AND "createdAt" >= ${start} AND "createdAt" < ${end}
+        GROUP BY 1 ORDER BY 1
+      `,
+    ]);
+    const counts = new Map(daily.map((row) => [row.date, row.count]));
+    const activity = Array.from({ length: 14 }, (_, day) => {
+      const date = new Date(start.getTime() + day * 86_400_000)
+        .toISOString()
+        .slice(0, 10);
+      return { date, count: counts.get(date) ?? 0 };
+    });
+    return {
+      members,
+      activeMembers,
+      invitations,
+      events: activity.reduce((total, row) => total + row.count, 0),
+      activity,
+    };
+  });
 }
 
 /** Read one authorized audit page under tenant RLS. */

@@ -48,7 +48,7 @@ test("admin recovery forwards Next reset without displaying private errors or 40
   expect(element.props.reset).toBe(reset);
   const html = renderToStaticMarkup(element);
   expect(html).toContain("Try again");
-  expect(html).toContain('href="/admin/users"');
+  expect(html).toContain('href="/admin"');
   expect(html).not.toContain("private fixture");
   expect(html).not.toContain("404");
 });

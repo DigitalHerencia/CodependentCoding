@@ -9,7 +9,7 @@ import { setRlsContext } from "@/lib/db/rls";
 import {
   acceptInvitationTx,
   hashInvitationToken,
-} from "@/lib/db/transactions/invitationTx";
+} from "@/lib/db/selects/invitationTx";
 
 config({ path: ".env.local", quiet: true });
 

@@ -1,7 +1,7 @@
 import "server-only";
-import type { InvitationDTO } from "@/types/invitationTypes";
-import type { InvitationRecord } from "@/lib/db/selects/invitationSelects";
+import type { InvitationDTO, InvitationRecord } from "@/types/invitationTypes";
 
+/** Serialize public invitation fields without exposing token hashes. */
 export function toInvitationDTO(record: InvitationRecord): InvitationDTO {
   return {
     id: record.id,

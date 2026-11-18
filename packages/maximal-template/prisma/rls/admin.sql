@@ -1,3 +1,5 @@
+-- Membership role, organization transfer and invitation administration append here atomically.
+-- Per-member permission restrictions are enforced by lib/authz before reads and writes.
 -- Admin-owned audit RLS. Organization context is set transaction-locally by tenancy.
 -- Insert-only audit trail: no UPDATE or DELETE policy, and the grants are
 -- revoked in identity.sql before these policies are installed.

@@ -2,15 +2,24 @@
   "$schema": "codependent-coding/execution/handoff/v1",
   "updated": "2026-11-18T20:19:44.991910+00:00",
   "format": "One current package; history is in progress.json, decisions.json and git.",
-  "status": "merged-verified",
+  "status": "local-checks-passed",
   "milestone": "M-T",
-  "current_issue": null,
+  "current_issue": 378,
   "next_issue": null,
-  "queue": ["CC-050", "CC-052", "CC-053", "CC-063"],
-  "branch": "main",
-  "active_package": null,
+  "queue": [
+    "CC-050",
+    "CC-052",
+    "CC-053",
+    "CC-063"
+  ],
+  "branch": "feat/378-admin-dashboard",
+  "active_package": {
+    "issue": 378,
+    "scope": "Admin owner-prompt implementation",
+    "verification": "format:write, lint:fix, typegen and typecheck passed; PR/CI next."
+  },
   "source_commit": "126b2046c7b776eb4586dd09d326e3d45202b2e5",
-  "completion": "PR #377 merged after green final-head CI; Issue #376 closed and Project item Done. No active implementation package. Execution records finalized after merge; main synchronization follows the metadata commit.",
+  "completion": "Implementation ready for permitted checks, PR, CI and authorized merge.",
   "in_flight": [
     "CC-050 token consolidation implemented; focused static checks passed. Affected-site CI and owner browser contrast/reduced-motion verification pending. CC-049 merged in #351; main synced and branch deleted.",
     "Homepage PR #349 has passing CI and ready preview; owner desktop/mobile verification remains pending.",
@@ -29,8 +38,9 @@
     "No stash remains; previous source recovery snapshots are archive tags, not work to replay."
   ],
   "risks": [
-    "No tests, builds, browser/runtime checks, database migrations or seeds executed per owner limits.",
-    "Installed BoldKit skeleton verified; generic error/loading endpoints returned no registry item; existing BoldKit card/button error presentation used."
+    "Source migration must be applied by owner before runtime uses deniedPermissions. No database job run.",
+    "No tests/builds/servers/runtime checks under owner limits.",
+    "Unrelated pre-existing PWA edits remain local and will not be committed."
   ],
   "do_not": [
     "Start any dev server or run full suites",
@@ -43,7 +53,9 @@
     "package": "template-ci-validator-fixes",
     "evidence": "See template-ci-validator-fixes in progress.json and DEC-126.",
     "delivery": "Not pushed; owner pushes.",
-    "NOT_RUN": ["Build, tests, push, GitHub CI run."]
+    "NOT_RUN": [
+      "Build, tests, push, GitHub CI run."
+    ]
   },
   "git_maintenance_2026_11_17": {
     "date": "2026-11-17",
@@ -65,7 +77,11 @@
         "result": "FAIL exit 1 before rebase: missing ui/utils imports and incompatible component props; 482 diagnostic output lines."
       }
     ],
-    "not_run": ["tests", "builds", "runtime/browser checks"],
+    "not_run": [
+      "tests",
+      "builds",
+      "runtime/browser checks"
+    ],
     "delivery": "Push snapshot branch; retain failing changes outside main. PRs #370 and #363 verified merged. Remote has only main before snapshot push."
   },
   "ci_fix_pr_371": {
@@ -94,7 +110,11 @@
       }
     ],
     "owner_authorization": "Owner approved dependency addition, commit, merge, sync and branch cleanup.",
-    "not_run": ["tests", "local builds", "browser/runtime checks"]
+    "not_run": [
+      "tests",
+      "local builds",
+      "browser/runtime checks"
+    ]
   },
   "next_actions": [],
   "verification_summary": [

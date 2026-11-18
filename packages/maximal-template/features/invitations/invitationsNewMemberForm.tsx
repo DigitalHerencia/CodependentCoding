@@ -1,41 +1,41 @@
 "use client";
 
 /** Invitations New Member Form contracts and composition for the owning application slice. */
-import {
-  InvitationCreateTemplate,
-  InvitationEmailFieldTemplate,
-  InvitationRoleFieldTemplate,
-} from "@/components/templates/invitation-templates";
-import { createInvitationWorkflow } from "@/lib/workflows/invitationClientWorkflows";
-import { defaultInvitedRole } from "@/lib/authz/roles";
+import { InvitationCreateTemplate } from "@/components/templates/invitation-templates";
+import { createInvitationWorkflow } from "@/lib/workflows/invitationWorkflows";
 import { createInvitationSchema } from "@/schemas/invitationSchemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { Controller, useForm } from "react-hook-form";
-import type { z } from "zod";
+import { useForm } from "react-hook-form";
+import type {
+  InvitationCreateInput,
+  InvitationCreateValues,
+} from "@/types/invitationTypes";
 
+/** Orchestrate invitation form validation and its authenticated creation workflow. */
 export function InvitationsNewMemberForm() {
   const router = useRouter();
   const [failure, setFailure] = useState<"failed">();
   const [link, setLink] = useState("");
   const {
-    control,
+    register,
     handleSubmit,
     setError,
     formState: { errors, isSubmitting },
-  } = useForm<
-    z.input<typeof createInvitationSchema>,
-    unknown,
-    z.output<typeof createInvitationSchema>
-  >({
+  } = useForm<InvitationCreateInput, unknown, InvitationCreateValues>({
     resolver: zodResolver(createInvitationSchema),
-    defaultValues: { email: "", role: defaultInvitedRole },
+    defaultValues: { email: "", role: "MEMBER" },
   });
 
   return (
     <InvitationCreateTemplate
       busy={isSubmitting}
+      emailField={{ ...register("email"), id: "new-invitation-email" }}
+      roleField={{ ...register("role"), id: "new-invitation-role" }}
+      roles={createInvitationSchema.shape.role.options}
+      emailError={errors.email?.message}
+      roleError={errors.role?.message}
       failure={failure}
       error={errors.root?.message}
       link={link}
@@ -62,27 +62,6 @@ export function InvitationsNewMemberForm() {
         setLink(`${window.location.origin}${result.data.path}`);
         router.refresh();
       })}
-    >
-      <Controller
-        control={control}
-        name="email"
-        render={({ field, fieldState }) => (
-          <InvitationEmailFieldTemplate
-            {...field}
-            error={fieldState.error?.message}
-          />
-        )}
-      />
-      <Controller
-        control={control}
-        name="role"
-        render={({ field, fieldState }) => (
-          <InvitationRoleFieldTemplate
-            {...field}
-            error={fieldState.error?.message}
-          />
-        )}
-      />
-    </InvitationCreateTemplate>
+    />
   );
 }

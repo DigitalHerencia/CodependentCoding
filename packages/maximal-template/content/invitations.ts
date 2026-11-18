@@ -9,9 +9,15 @@ export const invitationContent = {
   submit: "Create invitation",
   separator: "·",
   noInvitations: "No pending invitations.",
-  revokeFailed: "The invitation could not be revoked.",
+  revokeFailed: "The invitation could not be canceled.",
   expires: "· expires",
-  revoke: "Revoke",
+  revoke: "Cancel invitation",
+  edit: "Edit invitation",
+  editTitle: "Edit invitation",
+  editInstructions:
+    "Update the recipient and role. The existing invitation link and expiry are preserved.",
+  save: "Save invitation",
+  cancelEdit: "Cancel edit",
   invalid:
     "This invitation is not valid for your account. It may have expired, been revoked, or been sent to a different email.",
   joinTitle: "Join the workspace",

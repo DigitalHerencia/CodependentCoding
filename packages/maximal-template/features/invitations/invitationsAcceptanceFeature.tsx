@@ -2,11 +2,12 @@
 import { InvitationsEditAcceptanceForm } from "@/features/invitations/invitationsEditAcceptanceForm";
 import { loadInvitationAcceptanceWorkflow } from "@/lib/workflows/authWorkflows";
 
+import type { InvitationAcceptanceRouteProps } from "@/types/invitationTypes";
+
+/** Resolve the invitation acceptance parameters before rendering its form. */
 export async function InvitationsAcceptanceFeature({
   params,
-}: {
-  params: Promise<{ token: string }>;
-}) {
+}: InvitationAcceptanceRouteProps) {
   const { token } = await loadInvitationAcceptanceWorkflow(params);
   return <InvitationsEditAcceptanceForm token={token} />;
 }

@@ -4,18 +4,15 @@ import { adminAssignableRoles } from "@/lib/constants/adminConstants";
 /** Roles assignable without transferring ownership. */
 export const adminRoleSchema = z.enum(adminAssignableRoles);
 /** Role update scoped to a persistent membership. */
-export const changeAdminMembershipSchema = z.object({
+export const changeAdminMembershipSchema = z.strictObject({
   membershipId: z.uuid(),
   role: adminRoleSchema,
+  organizationId: z.uuid(),
+  deniedPermissions: z.array(z.string().min(1).max(200)).max(1000),
 });
 /** Membership state update; the server chooses the desired state. */
-export const updateAdminMembershipStatusSchema = z.object({
+export const updateAdminMembershipStatusSchema = z.strictObject({
   membershipId: z.uuid(),
-});
-/** Preserve the existing verified-email workspace approval contract. */
-export const addAdminMembershipSchema = z.object({
-  email: z.string().trim().toLowerCase().max(254).pipe(z.email()),
-  role: adminRoleSchema,
 });
 /** Normalize URL search criteria and bound offset pagination. */
 export const adminListCriteriaSchema = z.object({
