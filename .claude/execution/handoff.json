@@ -1,20 +1,16 @@
 {
   "$schema": "codependent-coding/execution/handoff/v1",
-  "updated": "2026-11-18T19:05:26.956712+00:00",
+  "updated": "2026-11-18T19:12:12.205445+00:00",
   "format": "One current package; history is in progress.json, decisions.json and git.",
-  "status": "checks-passed-pending-pr",
+  "status": "merged-verified",
   "milestone": "M-T",
-  "current_issue": 374,
-  "next_issue": 374,
+  "current_issue": null,
+  "next_issue": null,
   "queue": ["CC-050", "CC-052", "CC-053", "CC-063"],
-  "branch": "refactor/374-admin-domain",
-  "active_package": {
-    "issue": 374,
-    "scope": "Maximal Template admin conformance; owner prompt canonical; CRM read-only",
-    "stage": "Permitted checks passed; PR/CI/merge pending"
-  },
-  "source_commit": "59c256766681883d7d1f9694b707c177b2e40e09",
-  "completion": null,
+  "branch": "main",
+  "active_package": null,
+  "source_commit": "f513865b392b54525d96eeeaefcc2f85487bb87a",
+  "completion": "PR #375 merged after green final-head CI; Issue #374 Done; task branch deleted remotely and locally; main synchronized. No active implementation package.",
   "in_flight": [
     "CC-050 token consolidation implemented; focused static checks passed. Affected-site CI and owner browser contrast/reduced-motion verification pending. CC-049 merged in #351; main synced and branch deleted.",
     "Homepage PR #349 has passing CI and ready preview; owner desktop/mobile verification remains pending.",
@@ -33,8 +29,8 @@
     "No stash remains; previous source recovery snapshots are archive tags, not work to replay."
   ],
   "risks": [
-    "No tests, builds, browser/runtime checks, migrations or seeds executed per owner resource limits.",
-    "BoldKit auth/onboarding/error registry endpoints unavailable; existing presentation adapted using available registry primitives."
+    "No tests, builds, browser/runtime checks, database migrations or seeds executed per owner limits.",
+    "Installed BoldKit skeleton verified; generic error/loading endpoints returned no registry item; existing BoldKit card/button error presentation used."
   ],
   "do_not": [
     "Start any dev server or run full suites",

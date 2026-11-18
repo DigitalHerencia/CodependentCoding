@@ -4081,11 +4081,11 @@
   "admin-domain-conformance": {
     "issue": 374,
     "issue_url": "https://github.com/DigitalHerencia/CodependentCoding/issues/374",
-    "branch": "refactor/374-admin-domain",
-    "status": "checks-passed-pending-pr",
+    "branch": "main",
+    "status": "merged-verified",
     "source_of_truth": "Owner prompt 2026-11-18; CRM read-only; prior auth delivery in #373 retained.",
     "project_item": "PVTI_lAHOCo4iVM4BfqnzzhJ7Rxo",
-    "project_status": "In progress",
+    "project_status": "Done",
     "verification": [
       {
         "command": "pnpm --dir packages/maximal-template run format:write --ignore-unknown <affected files>",
@@ -4106,6 +4106,20 @@
       {
         "command": "pnpm --dir packages/maximal-template run typecheck",
         "result": "PASS: final TypeScript source after unused-contract cleanup."
+      },
+      {
+        "command": "gh pr view 375 --json headRefOid,statusCheckRollup; gh run view 44377530941 --json status,conclusion,jobs",
+        "result": "PASS: Changed-file checks (format/lint, generate types, typecheck), Vercel and Preview Comments all successful on the final PR head.",
+        "ci_run": 44377530941,
+        "verified_commit": "04e83715a79f7753eb32a95f99df221e85cd8020"
+      },
+      {
+        "command": "gh pr merge 375 --squash --delete-branch --match-head-commit 04e83715a79f7753eb32a95f99df221e85cd8020; gh pr view 375; gh issue view 374; gh project item-edit ... Done",
+        "result": "MERGED as f513865b392b54525d96eeeaefcc2f85487bb87a; Issue #374 CLOSED; Project item Done."
+      },
+      {
+        "command": "git fetch origin --prune; git switch main; git merge --ff-only origin/main; git diff --stat 04e83715a79f7753eb32a95f99df221e85cd8020 f513865b392b54525d96eeeaefcc2f85487bb87a; git branch -D refactor/374-admin-domain; git status --short --branch",
+        "result": "PASS: merged tree identical to the checked PR head; local main fast-forwarded; remote/local task branches removed; synchronized main."
       }
     ],
     "not_run": [
@@ -4132,10 +4146,7 @@
         "url": "https://react-hook-form.com/docs/usecontroller"
       }
     ],
-    "remaining": [
-      "PR CI and merge",
-      "Branch cleanup and repository synchronization"
-    ],
+    "remaining": [],
     "prior_failures_resolved": [
       "PowerShell execution policy: invoked installed Corepack JavaScript entry without changing policy.",
       "Existing test-source import annotation rejected by lint; converted to type-only namespace import.",
@@ -4147,6 +4158,11 @@
       "Audit model and policies moved without database DDL or a persistence-contract change.",
       "BoldKit skeleton registry source verified against installed primitive; generic error/loading endpoints returned no registry item. Existing BoldKit card/button error presentation retained.",
       "Optional schema-removal checker reuses generator audit-retention configuration; validator not executed per owner limits."
-    ]
+    ],
+    "pr": 375,
+    "pr_url": "https://github.com/DigitalHerencia/CodependentCoding/pull/375",
+    "checked_source_commit": "04e83715a79f7753eb32a95f99df221e85cd8020",
+    "merge_commit": "f513865b392b54525d96eeeaefcc2f85487bb87a",
+    "completed_at": "2026-11-18T19:12:12.205445+00:00"
   }
 }

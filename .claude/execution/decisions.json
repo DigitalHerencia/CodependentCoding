@@ -1377,6 +1377,13 @@
       "status": "accepted",
       "title": "Admin owner-prompt conformance and shared append-only audit ownership",
       "decision": "Owner prompt supersedes existing specifications. CRM stays read-only. One server-function admin workflow module orchestrates authenticated actions/fetchers. Blocks own copy/primitives; templates compose blocks; forms/features orchestrate. Skeletons directly import skeleton blocks. Shared audit schema/RLS/seed belongs to admin and is retained by generation even when admin presentation is omitted, because all domains append audit records. Keep existing access approval; no new invitations or profile UI. Retire unused bulk action and preserve self/owner/tenant safeguards. Only format:write, lint:fix, typegen and typecheck; no tests/builds/servers/database execution. Delivery authorized through PR, CI, merge and branch cleanup."
+    },
+    {
+      "id": "ADMIN-374-MERGED-2026-11-18",
+      "date": "2026-11-18",
+      "status": "accepted",
+      "title": "Verified admin conformance delivery merged",
+      "decision": "Owner-authorized PR #375 squash-merged as f513865b392b54525d96eeeaefcc2f85487bb87a after final head 04e83715a79f7753eb32a95f99df221e85cd8020 passed GitHub Changed-file checks (run 44377530941), Vercel and Preview Comments. Issue #374 closed and Project item Done; remote/local task branches deleted and main synchronized. CRM changed-file count zero. No tests, builds, dev servers, browser checks, migrations or seeds executed. Audit schema/policies moved without database contract changes; append-only seed ownership and optional-generator retention recorded."
     }
   ]
 }
