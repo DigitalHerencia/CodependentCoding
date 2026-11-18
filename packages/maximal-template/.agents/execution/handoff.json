@@ -7,15 +7,11 @@
     ".agents/contracts/validation.yaml"
   ],
   "spec_catalog": "context/specs/catalog.json",
-  "active_spec_id": "CC-080",
-  "next_spec_id": "CC-080",
-  "completed_spec_ids": ["TYPESCRIPTION-T2", "TYPESCRIPTION-T3"],
+  "active_spec_id": null,
+  "next_spec_id": null,
+  "completed_spec_ids": ["TYPESCRIPTION-T2", "TYPESCRIPTION-T3", "CC-080"],
   "blocked_spec_ids": [],
-  "next_actions": [
-    "Finish permitted source checks",
-    "Open Issue #372 linked PR",
-    "Merge green CI; clean task branch and sync main"
-  ],
+  "next_actions": [],
   "risks": [
     "No tests, builds, browser/runtime checks, migrations or seeds executed per owner resource limits.",
     "BoldKit auth/onboarding/error registry endpoints unavailable; existing presentation adapted using available registry primitives."
@@ -40,15 +36,27 @@
     {
       "command": "pnpm --dir packages/maximal-template run typecheck",
       "result": "PASS on final source after strict OTP/provider contracts, import moves and selector extraction."
+    },
+    {
+      "command": "gh pr view 373 --json headRefOid,statusCheckRollup,mergeable",
+      "result": "PASS: Changed-file checks, Vercel and Vercel Preview Comments succeeded on final head c39f8a7ff125aa670bc692e1d10324206aa77710",
+      "ci_run": 44270094130,
+      "verified_commit": "c39f8a7ff125aa670bc692e1d10324206aa77710"
+    },
+    {
+      "command": "gh pr merge 373 --squash --delete-branch --match-head-commit c39f8a7ff125aa670bc692e1d10324206aa77710; gh pr view 373; git status --short --branch; git branch -vv",
+      "result": "MERGED as 59ad92417dd5681a6fa831c4ba8d399cbc8f6277; task branch removed; local main synchronized with origin/main."
     }
   ],
-  "updated_at": "2026-11-17T19:13:59.516Z",
+  "updated_at": "2026-11-18T08:50:17.096543+00:00",
   "delivery": {
     "issue_number": 372,
     "pr_number": 373,
     "pr_url": "https://github.com/DigitalHerencia/CodependentCoding/pull/373",
-    "branch": "refactor/372-auth-authz-profile-modal",
-    "status": "in-review"
+    "branch": "main",
+    "status": "merged-verified",
+    "merge_commit": "59ad92417dd5681a6fa831c4ba8d399cbc8f6277",
+    "verified_head": "c39f8a7ff125aa670bc692e1d10324206aa77710"
   },
   "changed_file_inventory": [],
   "git_maintenance_2026_11_17": {
@@ -102,38 +110,8 @@
     "owner_authorization": "Owner approved dependency addition, commit, merge, sync and branch cleanup.",
     "not_run": ["tests", "local builds", "browser/runtime checks"]
   },
-  "auth_route_slices": {
-    "issue": 372,
-    "spec": "CC-080",
-    "branch": "refactor/372-auth-authz-profile-modal",
-    "status": "in-review",
-    "remaining": ["CI", "merge", "branch cleanup and sync"],
-    "verification": [
-      {
-        "command": "pnpm --dir packages/maximal-template run format:write --ignore-unknown <affected files>",
-        "result": "PASS: 169 affected files formatted; subsequent affected source/root-package formatting passed."
-      },
-      {
-        "command": "pnpm --dir packages/maximal-template run lint:fix <affected template files>",
-        "result": "PASS: 149 affected source files; subsequent affected selector/transaction/schema files passed with zero warnings."
-      },
-      {
-        "command": "pnpm run lint:fix packages/generator/src/compose.mjs packages/loaded-vibes/scripts/rls-sql.mjs",
-        "result": "PASS: zero warnings. A prior template-context attempt ignored sibling files; this root-context run checks them."
-      },
-      {
-        "command": "pnpm --dir packages/maximal-template run typegen",
-        "result": "PASS: Prisma Client 7.10.1 and Next route types."
-      },
-      {
-        "command": "pnpm --dir packages/maximal-template run typecheck",
-        "result": "PASS on final source after strict OTP/provider contracts, import moves and selector extraction."
-      }
-    ],
-    "pr": 373
-  },
-  "status": "in-review",
-  "branch": "refactor/372-auth-authz-profile-modal",
-  "completion": "Auth/authz changes implemented and permitted checks passed; PR #373 awaiting final CI and merge.",
+  "status": "merged-verified",
+  "branch": "main",
+  "completion": "PR #373 merged after green final-head CI; Issue #372 done; task branch deleted; main synchronized. No active implementation package.",
   "milestone": "M-T"
 }

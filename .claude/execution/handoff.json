@@ -2,15 +2,15 @@
   "$schema": "codependent-coding/execution/handoff/v1",
   "updated": "2026-11-18T03:56:12.446251+00:00",
   "format": "One current package; history is in progress.json, decisions.json and git.",
-  "status": "in-review",
+  "status": "merged-verified",
   "milestone": "M-T",
-  "current_issue": "CC-080",
-  "next_issue": "CC-080",
+  "current_issue": null,
+  "next_issue": null,
   "queue": ["CC-050", "CC-052", "CC-053", "CC-063"],
-  "branch": "refactor/372-auth-authz-profile-modal",
-  "active_package": "context/specs/issues/CC-080-auth-route-slices.md",
+  "branch": "main",
+  "active_package": null,
   "source_commit": "59c256766681883d7d1f9694b707c177b2e40e09",
-  "completion": "Auth/authz changes implemented and permitted checks passed; PR #373 awaiting final CI and merge.",
+  "completion": "PR #373 merged after green final-head CI; Issue #372 done; task branch deleted; main synchronized. No active implementation package.",
   "in_flight": [
     "CC-050 token consolidation implemented; focused static checks passed. Affected-site CI and owner browser contrast/reduced-motion verification pending. CC-049 merged in #351; main synced and branch deleted.",
     "Homepage PR #349 has passing CI and ready preview; owner desktop/mobile verification remains pending.",
@@ -96,41 +96,7 @@
     "owner_authorization": "Owner approved dependency addition, commit, merge, sync and branch cleanup.",
     "not_run": ["tests", "local builds", "browser/runtime checks"]
   },
-  "auth_route_slices": {
-    "issue": 372,
-    "spec": "CC-080",
-    "branch": "refactor/372-auth-authz-profile-modal",
-    "status": "in-review",
-    "remaining": ["CI", "merge", "branch cleanup and sync"],
-    "verification": [
-      {
-        "command": "pnpm --dir packages/maximal-template run format:write --ignore-unknown <affected files>",
-        "result": "PASS: 169 affected files formatted; subsequent affected source/root-package formatting passed."
-      },
-      {
-        "command": "pnpm --dir packages/maximal-template run lint:fix <affected template files>",
-        "result": "PASS: 149 affected source files; subsequent affected selector/transaction/schema files passed with zero warnings."
-      },
-      {
-        "command": "pnpm run lint:fix packages/generator/src/compose.mjs packages/loaded-vibes/scripts/rls-sql.mjs",
-        "result": "PASS: zero warnings. A prior template-context attempt ignored sibling files; this root-context run checks them."
-      },
-      {
-        "command": "pnpm --dir packages/maximal-template run typegen",
-        "result": "PASS: Prisma Client 7.10.1 and Next route types."
-      },
-      {
-        "command": "pnpm --dir packages/maximal-template run typecheck",
-        "result": "PASS on final source after strict OTP/provider contracts, import moves and selector extraction."
-      }
-    ],
-    "pr": 373
-  },
-  "next_actions": [
-    "Finish permitted source checks",
-    "Open Issue #372 linked PR",
-    "Merge green CI; clean task branch and sync main"
-  ],
+  "next_actions": [],
   "verification_summary": [
     {
       "command": "pnpm --dir packages/maximal-template run format:write --ignore-unknown <affected files>",
@@ -151,13 +117,26 @@
     {
       "command": "pnpm --dir packages/maximal-template run typecheck",
       "result": "PASS on final source after strict OTP/provider contracts, import moves and selector extraction."
+    },
+    {
+      "command": "gh pr view 373 --json headRefOid,statusCheckRollup,mergeable",
+      "result": "PASS: Changed-file checks, Vercel and Vercel Preview Comments succeeded on final head c39f8a7ff125aa670bc692e1d10324206aa77710",
+      "ci_run": 44270094130,
+      "verified_commit": "c39f8a7ff125aa670bc692e1d10324206aa77710"
+    },
+    {
+      "command": "gh pr merge 373 --squash --delete-branch --match-head-commit c39f8a7ff125aa670bc692e1d10324206aa77710; gh pr view 373; git status --short --branch; git branch -vv",
+      "result": "MERGED as 59ad92417dd5681a6fa831c4ba8d399cbc8f6277; task branch removed; local main synchronized with origin/main."
     }
   ],
   "delivery": {
     "issue_number": 372,
     "pr_number": 373,
     "pr_url": "https://github.com/DigitalHerencia/CodependentCoding/pull/373",
-    "branch": "refactor/372-auth-authz-profile-modal",
-    "status": "in-review"
-  }
+    "branch": "main",
+    "status": "merged-verified",
+    "merge_commit": "59ad92417dd5681a6fa831c4ba8d399cbc8f6277",
+    "verified_head": "c39f8a7ff125aa670bc692e1d10324206aa77710"
+  },
+  "updated_at": "2026-11-18T08:50:17.096543+00:00"
 }

@@ -4014,8 +4014,8 @@
   "auth_route_slices": {
     "issue": 372,
     "spec": "CC-080",
-    "branch": "refactor/372-auth-authz-profile-modal",
-    "status": "in-review",
+    "branch": "main",
+    "status": "merged-verified",
     "source_of_truth": "Owner prompt 2026-11-18",
     "verification": [
       {
@@ -4037,6 +4037,16 @@
       {
         "command": "pnpm --dir packages/maximal-template run typecheck",
         "result": "PASS on final source after strict OTP/provider contracts, import moves and selector extraction."
+      },
+      {
+        "command": "gh pr view 373 --json headRefOid,statusCheckRollup,mergeable",
+        "result": "PASS: Changed-file checks, Vercel and Vercel Preview Comments succeeded on final head c39f8a7ff125aa670bc692e1d10324206aa77710",
+        "ci_run": 44270094130,
+        "verified_commit": "c39f8a7ff125aa670bc692e1d10324206aa77710"
+      },
+      {
+        "command": "gh pr merge 373 --squash --delete-branch --match-head-commit c39f8a7ff125aa670bc692e1d10324206aa77710; gh pr view 373; git status --short --branch; git branch -vv",
+        "result": "MERGED as 59ad92417dd5681a6fa831c4ba8d399cbc8f6277; task branch removed; local main synchronized with origin/main."
       }
     ],
     "not_run": [
@@ -4061,8 +4071,11 @@
     ],
     "pr": 373,
     "pr_url": "https://github.com/DigitalHerencia/CodependentCoding/pull/373",
-    "checked_source_commit": "dfdf0f0d8b6f945421665d70fbd2667f9c68ad0f",
+    "checked_source_commit": "c39f8a7ff125aa670bc692e1d10324206aa77710",
     "source_review": "Existing browser expectations aligned with retired routes/modal contracts without executing tests.",
-    "project_status": "In review"
+    "project_status": "Done",
+    "merge_commit": "59ad92417dd5681a6fa831c4ba8d399cbc8f6277",
+    "completed_at": "2026-11-18T08:50:17.096543+00:00",
+    "remaining": []
   }
 }
