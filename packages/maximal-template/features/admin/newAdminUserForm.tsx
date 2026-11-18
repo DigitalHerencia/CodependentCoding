@@ -1,112 +1,53 @@
 "use client";
-
-import { adminPresentationCopy, adminRemainingCopy } from "@/content/admin";
-import {
-  NativeSelect,
-  NativeSelectOption,
-} from "@/components/ui/native-select";
-import { Button } from "@/components/ui/button";
-import { Field, FieldError, FieldLabel } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
-import { formResultCopy } from "@/content/application";
-import { addAdminMembership } from "@/lib/actions/adminActions";
-import { invitableRoles } from "@/lib/authz/roles";
-import { addAdminMembershipSchema } from "@/schemas/adminSchemas";
-import { zodResolver } from "@hookform/resolvers/zod";
+/** RHF owns field state and orchestrates the new-access template and server workflow.
+ * @see https://react-hook-form.com/docs/usecontroller
+ */
 import { useState } from "react";
-import { Controller, useForm } from "react-hook-form";
-import type { z } from "zod";
-
+import { useForm, useController } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { AdminNewUserTemplate } from "@/components/templates/admin-templates";
+import { addAdminMembershipWorkflow } from "@/lib/workflows/adminWorkflows";
+import {
+  addAdminMembershipSchema,
+  adminRoleSchema,
+} from "@/schemas/adminSchemas";
+import type { AddAdminMembershipCommand } from "@/types/adminTypes";
+/** Preserve existing verified-email approvals without provider or tenancy imports. */
 export function NewAdminUserForm() {
   const [approved, setApproved] = useState(false);
-  const form = useForm<z.input<typeof addAdminMembershipSchema>>({
+  const form = useForm<AddAdminMembershipCommand>({
     resolver: zodResolver(addAdminMembershipSchema),
     defaultValues: { email: "", role: "MEMBER" },
   });
+  const email = useController({ name: "email", control: form.control });
+  const role = useController({ name: "role", control: form.control });
   return (
-    <form
-      className="mx-auto max-w-3xl space-y-5 surface-card p-5"
+    <AdminNewUserTemplate
+      email={email.field}
+      role={role.field}
+      roles={adminRoleSchema.options}
+      errors={form.formState.errors}
+      pending={form.formState.isSubmitting}
+      approved={approved}
       onSubmit={form.handleSubmit(async (values) => {
         setApproved(false);
-        let result;
+        form.clearErrors("root");
         try {
-          result = await addAdminMembership(values);
+          const result = await addAdminMembershipWorkflow(values);
+          if (result.ok) {
+            form.reset();
+            setApproved(true);
+            return;
+          }
+          for (const name of ["email", "role"] as const) {
+            const message = result.error.fieldErrors?.[name]?.[0];
+            if (message) form.setError(name, { message });
+          }
+          form.setError("root", { message: result.error.message });
         } catch {
-          form.setError("root", { message: formResultCopy.failed });
-          return;
+          form.setError("root", { type: "server" });
         }
-        if (result.ok) {
-          form.reset();
-          setApproved(true);
-          return;
-        }
-        for (const name of ["email", "role"] as const) {
-          const message = result.error.fieldErrors?.[name]?.[0];
-          if (message) form.setError(name, { message });
-        }
-        form.setError("root", { message: result.error.message });
       })}
-      noValidate
-    >
-      <h1 className="type-title">
-        {adminPresentationCopy.approveWorkspaceAccess}
-      </h1>
-      <p>{adminPresentationCopy.assignARoleInThisWorkspaceTheUserCan}</p>
-      <Controller
-        name="email"
-        control={form.control}
-        render={({ field, fieldState }) => (
-          <Field data-invalid={fieldState.invalid}>
-            <FieldLabel htmlFor="member-email">
-              {adminRemainingCopy.registeredEmail}
-            </FieldLabel>
-            <Input
-              {...field}
-              id="member-email"
-              type="email"
-              aria-invalid={fieldState.invalid}
-            />
-            {fieldState.error && (
-              <FieldError>{fieldState.error.message}</FieldError>
-            )}
-          </Field>
-        )}
-      />
-      <Controller
-        name="role"
-        control={form.control}
-        render={({ field, fieldState }) => (
-          <Field data-invalid={fieldState.invalid}>
-            <FieldLabel htmlFor="new-member-role">
-              {adminRemainingCopy.applicationRole}
-            </FieldLabel>
-            <NativeSelect
-              {...field}
-              id="new-member-role"
-              className="control-field"
-              aria-invalid={fieldState.invalid}
-            >
-              {invitableRoles.map((role) => (
-                <NativeSelectOption key={role}>{role}</NativeSelectOption>
-              ))}
-            </NativeSelect>
-            {fieldState.error && (
-              <FieldError>{fieldState.error.message}</FieldError>
-            )}
-          </Field>
-        )}
-      />
-      {form.formState.errors.root && (
-        <FieldError>{form.formState.errors.root.message}</FieldError>
-      )}
-      {approved && (
-        <p role="status">
-          {adminPresentationCopy.accessApprovedTheUserCanCheckTheirAccessNow}
-        </p>
-      )}
-      <Button type="submit" disabled={form.formState.isSubmitting}>
-        {adminPresentationCopy.approveAccess}
-      </Button>
-    </form>
+    />
   );
 }

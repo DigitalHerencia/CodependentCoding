@@ -167,5 +167,65 @@ export default defineConfig([
       authBlockImports,
     ]),
   },
+  {
+    name: "codependent/admin-route-boundaries",
+    files: [
+      "app/(admin)/**/*.{ts,tsx}",
+      "components/shells/admin-shell.tsx",
+      "components/nav/admin-*.{ts,tsx}",
+    ],
+    ignores: ["app/(admin)/**/loading.tsx", "app/(admin)/**/error.tsx"],
+    rules: authImportRules([
+      authApplicationImports,
+      ...authBlockOnlyImports,
+      authBlockImports,
+      authTemplateImports,
+      authWorkflowImports,
+    ]),
+  },
+  {
+    name: "codependent/admin-loading-error-boundaries",
+    files: [
+      "app/(admin)/**/loading.tsx",
+      "app/(admin)/**/error.tsx",
+      "features/admin/*-skeleton.tsx",
+    ],
+    rules: authImportRules([
+      authApplicationImports,
+      ...authBlockOnlyImports,
+      authTemplateImports,
+      authWorkflowImports,
+    ]),
+  },
+  {
+    name: "codependent/admin-block-boundaries",
+    files: ["components/blocks/admin-blocks.tsx"],
+    rules: authImportRules([
+      authApplicationImports,
+      authBlockImports,
+      authTemplateImports,
+      authWorkflowImports,
+    ]),
+  },
+  {
+    name: "codependent/admin-template-boundaries",
+    files: ["components/templates/admin-templates.tsx"],
+    rules: authImportRules([
+      authApplicationImports,
+      ...authBlockOnlyImports,
+      authTemplateImports,
+      authWorkflowImports,
+    ]),
+  },
+  {
+    name: "codependent/admin-feature-boundaries",
+    files: ["features/admin/**/*.{ts,tsx}"],
+    ignores: ["features/admin/*-skeleton.tsx"],
+    rules: authImportRules([
+      authApplicationImports,
+      ...authBlockOnlyImports,
+      authBlockImports,
+    ]),
+  },
   prettier,
 ]);

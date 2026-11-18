@@ -1,3 +1,4 @@
+/** Admin navigation destinations and shell copy consumed only by blocks. */
 import type { Route } from "next";
 
 /** Administration destinations remain protected by the server-side admin gate. */
@@ -11,7 +12,6 @@ export const adminNavigationItems = [
 export const adminNavigationCopy = {
   navigation: "Admin navigation",
   skipToContent: "Skip to admin content",
-  loadingLayout: "Loading administration",
   loadingContent: "Loading admin content",
   errorTitle: "Something went wrong",
   errorDescription:

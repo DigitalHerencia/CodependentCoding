@@ -4077,5 +4077,76 @@
     "merge_commit": "59ad92417dd5681a6fa831c4ba8d399cbc8f6277",
     "completed_at": "2026-11-18T08:50:17.096543+00:00",
     "remaining": []
+  },
+  "admin-domain-conformance": {
+    "issue": 374,
+    "issue_url": "https://github.com/DigitalHerencia/CodependentCoding/issues/374",
+    "branch": "refactor/374-admin-domain",
+    "status": "checks-passed-pending-pr",
+    "source_of_truth": "Owner prompt 2026-11-18; CRM read-only; prior auth delivery in #373 retained.",
+    "project_item": "PVTI_lAHOCo4iVM4BfqnzzhJ7Rxo",
+    "project_status": "In progress",
+    "verification": [
+      {
+        "command": "pnpm --dir packages/maximal-template run format:write --ignore-unknown <affected files>",
+        "result": "PASS: final format:write covered 66 affected files after lint fixes; SQL/Prisma skipped by the unsupported-parser ignore option."
+      },
+      {
+        "command": "pnpm --dir packages/maximal-template run lint:fix <affected template source files>",
+        "result": "PASS: all affected template source checked; existing import-type annotation fixed and affected subset rerun successfully."
+      },
+      {
+        "command": "pnpm run lint:fix packages/generator/src/compose.mjs packages/generator/scripts/check-schema-modules.mjs packages/loaded-vibes/scripts/rls-sql.mjs",
+        "result": "PASS: affected factory files checked in root context (separate focused invocations)."
+      },
+      {
+        "command": "pnpm --dir packages/maximal-template run typegen",
+        "result": "PASS: Prisma Client 7.10.1 and Next route types generated."
+      },
+      {
+        "command": "pnpm --dir packages/maximal-template run typecheck",
+        "result": "PASS: final TypeScript source after unused-contract cleanup."
+      }
+    ],
+    "not_run": [
+      "tests",
+      "builds",
+      "development servers",
+      "browser/runtime checks",
+      "database migrations/seeds"
+    ],
+    "implementation": [
+      "One admin workflow module, page templates and block composition; RHF forms and Suspense routes",
+      "Central types/Zod/selects/DTO/transactions; active-actor, self/owner and tenancy guards",
+      "Stable inventory model IDs; duplicate resource counts removed; unused bulk mutation API retired",
+      "Admin-owned audit schema/RLS and append-only seed; shared audit sources retained when optional admin presentation is omitted",
+      "Scoped lint boundaries and stale import cleanup; CRM source unchanged"
+    ],
+    "documentation": [
+      {
+        "title": "Next.js use server",
+        "url": "https://nextjs.org/docs/app/api-reference/directives/use-server"
+      },
+      {
+        "title": "React Hook Form useController",
+        "url": "https://react-hook-form.com/docs/usecontroller"
+      }
+    ],
+    "remaining": [
+      "PR CI and merge",
+      "Branch cleanup and repository synchronization"
+    ],
+    "prior_failures_resolved": [
+      "PowerShell execution policy: invoked installed Corepack JavaScript entry without changing policy.",
+      "Existing test-source import annotation rejected by lint; converted to type-only namespace import.",
+      "Zod max-length validation moved before email pipeline; mutation input narrowing corrected."
+    ],
+    "source_review": [
+      "CRM changed-file count is zero.",
+      "All replaced file/import paths retired; existing test sources receive API/import alignment only and were not executed.",
+      "Audit model and policies moved without database DDL or a persistence-contract change.",
+      "BoldKit skeleton registry source verified against installed primitive; generic error/loading endpoints returned no registry item. Existing BoldKit card/button error presentation retained.",
+      "Optional schema-removal checker reuses generator audit-retention configuration; validator not executed per owner limits."
+    ]
   }
 }

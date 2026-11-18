@@ -1,10 +1,8 @@
+/** Only privileged active members may render admin content; commands authorize independently. */
 import { guardAdminWorkflow } from "@/lib/workflows/adminWorkflows";
-import type { ReactNode } from "react";
-
-// Only members who may enter administration see admin pages; others get 404.
-export async function AdminGateFeature({
-  children,
-}: Readonly<{ children: ReactNode }>) {
+import type { AdminChildrenProps } from "@/types/adminTypes";
+/** Resolve the server-selected organization before exposing administration. */
+export async function AdminGateFeature({ children }: AdminChildrenProps) {
   await guardAdminWorkflow();
   return children;
 }

@@ -46,7 +46,7 @@ vi.mock("@/lib/db/tenancy", () => ({
   withTenantTransaction: state.tenant,
   withAuthenticatedRead: state.read,
 }));
-vi.mock("@/lib/db/transactions/adminTx", () => ({
+vi.mock("@/lib/db/selects/adminTx", () => ({
   assertMembershipAdministratorTx: state.admin,
 }));
 vi.mock("@/lib/db/transactions/invitationTx", () => ({

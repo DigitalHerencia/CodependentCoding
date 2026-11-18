@@ -1,3 +1,4 @@
+/// Shared provider-event and idempotency infrastructure; administration owns the audit schema.
 enum WebhookStatus {
   RECEIVED
   PROCESSING
@@ -9,26 +10,6 @@ enum IdempotencyState {
   STARTED
   COMPLETED
   FAILED
-}
-
-model AuditEvent {
-  id             String  @id @default(uuid()) @db.Uuid
-  organizationId String  @db.Uuid
-  actorUserId    String?
-
-  action       String
-  resourceType String
-  resourceId   String?
-  metadata     Json?
-
-  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  actor        User?        @relation("AuditActor", fields: [actorUserId], references: [id], onDelete: SetNull)
-
-  createdAt DateTime @default(now()) @db.Timestamptz(6)
-
-  @@index([organizationId, createdAt])
-  @@index([organizationId, resourceType, resourceId])
-  @@index([organizationId, action])
 }
 
 model WebhookEvent {

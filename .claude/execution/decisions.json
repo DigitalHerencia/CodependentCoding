@@ -1370,6 +1370,13 @@
       "status": "accepted",
       "title": "Verified auth/authz modal-profile delivery merged",
       "decision": "Owner-authorized PR #373 squash-merged as 59ad92417dd5681a6fa831c4ba8d399cbc8f6277 after final head c39f8a7ff125aa670bc692e1d10324206aa77710 passed GitHub Changed-file checks (run 44270094130), Vercel and Preview Comments. Issue #372 moved to Done; task branch removed and main synchronized. No tests/builds/dev servers/browser checks/database migration or seed execution. Additive migration remains source-only; unavailable BoldKit block endpoints documented."
+    },
+    {
+      "id": "ADMIN-374-OWNER-2026-11-18",
+      "date": "2026-11-18",
+      "status": "accepted",
+      "title": "Admin owner-prompt conformance and shared append-only audit ownership",
+      "decision": "Owner prompt supersedes existing specifications. CRM stays read-only. One server-function admin workflow module orchestrates authenticated actions/fetchers. Blocks own copy/primitives; templates compose blocks; forms/features orchestrate. Skeletons directly import skeleton blocks. Shared audit schema/RLS/seed belongs to admin and is retained by generation even when admin presentation is omitted, because all domains append audit records. Keep existing access approval; no new invitations or profile UI. Retire unused bulk action and preserve self/owner/tenant safeguards. Only format:write, lint:fix, typegen and typecheck; no tests/builds/servers/database execution. Delivery authorized through PR, CI, merge and branch cleanup."
     }
   ]
 }

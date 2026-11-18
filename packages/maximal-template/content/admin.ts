@@ -1,28 +1,20 @@
-export const adminBlockCopy = {
+/** Admin presentation copy is consumed only in domain blocks. */
+export const adminCopy = {
   searchAuditEvents: "Search audit events",
   searchActionResourceOrActor: "Search action, resource or actor",
   addRegisteredMember: "Add registered member",
   searchMembers: "Search members",
-  searchNameEmailOrRole: "Search name, email or role",
-} as const;
-
-export const adminMembershipCopy = {
-  role: "Application role",
+  searchNameOrEmail: "Search name or email",
+  applicationRole: "Application role",
   roleUpdated: "Role updated.",
   saveRole: "Save role",
   accessUpdated: "Membership access updated.",
   restore: "Restore access",
   suspend: "Suspend access",
-} as const;
-
-export const adminPresentationCopy = {
   approveWorkspaceAccess: "Approve workspace access",
-  assignARoleInThisWorkspaceTheUserCan:
+  approvalDescription:
     "Assign a role in this workspace. The user can claim access from their waiting page using this verified email.",
-
-  applicationRole: "Application role",
-  accessApprovedTheUserCanCheckTheirAccessNow:
-    "Access approved. The user can check their access now.",
+  approvalComplete: "Access approved. The user can check their access now.",
   approveAccess: "Approve access",
   auditTrail: "Audit trail",
   system: "System",
@@ -39,23 +31,42 @@ export const adminPresentationCopy = {
   identity: "Identity",
   joined: "Joined ",
   access: "Access: ",
-  accessManagement: "Access management",
   memberAdministration: "Member administration",
   email: "Email",
   accessStatus: "Access status",
-  joined2: "Joined",
+  joinedHeading: "Joined",
   unnamedUser: "Unnamed user",
-} as const;
-
-export const adminPaginationCopy = {
   search: "Search",
   pagination: "Administration pages",
   previous: "Previous",
   next: "Next",
   page: "Page",
-} as const;
-
-export const adminRemainingCopy = {
   registeredEmail: "Registered email",
-  applicationRole: "Application role",
+  noMembers: "No matching members.",
+  noRecords: "No registered record resources.",
+  edit: "Edit access",
+  owner: "Ownership cannot be changed through routine administration.",
+  self: "You cannot change your own membership through administration.",
+  footer: "Workspace administration",
+} as const;
+/** Route heading vocabulary is resolved only in blocks. */
+export const adminPageCopy = {
+  audit: adminCopy.auditTrail,
+  records: adminCopy.workspaceRecordInventory,
+  record: "Resource inventory",
+  users: adminCopy.memberAdministration,
+  user: adminCopy.member,
+  new: adminCopy.approveWorkspaceAccess,
+  edit: "Edit workspace access",
+} as const;
+/** Page-specific loading announcements share one skeleton composition. */
+export const adminLoadingCopy = {
+  layout: "Loading administration",
+  audit: "Loading audit events",
+  records: "Loading records",
+  record: "Loading resource inventory",
+  users: "Loading members",
+  user: "Loading member",
+  new: "Loading access form",
+  edit: "Loading membership form",
 } as const;

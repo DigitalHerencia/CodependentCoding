@@ -1,122 +1,59 @@
 "use server";
-
-/** Admin Actions contracts and composition for the owning application slice. */
+/** Authenticated admin mutation boundary: validate, authorize, transact and return safe results. */
 import {
   addAdminMembershipSchema,
-  adminBulkOperationSchema,
   changeAdminMembershipSchema,
   updateAdminMembershipStatusSchema,
 } from "@/schemas/adminSchemas";
 import { requireIdentity } from "@/lib/integrations/clerk/server";
 import { assertPermission } from "@/lib/authz/permissions";
 import { assertInvitationsAllowed } from "@/lib/authz/tenancy";
-import { toAdminMembershipDTO } from "@/lib/db/dtos/adminDtos";
+import { toAdminMembershipDTO } from "@/lib/db/dtos/adminDto";
 import { withTenantTransaction } from "@/lib/db/tenancy";
 import {
   approveWorkspaceAccessTx,
   updateMembershipAdministrationTx,
-} from "@/lib/db/transactions/adminTx";
-import { InvariantViolationError } from "@/lib/db/transactions/errors";
+} from "@/lib/db/selects/adminTx";
 import { toActionResult } from "@/lib/utils/actionResult";
-
-/** Every command commits together or none does; an administrator never changes their own membership. */
-export async function executeAdminBulkOperation(rawInput: unknown) {
+import type { AdminMutationKind } from "@/types/adminTypes";
+/** Shared single-command boundary avoids drift between suspend, restore and role updates. */
+async function mutateMembership(rawInput: unknown, kind: AdminMutationKind) {
   return toActionResult(async () => {
     const identity = await requireIdentity();
     return withTenantTransaction(identity, async (tx, access) => {
       assertPermission(access, "admin.membership:update");
-      const commands = adminBulkOperationSchema.parse(rawInput);
-      const results = [];
-      for (const command of commands) {
-        if (
-          command.kind !== "restore" &&
-          command.membershipId === access.membershipId
-        ) {
-          throw new InvariantViolationError(
-            "An administrator cannot change their own membership.",
-          );
-        }
-        const membership = await updateMembershipAdministrationTx(tx, {
-          organizationId: access.organizationId,
-          actorUserId: access.userId,
-          membershipId: command.membershipId,
-          ...(command.kind === "change-role"
-            ? { role: command.role }
-            : { status: command.kind === "suspend" ? "SUSPENDED" : "ACTIVE" }),
-        });
-        results.push(toAdminMembershipDTO(membership));
-      }
-      return results;
+      const input =
+        kind === "role"
+          ? changeAdminMembershipSchema.parse(rawInput)
+          : {
+              ...updateAdminMembershipStatusSchema.parse(rawInput),
+              role: undefined,
+            };
+      const membership = await updateMembershipAdministrationTx(tx, {
+        organizationId: access.organizationId,
+        actorUserId: access.userId,
+        membershipId: input.membershipId,
+        ...(input.role !== undefined
+          ? { role: input.role }
+          : { status: kind === "suspend" ? "SUSPENDED" : "ACTIVE" }),
+      });
+      return toAdminMembershipDTO(membership, access.userId);
     });
   });
 }
-
+/** Change another non-owner member's role. */
 export async function changeAdminMembership(rawInput: unknown) {
-  return toActionResult(async () => {
-    const identity = await requireIdentity();
-
-    return withTenantTransaction(identity, async (tx, access) => {
-      assertPermission(access, "admin.membership:update");
-      const input = changeAdminMembershipSchema.parse(rawInput);
-      if (input.membershipId === access.membershipId) {
-        throw new InvariantViolationError(
-          "An administrator cannot change their own role.",
-        );
-      }
-
-      const membership = await updateMembershipAdministrationTx(tx, {
-        organizationId: access.organizationId,
-        actorUserId: access.userId,
-        membershipId: input.membershipId,
-        role: input.role,
-      });
-      return toAdminMembershipDTO(membership);
-    });
-  });
+  return mutateMembership(rawInput, "role");
 }
-
+/** Suspend another non-owner member. */
 export async function suspendAdminMembership(rawInput: unknown) {
-  return toActionResult(async () => {
-    const identity = await requireIdentity();
-
-    return withTenantTransaction(identity, async (tx, access) => {
-      assertPermission(access, "admin.membership:update");
-      const input = updateAdminMembershipStatusSchema.parse(rawInput);
-      if (input.membershipId === access.membershipId) {
-        throw new InvariantViolationError(
-          "An administrator cannot suspend their own membership.",
-        );
-      }
-
-      const membership = await updateMembershipAdministrationTx(tx, {
-        organizationId: access.organizationId,
-        actorUserId: access.userId,
-        membershipId: input.membershipId,
-        status: "SUSPENDED",
-      });
-      return toAdminMembershipDTO(membership);
-    });
-  });
+  return mutateMembership(rawInput, "suspend");
 }
-
+/** Restore another non-owner member. */
 export async function restoreAdminMembership(rawInput: unknown) {
-  return toActionResult(async () => {
-    const identity = await requireIdentity();
-
-    return withTenantTransaction(identity, async (tx, access) => {
-      assertPermission(access, "admin.membership:update");
-      const input = updateAdminMembershipStatusSchema.parse(rawInput);
-      const membership = await updateMembershipAdministrationTx(tx, {
-        organizationId: access.organizationId,
-        actorUserId: access.userId,
-        membershipId: input.membershipId,
-        status: "ACTIVE",
-      });
-      return toAdminMembershipDTO(membership);
-    });
-  });
+  return mutateMembership(rawInput, "restore");
 }
-
+/** Preserve the existing verified-email access approval; no new invitation behavior is introduced. */
 export async function addAdminMembership(rawInput: unknown) {
   return toActionResult(async () => {
     const identity = await requireIdentity();

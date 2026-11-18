@@ -15,7 +15,9 @@ import { PrismaNeon } from "@prisma/adapter-neon";
 import { PrismaClient } from "@/generated/prisma/client";
 import { seedModules } from "@/prisma/seeds/registry";
 import { baseEnv } from "@/lib/utils/env";
-import { seedAudit, seedBase, type SeedContext } from "@/prisma/seeds/base";
+import { seedBase, type SeedContext } from "@/prisma/seeds/base";
+
+import { seedAdminAudit } from "@/prisma/seeds/admin";
 
 config({ path: ".env.local", quiet: true });
 config({ quiet: true });
@@ -33,8 +35,10 @@ type ModuleSeed = (context: SeedContext) => Promise<void>;
 
 /** Installed modules with a seed file, dependencies first. */
 function seedOrder(root: string): string[] {
-  return seedModules.filter((id) =>
-    existsSync(path.join(root, "prisma", "seeds", `${id}.ts`)),
+  return seedModules.filter(
+    (id) =>
+      id !== "admin" &&
+      existsSync(path.join(root, "prisma", "seeds", `${id}.ts`)),
   );
 }
 
@@ -51,7 +55,7 @@ async function main(): Promise<void> {
     async (tx) => {
       const context = await seedBase(tx);
       for (const [, seed] of seeds) await seed(context);
-      await seedAudit(
+      await seedAdminAudit(
         context,
         seeds.map(([id]) => id),
       );

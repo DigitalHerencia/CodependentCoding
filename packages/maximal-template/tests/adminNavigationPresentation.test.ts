@@ -1,7 +1,8 @@
+/** Existing administration expectations for the current domain API. */
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { expect, test, vi } from "vitest";
-import { AdminNavLinks } from "@/components/nav/admin-nav-links";
+import { AdminNavigation } from "@/components/nav/admin-navigation";
 import AdminLoading from "@/app/(admin)/loading";
 import AdminError from "@/app/(admin)/error";
 
@@ -10,7 +11,17 @@ vi.mock("next/navigation", () => ({
 }));
 
 test("administration links preserve authorized destinations and the active route", () => {
-  const html = renderToStaticMarkup(createElement(AdminNavLinks));
+  const html = renderToStaticMarkup(
+    createElement(AdminNavigation, {
+      label: "Admin navigation",
+      items: [
+        { href: "/admin/users", label: "Users" },
+        { href: "/admin/records", label: "Records" },
+        { href: "/admin/audit", label: "Audit" },
+        { href: "/dashboard", label: "Workspace" },
+      ],
+    }),
+  );
   expect(html).toContain('aria-label="Admin navigation"');
   for (const href of [
     "/admin/users",
@@ -34,7 +45,7 @@ test("the admin fallback announces loading and hides its decorative skeletons", 
 test("admin recovery forwards Next reset without displaying private errors or 404", () => {
   const reset = vi.fn();
   const element = AdminError({ error: new Error("private fixture"), reset });
-  expect(element.props.onRetry).toBe(reset);
+  expect(element.props.reset).toBe(reset);
   const html = renderToStaticMarkup(element);
   expect(html).toContain("Try again");
   expect(html).toContain('href="/admin/users"');
