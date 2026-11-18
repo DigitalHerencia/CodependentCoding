@@ -1,34 +1,13 @@
-/** Layout contracts and composition for the owning application slice. */
-import { Suspense, type ReactNode } from "react";
-
-import { TenantLoadingTemplate } from "@/components/templates/tenant-templates";
-import { tenantCopy } from "@/content/tenant";
-import { OnboardingGateFeature } from "@/features/onboarding/onboarding-gate-feature";
-import { getIdentity } from "@/lib/integrations/clerk/server";
-import { redirectToSignIn } from "@/lib/utils/authRedirects";
-import { AuthzWorkspaceFeature } from "@/features/authz/authzWorkspaceFeature";
-
-/** Authenticated tenant frame; membership and navigation reads stream behind Suspense. */
-export default function TenantLayout({
-  children,
-}: Readonly<{ children: ReactNode }>) {
+/** Tenant root layout streams the authenticated feature with its direct skeleton fallback. */
+import { Suspense } from "react";
+import { TenantLayoutFeature } from "@/features/tenant/tenantLayoutFeature";
+import { TenantLayoutSkeleton } from "@/features/tenant/tenantLayoutSkeleton";
+import type { TenantChildrenProps } from "@/types/tenantTypes";
+/** Routes compose features without application, copy, primitive or template imports. */
+export default function TenantLayout({ children }: TenantChildrenProps) {
   return (
-    <Suspense
-      fallback={<TenantLoadingTemplate label={tenantCopy.loadingWorkspace} />}
-    >
-      <SignedInTenant>{children}</SignedInTenant>
+    <Suspense fallback={<TenantLayoutSkeleton />}>
+      <TenantLayoutFeature>{children}</TenantLayoutFeature>
     </Suspense>
-  );
-}
-
-/** Authenticate before evaluating the tenant onboarding gate. */
-async function SignedInTenant({ children }: Readonly<{ children: ReactNode }>) {
-  const identity = await getIdentity();
-  if (!identity) redirectToSignIn();
-
-  return (
-    <OnboardingGateFeature>
-      <AuthzWorkspaceFeature>{children}</AuthzWorkspaceFeature>
-    </OnboardingGateFeature>
   );
 }

@@ -26,12 +26,18 @@ import {
 import { Wordmark } from "@/components/brand/wordmark";
 import { AdminHeader } from "@/components/nav/admin-header";
 import { AdminFooter } from "@/components/nav/admin-footer";
-import { AdminNavigation } from "@/components/nav/admin-navigation";
-import { AdminMobile } from "@/components/nav/admin-mobile";
+import { AdminNavigationLinks } from "@/components/nav/admin-navigation";
 import {
-  adminNavigationCopy,
-  adminNavigationItems,
-} from "@/content/admin-navigation";
+  Sidebar,
+  SidebarProvider,
+  SidebarHeader,
+  SidebarContent,
+  SidebarFooter,
+  SidebarToggle,
+  useSidebar,
+} from "@/components/ui/sidebar";
+import { CardDescription } from "@/components/ui/card";
+import { adminNavigationCopy, adminNavigationItems } from "@/content/admin";
 import {
   adminCopy as copy,
   adminPageCopy,
@@ -40,6 +46,8 @@ import {
 import { formResultCopy } from "@/content/application";
 import type {
   AdminHeaderBlockProps,
+  AdminChildrenProps,
+  AdminMetricsProps,
   AdminAuditContentProps,
   AdminUsersContentProps,
   AdminSearchToolbarProps,
@@ -63,38 +71,69 @@ export function AdminPageBlock({
   children,
 }: AdminPageFrameProps) {
   return (
-    <section className="mx-auto max-w-7xl space-y-6 p-4 lg:p-6">
+    <section className="mx-auto max-w-7xl space-y-8 p-4 md:p-8">
       <header className="space-y-4">
-        <h1 className="type-title">{title ?? adminPageCopy[variant]}</h1>
+        <h1 className="type-title uppercase">
+          {title ?? adminPageCopy[variant]}
+        </h1>
+        <p className="text-muted-foreground">{copy.descriptions[variant]}</p>
         {toolbar}
       </header>
       {children}
     </section>
   );
 }
-/** Admin navigation labels enter only at the block boundary. */
-export function AdminHeaderBlock({
-  accountMenu,
-  mobileAccountMenu,
-}: AdminHeaderBlockProps) {
-  const navigation = (
-    <AdminNavigation
-      label={adminNavigationCopy.navigation}
-      items={adminNavigationItems}
-    />
-  );
+/** BoldKit's provider owns responsive sheet/collapse behavior for the whole admin frame.
+ * @see https://boldkit.dev/docs/components/sidebar
+ */
+export function AdminFrameBlock({ children }: AdminChildrenProps) {
+  return <SidebarProvider>{children}</SidebarProvider>;
+}
+/** Header controls share the sidebar provider rather than mounting another mobile menu. */
+export function AdminHeaderBlock() {
   return (
     <AdminHeader
       brand={<Wordmark />}
-      navigation={navigation}
-      accountMenu={accountMenu}
-      mobile={
-        <AdminMobile title={adminNavigationCopy.navigation}>
-          {navigation}
-          {mobileAccountMenu}
-        </AdminMobile>
-      }
+      controls={<SidebarToggle aria-label={adminNavigationCopy.navigation} />}
     />
+  );
+}
+/** One responsive sidebar contains navigation and an independently owned account sheet. */
+export function AdminSidebarBlock({ accountMenu }: AdminHeaderBlockProps) {
+  const { setOpenMobile } = useSidebar();
+  return (
+    <Sidebar collapsible="hidden" className="sticky top-0 h-dvh">
+      <SidebarHeader>
+        <span className="type-heading">{copy.footer}</span>
+      </SidebarHeader>
+      <SidebarContent>
+        <AdminNavigationLinks
+          label={adminNavigationCopy.navigation}
+          items={adminNavigationItems}
+          onNavigate={() => setOpenMobile(false)}
+        />
+      </SidebarContent>
+      <SidebarFooter className="mt-auto">{accountMenu}</SidebarFooter>
+    </Sidebar>
+  );
+}
+/** Dashboard cards expose only real values and describe the count's scope. */
+export function AdminMetricsBlock({ metrics }: AdminMetricsProps) {
+  return (
+    <div className="grid gap-5 sm:grid-cols-2">
+      {metrics.map((metric) => (
+        <Card key={metric.label}>
+          <CardHeader>
+            <CardDescription className="font-bold uppercase">
+              {copy.metrics[metric.label]}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <p className="text-4xl font-black tabular-nums">{metric.value}</p>
+          </CardContent>
+        </Card>
+      ))}
+    </div>
   );
 }
 /** Footer keeps navigation inside the authenticated admin shell. */
@@ -129,7 +168,7 @@ export function AdminSearchToolbarBlock({
   const audit = variant === "audit";
   return (
     <form
-      className="flex flex-wrap gap-3"
+      className="flex flex-wrap gap-3 [&_input]:w-auto [&_input]:min-w-0 [&_input]:flex-1"
       onSubmit={(event) => {
         event.preventDefault();
         onSearch();
@@ -214,7 +253,9 @@ export function AdminAuditContentBlock({ events }: AdminAuditContentProps) {
   );
 }
 /** Inventory links use stable registry identifiers. */
-export function AdminRecordsContentBlock({ records }: AdminRecordsProps) {
+export function AdminRecordsContentBlock({
+  records,
+}: Pick<AdminRecordsProps, "records">) {
   return records.length ? (
     <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
       {records.map((record) => (
@@ -377,6 +418,7 @@ export function AdminNewUserFormBlock({
   return (
     <form
       id="admin-new-user"
+      method="post"
       className="max-w-3xl space-y-5"
       onSubmit={onSubmit}
       noValidate
@@ -446,6 +488,7 @@ export function AdminEditUserFormBlock({
         {membership.user.displayName ?? membership.user.email ?? copy.member}
       </p>
       <form
+        method="post"
         className="space-y-3"
         onSubmit={onSubmit}
         noValidate

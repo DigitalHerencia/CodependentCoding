@@ -8,11 +8,13 @@ import type { AdminListView, AuditEventDTO } from "@/types/adminTypes";
 export function AdminAuditFeatureClient({
   page,
   pagination,
+  metrics,
 }: AdminListView<AuditEventDTO>) {
   const router = useRouter();
   const [query, setQuery] = useState(page.query);
   return (
     <AdminAuditTemplate
+      metrics={metrics}
       events={page.items}
       pagination={pagination}
       query={query}

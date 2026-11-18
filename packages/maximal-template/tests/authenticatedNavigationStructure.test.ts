@@ -12,15 +12,3 @@ test.each(["tenant", "admin"])(
     expect(source).toContain("{children}");
   },
 );
-
-test("authenticated responsive navigation uses viewport media queries, not device identification", () => {
-  const source = readFileSync(
-    new URL(
-      "../components/nav/authenticated-mobile-navigation.tsx",
-      import.meta.url,
-    ),
-    "utf8",
-  );
-  expect(source).not.toMatch(/userAgent|platform|isMobile/);
-  expect(source).toContain("lg:hidden");
-});

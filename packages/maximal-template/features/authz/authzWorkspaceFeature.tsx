@@ -1,6 +1,6 @@
 /** Authorized workspace orchestration after mandatory local profile completion. */
-import { TenantShell } from "@/components/shells/tenant-shell";
-import { AuthenticatedUserMenuFeature } from "@/features/navigation/authenticated-user-menu-feature";
+import { TenantShellTemplate } from "@/components/templates/tenant-templates";
+import { AuthAccountFeature } from "@/features/auth/authAccountFeature";
 import { loadTenantNavigationWorkflow } from "@/lib/workflows/tenantWorkflows";
 import { recoverAuthzAccessWorkflow } from "@/lib/workflows/authzWorkflows";
 import type { AuthChildrenProps } from "@/types/authTypes";
@@ -14,12 +14,11 @@ export async function AuthzWorkspaceFeature({ children }: AuthChildrenProps) {
     },
   );
   return (
-    <TenantShell
+    <TenantShellTemplate
       navigation={navigation}
-      accountMenu={<AuthenticatedUserMenuFeature />}
-      mobileAccountMenu={<AuthenticatedUserMenuFeature presentation="panel" />}
+      accountMenu={<AuthAccountFeature />}
     >
       {children}
-    </TenantShell>
+    </TenantShellTemplate>
   );
 }

@@ -37,11 +37,4 @@ export const tenantNavigationSchema = z.strictObject({
       ),
     }),
   ),
-  mobile: z.array(
-    z.strictObject({
-      label: z.string().min(1),
-      href: tenantInternalRouteSchema,
-      icon: z.enum(["home", "settings", "users", "building"]),
-    }),
-  ),
 });

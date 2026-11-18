@@ -7,7 +7,7 @@ import {
 } from "@/schemas/adminSchemas";
 import { assertPermission } from "@/lib/authz/permissions";
 import { isPrivilegedRole } from "@/lib/authz/roles";
-import { toAdminMembershipDTO, toAuditEventDTO } from "@/lib/db/dtos/adminDto";
+import { toAdminMembershipDTO, toAuditEventDTO } from "@/lib/db/dtos/adminDtos";
 import {
   adminMembershipSelect,
   auditEventSelect,

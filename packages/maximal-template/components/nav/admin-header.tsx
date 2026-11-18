@@ -1,18 +1,11 @@
-/** Slot-only admin header; blocks provide copy and interactive presentation. */
+/** Slot-only administration header; primitive controls are composed in blocks. */
 import type { AdminHeaderProps } from "@/types/adminTypes";
-/** Display desktop navigation alongside the shared mobile overlay. */
-export function AdminHeader({
-  brand,
-  navigation,
-  accountMenu,
-  mobile,
-}: AdminHeaderProps) {
+/** Keep the responsive sidebar toggle available at every viewport width. */
+export function AdminHeader({ brand, controls }: AdminHeaderProps) {
   return (
-    <header className="sticky top-0 z-40 flex min-w-0 items-center justify-between gap-4 border-b bg-background px-4 py-4 lg:static lg:flex-wrap lg:px-6">
+    <header className="flex min-h-20 items-center gap-4 border-b-3 border-foreground bg-background px-4 md:px-8">
+      {controls}
       {brand}
-      <div className="hidden min-w-0 lg:block">{navigation}</div>
-      <div className="hidden lg:block">{accountMenu}</div>
-      {mobile}
     </header>
   );
 }

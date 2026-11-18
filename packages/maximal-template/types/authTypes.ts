@@ -4,7 +4,7 @@ import type { UseFormRegisterReturn } from "react-hook-form";
 import type { verifyClerkWebhook } from "@/lib/integrations/clerk/webhooks";
 import type { onboardingSchema } from "@/schemas/authSchemas";
 /** Auth Types contracts and composition for the owning application slice. */
-import type { ComponentProps, ReactNode } from "react";
+import type { ComponentProps, ReactNode, RefObject } from "react";
 import type { useSignIn, useSignUp } from "@clerk/nextjs";
 import type { z } from "zod";
 import type {
@@ -228,4 +228,22 @@ export type AuthSignUpTransition =
 /** Editing always supplies a close callback from its eventual modal trigger. */
 export type OnboardingEditFormProps = Omit<OnboardingModalProps, "mode"> & {
   onClose: () => void;
+};
+
+/** Server-owned account projection and independently authorized organization presentation. */
+export type AuthAccountFeatureProps = {
+  profile: AuthProfileDTO;
+  organizationSwitcher: ReactNode;
+};
+/** Account sheet receives interaction state; it performs no identity or membership reads. */
+export type AuthAccountTemplateProps = AuthAccountFeatureProps & {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  triggerRef: RefObject<HTMLButtonElement | null>;
+  pending: boolean;
+  failed: boolean;
+  onAfterClose: () => boolean;
+  onViewProfile: () => void;
+  onEditProfile: () => void;
+  onSignOut: () => Promise<void>;
 };

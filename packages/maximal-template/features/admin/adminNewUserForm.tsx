@@ -2,7 +2,7 @@
 /** RHF owns field state and orchestrates the new-access template and server workflow.
  * @see https://react-hook-form.com/docs/usecontroller
  */
-import { useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { useForm, useController } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AdminNewUserTemplate } from "@/components/templates/admin-templates";
@@ -12,8 +12,15 @@ import {
   adminRoleSchema,
 } from "@/schemas/adminSchemas";
 import type { AddAdminMembershipCommand } from "@/types/adminTypes";
+/** A stable subscription disables native submission until RHF handlers are hydrated. */
+const subscribeToHydration = () => () => {};
 /** Preserve existing verified-email approvals without provider or tenancy imports. */
-export function NewAdminUserForm() {
+export function AdminNewUserForm() {
+  const hydrated = useSyncExternalStore(
+    subscribeToHydration,
+    () => true,
+    () => false,
+  );
   const [approved, setApproved] = useState(false);
   const form = useForm<AddAdminMembershipCommand>({
     resolver: zodResolver(addAdminMembershipSchema),
@@ -27,7 +34,7 @@ export function NewAdminUserForm() {
       role={role.field}
       roles={adminRoleSchema.options}
       errors={form.formState.errors}
-      pending={form.formState.isSubmitting}
+      pending={!hydrated || form.formState.isSubmitting}
       approved={approved}
       onSubmit={form.handleSubmit(async (values) => {
         setApproved(false);

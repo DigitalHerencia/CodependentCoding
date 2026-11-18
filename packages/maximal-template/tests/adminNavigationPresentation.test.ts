@@ -2,7 +2,7 @@
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { expect, test, vi } from "vitest";
-import { AdminNavigation } from "@/components/nav/admin-navigation";
+import { AdminNavigationLinks as AdminNavigation } from "@/components/nav/admin-navigation";
 import AdminLoading from "@/app/(admin)/loading";
 import AdminError from "@/app/(admin)/error";
 

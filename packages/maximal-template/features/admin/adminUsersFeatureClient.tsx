@@ -8,11 +8,13 @@ import type { AdminListView, AdminMembershipDTO } from "@/types/adminTypes";
 export function AdminUsersFeatureClient({
   page,
   pagination,
+  metrics,
 }: AdminListView<AdminMembershipDTO>) {
   const router = useRouter();
   const [query, setQuery] = useState(page.query);
   return (
     <AdminUsersTemplate
+      metrics={metrics}
       memberships={page.items}
       pagination={pagination}
       query={query}

@@ -6,9 +6,6 @@ import type { ModuleIcon } from "@/types/moduleTypes";
 /** Visual identifiers supported by the tenant's module navigation. */
 export type TenantNavigationIcon = ModuleIcon | "settings";
 
-/** Stable icon identifiers serialized across the tenant Server/Client boundary. */
-export type TenantMobileIcon = "home" | "settings" | "users" | "building";
-
 /** An internal destination shown in the tenant navigation. */
 export type TenantNavigationLink = {
   label: string;
@@ -23,50 +20,34 @@ export type TenantNavigationGroup = {
   links: readonly TenantNavigationLink[];
 };
 
-/** One mobile navigation destination, represented without component values. */
-export type TenantMobileNavigationItem = TenantNavigationLink & {
-  icon: TenantMobileIcon;
-};
-
 /** Serializable, authorized tenant navigation model. */
 export type TenantNavigationDTO = {
   groups: readonly TenantNavigationGroup[];
-  mobile: readonly TenantMobileNavigationItem[];
 };
 
-/** Shared tenant shell and its server-rendered account controls. */
-export type TenantShellProps = {
-  children: ReactNode;
+/** Layout components receive composed slots and never import application logic. */
+export type TenantChildrenProps = Readonly<{ children: ReactNode }>;
+/** Authenticated tenant shell presentation, inside the shared sidebar provider. */
+export type TenantShellProps = TenantChildrenProps & {
+  header: ReactNode;
+  navigation: ReactNode;
+  footer: ReactNode;
+  skipLink: ReactNode;
+};
+/** One feature prepares the navigation model and the auth-owned account sheet. */
+export type TenantShellTemplateProps = TenantChildrenProps & {
   navigation: TenantNavigationDTO;
   accountMenu: ReactNode;
-  mobileAccountMenu: ReactNode;
-  organizationSwitcher?: ReactNode;
 };
-
-/** Browser-only toggle controls for the tenant's header. */
-export type TenantHeaderBlockProps = {
-  sidebar: boolean;
-  mobileMenu: ReactNode;
-};
-
-/** Controlled navigation view, also reused inside the mobile menu. */
-export type TenantNavigationBlockProps = {
-  navigation: TenantNavigationDTO;
-  pathname: string;
-  expandedIds: string[];
-  onExpandedChange: (ids: string[]) => void;
-  onNavigate?: (() => void) | undefined;
-};
-
-/** Sidebar presentation composed from the same navigation view. */
-export type TenantSidebarBlockProps = TenantNavigationBlockProps & {
-  collapsed: boolean;
-  onToggleCollapsed: () => void;
-  onExpand: (id: string) => void;
-  organizationSwitcher?: ReactNode;
-  accountMenu: ReactNode;
-};
-
+/** Header primitive controls and branding are supplied by blocks. */
+export type TenantHeaderProps = { brand: ReactNode; controls: ReactNode };
+/** Domain-owned navigation landmark with primitive presentation supplied as a slot. */
+export type TenantNavigationProps = TenantChildrenProps & { label: string };
+/** Authorized model and account sheet are rendered together by the sidebar block. */
+export type TenantSidebarBlockProps = Pick<
+  TenantShellTemplateProps,
+  "navigation" | "accountMenu"
+>;
 /** Next.js route-group error boundary: never display the raw error. */
 export type TenantErrorBoundaryProps = {
   error: Error & { digest?: string };

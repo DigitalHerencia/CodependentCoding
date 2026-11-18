@@ -1,12 +1,12 @@
 /** Tenant Workflows contracts and composition for the owning application slice. */
 import "server-only";
+import { requireAuthIdentityAction } from "@/lib/actions/authActions";
 
 import { hasPermission } from "@/lib/authz/permissions";
 import { isPrivilegedRole } from "@/lib/authz/roles";
 import { withAuthenticatedRead } from "@/lib/db/tenancy";
 import { moduleNavigation, settingsNavigation } from "@/lib/modules/navigation";
 import { installedModules } from "@/lib/modules/registry";
-import { tenantMobileItems, tenantCopy } from "@/content/tenant";
 import { tenantNavigationSchema } from "@/schemas/tenantSchemas";
 import type { AccessContext } from "@/types/authzTypes";
 import type { ModuleDefinition } from "@/types/moduleTypes";
@@ -44,7 +44,7 @@ export function buildTenantNavigation(
     })),
     {
       id: "settings",
-      label: tenantCopy.settings,
+      label: "settings",
       icon: "settings" as const,
       // Match the existing integrations route's server permission; discovery is
       // still separate from the unchanged route/action authorization checks.
@@ -58,7 +58,6 @@ export function buildTenantNavigation(
 
   return tenantNavigationSchema.parse({
     groups,
-    mobile: tenantMobileItems,
   });
 }
 
@@ -67,4 +66,9 @@ export async function loadTenantNavigationWorkflow(): Promise<TenantNavigationDT
   return withAuthenticatedRead(async (_tx, access) =>
     buildTenantNavigation(access),
   );
+}
+
+/** Authenticate before the mandatory profile gate without requiring a membership yet. */
+export async function requireTenantIdentityWorkflow() {
+  await requireAuthIdentityAction();
 }

@@ -86,31 +86,25 @@ export type AdminMembershipUpdate = AdminActorContext & {
 export type AdminAccessApproval = AdminActorContext & AddAdminMembershipCommand;
 /** Shared slot-only container. */
 export type AdminChildrenProps = Readonly<{ children: ReactNode }>;
-/** Responsive shell presentation slots. */
+/** Responsive shell accepts already-composed presentation slots. */
 export type AdminShellProps = AdminChildrenProps & {
   header: ReactNode;
+  navigation: ReactNode;
   footer: ReactNode;
   skipLink: ReactNode;
 };
-/** Authenticated feature supplies account menu slots. */
+/** Auth-owned account sheet is supplied by the authenticated layout feature. */
 export type AdminShellTemplateProps = AdminChildrenProps & {
   accountMenu: ReactNode;
-  mobileAccountMenu: ReactNode;
 };
-/** Header receives presentation slots only. */
-export type AdminHeaderProps = {
-  brand: ReactNode;
-  navigation: ReactNode;
-  accountMenu: ReactNode;
-  mobile: ReactNode;
-};
-/** Navigation receives labels from its owning block. */
-export type AdminNavigationProps = {
+/** Header contains presentation controls without authorization reads. */
+export type AdminHeaderProps = { brand: ReactNode; controls: ReactNode };
+/** Typed internal destinations are provided by the block's content contract. */
+export type AdminNavigationLinksProps = {
   label: string;
   items: readonly { href: Route; label: string }[];
+  onNavigate?: (() => void) | undefined;
 };
-/** Shared mobile dialog preserves focus and account menu dismissal. */
-export type AdminMobileProps = AdminChildrenProps & { title: string };
 /** Page-specific skeleton variants use one primitive composition. */
 export type AdminSkeletonProps = {
   variant?:
@@ -155,22 +149,26 @@ export type AdminSearchProps = {
   onSearch: () => void;
 };
 /** Server-composed list data. */
-export type AdminListView<T> = {
+export type AdminListView<T> = AdminMetricsProps & {
   page: AdminPage<T>;
   pagination: AdminPaginationProps;
 };
 /** Audit template contract. */
-export type AdminAuditTemplateProps = AdminSearchProps & {
-  events: AuditEventDTO[];
-  pagination: AdminPaginationProps;
-};
+export type AdminAuditTemplateProps = AdminSearchProps &
+  AdminMetricsProps & {
+    events: AuditEventDTO[];
+    pagination: AdminPaginationProps;
+  };
 /** User template contract. */
-export type AdminUsersTemplateProps = AdminSearchProps & {
-  memberships: AdminMembershipDTO[];
-  pagination: AdminPaginationProps;
-};
+export type AdminUsersTemplateProps = AdminSearchProps &
+  AdminMetricsProps & {
+    memberships: AdminMembershipDTO[];
+    pagination: AdminPaginationProps;
+  };
 /** Record listing contract. */
-export type AdminRecordsProps = { records: AdminRecordSummaryDTO[] };
+export type AdminRecordsProps = AdminMetricsProps & {
+  records: AdminRecordSummaryDTO[];
+};
 /** Record detail contract. */
 export type AdminRecordDetailProps = { record: AdminRecordSummaryDTO };
 /** Membership detail/edit contract. */
@@ -230,3 +228,11 @@ export type AdminUsersContentProps = Pick<
 >;
 /** Validated source for server-composed pagination links. */
 export type AdminPaginationSource = AdminListCriteria & { hasMore: boolean };
+
+/** Authorized summary values prepared by the workflow, never recomputed by presentation. */
+export type AdminMetric = {
+  label: "events" | "actors" | "members" | "active" | "resources" | "records";
+  value: number;
+};
+/** Each route displays metrics for its actual query scope. */
+export type AdminMetricsProps = { metrics: readonly AdminMetric[] };

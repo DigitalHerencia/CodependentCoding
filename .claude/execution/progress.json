@@ -4164,5 +4164,57 @@
     "checked_source_commit": "04e83715a79f7753eb32a95f99df221e85cd8020",
     "merge_commit": "f513865b392b54525d96eeeaefcc2f85487bb87a",
     "completed_at": "2026-11-18T19:12:12.205445+00:00"
+  },
+  "admin-376-sidebar-account": {
+    "spec_id": "ADMIN-376-OWNER-PROMPT",
+    "status": "checks-passed",
+    "issue_number": 376,
+    "branch": "feat/376-admin-sidebar-account",
+    "pr_numbers": [],
+    "source_of_truth": "Owner-approved admin dashboard/account/navigation prompt, recorded in Issue #376; supersedes older specifications.",
+    "scope": [
+      "Admin slice consolidation and dashboard presentation",
+      "Responsive admin/tenant sidebar shells",
+      "Auth account sheet and onboarding edit modal",
+      "Authz organization/role presentation and switching"
+    ],
+    "acceptance_evidence": [
+      "One admin content/blocks/templates/schema/types/DTO/selects/Tx/fetchers/actions/workflows/module; camel-case feature/form/skeleton names.",
+      "Real authorized page-scoped audit/member metrics and persisted workspace inventory; no financial sample data.",
+      "Existing BoldKit sidebar replaces the authenticated mobile overlay and duplicate account popover; domain navigation/header/footer and root boundaries retained.",
+      "Auth owns Clerk avatar/menu/profile and account sheet; authz owns role/organization; onboardingEditForm provides profile editing.",
+      "Scoped ESLint import boundaries cover admin plus affected tenant/authz shell presentation. CRM changed files: zero.",
+      "Existing authenticated tenant/RLS checks, atomic membership safeguards and append-only audit schema/policies/seed are preserved."
+    ],
+    "validation_runs": [
+      {
+        "command": "pnpm --dir packages/maximal-template run lint:fix <affected source files>",
+        "result": "PASS: zero warnings"
+      },
+      {
+        "command": "pnpm --dir packages/maximal-template run format:write --ignore-unknown <affected files>",
+        "result": "PASS"
+      },
+      {
+        "command": "pnpm --dir packages/maximal-template run typegen",
+        "result": "PASS: Prisma Client and Next route types generated"
+      },
+      {
+        "command": "pnpm --dir packages/maximal-template run typecheck",
+        "result": "PASS"
+      }
+    ],
+    "NOT_RUN": [
+      "Tests",
+      "Builds",
+      "Dev servers",
+      "Browser/runtime checks",
+      "Database migrations/seeds"
+    ],
+    "limitations": [
+      "Only a dashboard screenshot was attached; no dashboard source file was available. Existing registry primitives implement the reference hierarchy.",
+      "Context7 was unavailable; official Clerk/shadcn/BoldKit documentation and installed types were consulted."
+    ],
+    "last_updated": "2026-11-18T20:16:24.018082+00:00"
   }
 }

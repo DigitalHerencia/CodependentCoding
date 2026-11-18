@@ -2,7 +2,7 @@
 import { expect, test, vi } from "vitest";
 import type { AccessContext } from "@/types/authzTypes";
 import { buildTenantNavigation } from "@/lib/workflows/tenantWorkflows";
-import { loadAuthenticatedUserMenuWorkflow } from "@/lib/workflows/authenticatedNavigationWorkflows";
+import { loadOrganizationSwitcherWorkflow } from "@/lib/workflows/authzWorkflows";
 
 vi.mock("@/lib/db/tenancy", () => ({ withAuthenticatedRead: vi.fn() }));
 const reads = vi.hoisted(() => ({
@@ -44,7 +44,7 @@ test("account navigation reuses the ACTIVE-membership switcher and role projecti
   };
   reads.switcher.mockResolvedValueOnce(switcher);
   reads.role.mockResolvedValueOnce("MEMBER");
-  expect(await loadAuthenticatedUserMenuWorkflow()).toEqual({
+  expect(await loadOrganizationSwitcherWorkflow()).toEqual({
     switcher,
     role: "MEMBER",
   });

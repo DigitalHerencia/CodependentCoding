@@ -24,6 +24,7 @@ import type {
   AdminPaginationProps,
   AdminPaginationSource,
   AdminListFeatureProps,
+  AdminMetric,
 } from "@/types/adminTypes";
 /** Compose links from validated, encoded criteria. */
 function pagination(
@@ -51,7 +52,19 @@ export async function loadAdminAuditWorkflow({
   criteria,
 }: AdminListFeatureProps) {
   const page = await getAuditEvents(await criteria);
-  return { page, pagination: pagination("/admin/audit", page) };
+  return {
+    page,
+    pagination: pagination("/admin/audit", page),
+    metrics: [
+      { label: "events", value: page.items.length },
+      {
+        label: "actors",
+        value: new Set(
+          page.items.flatMap((event) => (event.actor ? [event.actor.id] : [])),
+        ).size,
+      },
+    ] satisfies AdminMetric[],
+  };
 }
 /** Stable model IDs identify resources; preserve old label URLs as aliases. */
 export async function loadAdminRecordDetailWorkflow({
@@ -66,7 +79,17 @@ export async function loadAdminRecordDetailWorkflow({
 }
 /** Inventory counts are scoped to registered organization-owned resources. */
 export async function loadAdminRecordsWorkflow() {
-  return { records: await getAdminRecordSummary() };
+  const records = await getAdminRecordSummary();
+  return {
+    records,
+    metrics: [
+      { label: "resources", value: records.length },
+      {
+        label: "records",
+        value: records.reduce((sum, record) => sum + record.count, 0),
+      },
+    ] satisfies AdminMetric[],
+  };
 }
 /** Resolve a user within the active organization. */
 export async function loadAdminUserDetailWorkflow({ userId }: AdminUserLookup) {
@@ -79,7 +102,17 @@ export async function loadAdminUsersWorkflow({
   criteria,
 }: AdminListFeatureProps) {
   const page = await getAdminMemberships(await criteria);
-  return { page, pagination: pagination("/admin/users", page) };
+  return {
+    page,
+    pagination: pagination("/admin/users", page),
+    metrics: [
+      { label: "members", value: page.items.length },
+      {
+        label: "active",
+        value: page.items.filter((member) => member.status === "ACTIVE").length,
+      },
+    ] satisfies AdminMetric[],
+  };
 }
 /** Preserve existing verified-email workspace access approval. */
 export async function addAdminMembershipWorkflow(input: unknown) {
