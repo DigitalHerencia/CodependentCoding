@@ -4245,7 +4245,7 @@
     ]
   },
   "admin_378": {
-    "status": "local-checks-passed",
+    "status": "merged-verified",
     "issue": 378,
     "branch": "feat/378-admin-dashboard",
     "scope": "Owner-approved admin dashboard, layout authorization, invitation create/edit/cancel, permission restrictions and dual-authority organization transfers; CRM read-only.",
@@ -4266,6 +4266,21 @@
       "lib/workflows/pwaClientWorkflows.ts",
       "types/pwaTypes.ts",
       "existing admin-navigation callback edit"
-    ]
+    ],
+    "pull_request": 379,
+    "merge_commit": "1490c1d5cf008860175d999ff761731b2f0070d1",
+    "verified_commit": "91ccea208949d37584c285a9f3fdbc3625f51293",
+    "ci": {
+      "url": "https://github.com/DigitalHerencia/CodependentCoding/actions/runs/44399018907",
+      "conclusion": "success",
+      "checks": [
+        "Changed-file checks",
+        "Vercel",
+        "Vercel Preview Comments"
+      ]
+    },
+    "project_state": "Done",
+    "issue_state": "CLOSED",
+    "branch_cleanup": "Remote and local task branch deleted; main fast-forwarded to verified squash merge. Unrelated local PWA changes preserved."
   }
 }

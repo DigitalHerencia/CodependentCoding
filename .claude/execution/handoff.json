@@ -1,10 +1,10 @@
 {
   "$schema": "codependent-coding/execution/handoff/v1",
-  "updated": "2026-11-18T20:19:44.991910+00:00",
+  "updated": "2026-11-18T21:14:41.509506+00:00",
   "format": "One current package; history is in progress.json, decisions.json and git.",
-  "status": "local-checks-passed",
+  "status": "merged-verified",
   "milestone": "M-T",
-  "current_issue": 378,
+  "current_issue": null,
   "next_issue": null,
   "queue": [
     "CC-050",
@@ -12,14 +12,10 @@
     "CC-053",
     "CC-063"
   ],
-  "branch": "feat/378-admin-dashboard",
-  "active_package": {
-    "issue": 378,
-    "scope": "Admin owner-prompt implementation",
-    "verification": "format:write, lint:fix, typegen and typecheck passed; PR/CI next."
-  },
-  "source_commit": "126b2046c7b776eb4586dd09d326e3d45202b2e5",
-  "completion": "Implementation ready for permitted checks, PR, CI and authorized merge.",
+  "branch": "main",
+  "active_package": null,
+  "source_commit": "1490c1d5cf008860175d999ff761731b2f0070d1",
+  "completion": "PR #379 merged after final-head CI passed; Issue #378 closed and Project item Done. Task branches deleted; main synchronized. Execution records finalized after merge; metadata push follows.",
   "in_flight": [
     "CC-050 token consolidation implemented; focused static checks passed. Affected-site CI and owner browser contrast/reduced-motion verification pending. CC-049 merged in #351; main synced and branch deleted.",
     "Homepage PR #349 has passing CI and ready preview; owner desktop/mobile verification remains pending.",
@@ -38,9 +34,9 @@
     "No stash remains; previous source recovery snapshots are archive tags, not work to replay."
   ],
   "risks": [
-    "Source migration must be applied by owner before runtime uses deniedPermissions. No database job run.",
-    "No tests/builds/servers/runtime checks under owner limits.",
-    "Unrelated pre-existing PWA edits remain local and will not be committed."
+    "Migration source adding Membership.deniedPermissions and the audit index is unapplied; owner application required before runtime uses the new field.",
+    "No tests, local builds, servers, runtime/browser checks, migrations or seeds executed.",
+    "Unrelated pre-existing PWA edits remain local and uncommitted."
   ],
   "do_not": [
     "Start any dev server or run full suites",

@@ -1409,6 +1409,13 @@
         "https://clerk.com/docs/component-reference/user-button",
         "https://recharts.github.io/en-US/api/BarChart/"
       ]
+    },
+    {
+      "id": "ADMIN-378-MERGED-2026-11-18",
+      "date": "2026-11-18",
+      "status": "accepted",
+      "title": "Verified administration and invitation delivery merged",
+      "decision": "PR #379 squash-merged as 1490c1d5cf008860175d999ff761731b2f0070d1; final head 91ccea208949d37584c285a9f3fdbc3625f51293 passed Changed-file checks (https://github.com/DigitalHerencia/CodependentCoding/actions/runs/44399018907), Vercel and Preview Comments. Issue #378 closed and Project item Done. Both task branches deleted; main synchronized. CRM unchanged and pre-existing PWA changes preserved outside the commit. Only format:write, lint:fix, typegen and typecheck ran locally. Existing test sources and focused scripts updated but tests not executed. Database migration source remains unapplied under owner command limits; owner must apply it before runtime membership queries use deniedPermissions. No local builds, servers, migrations or seeds executed."
     }
   ]
 }
