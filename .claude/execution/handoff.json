@@ -2,7 +2,7 @@
   "$schema": "codependent-coding/execution/handoff/v1",
   "updated": "2026-11-18T03:56:12.446251+00:00",
   "format": "One current package; history is in progress.json, decisions.json and git.",
-  "status": "ready-for-pr",
+  "status": "in-review",
   "milestone": "M-T",
   "current_issue": "CC-080",
   "next_issue": "CC-080",
@@ -10,7 +10,7 @@
   "branch": "refactor/372-auth-authz-profile-modal",
   "active_package": "context/specs/issues/CC-080-auth-route-slices.md",
   "source_commit": "59c256766681883d7d1f9694b707c177b2e40e09",
-  "completion": "Auth/authz source implementation and permitted checks complete; PR/CI/merge/sync remain.",
+  "completion": "Auth/authz changes implemented and permitted checks passed; PR #373 awaiting final CI and merge.",
   "in_flight": [
     "CC-050 token consolidation implemented; focused static checks passed. Affected-site CI and owner browser contrast/reduced-motion verification pending. CC-049 merged in #351; main synced and branch deleted.",
     "Homepage PR #349 has passing CI and ready preview; owner desktop/mobile verification remains pending.",
@@ -100,8 +100,8 @@
     "issue": 372,
     "spec": "CC-080",
     "branch": "refactor/372-auth-authz-profile-modal",
-    "status": "ready-for-pr",
-    "remaining": ["PR", "CI", "merge", "branch cleanup and sync"],
+    "status": "in-review",
+    "remaining": ["CI", "merge", "branch cleanup and sync"],
     "verification": [
       {
         "command": "pnpm --dir packages/maximal-template run format:write --ignore-unknown <affected files>",
@@ -123,7 +123,8 @@
         "command": "pnpm --dir packages/maximal-template run typecheck",
         "result": "PASS on final source after strict OTP/provider contracts, import moves and selector extraction."
       }
-    ]
+    ],
+    "pr": 373
   },
   "next_actions": [
     "Finish permitted source checks",
@@ -154,7 +155,9 @@
   ],
   "delivery": {
     "issue_number": 372,
+    "pr_number": 373,
+    "pr_url": "https://github.com/DigitalHerencia/CodependentCoding/pull/373",
     "branch": "refactor/372-auth-authz-profile-modal",
-    "status": "ready-for-pr"
+    "status": "in-review"
   }
 }

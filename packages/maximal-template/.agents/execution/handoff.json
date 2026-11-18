@@ -45,8 +45,10 @@
   "updated_at": "2026-11-17T19:13:59.516Z",
   "delivery": {
     "issue_number": 372,
+    "pr_number": 373,
+    "pr_url": "https://github.com/DigitalHerencia/CodependentCoding/pull/373",
     "branch": "refactor/372-auth-authz-profile-modal",
-    "status": "ready-for-pr"
+    "status": "in-review"
   },
   "changed_file_inventory": [],
   "git_maintenance_2026_11_17": {
@@ -104,8 +106,8 @@
     "issue": 372,
     "spec": "CC-080",
     "branch": "refactor/372-auth-authz-profile-modal",
-    "status": "ready-for-pr",
-    "remaining": ["PR", "CI", "merge", "branch cleanup and sync"],
+    "status": "in-review",
+    "remaining": ["CI", "merge", "branch cleanup and sync"],
     "verification": [
       {
         "command": "pnpm --dir packages/maximal-template run format:write --ignore-unknown <affected files>",
@@ -127,10 +129,11 @@
         "command": "pnpm --dir packages/maximal-template run typecheck",
         "result": "PASS on final source after strict OTP/provider contracts, import moves and selector extraction."
       }
-    ]
+    ],
+    "pr": 373
   },
-  "status": "ready-for-pr",
+  "status": "in-review",
   "branch": "refactor/372-auth-authz-profile-modal",
-  "completion": "Auth/authz source implementation and permitted checks complete; PR/CI/merge/sync remain.",
+  "completion": "Auth/authz changes implemented and permitted checks passed; PR #373 awaiting final CI and merge.",
   "milestone": "M-T"
 }

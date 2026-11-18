@@ -4015,7 +4015,7 @@
     "issue": 372,
     "spec": "CC-080",
     "branch": "refactor/372-auth-authz-profile-modal",
-    "status": "ready-for-pr",
+    "status": "in-review",
     "source_of_truth": "Owner prompt 2026-11-18",
     "verification": [
       {
@@ -4058,6 +4058,11 @@
       "Lint type-import annotations",
       "Strict OTP props, provider nullable/type contracts and stale API imports",
       "Sibling lint base path corrected using the root script"
-    ]
+    ],
+    "pr": 373,
+    "pr_url": "https://github.com/DigitalHerencia/CodependentCoding/pull/373",
+    "checked_source_commit": "dfdf0f0d8b6f945421665d70fbd2667f9c68ad0f",
+    "source_review": "Existing browser expectations aligned with retired routes/modal contracts without executing tests.",
+    "project_status": "In review"
   }
 }
