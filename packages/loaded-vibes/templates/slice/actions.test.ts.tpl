@@ -2,8 +2,8 @@
 import assert from "node:assert/strict";
 import { beforeEach, test, vi } from "vitest";
 
-import type * as Auth from "@/lib/auth/auth";
-import type { AccessContext } from "@/types/accessTypes";
+import type * as Auth from "@/lib/integrations/clerk/server";
+import type { AccessContext } from "@/types/authzTypes";
 
 const state = vi.hoisted(() => ({
   signedIn: true,
@@ -12,7 +12,7 @@ const state = vi.hoisted(() => ({
   invalidated: [] as string[],
 }));
 
-vi.mock("@/lib/auth/auth", async (importOriginal) => {
+vi.mock("@/lib/integrations/clerk/server", async (importOriginal) => {
   const actual = await importOriginal<typeof Auth>();
   return {
     ...actual,

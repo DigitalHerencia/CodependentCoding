@@ -1,17 +1,16 @@
+/** Authenticated Navigation Workflows contracts and composition for the owning application slice. */
 import "server-only";
 import { cache } from "react";
-import { getOwnOnboardingProfile } from "@/lib/fetchers/onboardingFetchers";
 import {
   getActiveMembershipRole,
   getOrganizationSwitcher,
-} from "@/lib/fetchers/organizationFetchers";
+} from "@/lib/fetchers/authzFetchers";
 
 /** Reuse ACTIVE-member reads; menu visibility is never an authorization boundary. */
 export const loadAuthenticatedUserMenuWorkflow = cache(async () => {
-  const [profile, switcher, role] = await Promise.all([
-    getOwnOnboardingProfile(),
+  const [switcher, role] = await Promise.all([
     getOrganizationSwitcher(),
     getActiveMembershipRole(),
   ]);
-  return { profile, switcher, role };
+  return { switcher, role };
 });

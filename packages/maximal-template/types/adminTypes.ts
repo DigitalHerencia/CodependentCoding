@@ -1,3 +1,4 @@
+/** Admin Types contracts and composition for the owning application slice. */
 import type { MembershipStatus } from "@/generated/prisma/enums";
 import type { z } from "zod";
 import type {
@@ -5,7 +6,7 @@ import type {
   updateAdminMembershipStatusSchema,
   adminBulkOperationSchema,
 } from "@/schemas/adminSchemas";
-import type { AppRole } from "./accessTypes";
+import type { AppRole } from "./authzTypes";
 
 export type AdminMembershipDTO = {
   id: string;

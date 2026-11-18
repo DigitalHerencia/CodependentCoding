@@ -1,8 +1,9 @@
+/** Module Types contracts and composition for the owning application slice. */
 import type { Route } from "next";
 
 import type { Prisma } from "@/generated/prisma/client";
 
-import type { AppRole } from "@/types/accessTypes";
+import type { AppRole } from "@/types/authzTypes";
 import type { ModuleDashboardEntry } from "@/types/dashboardTypes";
 
 /** What a permission allows on a resource (AUTH.md §5.2). */

@@ -1,65 +1,164 @@
-import "server-only";
-
-import type { Prisma } from "@/generated/prisma/client";
-import { getIdentity } from "@/lib/auth/auth";
-import { projectClerkUser, verifyClerkWebhook } from "@/lib/auth/clerkWebhooks";
-import { redirectAfterAuth } from "@/lib/auth/redirects";
+/** Auth route orchestration shared safely across server entry and browser forms. */
 import {
-  claimWebhookEventTx,
-  completeWebhookEventTx,
-  failWebhookEventTx,
-  WebhookIdentityConflictError,
-} from "@/lib/db/transactions/webhookEventTx";
-import type { ClerkUserProjection } from "@/types/integrationTypes";
+  guardAuthEntryAction,
+  requireAuthIdentityAction,
+} from "@/lib/actions/authActions";
+import { useSignIn, useSignUp } from "@/lib/integrations/clerk/client";
 import type { NextRequest } from "next/server";
+import type {
+  AuthSignInTransition,
+  AuthSignUpTransition,
+  AuthFactor,
+  AuthSignInResource,
+  AuthSignInStep,
+  AuthSignInValues,
+  AuthSignUpResource,
+  AuthSignUpValues,
+  AuthFinalizeCallbacks,
+  ClerkWebhookDependencies,
+} from "@/types/authTypes";
 
+/** Resolve the sign-in route's identity guard through a server-only action. */
 export async function guardAuthEntryWorkflow() {
-  if (await getIdentity()) redirectAfterAuth();
+  await guardAuthEntryAction();
 }
-
-/** Verify the provider signature before any persistence; never expose a Server Action. */
-export async function handleClerkWebhookWorkflow(request: NextRequest) {
+/** Provider hooks stay behind the auth workflow API. */
+export function useAuthSignInWorkflow() {
+  return useSignIn();
+}
+/** Provider hooks stay behind the auth workflow API. */
+export function useAuthSignUpWorkflow() {
+  return useSignUp();
+}
+/** Dispatch the current sign-in, recovery, or verification stage to Clerk. */
+export async function submitAuthSignInWorkflow(
+  signIn: AuthSignInResource,
+  step: AuthSignInStep,
+  factor: AuthFactor,
+  values: AuthSignInValues,
+) {
+  if (step === "recover") {
+    const result = await signIn.create({ identifier: values.identifier });
+    if (result.error) return result;
+    return signIn.resetPasswordEmailCode.sendCode();
+  }
+  if (step === "reset-code")
+    return signIn.resetPasswordEmailCode.verifyCode({ code: values.code });
+  if (step === "password")
+    return signIn.password({
+      identifier: values.identifier,
+      password: values.password,
+    });
+  if (step === "new-password")
+    return signIn.resetPasswordEmailCode.submitPassword({
+      password: values.password,
+    });
+  if (factor === "totp") return signIn.mfa.verifyTOTP({ code: values.code });
+  if (factor === "backup_code")
+    return signIn.mfa.verifyBackupCode({ code: values.code });
+  if (factor === "phone_code")
+    return signIn.mfa.verifyPhoneCode({ code: values.code });
+  return signIn.mfa.verifyEmailCode({ code: values.code });
+}
+/** Clerk activates the session; the destination renders mandatory local onboarding. */
+export function finalizeAuthWorkflow(
+  resource: AuthSignInResource | AuthSignUpResource,
+  callbacks: AuthFinalizeCallbacks,
+) {
+  return resource.finalize({
+    navigate: ({ session, decorateUrl }) => {
+      if (session.currentTask) {
+        callbacks.onTask();
+        return;
+      }
+      callbacks.navigate(decorateUrl("/dashboard"));
+    },
+  });
+}
+/** Create or verify the sign-up attempt without provider-owned profile fields. */
+export function submitAuthSignUpWorkflow(
+  signUp: AuthSignUpResource,
+  verifying: boolean,
+  values: AuthSignUpValues,
+) {
+  return verifying
+    ? signUp.verifications.verifyEmailCode({ code: values.code })
+    : signUp.password({
+        username: values.username,
+        emailAddress: values.emailAddress,
+        password: values.password,
+      });
+}
+/** Send only an explicitly selected provider-supported verification code. */
+export async function sendAuthFactorWorkflow(
+  signIn: AuthSignInResource,
+  factor: AuthFactor,
+) {
+  if (factor === "email_code") return signIn.mfa.sendEmailCode();
+  if (factor === "phone_code") return signIn.mfa.sendPhoneCode();
+  return { error: null };
+}
+/** Resend recovery verification through the same installed provider API. */
+export function resendAuthRecoveryWorkflow(signIn: AuthSignInResource) {
+  return signIn.resetPasswordEmailCode.sendCode();
+}
+/** Reset the provider attempt when returning to initial sign-in. */
+export function resetAuthSignInWorkflow(signIn: AuthSignInResource) {
+  return signIn.reset();
+}
+/** Request email verification after Clerk accepts the sign-up details. */
+export function sendAuthSignUpCodeWorkflow(signUp: AuthSignUpResource) {
+  return signUp.verifications.sendEmailCode();
+}
+/** Invitation routes authenticate independently of local profile completion. */
+export async function loadInvitationAcceptanceWorkflow(
+  params: Promise<{ token: string }>,
+) {
+  await requireAuthIdentityAction();
+  return params;
+}
+/** Verify first, then claim and commit using server-owned, injected capabilities. */
+export async function handleClerkWebhookWorkflow(
+  request: NextRequest,
+  dependencies: ClerkWebhookDependencies,
+) {
   const payload = await request.clone().text();
-  let event: Awaited<ReturnType<typeof verifyClerkWebhook>>;
-
+  let event;
   try {
-    event = await verifyClerkWebhook(request);
+    event = await dependencies.verify(request);
   } catch {
     return Response.json(
       { error: "Invalid Clerk webhook signature." },
       { status: 400 },
     );
   }
-
   const eventId = request.headers.get("svix-id");
-  if (!eventId) {
+  if (!eventId)
     return Response.json(
       { error: "The svix-id header is required." },
       { status: 400 },
     );
-  }
-
+  let claimed: string | null = null;
   try {
-    const processed = await processClerkWebhook(event, eventId, payload);
-
-    return Response.json({ received: true, duplicate: !processed });
+    claimed = await dependencies.claim(eventId, event.type, payload);
+    if (!claimed) return Response.json({ received: true, duplicate: true });
+    const projection = await dependencies.project(event);
+    await dependencies.commit(event, projection, claimed);
+    return Response.json({ received: true, duplicate: false });
   } catch (error) {
-    if (error instanceof WebhookIdentityConflictError) {
+    if (dependencies.isConflict(error))
       return Response.json(
         { error: "Clerk webhook event identity conflict." },
         { status: 409 },
       );
+    if (claimed) {
+      try {
+        await dependencies.fail(claimed);
+      } catch {
+        console.error("Clerk webhook failure recording failed");
+      }
     }
-    // Log only a bounded diagnostic code, never payloads, credentials, or PII.
-    const code =
-      error &&
-      typeof error === "object" &&
-      "code" in error &&
-      typeof error.code === "string" &&
-      /^P\d{4}$/.test(error.code)
-        ? error.code
-        : "processing_failed";
-    console.error("Clerk webhook processing failed", { code });
+    console.error("Clerk webhook processing failed");
     return Response.json(
       { error: "Clerk webhook processing failed." },
       { status: 500 },
@@ -67,122 +166,58 @@ export async function handleClerkWebhookWorkflow(request: NextRequest) {
   }
 }
 
-/** Retain the durable claim/retry ledger and atomic identity plus completion writes. */
-async function processClerkWebhook(
-  event: Awaited<ReturnType<typeof verifyClerkWebhook>>,
-  eventId: string,
-  payload: string,
-) {
-  // Keep sign-in entry imports independent of database configuration. Load trusted
-  // persistence only after the HTTP workflow has verified the provider signature.
-  const { withProviderTransaction } = await import("@/lib/db/rls");
-  const webhookEventId = await withProviderTransaction((tx) =>
-    claimWebhookEventTx(tx, {
-      provider: "clerk",
-      eventId,
-      type: event.type,
-      payload,
-    }),
-  );
-  if (!webhookEventId) return false;
-
-  try {
-    await withProviderTransaction(async (tx) => {
-      if (event.type === "user.created" || event.type === "user.updated") {
-        await syncClerkUserTx(tx, projectClerkUser(event.data));
-      } else if (event.type === "user.deleted" && event.data.id) {
-        await anonymizeClerkUserTx(tx, event.data.id);
-      }
-
-      await completeWebhookEventTx(tx, webhookEventId);
-    });
-    return true;
-  } catch (error) {
-    try {
-      await withProviderTransaction((tx) =>
-        failWebhookEventTx(tx, webhookEventId, "processing_failed"),
-      );
-    } catch (recordingError) {
-      throw new AggregateError(
-        [error, recordingError],
-        "Clerk webhook processing and failure recording both failed.",
-      );
-    }
-    throw error;
-  }
-}
-
-/** Synchronize the provider identity using the accepted verified-email provisioning gate. */
-export async function syncClerkUserTx(
-  tx: Prisma.TransactionClient,
-  user: ClerkUserProjection,
-) {
-  const { setRlsContext } = await import("@/lib/db/rls");
-  const { provisionWorkspaceAccessTx } =
-    await import("@/lib/db/transactions/onboardingTx");
-  await setRlsContext(tx, { clerkUserId: user.clerkUserId });
-  const record = await tx.user.upsert({
-    where: { id: user.clerkUserId },
-    create: {
-      id: user.clerkUserId,
-      email: user.email,
-      displayName: user.displayName,
-      imageUrl: user.imageUrl,
-    },
-    update: {
-      email: user.email,
-      imageUrl: user.imageUrl,
-    },
-    select: { id: true },
-  });
-  await setRlsContext(tx, { userId: record.id });
-  await provisionWorkspaceAccessTx(
-    tx,
-    { id: record.id, displayName: user.displayName },
-    user.verifiedEmail,
+/** Project supported verification factors for the current sign-in attempt. */
+export function getAuthFactorsWorkflow(
+  signIn: AuthSignInResource,
+): AuthFactor[] {
+  return (signIn.supportedSecondFactors ?? []).flatMap(({ strategy }) =>
+    strategy === "totp" ||
+    strategy === "email_code" ||
+    strategy === "phone_code" ||
+    strategy === "backup_code"
+      ? [strategy]
+      : [],
   );
 }
-
-export async function anonymizeClerkUserTx(
-  tx: Prisma.TransactionClient,
-  clerkUserId: string,
-) {
-  const { setRlsContext } = await import("@/lib/db/rls");
-  await tx.$executeRaw`SELECT set_config('app.clerk_user_id', ${clerkUserId}, true)`;
-  await setRlsContext(tx, { userId: clerkUserId });
-  const memberships = await tx.membership.findMany({
-    where: { userId: clerkUserId },
-    select: { id: true, organizationId: true, status: true },
-  });
-  for (const membership of memberships) {
-    if (membership.status === "SUSPENDED" || membership.status === "REVOKED")
-      continue;
-    await setRlsContext(tx, { organizationId: membership.organizationId });
-    await tx.membership.updateMany({
-      where: {
-        id: membership.id,
-        userId: clerkUserId,
-        organizationId: membership.organizationId,
-      },
-      data: { status: "SUSPENDED" },
-    });
-    await tx.auditEvent.create({
-      data: {
-        organizationId: membership.organizationId,
-        actorUserId: clerkUserId,
-        action: "identity.deactivated",
-        resourceType: "Membership",
-        resourceId: membership.id,
-        metadata: {
-          source: "clerk-webhook",
-          previousStatus: membership.status,
-          status: "SUSPENDED",
-        },
-      },
-    });
+/** Compose post-submit sign-in transitions and provider-owned session tasks. */
+export async function advanceAuthSignInWorkflow(
+  signIn: AuthSignInResource,
+  callbacks: AuthFinalizeCallbacks,
+): Promise<AuthSignInTransition> {
+  if (signIn.status === "complete")
+    return {
+      kind: "finalize",
+      result: await finalizeAuthWorkflow(signIn, callbacks),
+    };
+  if (signIn.status === "needs_new_password") return { kind: "password" };
+  if (
+    signIn.status === "needs_second_factor" ||
+    signIn.status === "needs_client_trust"
+  ) {
+    const factor = getAuthFactorsWorkflow(signIn)[0];
+    if (factor)
+      return {
+        kind: "factor",
+        factor,
+        result: await sendAuthFactorWorkflow(signIn, factor),
+      };
   }
-  await tx.user.updateMany({
-    where: { id: clerkUserId },
-    data: { email: null, displayName: "Deleted user", imageUrl: null },
-  });
+  return { kind: "managed" };
+}
+/** Compose email verification or session activation after accepted sign-up input. */
+export async function advanceAuthSignUpWorkflow(
+  signUp: AuthSignUpResource,
+  callbacks: AuthFinalizeCallbacks,
+): Promise<AuthSignUpTransition> {
+  if (signUp.status === "complete")
+    return {
+      kind: "finalize",
+      result: await finalizeAuthWorkflow(signUp, callbacks),
+    };
+  if (
+    signUp.missingFields.length === 0 &&
+    signUp.unverifiedFields.includes("email_address")
+  )
+    return { kind: "verify", result: await sendAuthSignUpCodeWorkflow(signUp) };
+  return { kind: "managed" };
 }

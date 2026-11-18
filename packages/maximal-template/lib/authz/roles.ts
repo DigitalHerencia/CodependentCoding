@@ -1,7 +1,8 @@
+/** Browser-safe membership role vocabulary and role comparisons. */
 // The one lib/authz file without "server-only": role names are vocabulary,
 // not secrets, and role pickers and their schemas need them in the browser.
 import { MembershipRole } from "@/generated/prisma/enums";
-import type { AppRole } from "@/types/accessTypes";
+import type { AppRole, InvitableRole } from "@/types/authzTypes";
 
 const roleRank = {
   [MembershipRole.OWNER]: 0,
@@ -10,11 +11,10 @@ const roleRank = {
   [MembershipRole.VIEWER]: 3,
 } satisfies Record<MembershipRole, number>;
 
+/** Membership roles ordered from highest privilege to lowest privilege. */
 export const appRoles = Object.values(MembershipRole).sort(
   (left, right) => roleRank[left] - roleRank[right],
 );
-
-type InvitableRole = Exclude<AppRole, "OWNER">;
 
 /** Roles an invitation can grant: every role but OWNER, highest first. */
 export const invitableRoles = appRoles.filter(
@@ -32,6 +32,7 @@ const privilegedRoles = new Set<AppRole>([
   MembershipRole.ADMIN,
 ]);
 
+/** Narrow an untrusted role string to a supported membership role. */
 export function isAppRole(value: string): value is AppRole {
   return appRoles.some((role) => role === value);
 }

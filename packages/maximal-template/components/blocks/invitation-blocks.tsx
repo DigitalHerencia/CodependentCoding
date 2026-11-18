@@ -1,3 +1,5 @@
+/** Invitation blocks contracts and composition for the owning application slice. */
+import { formResultCopy } from "@/content/application";
 import { Button } from "@/components/ui/button";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
@@ -61,6 +63,7 @@ export function InvitationRoleFieldBlock({
 }
 
 export function InvitationCreateBlock({
+  failure,
   onSubmit,
   busy,
   children,
@@ -80,7 +83,15 @@ export function InvitationCreateBlock({
       <fieldset disabled={busy} className="space-y-3">
         {children}
       </fieldset>
-      {error && <FieldError>{error}</FieldError>}
+      {(failure || error) && (
+        <FieldError>
+          {failure === "invalid"
+            ? copy.invalid
+            : failure === "failed"
+              ? formResultCopy.failed
+              : error}
+        </FieldError>
+      )}
       {link && (
         <p role="status">
           {copy.share} <code className="break-all">{link}</code>
@@ -95,6 +106,7 @@ export function InvitationCreateBlock({
 
 /** A token is retained in RHF state, never copied into visible presentation or error messages. */
 export function InvitationAcceptanceBlock({
+  failure,
   onSubmit,
   busy,
   error,
@@ -109,7 +121,15 @@ export function InvitationAcceptanceBlock({
     >
       <h1 className="type-title">{copy.joinTitle}</h1>
       <p>{copy.joinDescription}</p>
-      {error && <FieldError>{error}</FieldError>}
+      {(failure || error) && (
+        <FieldError>
+          {failure === "invalid"
+            ? copy.invalid
+            : failure === "failed"
+              ? formResultCopy.failed
+              : error}
+        </FieldError>
+      )}
       <Button type="submit" disabled={busy}>
         {copy.accept}
       </Button>
@@ -151,7 +171,7 @@ export function InvitationsBlock({
           ))}
         </ul>
       )}
-      {error && <p role="alert">{error}</p>}
+      {error && <p role="alert">{copy.revokeFailed}</p>}
     </div>
   );
 }

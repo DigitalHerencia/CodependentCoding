@@ -1,7 +1,11 @@
+/** Proxy contracts and composition for the owning application slice. */
 import { clerkMiddleware } from "@clerk/nextjs/server";
 import { NextResponse, type NextRequest } from "next/server";
 
-import { DEFAULT_AUTH_REDIRECT_PATH, SIGN_IN_PATH } from "@/lib/auth/redirects";
+import {
+  DEFAULT_AUTH_REDIRECT_PATH,
+  SIGN_IN_PATH,
+} from "@/lib/constants/authConstants";
 import { baseEnv } from "@/lib/utils/env";
 import { isDevelopment } from "@/lib/constants/mode";
 

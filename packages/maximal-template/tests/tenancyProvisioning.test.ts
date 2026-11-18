@@ -1,10 +1,11 @@
+/** Tenancy Provisioning.test contracts for the owning application slice. */
 import { beforeEach, expect, test, vi } from "vitest";
 import type { Prisma } from "@/generated/prisma/client";
-import { provisionWorkspaceAccessTx } from "@/lib/db/transactions/onboardingTx";
+import { provisionWorkspaceAccessTx } from "@/lib/db/selects/authzTx";
 import { SINGLE_ORGANIZATION_ID } from "@/lib/authz/mode";
 import type * as AuthzMode from "@/lib/authz/mode";
-import type { AppRole } from "@/types/accessTypes";
-import { syncClerkUserTx } from "@/lib/workflows/authWorkflows";
+import type { AppRole } from "@/types/authzTypes";
+import { syncClerkUserTx } from "@/lib/db/selects/authTx";
 import { acceptInvitationTx } from "@/lib/db/transactions/invitationTx";
 
 const mode = vi.hoisted(() => ({ tenancy: "single" }));

@@ -8,7 +8,7 @@
 import type { ActionResult } from "@/types/actionTypes";
 import type { {{Entity}}DTO } from "@/types/{{module}}Types";
 import { toActionResult } from "@/lib/utils/actionResult";
-import { requireIdentity } from "@/lib/auth/auth";
+import { requireIdentity } from "@/lib/integrations/clerk/server";
 import { assertPermission } from "@/lib/authz/permissions";
 import { to{{Entity}}DTO } from "@/lib/db/dtos/{{module}}Dtos";
 import { {{entity}}Select } from "@/lib/db/selects/{{module}}Selects";

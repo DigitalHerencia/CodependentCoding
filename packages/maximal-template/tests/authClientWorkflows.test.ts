@@ -1,9 +1,10 @@
+/** Auth Client Workflows.test contracts for the owning application slice. */
 import { beforeEach, expect, test, vi } from "vitest";
 import {
   finalizeAuthWorkflow,
   submitAuthSignInWorkflow,
   submitAuthSignUpWorkflow,
-} from "@/lib/workflows/authClientWorkflows";
+} from "@/lib/workflows/authWorkflows";
 import {
   getSignInFormSchema,
   getSignUpFormSchema,

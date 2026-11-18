@@ -1,7 +1,5 @@
-import {
-  InvitationsBlock,
-  OrganizationSwitcherBlock,
-} from "@/components/blocks/settings-blocks";
+/** Shared templates contracts and composition for the owning application slice. */
+import { InvitationsBlock } from "@/components/blocks/settings-blocks";
 import {
   DashboardLayout,
   WorkspaceLoadingState,
@@ -11,8 +9,6 @@ import {
 import {
   SharedIntegrationsContentBlock,
   SharedMembersContentBlock,
-  SharedOnboardingPageBlock,
-  SharedProfileSettingsContentBlock,
 } from "@/components/blocks/shared-page-blocks";
 import { sharedPresentationCopy } from "@/content/shared";
 import type { ComponentProps } from "react";
@@ -39,31 +35,10 @@ export function SharedMembersTemplate(
     </DashboardLayout>
   );
 }
-export function SharedOnboardingTemplate(
-  props: ComponentProps<typeof SharedOnboardingPageBlock>,
-) {
-  return <SharedOnboardingPageBlock {...props} />;
-}
-export function SharedProfileSettingsTemplate(
-  props: ComponentProps<typeof SharedProfileSettingsContentBlock>,
-) {
-  return (
-    <DashboardLayout title={sharedPresentationCopy.workspaceSettings} nav={[]}>
-      <SharedProfileSettingsContentBlock {...props} />
-    </DashboardLayout>
-  );
-}
-
 export function InvitationsTemplate(
   props: ComponentProps<typeof InvitationsBlock>,
 ) {
   return <InvitationsBlock {...props} />;
-}
-
-export function OrganizationSwitcherTemplate(
-  props: ComponentProps<typeof OrganizationSwitcherBlock>,
-) {
-  return <OrganizationSwitcherBlock {...props} />;
 }
 
 export function WorkspaceLoadingTemplate(

@@ -1,9 +1,11 @@
-import type { AppRole } from "@/types/accessTypes";
+/** Invitation Types contracts and composition for the owning application slice. */
+import type { AppRole } from "@/types/authzTypes";
 import type { ComponentProps, ReactNode } from "react";
 
 export type InvitationFormProps = {
   onSubmit: ComponentProps<"form">["onSubmit"];
   busy: boolean;
+  failure?: "invalid" | "failed" | undefined;
   error?: string | undefined;
 };
 

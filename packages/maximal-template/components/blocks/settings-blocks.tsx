@@ -1,49 +1,8 @@
 "use client";
 
-import {
-  NativeSelect,
-  NativeSelectOption,
-} from "@/components/ui/native-select";
-import { settingsBlockCopy, settingsLibraryCopy } from "@/content/settings";
-import type { OrganizationSwitcherDTO } from "@/types/commonTypes";
+/** Settings blocks contracts and composition for the owning application slice. */
+import { settingsLibraryCopy } from "@/content/settings";
 import type * as React from "react";
-import type { ChangeEvent } from "react";
-
-export function OrganizationSwitcherBlock({
-  activeOrganizationId,
-  organizations,
-  pending,
-  error,
-  onOrganizationChange,
-}: {
-  activeOrganizationId: string;
-  organizations: OrganizationSwitcherDTO["organizations"];
-  pending: boolean;
-  error: string;
-  onOrganizationChange: (event: ChangeEvent<HTMLSelectElement>) => void;
-}) {
-  return (
-    <div className="space-y-1">
-      <label htmlFor="organization-switcher" className="eyebrow">
-        {settingsBlockCopy.organization}
-      </label>
-      <NativeSelect
-        id="organization-switcher"
-        key={activeOrganizationId}
-        defaultValue={activeOrganizationId}
-        disabled={pending}
-        onChange={onOrganizationChange}
-      >
-        {organizations.map((organization) => (
-          <NativeSelectOption key={organization.id} value={organization.id}>
-            {organization.name}
-          </NativeSelectOption>
-        ))}
-      </NativeSelect>
-      {error && <p role="alert">{error}</p>}
-    </div>
-  );
-}
 
 export { InvitationsBlock } from "@/components/blocks/invitation-blocks";
 

@@ -1,3 +1,4 @@
+/** Dialog contracts and composition for the owning application slice. */
 import * as React from "react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { X } from "lucide-react";
@@ -28,8 +29,10 @@ DialogOverlay.displayName = DialogPrimitive.Overlay.displayName;
 
 const DialogContent = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Content>,
-  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
->(({ className, children, ...props }, ref) => (
+  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> & {
+    showCloseButton?: boolean;
+  }
+>(({ className, children, showCloseButton = true, ...props }, ref) => (
   <DialogPortal>
     <DialogOverlay />
     <DialogPrimitive.Content
@@ -41,10 +44,12 @@ const DialogContent = React.forwardRef<
       {...props}
     >
       {children}
-      <DialogPrimitive.Close className="absolute top-4 right-4 border-2 border-foreground bg-background p-1 shadow-[4px_4px_0px_hsl(var(--shadow-color))] transition duration-200 hover:translate-x-[4px] hover:translate-y-[4px] hover:shadow-none focus:ring-2 focus:ring-ring focus:outline-none active:translate-x-[4px] active:translate-y-[4px] active:shadow-none disabled:pointer-events-none">
-        <X className="h-4 w-4 stroke-[3]" />
-        <span className="sr-only">Close</span>
-      </DialogPrimitive.Close>
+      {showCloseButton && (
+        <DialogPrimitive.Close className="absolute top-4 right-4 border-2 border-foreground bg-background p-1 shadow-[4px_4px_0px_hsl(var(--shadow-color))] transition duration-200 hover:translate-x-[4px] hover:translate-y-[4px] hover:shadow-none focus:ring-2 focus:ring-ring focus:outline-none active:translate-x-[4px] active:translate-y-[4px] active:shadow-none disabled:pointer-events-none">
+          <X className="h-4 w-4 stroke-[3]" />
+          <span className="sr-only">Close</span>
+        </DialogPrimitive.Close>
+      )}
     </DialogPrimitive.Content>
   </DialogPortal>
 ));

@@ -1,12 +1,8 @@
-import { AuthFormPanel } from "@/components/blocks/auth-blocks";
-import {
-  DashboardPanel,
-  DashboardTable,
-} from "@/components/blocks/shared-blocks";
+/** Shared page blocks contracts and composition for the owning application slice. */
+import { DashboardTable } from "@/components/blocks/shared-blocks";
 import { Card } from "@/components/ui/card";
 import { settingsPresentationCopy } from "@/content/settings";
 import { sharedPresentationCopy, sharedRemainingCopy } from "@/content/shared";
-import type { OrganizationDTO } from "@/types/commonTypes";
 import type { IntegrationStatus } from "@/types/integrationTypes";
 import type { ReactNode } from "react";
 
@@ -73,48 +69,6 @@ export function SharedMembersContentBlock({
           {invitations}
         </section>
       )}
-    </>
-  );
-}
-
-export function SharedOnboardingPageBlock({
-  title,
-  description,
-  children,
-}: {
-  title: string;
-  description: string;
-  children?: ReactNode;
-}) {
-  return (
-    <AuthFormPanel title={title} description={description}>
-      {children}
-    </AuthFormPanel>
-  );
-}
-
-export function SharedProfileSettingsContentBlock({
-  organization,
-  children,
-}: {
-  organization: OrganizationDTO;
-  children: ReactNode;
-}) {
-  return (
-    <>
-      <div className="grid gap-5 lg:grid-cols-[1fr_2fr]">
-        <DashboardPanel title={sharedPresentationCopy.workspace}>
-          <h2 className="type-title">{organization.name}</h2>
-          <p className="mt-3">{organization.slug}</p>
-          <p>
-            {organization.memberCount}
-            {sharedPresentationCopy.members}
-          </p>
-        </DashboardPanel>
-        <DashboardPanel title={sharedPresentationCopy.regionalPreferences}>
-          {children}
-        </DashboardPanel>
-      </div>
     </>
   );
 }

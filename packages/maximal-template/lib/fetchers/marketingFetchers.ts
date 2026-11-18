@@ -1,3 +1,4 @@
+/** Marketing Fetchers contracts and composition for the owning application slice. */
 import {
   persistedReadLimitSchema,
   persistedRecordIdSchema,
@@ -10,7 +11,7 @@ import {
   audienceSelect,
   campaignSelect,
 } from "@/lib/db/selects/marketingSelects";
-import { withAuthenticatedRead } from "@/lib/db/tenant";
+import { withAuthenticatedRead } from "@/lib/db/tenancy";
 
 export async function getCampaigns(rawLimit: unknown = 50) {
   return withAuthenticatedRead(async (tx, access) => {

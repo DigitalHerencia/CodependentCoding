@@ -1,11 +1,11 @@
+/** Auth Webhook Workflow.test contracts for the owning application slice. */
 import { beforeEach, expect, test, vi } from "vitest";
 import { NextRequest } from "next/server";
 import type { Prisma } from "@/generated/prisma/client";
-import {
-  handleClerkWebhookWorkflow,
-  guardAuthEntryWorkflow,
-} from "@/lib/workflows/authWorkflows";
+import { guardAuthEntryWorkflow } from "@/lib/workflows/authWorkflows";
+import { POST as handleClerkWebhookWorkflow } from "@/app/api/clerk/webhooks/route";
 import { WebhookIdentityConflictError } from "@/lib/db/transactions/webhookEventTx";
+import type * as AuthzTxModule from "@/lib/db/selects/authzTx";
 import type * as WebhookEventModule from "@/lib/db/transactions/webhookEventTx";
 
 const mocks = vi.hoisted(() => ({
@@ -18,23 +18,32 @@ const mocks = vi.hoisted(() => ({
   fail: vi.fn(),
   provision: vi.fn(),
 }));
-vi.mock("@/lib/auth/auth", () => ({ getIdentity: mocks.identity }));
-vi.mock("@/lib/auth/redirects", () => ({ redirectAfterAuth: mocks.redirect }));
-vi.mock("@/lib/auth/clerkWebhooks", () => ({
+vi.mock("@/lib/integrations/clerk/server", () => ({
+  getIdentity: mocks.identity,
+}));
+vi.mock("@/lib/utils/authRedirects", () => ({
+  redirectAfterAuth: mocks.redirect,
+}));
+vi.mock("@/lib/integrations/clerk/webhooks", () => ({
   verifyClerkWebhook: mocks.verify,
-  projectClerkUser: () => ({
-    clerkUserId: "user_fixture",
-    email: "fixture@example.test",
-    verifiedEmail: "fixture@example.test",
-    displayName: "Fixture",
-    imageUrl: null,
-  }),
+  resolveClerkWebhookUser: async (event: { type: string }) =>
+    event.type === "user.deleted"
+      ? null
+      : {
+          clerkUserId: "user_fixture",
+          email: "fixture@example.test",
+          verifiedEmail: "fixture@example.test",
+          displayName: "Fixture",
+          imageUrl: null,
+          username: null,
+        },
 }));
 vi.mock("@/lib/db/rls", () => ({
   withProviderTransaction: mocks.transaction,
   setRlsContext: vi.fn(async () => {}),
 }));
-vi.mock("@/lib/db/transactions/onboardingTx", () => ({
+vi.mock("@/lib/db/selects/authzTx", async (importOriginal) => ({
+  ...(await importOriginal<typeof AuthzTxModule>()),
   provisionWorkspaceAccessTx: mocks.provision,
 }));
 vi.mock("@/lib/db/transactions/webhookEventTx", async (importOriginal) => ({
@@ -141,7 +150,17 @@ test("deletion suspends active memberships without reactivating revoked or suspe
   expect(tx.auditEvent.create).toHaveBeenCalledOnce();
   expect(tx.user.updateMany).toHaveBeenCalledWith({
     where: { id: "user_fixture" },
-    data: { email: null, displayName: "Deleted user", imageUrl: null },
+    data: {
+      email: null,
+      displayName: "Deleted user",
+      imageUrl: null,
+      username: null,
+      firstName: null,
+      lastName: null,
+      bio: null,
+      phoneNumber: null,
+      profileCompletedAt: null,
+    },
   });
 });
 
@@ -161,7 +180,6 @@ test("processing errors record a retryable failure without leaking provider data
   );
   expect(diagnostic).toHaveBeenCalledExactlyOnceWith(
     "Clerk webhook processing failed",
-    { code: "P2002" },
   );
 });
 

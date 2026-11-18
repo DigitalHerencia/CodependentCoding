@@ -1,4 +1,5 @@
 "use server";
+/** Portal Actions contracts and composition for the owning application slice. */
 import { toActionResult } from "@/lib/utils/actionResult";
 
 import {
@@ -6,13 +7,13 @@ import {
   addPortalDocumentVersionSchema,
   createPortalDocumentSchema,
 } from "@/schemas/portalSchemas";
-import { requireIdentity } from "@/lib/auth/auth";
+import { requireIdentity } from "@/lib/integrations/clerk/server";
 import { assertPermission } from "@/lib/authz/permissions";
 import { limitedToCustomerRecords } from "@/lib/authz/attributes";
 import { ResourceNotFoundError } from "@/lib/db/transactions/errors";
 import { toPortalDocumentDTO } from "@/lib/db/dtos/portalDtos";
 import { portalDocumentSelect } from "@/lib/db/selects/portalSelects";
-import { withTenantTransaction } from "@/lib/db/tenant";
+import { withTenantTransaction } from "@/lib/db/tenancy";
 import { readPrivateBlob } from "@/lib/integrations/vercel-blob/download";
 import { sharePortalDocumentTx } from "@/lib/db/transactions/portalTx";
 import { addPortalVersionTx } from "@/lib/db/transactions/portalAddVersionTx";
@@ -76,7 +77,8 @@ export async function downloadPortalDocument(rawInput: unknown) {
     const identity = await requireIdentity();
     const asset = await withTenantTransaction(identity, async (tx, access) => {
       assertPermission(access, "portal.document:read");
-      if (limitedToCustomerRecords(access)) throw new ResourceNotFoundError("File");
+      if (limitedToCustomerRecords(access))
+        throw new ResourceNotFoundError("File");
       const { documentId } = portalDocumentCommandSchema
         .pick({ documentId: true })
         .parse(rawInput);

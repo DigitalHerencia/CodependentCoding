@@ -1,3 +1,4 @@
+/** Tenant contracts and composition for the owning application slice. */
 import type {
   TenantMobileNavigationItem,
   TenantNavigationLink,
@@ -30,9 +31,7 @@ export const tenantCopy = {
 /** Fixed mobile destinations are independent of optional installed modules. */
 export const tenantMobileItems = [
   { href: "/dashboard", label: "Dashboard", icon: "home" },
-  { href: "/settings/profile", label: "Profile", icon: "settings" },
   { href: "/settings/members", label: "Members", icon: "users" },
-  { href: "/onboarding", label: "Workspace", icon: "building" },
 ] as const satisfies readonly TenantMobileNavigationItem[];
 
 /** Public legal destinations available from the authenticated footer. */

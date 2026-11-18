@@ -1,13 +1,12 @@
+/** Layout contracts and composition for the owning application slice. */
 import { Suspense, type ReactNode } from "react";
 
 import { TenantLoadingTemplate } from "@/components/templates/tenant-templates";
-import { TenantShell } from "@/components/shells/tenant-shell";
 import { tenantCopy } from "@/content/tenant";
 import { OnboardingGateFeature } from "@/features/onboarding/onboarding-gate-feature";
-import { AuthenticatedUserMenuFeature } from "@/features/navigation/authenticated-user-menu-feature";
-import { getIdentity } from "@/lib/auth/auth";
-import { redirectToSignIn } from "@/lib/auth/redirects";
-import { loadTenantNavigationWorkflow } from "@/lib/workflows/tenantWorkflows";
+import { getIdentity } from "@/lib/integrations/clerk/server";
+import { redirectToSignIn } from "@/lib/utils/authRedirects";
+import { AuthzWorkspaceFeature } from "@/features/authz/authzWorkspaceFeature";
 
 /** Authenticated tenant frame; membership and navigation reads stream behind Suspense. */
 export default function TenantLayout({
@@ -29,23 +28,7 @@ async function SignedInTenant({ children }: Readonly<{ children: ReactNode }>) {
 
   return (
     <OnboardingGateFeature>
-      <TenantWorkspace>{children}</TenantWorkspace>
+      <AuthzWorkspaceFeature>{children}</AuthzWorkspaceFeature>
     </OnboardingGateFeature>
-  );
-}
-
-/** The gate has passed; provide the one shared shell its current navigation. */
-async function TenantWorkspace({
-  children,
-}: Readonly<{ children: ReactNode }>) {
-  const navigation = await loadTenantNavigationWorkflow();
-  return (
-    <TenantShell
-      navigation={navigation}
-      accountMenu={<AuthenticatedUserMenuFeature />}
-      mobileAccountMenu={<AuthenticatedUserMenuFeature presentation="panel" />}
-    >
-      {children}
-    </TenantShell>
   );
 }

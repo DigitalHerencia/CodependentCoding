@@ -1,9 +1,10 @@
+/** Invitation Tx contracts and composition for the owning application slice. */
 import "server-only";
 
 import { createHash } from "node:crypto";
 
 import type { Prisma } from "@/generated/prisma/client";
-import type { AppRole } from "@/types/accessTypes";
+import type { AppRole } from "@/types/authzTypes";
 
 import { setRlsContext } from "@/lib/db/rls";
 import { assertInvitationsAllowed } from "@/lib/authz/tenancy";
@@ -35,7 +36,13 @@ export async function acceptInvitationTx(
   await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtextextended(${lockKey}, 0))`;
   await setRlsContext(tx, { organizationId });
   const accepted = await tx.invitation.updateMany({
-    where: { id: invitation.id, organizationId, role: invitation.role, status: "PENDING", expiresAt: { gt: new Date() } },
+    where: {
+      id: invitation.id,
+      organizationId,
+      role: invitation.role,
+      status: "PENDING",
+      expiresAt: { gt: new Date() },
+    },
     data: { status: "ACCEPTED", acceptedAt: new Date() },
   });
   const existing = await tx.membership.findUnique({

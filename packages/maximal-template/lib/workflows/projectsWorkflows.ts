@@ -1,4 +1,5 @@
-import { getOrganizationMembers } from "@/lib/fetchers/organizationFetchers";
+/** Projects Workflows contracts and composition for the owning application slice. */
+import { getOrganizationMembers } from "@/lib/fetchers/authzFetchers";
 import {
   getMyTasks,
   getProject,

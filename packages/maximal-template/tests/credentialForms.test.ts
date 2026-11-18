@@ -1,3 +1,4 @@
+/** Credential Forms.test contracts for the owning application slice. */
 import assert from "node:assert/strict";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
@@ -10,12 +11,12 @@ vi.mock("@clerk/nextjs", () => ({
   SignUp: () => null,
 }));
 
-import { AuthSignInForm } from "@/features/auth/authSignInForm";
-import { AuthSignUpForm } from "@/features/auth/authSignUpForm";
+import { AuthNewSignInForm } from "@/features/auth/authNewSignInForm";
+import { AuthNewSignUpForm } from "@/features/auth/authNewSignUpForm";
 
 for (const [path, Component] of [
-  ["/sign-in", AuthSignInForm],
-  ["/sign-up", AuthSignUpForm],
+  ["/sign-in", AuthNewSignInForm],
+  ["/sign-up", AuthNewSignUpForm],
 ] as const) {
   test(`${path} cannot submit credentials through a native GET before hydration`, () => {
     const html = renderToStaticMarkup(createElement(Component));

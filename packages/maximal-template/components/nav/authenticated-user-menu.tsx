@@ -1,5 +1,6 @@
 "use client";
 
+/** Authenticated user menu contracts and composition for the owning application slice. */
 import { useUser } from "@clerk/nextjs";
 import { useEffect, useRef, useState } from "react";
 import type { MouseEvent } from "react";
@@ -10,8 +11,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { OnboardingProfileCardBlock } from "@/components/blocks/onboarding-blocks";
-import { OrganizationSwitcherFeatureClient } from "@/features/settings/organization-switcher-feature.client";
+import { AuthzOrganizationSwitcherFeatureClient } from "@/features/authz/authzOrganizationSwitcherFeatureClient";
 import { usePwaAccountMenuWorkflow } from "@/lib/workflows/pwaClientWorkflows";
 import { useAuthenticatedNavigationDismiss } from "@/components/nav/authenticated-mobile-navigation";
 import { authenticatedNavigationCopy as copy } from "@/content/authenticated-navigation";
@@ -19,7 +19,6 @@ import type { AuthenticatedUserMenuProps } from "@/types/authenticatedNavigation
 
 /** Rich account panel uses native form controls; it is a popover, not an ARIA command menu. */
 export function AuthenticatedUserMenu({
-  profile,
   switcher,
   role,
   presentation = "popover",
@@ -48,7 +47,9 @@ export function AuthenticatedUserMenu({
     <Avatar className="size-8">
       {user?.imageUrl && <AvatarImage src={user.imageUrl} alt="" />}
       <AvatarFallback aria-hidden>
-        {profile.displayName.trim().slice(0, 1).toUpperCase()}
+        {(user?.username ?? user?.primaryEmailAddress?.emailAddress ?? "")
+          .slice(0, 1)
+          .toUpperCase()}
       </AvatarFallback>
     </Avatar>
   );
@@ -58,7 +59,6 @@ export function AuthenticatedUserMenu({
         {avatar}
         <h2 className="type-heading">{copy.account}</h2>
       </div>
-      <OnboardingProfileCardBlock profile={profile} />
       <dl className="space-y-2 text-sm">
         <div>
           <dt className="text-muted-foreground">{copy.role}</dt>
@@ -80,7 +80,7 @@ export function AuthenticatedUserMenu({
         )}
       </dl>
       {switcher.organizations.length > 1 && (
-        <OrganizationSwitcherFeatureClient {...switcher} />
+        <AuthzOrganizationSwitcherFeatureClient {...switcher} />
       )}
       <div className="flex flex-wrap gap-3">
         <Button

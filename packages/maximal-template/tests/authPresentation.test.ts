@@ -1,10 +1,11 @@
+/** Auth Presentation.test contracts for the owning application slice. */
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { expect, test, vi } from "vitest";
 import RouteError from "@/app/(auth)/error";
 import Loading from "@/app/(auth)/loading";
 import { AuthInputBlock } from "@/components/blocks/auth-blocks";
-import { AuthHeader } from "@/components/nav/auth-header";
+import { AuthHeaderBlock } from "@/components/blocks/auth-shell-blocks";
 
 test("the auth error boundary passes Next's reset callback without exposing error details", () => {
   const reset = vi.fn();
@@ -26,7 +27,7 @@ test("loading announces its state and hides decorative skeletons", () => {
 });
 
 test("the auth header returns home through a plain link", () => {
-  const html = renderToStaticMarkup(createElement(AuthHeader));
+  const html = renderToStaticMarkup(createElement(AuthHeaderBlock));
   expect(html).toContain('href="/"');
   expect(html).toContain("Return Home");
   expect(html).not.toMatch(/<button|role="button"|data-slot="button"/);

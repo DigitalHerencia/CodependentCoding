@@ -7,39 +7,46 @@
     ".agents/contracts/validation.yaml"
   ],
   "spec_catalog": "context/specs/catalog.json",
-  "active_spec_id": null,
-  "next_spec_id": null,
+  "active_spec_id": "CC-080",
+  "next_spec_id": "CC-080",
   "completed_spec_ids": ["TYPESCRIPTION-T2", "TYPESCRIPTION-T3"],
   "blocked_spec_ids": [],
-  "next_actions": [],
+  "next_actions": [
+    "Finish permitted source checks",
+    "Open Issue #372 linked PR",
+    "Merge green CI; clean task branch and sync main"
+  ],
   "risks": [
-    "Local builds, tests and browser/runtime checks were not run under repository resource limits."
+    "No tests, builds, browser/runtime checks, migrations or seeds executed per owner resource limits.",
+    "BoldKit auth/onboarding/error registry endpoints unavailable; existing presentation adapted using available registry primitives."
   ],
   "verification_summary": [
     {
-      "command": "pnpm.cmd typecheck",
-      "result": "PASS: Prisma generation, Next route type generation, TypeScript."
+      "command": "pnpm --dir packages/maximal-template run format:write --ignore-unknown <affected files>",
+      "result": "PASS: 169 affected files formatted; subsequent affected source/root-package formatting passed."
     },
     {
-      "command": "Template-local Prettier and zero-warning ESLint on complete committed PR diff",
-      "result": "PASS"
+      "command": "pnpm --dir packages/maximal-template run lint:fix <affected template files>",
+      "result": "PASS: 149 affected source files; subsequent affected selector/transaction/schema files passed with zero warnings."
     },
     {
-      "command": "gh pr checks 371 --watch --interval 15",
-      "result": "PASS: Changed-file checks, Vercel, Vercel Preview Comments for head 201adf9."
+      "command": "pnpm run lint:fix packages/generator/src/compose.mjs packages/loaded-vibes/scripts/rls-sql.mjs",
+      "result": "PASS: zero warnings. A prior template-context attempt ignored sibling files; this root-context run checks them."
     },
     {
-      "command": "gh pr view 371; git pull --ff-only; git status --short --branch; git branch -vv; git ls-remote --heads origin",
-      "result": "MERGED; clean synced main; only main remains locally and remotely."
+      "command": "pnpm --dir packages/maximal-template run typegen",
+      "result": "PASS: Prisma Client 7.10.1 and Next route types."
+    },
+    {
+      "command": "pnpm --dir packages/maximal-template run typecheck",
+      "result": "PASS on final source after strict OTP/provider contracts, import moves and selector extraction."
     }
   ],
   "updated_at": "2026-11-17T19:13:59.516Z",
   "delivery": {
-    "pr_number": 371,
-    "pr_url": "https://github.com/DigitalHerencia/CodependentCoding/pull/371",
-    "branch": "main",
-    "status": "merged-verified",
-    "merge_commit": "59c256766681883d7d1f9694b707c177b2e40e09"
+    "issue_number": 372,
+    "branch": "refactor/372-auth-authz-profile-modal",
+    "status": "ready-for-pr"
   },
   "changed_file_inventory": [],
   "git_maintenance_2026_11_17": {
@@ -92,5 +99,38 @@
     ],
     "owner_authorization": "Owner approved dependency addition, commit, merge, sync and branch cleanup.",
     "not_run": ["tests", "local builds", "browser/runtime checks"]
-  }
+  },
+  "auth_route_slices": {
+    "issue": 372,
+    "spec": "CC-080",
+    "branch": "refactor/372-auth-authz-profile-modal",
+    "status": "ready-for-pr",
+    "remaining": ["PR", "CI", "merge", "branch cleanup and sync"],
+    "verification": [
+      {
+        "command": "pnpm --dir packages/maximal-template run format:write --ignore-unknown <affected files>",
+        "result": "PASS: 169 affected files formatted; subsequent affected source/root-package formatting passed."
+      },
+      {
+        "command": "pnpm --dir packages/maximal-template run lint:fix <affected template files>",
+        "result": "PASS: 149 affected source files; subsequent affected selector/transaction/schema files passed with zero warnings."
+      },
+      {
+        "command": "pnpm run lint:fix packages/generator/src/compose.mjs packages/loaded-vibes/scripts/rls-sql.mjs",
+        "result": "PASS: zero warnings. A prior template-context attempt ignored sibling files; this root-context run checks them."
+      },
+      {
+        "command": "pnpm --dir packages/maximal-template run typegen",
+        "result": "PASS: Prisma Client 7.10.1 and Next route types."
+      },
+      {
+        "command": "pnpm --dir packages/maximal-template run typecheck",
+        "result": "PASS on final source after strict OTP/provider contracts, import moves and selector extraction."
+      }
+    ]
+  },
+  "status": "ready-for-pr",
+  "branch": "refactor/372-auth-authz-profile-modal",
+  "completion": "Auth/authz source implementation and permitted checks complete; PR/CI/merge/sync remain.",
+  "milestone": "M-T"
 }

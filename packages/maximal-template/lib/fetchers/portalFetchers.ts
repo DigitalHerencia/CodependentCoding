@@ -1,3 +1,4 @@
+/** Portal Fetchers contracts and composition for the owning application slice. */
 import {
   persistedReadLimitSchema,
   persistedRecordIdSchema,
@@ -16,7 +17,7 @@ import {
   portalDocumentSelect,
   portalInvoiceSelect,
 } from "@/lib/db/selects/portalSelects";
-import { withAuthenticatedRead } from "@/lib/db/tenant";
+import { withAuthenticatedRead } from "@/lib/db/tenancy";
 
 export async function getPortalDocuments(rawLimit: unknown = 100) {
   return withAuthenticatedRead(async (tx, access) => {
@@ -45,7 +46,8 @@ export async function getPortalBilling() {
   return withAuthenticatedRead(async (tx, access) => {
     assertPermission(access, "portal.billing:read");
     // Invoice customerName/email and tenant subscription are not authenticated recipients.
-    if (limitedToCustomerRecords(access)) return { subscription: null, invoices: [] };
+    if (limitedToCustomerRecords(access))
+      return { subscription: null, invoices: [] };
     const [subscription, invoices] = await Promise.all([
       tx.billingSubscription.findUnique({
         where: { organizationId: access.organizationId },

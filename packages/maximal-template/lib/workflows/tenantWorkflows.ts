@@ -1,13 +1,14 @@
+/** Tenant Workflows contracts and composition for the owning application slice. */
 import "server-only";
 
 import { hasPermission } from "@/lib/authz/permissions";
 import { isPrivilegedRole } from "@/lib/authz/roles";
-import { withAuthenticatedRead } from "@/lib/db/tenant";
+import { withAuthenticatedRead } from "@/lib/db/tenancy";
 import { moduleNavigation, settingsNavigation } from "@/lib/modules/navigation";
 import { installedModules } from "@/lib/modules/registry";
 import { tenantMobileItems, tenantCopy } from "@/content/tenant";
 import { tenantNavigationSchema } from "@/schemas/tenantSchemas";
-import type { AccessContext } from "@/types/accessTypes";
+import type { AccessContext } from "@/types/authzTypes";
 import type { ModuleDefinition } from "@/types/moduleTypes";
 import type { TenantNavigationDTO } from "@/types/tenantTypes";
 

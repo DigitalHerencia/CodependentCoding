@@ -1,10 +1,11 @@
 "use server";
+/** Uploads Actions contracts and composition for the owning application slice. */
 import { toActionResult } from "@/lib/utils/actionResult";
 
 import { randomUUID } from "node:crypto";
-import { requireIdentity } from "@/lib/auth/auth";
+import { requireIdentity } from "@/lib/integrations/clerk/server";
 import { assertPermission } from "@/lib/authz/permissions";
-import { withTenantTransaction } from "@/lib/db/tenant";
+import { withTenantTransaction } from "@/lib/db/tenancy";
 import { uploadBlob } from "@/lib/integrations/vercel-blob/upload";
 import { deleteBlob } from "@/lib/integrations/vercel-blob/delete";
 import { toUploadedAssetDTO } from "@/lib/db/dtos/uploadsDtos";

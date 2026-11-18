@@ -438,3 +438,11 @@ agent:
     - read the issue and its acceptance criteria first
     - run the edit profile via hook and the quick profile before commit
     - update decisions.json, progress.json, handoff.json before ending a session
+
+owner_auth_route_override:
+  source: context/specs/issues/CC-080-auth-route-slices.md
+  approved: 2026-11-18
+  scope: packages/maximal-template auth and onboarding
+  commands: [lint:fix, format:write, typegen, typecheck]
+  prohibited: [tests, builds, dev_servers, database_execution]
+  import_enforcement: packages/maximal-template/eslint.config.mjs

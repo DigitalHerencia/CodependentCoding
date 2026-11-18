@@ -111,3 +111,9 @@ _Significant decisions as short ADRs. Each also goes into `.agents/execution/dec
 | ADR-001 | TODO:    |        |      |
 
 **Feeds:** `ENG-M3-P3.2-REVIEW-T01`, `ENG-M3-P3.2-REVIEW-T04`, `ENG-M3-P3.2-REVIEW-T05`, `ENG-M3-P3.3-DOCS-T04`
+
+## Auth/authz ownership update (CC-080, approved 2026-11-18)
+
+For Maximal Template, the owner-approved [CC-080 specification](../../../../context/specs/issues/CC-080-auth-route-slices.md) supersedes previous profile/onboarding details. Auth owns identity, Clerk sessions, and a local profile stored in nullable User columns. An explicit completion timestamp makes empty optional profiles complete. Mandatory onboarding is a modal, independent of tenancy, with no profile page or edit trigger yet. Authz owns organizations, permissions and tenancy.
+
+Auth and onboarding workflows compose application logic; credential templates compose blocks; blocks compose shadcn primitives and copy. Auth page routes only wrap features in Suspense. Scoped import boundaries are enforced in the template ESLint configuration. Auth/authz Prisma, RLS and seed ownership follow the same split.

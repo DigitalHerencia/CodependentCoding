@@ -1,3 +1,4 @@
+/** Social Fetchers contracts and composition for the owning application slice. */
 import { persistedReadLimitSchema } from "@/schemas/commonSchemas";
 import "server-only";
 
@@ -12,7 +13,7 @@ import {
   socialAccountSelect,
   socialPostSelect,
 } from "@/lib/db/selects/socialSelects";
-import { withAuthenticatedRead } from "@/lib/db/tenant";
+import { withAuthenticatedRead } from "@/lib/db/tenancy";
 
 export async function getScheduledSocialPosts(rawLimit: unknown = 100) {
   return withAuthenticatedRead(async (tx, access) => {

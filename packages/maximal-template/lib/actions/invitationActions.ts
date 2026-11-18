@@ -1,5 +1,6 @@
 "use server";
 
+/** Invitation Actions contracts and composition for the owning application slice. */
 import { randomBytes } from "node:crypto";
 import {
   acceptInvitationSchema,
@@ -8,16 +9,17 @@ import {
 } from "@/schemas/invitationSchemas";
 import type { ActionResult } from "@/types/actionTypes";
 import { assertInvitationsAllowed } from "@/lib/authz/tenancy";
-import { getVerifiedPrimaryEmail, requireIdentity } from "@/lib/auth/auth";
+import {
+  getVerifiedPrimaryEmail,
+  requireIdentity,
+} from "@/lib/integrations/clerk/server";
 import { assertPermission } from "@/lib/authz/permissions";
 import { invalidatePaths } from "@/lib/cache/invalidate";
 import { INVITATION_TTL_DAYS } from "@/lib/constants/invitations";
 import { toInvitationDTO } from "@/lib/db/dtos/invitationDtos";
 import { invitationSelect } from "@/lib/db/selects/invitationSelects";
-import {
-  withIdentityTransaction,
-  withTenantTransaction,
-} from "@/lib/db/tenant";
+import { withIdentityTransaction } from "@/lib/db/rls";
+import { withTenantTransaction } from "@/lib/db/tenancy";
 import { ResourceNotFoundError } from "@/lib/db/transactions/errors";
 import {
   acceptInvitationTx,
@@ -64,7 +66,7 @@ export async function createInvitation(rawInput: unknown) {
         });
         return {
           invitation: toInvitationDTO(record),
-          path: `/invite/${token}`,
+          path: `/invitations/${token}`,
         };
       },
     );

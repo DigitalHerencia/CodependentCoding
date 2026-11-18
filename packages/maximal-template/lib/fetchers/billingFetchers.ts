@@ -1,9 +1,10 @@
+/** Billing Fetchers contracts and composition for the owning application slice. */
 import "server-only";
 
 import { assertPermission } from "@/lib/authz/permissions";
 import { toBillingSubscriptionDTO } from "@/lib/db/dtos/billingDtos";
 import { billingSubscriptionSelect } from "@/lib/db/selects/billingSelects";
-import { withAuthenticatedRead } from "@/lib/db/tenant";
+import { withAuthenticatedRead } from "@/lib/db/tenancy";
 
 export async function getBillingSubscription() {
   return withAuthenticatedRead(async (tx, access) => {

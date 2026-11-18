@@ -1,6 +1,6 @@
 /**
  * RLS SQL shipped by each owner: `prisma/rls/identity.sql` first (it also
- * creates the app_runtime and app_system roles), then each manifest module's
+ * creates the app_runtime and app_system roles), then auth and authz, then each manifest module's
  * file that exists, in manifest order.
  *
  * The files are the readable source; the database only ever receives them as a
@@ -21,7 +21,14 @@ import { manifestPath } from "@codependent/generator/paths.mjs";
 /** @param {string} root template root */
 export function rlsFiles(root) {
   const manifest = JSON.parse(readFileSync(manifestPath(root), "utf8"));
-  return ["identity", ...manifest.modules.map(({ id }) => id)]
+  return [
+    ...new Set([
+      "identity",
+      "auth",
+      "authz",
+      ...manifest.modules.map(({ id }) => id),
+    ]),
+  ]
     .map((owner) => join(root, "prisma", "rls", `${owner}.sql`))
     .filter((file) => existsSync(file));
 }

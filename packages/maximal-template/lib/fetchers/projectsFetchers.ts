@@ -1,3 +1,4 @@
+/** Projects Fetchers contracts and composition for the owning application slice. */
 import {
   persistedReadLimitSchema,
   persistedRecordIdSchema,
@@ -11,7 +12,7 @@ import {
   projectSummarySelect,
   taskSelect,
 } from "@/lib/db/selects/projectsSelects";
-import { withAuthenticatedRead } from "@/lib/db/tenant";
+import { withAuthenticatedRead } from "@/lib/db/tenancy";
 
 export async function getProjects(rawLimit: unknown = 50) {
   return withAuthenticatedRead(async (tx, access) => {

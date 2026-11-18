@@ -1,90 +1,17 @@
-export const onboardingPresentationCopy = {
-  completeYourProfile: "Complete your profile",
-
-  saveProfile: "Save profile",
-
-  preparingYourAccount: "Preparing your account",
-  refreshThisPageInAMomentToContinue:
-    "Refresh this page in a moment to continue.",
-  noWorkspaceAccess: "No workspace access",
-  noWorkspaceAccessDescription:
-    "Your membership is suspended, or an invitation link is waiting for you. Open the link from your invitation email, or ask a workspace administrator.",
-} as const;
-
-export const onboardingStepCopy = {
-  steps: "Profile completion",
-  profile: "Profile",
-  review: "Review",
-  continue: "Review profile",
-  back: "Edit profile",
-  reviewTitle: "Review your profile",
-} as const;
-
-export const onboardingProfileCopy = {
+/** Local-profile onboarding copy, consumed only by presentation blocks. */
+export const onboardingCopy = {
+  title: "Complete your profile",
   editTitle: "Edit your profile",
-  cardLabel: "Your profile",
+  description: "All fields are optional. Save your profile to continue.",
+  editDescription: "Update your profile details.",
+  firstName: "First name",
+  lastName: "Last name",
+  bio: "Bio",
+  phoneNumber: "Phone number",
+  save: "Save profile",
+  saving: "Saving?",
   saved: "Profile saved.",
-  complete: "Profile complete",
-  incomplete: "Profile incomplete",
+  failed: "Unable to save your profile. Please try again.",
   loading: "Loading your profile",
-} as const;
-
-export const onboardingLibraryCopy = {
-  step: "Step ",
-  of: " of ",
-  complete: "% complete",
-  progressSteps: "Progress steps",
-  back: "Back",
-  skip: "Skip",
-  complete2: "Complete",
-  continue: "Continue",
-  welcomeToTheApp: "Welcome to the app",
-  developer: "Developer",
-  designer: "Designer",
-  productManager: "Product Manager",
-  marketing: "Marketing",
-  other: "Other",
-  webDevelopment: "Web Development",
-  mobileApps: "Mobile Apps",
-  aIMachineLearning: "AI & Machine Learning",
-  uIUXDesign: "UI/UX Design",
-  dataScience: "Data Science",
-  devOps: "DevOps",
-  setUpYourProfile: "Set Up Your Profile",
-  tellUsABitAboutYourself: "Tell us a bit about yourself",
-  avatarPreview: "Avatar preview",
-  yourName: "Your Name",
-  whatShouldWeCallYou: "What should we call you?",
-  yourRole: "Your Role",
-  yourInterests: "Your Interests",
-  selectAllThatApply: "(Select all that apply)",
-  createYourWorkspace: "Create Your Workspace",
-  setUpYourTeamWorkspaceAndInviteMembers:
-    "Set up your team workspace and invite members",
-  createWorkspace: "Create Workspace",
-  workspaceName: "Workspace Name",
-  eGAcmeInc: "e.g., Acme Inc.",
-  inviteTeamMembers: "Invite Team Members",
-  optional: "(Optional)",
-  colleagueEmailCom: "colleague@email.com",
-  add: "Add",
-  pendingInvites: "Pending Invites (",
-  separator: ")",
-  separator2: "×",
-  skipForNow: "Skip for Now",
-  saving: "Saving…",
-  whatAreYourGoals: "What are your goals?",
-  selectUpTo: "Select up to ",
-  goalsToPersonalizeYourExperience: " goals to personalize your experience",
-  continueWith: "Continue with ",
-  goal: " goal",
-  s: "s",
-  youReAllSet: "You're all set!",
-} as const;
-
-export const onboardingRemainingCopy = {
-  step: (value0: unknown, value1: unknown, value2: unknown) =>
-    `Step ${value0} of ${value1}: ${value2}`,
-
-  displayName: "Display name",
+  close: "Close",
 } as const;

@@ -1,5 +1,5 @@
 # Current factory focus: validate changed Maximal Template code only.
-# No builds, tests, migrations, dev servers, deployments, or CI autofixes.
+# No builds, tests, migrations, dev servers, or deployment commands.
 name: Template CI
 
 on:
@@ -75,13 +75,18 @@ jobs:
         run: |
           set -euo pipefail
           mapfile -t files < "$RUNNER_TEMP/changed-template.txt"
-          pnpm exec prettier --check --ignore-unknown "${files[@]}"
+          pnpm run format:write --ignore-unknown "${files[@]}"
           mapfile -t code < <(grep -E '\.(js|jsx|ts|tsx|mjs|cjs|mts|cts)$' "$RUNNER_TEMP/changed-template.txt" || true)
           if (("${#code[@]}")); then
             # Baseline ESLint config is self-contained; the optional factory
             # doctrine plugin needs sibling packages not installed here.
-            pnpm exec eslint --max-warnings=0 "${code[@]}"
+            pnpm run lint:fix "${code[@]}"
           fi
+          git diff --exit-code -- .
+
+      - name: Generate types
+        if: steps.changes.outputs.types == 'true'
+        run: pnpm typegen
 
       - name: Typecheck
         if: steps.changes.outputs.types == 'true'

@@ -1,11 +1,12 @@
 "use server";
+/** Billing Actions contracts and composition for the owning application slice. */
 import { toActionResult } from "@/lib/utils/actionResult";
 
 import { reconcileBillingProviderStateSchema } from "@/schemas/billingSchemas";
-import { requireIdentity } from "@/lib/auth/auth";
+import { requireIdentity } from "@/lib/integrations/clerk/server";
 import { assertPermission } from "@/lib/authz/permissions";
 import { toBillingProviderStateDTO } from "@/lib/db/dtos/billingDtos";
-import { withTenantTransaction } from "@/lib/db/tenant";
+import { withTenantTransaction } from "@/lib/db/tenancy";
 import { reconcileBillingProviderStateTx } from "@/lib/db/transactions/billingReconcileProviderStateTx";
 
 export async function reconcileBillingProviderState(rawInput: unknown) {

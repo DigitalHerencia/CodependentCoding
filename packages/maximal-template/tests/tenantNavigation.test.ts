@@ -1,13 +1,14 @@
+/** Tenant Navigation.test contracts for the owning application slice. */
 import { describe, expect, it, vi } from "vitest";
 
 // Pure navigation tests must not open a real database or import its adapter.
-vi.mock("@/lib/db/tenant", () => ({
+vi.mock("@/lib/db/tenancy", () => ({
   withAuthenticatedRead: vi.fn(),
 }));
 
 import { buildTenantNavigation } from "@/lib/workflows/tenantWorkflows";
 import { tenantNavigationSchema } from "@/schemas/tenantSchemas";
-import type { AccessContext, AppRole } from "@/types/accessTypes";
+import type { AccessContext, AppRole } from "@/types/authzTypes";
 import type { ModuleDefinition } from "@/types/moduleTypes";
 
 function access(role: AppRole): AccessContext {
@@ -60,23 +61,20 @@ describe("tenant navigation projection", () => {
 
   it("filters domains using existing permission grants", () => {
     const member = buildTenantNavigation(access("MEMBER"), modules);
-    expect(member.groups.map((group) => group.id)).toEqual([
-      "crm",
-      "settings",
-    ]);
+    expect(member.groups.map((group) => group.id)).toEqual(["crm", "settings"]);
 
     const viewer = buildTenantNavigation(access("VIEWER"), modules);
     expect(viewer.groups.map((group) => group.id)).toEqual(["settings"]);
-    expect(viewer.groups[0]?.links.some((link) => link.href === "/settings/profile")).toBe(true);
+    expect(
+      viewer.groups[0]?.links.some((link) => link.href === "/settings/profile"),
+    ).toBe(false);
   });
 
   it("retains stable, local bottom navigation", () => {
     const navigation = buildTenantNavigation(access("VIEWER"), modules);
     expect(navigation.mobile.map((item) => item.href)).toEqual([
       "/dashboard",
-      "/settings/profile",
       "/settings/members",
-      "/onboarding",
     ]);
   });
 });
@@ -89,18 +87,26 @@ describe("tenant navigation schema", () => {
       icon: "settings",
       links: [{ label: "Offsite", href: "https://example.test" }],
     };
-    expect(() => tenantNavigationSchema.parse({ groups: [group], mobile: [] })).toThrow();
-    expect(() => tenantNavigationSchema.parse({
-      groups: [{ ...group, links: [{ label: "Offsite", href: "//example.test" }] }],
-      mobile: [],
-    })).toThrow();
+    expect(() =>
+      tenantNavigationSchema.parse({ groups: [group], mobile: [] }),
+    ).toThrow();
+    expect(() =>
+      tenantNavigationSchema.parse({
+        groups: [
+          { ...group, links: [{ label: "Offsite", href: "//example.test" }] },
+        ],
+        mobile: [],
+      }),
+    ).toThrow();
   });
 
   it("rejects unknown fields in the navigation DTO", () => {
-    expect(() => tenantNavigationSchema.parse({
-      groups: [],
-      mobile: [],
-      organizationId: "forged",
-    })).toThrow();
+    expect(() =>
+      tenantNavigationSchema.parse({
+        groups: [],
+        mobile: [],
+        organizationId: "forged",
+      }),
+    ).toThrow();
   });
 });

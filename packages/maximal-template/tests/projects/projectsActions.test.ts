@@ -1,9 +1,10 @@
-// Why: actions return the ActionResult contract (AUTH.md §8) for every failure path.
+/** Projects Actions.test contracts for the owning application slice. */
+// Why: actions return the ActionResult contract (AUTH.md �8) for every failure path.
 import assert from "node:assert/strict";
 import { beforeEach, test, vi } from "vitest";
 
-import type * as Auth from "@/lib/auth/auth";
-import type { AccessContext } from "@/types/accessTypes";
+import type * as Auth from "@/lib/integrations/clerk/server";
+import type { AccessContext } from "@/types/authzTypes";
 
 const state = vi.hoisted(() => ({
   signedIn: true,
@@ -12,7 +13,7 @@ const state = vi.hoisted(() => ({
   invalidated: [] as string[],
 }));
 
-vi.mock("@/lib/auth/auth", async (importOriginal) => {
+vi.mock("@/lib/integrations/clerk/server", async (importOriginal) => {
   const actual = await importOriginal<typeof Auth>();
   return {
     ...actual,
@@ -23,7 +24,7 @@ vi.mock("@/lib/auth/auth", async (importOriginal) => {
   };
 });
 
-vi.mock("@/lib/db/tenant", () => ({
+vi.mock("@/lib/db/tenancy", () => ({
   withTenantTransaction: async (
     _identity: unknown,
     work: (tx: unknown, access: AccessContext) => Promise<unknown>,

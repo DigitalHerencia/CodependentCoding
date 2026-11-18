@@ -105,6 +105,20 @@
       "status": "accepted",
       "title": "Verified UI/chart delivery merged and branches cleaned",
       "decision": "Owner-approved PR #371 squash-merged as 59c256766681883d7d1f9694b707c177b2e40e09 after GitHub run 44155983387 passed. Local and remote main synchronized; merged topic branch deleted locally and remotely. No active implementation package remains."
+    },
+    {
+      "id": "AUTH-ROUTE-SLICES-2026-11-17",
+      "date": "2026-11-17",
+      "status": "accepted-with-open-runtime-decision",
+      "title": "Owner-directed auth route and authz slice refactor",
+      "decision": "Apply the explicit route/presentation/naming refactor. Identity/session and ClerkUserProjection live in authTypes; organization/authorization contracts live in authzTypes under the stated ownership interpretation. Keep existing browser auth workflows pending the owner decision on the single server/client module constraint. No authorization/schema weakening or database changes. Implementation remains local and incomplete; see CC-080."
+    },
+    {
+      "id": "CC-080-OWNER-2026-11-18",
+      "date": "2026-11-18",
+      "status": "accepted",
+      "title": "Auth/authz ownership and modal profile onboarding",
+      "decision": "Owner prompt supersedes prior CC-080 runtime questions. Use one browser-safe authWorkflows and one onboardingWorkflows, with async authenticated server actions and injected server webhook capabilities. Profile belongs auth; authorization/tenancy/organizations belong authz. Mandatory modal accepts nullable optional profile fields and an explicit completion marker. Clerk sync preserves profile columns. Source migration only; permitted checks are lint:fix, format:write, typegen and typecheck; no tests/builds/servers/database execution. Issue #372, PR delivery authorized."
     }
   ]
 }

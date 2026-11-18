@@ -1,3 +1,4 @@
+/** Settings and tenant navigation contributed by installed domain modules. */
 import { installedModules } from "@/lib/modules/registry";
 import type {
   ModuleDefinition,
@@ -6,8 +7,6 @@ import type {
 } from "@/types/moduleTypes";
 
 const baseSettings: readonly ModuleNavLink[] = [
-  { label: "Profile", href: "/settings/profile" },
-  { label: "Members", href: "/settings/members" },
   { label: "Integrations", href: "/settings/integrations" },
 ];
 
@@ -18,13 +17,12 @@ export function moduleNavigation(
   return modules.flatMap(({ id, nav }) => (nav ? [{ id, ...nav }] : []));
 }
 
-/** Base settings links, then module settings links, then workspace setup. */
+/** Base settings links followed by each installed domain's settings links. */
 export function settingsNavigation(
   modules: readonly ModuleDefinition[] = installedModules,
 ): readonly ModuleNavLink[] {
   return [
     ...baseSettings,
     ...modules.flatMap(({ settings }) => settings ?? []),
-    { label: "Workspace setup", href: "/onboarding" },
   ];
 }

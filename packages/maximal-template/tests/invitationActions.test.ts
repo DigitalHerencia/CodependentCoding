@@ -1,6 +1,7 @@
+/** Invitation Actions.test contracts for the owning application slice. */
 import { beforeEach, expect, test, vi } from "vitest";
 import type { Prisma } from "@/generated/prisma/client";
-import type { AccessContext } from "@/types/accessTypes";
+import type { AccessContext } from "@/types/authzTypes";
 import {
   acceptInvitation,
   createInvitation,
@@ -29,11 +30,24 @@ vi.mock("@/lib/authz/mode", async (importOriginal) => ({
     return state.tenancy;
   },
 }));
-vi.mock("@/lib/auth/auth", () => ({
+vi.mock("@/lib/integrations/clerk/server", () => ({
   requireIdentity: async () => ({ clerkUserId: "actor" }),
   getVerifiedPrimaryEmail: async () => "invitee@example.test",
 }));
-vi.mock("@/lib/db/tenant", () => ({
+vi.mock("@/lib/db/rls", () => ({
+  setRlsContext: vi.fn(async () => {}),
+  withIdentityTransaction: (
+    work: (
+      client: Prisma.TransactionClient,
+      user: { id: string; email: string },
+    ) => unknown,
+  ) =>
+    work(tx as unknown as Prisma.TransactionClient, {
+      id: "actor",
+      email: "invitee@example.test",
+    }),
+}));
+vi.mock("@/lib/db/tenancy", () => ({
   withTenantTransaction: (
     _identity: unknown,
     work: (client: Prisma.TransactionClient, context: AccessContext) => unknown,
@@ -44,16 +58,6 @@ vi.mock("@/lib/db/tenant", () => ({
       membershipId: "member-actor",
       organizationId,
       role: state.role as AccessContext["role"],
-    }),
-  withIdentityTransaction: (
-    work: (
-      client: Prisma.TransactionClient,
-      user: { id: string; email: string },
-    ) => unknown,
-  ) =>
-    work(tx as unknown as Prisma.TransactionClient, {
-      id: "actor",
-      email: "invitee@example.test",
     }),
 }));
 vi.mock("@/lib/cache/invalidate", () => ({

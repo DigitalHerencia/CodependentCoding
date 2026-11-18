@@ -1,6 +1,5 @@
-import { InvitationLoadingTemplate } from "@/components/templates/invitation-templates";
-
-/** Independent acceptance-route fallback inside the preserved auth shell. */
+/** Invitation skeleton contracts and composition for the owning application slice. */
+import { AuthFormSkeleton } from "@/features/auth/authFormSkeleton";
 export function InvitationSkeleton() {
-  return <InvitationLoadingTemplate />;
+  return <AuthFormSkeleton />;
 }

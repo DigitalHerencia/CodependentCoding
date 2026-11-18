@@ -1,6 +1,7 @@
+/** Crm Actions.test contracts for the owning application slice. */
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-vi.mock("@/lib/auth/auth", () => ({
+vi.mock("@/lib/integrations/clerk/server", () => ({
   requireIdentity: vi.fn(async () => ({ userId: "user-1" })),
 }));
 vi.mock("@/lib/authz/permissions", () => ({ assertPermission: vi.fn() }));
@@ -10,18 +11,24 @@ vi.mock("@/lib/db/dtos/crmDtos", () => ({
   toCrmContactDTO: vi.fn(),
   toCrmDealDTO: vi.fn(),
 }));
-vi.mock("@/lib/db/tenant", () => ({
-  withTenantTransaction: vi.fn(async (
-    _: unknown,
-    callback: (tx: unknown, access: unknown) => Promise<unknown>,
-  ) => callback({
-    crmAccount: { create: vi.fn(async () => ({ id: "account-1" })) },
-    auditEvent: { create: vi.fn(async () => ({ id: "audit-1" })) },
-  }, {
-    organizationId: "organization-1",
-    userId: "user-1",
-    membershipId: "membership-1",
-  })),
+vi.mock("@/lib/db/tenancy", () => ({
+  withTenantTransaction: vi.fn(
+    async (
+      _: unknown,
+      callback: (tx: unknown, access: unknown) => Promise<unknown>,
+    ) =>
+      callback(
+        {
+          crmAccount: { create: vi.fn(async () => ({ id: "account-1" })) },
+          auditEvent: { create: vi.fn(async () => ({ id: "audit-1" })) },
+        },
+        {
+          organizationId: "organization-1",
+          userId: "user-1",
+          membershipId: "membership-1",
+        },
+      ),
+  ),
 }));
 
 import { invalidatePaths } from "@/lib/cache/invalidate";
@@ -32,16 +39,24 @@ describe("CRM write cache coherence", () => {
 
   it("invalidates CRM views after the authorized write succeeds", async () => {
     const result = await createCrmAccount({
-      name: "Acme", website: "", industry: "", notes: "",
+      name: "Acme",
+      website: "",
+      industry: "",
+      notes: "",
     });
     expect(result.ok).toBe(true);
     expect(invalidatePaths).toHaveBeenCalledOnce();
-    expect(vi.mocked(invalidatePaths).mock.calls[0]?.[0]).toContain("/crm/accounts");
+    expect(vi.mocked(invalidatePaths).mock.calls[0]?.[0]).toContain(
+      "/crm/accounts",
+    );
   });
 
   it("does not invalidate when validation fails", async () => {
     const result = await createCrmAccount({
-      name: "", website: "", industry: "", notes: "",
+      name: "",
+      website: "",
+      industry: "",
+      notes: "",
     });
     expect(result.ok).toBe(false);
     expect(invalidatePaths).not.toHaveBeenCalled();

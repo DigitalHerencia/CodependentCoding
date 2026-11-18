@@ -1,7 +1,7 @@
--- Row-level security for the crm module (AUTH.md ยง6).
+-- Row-level security for the crm module (AUTH.md ง6).
 -- CRM policy source; migration generation is governed by prisma.config.ts.
 -- Do not edit historical migrations. Validate changes in a disposable RLS database.
--- Policies read app.organization_id / app.clerk_user_id set per transaction by lib/db/tenant.ts.
+-- Policies read app.organization_id / app.clerk_user_id set per transaction by lib/db/tenancy.ts.
 
 ALTER TABLE "CrmAccount" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "CrmAccount" FORCE ROW LEVEL SECURITY;

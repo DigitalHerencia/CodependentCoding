@@ -1,3 +1,4 @@
+/** Authz Policies.test contracts for the owning application slice. */
 // RBAC staff grants and mandatory customer relationships; generator ABAC replaces this file.
 import { expect, test } from "vitest";
 
@@ -7,7 +8,7 @@ import {
   limitedToOwnRecords,
 } from "@/lib/authz/policies";
 import { hasRoleAtLeast } from "@/lib/authz/roles";
-import type { AccessContext, AppRole } from "@/types/accessTypes";
+import type { AccessContext, AppRole } from "@/types/authzTypes";
 
 const as = (role: AppRole): AccessContext => ({
   clerkUserId: "clerk_1",

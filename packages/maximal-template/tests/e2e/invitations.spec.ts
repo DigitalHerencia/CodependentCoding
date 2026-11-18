@@ -1,10 +1,11 @@
+/** Invitations.spec contracts for the owning application slice. */
 import { expect, test } from "@playwright/test";
 
 // Authored only; no server or browser is started during this delivery.
 test("a signed-out invitation recipient is gated by authentication", async ({
   request,
 }) => {
-  const response = await request.get(`/invite/${"fixture".repeat(8)}`, {
+  const response = await request.get(`/invitations/${"fixture".repeat(8)}`, {
     maxRedirects: 0,
   });
   expect(response.status()).toBeGreaterThanOrEqual(300);

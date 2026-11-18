@@ -4,7 +4,7 @@ import type {
   AccessContext,
   Permission,
   ResourceAccessDescriptor,
-} from "@/types/accessTypes";
+} from "@/types/authzTypes";
 
 import { isOutsideRole, isPrivilegedRole } from "./roles";
 import { assertPermission } from "./permissions";

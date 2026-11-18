@@ -1,7 +1,8 @@
+/** Members feature contracts and composition for the owning application slice. */
 import { SharedMembersTemplate } from "@/components/templates/shared-templates";
-import { InvitationsFeatureClient } from "@/features/invitations/invitations-feature.client";
-import { NewMemberInvitationForm } from "@/features/invitations/newMemberInvitationForm";
-import { loadMembersWorkflow } from "@/lib/workflows/settingsWorkflows";
+import { InvitationsFeatureClient } from "@/features/invitations/invitationsFeatureClient";
+import { InvitationsNewMemberForm } from "@/features/invitations/invitationsNewMemberForm";
+import { loadMembersWorkflow } from "@/lib/workflows/authzWorkflows";
 
 export async function MembersFeature() {
   const { members, pending } = await loadMembersWorkflow();
@@ -12,7 +13,7 @@ export async function MembersFeature() {
         pending.canInvite ? (
           <>
             <InvitationsFeatureClient invitations={pending.invitations} />
-            <NewMemberInvitationForm />
+            <InvitationsNewMemberForm />
           </>
         ) : null
       }

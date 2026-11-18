@@ -1,4 +1,5 @@
 "use server";
+/** Social Actions contracts and composition for the owning application slice. */
 import { toActionResult } from "@/lib/utils/actionResult";
 import { socialAssetIdSchema } from "@/schemas/socialSchemas";
 import { readPrivateBlob } from "@/lib/integrations/vercel-blob/download";
@@ -8,11 +9,11 @@ import {
   createSocialPostSchema,
   scheduleSocialPostSchema,
 } from "@/schemas/socialSchemas";
-import { requireIdentity } from "@/lib/auth/auth";
+import { requireIdentity } from "@/lib/integrations/clerk/server";
 import { assertPermission } from "@/lib/authz/permissions";
 import { toSocialPostDTO } from "@/lib/db/dtos/socialDtos";
 import { socialPostSelect } from "@/lib/db/selects/socialSelects";
-import { withTenantTransaction } from "@/lib/db/tenant";
+import { withTenantTransaction } from "@/lib/db/tenancy";
 import { ResourceNotFoundError } from "@/lib/db/transactions/errors";
 import { scheduleSocialPostTx } from "@/lib/db/transactions/socialSchedulePostTx";
 import { approveSocialPostTx } from "@/lib/db/transactions/socialTx";

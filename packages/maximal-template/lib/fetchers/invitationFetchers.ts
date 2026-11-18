@@ -1,9 +1,10 @@
+/** Invitation Fetchers contracts and composition for the owning application slice. */
 import "server-only";
 import type { InvitationListDTO } from "@/types/invitationTypes";
 import { tenancy } from "@/lib/authz/mode";
 import { isPrivilegedRole } from "@/lib/authz/roles";
 import { hasPermission } from "@/lib/authz/permissions";
-import { withAuthenticatedRead } from "@/lib/db/tenant";
+import { withAuthenticatedRead } from "@/lib/db/tenancy";
 import { toInvitationDTO } from "@/lib/db/dtos/invitationDtos";
 import { invitationSelect } from "@/lib/db/selects/invitationSelects";
 

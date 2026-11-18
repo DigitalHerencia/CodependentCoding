@@ -1,6 +1,6 @@
--- Row-level security for the marketing module (AUTH.md ยง6).
+-- Row-level security for the marketing module (AUTH.md ง6).
 -- Readable source: `pnpm db:rls` writes it into a migration (CC-MIG-001). Idempotent.
--- Policies read app.organization_id / app.clerk_user_id set per transaction by lib/db/tenant.ts.
+-- Policies read app.organization_id / app.clerk_user_id set per transaction by lib/db/tenancy.ts.
 
 ALTER TABLE "Audience" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "Audience" FORCE ROW LEVEL SECURITY;
