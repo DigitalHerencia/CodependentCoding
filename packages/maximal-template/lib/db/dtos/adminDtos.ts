@@ -34,6 +34,8 @@ export function toAdminMembershipDTO(
   return {
     id: record.id,
     role: record.role,
+    organizationId: record.organizationId,
+    deniedPermissions: record.deniedPermissions,
     canManage: record.role !== "OWNER" && record.user.id !== actorUserId,
     status: record.status,
     user: record.user,

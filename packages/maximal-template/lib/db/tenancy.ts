@@ -70,6 +70,7 @@ async function resolveAccessContext(
     membershipId: membership.id,
     userId: user.id,
     role: membership.role as AppRole,
+    deniedPermissions: membership.deniedPermissions,
   };
 }
 

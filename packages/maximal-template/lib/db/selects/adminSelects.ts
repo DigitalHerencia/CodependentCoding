@@ -22,6 +22,8 @@ export const auditEventSelect = {
 /** Member reads include only identity and membership display data. */
 export const adminMembershipSelect = {
   id: true,
+  organizationId: true,
+  deniedPermissions: true,
   role: true,
   status: true,
   user: { select: { id: true, displayName: true, email: true } },
@@ -34,8 +36,5 @@ export const adminMembershipTargetSelect = {
   userId: true,
   role: true,
   status: true,
+  deniedPermissions: true,
 } satisfies Prisma.MembershipSelect;
-/** Access approval returns only the key used by the appended audit event. */
-export const adminApprovalSelect = {
-  id: true,
-} satisfies Prisma.InvitationSelect;

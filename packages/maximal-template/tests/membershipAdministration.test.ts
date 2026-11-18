@@ -2,10 +2,7 @@
 import { beforeEach, expect, test, vi } from "vitest";
 import type * as TenancyMode from "@/lib/authz/mode";
 import type { Prisma } from "@/generated/prisma/client";
-import {
-  approveWorkspaceAccessTx,
-  updateMembershipAdministrationTx,
-} from "@/lib/db/selects/adminTx";
+import { updateMembershipAdministrationTx } from "@/lib/db/selects/adminTx";
 import { SINGLE_ORGANIZATION_ID } from "@/lib/authz/mode";
 
 const mode = vi.hoisted(() => ({ tenancy: "single" }));
@@ -26,13 +23,14 @@ const input = {
 };
 
 function fixture(
-  actor: { role: string; status: string } | null,
+  actor: { role: string; status: string; deniedPermissions?: string[] } | null,
   targetRole = "MEMBER",
 ) {
   const update = vi.fn(async () => ({
     id: "target",
     role: "VIEWER",
     status: "ACTIVE",
+    deniedPermissions: [],
   }));
   const create = vi.fn();
   const findFirst = vi.fn(async () => ({
@@ -40,10 +38,13 @@ function fixture(
     userId: "other-user",
     role: targetRole,
     status: "ACTIVE",
+    deniedPermissions: [],
   }));
   const tx = {
     $executeRaw: vi.fn(async () => 1),
-    $queryRaw: vi.fn(async () => (actor ? [actor] : [])),
+    $queryRaw: vi.fn(async () =>
+      actor ? [{ deniedPermissions: [], ...actor }] : [],
+    ),
     membership: { findFirst, update },
     invitation: { create },
     auditEvent: { create: vi.fn(async () => ({})) },
@@ -107,17 +108,20 @@ test.each([
   },
 );
 
-test("single tenancy forbids administrator invitation approvals", async () => {
-  const { tx, create } = fixture({ role: "OWNER", status: "ACTIVE" });
+test("a permission revoked after access resolution is rechecked under the actor lock", async () => {
+  const { tx, update } = fixture({
+    role: "ADMIN",
+    status: "ACTIVE",
+    deniedPermissions: ["admin.membership:update"],
+  });
   await expect(
-    approveWorkspaceAccessTx(tx, {
-      organizationId: SINGLE_ORGANIZATION_ID,
-      actorUserId: "admin",
-      email: "customer@example.test",
+    updateMembershipAdministrationTx(tx, {
+      ...input,
+      permission: "admin.membership:update",
       role: "VIEWER",
     }),
-  ).rejects.toThrow(/single tenancy/);
-  expect(create).not.toHaveBeenCalled();
+  ).rejects.toThrow(/permission/);
+  expect(update).not.toHaveBeenCalled();
 });
 
 test("single tenancy rejects an arbitrary other organization before mutation", async () => {

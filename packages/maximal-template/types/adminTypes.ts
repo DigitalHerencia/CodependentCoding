@@ -8,8 +8,8 @@ import type { z } from "zod";
 import type { ReactNode, FormEventHandler } from "react";
 import type { ControllerRenderProps, FieldErrors } from "react-hook-form";
 import type { Route } from "next";
+import type { MembershipAdministratorContext } from "@/types/authzTypes";
 import type {
-  addAdminMembershipSchema,
   changeAdminMembershipSchema,
   adminListCriteriaSchema,
 } from "@/schemas/adminSchemas";
@@ -22,6 +22,8 @@ export type AdminMembershipDTO = {
   id: string;
   role: MembershipRole;
   status: MembershipStatus;
+  organizationId: string;
+  deniedPermissions: string[];
   canManage: boolean;
   user: { id: string; displayName: string | null; email: string | null };
   createdAt: string;
@@ -49,10 +51,6 @@ export type AuditEventDTO = {
 export type ChangeAdminMembershipCommand = z.input<
   typeof changeAdminMembershipSchema
 >;
-/** Existing workspace-access approval input. */
-export type AddAdminMembershipCommand = z.input<
-  typeof addAdminMembershipSchema
->;
 /** Parsed URL criteria. */
 export type AdminListCriteria = z.output<typeof adminListCriteriaSchema>;
 /** One page, without a second count query. */
@@ -69,30 +67,16 @@ export type AuditEventRecord = Prisma.AuditEventGetPayload<{
 export type AdminTenantCounter = {
   count(args: { where: { organizationId: string } }): Promise<number>;
 };
-/** Trusted context resolved by tenancy before mutation. */
-export type AdminActorContext = { organizationId: string; actorUserId: string };
-/** Locked actor projection rejects revoked administrators. */
-export type AdminActorRecord = {
-  role: MembershipRole;
-  status: MembershipStatus;
-};
 /** The transaction helper enforces ownership and self-edit invariants. */
-export type AdminMembershipUpdate = AdminActorContext & {
+export type AdminMembershipUpdate = MembershipAdministratorContext & {
   membershipId: string;
   role?: MembershipRole;
   status?: MembershipStatus;
+  deniedPermissions?: string[];
+  targetOrganizationId?: string;
 };
-/** Existing organization-scoped verified-email approval. */
-export type AdminAccessApproval = AdminActorContext & AddAdminMembershipCommand;
 /** Shared slot-only container. */
 export type AdminChildrenProps = Readonly<{ children: ReactNode }>;
-/** Responsive shell accepts already-composed presentation slots. */
-export type AdminShellProps = AdminChildrenProps & {
-  header: ReactNode;
-  navigation: ReactNode;
-  footer: ReactNode;
-  skipLink: ReactNode;
-};
 /** Auth-owned account sheet is supplied by the authenticated layout feature. */
 export type AdminShellTemplateProps = AdminChildrenProps & {
   accountMenu: ReactNode;
@@ -109,6 +93,7 @@ export type AdminNavigationLinksProps = {
 export type AdminSkeletonProps = {
   variant?:
     | "layout"
+    | "dashboard"
     | "audit"
     | "records"
     | "record"
@@ -164,6 +149,7 @@ export type AdminUsersTemplateProps = AdminSearchProps &
   AdminMetricsProps & {
     memberships: AdminMembershipDTO[];
     pagination: AdminPaginationProps;
+    invitations: ReactNode;
   };
 /** Record listing contract. */
 export type AdminRecordsProps = AdminMetricsProps & {
@@ -173,19 +159,17 @@ export type AdminRecordsProps = AdminMetricsProps & {
 export type AdminRecordDetailProps = { record: AdminRecordSummaryDTO };
 /** Membership detail/edit contract. */
 export type AdminMembershipProps = { membership: AdminMembershipDTO };
-/** RHF owns bindings; the block renders them without application imports. */
-export type AdminNewUserTemplateProps = {
-  email: ControllerRenderProps<AddAdminMembershipCommand, "email">;
-  role: ControllerRenderProps<AddAdminMembershipCommand, "role">;
-  errors: FieldErrors<AddAdminMembershipCommand>;
-  roles: readonly string[];
-  pending: boolean;
-  approved: boolean;
-  onSubmit: FormEventHandler<HTMLFormElement>;
-};
 /** Edit form presentation receives field bindings and mutation state only. */
-export type AdminEditUserTemplateProps = AdminMembershipProps & {
+export type AdminEditUserTemplateProps = AdminUserEditView & {
   role: ControllerRenderProps<ChangeAdminMembershipCommand, "role">;
+  organizationId: ControllerRenderProps<
+    ChangeAdminMembershipCommand,
+    "organizationId"
+  >;
+  deniedPermissions: ControllerRenderProps<
+    ChangeAdminMembershipCommand,
+    "deniedPermissions"
+  >;
   errors: FieldErrors<ChangeAdminMembershipCommand>;
   roles: readonly string[];
   pending: boolean;
@@ -196,7 +180,14 @@ export type AdminEditUserTemplateProps = AdminMembershipProps & {
 
 /** Route title vocabulary resolved exclusively in the block layer. */
 export type AdminPageVariant =
-  "audit" | "records" | "record" | "users" | "user" | "new" | "edit";
+  | "dashboard"
+  | "audit"
+  | "records"
+  | "record"
+  | "users"
+  | "user"
+  | "new"
+  | "edit";
 /** Shared page frame composed by each route template. */
 export type AdminPageFrameProps = AdminChildrenProps & {
   variant: AdminPageVariant;
@@ -206,7 +197,6 @@ export type AdminPageFrameProps = AdminChildrenProps & {
 /** Inline mutation error and status presentation. */
 export type AdminFormFeedbackProps = {
   error?: { message?: string } | undefined;
-  approved?: boolean;
   result?: "role" | "access" | "failed" | null;
 };
 
@@ -236,3 +226,26 @@ export type AdminMetric = {
 };
 /** Each route displays metrics for its actual query scope. */
 export type AdminMetricsProps = { metrics: readonly AdminMetric[] };
+
+/** Real, tenant-scoped summary counts and daily audit activity for the admin overview. */
+export type AdminDashboardView = {
+  members: number;
+  activeMembers: number;
+  invitations: number;
+  events: number;
+  activity: { date: string; count: number }[];
+};
+
+/** Bounded SQL aggregate, converted to zero-filled daily presentation values by the fetcher. */
+export type AdminActivityRecord = { date: string; count: number };
+
+/** Edit options are authorized independently of the target membership. */
+export type AdminUserEditView = AdminMembershipProps & {
+  organizations: readonly { id: string; name: string }[];
+  permissions: readonly string[];
+};
+
+/** User list island accepts an invitation-owned feature as a presentation slot. */
+export type AdminUsersFeatureClientProps = AdminListView<AdminMembershipDTO> & {
+  invitations: ReactNode;
+};

@@ -1,5 +1,6 @@
-/** Invitation skeleton contracts and composition for the owning application slice. */
-import { AuthFormSkeleton } from "@/features/auth/authFormSkeleton";
+import { InvitationLoadingBlock } from "@/components/blocks/invitation-blocks";
+
+/** Present the invitation domain skeleton directly from its skeleton block. */
 export function InvitationSkeleton() {
-  return <AuthFormSkeleton />;
+  return <InvitationLoadingBlock />;
 }

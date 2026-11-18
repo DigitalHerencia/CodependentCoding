@@ -7,12 +7,14 @@ import {
   InvitationAcceptanceTemplate,
   InvitationCreateTemplate,
 } from "@/components/templates/invitation-templates";
+import { invitableRoles } from "@/lib/authz/roles";
 import { InvitationRoleFieldBlock } from "@/components/blocks/invitation-blocks";
 
 test("the role picker contains ADMIN/MEMBER/VIEWER and never OWNER", () => {
   const html = renderToStaticMarkup(
     createElement(InvitationRoleFieldBlock, {
       name: "role",
+      roles: invitableRoles,
       defaultValue: "MEMBER",
     }),
   );
@@ -42,7 +44,21 @@ test("creation exposes only the one-time path returned by the authorized workflo
       onSubmit: () => {},
       busy: false,
       link: "https://example.test/invitations/fixture",
-      children: null,
+      emailField: {
+        id: "invite-email",
+        name: "email",
+        onChange: async () => {},
+        onBlur: async () => {},
+        ref: () => {},
+      },
+      roleField: {
+        id: "invite-role",
+        name: "role",
+        onChange: async () => {},
+        onBlur: async () => {},
+        ref: () => {},
+      },
+      roles: invitableRoles,
     }),
   );
   expect(html).toContain('role="status"');

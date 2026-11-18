@@ -65,7 +65,10 @@ export function hasPermission(
   context: AccessContext,
   permission: Permission,
 ): boolean {
-  return grants[context.role].has(permission);
+  return (
+    grants[context.role].has(permission) &&
+    !context.deniedPermissions?.includes(permission)
+  );
 }
 
 /** Reject access unless the membership role grants the required permission. */

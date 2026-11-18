@@ -4,12 +4,14 @@ import { toOrganizationMemberDTO } from "@/lib/db/dtos/authzDto";
 import {
   organizationMemberSelect,
   organizationSwitcherMembershipSelect,
+  manageableOrganizationMembershipSelect,
 } from "@/lib/db/selects/authzSelects";
 
 import type { OrganizationSwitcherDTO } from "@/types/authzTypes";
 import { activeMembershipScope } from "@/lib/authz/mode";
 import { limitedToCustomerRecords } from "@/lib/authz/attributes";
 import { assertPermission, hasPermission } from "@/lib/authz/permissions";
+import { isPrivilegedRole } from "@/lib/authz/roles";
 import { withAuthenticatedRead } from "@/lib/db/tenancy";
 
 /** Check whether the current membership may inspect integration configuration. */
@@ -22,6 +24,26 @@ export async function canViewIntegrationStatuses() {
 /** The current authenticated membership role, scoped to the active organization. */
 export async function getActiveMembershipRole() {
   return withAuthenticatedRead(async (_tx, access) => access.role);
+}
+
+/** List only destinations where the caller can administer memberships; single tenancy stays fixed. */
+export async function getManagedOrganizationOptions() {
+  return withAuthenticatedRead(async (tx, access) => {
+    assertPermission(access, "admin.membership:update");
+    const rows = await tx.membership.findMany({
+      where: activeMembershipScope(access.userId),
+      orderBy: [{ createdAt: "asc" }, { id: "asc" }],
+      select: manageableOrganizationMembershipSelect,
+    });
+    return rows
+      .filter(
+        (row) =>
+          isPrivilegedRole(row.role) &&
+          (row.organization.id === access.organizationId ||
+            !row.deniedPermissions.includes("admin.membership:create")),
+      )
+      .map(({ organization }) => organization);
+  });
 }
 
 /** The organizations the caller can switch between, oldest membership first. */

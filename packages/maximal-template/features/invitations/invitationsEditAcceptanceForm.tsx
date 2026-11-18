@@ -3,17 +3,23 @@
 import { useState } from "react";
 
 import { InvitationAcceptanceTemplate } from "@/components/templates/invitation-templates";
-import { acceptInvitationWorkflow } from "@/lib/workflows/invitationClientWorkflows";
+import { acceptInvitationWorkflow } from "@/lib/workflows/invitationWorkflows";
 import { acceptInvitationSchema } from "@/schemas/invitationSchemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
-import type { z } from "zod";
+import type {
+  InvitationAcceptanceInput,
+  InvitationAcceptanceProps,
+} from "@/types/invitationTypes";
 
-export function InvitationsEditAcceptanceForm({ token }: { token: string }) {
+/** Validate and submit the invitation token using the acceptance workflow. */
+export function InvitationsEditAcceptanceForm({
+  token,
+}: InvitationAcceptanceProps) {
   const router = useRouter();
   const [failure, setFailure] = useState<"invalid" | "failed">();
-  const form = useForm<z.input<typeof acceptInvitationSchema>>({
+  const form = useForm<InvitationAcceptanceInput>({
     resolver: zodResolver(acceptInvitationSchema),
     defaultValues: { token },
   });

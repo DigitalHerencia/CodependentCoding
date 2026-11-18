@@ -4,13 +4,23 @@ import "server-only";
 import { randomUUID } from "node:crypto";
 
 import type { Prisma } from "@/generated/prisma/client";
-import type { AppRole, ProvisionedUser } from "@/types/authzTypes";
+import type {
+  AppRole,
+  ProvisionedUser,
+  MembershipOrganizationTransfer,
+  MembershipAdministratorContext,
+  MembershipAdministratorRecord,
+} from "@/types/authzTypes";
+import {
+  ResourceNotFoundError,
+  InvariantViolationError,
+} from "@/lib/db/transactions/errors";
 import {
   SINGLE_ORGANIZATION_ID,
   SINGLE_ORGANIZATION_SLUG,
   tenancy,
 } from "@/lib/authz/mode";
-import { selfSignupRole } from "@/lib/authz/roles";
+import { selfSignupRole, isPrivilegedRole } from "@/lib/authz/roles";
 import {
   authzIdSelect,
   pendingInvitationAccessSelect,
@@ -18,7 +28,81 @@ import {
   membershipSuspensionSelect,
 } from "@/lib/db/selects/authzSelects";
 import { setRlsContext } from "@/lib/db/rls";
-import { acceptInvitationTx } from "@/lib/db/transactions/invitationTx";
+import { acceptInvitationTx } from "@/lib/db/selects/invitationTx";
+
+/** Re-read and lock the actor in the server-selected organization before mutation. */
+export async function assertMembershipAdministratorTx(
+  tx: Prisma.TransactionClient,
+  input: MembershipAdministratorContext,
+): Promise<void> {
+  if (tenancy === "single" && input.organizationId !== SINGLE_ORGANIZATION_ID)
+    throw new ResourceNotFoundError("Organization");
+  const lockKey = `membership-administration:${input.organizationId}`;
+  await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtextextended(${lockKey}, 0))`;
+  const [actor] = await tx.$queryRaw<MembershipAdministratorRecord[]>`
+    SELECT "role", "status", "deniedPermissions" FROM "Membership"
+    WHERE "organizationId" = ${input.organizationId}::uuid AND "userId" = ${input.actorUserId}
+    FOR UPDATE
+  `;
+  if (!actor || actor.status !== "ACTIVE" || !isPrivilegedRole(actor.role))
+    throw new ResourceNotFoundError("Administrator membership");
+  if (input.permission && actor.deniedPermissions.includes(input.permission))
+    throw new ResourceNotFoundError("Administrator permission");
+}
+
+/** Move access atomically without reparenting any CRM or other domain-owned records. */
+export async function transferOrganizationMembershipTx(
+  tx: Prisma.TransactionClient,
+  input: MembershipOrganizationTransfer,
+) {
+  if (tenancy === "single")
+    throw new InvariantViolationError(
+      "Organization transfers require multi tenancy.",
+    );
+  await setRlsContext(tx, { organizationId: input.organizationId });
+  await assertMembershipAdministratorTx(tx, {
+    organizationId: input.organizationId,
+    actorUserId: input.actorUserId,
+    permission: "admin.membership:create",
+  });
+  const existing = await tx.membership.findUnique({
+    where: {
+      organizationId_userId: {
+        organizationId: input.organizationId,
+        userId: input.userId,
+      },
+    },
+    select: authzIdSelect,
+  });
+  if (existing)
+    throw new InvariantViolationError(
+      "This user already belongs to the destination organization.",
+    );
+  const membership = await tx.membership.create({
+    data: {
+      organizationId: input.organizationId,
+      userId: input.userId,
+      role: input.role,
+      status: input.status,
+      deniedPermissions: input.deniedPermissions,
+    },
+    select: authzIdSelect,
+  });
+  await tx.auditEvent.create({
+    data: {
+      organizationId: input.organizationId,
+      actorUserId: input.actorUserId,
+      action: "admin.membership.transferred",
+      resourceType: "Membership",
+      resourceId: membership.id,
+      metadata: {
+        sourceOrganizationId: input.sourceOrganizationId,
+        role: input.role,
+      },
+    },
+  });
+  await setRlsContext(tx, { organizationId: input.sourceOrganizationId });
+}
 
 /** Derive a stable organization slug from the trusted identity. */
 function workspaceSlug(name: string | null, userId: string): string {

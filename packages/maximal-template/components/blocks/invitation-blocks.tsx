@@ -9,59 +9,64 @@ import {
 } from "@/components/ui/native-select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { invitationContent as copy } from "@/content/invitations";
-import { invitableRoles } from "@/lib/authz/roles";
 import type {
   InvitationCreateProps,
+  InvitationEmailFieldProps,
+  InvitationRoleFieldProps,
   InvitationFormProps,
   InvitationListProps,
 } from "@/types/invitationTypes";
-import type { ComponentProps } from "react";
 
 /** Adapt BoldKit's labelled form surfaces; RHF and real invitation commands live in features/workflows. */
 export function InvitationEmailFieldBlock({
   error,
   ...input
-}: ComponentProps<"input"> & { error?: string | undefined }) {
+}: InvitationEmailFieldProps) {
+  const id = input.id ?? "invite-email";
   return (
     <Field data-invalid={Boolean(error)}>
-      <FieldLabel htmlFor="invite-email">{copy.email}</FieldLabel>
+      <FieldLabel htmlFor={id}>{copy.email}</FieldLabel>
       <Input
         {...input}
-        id="invite-email"
+        id={id}
         type="email"
         autoComplete="email"
         aria-invalid={Boolean(error)}
-        aria-describedby={error ? "invite-email-error" : undefined}
+        aria-describedby={error ? `${id}-error` : undefined}
       />
-      {error && <FieldError id="invite-email-error">{error}</FieldError>}
+      {error && <FieldError id={`${id}-error`}>{error}</FieldError>}
     </Field>
   );
 }
 
+/** Render the supported invitation roles using the form-owned native binding. */
 export function InvitationRoleFieldBlock({
   error,
+  roles,
   ...input
-}: ComponentProps<"select"> & { error?: string | undefined }) {
+}: InvitationRoleFieldProps) {
+  const id = input.id ?? "invite-role";
   return (
     <Field data-invalid={Boolean(error)}>
-      <FieldLabel htmlFor="invite-role">{copy.role}</FieldLabel>
+      <FieldLabel htmlFor={id}>{copy.role}</FieldLabel>
       <NativeSelect
         {...input}
-        id="invite-role"
+        id={id}
         aria-invalid={Boolean(error)}
-        aria-describedby={error ? "invite-role-error" : undefined}
+        aria-describedby={error ? `${id}-error` : undefined}
       >
-        {invitableRoles.map((role) => (
+        {roles.map((role) => (
           <NativeSelectOption key={role} value={role}>
             {role}
           </NativeSelectOption>
         ))}
       </NativeSelect>
-      {error && <FieldError id="invite-role-error">{error}</FieldError>}
+      {error && <FieldError id={`${id}-error`}>{error}</FieldError>}
     </Field>
   );
 }
 
+/** Present a create or edit invitation form while the feature owns form state. */
 export function InvitationCreateBlock({
   failure,
   onSubmit,
@@ -69,6 +74,8 @@ export function InvitationCreateBlock({
   children,
   error,
   link,
+  editing,
+  onCancel,
 }: InvitationCreateProps) {
   return (
     <form
@@ -78,8 +85,8 @@ export function InvitationCreateBlock({
       className="space-y-3 surface-card p-5"
       aria-busy={busy}
     >
-      <h2 className="type-heading">{copy.title}</h2>
-      <p>{copy.instructions}</p>
+      <h2 className="type-heading">{editing ? copy.editTitle : copy.title}</h2>
+      <p>{editing ? copy.editInstructions : copy.instructions}</p>
       <fieldset disabled={busy} className="space-y-3">
         {children}
       </fieldset>
@@ -98,8 +105,18 @@ export function InvitationCreateBlock({
         </p>
       )}
       <Button type="submit" disabled={busy}>
-        {copy.submit}
+        {editing ? copy.save : copy.submit}
       </Button>
+      {onCancel && (
+        <Button
+          type="button"
+          variant="outline"
+          disabled={busy}
+          onClick={onCancel}
+        >
+          {copy.cancelEdit}
+        </Button>
+      )}
     </form>
   );
 }
@@ -137,11 +154,13 @@ export function InvitationAcceptanceBlock({
   );
 }
 
+/** Render live pending invitations with edit and cancel commands. */
 export function InvitationsBlock({
   invitations,
   pending,
   error,
   onRevoke,
+  onEdit,
 }: InvitationListProps) {
   return (
     <div className="space-y-2">
@@ -160,6 +179,14 @@ export function InvitationsBlock({
                 {new Date(invitation.expiresAt).toLocaleDateString()}
               </span>
               <Button
+                type="button"
+                variant="outline"
+                disabled={pending}
+                onClick={() => onEdit(invitation)}
+              >
+                {copy.edit}
+              </Button>
+              <Button
                 disabled={pending}
                 onClick={() => onRevoke(invitation.id)}
                 type="button"
@@ -176,6 +203,7 @@ export function InvitationsBlock({
   );
 }
 
+/** Render the invitation skeleton directly for Suspense boundaries. */
 export function InvitationLoadingBlock() {
   return (
     <div role="status" aria-label={copy.loading} className="space-y-4">

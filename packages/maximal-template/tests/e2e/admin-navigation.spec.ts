@@ -19,9 +19,9 @@ test.describe("administrator navigation", () => {
 
   for (const viewport of [
     { width: 390, height: 844 },
-    { width: 820, height: 1180 },
+    { width: 600, height: 900 },
   ]) {
-    test(`one fullscreen administration menu replaces the bottom bar at ${viewport.width}px`, async ({
+    test(`the shared responsive sidebar opens and closes at ${viewport.width}px`, async ({
       page,
     }) => {
       await page.setViewportSize(viewport);
@@ -33,54 +33,56 @@ test.describe("administrator navigation", () => {
         }),
       ).toHaveCount(0);
       const trigger = page.getByRole("button", {
-        name: "Open navigation",
-        exact: true,
-      });
-      await expect(trigger).toBeVisible();
-      await trigger.click();
-      const dialog = page.getByRole("dialog", {
         name: "Admin navigation",
         exact: true,
       });
+      await trigger.click();
+      const dialog = page.getByRole("dialog", {
+        name: "Navigation",
+        exact: true,
+      });
       await expect(dialog).toBeVisible();
-      const rect = await dialog.boundingBox();
-      expect(rect).not.toBeNull();
-      if (!rect) throw new Error("The fullscreen menu must have a layout box.");
-      expect(rect.width).toBeGreaterThanOrEqual(viewport.width - 2);
-      expect(rect.height).toBeGreaterThanOrEqual(viewport.height - 2);
+      const navigation = dialog.getByRole("navigation", {
+        name: "Admin navigation",
+        exact: true,
+      });
       for (const name of ["Users", "Records", "Audit", "Workspace"])
         await expect(
-          dialog.getByRole("link", { name, exact: true }),
+          navigation.getByRole("link", { name, exact: true }),
         ).toBeVisible();
       await expect(
-        dialog.getByRole("button", { name: "Manage account", exact: true }),
+        dialog.locator('[aria-haspopup="dialog"]').first(),
       ).toBeVisible();
-      await expect(
-        dialog.getByRole("button", { name: "Sign out", exact: true }),
-      ).toBeVisible();
-      await dialog.getByRole("button", { name: /close/i }).click();
-      await expect(dialog).toHaveCount(0);
-      await expect(trigger).toBeFocused();
-      await trigger.click();
       await page.keyboard.press("Escape");
       await expect(dialog).toHaveCount(0);
       await expect(trigger).toBeFocused();
+      await trigger.click();
+      await navigation
+        .getByRole("link", { name: "Audit", exact: true })
+        .click();
+      await expect(page).toHaveURL(/\/admin\/audit/);
+      await expect(dialog).toHaveCount(0);
     });
   }
 
-  test("desktop keeps header links and hides the hamburger", async ({
-    page,
-  }) => {
-    await page.setViewportSize({ width: 1440, height: 1000 });
-    await page.goto("/admin/users");
-    await expect(
-      page.getByRole("navigation", { name: "Admin navigation", exact: true }),
-    ).toBeVisible();
-    await expect(
-      page.getByRole("button", { name: "Open navigation", exact: true }),
-    ).toBeHidden();
-    await expect(page.getByRole("dialog")).toHaveCount(0);
-  });
+  for (const width of [820, 1440]) {
+    test(`desktop uses the same collapsible sidebar at ${width}px`, async ({
+      page,
+    }) => {
+      await page.setViewportSize({ width, height: 1000 });
+      await page.goto("/admin/users");
+      await expect(
+        page.getByRole("navigation", { name: "Admin navigation", exact: true }),
+      ).toBeVisible();
+      await expect(page.getByRole("dialog")).toHaveCount(0);
+      await page
+        .getByRole("button", { name: "Admin navigation", exact: true })
+        .click();
+      await expect(
+        page.locator('[data-state="collapsed"][data-collapsible="hidden"]'),
+      ).toHaveCount(1);
+    });
+  }
 });
 
 test.describe("non-administrator server authorization", () => {

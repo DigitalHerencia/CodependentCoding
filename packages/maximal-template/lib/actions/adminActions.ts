@@ -1,26 +1,22 @@
 "use server";
 /** Authenticated admin mutation boundary: validate, authorize, transact and return safe results. */
 import {
-  addAdminMembershipSchema,
   changeAdminMembershipSchema,
   updateAdminMembershipStatusSchema,
 } from "@/schemas/adminSchemas";
 import { requireIdentity } from "@/lib/integrations/clerk/server";
 import { assertPermission } from "@/lib/authz/permissions";
-import { assertInvitationsAllowed } from "@/lib/authz/tenancy";
 import { toAdminMembershipDTO } from "@/lib/db/dtos/adminDtos";
 import { withTenantTransaction } from "@/lib/db/tenancy";
-import {
-  approveWorkspaceAccessTx,
-  updateMembershipAdministrationTx,
-} from "@/lib/db/selects/adminTx";
+import { updateMembershipAdministrationTx } from "@/lib/db/selects/adminTx";
 import { toActionResult } from "@/lib/utils/actionResult";
 import type { AdminMutationKind } from "@/types/adminTypes";
+import { invalidatePaths } from "@/lib/cache/invalidate";
 /** Shared single-command boundary avoids drift between suspend, restore and role updates. */
 async function mutateMembership(rawInput: unknown, kind: AdminMutationKind) {
   return toActionResult(async () => {
     const identity = await requireIdentity();
-    return withTenantTransaction(identity, async (tx, access) => {
+    const result = await withTenantTransaction(identity, async (tx, access) => {
       assertPermission(access, "admin.membership:update");
       const input =
         kind === "role"
@@ -32,13 +28,26 @@ async function mutateMembership(rawInput: unknown, kind: AdminMutationKind) {
       const membership = await updateMembershipAdministrationTx(tx, {
         organizationId: access.organizationId,
         actorUserId: access.userId,
+        permission: "admin.membership:update",
         membershipId: input.membershipId,
         ...(input.role !== undefined
-          ? { role: input.role }
+          ? {
+              role: input.role,
+              deniedPermissions: input.deniedPermissions,
+              targetOrganizationId: input.organizationId,
+            }
           : { status: kind === "suspend" ? "SUSPENDED" : "ACTIVE" }),
       });
       return toAdminMembershipDTO(membership, access.userId);
     });
+    invalidatePaths([
+      "/admin",
+      "/admin/users",
+      `/admin/users/${result.user.id}`,
+      `/admin/users/${result.user.id}/edit`,
+      "/settings/members",
+    ]);
+    return result;
   });
 }
 /** Change another non-owner member's role. */
@@ -52,20 +61,4 @@ export async function suspendAdminMembership(rawInput: unknown) {
 /** Restore another non-owner member. */
 export async function restoreAdminMembership(rawInput: unknown) {
   return mutateMembership(rawInput, "restore");
-}
-/** Preserve the existing verified-email access approval; no new invitation behavior is introduced. */
-export async function addAdminMembership(rawInput: unknown) {
-  return toActionResult(async () => {
-    const identity = await requireIdentity();
-    return withTenantTransaction(identity, async (tx, access) => {
-      assertPermission(access, "admin.membership:create");
-      assertInvitationsAllowed();
-      const input = addAdminMembershipSchema.parse(rawInput);
-      await approveWorkspaceAccessTx(tx, {
-        ...input,
-        organizationId: access.organizationId,
-        actorUserId: access.userId,
-      });
-    });
-  });
 }

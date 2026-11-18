@@ -4243,5 +4243,29 @@
       "Strict optional Link handler type corrected.",
       "Retired PWA hook consumer removed with its unused presentation."
     ]
+  },
+  "admin_378": {
+    "status": "local-checks-passed",
+    "issue": 378,
+    "branch": "feat/378-admin-dashboard",
+    "scope": "Owner-approved admin dashboard, layout authorization, invitation create/edit/cancel, permission restrictions and dual-authority organization transfers; CRM read-only.",
+    "verification": {
+      "executed": [
+        "pnpm --dir packages/maximal-template format:write <changed source files>: passed",
+        "pnpm --dir packages/maximal-template lint:fix <changed source files>: passed; corrected two type-import diagnostics and reran affected files",
+        "pnpm --dir packages/maximal-template typegen: passed (Prisma 7.10.1 and Next routes)",
+        "pnpm --dir packages/maximal-template typecheck: passed after optional callback correction",
+        "CRM source, schema, workflows and tests: no edits"
+      ],
+      "not_run": [
+        "Tests, builds, servers, runtime/browser verification, migrations and seeds per owner constraints."
+      ]
+    },
+    "database_gate": "Source migration adds Membership.deniedPermissions and ordered audit index; database application requires owner approval and has not run.",
+    "preserved_local_work": [
+      "lib/workflows/pwaClientWorkflows.ts",
+      "types/pwaTypes.ts",
+      "existing admin-navigation callback edit"
+    ]
   }
 }

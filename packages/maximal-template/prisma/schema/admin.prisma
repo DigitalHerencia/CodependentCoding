@@ -14,7 +14,8 @@ model AuditEvent {
 
   createdAt DateTime @default(now()) @db.Timestamptz(6)
 
-  @@index([organizationId, createdAt])
+  /// Supports deterministic audit pagination and bounded overview aggregation.
+  @@index([organizationId, createdAt(sort: Desc), id(sort: Desc)])
   @@index([organizationId, resourceType, resourceId])
   @@index([organizationId, action])
 }

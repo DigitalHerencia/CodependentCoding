@@ -1398,6 +1398,17 @@
       "status": "accepted",
       "title": "Verified responsive administration delivery merged",
       "decision": "Owner-authorized PR #377 squash-merged as 126b2046c7b776eb4586dd09d326e3d45202b2e5 after final head 9effbc49f1c22d2cc8727f49e3ae05ce4bd659b1 passed GitHub Changed-file checks (run 44389472690), Vercel and Preview Comments. Issue #376 closed and Project item Done. Admin/tenant responsive sidebar and auth-owned account sheet replace the old mobile overlay/popover. Authz retains role/organization switching, onboardingEditForm retains RHF profile editing, and auth owns identity operations with PWA cache-aware explicit sign-out. CRM source and persistence schema/RLS/seed sources are unchanged. No tests, local builds, dev servers, browser checks, migrations or seeds executed. Runtime/visual fidelity remains unverified under owner limits. Execution records are finalized after merge; branch cleanup and main synchronization are verified separately."
+    },
+    {
+      "id": "ADMIN-378-OWNER-2026-11-18",
+      "date": "2026-11-18",
+      "status": "accepted",
+      "title": "Admin dashboard and invitation architecture",
+      "decision": "Owner prompt overrides prior specs; CRM remains read-only. Reuse installed BoldKit primitives and auth-owned Clerk/profile sheet. Layout owns identity/onboarding/admin access and imports shell feature. Overview uses bounded UTC audit aggregates and persisted membership/invitation counts. Admin new-user delegates to invitation RHF. Pending token invitations are editable/cancelable in either tenancy mode; single tenancy stays fixed to its organization. First accepted pre-signup invitation can upgrade only a newly created single-tenant default VIEWER. Permission restrictions subtract role grants. Multi-tenant access transfer checks and locks both administrator memberships, preserves original domain records, creates destination membership and suspends source atomically with append-only audit. Authorization lock helper belongs to authz, removing optional-admin dependencies from invitations. Obsolete approval-only API and layout/gate feature files retired. No tests/builds/servers/migrations/seeds executed; only format:write, lint:fix, typegen and typecheck authorized. PR/CI/merge and branch cleanup authorized. Database migration is source-only pending owner application.",
+      "references": [
+        "https://clerk.com/docs/component-reference/user-button",
+        "https://recharts.github.io/en-US/api/BarChart/"
+      ]
     }
   ]
 }
