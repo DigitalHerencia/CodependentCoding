@@ -7,46 +7,48 @@
     ".agents/contracts/validation.yaml"
   ],
   "spec_catalog": "context/specs/catalog.json",
-  "active_spec_id": "INVOICING-382-OWNER-PROMPT",
+  "active_spec_id": null,
   "next_spec_id": null,
   "completed_spec_ids": [
     "TYPESCRIPTION-T2",
     "TYPESCRIPTION-T3",
     "CC-080",
-    "ADMIN-376-OWNER-PROMPT"
+    "ADMIN-376-OWNER-PROMPT",
+    "INVOICING-382-OWNER-PROMPT"
   ],
   "blocked_spec_ids": [],
   "next_actions": [],
   "risks": [
     "No tests, builds, browser/runtime checks, migrations or seeds executed per owner resource limits.",
-    "BoldKit auth/onboarding/error registry endpoints unavailable; existing presentation adapted using available registry primitives."
+    "BoldKit auth/onboarding/error registry endpoints unavailable; existing presentation adapted using available registry primitives.",
+    "Terminal invoice transitions OPEN/OVERDUE -> PAID/VOID require an explicit owner policy decision; fail closed until then.",
+    "No invoicing migration added; existing unrelated membership/AI migrations remain owner-managed and unapplied.",
+    "CRM unchanged; unrelated local PWA edits remain uncommitted."
   ],
   "verification_summary": [
     {
-      "command": "pnpm --dir packages/maximal-template run lint:fix <affected source files>",
-      "result": "PASS: zero warnings"
-    },
-    {
-      "command": "pnpm --dir packages/maximal-template run format:write --ignore-unknown <affected files>",
+      "command": "npm --prefix packages/maximal-template run format:write -- --ignore-unknown <affected files>",
       "result": "PASS"
     },
     {
-      "command": "pnpm --dir packages/maximal-template run typegen",
-      "result": "PASS: Prisma Client and Next route types generated"
+      "command": "npm --prefix packages/maximal-template run lint:fix -- <affected source files>",
+      "result": "PASS; zero warnings; repeated only affected files after type fixes"
     },
     {
-      "command": "pnpm --dir packages/maximal-template run typecheck",
-      "result": "PASS"
+      "command": "npm --prefix packages/maximal-template run typegen",
+      "result": "PASS; Prisma Client 7.10.1 and Next route types generated; no database requests"
     },
     {
-      "command": "gh pr view 377 --json headRefOid,statusCheckRollup,mergeable; gh run view 44389472690",
-      "result": "PASS: Changed-file checks, Vercel and Vercel Preview Comments succeeded on the verified PR head.",
-      "verified_commit": "9effbc49f1c22d2cc8727f49e3ae05ce4bd659b1",
-      "ci_run": 44389472690
+      "command": "npm --prefix packages/maximal-template run typecheck",
+      "result": "PASS after correcting exact optional properties and Prisma unchecked mutation input type"
     },
     {
-      "command": "gh pr merge 377 --squash --delete-branch --match-head-commit 9effbc49f1c22d2cc8727f49e3ae05ce4bd659b1; gh pr view 377; gh issue view 376",
-      "result": "MERGED as 126b2046c7b776eb4586dd09d326e3d45202b2e5; Issue #376 CLOSED; Project item Done; task branch deletion requested by successful merge."
+      "command": "Corrected-head affected lint:fix/format:write/typecheck",
+      "result": "PASS; regression tests unrun"
+    },
+    {
+      "command": "GitHub Changed-file checks at e726f8e599b2c015e30ea5b4c3d0c47abefb7ef0",
+      "result": "SUCCESS: https://github.com/DigitalHerencia/CodependentCoding/actions/runs/44438644599"
     }
   ],
   "updated_at": "2026-11-18T08:50:17.096543+00:00",
@@ -111,19 +113,13 @@
     "owner_authorization": "Owner approved dependency addition, commit, merge, sync and branch cleanup.",
     "not_run": ["tests", "local builds", "browser/runtime checks"]
   },
-  "status": "in-review",
-  "branch": "refactor/382-invoicing-architecture",
-  "completion": "PR #383 open; initial CI green. Source review rounding edge fixed and affected permitted checks passed; corrected head requires fresh CI. Terminal policy owner-gated; no migration required.",
+  "status": "merged-verified",
+  "branch": "main",
+  "completion": "PR #383 squash-merged after corrected-head CI passed; Issue #382 closed and Project item Done. Task branch deleted locally/remotely; main synchronized. CRM unchanged; two unrelated PWA edits preserved. Four permitted checks passed; tests and runtime/visual checks deliberately unrun. No invoicing migration required. Terminal invoice status mutations remain disabled pending the owner transition policy; approval and issuance supported.",
   "milestone": "M-T",
-  "updated": "2026-11-19T01:40:08.495920+00:00",
-  "current_issue": 382,
-  "active_package": {
-    "issue": 382,
-    "pull_request": 383,
-    "spec": "context/specs/invoicing-owner-refactor.md",
-    "phase": "Reviewed correction; fresh CI pending",
-    "policy_question": "Terminal status policy remains owner-gated; mutations fail closed."
-  },
+  "updated": "2026-11-19T01:43:47.189284+00:00",
+  "current_issue": null,
+  "active_package": null,
   "next_issue": null,
-  "source_commit": "126b2046c7b776eb4586dd09d326e3d45202b2e5"
+  "source_commit": "49b5ccfc2db0bf897afbab7370020b279e79f3db"
 }

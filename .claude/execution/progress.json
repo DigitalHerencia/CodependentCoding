@@ -4315,10 +4315,10 @@
   "invoicing-382": {
     "spec": "context/specs/invoicing-owner-refactor.md",
     "issue": 382,
-    "status": "in-review",
+    "status": "merged-verified",
     "branch": "refactor/382-invoicing-architecture",
     "project": "DigitalHerencia project 19",
-    "updated": "2026-11-19T01:40:08.495920+00:00",
+    "updated": "2026-11-19T01:43:47.189284+00:00",
     "scope": "Consolidate tenant invoices and expenses; CRM read-only; preserve PWA edits.",
     "verification": [
       {
@@ -4363,13 +4363,19 @@
     ],
     "pull_request": 383,
     "prior_verified_head": "08bf7efc140ac89918990dd897edee613f8d5e3b",
-    "ci": "https://github.com/DigitalHerencia/CodependentCoding/actions/runs/44438187736",
+    "ci": "https://github.com/DigitalHerencia/CodependentCoding/actions/runs/44438644599",
     "review": "Delegated source review found and corrected intermediate Decimal significant-digit rounding at large supported amounts. Canonical calculator now imports Prisma.Decimal via the documented generated browser entry and preserves the original multiplication/four-place-rounding/addition sequence; no floating point or new dependencies. Large-amount regression source added but unrun. No additional material findings.",
     "latest_verification": [
       "lint:fix on calculator and regression source: PASS, zero warnings",
       "format:write on calculator and regression source: PASS",
       "typecheck after calculator correction: PASS"
     ],
-    "ci_state": "Original PR head green; corrected calculation head requires fresh CI."
+    "ci_state": "Final corrected-head Changed-file checks SUCCESS; existing Vercel and Preview Comments checks SUCCESS.",
+    "project_status": "Done",
+    "source_commit": "49b5ccfc2db0bf897afbab7370020b279e79f3db",
+    "verified_pr_head": "e726f8e599b2c015e30ea5b4c3d0c47abefb7ef0",
+    "completion": "PR #383 squash-merged after corrected-head CI passed; Issue #382 closed and Project item Done. Task branch deleted locally/remotely; main synchronized. CRM unchanged; two unrelated PWA edits preserved. Four permitted checks passed; tests and runtime/visual checks deliberately unrun. No invoicing migration required. Terminal invoice status mutations remain disabled pending the owner transition policy; approval and issuance supported.",
+    "cleanup": "Verified task branch absent locally and remotely; local main equals origin/main before metadata finalization.",
+    "owner_action": "Decide whether OPEN/OVERDUE -> PAID/VOID is supported and record the financial transition policy before enabling terminal mutations. Existing independently recorded pending migrations remain unapplied; no new invoicing migration."
   }
 }
