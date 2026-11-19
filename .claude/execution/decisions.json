@@ -1416,6 +1416,13 @@
       "status": "accepted",
       "title": "Verified administration and invitation delivery merged",
       "decision": "PR #379 squash-merged as 1490c1d5cf008860175d999ff761731b2f0070d1; final head 91ccea208949d37584c285a9f3fdbc3625f51293 passed Changed-file checks (https://github.com/DigitalHerencia/CodependentCoding/actions/runs/44399018907), Vercel and Preview Comments. Issue #378 closed and Project item Done. Both task branches deleted; main synchronized. CRM unchanged and pre-existing PWA changes preserved outside the commit. Only format:write, lint:fix, typegen and typecheck ran locally. Existing test sources and focused scripts updated but tests not executed. Database migration source remains unapplied under owner command limits; owner must apply it before runtime membership queries use deniedPermissions. No local builds, servers, migrations or seeds executed."
+    },
+    {
+      "status": "accepted",
+      "id": "AI-380-OWNER-2026-11-18",
+      "decision": "Owner task overrides conflicting prior specs. CRM remains read-only. AI uses exact singleton layers and existing tenant shell/BoldKit primitives, with personal rolling thirty-day UTC views, bounded pagination, database aggregates and decimal transport. RHF owns generation state; provider/model/bounds stay server-owned. Inference runs outside transactions; original organization/user/membership is captured and row-locked authority rechecked on start/completion/failure. New lifecycle is RUNNING to SUCCEEDED or FAILED, with conditional updates and unique atomic append-only usage. Historical PENDING/CANCELED enum values and all recorded values remain readable and unchanged. Missing provider measurements become nullable; no pricing or billing changes, estimates, reconciliation rewrites or new capabilities. RLS adds requester scoping and append-only runtime ledger permissions. Source migration is unapplied; owner applies all pending migrations before runtime use. Only lint:fix, format:write, typegen and typecheck are allowed. Tests are authored but unrun; PR/CI/merge/cleanup authorized. Dashboard attachment unavailable and Context7 tooling not registered; installed declarations and existing patterns used. Historical AI wrote fabricated zero measurements; a version-zero default marks these existing amounts unverified without modifying them. New writes explicitly use version one and nullable reported fields. DTOs and SQL measured totals exclude unverified values while total ledger counts preserve all rows.",
+      "date": "2026-11-18",
+      "title": "AI tenant architecture and pinned inference lifecycle"
     }
   ]
 }

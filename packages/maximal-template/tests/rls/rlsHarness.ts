@@ -334,6 +334,8 @@ export function buildRow(
     if (column.nullable || column.hasDefault) continue;
     row[column.name] = scalarValue(column, catalog, index);
   }
+  // Ledger insertion requires a completed generation owned by the same requester.
+  if (table.name === "AiGeneration") row.status = "SUCCEEDED";
   return row;
 }
 

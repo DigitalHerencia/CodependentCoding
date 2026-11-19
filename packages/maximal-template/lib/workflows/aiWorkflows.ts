@@ -1,64 +1,79 @@
+"use server";
+
+import "server-only";
 import {
-  assertAiReadAccess,
-  getMyAiGenerations,
-  getMyAiUsage,
+  getAiCapabilities,
+  getAiOverviewData,
+  getAiUsageData,
 } from "@/lib/fetchers/aiFetchers";
+import { generateAiResponse } from "@/lib/actions/aiActions";
 import { isHuggingFaceConfigured } from "@/lib/integrations/hugging-face/client";
 import { getConfiguredHuggingFaceModel } from "@/lib/integrations/hugging-face/inference";
-import { type AiUsageItem } from "@/types/aiTypes";
-import "server-only";
+import type {
+  AiConfiguration,
+  AiOverviewView,
+  AiUsageView,
+  AiRecentScope,
+} from "@/types/aiTypes";
 
-export async function getAiWorkspaceWorkflow() {
-  const [configuration, generations, usage] = await Promise.all([
-    getAiPlaygroundConfiguration(),
-    getMyAiGenerations(),
-    getMyAiUsage(),
-  ]);
-  return { configuration, generations, usage };
-}
-
-// Provider configuration is not a persisted read, so it lives here rather than in a fetcher.
-export async function getAiPlaygroundConfiguration() {
-  await assertAiReadAccess();
+/** A server-owned rolling thirty-day UTC scope; URL input cannot broaden the authorization window. */
+function recentScope(): AiRecentScope {
+  const to = new Date();
+  const from = new Date(to.getTime() - 30 * 86_400_000);
   return {
-    configured: isHuggingFaceConfigured(),
-    model: getConfiguredHuggingFaceModel(),
+    read: { from, to },
+    display: {
+      from: from.toISOString(),
+      to: to.toISOString(),
+      label:
+        "Your generations in the current organization · last 30 days (UTC)",
+    },
   };
 }
 
-const TICKS_PER_US_DOLLAR = 10_000_000_000n;
-
-export function costTicksToUsd(costTicks: number | bigint): string {
-  const ticks = BigInt(costTicks);
-  if (ticks < 0n) throw new Error("Provider cost cannot be negative.");
-  const whole = ticks / TICKS_PER_US_DOLLAR;
-  const fraction = (ticks % TICKS_PER_US_DOLLAR).toString().padStart(10, "0");
-  return `${whole}.${fraction.slice(0, 8)}`;
+function configuration(canGenerate: boolean): AiConfiguration {
+  return {
+    configured: isHuggingFaceConfigured(),
+    provider: "Hugging Face",
+    model: getConfiguredHuggingFaceModel(),
+    canGenerate,
+  };
 }
 
-export function calculateUsage(items: AiUsageItem[]) {
-  return items.reduce(
-    (total, item) => ({
-      inputTokens: total.inputTokens + item.inputTokens,
-      outputTokens: total.outputTokens + item.outputTokens,
-      cost: total.cost + Number(item.cost),
-      generationCount: total.generationCount + 1,
-    }),
-    { inputTokens: 0, outputTokens: 0, cost: 0, generationCount: 0 },
+/** Compose one overview from bounded metadata and full-window SQL aggregates. */
+export async function loadAiOverviewWorkflow(
+  rawQuery: unknown = {},
+): Promise<AiOverviewView> {
+  const scope = recentScope();
+  const { canGenerate, ...data } = await getAiOverviewData(
+    rawQuery,
+    scope.read,
   );
+  return {
+    ...data,
+    configuration: configuration(canGenerate),
+    scope: scope.display,
+  };
 }
 
-export async function loadAiGenerationWorkflow() {
-  const generations = await getMyAiGenerations();
-  return { generations };
-}
-
+/** Provider configuration is server-owned and readable only after the AI permission check. */
 export async function loadAiPlaygroundWorkflow() {
-  const configuration = await getAiPlaygroundConfiguration();
-  return { configuration };
+  const { canGenerate } = await getAiCapabilities();
+  return { configuration: configuration(canGenerate) };
 }
 
-export async function loadAiUsageWorkflow() {
-  const usage = await getMyAiUsage();
-  return { usage };
+/** Paginated records and totals describe the same personal organization/date scope. */
+export async function loadAiUsageWorkflow(
+  rawQuery: unknown = {},
+): Promise<AiUsageView> {
+  const scope = recentScope();
+  return {
+    ...(await getAiUsageData(rawQuery, scope.read)),
+    scope: scope.display,
+  };
+}
+
+/** The form's sole mutation entry delegates all validation and authorization to its action. */
+export async function generateAiResponseWorkflow(rawInput: unknown) {
+  return generateAiResponse(rawInput);
 }

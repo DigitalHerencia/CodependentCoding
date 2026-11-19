@@ -4282,5 +4282,31 @@
     "project_state": "Done",
     "issue_state": "CLOSED",
     "branch_cleanup": "Remote and local task branch deleted; main fast-forwarded to verified squash merge. Unrelated local PWA changes preserved."
+  },
+  "ai-380": {
+    "owner_action": "Apply pending migrations including 20261118223000_ai_generation_lifecycle before runtime use; no migration has been applied in this task.",
+    "issue": 380,
+    "status": "local-verified-awaiting-pr-ci",
+    "scope": "Maximal Template AI architecture, tenant-pinned lifecycle, bounded reads, exact/null measurements, source-only RLS migration",
+    "NOT_RUN": [
+      "Tests, integration/E2E/browser checks, builds, servers, watchers, migrations, seeds and live provider requests"
+    ],
+    "risks": [
+      "Historical PENDING/CANCELED and stored measurements preserved without rewriting history.",
+      "No dashboard attachment available; visual fidelity unverified.",
+      "Pre-existing PWA edits excluded."
+    ],
+    "spec": "context/specs/issues/ai-domain-refactor.md",
+    "project": "In review after PR creation",
+    "branch": "refactor/380-ai-domain",
+    "EXECUTED": [
+      "npm run lint:fix -- <affected code>: PASS; affected shared contracts and new regression sources also PASS on focused rerun.",
+      "npm run format:write -- --ignore-unknown <affected files>: PASS; corrected initial root-document relative paths.",
+      "npm run typegen: PASS (Prisma 7.10.1 client and Next route types generated).",
+      "npm run typecheck: PASS after fixing exact optional form props.",
+      "pnpm script runner refused before execution: ERR_PNPM_VERIFY_DEPS_BEFORE_RUN registryRoutes mismatch. Same installed scripts ran through npm; no install or configuration changes.",
+      "Read-only delegated review found legacy fabricated measurements; version marker preserves amounts and excludes unverified values from measured presentation."
+    ],
+    "shared_dependencies": "Captured tenant authority stays in authz/db tenancy. Admin record counters honor AI-declared permission/user scope in module metadata, closing a shared read bypass. CRM unchanged."
   }
 }

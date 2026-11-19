@@ -1,8 +1,10 @@
 enum AiGenerationStatus {
+  /// Historical only: new synchronous inference starts directly in RUNNING.
   PENDING
   RUNNING
   SUCCEEDED
   FAILED
+  /// Historical only: no cancellation mutation is supported.
   CANCELED
 }
 
@@ -13,16 +15,19 @@ model AiGeneration {
 
   provider String
   model    String
-  status   AiGenerationStatus @default(PENDING)
+  status   AiGenerationStatus @default(RUNNING)
 
   input       Json
   output      Json?
   requestHash String?
   errorCode   String?
 
-  inputTokens  Int     @default(0)
-  outputTokens Int     @default(0)
-  cost         Decimal @default(0) @db.Decimal(19, 8)
+  /// Null means the inference provider did not report a measurement.
+  inputTokens  Int?
+  outputTokens Int?
+  cost         Decimal? @db.Decimal(19, 8)
+  /// Zero marks historical values whose provider measurement provenance is unknown.
+  measurementVersion Int @default(0)
 
   startedAt   DateTime? @db.Timestamptz(6)
   completedAt DateTime? @db.Timestamptz(6)
@@ -47,9 +52,12 @@ model AiUsageLedger {
 
   provider     String
   model        String
-  inputTokens  Int
-  outputTokens Int
-  cost         Decimal @db.Decimal(19, 8)
+  /// Ledger measurements are append-only; unavailable values are never estimated.
+  inputTokens  Int?
+  outputTokens Int?
+  cost         Decimal? @db.Decimal(19, 8)
+  /// New writes explicitly use version 1; existing amounts are retained without reinterpretation.
+  measurementVersion Int @default(0)
 
   organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   user         User         @relation("AiUsageUser", fields: [userId], references: [id], onDelete: Restrict)

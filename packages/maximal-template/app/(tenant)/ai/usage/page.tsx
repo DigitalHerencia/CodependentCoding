@@ -1,12 +1,13 @@
+import type { AiRoutePageProps } from "@/types/aiTypes";
 import { Suspense } from "react";
+import { AiUsageFeature } from "@/features/ai/aiUsageFeature";
+import { AiUsageSkeleton } from "@/features/ai/aiUsageSkeleton";
 
-import { AiUsageFeature } from "@/features/ai/ai-usage-feature";
-import { AiUsageSkeleton } from "@/features/ai/ai-usage-skeleton";
-
-export default async function Page() {
+/** The tenant route owns composition and its matching loading boundary. */
+export default function Page({ searchParams }: AiRoutePageProps) {
   return (
     <Suspense fallback={<AiUsageSkeleton />}>
-      <AiUsageFeature />
+      <AiUsageFeature criteria={searchParams} />
     </Suspense>
   );
 }

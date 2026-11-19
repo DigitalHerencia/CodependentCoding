@@ -5,9 +5,16 @@ import "server-only";
 import { connection } from "next/server";
 
 import type { Prisma } from "@/generated/prisma/client";
-import type { AccessContext, AppRole } from "@/types/authzTypes";
+import type {
+  AccessContext,
+  AppRole,
+  CapturedTenantAuthority,
+} from "@/types/authzTypes";
 
-import { getActiveOrganizationPreference } from "@/lib/authz/tenancy";
+import {
+  getActiveOrganizationPreference,
+  resolveCapturedAccessTx,
+} from "@/lib/authz/tenancy";
 import { requireIdentity } from "@/lib/integrations/clerk/server";
 import { activeMembershipScope } from "@/lib/authz/mode";
 import { prisma } from "@/lib/db/client";
@@ -102,4 +109,29 @@ export async function withAuthenticatedRead<T>(
   read: (tx: Prisma.TransactionClient, access: AccessContext) => Promise<T>,
 ): Promise<T> {
   return withTenantTransaction(await requireIdentity(), read);
+}
+
+/**
+ * Finish a request in its captured organization, even if the active preference changes.
+ * Identity, onboarding and locked membership are revalidated; a revoked original
+ * membership fails closed rather than falling back to another organization.
+ */
+export async function withCapturedTenantTransaction<T>(
+  identity: AuthenticatedIdentity,
+  captured: CapturedTenantAuthority,
+  work: (tx: Prisma.TransactionClient, access: AccessContext) => Promise<T>,
+): Promise<T> {
+  await connection();
+  return prisma.$transaction(
+    async (tx) => {
+      const user = await resolveAuthenticatedUser(tx, identity);
+      if (user.id !== captured.userId || !user.profileCompletedAt)
+        throw new TenantContextError(
+          "The original request authority is unavailable.",
+        );
+      await setRlsContext(tx, { organizationId: captured.organizationId });
+      return work(tx, await resolveCapturedAccessTx(tx, identity, captured));
+    },
+    { maxWait: 5_000, timeout: 15_000 },
+  );
 }

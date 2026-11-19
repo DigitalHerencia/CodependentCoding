@@ -313,5 +313,61 @@ export default defineConfig([
       authBlockImports,
     ]),
   },
+  {
+    name: "codependent/ai-route-boundaries",
+    files: ["app/(tenant)/ai/**/*.{ts,tsx}"],
+    ignores: ["app/(tenant)/ai/**/loading.tsx", "app/(tenant)/ai/**/error.tsx"],
+    rules: authImportRules([
+      authApplicationImports,
+      ...authBlockOnlyImports,
+      authBlockImports,
+      authTemplateImports,
+      authWorkflowImports,
+    ]),
+  },
+  {
+    name: "codependent/ai-loading-error-skeleton-boundaries",
+    files: [
+      "app/(tenant)/ai/**/loading.tsx",
+      "app/(tenant)/ai/**/error.tsx",
+      "features/ai/*Skeleton.tsx",
+    ],
+    rules: authImportRules([
+      authApplicationImports,
+      ...authBlockOnlyImports,
+      authTemplateImports,
+      authWorkflowImports,
+    ]),
+  },
+  {
+    name: "codependent/ai-block-boundaries",
+    files: ["components/blocks/ai-blocks.tsx"],
+    rules: authImportRules([
+      authApplicationImports,
+      authBlockImports,
+      authTemplateImports,
+      authWorkflowImports,
+    ]),
+  },
+  {
+    name: "codependent/ai-template-boundaries",
+    files: ["components/templates/ai-templates.tsx"],
+    rules: authImportRules([
+      authApplicationImports,
+      ...authBlockOnlyImports,
+      authTemplateImports,
+      authWorkflowImports,
+    ]),
+  },
+  {
+    name: "codependent/ai-feature-form-boundaries",
+    files: ["features/ai/**/*.{ts,tsx}"],
+    ignores: ["features/ai/*Skeleton.tsx"],
+    rules: authImportRules([
+      authApplicationImports,
+      ...authBlockOnlyImports,
+      authBlockImports,
+    ]),
+  },
   prettier,
 ]);
