@@ -1,10 +1,10 @@
 {
   "$schema": "codependent-coding/execution/handoff/v1",
-  "updated": "2026-11-19T00:09:14.6585084Z",
+  "updated": "2026-11-19T00:11:50.0396470Z",
   "format": "One current package; history is in progress.json, decisions.json and git.",
-  "status": "local-verified-awaiting-pr-ci",
+  "status": "merged-verified",
   "milestone": "M-T",
-  "current_issue": 380,
+  "current_issue": null,
   "next_issue": null,
   "queue": [
     "CC-050",
@@ -12,16 +12,10 @@
     "CC-053",
     "CC-063"
   ],
-  "branch": "refactor/380-ai-domain",
-  "active_package": {
-    "spec": "context/specs/issues/ai-domain-refactor.md",
-    "status": "local-verified-awaiting-pr-ci",
-    "scope": "AI domain refactor",
-    "issue": 380,
-    "evidence": "Only lint:fix, format:write, typegen and typecheck executed, all passing through npm script runner; pnpm registryRoutes guard stopped before execution. Tests authored but unrun."
-  },
-  "source_commit": "1490c1d5cf008860175d999ff761731b2f0070d1",
-  "completion": "AI refactor implemented and locally verified under permitted checks. Issue #380; PR/CI/merge/cleanup pending. Database migration remains unapplied.",
+  "branch": "main",
+  "active_package": null,
+  "source_commit": "620f5bc1c221c4cd8cf9d1698b570a3a4490b3e9",
+  "completion": "AI PR #381 merged after final-head CI passed; Issue #380 closed and Project item Done. Task branch deleted locally/remotely and main synchronized. Execution records finalized after merge; metadata push follows. AI migration source and prior membership restriction migration remain unapplied, requiring owner application before runtime use. Tests, local builds, servers, migrations, seeds and live provider requests were deliberately not executed; CRM unchanged and pre-existing PWA edits preserved.",
   "in_flight": [
     "CC-050 token consolidation implemented; focused static checks passed. Affected-site CI and owner browser contrast/reduced-motion verification pending. CC-049 merged in #351; main synced and branch deleted.",
     "Homepage PR #349 has passing CI and ready preview; owner desktop/mobile verification remains pending.",
