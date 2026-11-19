@@ -108,6 +108,14 @@ test("invoice detail renders persisted line items and calculated total", () => {
   assert.doesNotMatch(html, /SERVER|Records/);
 });
 
+test("large supported products retain the original Decimal working precision before four-place rounding", () => {
+  const result = calculateInvoiceTotals([
+    { quantity: "1.001", unitPrice: "100000000000000.0495", taxRate: "0" },
+  ]);
+  assert.equal(result.subtotal, "100100000000000.0496");
+  assert.equal(result.total, "100100000000000.0496");
+});
+
 // Source assertions are intentionally unexecuted under the owner verification constraints.
 test("calendar dates and bounded list criteria reject ambiguous or excessive input", () => {
   assert.equal(invoicingDateSchema.safeParse("2026-02-30").success, false);

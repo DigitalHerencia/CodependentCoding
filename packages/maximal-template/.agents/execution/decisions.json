@@ -147,6 +147,13 @@
       "status": "accepted",
       "title": "Owner-approved tenant invoicing architecture",
       "decision": "Owner prompt is canonical. Keep invoices and expenses in existing invoicing module and tenant shell; CRM read-only. Consolidate exact decimal calculator and transaction helper at explicit owner target lib/db/selects/invoicingTx.ts. Preserve four-place half-up subtotal-before-tax rounding, storage precision and invoice update approval authority. Lists use bounded database filters and full-scope currency/status aggregates. Only lint:fix, format:write, typegen, typecheck; test sources unrun. No migration/schema/RLS change needed. No dashboard image supplied; visual fidelity unverified. Context7 unavailable; official RHF useFieldArray and Prisma transaction docs consulted. Terminal lifecycle policy question remains pending."
+    },
+    {
+      "id": "INVOICING-382-ROUNDING-2026-11-18",
+      "date": "2026-11-18",
+      "status": "accepted",
+      "title": "Preserve original Decimal intermediate precision in shared calculator",
+      "decision": "Read-only source review found direct fixed-point product rounding can differ at supported large values from original Prisma.Decimal multiplication at working precision followed by toDecimalPlaces(4). Shared browser/server calculator now uses the generated browser-safe Prisma.Decimal export and original operation sequence. No rounding policy change, no new dependency, no history rewrite. Added large-product regression source without executing tests; affected lint:fix/format:write and typecheck passed."
     }
   ]
 }

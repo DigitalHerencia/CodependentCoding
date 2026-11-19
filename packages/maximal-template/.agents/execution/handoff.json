@@ -111,16 +111,17 @@
     "owner_authorization": "Owner approved dependency addition, commit, merge, sync and branch cleanup.",
     "not_run": ["tests", "local builds", "browser/runtime checks"]
   },
-  "status": "ready-for-pr",
+  "status": "in-review",
   "branch": "refactor/382-invoicing-architecture",
-  "completion": "Invoicing #382 implementation and permitted local checks complete; PR/CI/merge pending. Terminal status mutations fail closed pending explicit owner transition policy. CRM unchanged; unrelated PWA edits preserved.",
+  "completion": "PR #383 open; initial CI green. Source review rounding edge fixed and affected permitted checks passed; corrected head requires fresh CI. Terminal policy owner-gated; no migration required.",
   "milestone": "M-T",
-  "updated": "2026-11-19T01:35:21.032202+00:00",
+  "updated": "2026-11-19T01:40:08.495920+00:00",
   "current_issue": 382,
   "active_package": {
     "issue": 382,
+    "pull_request": 383,
     "spec": "context/specs/invoicing-owner-refactor.md",
-    "phase": "Four permitted checks passed; PR and CI pending",
+    "phase": "Reviewed correction; fresh CI pending",
     "policy_question": "Terminal status policy remains owner-gated; mutations fail closed."
   },
   "next_issue": null,

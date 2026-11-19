@@ -4315,10 +4315,10 @@
   "invoicing-382": {
     "spec": "context/specs/invoicing-owner-refactor.md",
     "issue": 382,
-    "status": "ready-for-pr",
+    "status": "in-review",
     "branch": "refactor/382-invoicing-architecture",
     "project": "DigitalHerencia project 19",
-    "updated": "2026-11-19T01:35:21.032202+00:00",
+    "updated": "2026-11-19T01:40:08.495920+00:00",
     "scope": "Consolidate tenant invoices and expenses; CRM read-only; preserve PWA edits.",
     "verification": [
       {
@@ -4360,6 +4360,16 @@
     ],
     "prior_failures_resolved": [
       "Typecheck: exact optional error props, normalized optional customerEmail/description, Prisma scalar relation mutation type."
-    ]
+    ],
+    "pull_request": 383,
+    "prior_verified_head": "08bf7efc140ac89918990dd897edee613f8d5e3b",
+    "ci": "https://github.com/DigitalHerencia/CodependentCoding/actions/runs/44438187736",
+    "review": "Delegated source review found and corrected intermediate Decimal significant-digit rounding at large supported amounts. Canonical calculator now imports Prisma.Decimal via the documented generated browser entry and preserves the original multiplication/four-place-rounding/addition sequence; no floating point or new dependencies. Large-amount regression source added but unrun. No additional material findings.",
+    "latest_verification": [
+      "lint:fix on calculator and regression source: PASS, zero warnings",
+      "format:write on calculator and regression source: PASS",
+      "typecheck after calculator correction: PASS"
+    ],
+    "ci_state": "Original PR head green; corrected calculation head requires fresh CI."
   }
 }
