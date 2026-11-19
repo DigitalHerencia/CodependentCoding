@@ -1,8 +1,7 @@
 import { Suspense } from "react";
-
-import { InvoiceEditFeature } from "@/features/invoicing/invoice-edit-feature";
-import { InvoiceFormSkeleton } from "@/features/invoicing/invoice-form-skeleton";
-
+import { InvoicingEditInvoiceFeature } from "@/features/invoicing/invoicingEditInvoiceFeature";
+import { InvoicingEditInvoiceSkeleton } from "@/features/invoicing/invoicingEditInvoiceSkeleton";
+/** Route composes its authorized feature inside the appropriate streaming fallback. */
 export default async function Page({
   params,
 }: {
@@ -10,8 +9,8 @@ export default async function Page({
 }) {
   const { invoiceId } = await params;
   return (
-    <Suspense fallback={<InvoiceFormSkeleton />}>
-      <InvoiceEditFeature invoiceId={invoiceId} />
+    <Suspense fallback={<InvoicingEditInvoiceSkeleton />}>
+      <InvoicingEditInvoiceFeature invoiceId={invoiceId} />
     </Suspense>
   );
 }

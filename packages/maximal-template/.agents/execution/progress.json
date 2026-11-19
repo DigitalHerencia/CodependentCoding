@@ -1297,5 +1297,65 @@
     "merge_commit": "59ad92417dd5681a6fa831c4ba8d399cbc8f6277",
     "completed_at": "2026-11-18T08:50:17.096543+00:00",
     "remaining": []
+  },
+  "invoicing-382": {
+    "spec": "context/specs/invoicing-owner-refactor.md",
+    "issue": 382,
+    "status": "in-review",
+    "branch": "refactor/382-invoicing-architecture",
+    "project": "DigitalHerencia project 19",
+    "updated": "2026-11-19T01:40:08.495920+00:00",
+    "scope": "Consolidate tenant invoices and expenses; CRM read-only; preserve PWA edits.",
+    "verification": [
+      {
+        "command": "npm --prefix packages/maximal-template run format:write -- --ignore-unknown <affected files>",
+        "result": "PASS"
+      },
+      {
+        "command": "npm --prefix packages/maximal-template run lint:fix -- <affected source files>",
+        "result": "PASS; zero warnings; repeated only affected files after type fixes"
+      },
+      {
+        "command": "npm --prefix packages/maximal-template run typegen",
+        "result": "PASS; Prisma Client 7.10.1 and Next route types generated; no database requests"
+      },
+      {
+        "command": "npm --prefix packages/maximal-template run typecheck",
+        "result": "PASS after correcting exact optional properties and Prisma unchecked mutation input type"
+      }
+    ],
+    "not_run": [
+      "tests",
+      "builds",
+      "servers/watchers",
+      "migrations/seeds",
+      "live provider requests",
+      "browser/visual verification"
+    ],
+    "policy_question": "OPEN/OVERDUE to PAID/VOID owner decision remains open; terminal action fails closed and no terminal buttons exposed. Approval and issuance supported.",
+    "migration": "No invoicing schema changes required.",
+    "implementation": [
+      "Eight tenant routes with exact feature/form/skeleton names, one page template each and existing shell.",
+      "Singleton blocks/copy/templates/types/schemas/DTOs/selects/transactions/actions/fetchers/workflows/module; retired duplicates removed.",
+      "Shared exact four-place subtotal-before-tax calculator; atomic headers/lines/audits; tenant-number advisory lock; optimistic transitions.",
+      "DB search/filter/sort/pagination and full-scope currency/status summaries, direct detail reads, calendar date transport."
+    ],
+    "references": [
+      "https://react-hook-form.com/docs/usefieldarray",
+      "https://www.prisma.io/docs/orm/prisma-client/queries/transactions"
+    ],
+    "prior_failures_resolved": [
+      "Typecheck: exact optional error props, normalized optional customerEmail/description, Prisma scalar relation mutation type."
+    ],
+    "pull_request": 383,
+    "prior_verified_head": "08bf7efc140ac89918990dd897edee613f8d5e3b",
+    "ci": "https://github.com/DigitalHerencia/CodependentCoding/actions/runs/44438187736",
+    "review": "Delegated source review found and corrected intermediate Decimal significant-digit rounding at large supported amounts. Canonical calculator now imports Prisma.Decimal via the documented generated browser entry and preserves the original multiplication/four-place-rounding/addition sequence; no floating point or new dependencies. Large-amount regression source added but unrun. No additional material findings.",
+    "latest_verification": [
+      "lint:fix on calculator and regression source: PASS, zero warnings",
+      "format:write on calculator and regression source: PASS",
+      "typecheck after calculator correction: PASS"
+    ],
+    "ci_state": "Original PR head green; corrected calculation head requires fresh CI."
   }
 }

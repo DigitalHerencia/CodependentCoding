@@ -369,5 +369,70 @@ export default defineConfig([
       authBlockImports,
     ]),
   },
+  {
+    name: "codependent/invoicing-route-boundaries",
+    files: [
+      "app/(tenant)/invoices/**/*.{ts,tsx}",
+      "app/(tenant)/expenses/**/*.{ts,tsx}",
+    ],
+    ignores: ["**/loading.tsx", "**/error.tsx"],
+    rules: authImportRules([
+      authApplicationImports,
+      ...authBlockOnlyImports,
+      authBlockImports,
+      authTemplateImports,
+      authWorkflowImports,
+    ]),
+  },
+  {
+    name: "codependent/invoicing-skeleton-boundaries",
+    files: [
+      "features/invoicing/*Skeleton.tsx",
+      "app/(tenant)/invoices/**/loading.tsx",
+      "app/(tenant)/invoices/**/error.tsx",
+      "app/(tenant)/expenses/**/loading.tsx",
+      "app/(tenant)/expenses/**/error.tsx",
+    ],
+    rules: authImportRules([
+      authApplicationImports,
+      ...authBlockOnlyImports,
+      authTemplateImports,
+      authWorkflowImports,
+    ]),
+  },
+  {
+    name: "codependent/invoicing-feature-form-boundaries",
+    files: ["features/invoicing/**/*.{ts,tsx}"],
+    ignores: ["features/invoicing/*Skeleton.tsx"],
+    rules: authImportRules([
+      {
+        regex: "^@/lib/(?!workflows/|utils/invoicingMoney$)",
+        message:
+          "Use invoicing workflows; only the pure shared decimal calculator may be imported directly.",
+      },
+      ...authBlockOnlyImports,
+      authBlockImports,
+    ]),
+  },
+  {
+    name: "codependent/invoicing-template-boundaries",
+    files: ["components/templates/invoicing-templates.tsx"],
+    rules: authImportRules([
+      authApplicationImports,
+      ...authBlockOnlyImports,
+      authTemplateImports,
+      authWorkflowImports,
+    ]),
+  },
+  {
+    name: "codependent/invoicing-block-boundaries",
+    files: ["components/blocks/invoicing-blocks.tsx"],
+    rules: authImportRules([
+      authApplicationImports,
+      authBlockImports,
+      authTemplateImports,
+      authWorkflowImports,
+    ]),
+  },
   prettier,
 ]);

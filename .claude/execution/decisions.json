@@ -1430,6 +1430,20 @@
       "status": "accepted",
       "title": "Verified AI architecture delivery merged",
       "decision": "PR #381 squash-merged as 620f5bc1c221c4cd8cf9d1698b570a3a4490b3e9. Final head 96a81fe18c855a7d091172fe49f71c76e3e110ec passed Changed-file checks (https://github.com/DigitalHerencia/CodependentCoding/actions/runs/44426751301), Vercel and Preview Comments. Issue #380 closed and Project item Done. Task branch deleted locally/remotely; main synchronized. Only lint:fix, format:write, typegen and typecheck ran locally; pnpm refused registryRoutes settings before execution, so installed scripts ran through npm without dependency/config changes. Tests and RLS/E2E sources authored or updated but unrun; no local builds, servers, watchers, migrations, seeds or live provider requests executed. CRM unchanged; unrelated PWA edits excluded. Source-only AI migration 20261118223000_ai_generation_lifecycle remains unapplied, alongside the recorded membership restriction migration. Owner must apply all pending migrations before runtime use. Historical amounts/statuses remain intact; version-zero measurements are unverified and excluded from measured DTOs/totals. Shared admin counters honor AI-owned permission/personal scope. No dashboard attachment available and no browser/visual verification performed."
+    },
+    {
+      "id": "INVOICING-382-OWNER-2026-11-18",
+      "date": "2026-11-18",
+      "status": "accepted",
+      "title": "Owner-approved tenant invoicing architecture",
+      "decision": "Owner prompt is canonical. Keep invoices and expenses in existing invoicing module and tenant shell; CRM read-only. Consolidate exact decimal calculator and transaction helper at explicit owner target lib/db/selects/invoicingTx.ts. Preserve four-place half-up subtotal-before-tax rounding, storage precision and invoice update approval authority. Lists use bounded database filters and full-scope currency/status aggregates. Only lint:fix, format:write, typegen, typecheck; test sources unrun. No migration/schema/RLS change needed. No dashboard image supplied; visual fidelity unverified. Context7 unavailable; official RHF useFieldArray and Prisma transaction docs consulted. Terminal lifecycle policy question remains pending."
+    },
+    {
+      "id": "INVOICING-382-ROUNDING-2026-11-18",
+      "date": "2026-11-18",
+      "status": "accepted",
+      "title": "Preserve original Decimal intermediate precision in shared calculator",
+      "decision": "Read-only source review found direct fixed-point product rounding can differ at supported large values from original Prisma.Decimal multiplication at working precision followed by toDecimalPlaces(4). Shared browser/server calculator now uses the generated browser-safe Prisma.Decimal export and original operation sequence. No rounding policy change, no new dependency, no history rewrite. Added large-product regression source without executing tests; affected lint:fix/format:write and typecheck passed."
     }
   ]
 }

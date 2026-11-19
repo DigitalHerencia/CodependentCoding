@@ -7,7 +7,7 @@
     ".agents/contracts/validation.yaml"
   ],
   "spec_catalog": "context/specs/catalog.json",
-  "active_spec_id": null,
+  "active_spec_id": "INVOICING-382-OWNER-PROMPT",
   "next_spec_id": null,
   "completed_spec_ids": [
     "TYPESCRIPTION-T2",
@@ -111,13 +111,19 @@
     "owner_authorization": "Owner approved dependency addition, commit, merge, sync and branch cleanup.",
     "not_run": ["tests", "local builds", "browser/runtime checks"]
   },
-  "status": "merged-verified",
-  "branch": "main",
-  "completion": "PR #377 merged after green final-head CI; Issue #376 closed and Project item Done. No active implementation package. Execution records finalized after merge; main synchronization follows the metadata commit.",
+  "status": "in-review",
+  "branch": "refactor/382-invoicing-architecture",
+  "completion": "PR #383 open; initial CI green. Source review rounding edge fixed and affected permitted checks passed; corrected head requires fresh CI. Terminal policy owner-gated; no migration required.",
   "milestone": "M-T",
-  "updated": "2026-11-18T20:19:44.991910+00:00",
-  "current_issue": null,
-  "active_package": null,
+  "updated": "2026-11-19T01:40:08.495920+00:00",
+  "current_issue": 382,
+  "active_package": {
+    "issue": 382,
+    "pull_request": 383,
+    "spec": "context/specs/invoicing-owner-refactor.md",
+    "phase": "Reviewed correction; fresh CI pending",
+    "policy_question": "Terminal status policy remains owner-gated; mutations fail closed."
+  },
   "next_issue": null,
   "source_commit": "126b2046c7b776eb4586dd09d326e3d45202b2e5"
 }

@@ -1,8 +1,7 @@
 import { Suspense } from "react";
-
-import { ExpenseFeature } from "@/features/invoicing/expense-feature";
-import { ExpenseSkeleton } from "@/features/invoicing/expense-skeleton";
-
+import { InvoicingExpenseDetailFeature } from "@/features/invoicing/invoicingExpenseDetailFeature";
+import { InvoicingExpenseDetailSkeleton } from "@/features/invoicing/invoicingExpenseDetailSkeleton";
+/** Route composes its authorized feature inside the appropriate streaming fallback. */
 export default async function Page({
   params,
 }: {
@@ -10,8 +9,8 @@ export default async function Page({
 }) {
   const { expenseId } = await params;
   return (
-    <Suspense fallback={<ExpenseSkeleton />}>
-      <ExpenseFeature expenseId={expenseId} />
+    <Suspense fallback={<InvoicingExpenseDetailSkeleton />}>
+      <InvoicingExpenseDetailFeature expenseId={expenseId} />
     </Suspense>
   );
 }

@@ -22,5 +22,8 @@ export const invoicingModule = {
     resources: ["invoicing.invoice", "invoicing.expense"],
     grants: { MEMBER: ["read", "create", "update"] },
   },
-  records: [{ label: "Invoices", model: "invoice" }],
+  records: [
+    { label: "Invoices", model: "invoice" },
+    { label: "Expenses", model: "expense" },
+  ],
 } satisfies ModuleDefinition;

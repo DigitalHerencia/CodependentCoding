@@ -1,857 +1,720 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import {
   NativeSelect,
   NativeSelectOption,
 } from "@/components/ui/native-select";
-import { Separator } from "@/components/ui/separator";
-import { cn } from "@/components/ui/utils";
-import {
-  invoicingBlockCopy,
-  invoicingLibraryCopy,
-  invoicingRemainingCopy,
-} from "@/content/invoicing";
-import { type InvoiceDTO } from "@/types/invoicingTypes";
-import {
-  AlertCircle,
-  Check,
-  Clock,
-  Download,
-  Mail,
-  Printer,
-} from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
+import { invoicingCopy as copy } from "@/content/invoicing";
+import type {
+  ExpenseDTO,
+  InvoiceDTO,
+  InvoiceListDTO,
+  InvoicingQuery,
+  InvoicingPagination,
+  InvoicingSummary,
+} from "@/types/invoicingTypes";
 import Link from "next/link";
-import * as React from "react";
+import type { FormEventHandler, ReactNode, Ref } from "react";
 
-export function ExpensesToolbar({
-  query,
-  onQueryChange,
+/** Presentation contract for GET filters; normalized by the server workflow. */
+type Criteria = InvoicingQuery;
+type PageInfo = InvoicingPagination;
+type Summary = InvoicingSummary[number];
+type Mode = "invoices" | "expenses";
+
+/** Tenant-page heading; the tenant layout supplies the surrounding shell. */
+export function InvoicingHeadingBlock({
+  mode,
+  create = false,
+  title,
 }: {
-  query: string;
-  onQueryChange: (value: string) => void;
+  mode: Mode;
+  create?: boolean;
+  title?: ReactNode;
 }) {
   return (
-    <div className="flex flex-wrap gap-3">
-      <Input
-        aria-label={invoicingBlockCopy.searchExpenses}
-        placeholder={invoicingBlockCopy.searchVendorOrPurpose}
-        value={query}
-        onChange={(event) => onQueryChange(event.target.value)}
-      />
-      <Link className="type-link" href="/expenses/new">
-        {invoicingBlockCopy.submitExpense}
-      </Link>
-    </div>
+    <header className="flex flex-wrap items-center justify-between gap-4">
+      <h1 className="type-title">{title ?? copy[mode]}</h1>
+      {create && (
+        <Button asChild>
+          <Link href={`/${mode}/new`}>
+            {mode === "invoices" ? copy.newInvoice : copy.newExpense}
+          </Link>
+        </Button>
+      )}
+    </header>
   );
 }
 
-export function InvoicesToolbar({
+/** Accessible URL-based filters submit to the authorized database query. */
+export function InvoicingFiltersBlock({
+  mode,
   query,
-  onQueryChange,
-  status,
-  onStatusChange,
-  statuses,
 }: {
-  query: string;
-  onQueryChange: (value: string) => void;
-  status: string;
-  onStatusChange: (value: string) => void;
-  statuses: string[];
+  mode: Mode;
+  query: Criteria;
+}) {
+  const statuses =
+    mode === "invoices"
+      ? ["DRAFT", "OPEN", "PAID", "VOID", "OVERDUE"]
+      : ["DRAFT", "SUBMITTED", "APPROVED", "REJECTED", "REIMBURSED"];
+  return (
+    <form
+      action={`/${mode}`}
+      method="get"
+      className="grid gap-3 rounded-lg border p-4 sm:grid-cols-2 lg:grid-cols-4"
+    >
+      <Field>
+        <FieldLabel htmlFor="ledger-search">{copy.search}</FieldLabel>
+        <Input
+          id="ledger-search"
+          name="search"
+          defaultValue={query.search}
+          maxLength={200}
+        />
+      </Field>
+      <Field>
+        <FieldLabel htmlFor="ledger-status">
+          {mode === "invoices" ? copy.status : copy.expenseStatus}
+        </FieldLabel>
+        <NativeSelect
+          id="ledger-status"
+          name="status"
+          defaultValue={query.status}
+        >
+          <NativeSelectOption value="">{copy.all}</NativeSelectOption>
+          {statuses.map((status) => (
+            <NativeSelectOption key={status} value={status}>
+              {status}
+            </NativeSelectOption>
+          ))}
+        </NativeSelect>
+      </Field>
+      <Field>
+        <FieldLabel htmlFor="ledger-currency">{copy.currency}</FieldLabel>
+        <Input
+          id="ledger-currency"
+          name="currency"
+          defaultValue={query.currency}
+          maxLength={3}
+        />
+      </Field>
+      <Field>
+        <FieldLabel htmlFor="ledger-sort">{copy.sort}</FieldLabel>
+        <NativeSelect id="ledger-sort" name="sort" defaultValue={query.sort}>
+          {Object.entries(copy.sortOptions).map(([value, label]) => (
+            <NativeSelectOption key={value} value={value}>
+              {label}
+            </NativeSelectOption>
+          ))}
+        </NativeSelect>
+      </Field>
+      <Field>
+        <FieldLabel htmlFor="ledger-from">{copy.from}</FieldLabel>
+        <Input
+          type="date"
+          id="ledger-from"
+          name="from"
+          defaultValue={query.from}
+        />
+      </Field>
+      <Field>
+        <FieldLabel htmlFor="ledger-to">{copy.to}</FieldLabel>
+        <Input type="date" id="ledger-to" name="to" defaultValue={query.to} />
+      </Field>
+      <input type="hidden" name="pageSize" value={query.pageSize} />
+      <div className="flex items-end gap-3">
+        <Button type="submit">{copy.apply}</Button>
+        <Link className="type-link" href={`/${mode}`}>
+          {copy.reset}
+        </Link>
+      </div>
+    </form>
+  );
+}
+
+/** Full-query aggregates retain separate currencies and persisted lifecycle states. */
+export function InvoicingSummaryBlock({
+  mode,
+  summary,
+  query,
+}: {
+  mode: Mode;
+  summary: Summary[];
+  query: Criteria;
 }) {
   return (
-    <div className="flex flex-wrap gap-3">
-      <Input
-        aria-label={invoicingBlockCopy.searchInvoices}
-        placeholder={invoicingBlockCopy.searchInvoiceOrCustomer}
-        value={query}
-        onChange={(event) => onQueryChange(event.target.value)}
-      />
-      <NativeSelect
-        className="control-field"
-        aria-label={invoicingBlockCopy.invoiceStatus}
-        value={status}
-        onChange={(event) => onStatusChange(event.target.value)}
-      >
-        <NativeSelectOption value="">
-          {invoicingBlockCopy.allStatuses}
-        </NativeSelectOption>
-        {statuses.map((value) => (
-          <NativeSelectOption key={value}>{value}</NativeSelectOption>
+    <section className="space-y-3" aria-label={copy.summary}>
+      <p className="type-caption">{copy.scope}</p>
+      <p className="type-caption">
+        {mode === "invoices" ? copy.invoiceRange : copy.expenseRange}:{" "}
+        {query.from || copy.noStart} – {query.to || copy.noEnd}
+      </p>
+      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        {summary.map((item) => (
+          <Card
+            className="space-y-2 p-4"
+            key={`${item.currency}-${item.status}`}
+          >
+            <h2 className="type-label">
+              {mode === "expenses"
+                ? copy.expenseAmount
+                : item.status === "PAID"
+                  ? copy.markedPaid
+                  : ["OPEN", "OVERDUE"].includes(item.status)
+                    ? copy.receivable
+                    : copy.invoiceTotal}
+            </h2>
+            <p className="type-title">
+              {item.total} {item.currency}
+            </p>
+            <p>
+              {item.status} · {item.count}
+            </p>
+          </Card>
         ))}
-      </NativeSelect>
-      <Link className="type-link" href="/invoices/new">
-        {invoicingBlockCopy.draftInvoice}
-      </Link>
+      </div>
+    </section>
+  );
+}
+
+/** Financial DTO table: render untrusted names and descriptions as text. */
+export function InvoicingInvoicesTableBlock({
+  invoices,
+}: {
+  invoices: Array<InvoiceListDTO & { overdue?: boolean }>;
+}) {
+  return (
+    <div className="overflow-x-auto rounded-lg border">
+      <table className="w-full text-left text-sm">
+        <caption className="sr-only">{copy.invoices}</caption>
+        <thead>
+          <tr>
+            {[
+              copy.number,
+              copy.customer,
+              copy.amount,
+              copy.status,
+              copy.approval,
+              copy.due,
+            ].map((label) => (
+              <th className="p-3" scope="col" key={label}>
+                {label}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {invoices.map((invoice) => (
+            <tr className="border-t" key={invoice.id}>
+              <td className="p-3">
+                <Link className="type-link" href={`/invoices/${invoice.id}`}>
+                  #{invoice.number}
+                </Link>
+              </td>
+              <td className="p-3">{invoice.customerName}</td>
+              <td className="p-3 whitespace-nowrap">
+                {invoice.total} {invoice.currency}
+              </td>
+              <td className="p-3">
+                {invoice.status}
+                {invoice.overdue && invoice.status !== "OVERDUE"
+                  ? ` · ${copy.overdue}`
+                  : ""}
+              </td>
+              <td className="p-3">
+                {invoice.approvedAt ? copy.approved : copy.unapproved}
+              </td>
+              <td className="p-3">{invoice.dueAt ?? copy.unavailable}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      {!invoices.length && <p className="p-4">{copy.empty}</p>}
     </div>
   );
 }
 
-export function InvoiceControlsBlock({
+/** Expense ledger preserves recorded reimbursement status without implying payment. */
+export function InvoicingExpensesTableBlock({
+  expenses,
+}: {
+  expenses: ExpenseDTO[];
+}) {
+  return (
+    <div className="overflow-x-auto rounded-lg border">
+      <table className="w-full text-left text-sm">
+        <caption className="sr-only">{copy.expenses}</caption>
+        <thead>
+          <tr>
+            {[
+              copy.vendor,
+              copy.description,
+              copy.amount,
+              copy.expenseStatus,
+              copy.incurred,
+            ].map((label) => (
+              <th className="p-3" scope="col" key={label}>
+                {label}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {expenses.map((expense) => (
+            <tr className="border-t" key={expense.id}>
+              <td className="p-3">
+                <Link className="type-link" href={`/expenses/${expense.id}`}>
+                  {expense.vendor}
+                </Link>
+              </td>
+              <td className="p-3">{expense.description}</td>
+              <td className="p-3 whitespace-nowrap">
+                {expense.amount} {expense.currency}
+              </td>
+              <td className="p-3">{expense.status}</td>
+              <td className="p-3">{expense.incurredAt}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      {!expenses.length && <p className="p-4">{copy.empty}</p>}
+    </div>
+  );
+}
+
+/** Pagination retains the entire server-normalized filter and sort scope. */
+export function InvoicingPaginationBlock({
+  mode,
+  query,
+  pagination,
+}: {
+  mode: Mode;
+  query: Criteria;
+  pagination: PageInfo;
+}) {
+  const href = (page: number) =>
+    `/${mode}?${new URLSearchParams(Object.entries({ ...query, page }).map(([key, value]) => [key, String(value)]))}`;
+  return (
+    <nav
+      className="flex flex-wrap items-center justify-between gap-3"
+      aria-label={`${copy[mode]} pages`}
+    >
+      <p>
+        {pagination.page} / {Math.max(1, pagination.totalPages)} ·{" "}
+        {pagination.total}
+      </p>
+      <div className="flex gap-4">
+        {pagination.page > 1 && (
+          <Link className="type-link" href={href(pagination.page - 1)}>
+            {copy.previous}
+          </Link>
+        )}
+        {pagination.page < pagination.totalPages && (
+          <Link className="type-link" href={href(pagination.page + 1)}>
+            {copy.next}
+          </Link>
+        )}
+      </div>
+    </nav>
+  );
+}
+
+/** Persisted invoice facts and line amounts; lifecycle actions arrive as a slot. */
+export function InvoicingInvoiceDetailBlock({
   invoice,
-  pending,
-  message,
-  onApproveOrIssue,
+  canEdit,
+  children,
 }: {
   invoice: InvoiceDTO;
-  pending: boolean;
-  message: string;
-  onApproveOrIssue: () => void | Promise<void>;
+  canEdit: boolean;
+  children?: ReactNode;
 }) {
   return (
-    <div className="space-y-3">
-      <Button disabled={pending} onClick={onApproveOrIssue}>
-        {invoice.approvedAt
-          ? invoicingBlockCopy.issueApprovedInvoice
-          : invoicingBlockCopy.approveInvoice}
-      </Button>
-      <p className="text-sm text-muted-primary">
-        {
-          invoicingBlockCopy.issuingRecordsThisInvoiceAsOpenItDoesNotEmailTheCustomerOrChargeAPaymentMethod
-        }
-      </p>
-      <p role="status">{message}</p>
-    </div>
-  );
-}
-
-// ============================================================================
-// Common Types
-// ============================================================================
-export type InvoiceItem = {
-  description: string;
-  quantity: number;
-  unitPrice: number;
-  total: number;
-};
-
-export type InvoiceAddress = {
-  name: string;
-  company?: string;
-  address: string;
-  city: string;
-  state?: string;
-  zip: string;
-  country?: string;
-  email?: string;
-  phone?: string;
-};
-
-export type InvoiceData = {
-  invoiceNumber: string;
-  issueDate: string;
-  dueDate: string;
-  status?: "paid" | "pending" | "overdue";
-  from: InvoiceAddress;
-  to: InvoiceAddress;
-  items: InvoiceItem[];
-  subtotal: number;
-  tax?: { label: string; rate: number; amount: number };
-  discount?: { label: string; amount: number };
-  total: number;
-  notes?: string;
-  terms?: string;
-  paymentInfo?: {
-    bankName?: string;
-    accountNumber?: string;
-    routingNumber?: string;
-    paymentMethods?: string[];
-  };
-};
-
-// ============================================================================
-// INVOICE VARIANT 1: Full Invoice
-// ============================================================================
-export type InvoiceProps = {
-  data: InvoiceData;
-  logo?: React.ReactNode;
-  onDownload?: () => void;
-  onPrint?: () => void;
-  onSendEmail?: () => void;
-  className?: string;
-};
-
-export function Invoice({
-  data,
-  logo,
-  onDownload,
-  onPrint,
-  onSendEmail,
-  className,
-}: InvoiceProps) {
-  const statusConfig = {
-    paid: { bg: "bg-success", text: "text-success-foreground", icon: Check },
-    pending: { bg: "bg-warning", text: "text-warning-foreground", icon: Clock },
-    overdue: {
-      bg: "bg-destructive",
-      text: "text-destructive-foreground",
-      icon: AlertCircle,
-    },
-  };
-
-  const status = data.status ? statusConfig[data.status] : null;
-
-  return (
-    <div className={cn("mx-auto max-w-4xl", className)}>
-      {/* Actions Bar */}
-      <div className="mb-6 flex items-center justify-between print:hidden">
-        <h1 className="text-2xl font-black uppercase">
-          {invoicingLibraryCopy.invoice}
-        </h1>
-        <div className="flex gap-2">
-          {onSendEmail && (
-            <Button variant="outline" size="sm" onClick={onSendEmail}>
-              <Mail className="mr-2 h-4 w-4" />
-              {invoicingLibraryCopy.email}
-            </Button>
-          )}
-          {onPrint && (
-            <Button variant="outline" size="sm" onClick={onPrint}>
-              <Printer className="mr-2 h-4 w-4" />
-              {invoicingLibraryCopy.print}
-            </Button>
-          )}
-          {onDownload && (
-            <Button size="sm" onClick={onDownload}>
-              <Download className="mr-2 h-4 w-4" />
-              {invoicingLibraryCopy.download}
-            </Button>
+    <Card className="space-y-6 p-6">
+      <header className="flex flex-wrap justify-between gap-4">
+        <div>
+          <h1 className="type-title">
+            {copy.number} #{invoice.number}
+          </h1>
+          <p>{invoice.status}</p>
+        </div>
+        <div className="flex gap-4">
+          <Link className="type-link" href="/invoices">
+            {copy.back}
+          </Link>
+          {canEdit && (
+            <Link className="type-link" href={`/invoices/${invoice.id}/edit`}>
+              {copy.edit}
+            </Link>
           )}
         </div>
-      </div>
-
-      {/* Invoice Document */}
-      <div className="border-3 border-foreground bg-card shadow-[8px_8px_0px_hsl(var(--shadow-color))] print:border-0 print:shadow-none">
-        <div className="p-8 md:p-12">
-          {/* Header */}
-          <div className="mb-8 flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
-            <div>
-              {logo && <div className="mb-4">{logo}</div>}
-              <AddressBlock address={data.from} />
-            </div>
-
-            <div className="space-y-2 text-left md:text-right">
-              <h2 className="text-4xl font-black tracking-tight uppercase">
-                {invoicingLibraryCopy.invoice}
-              </h2>
-              <div className="space-y-1 text-sm">
-                <p>
-                  <span className="font-bold text-muted-foreground uppercase">
-                    {invoicingLibraryCopy.invoice2}
-                  </span>{" "}
-                  <span className="font-medium">{data.invoiceNumber}</span>
-                </p>
-                <p>
-                  <span className="font-bold text-muted-foreground uppercase">
-                    {invoicingLibraryCopy.issueDate}
-                  </span>{" "}
-                  <span className="font-medium">{data.issueDate}</span>
-                </p>
-                <p>
-                  <span className="font-bold text-muted-foreground uppercase">
-                    {invoicingLibraryCopy.dueDate}
-                  </span>{" "}
-                  <span className="font-medium">{data.dueDate}</span>
-                </p>
-              </div>
-              {status && (
-                <div
-                  className={cn(
-                    "inline-flex items-center gap-1 px-3 py-1 text-xs font-bold uppercase",
-                    status.bg,
-                    status.text,
-                  )}
-                >
-                  <status.icon className="h-3 w-3" />
-                  {data.status}
-                </div>
-              )}
-            </div>
+      </header>
+      <section>
+        <h2 className="type-label">{copy.customer}</h2>
+        <p>{invoice.customerName}</p>
+        <p>{invoice.customerEmail}</p>
+      </section>
+      <dl className="grid gap-2 sm:grid-cols-2">
+        {[
+          [copy.issuedAt, invoice.issuedAt],
+          [copy.dueAt, invoice.dueAt],
+          [copy.approvedAt, invoice.approvedAt],
+          [copy.approvedBy, invoice.approvedBy?.displayName],
+          [copy.paidAt, invoice.paidAt],
+        ].map(([label, value]) => (
+          <div key={label}>
+            <dt className="type-label">{label}</dt>
+            <dd>{value ?? copy.unavailable}</dd>
           </div>
-
-          {/* Bill To */}
-          <div className="mb-8 border-3 border-foreground bg-muted/30 p-4">
-            <p className="mb-2 text-xs font-bold text-muted-foreground uppercase">
-              {invoicingLibraryCopy.billTo}
-            </p>
-            <AddressBlock address={data.to} />
-          </div>
-
-          {/* Items Table */}
-          <div className="mb-8 overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b-3 border-foreground">
-                  <th className="py-3 text-left text-sm font-black uppercase">
-                    {invoicingLibraryCopy.description}
-                  </th>
-                  <th className="w-24 py-3 text-center text-sm font-black uppercase">
-                    {invoicingLibraryCopy.qty}
-                  </th>
-                  <th className="w-32 py-3 text-right text-sm font-black uppercase">
-                    {invoicingLibraryCopy.unitPrice}
-                  </th>
-                  <th className="w-32 py-3 text-right text-sm font-black uppercase">
-                    {invoicingLibraryCopy.total}
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {data.items.map((item) => (
-                  <tr
-                    key={`invoice-item-${item.description}`}
-                    className="border-b border-foreground/20"
-                  >
-                    <td className="py-4">{item.description}</td>
-                    <td className="py-4 text-center">{item.quantity}</td>
-                    <td className="py-4 text-right font-mono">
-                      {invoicingLibraryCopy.separator}
-                      {item.unitPrice.toFixed(2)}
-                    </td>
-                    <td className="py-4 text-right font-mono font-bold">
-                      {invoicingLibraryCopy.separator}
-                      {item.total.toFixed(2)}
-                    </td>
-                  </tr>
+        ))}
+      </dl>
+      <div className="overflow-x-auto">
+        <table className="w-full text-left text-sm">
+          <caption className="sr-only">{copy.lines}</caption>
+          <thead>
+            <tr>
+              {[
+                copy.description,
+                copy.quantity,
+                copy.unitPrice,
+                copy.taxRate,
+                copy.lineSubtotal,
+                copy.lineTax,
+                copy.lineTotal,
+              ].map((label) => (
+                <th className="p-2" scope="col" key={label}>
+                  {label}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {invoice.lines.map((line) => (
+              <tr key={line.id} className="border-t">
+                {[
+                  line.description,
+                  line.quantity,
+                  line.unitPrice,
+                  line.taxRate,
+                  line.lineSubtotal,
+                  line.lineTax,
+                  line.lineTotal,
+                ].map((value, index) => (
+                  <td className="p-2" key={index}>
+                    {value}
+                  </td>
                 ))}
-              </tbody>
-            </table>
-          </div>
-
-          {/* Totals */}
-          <div className="mb-8 flex justify-end">
-            <div className="w-full max-w-xs space-y-2">
-              <div className="flex justify-between py-2">
-                <span className="text-muted-foreground">
-                  {invoicingLibraryCopy.subtotal}
-                </span>
-                <span className="font-mono font-bold">
-                  {invoicingLibraryCopy.separator}
-                  {data.subtotal.toFixed(2)}
-                </span>
-              </div>
-              {data.tax && (
-                <div className="flex justify-between py-2">
-                  <span className="text-muted-foreground">
-                    {data.tax.label}
-                    {invoicingLibraryCopy.separator2}
-                    {data.tax.rate}
-                    {invoicingLibraryCopy.separator3}
-                  </span>
-                  <span className="font-mono">
-                    {invoicingLibraryCopy.separator}
-                    {data.tax.amount.toFixed(2)}
-                  </span>
-                </div>
-              )}
-              {data.discount && (
-                <div className="flex justify-between py-2 text-success">
-                  <span>{data.discount.label}</span>
-                  <span className="font-mono">
-                    {invoicingLibraryCopy.separator4}
-                    {data.discount.amount.toFixed(2)}
-                  </span>
-                </div>
-              )}
-              <Separator className="h-[2px] bg-foreground" />
-              <div className="flex justify-between py-2">
-                <span className="text-lg font-black uppercase">
-                  {invoicingLibraryCopy.total}
-                </span>
-                <span className="font-mono text-2xl font-black">
-                  {invoicingLibraryCopy.separator}
-                  {data.total.toFixed(2)}
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* Payment Info */}
-          {data.paymentInfo && (
-            <div className="mb-8 border-3 border-foreground bg-primary/5 p-4">
-              <p className="mb-3 text-xs font-bold text-muted-foreground uppercase">
-                {invoicingLibraryCopy.paymentInformation}
-              </p>
-              <div className="grid gap-4 text-sm md:grid-cols-2">
-                {data.paymentInfo.bankName && (
-                  <div>
-                    <p className="font-bold">{invoicingLibraryCopy.bankName}</p>
-                    <p className="text-muted-foreground">
-                      {data.paymentInfo.bankName}
-                    </p>
-                  </div>
-                )}
-                {data.paymentInfo.accountNumber && (
-                  <div>
-                    <p className="font-bold">
-                      {invoicingLibraryCopy.accountNumber}
-                    </p>
-                    <p className="font-mono text-muted-foreground">
-                      {data.paymentInfo.accountNumber}
-                    </p>
-                  </div>
-                )}
-                {data.paymentInfo.routingNumber && (
-                  <div>
-                    <p className="font-bold">
-                      {invoicingLibraryCopy.routingNumber}
-                    </p>
-                    <p className="font-mono text-muted-foreground">
-                      {data.paymentInfo.routingNumber}
-                    </p>
-                  </div>
-                )}
-                {data.paymentInfo.paymentMethods && (
-                  <div>
-                    <p className="font-bold">
-                      {invoicingLibraryCopy.acceptedMethods}
-                    </p>
-                    <p className="text-muted-foreground">
-                      {data.paymentInfo.paymentMethods.join(", ")}
-                    </p>
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
-
-          {/* Notes & Terms */}
-          {(data.notes || data.terms) && (
-            <div className="grid gap-6 text-sm md:grid-cols-2">
-              {data.notes && (
-                <div>
-                  <p className="mb-2 text-xs font-bold text-muted-foreground uppercase">
-                    {invoicingLibraryCopy.notes}
-                  </p>
-                  <p className="text-muted-foreground">{data.notes}</p>
-                </div>
-              )}
-              {data.terms && (
-                <div>
-                  <p className="mb-2 text-xs font-bold text-muted-foreground uppercase">
-                    {invoicingLibraryCopy.termsConditions}
-                  </p>
-                  <p className="text-muted-foreground">{data.terms}</p>
-                </div>
-              )}
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// ============================================================================
-// INVOICE VARIANT 2: Compact Receipt
-// ============================================================================
-export type ReceiptData = {
-  receiptNumber: string;
-  date: string;
-  merchant: {
-    name: string;
-    address?: string;
-    phone?: string;
-  };
-  items: Array<{
-    name: string;
-    quantity?: number;
-    price: number;
-  }>;
-  subtotal: number;
-  tax?: number;
-  total: number;
-  paymentMethod?: string;
-  cardLast4?: string;
-};
-
-export type ReceiptProps = {
-  data: ReceiptData;
-  logo?: React.ReactNode;
-  onDownload?: () => void;
-  className?: string;
-};
-
-export function Receipt({ data, logo, onDownload, className }: ReceiptProps) {
-  return (
-    <div className={cn("mx-auto max-w-sm", className)}>
-      <div className="border-3 border-foreground bg-card shadow-[6px_6px_0px_hsl(var(--shadow-color))]">
-        <div className="space-y-6 p-6">
-          {/* Header */}
-          <div className="space-y-2 text-center">
-            {logo && <div className="mb-4 flex justify-center">{logo}</div>}
-            <h2 className="text-xl font-black uppercase">
-              {data.merchant.name}
-            </h2>
-            {data.merchant.address && (
-              <p className="text-sm text-muted-foreground">
-                {data.merchant.address}
-              </p>
-            )}
-            {data.merchant.phone && (
-              <p className="text-sm text-muted-foreground">
-                {data.merchant.phone}
-              </p>
-            )}
-          </div>
-
-          <Separator className="h-[2px] border-dashed bg-foreground" />
-
-          {/* Receipt Info */}
-          <div className="space-y-1 text-center text-sm">
-            <p className="font-bold uppercase">
-              {invoicingLibraryCopy.receipt}
-              {data.receiptNumber}
-            </p>
-            <p className="text-muted-foreground">{data.date}</p>
-          </div>
-
-          <Separator className="h-[2px] border-dashed bg-foreground" />
-
-          {/* Items */}
-          <div className="space-y-2">
-            {data.items.map((item) => (
-              <div key={item.name} className="flex justify-between text-sm">
-                <span>
-                  {item.quantity &&
-                    item.quantity > 1 &&
-                    invoicingRemainingCopy.quantityPrefix(item.quantity)}
-                  {item.name}
-                </span>
-                <span className="font-mono">
-                  {invoicingLibraryCopy.separator}
-                  {item.price.toFixed(2)}
-                </span>
-              </div>
+              </tr>
             ))}
-          </div>
-
-          <Separator className="h-[2px] border-dashed bg-foreground" />
-
-          {/* Totals */}
-          <div className="space-y-2">
-            <div className="flex justify-between text-sm">
-              <span className="text-muted-foreground">
-                {invoicingLibraryCopy.subtotal}
-              </span>
-              <span className="font-mono">
-                {invoicingLibraryCopy.separator}
-                {data.subtotal.toFixed(2)}
-              </span>
-            </div>
-            {data.tax !== undefined && (
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">
-                  {invoicingLibraryCopy.tax}
-                </span>
-                <span className="font-mono">
-                  {invoicingLibraryCopy.separator}
-                  {data.tax.toFixed(2)}
-                </span>
-              </div>
-            )}
-            <div className="flex justify-between font-bold">
-              <span className="uppercase">{invoicingLibraryCopy.total}</span>
-              <span className="font-mono text-lg">
-                {invoicingLibraryCopy.separator}
-                {data.total.toFixed(2)}
-              </span>
-            </div>
-          </div>
-
-          <Separator className="h-[2px] border-dashed bg-foreground" />
-
-          {/* Payment Method */}
-          {data.paymentMethod && (
-            <div className="space-y-1 text-center text-sm">
-              <p className="text-muted-foreground">
-                {invoicingLibraryCopy.paidWith}
-                {data.paymentMethod}
-              </p>
-              {data.cardLast4 && (
-                <p className="font-mono">
-                  {invoicingLibraryCopy.separator5}
-                  {data.cardLast4}
-                </p>
-              )}
-            </div>
-          )}
-
-          {/* Thank You */}
-          <div className="text-center">
-            <p className="text-sm font-bold uppercase">
-              {invoicingLibraryCopy.thankYou}
-            </p>
-          </div>
-
-          {/* Download */}
-          {onDownload && (
-            <Button
-              variant="outline"
-              className="w-full print:hidden"
-              onClick={onDownload}
-            >
-              <Download className="mr-2 h-4 w-4" />
-              {invoicingLibraryCopy.downloadReceipt}
-            </Button>
-          )}
-        </div>
+          </tbody>
+        </table>
       </div>
-    </div>
+      <InvoicingTotalsBlock totals={invoice} currency={invoice.currency} />
+      {children}
+    </Card>
   );
 }
 
-// ============================================================================
-// INVOICE VARIANT 3: Invoice Summary Card
-// ============================================================================
-export type InvoiceSummaryProps = {
-  invoiceNumber: string;
-  clientName: string;
-  issueDate: string;
-  dueDate: string;
-  amount: number;
-  status: "paid" | "pending" | "overdue";
-  onView?: () => void;
-  onDownload?: () => void;
-  className?: string;
-};
-
-export function InvoiceSummary({
-  invoiceNumber,
-  clientName,
-  issueDate,
-  dueDate,
-  amount,
-  status,
-  onView,
-  onDownload,
-  className,
-}: InvoiceSummaryProps) {
-  const statusConfig = {
-    paid: {
-      bg: "bg-success/10",
-      border: "border-success",
-      text: "text-success",
-    },
-    pending: {
-      bg: "bg-warning/10",
-      border: "border-warning",
-      text: "text-warning",
-    },
-    overdue: {
-      bg: "bg-destructive/10",
-      border: "border-destructive",
-      text: "text-destructive",
-    },
-  };
-
-  const statusStyle = statusConfig[status];
-
+/** Direct authorized expense detail, including only permitted DTO fields. */
+export function InvoicingExpenseDetailBlock({
+  expense,
+  canEdit,
+}: {
+  expense: ExpenseDTO;
+  canEdit: boolean;
+}) {
   return (
-    <div
-      className={cn(
-        "border-3 border-foreground bg-card p-4 shadow-[4px_4px_0px_hsl(var(--shadow-color))] transition hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_hsl(var(--shadow-color))]",
-        className,
-      )}
-    >
-      <div className="mb-4 flex items-start justify-between">
-        <div>
-          <p className="text-lg font-black">{invoiceNumber}</p>
-          <p className="text-sm text-muted-foreground">{clientName}</p>
-        </div>
-        <div
-          className={cn(
-            "border-2 px-2 py-1 text-xs font-bold uppercase",
-            statusStyle.bg,
-            statusStyle.border,
-            statusStyle.text,
-          )}
-        >
-          {status}
-        </div>
+    <Card className="space-y-5 p-6">
+      <h1 className="type-title">{expense.vendor}</h1>
+      <div className="flex gap-4">
+        <Link className="type-link" href="/expenses">
+          {copy.back}
+        </Link>
+        {canEdit && (
+          <Link className="type-link" href={`/expenses/${expense.id}/edit`}>
+            {copy.edit}
+          </Link>
+        )}
       </div>
-
-      <div className="mb-4 grid grid-cols-2 gap-4 text-sm">
-        <div>
-          <p className="text-xs font-bold text-muted-foreground uppercase">
-            {invoicingLibraryCopy.issued}
-          </p>
-          <p className="font-medium">{issueDate}</p>
-        </div>
-        <div>
-          <p className="text-xs font-bold text-muted-foreground uppercase">
-            {invoicingLibraryCopy.due}
-          </p>
-          <p className="font-medium">{dueDate}</p>
-        </div>
-      </div>
-
-      <div className="flex items-center justify-between">
-        <p className="font-mono text-2xl font-black">
-          {invoicingLibraryCopy.separator}
-          {amount.toFixed(2)}
-        </p>
-        <div className="flex gap-2">
-          {onDownload && (
-            <Button
-              variant="ghost"
-              size="sm"
-              aria-label={invoicingLibraryCopy.downloadInvoice}
-              onClick={onDownload}
-            >
-              <Download className="h-4 w-4" />
-            </Button>
-          )}
-          {onView && (
-            <Button size="sm" onClick={onView}>
-              {invoicingLibraryCopy.view}
-            </Button>
-          )}
-        </div>
-      </div>
-    </div>
+      <p className="whitespace-pre-wrap">{expense.description}</p>
+      <dl className="grid gap-4 sm:grid-cols-2">
+        {[
+          [copy.amount, `${expense.amount} ${expense.currency}`],
+          [copy.expenseStatus, expense.status],
+          [copy.incurred, expense.incurredAt],
+          [copy.submitter, expense.submitter],
+        ].map(([label, value]) => (
+          <div key={label}>
+            <dt className="type-label">{label}</dt>
+            <dd>{value ?? copy.unavailable}</dd>
+          </div>
+        ))}
+      </dl>
+      <p className="type-caption">{copy.expenseNote}</p>
+    </Card>
   );
 }
 
-// ============================================================================
-// INVOICE VARIANT 4: Invoice List
-// ============================================================================
-export type InvoiceListItem = {
-  id: string;
-  invoiceNumber: string;
-  clientName: string;
-  date: string;
-  amount: number;
-  status: "paid" | "pending" | "overdue";
-};
-
-export type InvoiceListProps = {
-  invoices: InvoiceListItem[];
-  onView?: (id: string) => void;
-  onDownload?: (id: string) => void;
-  className?: string;
-};
-
-export function InvoiceList({
-  invoices,
-  onView,
-  onDownload,
-  className,
-}: InvoiceListProps) {
-  const statusConfig = {
-    paid: "bg-success text-success-foreground",
-    pending: "bg-warning text-warning-foreground",
-    overdue: "bg-destructive text-destructive-foreground",
-  };
-
+/** Command presentation receives permission-checked availability from its feature. */
+export function InvoicingCommandsBlock({
+  canApprove,
+  canIssue,
+  pending,
+  message,
+  onCommand,
+}: {
+  canApprove: boolean;
+  canIssue: boolean;
+  pending: boolean;
+  message: string;
+  onCommand: (command: "approve" | "issue") => void;
+}) {
   return (
-    <div className={cn("border-3 border-foreground bg-card", className)}>
-      {/* Header */}
-      <div className="grid grid-cols-12 gap-2 border-b-3 border-foreground bg-muted/50 p-4 text-xs font-bold uppercase">
-        <div className="col-span-2">{invoicingLibraryCopy.invoice}</div>
-        <div className="col-span-3">{invoicingLibraryCopy.client}</div>
-        <div className="col-span-2">{invoicingLibraryCopy.date}</div>
-        <div className="col-span-2 text-right">
-          {invoicingLibraryCopy.amount}
-        </div>
-        <div className="col-span-2 text-right">
-          {invoicingLibraryCopy.status}
-        </div>
-        <div className="col-span-1" />
+    <section className="space-y-3">
+      <div className="flex flex-wrap gap-3">
+        {canApprove && (
+          <Button disabled={pending} onClick={() => onCommand("approve")}>
+            {copy.approve}
+          </Button>
+        )}
+        {canIssue && (
+          <Button disabled={pending} onClick={() => onCommand("issue")}>
+            {copy.issue}
+          </Button>
+        )}
       </div>
-
-      {/* Rows */}
-      {invoices.map((invoice) => (
-        <div
-          key={invoice.id}
-          className="grid grid-cols-12 items-center gap-2 border-b border-foreground/20 p-4 transition-colors hover:bg-muted/30"
-        >
-          <div className="col-span-2 truncate font-bold">
-            {invoice.invoiceNumber}
-          </div>
-          <div className="col-span-3 truncate text-muted-foreground">
-            {invoice.clientName}
-          </div>
-          <div className="col-span-2 text-sm text-muted-foreground">
-            {invoice.date}
-          </div>
-          <div className="col-span-2 text-right font-mono font-bold">
-            {invoicingLibraryCopy.separator}
-            {invoice.amount.toFixed(2)}
-          </div>
-          <div className="col-span-2 flex justify-end">
-            <span
-              className={cn(
-                "px-2 py-0.5 text-xs font-bold whitespace-nowrap uppercase",
-                statusConfig[invoice.status],
-              )}
-            >
-              {invoice.status}
-            </span>
-          </div>
-          <div className="col-span-1 flex items-center justify-end gap-1">
-            {onDownload && (
-              <Button
-                variant="ghost"
-                size="sm"
-                className="h-7 w-7 p-0"
-                onClick={() => onDownload(invoice.id)}
-              >
-                <Download className="h-3 w-3" />
-              </Button>
-            )}
-            {onView && (
-              <Button
-                variant="ghost"
-                size="sm"
-                className="h-7 w-7 p-0"
-                onClick={() => onView(invoice.id)}
-              >
-                {invoicingLibraryCopy.separator6}
-              </Button>
-            )}
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-// ============================================================================
-// Helper Components
-// ============================================================================
-function AddressBlock({ address }: { address: InvoiceAddress }) {
-  return (
-    <div className="space-y-1 text-sm">
-      <p className="font-bold">{address.name}</p>
-      {address.company && <p>{address.company}</p>}
-      <p className="text-muted-foreground">{address.address}</p>
-      <p className="text-muted-foreground">
-        {address.city}
-        {address.state &&
-          invoicingRemainingCopy.stateSuffix(address.state)}{" "}
-        {address.zip}
+      <p className="type-caption">{copy.commandNote}</p>
+      <p role="status" aria-live="polite">
+        {message === "updated"
+          ? copy.updated
+          : message === "error"
+            ? copy.commandError
+            : message}
       </p>
-      {address.country && (
-        <p className="text-muted-foreground">{address.country}</p>
-      )}
-      {address.email && (
-        <p className="text-muted-foreground">{address.email}</p>
-      )}
-      {address.phone && (
-        <p className="text-muted-foreground">{address.phone}</p>
-      )}
-    </div>
+    </section>
   );
 }
 
-// ============================================================================
-// Export all variants
-// ============================================================================
-export const InvoiceBlocks = {
-  Full: Invoice,
-  Receipt: Receipt,
-  Summary: InvoiceSummary,
-  List: InvoiceList,
+/** Structural RHF binding; blocks never import form state or application logic. */
+type Binding = {
+  name: string;
+  value: unknown;
+  onChange: (...event: unknown[]) => void;
+  onBlur: () => void;
+  ref: Ref<HTMLInputElement>;
 };
+export function InvoicingFieldBlock({
+  name,
+  binding,
+  invalid,
+  error,
+  index,
+}: {
+  name: string;
+  binding: Binding;
+  invalid?: boolean;
+  error?: string | undefined;
+  index?: number;
+}) {
+  const labels: Record<string, string> = {
+    customerName: copy.customerName,
+    customerEmail: copy.customerEmail,
+    currency: copy.currency,
+    issuedAt: copy.issuedAt,
+    dueAt: copy.dueAt,
+    description: index === undefined ? copy.businessPurpose : copy.description,
+    quantity: copy.quantity,
+    unitPrice: copy.unitPrice,
+    taxRate: copy.taxRate,
+    vendor: copy.vendor,
+    amount: copy.amount,
+    incurredAt: copy.incurredAt,
+  };
+  const id = `invoicing-${index ?? "header"}-${name}`;
+  return (
+    <Field data-invalid={invalid}>
+      <FieldLabel htmlFor={id}>{labels[name]}</FieldLabel>
+      <Input
+        {...binding}
+        id={id}
+        value={String(binding.value ?? "")}
+        type={
+          name.endsWith("At")
+            ? "date"
+            : name === "customerEmail"
+              ? "email"
+              : "text"
+        }
+        inputMode={
+          ["quantity", "unitPrice", "taxRate", "amount"].includes(name)
+            ? "decimal"
+            : "text"
+        }
+        aria-invalid={invalid}
+        aria-describedby={error ? `${id}-error` : undefined}
+      />
+      {error && <FieldError id={`${id}-error`}>{error}</FieldError>}
+    </Field>
+  );
+}
+
+/** A line-item container delegates all field array operations to the form. */
+export function InvoicingLineBlock({
+  index,
+  children,
+  onRemove,
+  disabled,
+}: {
+  index: number;
+  children: ReactNode;
+  onRemove: () => void;
+  disabled: boolean;
+}) {
+  return (
+    <fieldset className="grid gap-3 rounded-lg border p-4 sm:grid-cols-2 lg:grid-cols-5">
+      <legend className="px-2">
+        {copy.lines} {index + 1}
+      </legend>
+      {children}
+      <Button
+        type="button"
+        variant="outline"
+        disabled={disabled}
+        aria-label={`${copy.removeLine} ${index + 1}`}
+        onClick={onRemove}
+      >
+        {copy.removeLine}
+      </Button>
+    </fieldset>
+  );
+}
+
+/** Decimal strings are displayed without floating-point currency conversion. */
+export function InvoicingTotalsBlock({
+  totals,
+  currency,
+  preview = false,
+}: {
+  totals: { subtotal: string; taxTotal: string; total: string } | null;
+  currency: string;
+  preview?: boolean;
+}) {
+  return (
+    <section aria-live={preview ? "polite" : undefined}>
+      {preview && <h2 className="type-label">{copy.preview}</h2>}
+      {totals ? (
+        <dl className="ml-auto grid max-w-sm grid-cols-2 gap-2">
+          {[
+            [copy.subtotal, totals.subtotal],
+            [copy.taxTotal, totals.taxTotal],
+            [copy.total, totals.total],
+          ].map(([label, value]) => (
+            <div className="contents" key={label}>
+              <dt>{label}</dt>
+              <dd className="text-right">
+                {value} {currency}
+              </dd>
+            </div>
+          ))}
+        </dl>
+      ) : (
+        <p>{copy.previewInvalid}</p>
+      )}
+    </section>
+  );
+}
+
+/** Shared form scaffold: RHF state, field arrays and submission remain in forms. */
+export function InvoicingFormBlock({
+  mode,
+  edit,
+  fields,
+  lines,
+  onAddLine,
+  preview,
+  pending,
+  error,
+  locked,
+  onSubmit,
+}: {
+  mode: Mode;
+  edit: boolean;
+  fields: ReactNode;
+  lines?: ReactNode;
+  onAddLine?: () => void;
+  preview?: ReactNode;
+  pending: boolean;
+  error?: string | undefined;
+  locked?: boolean;
+  onSubmit: FormEventHandler<HTMLFormElement>;
+}) {
+  return (
+    <form
+      className="mx-auto max-w-5xl space-y-5 rounded-lg border p-5"
+      noValidate
+      onSubmit={onSubmit}
+    >
+      <h1 className="type-title">
+        {mode === "invoices"
+          ? edit
+            ? copy.editInvoice
+            : copy.newInvoice
+          : edit
+            ? copy.editExpense
+            : copy.newExpense}
+      </h1>
+      <fieldset disabled={pending || locked} className="space-y-4">
+        <div className="grid gap-4 sm:grid-cols-2">{fields}</div>
+        {lines}
+        {onAddLine && (
+          <Button type="button" variant="outline" onClick={onAddLine}>
+            {copy.addLine}
+          </Button>
+        )}
+        {preview}
+      </fieldset>
+      {locked && <p role="alert">{copy.editLocked}</p>}
+      {error && (
+        <p role="alert">{error === "error" ? copy.saveError : error}</p>
+      )}
+      <div className="flex gap-4">
+        <Button type="submit" disabled={pending || locked}>
+          {pending
+            ? copy.saving
+            : mode === "invoices"
+              ? copy.saveInvoice
+              : copy.saveExpense}
+        </Button>
+        <Link className="type-link" href={`/${mode}`}>
+          {copy.back}
+        </Link>
+      </div>
+    </form>
+  );
+}
+
+/** Permission denial is presented without a second auth or onboarding gate. */
+export function InvoicingUnavailableBlock({
+  edit = false,
+}: {
+  edit?: boolean;
+}) {
+  return <p role="alert">{edit ? copy.editLocked : copy.noAccess}</p>;
+}
+
+/** Skeleton blocks are imported directly by route-specific skeleton components. */
+export function InvoicingSkeletonBlock() {
+  return (
+    <div className="space-y-4" role="status" aria-label="Loading">
+      <Skeleton className="h-10 w-60" />
+      <Skeleton className="h-32 w-full" />
+      <Skeleton className="h-72 w-full" />
+    </div>
+  );
+}

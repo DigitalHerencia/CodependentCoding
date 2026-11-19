@@ -2,8 +2,13 @@ import assert from "node:assert/strict";
 import { test } from "vitest";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import { calculateInvoiceTotals } from "@/lib/db/transactions/invoicingCreateInvoiceTx";
-import { expenseFormSchema } from "@/schemas/invoicingSchemas";
+import { calculateInvoiceTotals } from "@/lib/utils/invoicingMoney";
+import {
+  expenseFormSchema,
+  invoicingDateSchema,
+  updateInvoiceStatusSchema,
+  invoiceListQuerySchema,
+} from "@/schemas/invoicingSchemas";
 import { InvoicingInvoiceDetailTemplate } from "@/components/templates/invoicing-templates";
 import type { InvoiceDTO } from "@/types/invoicingTypes";
 
@@ -42,6 +47,12 @@ test("invoice totals preserve decimal precision and tax rounding", () => {
   assert.equal(totals.subtotal.toString(), "31.164");
   assert.equal(totals.taxTotal.toString(), "0.0248");
   assert.equal(totals.total.toString(), "31.1888");
+  const rounded = calculateInvoiceTotals([
+    { quantity: "0.001", unitPrice: "0.05", taxRate: "0.5" },
+  ]);
+  assert.equal(rounded.lines[0]?.lineSubtotal, "0.0001");
+  assert.equal(rounded.lines[0]?.lineTax, "0.0001");
+  assert.equal(rounded.total, "0.0002");
   assert.throws(
     () =>
       calculateInvoiceTotals([
@@ -85,10 +96,58 @@ test("invoice detail renders persisted line items and calculated total", () => {
     ],
   };
   const html = renderToStaticMarkup(
-    createElement(InvoicingInvoiceDetailTemplate, { invoice }, null),
+    createElement(
+      InvoicingInvoiceDetailTemplate,
+      { invoice, canEdit: false },
+      null,
+    ),
   );
   assert.match(html, /Design services/);
-  assert.match(html, /Bill to/);
+  assert.match(html, /Customer/);
   assert.match(html, /105/);
   assert.doesNotMatch(html, /SERVER|Records/);
+});
+
+test("large supported products retain the original Decimal working precision before four-place rounding", () => {
+  const result = calculateInvoiceTotals([
+    { quantity: "1.001", unitPrice: "100000000000000.0495", taxRate: "0" },
+  ]);
+  assert.equal(result.subtotal, "100100000000000.0496");
+  assert.equal(result.total, "100100000000000.0496");
+});
+
+// Source assertions are intentionally unexecuted under the owner verification constraints.
+test("calendar dates and bounded list criteria reject ambiguous or excessive input", () => {
+  assert.equal(invoicingDateSchema.safeParse("2026-02-30").success, false);
+  assert.equal(
+    invoicingDateSchema.safeParse("2026-11-18T00:00:00-07:00").success,
+    false,
+  );
+  assert.equal(
+    invoiceListQuerySchema.safeParse({ pageSize: 101 }).success,
+    false,
+  );
+  assert.equal(
+    invoiceListQuerySchema.safeParse({ from: "2026-11-18", to: "2026-11-17" })
+      .success,
+    false,
+  );
+});
+test("generic status commands cannot bypass approval or issuance", () => {
+  assert.equal(
+    updateInvoiceStatusSchema.safeParse({
+      invoiceId: id,
+      expectedVersion: 1,
+      status: "OPEN",
+    }).success,
+    false,
+  );
+  assert.equal(
+    updateInvoiceStatusSchema.safeParse({
+      invoiceId: id,
+      expectedVersion: 1,
+      status: "PAID",
+    }).success,
+    true,
+  );
 });
