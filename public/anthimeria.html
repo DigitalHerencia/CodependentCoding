@@ -45,7 +45,7 @@ a{color:inherit}
 .system-map{display:grid;grid-template-columns:repeat(4,minmax(190px,1fr));gap:20px;min-width:820px;align-items:stretch}
 .map-scroll{overflow:auto}
 .boundary{border:2px solid #6d6d6d;background:#171717;position:relative;padding:12px}
-.boundary:not(:last-child):after{content:"→";position:absolute;right:-21px;top:47%;font:800 24px Consolas,monospace;color:#dedede;z-index:2}
+.boundary:not(:last-child):after{display:none}
 .boundary h3{margin:0 0 12px;padding:0 0 8px;border-bottom:1px solid #777;font:700 12px Consolas,monospace;text-transform:uppercase;letter-spacing:.09em}
 .boundary .desc{font-size:11px;color:var(--muted);line-height:1.5;min-height:35px;margin:0 0 9px}
 .mapnode{display:block;text-align:left;width:100%;margin:6px 0;border:1px solid #666;background:#262626;color:var(--ink);padding:10px;min-width:0}
@@ -105,8 +105,8 @@ a{color:inherit}
 </style>
 </head>
 <body>
-<header class="top"><div class="brand"><b>ANTHIMERIA</b><small>THE CODEDEPENDENT CODING ARCHITECTURE ATLAS</small></div><div class="top-right"><strong>DIGITAL HERENCIA // THE MAXIMAL TEMPLATE</strong><div>GOLDEN PATTERN • STATIC REFERENCE • NO AI • NO REPOSITORY ACCESS</div></div></header>
-<div class="notice"><b>REFERENCE MODEL, NOT LIVE SOURCE.</b> Representative CRM and webhook code paths drawn from the Codependent Coding architectural doctrine. Navigate files and follow actual intended call direction. No credentials, backend, account, or external libraries.</div>
+<header class="top"><div class="brand"><b>ANTHIMERIA</b><small>A SYSTEM CONSTITUTED OF SIMPLES // CURRENTLY HIPSTERING</small></div><div class="top-right"><strong>DIGITAL HERENCIA // THE MAXIMAL TEMPLATE</strong><div>CONSTITUTED OF SIMPLES • DYNAMIC TRACES • NO AI • NO REPOSITORY CONNECTION</div></div></header>
+<div class="notice"><b>REFERENCE MODEL, NOT LIVE SOURCE.</b> CRM examples based on the November 19 architecture discussion. No repository doctrine is used as authority. Navigate files and follow actual intended call direction. No credentials, backend, account, or external libraries.</div>
 <div class="tabs" role="tablist" aria-label="Architecture views">
 <button class="tab" data-view="system" role="tab" aria-selected="true">01 / SYSTEM</button>
 <button class="tab" data-view="read" role="tab" aria-selected="false">02 / READ</button>
@@ -116,7 +116,7 @@ a{color:inherit}
 </div>
 <main class="main">
 <aside class="side" aria-label="Directory explorer"><div class="sidehead"><p class="eyebrow">01 / OWNERSHIP</p><h2>File explorer</h2><input id="search" class="search" type="search" placeholder="Find file / symbol…" aria-label="Search files and source" autocomplete="off"></div><div class="tree" id="tree"></div></aside>
-<section class="workspace" aria-live="polite"><div class="workhead"><div><p class="eyebrow" id="view-eyebrow">SYSTEM MODEL</p><h1 id="view-title">THE BIG PICTURE</h1><p id="view-desc">Boundaries contain responsibilities. Follow the arrows from the route through the application to the data. Click any file to inspect its code.</p></div><div class="legend">→ EXECUTION / DATA HANDOFF<br>CLICK = SOURCE INSPECTOR</div></div><div class="stage" id="stage"><div class="noscript">The interactive diagram will appear here. Use the tabs to explore one path at a time.</div></div></section>
+<section class="workspace" aria-live="polite"><div class="workhead"><div><p class="eyebrow" id="view-eyebrow">SYSTEM MODEL</p><h1 id="view-title">THE BIG PICTURE</h1><p id="view-desc">Boundaries identify ownership. Trace tabs follow runtime execution; file nodes open source. These are separate views.</p></div><div class="legend">→ FLOW IS SHOWN IN TRACE TABS<br>CLICK = SOURCE INSPECTOR</div></div><div class="stage" id="stage"><div class="noscript">The interactive diagram will appear here. Use the tabs to explore one path at a time.</div></div></section>
 <aside class="inspector" id="inspector" aria-label="Source code inspector"><div class="inspector-head"><div><p class="eyebrow">02 / SOURCE INSPECTOR</p><h2 id="source-title">SELECT A FILE</h2><div class="label path" id="source-path">Click any node or file</div><div class="miniactions"><button class="action" id="copy" type="button">COPY SOURCE</button><button class="action close" id="close" type="button">CLOSE</button></div></div></div><div class="details"><p class="inspector-description" id="summary">Every diagram node resolves to a concrete source-file example.</p><strong>IMPORTS / DEPENDS ON</strong><div class="chips" id="imports"><span class="empty">—</span></div><strong>USED BY / IMPORTED FROM</strong><div class="chips" id="usedby"><span class="empty">—</span></div></div><div class="source" id="source"></div></aside>
 </main>
 <footer class="foot">ANTHIMERIA <span class="note-strong">/</span> STYLE: BRUTALIST <span class="note-strong">/</span> MODEL: CANONICAL INTENT <span class="note-strong">/</span> LINKS: FILE → DEPENDENCIES → FLOW</footer>
@@ -124,438 +124,13 @@ a{color:inherit}
 (function(){
 'use strict';
 function file(id,path,role,group,summary,imports){return {id:id,path:path,role:role,group:group,summary:summary,imports:imports||[],code:''};}
-const F=[
-file('route','app/(tenant)/crm/contacts/page.tsx','Route entry','Routing','The URL entry. Await search params and render a server feature inside Suspense.',['feature','skeleton']),
-file('pipelineRoute','app/(tenant)/crm/pipeline/page.tsx','Route entry','Routing','A second route demonstrates a different page using the same CRM architecture.',['pipelineFeature']),
-file('feature','features/crm/crmContactsFeature.tsx','Server feature','Presentation','Loads DTOs via the read workflow and passes the result into a page template.',['workflow','template','client']),
-file('pipelineFeature','features/crm/crmPipelineFeature.tsx','Server feature','Presentation','The pipeline page assembles the board using its named workflow.',['workflow','template']),
-file('client','features/crm/crmContactActions.client.tsx','Client island','Presentation','Owns dialog state and user events. Calls a server action, never a server-only workflow.',['action','template']),
-file('skeleton','features/crm/crmContactsSkeleton.tsx','Loading skeleton','Presentation','Shape-preserving visual fallback while the server feature is awaiting data.',['block']),
-file('template','components/templates/crm-templates.tsx','Page template','Presentation','Arranges reusable blocks, receives DTOs and callback/slot props, no business logic.',['block']),
-file('block','components/blocks/crm-blocks.tsx','Presentation block','Presentation','Composes pure controls into table rows and cards. No ORM, fetchers, or decisions.',['uiButton','type']),
-file('uiButton','components/ui/button.tsx','UI primitive','Presentation','Accessible UI control, normally installed from shadcn; example shows contract only.',[]),
-file('copy','content/crm.ts','Static content','Presentation','Centralised copy for CRM labels.',['']),
-file('workflow','lib/workflows/crmWorkflows.ts','Use-case orchestration','Application','Named read workflows compose fetchers; write workflows orchestrate transaction helpers and domain rules.',['fetcher','tenant','tx','permission','type']),
-file('fetcher','lib/fetchers/crmFetchers.ts','Read boundary','Application','Validates criteria, authenticates and authorises, performs tenant-scoped select, returns DTO.',['schema','select','dto','tenant','permission']),
-file('action','lib/actions/crmActions.ts','Server action','Application','Browser-callable mutation boundary. Auth → rate limit → parse → workflow → invalidate.',['auth','schema','workflow','cache','type']),
-file('schema','schemas/crmSchemas.ts','Zod contract','Contracts','Runtime validation for untrusted inputs; same schema is reused by client forms and server action.',['']),
-file('type','types/crmTypes.ts','DTO / input types','Contracts','Serialisable view-model contracts; clients do not receive raw Prisma records.',['schema']),
-file('select','lib/db/selects/crm.selects.ts','Prisma select','Data','Allowlist of fields to read from the database.',['']),
-file('dto','lib/db/dto/crm.dto.ts','DTO mapper','Data','Converts database records into serialisable presentation contracts.',['type','select']),
-file('tx','lib/db/transactions/crm-update-contact.tx.ts','Atomic transaction helper','Data','Performs one tenant-scoped write and its audit record within the same transaction.',['select']),
-file('tenant','lib/db/tenant.ts','Tenant RLS wrapper','Data','Provides correctly scoped database reads and transactions.',['']),
-file('model','prisma/schema/crm.prisma','Prisma model','Data','Persistence schema and organization ownership. RLS enforcement lives in database policy files.',['']),
-file('auth','lib/auth/auth.ts','Authentication','Security','Loads authenticated identity from Clerk and rejects unauthenticated callers.',['']),
-file('permission','lib/authz/permissions.ts','Authorization','Security','Checks effective permission from trusted tenant access context.',['']),
-file('cache','lib/cache/invalidate.ts','Cache invalidation','Application','Invalidates the affected client router cache after a committed mutation.',['']),
-file('webroute','app/api/stripe/webhooks/route.ts','HTTP ingress','Routing','Receives an external POST; delegates raw payload and signature to server-only webhook workflow.',['webflow']),
-file('webflow','lib/workflows/billingWebhookWorkflows.ts','Webhook workflow','Application','Verifies provider signature and controls idempotent event processing.',['stripe','webaction']),
-file('stripe','lib/integrations/stripe/webhooks.ts','Integration adapter','Integration','Provider-specific signature verification; not an HTTP route.',['']),
-file('webaction','lib/actions/billingWebhookActions.ts','Trusted server command','Application','Server-only trusted command for verified webhook events.',['webtx']),
-file('webtx','lib/db/transactions/billingRecordStripeWebhookTx.ts','Webhook transaction','Data','Claims event ID for idempotency and persists subscription effects atomically.',['tenant'])
-].map(x=>({...x,imports:x.imports.filter(Boolean)}));
+const F=[{"id":"accountsRoute","path":"app/(tenant)/crm/accounts/page.tsx","role":"Tenant route","group":"Routing","summary":"URL ownership and Suspense. This file never imports the data layer.","imports":["accountsFeature","skeleton"],"code":""},{"id":"pipelineRoute","path":"app/(tenant)/crm/pipeline/page.tsx","role":"Tenant route","group":"Routing","summary":"Each page route owns a separate feature but shares the CRM composition conventions.","imports":["pipelineFeature"],"code":""},{"id":"tenantLayout","path":"app/(tenant)/layout.tsx","role":"Layout boundary","group":"Routing","summary":"Owns the tenant shell; layout checks are not a substitute for data-layer authorization.","imports":["tenantShell"],"code":""},{"id":"tenantShell","path":"components/shells/tenant-shell.tsx","role":"Presentation shell","group":"Presentation","summary":"Composes navigation, chrome and page slot; it never queries the database.","imports":[],"code":""},{"id":"accountsFeature","path":"features/crm/accountsFeature.tsx","role":"Server feature","group":"Presentation","summary":"Composes the page read workflow with the accounts template and client interaction island.","imports":["crmWorkflow","accountsTemplate","clientFeature"],"code":""},{"id":"clientFeature","path":"features/crm/accountsFeatureClient.tsx","role":"Client feature","group":"Presentation","summary":"Only hooks, events and client orchestration. Calls a Server Function, not a workflow or database module.","imports":["serverFunction","accountBlock","crmType"],"code":""},{"id":"pipelineFeature","path":"features/crm/pipelineFeature.tsx","role":"Server feature","group":"Presentation","summary":"Each route-specific read workflow returns a view model suitable for one page template.","imports":["crmWorkflow","accountsTemplate"],"code":""},{"id":"skeleton","path":"features/crm/accountsSkeleton.tsx","role":"Skeleton","group":"Presentation","summary":"A visual fallback that reuses blocks without fetching or mutating data.","imports":["accountBlock"],"code":""},{"id":"accountsTemplate","path":"components/templates/crm-templates.tsx","role":"Page templates","group":"Presentation","summary":"Owns page-level arrangement, not how the data was loaded or written.","imports":["accountBlock","crmType","crmCopy"],"code":""},{"id":"accountBlock","path":"components/blocks/crm-blocks.tsx","role":"UI blocks","group":"Presentation","summary":"Pure reusable compositions of UI primitives; callbacks arrive as props.","imports":["uiPrimitive","crmType"],"code":""},{"id":"uiPrimitive","path":"components/ui/button.tsx","role":"shadcn primitive","group":"Presentation","summary":"A standard shadcn control. This reference is a signature illustration—not a replacement for the installed component.","imports":[],"code":""},{"id":"crmCopy","path":"content/crm.ts","role":"Presentation content","group":"Contracts","summary":"Static copy is data, not business logic.","imports":[],"code":""},{"id":"crmWorkflow","path":"lib/workflows/crmWorkflows.ts","role":"Application workflow","group":"Application","summary":"Named use-case compositions. Read workflows call fetchers; write workflows call actions. Server-only.","imports":["crmFetcher","crmAction","crmType"],"code":""},{"id":"crmFetcher","path":"lib/fetchers/crmFetchers.ts","role":"Read block / fetcher","group":"Application","summary":"Validates inputs; authenticates, authorises, scopes and projects; returns DTOs.","imports":["tenantWrapper","authz","crmSchema","crmSelect","crmDto"],"code":""},{"id":"crmAction","path":"lib/actions/crmActions.ts","role":"Application action / write block","group":"Application","summary":"Owns mutation safety: identity, schema, tenant authorization, transaction, DTO and invalidation.","imports":["auth","authz","crmSchema","tenantWrapper","crmTx","crmDto","crmCache","crmType"],"code":""},{"id":"serverFunction","path":"lib/server-functions/crmServerFunctions.ts","role":"Server Function / RPC boundary","group":"Application","summary":"The client-safe import boundary. Exposes a callable server entry while the workflow stays server-only.","imports":["crmWorkflow","crmSchema","crmType"],"code":""},{"id":"crmSchema","path":"schemas/crmSchemas.ts","role":"Zod validation primitive","group":"Contracts","summary":"Runtime input contracts. Validation exists at the server trust boundary and can be reused in forms.","imports":[],"code":""},{"id":"crmType","path":"types/crmTypes.ts","role":"Type contracts","group":"Contracts","summary":"The DTO is an explicit client-safe projection. Types describe values; they do not query.","imports":["crmSchema"],"code":""},{"id":"crmSelect","path":"lib/db/selects/crmSelects.ts","role":"Prisma select primitive","group":"Persistence","summary":"Limits selected fields, reducing overfetching and accidental disclosure.","imports":[],"code":""},{"id":"crmDto","path":"lib/db/dtos/crmDtos.ts","role":"DTO mapper primitive","group":"Persistence","summary":"Converts selected records into serialisable application contracts.","imports":["crmSelect","crmType"],"code":""},{"id":"crmTx","path":"lib/db/transactions/crmTransactions.ts","role":"Atomic transaction primitive","group":"Persistence","summary":"Performs one scoped, version-checked update and its audit in the same transaction.","imports":["crmSelect","crmType"],"code":""},{"id":"tenantWrapper","path":"lib/db/tenant.ts","role":"Tenant-scoped database primitive","group":"Persistence","summary":"Infrastructure: provides a verified identity-scoped Prisma transaction with RLS context.","imports":["auth"],"code":""},{"id":"auth","path":"lib/auth/auth.ts","role":"Authentication primitive","group":"Security","summary":"Trusted authentication wrapper, not permission calculation.","imports":[],"code":""},{"id":"authz","path":"lib/authz/permissions.ts","role":"Authorization primitive","group":"Security","summary":"Checks a trusted tenant access context for an explicit resource grant.","imports":[],"code":""},{"id":"crmCache","path":"lib/cache/crmCache.ts","role":"Cache invalidation primitive","group":"Application","summary":"Invalidates affected tenant UI only after the mutation succeeds.","imports":[],"code":""},{"id":"crmModel","path":"prisma/schema/crm.prisma","role":"Database schema","group":"Persistence","summary":"Data model: organization-scoped account and optimistic version field.","imports":[],"code":""},{"id":"webhookRoute","path":"app/api/stripe/webhooks/route.ts","role":"Inbound HTTP route","group":"Routing","summary":"Receives a raw external POST and delegates provider logic.","imports":["webhookWorkflow"],"code":""},{"id":"webhookWorkflow","path":"lib/workflows/billingWebhookWorkflows.ts","role":"Webhook workflow","group":"Application","summary":"Coordinates verification through an integration primitive, then uses an internal action.","imports":["stripeAdapter","webhookAction"],"code":""},{"id":"stripeAdapter","path":"lib/integrations/stripe/webhooks.ts","role":"Provider integration primitive","group":"Integrations","summary":"The adapter owns Stripe SDK parsing and signature verification—not the HTTP route.","imports":[],"code":""},{"id":"webhookAction","path":"lib/actions/billingWebhookActions.ts","role":"Trusted application action","group":"Application","summary":"An internal server-only command, not a browser-callable function.","imports":["webhookTx"],"code":""},{"id":"webhookTx","path":"lib/db/transactions/billingRecordStripeWebhookTx.ts","role":"Idempotent transaction primitive","group":"Persistence","summary":"Claims external event ID before applying effects; requires real persistence implementation.","imports":[],"code":""}];
 const BY=Object.fromEntries(F.map(f=>[f.id,f]));
-const SRC={
-route:[
-'import { Suspense } from "react";',
-'import { CrmContactsFeature } from "@/features/crm/crmContactsFeature";',
-'import { CrmContactsSkeleton } from "@/features/crm/crmContactsSkeleton";',
-'',
-'/** URL owner: /crm/contacts. No database or business logic. */',
-'export default async function Page({ searchParams }: PageProps<"/crm/contacts">) {',
-'  const filters = await searchParams;',
-'  return (',
-'    <Suspense fallback={<CrmContactsSkeleton />}>',
-'      <CrmContactsFeature filters={filters} />',
-'    </Suspense>',
-'  );',
-'}'
-],pipelineRoute:[
-'import { Suspense } from "react";',
-'import { CrmPipelineFeature } from "@/features/crm/crmPipelineFeature";',
-'',
-'export default function Page() {',
-'  return (',
-'    <Suspense fallback={<p>Loading pipeline…</p>}>',
-'      <CrmPipelineFeature />',
-'    </Suspense>',
-'  );',
-'}'
-],feature:[
-'import { CrmContactsTemplate } from "@/components/templates/crm-templates";',
-'import { getCrmContactsPage } from "@/lib/workflows/crmWorkflows";',
-'import { CrmContactActions } from "./crmContactActions.client";',
-'',
-'/** Server composition point. DTOs, not Prisma records, enter the UI. */',
-'export async function CrmContactsFeature({ filters }: { filters: unknown }) {',
-'  const page = await getCrmContactsPage(filters);',
-'  return (',
-'    <CrmContactsTemplate',
-'      contacts={page.rows}',
-'      total={page.total}',
-'      actions={(contact) => (',
-'        <CrmContactActions id={contact.id} version={contact.version} />',
-'      )}',
-'    />',
-'  );',
-'}'
-],pipelineFeature:[
-'import { CrmPipelineTemplate } from "@/components/templates/crm-templates";',
-'import { getCrmPipelineBoard } from "@/lib/workflows/crmWorkflows";',
-'',
-'export async function CrmPipelineFeature() {',
-'  const board = await getCrmPipelineBoard({ pageSize: 30 });',
-'  return <CrmPipelineTemplate board={board} />;',
-'}'
-],client:[
-'"use client";',
-'',
-'import { useState, useTransition } from "react";',
-'import { updateCrmContact } from "@/lib/actions/crmActions";',
-'import { CrmContactEditPanel } from "@/components/templates/crm-templates";',
-'',
-'/** Browser state and event handlers only. No database imports. */',
-'export function CrmContactActions({ id, version }: { id: string; version: number }) {',
-'  const [open, setOpen] = useState(false);',
-'  const [pending, startTransition] = useTransition();',
-'  function save(input: { firstName: string; lastName: string }) {',
-'    startTransition(async () => {',
-'      const result = await updateCrmContact({ contactId: id, expectedVersion: version, ...input });',
-'      if (result.ok) setOpen(false);',
-'    });',
-'  }',
-'  return <CrmContactEditPanel open={open} pending={pending} onOpenChange={setOpen} onSave={save} />;',
-'}'
-],skeleton:[
-'import { CrmContactsTableSkeleton } from "@/components/blocks/crm-blocks";',
-'',
-'export function CrmContactsSkeleton() {',
-'  return <CrmContactsTableSkeleton rows={8} />;',
-'}'
-],template:[
-'import type { CrmContactDTO } from "@/types/crmTypes";',
-'import { CrmContactsTable, CrmPipelineBoard } from "@/components/blocks/crm-blocks";',
-'',
-'/** Arrangement only: no writes, fetching, SDKs or permissions. */',
-'export function CrmContactsTemplate({ contacts, total, actions }: {',
-'  contacts: CrmContactDTO[];',
-'  total: number;',
-'  actions: (contact: CrmContactDTO) => React.ReactNode;',
-'}) {',
-'  return <section><h1>Contacts ({total})</h1><CrmContactsTable contacts={contacts} actions={actions} /></section>;',
-'}',
-'export function CrmContactEditPanel(props: {',
-'  open: boolean; pending: boolean; onOpenChange: (open: boolean) => void;',
-'  onSave: (input: { firstName: string; lastName: string }) => void;',
-'}) {',
-'  return <section hidden={!props.open}>Edit dialog UI composes here.</section>;',
-'}',
-'export function CrmPipelineTemplate({ board }: { board: { weightedValue: number } }) {',
-'  return <CrmPipelineBoard value={board.weightedValue} />;',
-'}'
-],block:[
-'import type { CrmContactDTO } from "@/types/crmTypes";',
-'import { Button } from "@/components/ui/button";',
-'',
-'/** Receives data and slots; renders only. */',
-'export function CrmContactsTable({ contacts, actions }: {',
-'  contacts: CrmContactDTO[];',
-'  actions: (contact: CrmContactDTO) => React.ReactNode;',
-'}) {',
-'  return <table><tbody>{contacts.map((contact) => (',
-'    <tr key={contact.id}><td>{contact.name}</td><td>{actions(contact)}</td></tr>',
-'  ))}</tbody></table>;',
-'}',
-'export function CrmContactsTableSkeleton({ rows }: { rows: number }) {',
-'  return <div aria-hidden="true">{Array.from({ length: rows }, (_, i) => <div key={i}>Loading…</div>)}</div>;',
-'}',
-'export function CrmPipelineBoard({ value }: { value: number }) {',
-'  return <div>Weighted pipeline: {value}</div>;',
-'}'
-],uiButton:[
-'/** Representative shadcn primitive contract, not a replacement for a registry-managed file. */',
-'export function Button(props: React.ButtonHTMLAttributes<HTMLButtonElement>) {',
-'  return <button {...props} />;',
-'}'
-],copy:[
-'/** Presentation copy only: no routing, side effects or business decisions. */',
-'export const crmContent = {',
-'  contactsHeading: "Contacts",',
-'  editAction: "Edit contact",',
-'  saveAction: "Save changes",',
-'} as const;'
-],workflow:[
-'import "server-only";',
-'import { listCrmContacts, getCrmPipelineStages, listCrmDeals } from "@/lib/fetchers/crmFetchers";',
-'import { withTenantTransaction } from "@/lib/db/tenant";',
-'import { updateCrmContactTx } from "@/lib/db/transactions/crm-update-contact.tx";',
-'import { assertPermission } from "@/lib/authz/permissions";',
-'',
-'/** Read workflow: the page view model, not a raw query. */',
-'export async function getCrmContactsPage(filters: unknown) {',
-'  return listCrmContacts(filters);',
-'}',
-'',
-'/** One named workflow for the pipeline route. */',
-'export async function getCrmPipelineBoard(filters: unknown) {',
-'  const [stages, deals] = await Promise.all([',
-'    getCrmPipelineStages(), listCrmDeals(filters),',
-'  ]);',
-'  return {',
-'    stages: stages.map(s => ({ ...s, deals: deals.rows.filter(d => d.stageId === s.id) })),',
-'    weightedValue: deals.rows.reduce((sum, d) => sum + Number(d.value) *',
-'      (stages.find(s => s.id === d.stageId)?.probability ?? 0), 0),',
-'  };',
-'}',
-'',
-'/** Write workflow: invoked BY the action after authentication and parsing. */',
-'export async function updateCrmContactDetails(input: { contactId: string; expectedVersion: number; firstName: string; lastName: string }) {',
-'  return withTenantTransaction(async (tx, access) => {',
-'    assertPermission(access, "crm.contact:update");',
-'    return updateCrmContactTx(tx, access, input);',
-'  });',
-'}'
-],fetcher:[
-'import "server-only";',
-'import { withTenantRead } from "@/lib/db/tenant";',
-'import { assertPermission } from "@/lib/authz/permissions";',
-'import { crmContactRowSelect } from "@/lib/db/selects/crm.selects";',
-'import { toCrmContactDTO } from "@/lib/db/dto/crm.dto";',
-'import { listCrmContactsSchema } from "@/schemas/crmSchemas";',
-'',
-'/** Trusted server read boundary. Query and tenant context are validated. */',
-'export async function listCrmContacts(raw: unknown) {',
-'  const query = listCrmContactsSchema.parse(raw);',
-'  return withTenantRead(async (tx, access) => {',
-'    assertPermission(access, "crm.contact:read");',
-'    const where = { organizationId: access.organizationId, deletedAt: null };',
-'    const rows = await tx.crmContact.findMany({',
-'      where, select: crmContactRowSelect,',
-'      orderBy: [{ updatedAt: "desc" }, { id: "asc" }],',
-'      take: Math.min(query.pageSize, 50), skip: (query.page - 1) * Math.min(query.pageSize, 50),',
-'    });',
-'    const total = await tx.crmContact.count({ where });',
-'    return { rows: rows.map(toCrmContactDTO), total, page: query.page };',
-'  });',
-'}',
-'',
-'/** Pipeline fetchers follow the same authenticated, scoped DTO pattern. */',
-'export async function getCrmPipelineStages() { /* tenant-scoped stage DTOs */ }',
-'export async function listCrmDeals(_raw: unknown) { /* tenant-scoped deal DTO page */ }'
-],action:[
-'"use server";',
-'',
-'import { requireIdentity } from "@/lib/auth/auth";',
-'import { updateCrmContactSchema } from "@/schemas/crmSchemas";',
-'import { updateCrmContactDetails } from "@/lib/workflows/crmWorkflows";',
-'import { invalidateCrmContacts } from "@/lib/cache/invalidate";',
-'',
-'/** Public mutation boundary; the workflow cannot be imported into a client island. */',
-'export async function updateCrmContact(raw: unknown) {',
-'  const identity = await requireIdentity();',
-'  await enforceRateLimitForIdentity(identity, "crm.contact.update");',
-'  const input = updateCrmContactSchema.parse(raw);',
-'  const contact = await updateCrmContactDetails(input);',
-'  invalidateCrmContacts();',
-'  return { ok: true as const, data: contact };',
-'}',
-'',
-'// In production, use the doctrine’s shared rate-limit and ActionResult helpers.',
-'async function enforceRateLimitForIdentity(_identity: unknown, _key: string) { /* guard */ }'
-],schema:[
-'import { z } from "zod";',
-'',
-'export const listCrmContactsSchema = z.object({',
-'  page: z.coerce.number().int().min(1).default(1),',
-'  pageSize: z.coerce.number().int().min(1).max(50).default(20),',
-'});',
-'',
-'export const updateCrmContactSchema = z.object({',
-'  contactId: z.uuid(),',
-'  expectedVersion: z.number().int().positive(),',
-'  firstName: z.string().trim().min(1).max(200),',
-'  lastName: z.string().trim().min(1).max(200),',
-'});'
-],type:[
-'import type { z } from "zod";',
-'import type { updateCrmContactSchema } from "@/schemas/crmSchemas";',
-'',
-'export type UpdateCrmContactInput = z.infer<typeof updateCrmContactSchema>;',
-'export type CrmContactDTO = {',
-'  id: string; name: string; version: number;',
-'  updatedAt: string; email: string | null;',
-'};'
-],select:[
-'import { Prisma } from "@/generated/prisma/client";',
-'',
-'/** Column allowlist; never send an unrestricted model to a client. */',
-'export const crmContactRowSelect = {',
-'  id: true, firstName: true, lastName: true,',
-'  email: true, version: true, updatedAt: true,',
-'} as const satisfies Prisma.CrmContactSelect;'
-],dto:[
-'import type { Prisma } from "@/generated/prisma/client";',
-'import type { CrmContactDTO } from "@/types/crmTypes";',
-'import { crmContactRowSelect } from "@/lib/db/selects/crm.selects";',
-'',
-'type Row = Prisma.CrmContactGetPayload<{ select: typeof crmContactRowSelect }>;',
-'export function toCrmContactDTO(row: Row): CrmContactDTO {',
-'  return { id: row.id, name: [row.firstName, row.lastName].join(" "),',
-'    email: row.email, version: row.version, updatedAt: row.updatedAt.toISOString() };',
-'}'
-],tx:[
-'import "server-only";',
-'import type { Prisma } from "@/generated/prisma/client";',
-'import { crmContactRowSelect } from "@/lib/db/selects/crm.selects";',
-'',
-'/** Transaction helper: atomic write + audit; no second independent commit. */',
-'export async function updateCrmContactTx(',
-'  tx: Prisma.TransactionClient,',
-'  access: { organizationId: string; userId: string },',
-'  input: { contactId: string; expectedVersion: number; firstName: string; lastName: string }',
-') {',
-'  const updated = await tx.crmContact.updateMany({',
-'    where: { id: input.contactId, organizationId: access.organizationId, version: input.expectedVersion },',
-'    data: { firstName: input.firstName, lastName: input.lastName, version: { increment: 1 } },',
-'  });',
-'  if (updated.count !== 1) throw new Error("CONTACT_CONFLICT");',
-'  await tx.auditEvent.create({ data: { organizationId: access.organizationId, actorUserId: access.userId,',
-'    action: "crm.contact.updated", resourceType: "CrmContact", resourceId: input.contactId } });',
-'  return tx.crmContact.findFirstOrThrow({',
-'    where: { id: input.contactId, organizationId: access.organizationId }, select: crmContactRowSelect,',
-'  });',
-'}'
-],tenant:[
-'import "server-only";',
-'/** Representative contract. Concrete RLS transaction setup remains infrastructure-owned. */',
-'export async function withTenantRead<T>(fn: (tx: any, access: any) => Promise<T>): Promise<T> {',
-'  throw new Error("Teaching placeholder: use the canonical tenant wrapper");',
-'}',
-'export async function withTenantTransaction<T>(fn: (tx: any, access: any) => Promise<T>): Promise<T> {',
-'  throw new Error("Teaching placeholder: use the canonical tenant wrapper");',
-'}'
-],model:[
-'model CrmContact {',
-'  id             String   @id @default(uuid(7)) @db.Uuid',
-'  organizationId String   @db.Uuid',
-'  firstName      String',
-'  lastName       String',
-'  email          String?',
-'  version        Int      @default(1)',
-'  deletedAt      DateTime?',
-'  updatedAt      DateTime @updatedAt',
-'  @@index([organizationId, updatedAt])',
-'}',
-'// Database RLS policy: separate prisma/rls/crm.sql.'
-],auth:[
-'import "server-only";',
-'/** Identity is read from the authenticated session, not a form field. */',
-'export async function requireIdentity() {',
-'  // Clerk session → trusted identity; reject anonymous.',
-'  throw new Error("Teaching placeholder: integrate actual Clerk auth adapter");',
-'}'
-],permission:[
-'import "server-only";',
-'/** Authorization is checked against tenant membership and requested resource. */',
-'export function assertPermission(access: { permissions: string[] }, grant: string) {',
-'  if (!access.permissions.includes(grant)) throw new Error("FORBIDDEN");',
-'}'
-],cache:[
-'import "server-only";',
-'import { revalidatePath } from "next/cache";',
-'export function invalidateCrmContacts() { revalidatePath("/crm/contacts"); }'
-],webroute:[
-'import { handleStripeWebhookWorkflow } from "@/lib/workflows/billingWebhookWorkflows";',
-'',
-'/** HTTP boundary: keep raw bytes for provider signature verification. */',
-'export async function POST(request: Request) {',
-'  const payload = await request.text();',
-'  const signature = request.headers.get("stripe-signature");',
-'  return handleStripeWebhookWorkflow({ payload, signature });',
-'}'
-],webflow:[
-'import "server-only";',
-'import { verifyStripeWebhook } from "@/lib/integrations/stripe/webhooks";',
-'import { recordStripeWebhook } from "@/lib/actions/billingWebhookActions";',
-'',
-'export async function handleStripeWebhookWorkflow(input: { payload: string; signature: string | null }) {',
-'  if (!input.signature) return new Response("Missing signature", { status: 400 });',
-'  const event = verifyStripeWebhook(input.payload, input.signature);',
-'  await recordStripeWebhook({ eventId: event.id, type: event.type });',
-'  return new Response("OK", { status: 200 });',
-'}'
-],stripe:[
-'import "server-only";',
-'/** Signature verification belongs in the Stripe adapter, not the route. */',
-'export function verifyStripeWebhook(payload: string, signature: string) {',
-'  // Real implementation delegates to stripe.webhooks.constructEvent.',
-'  throw new Error("Teaching placeholder: provider SDK adapter");',
-'}'
-],webaction:[
-'import "server-only";',
-'import { recordStripeWebhookTx } from "@/lib/db/transactions/billingRecordStripeWebhookTx";',
-'',
-'/** Trusted server command; not exposed as a client-callable action. */',
-'export async function recordStripeWebhook(event: { eventId: string; type: string }) {',
-'  return recordStripeWebhookTx(event);',
-'}'
-],webtx:[
-'import "server-only";',
-'/** Illustrative idempotency flow; actual table and RLS implementation are domain-owned. */',
-'export async function recordStripeWebhookTx(event: { eventId: string; type: string }) {',
-'  // Claim provider event ID with a unique constraint before changing subscription state.',
-'  // In one transaction, persist effects and mark event processed.',
-'  // Duplicate event ID: return an idempotent success response.',
-'}'
-]};
-for(const f of F) f.code=(SRC[f.id]||[]).join('\n');
-const groups=[
-{title:'01 / ENTRY POINTS',desc:'Route and HTTP request boundaries. Own URL and request ingress.',ids:['route','pipelineRoute','webroute']},
-{title:'02 / FEATURE + UI',desc:'Server composition, interactive islands and pure presentation.',ids:['feature','client','template','block','uiButton']},
-{title:'03 / APPLICATION',desc:'Named workflows coordinate secured reads, writes and adapters.',ids:['workflow','fetcher','action','webflow']},
-{title:'04 / DATA + SECURITY',desc:'DTO mapping, projection, scoped transactions and policy.',ids:['schema','select','dto','tx','tenant','model']}
-];
-const flows={
-read:{eyebrow:'EXECUTION TRACE / SERVER READ',title:'FOLLOW A CONTACTS PAGE LOAD',desc:'The browser requests a route. Server-side layers load tenant-scoped data and return a serialisable DTO view model. UI blocks only render the result.',steps:[
-['route','NEXT.JS PAGE','Request arrives; Suspense starts the server feature.','URL + searchParams'],
-['feature','SERVER FEATURE','Calls a named workflow; never reads Prisma directly.','raw criteria'],
-['workflow','READ WORKFLOW','Composes the page read use case.','criteria'],
-['fetcher','FETCHER','Parses criteria, authorises and scopes query to tenant.','validated query + access'],
-['tenant','TENANCY BOUNDARY','Uses trusted scoped read context and RLS.','organizationId'],
-['select','PRISMA SELECT','Limits returned columns to the approved projection.','allowlisted fields'],
-['dto','DTO MAPPER','Transforms records to serialisable application contracts.','CrmContactDTO[]'],
-['template','PAGE TEMPLATE','Arranges data and interactive slots into page blocks.','DTO props'],
-['block','UI BLOCK','Renders rows using primitives. No business decisions.','HTML / RSC payload']
-]},
-write:{eyebrow:'EXECUTION TRACE / MUTATION',title:'FOLLOW AN EDIT BUTTON',desc:'This is the cross-boundary transition. The client owns interaction state, while the server action owns the authenticated mutation entry point.',steps:[
-['client','CLIENT ISLAND','User opens edit dialog and submits changed fields.','contactId, version, form fields'],
-['action','SERVER ACTION','Next.js RPC invokes server function. Authenticate and rate-limit.','trusted identity'],
-['schema','ZOD VALIDATION','Rejects malformed or unexpected input.','UpdateCrmContactInput'],
-['workflow','WRITE WORKFLOW','Orchestrates a single scoped transaction.','validated command'],
-['permission','AUTHORIZATION','Checks permission inside the tenant transaction.','effective tenant grant'],
-['tx','TRANSACTION HELPER','Atomically updates row and inserts audit event.','committed row + audit'],
-['dto','DTO MAPPER','Converts changed record into safe output contract.','CrmContactDTO'],
-['cache','INVALIDATION','Refreshes affected router cache only after commit.','fresh route data'],
-['client','CLIENT ISLAND','Handles result; closes the dialog or shows error.','ActionResult']
-]},
-ui:{eyebrow:'COMPOSITION TRACE / PRESENTATION',title:'FOLLOW THE UI HIERARCHY',desc:'Composition proceeds through route → feature → template → block → primitive. Content and types provide inputs but do not own rendering.',steps:[
-['route','ROUTE','Declares page URL and its Suspense boundary.','React Server Component'],
-['feature','SERVER FEATURE','Resolves the read-side DTOs and selects the template.','view model'],
-['template','PAGE TEMPLATE','Defines page structure and arranges blocks.','data / slots'],
-['block','PRESENTATION BLOCK','Groups reusable UI controls and presents narrow states.','UI props'],
-['uiButton','SHADCN PRIMITIVE','Renders a single accessible control.','DOM control'],
-['client','CLIENT ISLAND','Owns hooks and handlers when actual browser state is needed.','interactive slots']
-]},
-webhook:{eyebrow:'EXECUTION TRACE / INBOUND INTEGRATION',title:'FOLLOW A STRIPE WEBHOOK',desc:'HTTP ingress is separate from provider signature verification. A trusted server command processes verified events idempotently.',steps:[
-['webroute','HTTP ROUTE','Receives raw POST body and signature header.','raw payload + signature'],
-['webflow','WEBHOOK WORKFLOW','Dispatches to verification and persistence.','provider event'],
-['stripe','STRIPE ADAPTER','Verifies payload against provider signature.','verified event'],
-['webaction','TRUSTED SERVER COMMAND','Invokes provider-event transaction. Not a browser-facing action.','event ID + type'],
-['webtx','TRANSACTION HELPER','Claims event ID, guards duplicates and persists effects.','idempotent commit'],
-['webroute','HTTP RESPONSE','Acknowledges valid delivery or returns appropriate failure.','HTTP status']
-]}
-};
-let currentView='system',selected='route',query='';
+const SRC={"accountsRoute":"import { Suspense } from \"react\";\nimport { AccountsFeature } from \"@/features/crm/accountsFeature\";\nimport { AccountsSkeleton } from \"@/features/crm/accountsSkeleton\";\n\n/** Thin route: resolve route inputs and render the feature. */\nexport default async function Page({ searchParams }: PageProps<\"/crm/accounts\">) {\n  const filters = await searchParams;\n  return (\n    <Suspense fallback={<AccountsSkeleton />}>\n      <AccountsFeature filters={filters} />\n    </Suspense>\n  );\n}","pipelineRoute":"import { Suspense } from \"react\";\nimport { PipelineFeature } from \"@/features/crm/pipelineFeature\";\n\n/** Pipeline is a separate route, not a new domain. */\nexport default function Page() {\n  return (\n    <Suspense fallback={<p>Loading pipeline…</p>}>\n      <PipelineFeature />\n    </Suspense>\n  );\n}","tenantLayout":"import type { ReactNode } from \"react\";\nimport { TenantShell } from \"@/components/shells/tenant-shell\";\n\n/** Reusable shell for tenant routes. Data guards run again per operation. */\nexport default function TenantLayout({ children }: { children: ReactNode }) {\n  return <TenantShell>{children}</TenantShell>;\n}","tenantShell":"import type { ReactNode } from \"react\";\n\n/** Shell is a presentation concern, not a data access boundary. */\nexport function TenantShell({ children }: { children: ReactNode }) {\n  return <div className=\"tenant-shell\"><main>{children}</main></div>;\n}","accountsFeature":"import { AccountsTemplate } from \"@/components/templates/crm-templates\";\nimport { getAccountsPage } from \"@/lib/workflows/crmWorkflows\";\nimport { AccountsFeatureClient } from \"./accountsFeatureClient\";\n\n/** Server feature: data loading and page composition. */\nexport async function AccountsFeature({ filters }: { filters: unknown }) {\n  const page = await getAccountsPage(filters);\n  return (\n    <AccountsTemplate\n      accounts={page.accounts}\n      total={page.total}\n      editor={<AccountsFeatureClient accounts={page.accounts} />}\n    />\n  );\n}","clientFeature":"\"use client\";\n\nimport { useState, useTransition } from \"react\";\nimport { saveAccount } from \"@/lib/server-functions/crmServerFunctions\";\nimport { AccountEditControls } from \"@/components/blocks/crm-blocks\";\nimport type { AccountDTO } from \"@/types/crmTypes\";\n\n/** One interactive island; presentation stays in blocks. */\nexport function AccountsFeatureClient({ accounts }: { accounts: AccountDTO[] }) {\n  const [editing, setEditing] = useState<AccountDTO | null>(null);\n  const [pending, startTransition] = useTransition();\n\n  function onSave(name: string) {\n    if (!editing) return;\n    startTransition(async () => {\n      const result = await saveAccount({\n        accountId: editing.id,\n        expectedVersion: editing.version,\n        name,\n      });\n      if (result.ok) setEditing(null);\n    });\n  }\n\n  return (\n    <AccountEditControls\n      accounts={accounts}\n      editing={editing}\n      pending={pending}\n      onSelect={setEditing}\n      onSave={onSave}\n      onCancel={() => setEditing(null)}\n    />\n  );\n}","pipelineFeature":"import { PipelineTemplate } from \"@/components/templates/crm-templates\";\nimport { getPipelinePage } from \"@/lib/workflows/crmWorkflows\";\n\n/** A second server feature calls a different named workflow. */\nexport async function PipelineFeature() {\n  const board = await getPipelinePage();\n  return <PipelineTemplate board={board} />;\n}","skeleton":"import { AccountsTableSkeleton } from \"@/components/blocks/crm-blocks\";\n\nexport function AccountsSkeleton() {\n  return <AccountsTableSkeleton rows={6} />;\n}","accountsTemplate":"import type { ReactNode } from \"react\";\nimport { AccountsTable, PipelineBoard } from \"@/components/blocks/crm-blocks\";\nimport { crmCopy } from \"@/content/crm\";\nimport type { AccountDTO, PipelinePageDTO } from \"@/types/crmTypes\";\n\n/** The arrangement of the accounts page. */\nexport function AccountsTemplate(props: {\n  accounts: AccountDTO[];\n  total: number;\n  editor: ReactNode;\n}) {\n  return (\n    <section>\n      <h1>{crmCopy.accountsTitle} ({props.total})</h1>\n      <AccountsTable accounts={props.accounts} />\n      {props.editor}\n    </section>\n  );\n}\n\n/** The arrangement of the pipeline page. */\nexport function PipelineTemplate({ board }: { board: PipelinePageDTO }) {\n  return <section><h1>{crmCopy.pipelineTitle}</h1><PipelineBoard board={board} /></section>;\n}","accountBlock":"import { Button } from \"@/components/ui/button\";\nimport type { AccountDTO, PipelinePageDTO } from \"@/types/crmTypes\";\n\n/** Pure read-only table block. */\nexport function AccountsTable({ accounts }: { accounts: AccountDTO[] }) {\n  return <table><tbody>{accounts.map(account => (\n    <tr key={account.id}><td>{account.name}</td><td>{account.industry ?? \"—\"}</td></tr>\n  ))}</tbody></table>;\n}\n\n/** Interactive controls are pure JSX; state and handlers come from a client feature. */\nexport function AccountEditControls(props: {\n  accounts: AccountDTO[];\n  editing: AccountDTO | null;\n  pending: boolean;\n  onSelect: (account: AccountDTO) => void;\n  onSave: (name: string) => void;\n  onCancel: () => void;\n}) {\n  return <section>\n    {props.accounts.map(account => (\n      <Button key={account.id} onClick={() => props.onSelect(account)}>Edit {account.name}</Button>\n    ))}\n    {props.editing && <AccountEditForm\n      name={props.editing.name}\n      disabled={props.pending}\n      onSubmit={props.onSave}\n      onCancel={props.onCancel}\n    />}\n  </section>;\n}\n\nfunction AccountEditForm(props: {\n  name: string;\n  disabled: boolean;\n  onSubmit: (name: string) => void;\n  onCancel: () => void;\n}) {\n  return <form onSubmit={event => {\n    event.preventDefault();\n    const data = new FormData(event.currentTarget);\n    props.onSubmit(String(data.get(\"name\") ?? \"\"));\n  }}>\n    <input name=\"name\" defaultValue={props.name} aria-label=\"Account name\" />\n    <Button type=\"submit\" disabled={props.disabled}>Save</Button>\n    <Button type=\"button\" onClick={props.onCancel}>Cancel</Button>\n  </form>;\n}\n\nexport function AccountsTableSkeleton({ rows }: { rows: number }) {\n  return <div aria-hidden>{Array.from({ length: rows }, (_, i) => <div key={i}>Loading…</div>)}</div>;\n}\n\nexport function PipelineBoard({ board }: { board: PipelinePageDTO }) {\n  return <div>{board.stages.map(stage => (\n    <section key={stage.id}><h2>{stage.name}</h2><p>{stage.deals.length} deals</p></section>\n  ))}</div>;\n}","uiPrimitive":"/** Managed by shadcn/ui. Maintain the registry component and its variants. */\nimport * as React from \"react\";\n\nexport type ButtonProps = React.ComponentProps<\"button\">;\n\n/** In the application, import the actual installed Button implementation. */\nexport declare function Button(props: ButtonProps): React.JSX.Element;","crmCopy":"export const crmCopy = {\n  accountsTitle: \"Accounts\",\n  pipelineTitle: \"Pipeline\",\n  edit: \"Edit\",\n  save: \"Save\",\n} as const;","crmWorkflow":"import \"server-only\";\nimport { listCrmAccounts, listPipelineStagesAndDeals } from \"@/lib/fetchers/crmFetchers\";\nimport { updateCrmAccountAction } from \"@/lib/actions/crmActions\";\nimport type { UpdateAccountInput } from \"@/types/crmTypes\";\n\n/** Route-level read composition: Accounts page. */\nexport async function getAccountsPage(filters: unknown) {\n  const page = await listCrmAccounts(filters);\n  return { accounts: page.rows, total: page.total };\n}\n\n/** Route-level read composition: Pipeline page. */\nexport async function getPipelinePage() {\n  const { stages, deals } = await listPipelineStagesAndDeals();\n  return {\n    stages: stages.map(stage => ({\n      ...stage,\n      deals: deals.filter(deal => deal.stageId === stage.id),\n    })),\n  };\n}\n\n/** Write composition: workflow invokes application action, never client code. */\nexport async function updateAccountWorkflow(input: UpdateAccountInput) {\n  return updateCrmAccountAction(input);\n}","crmFetcher":"import \"server-only\";\nimport { withTenantRead } from \"@/lib/db/tenant\";\nimport { assertPermission } from \"@/lib/authz/permissions\";\nimport { listAccountsSchema } from \"@/schemas/crmSchemas\";\nimport { crmAccountSelect } from \"@/lib/db/selects/crmSelects\";\nimport { toAccountDTO } from \"@/lib/db/dtos/crmDtos\";\n\n/** Every read is scoped and its returned fields are selected explicitly. */\nexport async function listCrmAccounts(raw: unknown) {\n  const query = listAccountsSchema.parse(raw);\n  return withTenantRead(async (tx, access) => {\n    assertPermission(access, \"crm.account:read\");\n    const where = { organizationId: access.organizationId, deletedAt: null };\n    const [rows, total] = await Promise.all([\n      tx.crmAccount.findMany({\n        where,\n        select: crmAccountSelect,\n        take: query.pageSize,\n        skip: (query.page - 1) * query.pageSize,\n        orderBy: [{ name: \"asc\" }, { id: \"asc\" }],\n      }),\n      tx.crmAccount.count({ where }),\n    ]);\n    return { rows: rows.map(toAccountDTO), total };\n  });\n}\n\n/** The second named read follows the same authenticated tenant boundary. */\nexport async function listPipelineStagesAndDeals() {\n  return withTenantRead(async (tx, access) => {\n    assertPermission(access, \"crm.deal:read\");\n    // Stage and deal projections map to DTOs, just like listCrmAccounts.\n    const stages = await tx.crmStage.findMany({\n      where: { organizationId: access.organizationId },\n      select: { id: true, name: true },\n    });\n    const deals = await tx.crmDeal.findMany({\n      where: { organizationId: access.organizationId },\n      select: { id: true, stageId: true, title: true },\n    });\n    return { stages, deals };\n  });\n}","crmAction":"import \"server-only\";\nimport { requireIdentity } from \"@/lib/auth/auth\";\nimport { assertPermission } from \"@/lib/authz/permissions\";\nimport { updateAccountSchema } from \"@/schemas/crmSchemas\";\nimport { withTenantTransaction } from \"@/lib/db/tenant\";\nimport { updateAccountTx } from \"@/lib/db/transactions/crmTransactions\";\nimport { toAccountDTO } from \"@/lib/db/dtos/crmDtos\";\nimport { invalidateCrmAccounts } from \"@/lib/cache/crmCache\";\nimport type { UpdateAccountInput, ActionResult, AccountDTO } from \"@/types/crmTypes\";\n\n/** Internal application command. Browser calls the separate Server Function. */\nexport async function updateCrmAccountAction(\n  raw: UpdateAccountInput\n): Promise<ActionResult<AccountDTO>> {\n  try {\n    await requireIdentity();\n    const input = updateAccountSchema.parse(raw);\n    const row = await withTenantTransaction(async (tx, access) => {\n      assertPermission(access, \"crm.account:update\");\n      return updateAccountTx(tx, access, input);\n    });\n    invalidateCrmAccounts();\n    return { ok: true, data: toAccountDTO(row) };\n  } catch {\n    // Error mapping intentionally prevents exposing internal database details.\n    return { ok: false, error: \"Account update failed\" };\n  }\n}","serverFunction":"\"use server\";\n\nimport { updateAccountWorkflow } from \"@/lib/workflows/crmWorkflows\";\nimport { updateAccountSchema } from \"@/schemas/crmSchemas\";\nimport type { ActionResult, AccountDTO } from \"@/types/crmTypes\";\n\n/** Browser-callable function. Only this file crosses the client/server import boundary. */\nexport async function saveAccount(raw: unknown): Promise<ActionResult<AccountDTO>> {\n  const checked = updateAccountSchema.safeParse(raw);\n  if (!checked.success) return { ok: false, error: \"Invalid account details\" };\n  return updateAccountWorkflow(checked.data);\n}","crmSchema":"import { z } from \"zod\";\n\nexport const listAccountsSchema = z.object({\n  page: z.coerce.number().int().min(1).default(1),\n  pageSize: z.coerce.number().int().min(1).max(50).default(20),\n});\n\nexport const updateAccountSchema = z.object({\n  accountId: z.uuid(),\n  expectedVersion: z.number().int().positive(),\n  name: z.string().trim().min(1).max(200),\n});","crmType":"import type { z } from \"zod\";\nimport type { updateAccountSchema } from \"@/schemas/crmSchemas\";\n\nexport type UpdateAccountInput = z.infer<typeof updateAccountSchema>;\nexport type AccountDTO = {\n  id: string;\n  name: string;\n  industry: string | null;\n  version: number;\n  updatedAt: string;\n};\nexport type PipelinePageDTO = {\n  stages: { id: string; name: string; deals: { id: string; stageId: string; title: string }[] }[];\n};\nexport type ActionResult<T> =\n  | { ok: true; data: T }\n  | { ok: false; error: string };","crmSelect":"import type { Prisma } from \"@/generated/prisma/client\";\n\n/** Field-level projection. Tenant scoping still occurs in the fetcher. */\nexport const crmAccountSelect = {\n  id: true, name: true, industry: true, version: true, updatedAt: true,\n} as const satisfies Prisma.CrmAccountSelect;","crmDto":"import type { Prisma } from \"@/generated/prisma/client\";\nimport { crmAccountSelect } from \"@/lib/db/selects/crmSelects\";\nimport type { AccountDTO } from \"@/types/crmTypes\";\n\ntype Row = Prisma.CrmAccountGetPayload<{ select: typeof crmAccountSelect }>;\n\nexport function toAccountDTO(row: Row): AccountDTO {\n  return {\n    id: row.id,\n    name: row.name,\n    industry: row.industry,\n    version: row.version,\n    updatedAt: row.updatedAt.toISOString(),\n  };\n}","crmTx":"import \"server-only\";\nimport type { Prisma } from \"@/generated/prisma/client\";\nimport { crmAccountSelect } from \"@/lib/db/selects/crmSelects\";\nimport type { UpdateAccountInput } from \"@/types/crmTypes\";\n\n/** Transaction helper: atomically update one account and record an audit row. */\nexport async function updateAccountTx(\n  tx: Prisma.TransactionClient,\n  access: { organizationId: string; userId: string },\n  input: UpdateAccountInput\n) {\n  const result = await tx.crmAccount.updateMany({\n    where: {\n      id: input.accountId,\n      organizationId: access.organizationId,\n      version: input.expectedVersion,\n      deletedAt: null,\n    },\n    data: { name: input.name, version: { increment: 1 } },\n  });\n  if (result.count !== 1) throw new Error(\"ACCOUNT_VERSION_CONFLICT\");\n\n  await tx.auditEvent.create({\n    data: {\n      organizationId: access.organizationId,\n      actorUserId: access.userId,\n      action: \"crm.account.updated\",\n      resourceType: \"CrmAccount\",\n      resourceId: input.accountId,\n    },\n  });\n  return tx.crmAccount.findFirstOrThrow({\n    where: { id: input.accountId, organizationId: access.organizationId },\n    select: crmAccountSelect,\n  });\n}","tenantWrapper":"import \"server-only\";\nimport { requireIdentity } from \"@/lib/auth/auth\";\n\n/**\n * The tenant wrapper enforces organization scope and RLS database context.\n * This outline deliberately omits pool configuration and transaction SET LOCAL.\n * Implement against the application's existing Prisma client and RLS roles.\n */\nexport async function withTenantRead<T>(\n  run: (tx: TenantTransaction, access: TenantAccess) => Promise<T>\n): Promise<T> {\n  const identity = await requireIdentity();\n  return executeWithTenantRls(identity, run);\n}\n\nexport async function withTenantTransaction<T>(\n  run: (tx: TenantTransaction, access: TenantAccess) => Promise<T>\n): Promise<T> {\n  const identity = await requireIdentity();\n  return executeWithTenantRls(identity, run);\n}\n\n// Infrastructure contracts shown, not supplied as runnable database access.\ntype TenantTransaction = import(\"@/generated/prisma/client\").Prisma.TransactionClient;\ntype TenantAccess = { organizationId: string; userId: string; permissions: string[] };\ndeclare function executeWithTenantRls<T>(\n  identity: { userId: string }, run: (tx: TenantTransaction, access: TenantAccess) => Promise<T>\n): Promise<T>;","auth":"import \"server-only\";\nimport { auth } from \"@clerk/nextjs/server\";\n\n/** Authentication identifies the caller; authorization is separate. */\nexport async function requireIdentity() {\n  const session = await auth();\n  if (!session.userId) throw new Error(\"UNAUTHENTICATED\");\n  return { userId: session.userId };\n}","authz":"import \"server-only\";\n\nexport function assertPermission(\n  access: { permissions: string[] },\n  grant: string\n): void {\n  if (!access.permissions.includes(grant)) throw new Error(\"FORBIDDEN\");\n}","crmCache":"import \"server-only\";\nimport { revalidatePath } from \"next/cache\";\n\n/** Run after the write commits, never before. */\nexport function invalidateCrmAccounts() {\n  revalidatePath(\"/crm/accounts\");\n}","crmModel":"model CrmAccount {\n  id             String    @id @default(uuid(7)) @db.Uuid\n  organizationId String    @db.Uuid\n  name           String    @db.VarChar(200)\n  industry       String?\n  version        Int       @default(1)\n  deletedAt      DateTime?\n  updatedAt      DateTime  @updatedAt\n\n  @@index([organizationId, name])\n}","webhookRoute":"import { handleStripeWebhook } from \"@/lib/workflows/billingWebhookWorkflows\";\n\n/** HTTP entry point, not the Stripe verification implementation. */\nexport async function POST(request: Request) {\n  return handleStripeWebhook({\n    body: await request.text(),\n    signature: request.headers.get(\"stripe-signature\"),\n  });\n}","webhookWorkflow":"import \"server-only\";\nimport { verifyStripeEvent } from \"@/lib/integrations/stripe/webhooks\";\nimport { recordStripeEventAction } from \"@/lib/actions/billingWebhookActions\";\n\n/** Verification → trusted command → HTTP response. */\nexport async function handleStripeWebhook(input: {\n  body: string;\n  signature: string | null;\n}) {\n  if (!input.signature) return new Response(\"Missing signature\", { status: 400 });\n  const event = verifyStripeEvent(input.body, input.signature);\n  await recordStripeEventAction(event);\n  return new Response(\"OK\", { status: 200 });\n}","stripeAdapter":"import \"server-only\";\nimport Stripe from \"stripe\";\n\n/** Provider SDK adapter. Secret is validated through the environment layer. */\nexport function verifyStripeEvent(body: string, signature: string): Stripe.Event {\n  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);\n  return stripe.webhooks.constructEvent(\n    body, signature, process.env.STRIPE_WEBHOOK_SECRET!\n  );\n}","webhookAction":"import \"server-only\";\nimport type Stripe from \"stripe\";\nimport { recordStripeWebhookTx } from \"@/lib/db/transactions/billingRecordStripeWebhookTx\";\n\n/** Trusted command, called only after provider signature verification. */\nexport async function recordStripeEventAction(event: Stripe.Event) {\n  return recordStripeWebhookTx({ id: event.id, type: event.type });\n}","webhookTx":"import \"server-only\";\n\n/**\n * Transaction contract:\n * 1. Claim a unique Stripe event ID.\n * 2. If already claimed, return idempotent success.\n * 3. Apply subscription changes in the same database transaction.\n * 4. Mark the event processed after durable commit.\n */\nexport async function recordStripeWebhookTx(event: {\n  id: string; type: string\n}) {\n  // Reference contract, not a working Stripe persistence adapter.\n  return { eventId: event.id, handled: false as const };\n}"};
+for(const f of F)f.code=SRC[f.id]||'';
+const groups=[{"title":"01 / ROUTING","desc":"URL, tenant layout, and inbound HTTP entry points.","ids":["accountsRoute","pipelineRoute","tenantLayout","webhookRoute"]},{"title":"02 / PRESENTATION","desc":"Server and client features compose pure templates, blocks and UI primitives.","ids":["accountsFeature","clientFeature","accountsTemplate","accountBlock","uiPrimitive"]},{"title":"03 / APPLICATION","desc":"Workflows orchestrate fetchers and actions. A Server Function bridges client calls.","ids":["crmWorkflow","crmFetcher","crmAction","serverFunction","webhookWorkflow"]},{"title":"04 / DATA + CONTRACTS","desc":"Schema, identity, DTOs, selects and transaction helpers enforce invariants.","ids":["crmSchema","crmDto","crmSelect","crmTx","tenantWrapper"]}];
+const flows={"read":{"eyebrow":"DATA FLOW / SERVER READ","title":"ACCOUNTS / READ","desc":"Trace a page render: route → server feature → read workflow → fetcher → tenant-scoped read → DTO → template → blocks.","steps":[["accountsRoute","ROUTE","The accounts URL enters the App Router.","URL + search parameters"],["accountsFeature","SERVER FEATURE","Asks the read workflow for a page view model.","filters"],["crmWorkflow","READ WORKFLOW","Composes the accounts use case from the fetcher.","getAccountsPage(filters)"],["crmFetcher","FETCHER","Authenticates, validates, authorises and scopes the query.","listCrmAccounts(filters)"],["tenantWrapper","TENANT WRAPPER","Runs the query with verified organization and RLS context.","organization scope"],["crmSelect","PRISMA SELECT","Chooses exactly which fields the query may return.","allowed columns"],["crmDto","DTO MAPPER","Converts records to serialisable application data.","AccountDTO[]"],["accountsTemplate","PAGE TEMPLATE","Arranges the accounts table and edit controls.","DTO props"],["accountBlock","PRESENTATION BLOCK","Renders account rows and UI primitives.","React UI"]]},"write":{"eyebrow":"DATA FLOW / SERVER MUTATION","title":"ACCOUNTS / WRITE","desc":"The browser interaction crosses the server boundary through a Server Function. The write workflow calls an action; the action owns the secured mutation.","steps":[["clientFeature","CLIENT FEATURE","Owns which row is editing, form events and pending state.","edited name + account ID"],["serverFunction","SERVER FUNCTION","Only client-importable RPC entry. Passes validated data to the server workflow.","saveAccount(raw)"],["crmWorkflow","WRITE WORKFLOW","Composes the write use case by invoking its application action.","updateAccountWorkflow(input)"],["crmAction","APPLICATION ACTION","Authenticates, validates, authorises, writes and invalidates.","updateCrmAccountAction(input)"],["crmSchema","ZOD SCHEMA","Rejects malformed input before persistence.","UpdateAccountInput"],["authz","AUTHORIZATION","Checks permission in the scoped transaction.","crm.account:update"],["crmTx","TRANSACTION HELPER","Updates record and audit event atomically.","committed account record"],["crmDto","DTO MAPPER","Converts persisted data into a client-safe contract.","AccountDTO"],["crmCache","INVALIDATION","Signals the accounts page to refresh after commit.","refreshed route cache"],["clientFeature","CLIENT FEATURE","Receives ActionResult and updates UI state.","success / failure"]]},"ui":{"eyebrow":"COMPOSITION / PRESENTATION","title":"PRESENTATION HIERARCHY","desc":"Pure UI primitives constitute blocks; blocks constitute templates; features connect presentation with the server-side application.","steps":[["accountsRoute","NEXT.JS PAGE","Owns the URL, not application logic.","route"],["accountsFeature","SERVER FEATURE","Composes the read workflow with presentation.","DTO view model"],["accountsTemplate","PAGE TEMPLATE","Arranges one page's blocks.","page composition"],["accountBlock","UI BLOCK","Groups primitives into display and control blocks.","typed props / callbacks"],["uiPrimitive","UI PRIMITIVE","Provides a single accessible control.","button"],["clientFeature","CLIENT FEATURE","Owns hook state and events, not the visual markup.","client interactivity"]]},"webhook":{"eyebrow":"DATA FLOW / INBOUND INTEGRATION","title":"STRIPE / WEBHOOK","desc":"Ingress, provider verification, workflow orchestration, trusted action and persistence are distinct ownership boundaries.","steps":[["webhookRoute","HTTP ROUTE","Receives raw POST bytes and signature header.","Request"],["webhookWorkflow","WEBHOOK WORKFLOW","Orchestrates the trusted server-side event handling.","body + signature"],["stripeAdapter","INTEGRATION PRIMITIVE","Uses the provider SDK to verify and parse the event.","verified Stripe.Event"],["webhookAction","APPLICATION ACTION","Receives trusted event, delegates durable write.","verified event"],["webhookTx","TRANSACTION HELPER","Claims event ID for idempotent persistence.","committed effects"],["webhookRoute","RESPONSE","Acknowledges processed deliveries.","HTTP status"]]}};
+let currentView='system',selected='accountsRoute',query='';
 const $=id=>document.getElementById(id);
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const short=path=>path.split('/').pop();
@@ -585,9 +160,9 @@ function node(id){const f=BY[id];return '<button class="mapnode '+(selected===id
 function renderSystem(){
  $('view-eyebrow').textContent='SYSTEM MODEL / NESTED BOUNDARIES';
  $('view-title').textContent='THE BIG PICTURE';
- $('view-desc').textContent='Grouped ownership first, not a plate of intersecting import edges. Arrows indicate the principal request-to-data direction.';
+ $('view-desc').textContent='Grouped ownership first, not an unstructured tangle of imports. Each boundary is a grouping; use the read and write tabs for directional execution.';
  const map=groups.map(g=>'<section class="boundary"><h3>'+esc(g.title)+'</h3><p class="desc">'+esc(g.desc)+'</p>'+g.ids.map(node).join('')+'</section>').join('');
- $('stage').innerHTML='<div class="map-scroll"><div class="system-map">'+map+'</div></div><div class="story"><strong>ONE SYSTEM. FOUR LENSES.</strong><p>The folders show who owns each file. The architecture map shows which boundary owns each responsibility. The trace tabs show the order in which information moves. These are different relationships; the diagrams keep them separate.</p><div class="pills"><button class="pill" data-go="read">TRACE A PAGE READ →</button><button class="pill" data-go="write">TRACE AN EDIT →</button><button class="pill" data-go="ui">TRACE UI COMPOSITION →</button><button class="pill" data-go="webhook">TRACE A WEBHOOK →</button></div></div>';
+ $('stage').innerHTML='<div class="map-scroll"><div class="system-map">'+map+'</div></div><div class="story"><strong>ONE SYSTEM. FOUR LENSES.</strong><p>The directory tree shows file ownership. The system map shows how simples are constituted into a whole. The trace tabs show what that whole is doing during execution. These are different relationships; the diagrams keep them separate.</p><div class="pills"><button class="pill" data-go="read">TRACE A PAGE READ →</button><button class="pill" data-go="write">TRACE AN ACCOUNT EDIT →</button><button class="pill" data-go="ui">TRACE UI COMPOSITION →</button><button class="pill" data-go="webhook">TRACE A WEBHOOK →</button></div></div>';
 }
 function renderFlow(){
  const f=flows[currentView];$('view-eyebrow').textContent=f.eyebrow;$('view-title').textContent=f.title;$('view-desc').textContent=f.desc;
