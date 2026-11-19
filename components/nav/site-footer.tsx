@@ -2,7 +2,6 @@ import Image from "next/image";
 import Link from "next/link";
 
 const footerLinks = [
-  { label: "Anthimeria", href: "/anthimeria.html" },
   { label: "FAQ", href: "/faq" },
   { label: "Terms", href: "/terms" },
   { label: "Privacy", href: "/privacy" },
@@ -26,6 +25,7 @@ export function SiteFooter() {
           />
         </Link>
         <nav aria-label="Footer navigation">
+          <a className="nav-link" href="/anthimeria.html">Anthimeria</a>
           {footerLinks.map((link) => (
             <Link className="nav-link" href={link.href} key={link.label}>
               {link.label}
