@@ -1,11 +1,17 @@
 import "server-only";
 
-import type { ExpenseDTO, InvoiceDTO } from "@/types/invoicingTypes";
+import type {
+  ExpenseDTO,
+  InvoiceDTO,
+  InvoiceListDTO,
+} from "@/types/invoicingTypes";
 import type {
   ExpenseRecord,
   InvoiceRecord,
+  InvoiceListRecord,
 } from "@/lib/db/selects/invoicingSelects";
 
+/** Serialize expense decimals explicitly and preserve its incurred calendar day. */
 export function toExpenseDTO(record: ExpenseRecord): ExpenseDTO {
   return {
     updatedAt: record.updatedAt.toISOString(),
@@ -14,12 +20,13 @@ export function toExpenseDTO(record: ExpenseRecord): ExpenseDTO {
     description: record.description,
     amount: record.amount.toString(),
     currency: record.currency,
-    incurredAt: record.incurredAt.toISOString(),
+    incurredAt: record.incurredAt.toISOString().slice(0, 10),
     status: record.status,
     submitter: record.submittedBy?.user.displayName ?? null,
   };
 }
 
+/** Serialize persisted invoice details without exposing internal authority identifiers. */
 export function toInvoiceDTO(record: InvoiceRecord): InvoiceDTO {
   return {
     id: record.id,
@@ -31,13 +38,12 @@ export function toInvoiceDTO(record: InvoiceRecord): InvoiceDTO {
     taxTotal: record.taxTotal.toString(),
     total: record.total.toString(),
     status: record.status,
-    issuedAt: record.issuedAt?.toISOString() ?? null,
-    dueAt: record.dueAt?.toISOString() ?? null,
+    issuedAt: record.issuedAt?.toISOString().slice(0, 10) ?? null,
+    dueAt: record.dueAt?.toISOString().slice(0, 10) ?? null,
     paidAt: record.paidAt?.toISOString() ?? null,
     approvedAt: record.approvedAt?.toISOString() ?? null,
     approvedBy: record.approvedBy
       ? {
-          membershipId: record.approvedBy.id,
           displayName: record.approvedBy.user.displayName,
         }
       : null,
@@ -53,6 +59,25 @@ export function toInvoiceDTO(record: InvoiceRecord): InvoiceDTO {
       lineTax: line.lineTax.toString(),
       lineTotal: line.lineTotal.toString(),
     })),
+    createdAt: record.createdAt.toISOString(),
+    updatedAt: record.updatedAt.toISOString(),
+  };
+}
+
+/** Map a minimal invoice list row into transport-safe decimal and date text. */
+export function toInvoiceListDTO(record: InvoiceListRecord): InvoiceListDTO {
+  return {
+    id: record.id,
+    number: record.number,
+    customerName: record.customerName,
+    currency: record.currency,
+    total: record.total.toString(),
+    status: record.status,
+    issuedAt: record.issuedAt?.toISOString().slice(0, 10) ?? null,
+    dueAt: record.dueAt?.toISOString().slice(0, 10) ?? null,
+    paidAt: record.paidAt?.toISOString() ?? null,
+    approvedAt: record.approvedAt?.toISOString() ?? null,
+    version: record.version,
     createdAt: record.createdAt.toISOString(),
     updatedAt: record.updatedAt.toISOString(),
   };

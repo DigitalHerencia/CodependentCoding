@@ -1,21 +1,21 @@
 {
   "$schema": "codependent-coding/execution/handoff/v1",
-  "updated": "2026-11-19T00:11:50.0396470Z",
+  "updated": "2026-11-19T01:35:21.032202+00:00",
   "format": "One current package; history is in progress.json, decisions.json and git.",
-  "status": "merged-verified",
+  "status": "ready-for-pr",
   "milestone": "M-T",
-  "current_issue": null,
+  "current_issue": 382,
   "next_issue": null,
-  "queue": [
-    "CC-050",
-    "CC-052",
-    "CC-053",
-    "CC-063"
-  ],
-  "branch": "main",
-  "active_package": null,
+  "queue": ["CC-050", "CC-052", "CC-053", "CC-063"],
+  "branch": "refactor/382-invoicing-architecture",
+  "active_package": {
+    "issue": 382,
+    "spec": "context/specs/invoicing-owner-refactor.md",
+    "phase": "Four permitted checks passed; PR and CI pending",
+    "policy_question": "Terminal status policy remains owner-gated; mutations fail closed."
+  },
   "source_commit": "620f5bc1c221c4cd8cf9d1698b570a3a4490b3e9",
-  "completion": "AI PR #381 merged after final-head CI passed; Issue #380 closed and Project item Done. Task branch deleted locally/remotely and main synchronized. Execution records finalized after merge; metadata push follows. AI migration source and prior membership restriction migration remain unapplied, requiring owner application before runtime use. Tests, local builds, servers, migrations, seeds and live provider requests were deliberately not executed; CRM unchanged and pre-existing PWA edits preserved.",
+  "completion": "Invoicing #382 implementation and permitted local checks complete; PR/CI/merge pending. Terminal status mutations fail closed pending explicit owner transition policy. CRM unchanged; unrelated PWA edits preserved.",
   "in_flight": [
     "CC-050 token consolidation implemented; focused static checks passed. Affected-site CI and owner browser contrast/reduced-motion verification pending. CC-049 merged in #351; main synced and branch deleted.",
     "Homepage PR #349 has passing CI and ready preview; owner desktop/mobile verification remains pending.",
@@ -50,9 +50,7 @@
     "package": "template-ci-validator-fixes",
     "evidence": "See template-ci-validator-fixes in progress.json and DEC-126.",
     "delivery": "Not pushed; owner pushes.",
-    "NOT_RUN": [
-      "Build, tests, push, GitHub CI run."
-    ]
+    "NOT_RUN": ["Build, tests, push, GitHub CI run."]
   },
   "git_maintenance_2026_11_17": {
     "date": "2026-11-17",
@@ -74,11 +72,7 @@
         "result": "FAIL exit 1 before rebase: missing ui/utils imports and incompatible component props; 482 diagnostic output lines."
       }
     ],
-    "not_run": [
-      "tests",
-      "builds",
-      "runtime/browser checks"
-    ],
+    "not_run": ["tests", "builds", "runtime/browser checks"],
     "delivery": "Push snapshot branch; retain failing changes outside main. PRs #370 and #363 verified merged. Remote has only main before snapshot push."
   },
   "ci_fix_pr_371": {
@@ -107,11 +101,7 @@
       }
     ],
     "owner_authorization": "Owner approved dependency addition, commit, merge, sync and branch cleanup.",
-    "not_run": [
-      "tests",
-      "local builds",
-      "browser/runtime checks"
-    ]
+    "not_run": ["tests", "local builds", "browser/runtime checks"]
   },
   "next_actions": [],
   "verification_summary": [

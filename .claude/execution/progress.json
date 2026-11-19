@@ -4273,11 +4273,7 @@
     "ci": {
       "url": "https://github.com/DigitalHerencia/CodependentCoding/actions/runs/44399018907",
       "conclusion": "success",
-      "checks": [
-        "Changed-file checks",
-        "Vercel",
-        "Vercel Preview Comments"
-      ]
+      "checks": ["Changed-file checks", "Vercel", "Vercel Preview Comments"]
     },
     "project_state": "Done",
     "issue_state": "CLOSED",
@@ -4315,5 +4311,55 @@
     "source_commit": "620f5bc1c221c4cd8cf9d1698b570a3a4490b3e9",
     "verified_pr_head": "96a81fe18c855a7d091172fe49f71c76e3e110ec",
     "ci": "https://github.com/DigitalHerencia/CodependentCoding/actions/runs/44426751301"
+  },
+  "invoicing-382": {
+    "spec": "context/specs/invoicing-owner-refactor.md",
+    "issue": 382,
+    "status": "ready-for-pr",
+    "branch": "refactor/382-invoicing-architecture",
+    "project": "DigitalHerencia project 19",
+    "updated": "2026-11-19T01:35:21.032202+00:00",
+    "scope": "Consolidate tenant invoices and expenses; CRM read-only; preserve PWA edits.",
+    "verification": [
+      {
+        "command": "npm --prefix packages/maximal-template run format:write -- --ignore-unknown <affected files>",
+        "result": "PASS"
+      },
+      {
+        "command": "npm --prefix packages/maximal-template run lint:fix -- <affected source files>",
+        "result": "PASS; zero warnings; repeated only affected files after type fixes"
+      },
+      {
+        "command": "npm --prefix packages/maximal-template run typegen",
+        "result": "PASS; Prisma Client 7.10.1 and Next route types generated; no database requests"
+      },
+      {
+        "command": "npm --prefix packages/maximal-template run typecheck",
+        "result": "PASS after correcting exact optional properties and Prisma unchecked mutation input type"
+      }
+    ],
+    "not_run": [
+      "tests",
+      "builds",
+      "servers/watchers",
+      "migrations/seeds",
+      "live provider requests",
+      "browser/visual verification"
+    ],
+    "policy_question": "OPEN/OVERDUE to PAID/VOID owner decision remains open; terminal action fails closed and no terminal buttons exposed. Approval and issuance supported.",
+    "migration": "No invoicing schema changes required.",
+    "implementation": [
+      "Eight tenant routes with exact feature/form/skeleton names, one page template each and existing shell.",
+      "Singleton blocks/copy/templates/types/schemas/DTOs/selects/transactions/actions/fetchers/workflows/module; retired duplicates removed.",
+      "Shared exact four-place subtotal-before-tax calculator; atomic headers/lines/audits; tenant-number advisory lock; optimistic transitions.",
+      "DB search/filter/sort/pagination and full-scope currency/status summaries, direct detail reads, calendar date transport."
+    ],
+    "references": [
+      "https://react-hook-form.com/docs/usefieldarray",
+      "https://www.prisma.io/docs/orm/prisma-client/queries/transactions"
+    ],
+    "prior_failures_resolved": [
+      "Typecheck: exact optional error props, normalized optional customerEmail/description, Prisma scalar relation mutation type."
+    ]
   }
 }

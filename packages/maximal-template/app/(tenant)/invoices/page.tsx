@@ -1,12 +1,16 @@
 import { Suspense } from "react";
-
-import { InvoicesFeature } from "@/features/invoicing/invoices-feature";
-import { InvoicesSkeleton } from "@/features/invoicing/invoices-skeleton";
-
-export default async function Page() {
+import { InvoicingInvoicesFeature } from "@/features/invoicing/invoicingInvoicesFeature";
+import { InvoicingInvoicesSkeleton } from "@/features/invoicing/invoicingInvoicesSkeleton";
+/** Route composes its authorized feature inside the appropriate streaming fallback. */
+export default async function Page({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  const query = await searchParams;
   return (
-    <Suspense fallback={<InvoicesSkeleton />}>
-      <InvoicesFeature />
+    <Suspense fallback={<InvoicingInvoicesSkeleton />}>
+      <InvoicingInvoicesFeature query={query} />
     </Suspense>
   );
 }
