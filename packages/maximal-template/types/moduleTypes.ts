@@ -58,6 +58,10 @@ export type ModuleIntegration = {
 export type ModuleRecordCount = {
   label: string;
   model: Uncapitalize<Prisma.ModelName>;
+  /** Domain read authority is required even when the caller can access admin summaries. */
+  permission?: ModulePermission;
+  /** Personal modules count only the requester's rows in addition to the tenant boundary. */
+  userScoped?: boolean;
 };
 
 /** Runtime contributions of one installed SaaS module. */

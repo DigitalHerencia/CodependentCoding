@@ -65,7 +65,9 @@ export type AuditEventRecord = Prisma.AuditEventGetPayload<{
 }>;
 /** Every registered inventory model supports an organization filter. */
 export type AdminTenantCounter = {
-  count(args: { where: { organizationId: string } }): Promise<number>;
+  count(args: {
+    where: { organizationId: string; userId?: string };
+  }): Promise<number>;
 };
 /** The transaction helper enforces ownership and self-edit invariants. */
 export type AdminMembershipUpdate = MembershipAdministratorContext & {

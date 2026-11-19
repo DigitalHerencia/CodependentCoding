@@ -1,5 +1,6 @@
 import type { ModuleDefinition } from "@/types/moduleTypes";
 
+/** AI owns tenant navigation, permission resources, dashboard contributions and record registration. */
 export const aiModule = {
   id: "ai",
   nav: {
@@ -23,5 +24,18 @@ export const aiModule = {
     resources: ["ai.generation"],
     grants: { MEMBER: ["read", "create", "update"] },
   },
-  records: [{ label: "AI generations", model: "aiGeneration" }],
+  records: [
+    {
+      label: "Your AI generations",
+      model: "aiGeneration",
+      permission: "ai.generation:read",
+      userScoped: true,
+    },
+    {
+      label: "Your AI usage",
+      model: "aiUsageLedger",
+      permission: "ai.generation:read",
+      userScoped: true,
+    },
+  ],
 } satisfies ModuleDefinition;

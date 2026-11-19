@@ -203,6 +203,56 @@ describe("RLS coverage (catalog)", () => {
 });
 
 describe("cross-tenant isolation through the runtime role", () => {
+  test("AI records are private to their requester even inside the same organization", async () => {
+    await inTransaction(app, async () => {
+      await setTenantContext(app, orgA);
+      await app.query("SELECT set_config('app.user_id', $1, true)", [
+        `user_other_${randomUUID()}`,
+      ]);
+      const generations = await app.query(
+        `SELECT id FROM "AiGeneration" WHERE "organizationId" = $1`,
+        [orgA.organizationId],
+      );
+      const usage = await app.query(
+        `SELECT id FROM "AiUsageLedger" WHERE "organizationId" = $1`,
+        [orgA.organizationId],
+      );
+      assert.equal(generations.rowCount, 0);
+      assert.equal(usage.rowCount, 0);
+      const changed = await app.query(
+        `UPDATE "AiGeneration" SET "errorCode" = 'foreign' WHERE "organizationId" = $1`,
+        [orgA.organizationId],
+      );
+      assert.equal(changed.rowCount, 0);
+    });
+  });
+
+  test("the requester cannot rewrite or delete AI usage history", async () => {
+    await inTransaction(app, async () => {
+      await setTenantContext(app, orgA);
+      const visible = await app.query(
+        `SELECT id FROM "AiUsageLedger" WHERE "organizationId" = $1`,
+        [orgA.organizationId],
+      );
+      assert.ok((visible.rowCount ?? 0) > 0);
+      const changed = await app.query(
+        `UPDATE "AiUsageLedger" SET cost = 1 WHERE "organizationId" = $1`,
+        [orgA.organizationId],
+      );
+      const removed = await app.query(
+        `DELETE FROM "AiUsageLedger" WHERE "organizationId" = $1`,
+        [orgA.organizationId],
+      );
+      const generationsRemoved = await app.query(
+        `DELETE FROM "AiGeneration" WHERE "organizationId" = $1`,
+        [orgA.organizationId],
+      );
+      assert.equal(changed.rowCount, 0);
+      assert.equal(removed.rowCount, 0);
+      assert.equal(generationsRemoved.rowCount, 0);
+    });
+  });
+
   test("org A cannot read, change or create org B rows", async () => {
     const leaks = await inTransaction(app, () =>
       probeAll(app, orgA, orgB, catalog.tenantTables),
@@ -234,7 +284,6 @@ describe("cross-tenant isolation through the runtime role", () => {
     });
   });
 
-
   test("dashboard preferences are hidden from a different member of the same organization", async () => {
     await inTransaction(app, async () => {
       await setTenantContext(app, orgA);
@@ -244,7 +293,10 @@ describe("cross-tenant isolation through the runtime role", () => {
                 set_config('app.user_id', $1, true)`,
         [anotherUserId],
       );
-      await app.query(`INSERT INTO "User" (id, "updatedAt") VALUES ($1, now())`, [anotherUserId]);
+      await app.query(
+        `INSERT INTO "User" (id, "updatedAt") VALUES ($1, now())`,
+        [anotherUserId],
+      );
       const membership = await app.query<{ id: string }>(
         `INSERT INTO "Membership" (id, "organizationId", "userId", "updatedAt")
          VALUES (gen_random_uuid(), $1, $2, now()) RETURNING id`,

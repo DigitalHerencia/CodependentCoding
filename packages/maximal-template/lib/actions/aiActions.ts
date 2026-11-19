@@ -1,14 +1,19 @@
 "use server";
 
-/** Ai Actions contracts and composition for the owning application slice. */
+import { unstable_rethrow } from "next/navigation";
+import { ZodError } from "zod";
 import { requireIdentity } from "@/lib/integrations/clerk/server";
 import { assertPermission } from "@/lib/authz/permissions";
-import { withTenantTransaction } from "@/lib/db/tenancy";
-import { completeAiGenerationTx } from "@/lib/db/transactions/aiCompleteGenerationTx";
+import { resolveCapturedAccessTx } from "@/lib/authz/tenancy";
 import {
-  createAiGenerationTx,
+  withTenantTransaction,
+  withCapturedTenantTransaction,
+} from "@/lib/db/tenancy";
+import {
+  startAiGenerationTx,
+  completeAiGenerationTx,
   failAiGenerationTx,
-} from "@/lib/db/transactions/aiTx";
+} from "@/lib/db/selects/aiTx";
 import { isHuggingFaceConfigured } from "@/lib/integrations/hugging-face/client";
 import {
   generateHuggingFaceText,
@@ -20,72 +25,106 @@ import {
 } from "@/lib/integrations/upstash/ratelimit";
 import { toActionResult } from "@/lib/utils/actionResult";
 import { aiGenerationRequestSchema } from "@/schemas/aiSchemas";
+import type { AiGenerationResult } from "@/types/aiTypes";
+import type { ActionResult } from "@/types/actionTypes";
 
-export async function generateAiResponse(rawInput: unknown) {
+/**
+ * Authorize and capture the request owner before network work, then recheck that exact
+ * membership before either terminal transition. Inference and rate limiting run outside
+ * database transactions. Raw provider/database diagnostics never reach logs or the client.
+ */
+export async function generateAiResponse(
+  rawInput: unknown,
+): Promise<ActionResult<AiGenerationResult>> {
   return toActionResult(async () => {
-    const identity = await requireIdentity();
-    const { prompt } = await withTenantTransaction(
-      identity,
-      async (_tx, access) => {
-        assertPermission(access, "ai.generation:create");
-        return aiGenerationRequestSchema.parse(rawInput);
-      },
-    );
-
-    if (!isHuggingFaceConfigured()) {
-      throw new Error("The AI provider is not configured.");
-    }
-    const model = getConfiguredHuggingFaceModel();
-    if (isRateLimitRequested()) {
-      await enforceRateLimit("ai-generate", identity.clerkUserId, {
-        requests: 5,
-        window: "60 s",
-      });
-    }
-    const generation = await withTenantTransaction(
-      identity,
-      async (tx, access) => {
-        assertPermission(access, "ai.generation:create");
-        return createAiGenerationTx(tx, {
-          organizationId: access.organizationId,
-          userId: access.userId,
-          provider: "hugging-face",
-          model,
-          input: { prompt: prompt },
-        });
-      },
-    );
     try {
-      const result = await generateHuggingFaceText({
-        prompt: prompt,
-        model,
-      });
-      await withTenantTransaction(identity, async (tx, access) => {
-        assertPermission(access, "ai.generation:update");
-        return completeAiGenerationTx(tx, {
-          organizationId: access.organizationId,
-          generationId: generation.id,
-          output: { text: result.generated_text },
-          inputTokens: 0,
-          outputTokens: 0,
-          cost: "0",
+      const identity = await requireIdentity();
+      const input = aiGenerationRequestSchema.parse(rawInput);
+      const captured = await withTenantTransaction(
+        identity,
+        async (tx, access) => {
+          const current = await resolveCapturedAccessTx(tx, identity, access);
+          assertPermission(current, "ai.generation:create");
+          assertPermission(current, "ai.generation:update");
+          return {
+            organizationId: current.organizationId,
+            userId: current.userId,
+            membershipId: current.membershipId,
+          };
+        },
+      );
+      if (!isHuggingFaceConfigured())
+        throw new Error("AI inference is unavailable.");
+      const model = getConfiguredHuggingFaceModel();
+      if (isRateLimitRequested())
+        await enforceRateLimit("ai-generate", identity.clerkUserId, {
+          requests: 5,
+          window: "60 s",
         });
-      });
-      return {
-        generationId: generation.id,
-        text: result.generated_text,
-        model,
-      };
+
+      const generation = await withCapturedTenantTransaction(
+        identity,
+        captured,
+        async (tx, access) => {
+          assertPermission(access, "ai.generation:create");
+          assertPermission(access, "ai.generation:update");
+          return startAiGenerationTx(tx, {
+            ...captured,
+            provider: "hugging-face",
+            model,
+            prompt: input.prompt,
+          });
+        },
+      );
+      let result;
+      try {
+        result = await generateHuggingFaceText({ prompt: input.prompt, model });
+      } catch {
+        await withCapturedTenantTransaction(
+          identity,
+          captured,
+          async (tx, access) => {
+            assertPermission(access, "ai.generation:update");
+            await failAiGenerationTx(tx, {
+              ...captured,
+              generationId: generation.id,
+            });
+          },
+        );
+        throw new Error("AI inference is unavailable.");
+      }
+      await withCapturedTenantTransaction(
+        identity,
+        captured,
+        async (tx, access) => {
+          assertPermission(access, "ai.generation:update");
+          await completeAiGenerationTx(tx, {
+            ...captured,
+            generationId: generation.id,
+            ...result,
+          });
+        },
+      );
+      return { generationId: generation.id, text: result.text, model };
     } catch (cause) {
-      await withTenantTransaction(identity, async (tx, access) => {
-        assertPermission(access, "ai.generation:update");
-        return failAiGenerationTx(tx, {
-          organizationId: access.organizationId,
-          generationId: generation.id,
-          errorCode: "AI_GENERATION_FAILED",
-        });
-      });
-      throw cause;
+      unstable_rethrow(cause);
+      if (cause instanceof ZodError) throw cause;
+      const code = (cause as { code?: unknown } | null)?.code;
+      if (
+        typeof code === "string" &&
+        [
+          "UNAUTHENTICATED",
+          "FORBIDDEN",
+          "NOT_FOUND",
+          "CONFLICT",
+          "RATE_LIMITED",
+        ].includes(code)
+      )
+        throw Object.assign(
+          new Error("The AI request could not be completed."),
+          { code },
+        );
+      throw new Error("The AI request could not be completed.");
     }
   });
 }

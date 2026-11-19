@@ -26,6 +26,12 @@ export interface AccessContext extends AuthenticatedIdentity {
   deniedPermissions?: readonly string[];
 }
 
+/** Immutable request authority captured before an external operation begins. */
+export type CapturedTenantAuthority = Pick<
+  AccessContext,
+  "organizationId" | "userId" | "membershipId"
+>;
+
 /** A base resource (`base.organization`) or one a module declares in `permissions.resources`. */
 export type ResourceKind = `${string}.${string}`;
 

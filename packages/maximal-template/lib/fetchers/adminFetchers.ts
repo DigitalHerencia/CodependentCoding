@@ -163,7 +163,7 @@ export async function getAdminMemberships(rawCriteria: unknown = {}) {
   });
 }
 
-/** Counts the tables installed modules list in `records` (registry order). */
+/** Count registered records only within each domain's declared permission and ownership scope. */
 export async function getAdminRecordSummary() {
   const records = [
     ...new Map(
@@ -174,13 +174,20 @@ export async function getAdminRecordSummary() {
   ];
   return withAuthenticatedRead(async (tx, access) => {
     assertPermission(access, "admin.record:read");
-    const where = { organizationId: access.organizationId };
+    const authorized = records.filter(
+      ({ permission }) => !permission || hasPermission(access, permission),
+    );
     const counts = await Promise.all(
-      records.map(({ model }) =>
-        (tx[model] as unknown as AdminTenantCounter).count({ where }),
+      authorized.map(({ model, userScoped }) =>
+        (tx[model] as unknown as AdminTenantCounter).count({
+          where: {
+            organizationId: access.organizationId,
+            ...(userScoped ? { userId: access.userId } : {}),
+          },
+        }),
       ),
     );
-    return records.map(({ label, model }, index) => {
+    return authorized.map(({ label, model }, index) => {
       const count = counts[index];
       if (count === undefined)
         throw new Error("Missing registered resource count.");
