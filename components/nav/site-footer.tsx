@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 const footerLinks = [
+  { label: "Anthimeria", href: "/anthimeria.html" },
   { label: "FAQ", href: "/faq" },
   { label: "Terms", href: "/terms" },
   { label: "Privacy", href: "/privacy" },

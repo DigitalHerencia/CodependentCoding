@@ -1,0 +1,612 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#090909">
+<title>ANTHIMERIA — Codependent Coding Architecture Atlas</title>
+<style>
+:root{color-scheme:dark;--bg:#090909;--panel:#121212;--raised:#1a1a1a;--line:#494949;--muted:#a3a3a3;--ink:#ededed;--accent:#1d4ed8;--shadow:#000}
+*{box-sizing:border-box;border-radius:0!important}
+html,body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font-family:Arial,Helvetica,sans-serif}
+button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+a{color:inherit}
+.mono,code,pre,.path,.tree,.eyebrow,.step-index,.tag,.index,.metric{font-family:Consolas,"SFMono-Regular","Liberation Mono",monospace}
+.top{border-bottom:2px solid #777;background:#000;padding:13px 22px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.brand{font-family:Impact,"Arial Black",sans-serif;font-size:clamp(25px,3vw,42px);letter-spacing:.035em;text-transform:uppercase;line-height:1}
+.brand small{font:700 10px Consolas,monospace;display:block;letter-spacing:.3em;color:var(--muted);padding:5px 0}
+.brand b{color:var(--ink);font-weight:900}
+.top-right{font:700 11px Consolas,monospace;color:var(--muted);text-align:right;line-height:1.7}
+.top-right strong{color:var(--ink)}
+.notice{padding:9px 20px;border-bottom:1px solid var(--line);background:var(--raised);font-size:12px;line-height:1.45}
+.notice b{color:#f2f2f2}
+.tabs{display:flex;flex-wrap:wrap;border-bottom:2px solid #737373;background:var(--panel);gap:0}
+.tab{border:0;border-right:1px solid var(--line);padding:13px 20px;background:transparent;color:#c2c2c2;font:700 12px Consolas,monospace;letter-spacing:.1em}
+.tab[aria-selected=true]{background:var(--accent);color:white}
+.tab:hover:not([aria-selected=true]){background:#292929}
+.main{display:grid;grid-template-columns:255px minmax(0,1fr) 380px;min-height:calc(100vh - 150px)}
+.side{border-right:2px solid var(--line);min-width:0;background:var(--panel);display:flex;flex-direction:column}
+.sidehead,.inspector-head{padding:15px;border-bottom:1px solid var(--line)}
+.eyebrow{letter-spacing:.16em;font-size:10px;font-weight:700;color:var(--muted);margin:0 0 9px}
+.side h2,.inspector h2{font:900 19px Impact,"Arial Black",sans-serif;text-transform:uppercase;letter-spacing:.05em;margin:0 0 10px}
+.search{background:#090909;color:var(--ink);width:100%;border:1px solid #888;padding:10px;font:12px Consolas,monospace}
+.tree{overflow:auto;flex:1;padding:12px 6px 35px;font-size:12px;line-height:1.6;max-height:calc(100vh - 236px)}
+.tree details{margin:2px 0 2px 8px;border-left:1px solid #333;padding-left:9px}
+.tree summary{color:#bdbdbd;padding:3px 4px;cursor:pointer;font-weight:700;list-style:"▸  "}
+.tree details[open]>summary{list-style:"▾  "}
+.file-row{display:block;border:0;background:transparent;text-align:left;color:#c4c4c4;padding:5px 6px;width:100%;overflow-wrap:anywhere;font:12px Consolas,monospace}
+.file-row:hover,.file-row.active{color:white;background:#333}
+.file-row.active{border-left:4px solid var(--accent);padding-left:2px}
+.workspace{min-width:0;background:var(--bg)}
+.workhead{padding:18px 22px 15px;border-bottom:1px solid var(--line);display:flex;gap:16px;flex-wrap:wrap;align-items:end;justify-content:space-between}
+.workhead h1{font:900 clamp(23px,2.5vw,34px) Impact,"Arial Black",sans-serif;letter-spacing:.05em;margin:0;text-transform:uppercase}
+.workhead p{font-size:12px;line-height:1.6;color:#b9b9b9;max-width:720px;margin:7px 0 0}
+.legend{font:11px Consolas,monospace;color:#ccc;border:1px solid #777;padding:9px;white-space:nowrap}
+.stage{padding:20px 22px 32px}
+.system-map{display:grid;grid-template-columns:repeat(4,minmax(190px,1fr));gap:20px;min-width:820px;align-items:stretch}
+.map-scroll{overflow:auto}
+.boundary{border:2px solid #6d6d6d;background:#171717;position:relative;padding:12px}
+.boundary:not(:last-child):after{content:"→";position:absolute;right:-21px;top:47%;font:800 24px Consolas,monospace;color:#dedede;z-index:2}
+.boundary h3{margin:0 0 12px;padding:0 0 8px;border-bottom:1px solid #777;font:700 12px Consolas,monospace;text-transform:uppercase;letter-spacing:.09em}
+.boundary .desc{font-size:11px;color:var(--muted);line-height:1.5;min-height:35px;margin:0 0 9px}
+.mapnode{display:block;text-align:left;width:100%;margin:6px 0;border:1px solid #666;background:#262626;color:var(--ink);padding:10px;min-width:0}
+.mapnode:hover,.mapnode.selected{background:#333;border-color:#d9d9d9}
+.mapnode.selected{box-shadow:inset 4px 0 0 var(--accent)}
+.mapnode strong{display:block;font:700 12px Consolas,monospace;overflow-wrap:anywhere}
+.mapnode span{display:block;color:#adadad;font-size:11px;line-height:1.35;margin-top:5px}
+.story{border:1px solid #666;padding:16px;margin-top:18px;background:#151515}
+.story strong{font-size:14px;text-transform:uppercase;letter-spacing:.06em}
+.story p{font-size:12px;line-height:1.7;color:#c5c5c5;margin:7px 0 12px}
+.pills{display:flex;flex-wrap:wrap;gap:7px}
+.pill{background:#222;color:#ddd;border:1px solid #777;font:700 11px Consolas,monospace;padding:8px 11px}
+.pill:hover{border-color:white;background:#333}
+.flowintro{display:grid;grid-template-columns:1fr auto;gap:18px;align-items:center;border:1px solid #777;padding:15px;background:#171717;margin-bottom:16px}
+.flowintro h2{font:800 21px Impact,"Arial Black",sans-serif;margin:0 0 6px;text-transform:uppercase}
+.flowintro p{color:#bdbdbd;font-size:12px;line-height:1.6;margin:0}
+.flowhint{font:10px Consolas,monospace;border:1px solid #888;padding:10px;max-width:200px;line-height:1.6}
+.flow{display:flex;flex-direction:column;gap:0;max-width:860px;margin:auto}
+.step{display:grid;grid-template-columns:42px minmax(0,1fr) 170px;gap:12px;align-items:stretch;padding-bottom:25px;position:relative}
+.step:not(:last-child):before{content:"";position:absolute;top:37px;left:18px;bottom:0;border-left:2px solid #888}
+.step-index{display:grid;place-items:center;z-index:1;align-self:start;width:38px;height:38px;border:2px solid #888;background:#131313;font-weight:700;font-size:12px}
+.stepbtn{border:2px solid #777;padding:12px;text-align:left;background:#1b1b1b;color:var(--ink);width:100%}
+.stepbtn:hover,.stepbtn.active{border-color:#e0e0e0;background:#303030}
+.stepbtn.active{box-shadow:inset 5px 0 0 var(--accent)}
+.steptitle{display:block;font:700 14px Consolas,monospace;margin-bottom:5px;overflow-wrap:anywhere}
+.steppath{display:block;color:#bdbdbd;font:11px Consolas,monospace;overflow-wrap:anywhere}
+.stepnote{display:block;font-size:12px;line-height:1.55;margin-top:8px;color:#dedede}
+.data{align-self:stretch;border:1px solid #555;background:#111;padding:11px;font:11px Consolas,monospace;line-height:1.55;color:#c1c1c1;overflow-wrap:anywhere}
+.data span{display:block;color:#f1f1f1;font-weight:bold;margin-bottom:6px}
+.subhead{font:700 12px Consolas,monospace;letter-spacing:.12em;text-transform:uppercase;border-bottom:1px solid #555;padding-bottom:10px;margin:8px 0 13px;color:#dedede}
+.inspector{border-left:2px solid var(--line);background:#101010;min-width:0;display:flex;flex-direction:column;position:sticky;top:0;max-height:100vh}
+.inspector-head{display:flex;justify-content:space-between;gap:8px;align-items:start;flex:0 0 auto}
+.inspector h2{overflow-wrap:anywhere}
+.miniactions{display:flex;gap:6px;flex-wrap:wrap;margin:9px 0 0}
+.action{background:#202020;border:1px solid #888;color:#eee;font:11px Consolas,monospace;padding:8px 10px}
+.action:hover{background:#333}
+.close{display:none}
+.inspector-description{font-size:12px;line-height:1.6;margin:0 0 6px;color:#c4c4c4}
+.details{padding:12px 15px;border-bottom:1px solid #555;max-height:190px;overflow:auto}
+.details strong{display:block;font:700 10px Consolas,monospace;letter-spacing:.1em;margin:6px 0;color:#e4e4e4}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font:11px Consolas,monospace;background:#1b1b1b;border:1px solid #666;color:#e4e4e4;padding:5px 7px;overflow-wrap:anywhere;text-align:left}
+.chip:hover{border-color:white}
+.empty{font-size:11px;color:#aaa}
+.source{overflow:auto;flex:1;min-height:220px;padding:6px 0 40px}
+.line{display:grid;grid-template-columns:38px 1fr;align-items:start;min-width:max-content;padding:0 13px 0 3px;line-height:1.55}
+.line:hover{background:#202020}
+.num{color:#8a8a8a;text-align:right;padding-right:14px;user-select:none;font:11px/1.65 Consolas,monospace}
+.txt{white-space:pre;font:12px/1.55 Consolas,monospace;tab-size:2;color:#ededed}
+.label{font:10px Consolas,monospace;color:#9b9b9b;text-transform:uppercase;letter-spacing:.1em}
+.foot{border-top:1px solid #555;padding:10px 20px;font:11px Consolas,monospace;color:#a1a1a1}
+.note-strong{color:#ededed}
+.noscript{padding:20px;border:1px solid #777;color:#ddd;font-size:12px}
+@media(max-width:1200px){.main{grid-template-columns:205px minmax(0,1fr) 330px}.stage{padding:16px}.workhead{padding:16px}}
+@media(max-width:980px){.main{grid-template-columns:200px minmax(0,1fr)}.inspector{position:fixed;right:0;top:0;bottom:0;width:min(90vw,560px);max-height:none;z-index:30;box-shadow:-12px 0 0 #000;border-left:3px solid #d0d0d0;transform:translateX(105%);transition:transform 150ms linear}.inspector.open{transform:translateX(0)}.close{display:block}.tree{max-height:calc(100vh - 230px)}.top-right{display:none}}
+@media(max-width:680px){.top{padding:12px}.tabs{overflow:auto;flex-wrap:nowrap}.tab{padding:12px 13px;white-space:nowrap}.main{display:block}.side{border-bottom:2px solid #666;border-right:0}.tree{max-height:170px;padding-bottom:10px}.sidehead{padding:10px}.workhead,.stage{padding:12px}.step{grid-template-columns:33px minmax(0,1fr);gap:8px;padding-bottom:18px}.step:not(:last-child):before{left:15px}.step-index{height:31px;width:31px}.data{grid-column:2;min-height:0}.flowintro{grid-template-columns:1fr}.flowhint{max-width:none}}
+</style>
+</head>
+<body>
+<header class="top"><div class="brand"><b>ANTHIMERIA</b><small>THE CODEDEPENDENT CODING ARCHITECTURE ATLAS</small></div><div class="top-right"><strong>DIGITAL HERENCIA // THE MAXIMAL TEMPLATE</strong><div>GOLDEN PATTERN • STATIC REFERENCE • NO AI • NO REPOSITORY ACCESS</div></div></header>
+<div class="notice"><b>REFERENCE MODEL, NOT LIVE SOURCE.</b> Representative CRM and webhook code paths drawn from the Codependent Coding architectural doctrine. Navigate files and follow actual intended call direction. No credentials, backend, account, or external libraries.</div>
+<div class="tabs" role="tablist" aria-label="Architecture views">
+<button class="tab" data-view="system" role="tab" aria-selected="true">01 / SYSTEM</button>
+<button class="tab" data-view="read" role="tab" aria-selected="false">02 / READ</button>
+<button class="tab" data-view="write" role="tab" aria-selected="false">03 / WRITE</button>
+<button class="tab" data-view="ui" role="tab" aria-selected="false">04 / PRESENTATION</button>
+<button class="tab" data-view="webhook" role="tab" aria-selected="false">05 / WEBHOOK</button>
+</div>
+<main class="main">
+<aside class="side" aria-label="Directory explorer"><div class="sidehead"><p class="eyebrow">01 / OWNERSHIP</p><h2>File explorer</h2><input id="search" class="search" type="search" placeholder="Find file / symbol…" aria-label="Search files and source" autocomplete="off"></div><div class="tree" id="tree"></div></aside>
+<section class="workspace" aria-live="polite"><div class="workhead"><div><p class="eyebrow" id="view-eyebrow">SYSTEM MODEL</p><h1 id="view-title">THE BIG PICTURE</h1><p id="view-desc">Boundaries contain responsibilities. Follow the arrows from the route through the application to the data. Click any file to inspect its code.</p></div><div class="legend">→ EXECUTION / DATA HANDOFF<br>CLICK = SOURCE INSPECTOR</div></div><div class="stage" id="stage"><div class="noscript">The interactive diagram will appear here. Use the tabs to explore one path at a time.</div></div></section>
+<aside class="inspector" id="inspector" aria-label="Source code inspector"><div class="inspector-head"><div><p class="eyebrow">02 / SOURCE INSPECTOR</p><h2 id="source-title">SELECT A FILE</h2><div class="label path" id="source-path">Click any node or file</div><div class="miniactions"><button class="action" id="copy" type="button">COPY SOURCE</button><button class="action close" id="close" type="button">CLOSE</button></div></div></div><div class="details"><p class="inspector-description" id="summary">Every diagram node resolves to a concrete source-file example.</p><strong>IMPORTS / DEPENDS ON</strong><div class="chips" id="imports"><span class="empty">—</span></div><strong>USED BY / IMPORTED FROM</strong><div class="chips" id="usedby"><span class="empty">—</span></div></div><div class="source" id="source"></div></aside>
+</main>
+<footer class="foot">ANTHIMERIA <span class="note-strong">/</span> STYLE: BRUTALIST <span class="note-strong">/</span> MODEL: CANONICAL INTENT <span class="note-strong">/</span> LINKS: FILE → DEPENDENCIES → FLOW</footer>
+<script>
+(function(){
+'use strict';
+function file(id,path,role,group,summary,imports){return {id:id,path:path,role:role,group:group,summary:summary,imports:imports||[],code:''};}
+const F=[
+file('route','app/(tenant)/crm/contacts/page.tsx','Route entry','Routing','The URL entry. Await search params and render a server feature inside Suspense.',['feature','skeleton']),
+file('pipelineRoute','app/(tenant)/crm/pipeline/page.tsx','Route entry','Routing','A second route demonstrates a different page using the same CRM architecture.',['pipelineFeature']),
+file('feature','features/crm/crmContactsFeature.tsx','Server feature','Presentation','Loads DTOs via the read workflow and passes the result into a page template.',['workflow','template','client']),
+file('pipelineFeature','features/crm/crmPipelineFeature.tsx','Server feature','Presentation','The pipeline page assembles the board using its named workflow.',['workflow','template']),
+file('client','features/crm/crmContactActions.client.tsx','Client island','Presentation','Owns dialog state and user events. Calls a server action, never a server-only workflow.',['action','template']),
+file('skeleton','features/crm/crmContactsSkeleton.tsx','Loading skeleton','Presentation','Shape-preserving visual fallback while the server feature is awaiting data.',['block']),
+file('template','components/templates/crm-templates.tsx','Page template','Presentation','Arranges reusable blocks, receives DTOs and callback/slot props, no business logic.',['block']),
+file('block','components/blocks/crm-blocks.tsx','Presentation block','Presentation','Composes pure controls into table rows and cards. No ORM, fetchers, or decisions.',['uiButton','type']),
+file('uiButton','components/ui/button.tsx','UI primitive','Presentation','Accessible UI control, normally installed from shadcn; example shows contract only.',[]),
+file('copy','content/crm.ts','Static content','Presentation','Centralised copy for CRM labels.',['']),
+file('workflow','lib/workflows/crmWorkflows.ts','Use-case orchestration','Application','Named read workflows compose fetchers; write workflows orchestrate transaction helpers and domain rules.',['fetcher','tenant','tx','permission','type']),
+file('fetcher','lib/fetchers/crmFetchers.ts','Read boundary','Application','Validates criteria, authenticates and authorises, performs tenant-scoped select, returns DTO.',['schema','select','dto','tenant','permission']),
+file('action','lib/actions/crmActions.ts','Server action','Application','Browser-callable mutation boundary. Auth → rate limit → parse → workflow → invalidate.',['auth','schema','workflow','cache','type']),
+file('schema','schemas/crmSchemas.ts','Zod contract','Contracts','Runtime validation for untrusted inputs; same schema is reused by client forms and server action.',['']),
+file('type','types/crmTypes.ts','DTO / input types','Contracts','Serialisable view-model contracts; clients do not receive raw Prisma records.',['schema']),
+file('select','lib/db/selects/crm.selects.ts','Prisma select','Data','Allowlist of fields to read from the database.',['']),
+file('dto','lib/db/dto/crm.dto.ts','DTO mapper','Data','Converts database records into serialisable presentation contracts.',['type','select']),
+file('tx','lib/db/transactions/crm-update-contact.tx.ts','Atomic transaction helper','Data','Performs one tenant-scoped write and its audit record within the same transaction.',['select']),
+file('tenant','lib/db/tenant.ts','Tenant RLS wrapper','Data','Provides correctly scoped database reads and transactions.',['']),
+file('model','prisma/schema/crm.prisma','Prisma model','Data','Persistence schema and organization ownership. RLS enforcement lives in database policy files.',['']),
+file('auth','lib/auth/auth.ts','Authentication','Security','Loads authenticated identity from Clerk and rejects unauthenticated callers.',['']),
+file('permission','lib/authz/permissions.ts','Authorization','Security','Checks effective permission from trusted tenant access context.',['']),
+file('cache','lib/cache/invalidate.ts','Cache invalidation','Application','Invalidates the affected client router cache after a committed mutation.',['']),
+file('webroute','app/api/stripe/webhooks/route.ts','HTTP ingress','Routing','Receives an external POST; delegates raw payload and signature to server-only webhook workflow.',['webflow']),
+file('webflow','lib/workflows/billingWebhookWorkflows.ts','Webhook workflow','Application','Verifies provider signature and controls idempotent event processing.',['stripe','webaction']),
+file('stripe','lib/integrations/stripe/webhooks.ts','Integration adapter','Integration','Provider-specific signature verification; not an HTTP route.',['']),
+file('webaction','lib/actions/billingWebhookActions.ts','Trusted server command','Application','Server-only trusted command for verified webhook events.',['webtx']),
+file('webtx','lib/db/transactions/billingRecordStripeWebhookTx.ts','Webhook transaction','Data','Claims event ID for idempotency and persists subscription effects atomically.',['tenant'])
+].map(x=>({...x,imports:x.imports.filter(Boolean)}));
+const BY=Object.fromEntries(F.map(f=>[f.id,f]));
+const SRC={
+route:[
+'import { Suspense } from "react";',
+'import { CrmContactsFeature } from "@/features/crm/crmContactsFeature";',
+'import { CrmContactsSkeleton } from "@/features/crm/crmContactsSkeleton";',
+'',
+'/** URL owner: /crm/contacts. No database or business logic. */',
+'export default async function Page({ searchParams }: PageProps<"/crm/contacts">) {',
+'  const filters = await searchParams;',
+'  return (',
+'    <Suspense fallback={<CrmContactsSkeleton />}>',
+'      <CrmContactsFeature filters={filters} />',
+'    </Suspense>',
+'  );',
+'}'
+],pipelineRoute:[
+'import { Suspense } from "react";',
+'import { CrmPipelineFeature } from "@/features/crm/crmPipelineFeature";',
+'',
+'export default function Page() {',
+'  return (',
+'    <Suspense fallback={<p>Loading pipeline…</p>}>',
+'      <CrmPipelineFeature />',
+'    </Suspense>',
+'  );',
+'}'
+],feature:[
+'import { CrmContactsTemplate } from "@/components/templates/crm-templates";',
+'import { getCrmContactsPage } from "@/lib/workflows/crmWorkflows";',
+'import { CrmContactActions } from "./crmContactActions.client";',
+'',
+'/** Server composition point. DTOs, not Prisma records, enter the UI. */',
+'export async function CrmContactsFeature({ filters }: { filters: unknown }) {',
+'  const page = await getCrmContactsPage(filters);',
+'  return (',
+'    <CrmContactsTemplate',
+'      contacts={page.rows}',
+'      total={page.total}',
+'      actions={(contact) => (',
+'        <CrmContactActions id={contact.id} version={contact.version} />',
+'      )}',
+'    />',
+'  );',
+'}'
+],pipelineFeature:[
+'import { CrmPipelineTemplate } from "@/components/templates/crm-templates";',
+'import { getCrmPipelineBoard } from "@/lib/workflows/crmWorkflows";',
+'',
+'export async function CrmPipelineFeature() {',
+'  const board = await getCrmPipelineBoard({ pageSize: 30 });',
+'  return <CrmPipelineTemplate board={board} />;',
+'}'
+],client:[
+'"use client";',
+'',
+'import { useState, useTransition } from "react";',
+'import { updateCrmContact } from "@/lib/actions/crmActions";',
+'import { CrmContactEditPanel } from "@/components/templates/crm-templates";',
+'',
+'/** Browser state and event handlers only. No database imports. */',
+'export function CrmContactActions({ id, version }: { id: string; version: number }) {',
+'  const [open, setOpen] = useState(false);',
+'  const [pending, startTransition] = useTransition();',
+'  function save(input: { firstName: string; lastName: string }) {',
+'    startTransition(async () => {',
+'      const result = await updateCrmContact({ contactId: id, expectedVersion: version, ...input });',
+'      if (result.ok) setOpen(false);',
+'    });',
+'  }',
+'  return <CrmContactEditPanel open={open} pending={pending} onOpenChange={setOpen} onSave={save} />;',
+'}'
+],skeleton:[
+'import { CrmContactsTableSkeleton } from "@/components/blocks/crm-blocks";',
+'',
+'export function CrmContactsSkeleton() {',
+'  return <CrmContactsTableSkeleton rows={8} />;',
+'}'
+],template:[
+'import type { CrmContactDTO } from "@/types/crmTypes";',
+'import { CrmContactsTable, CrmPipelineBoard } from "@/components/blocks/crm-blocks";',
+'',
+'/** Arrangement only: no writes, fetching, SDKs or permissions. */',
+'export function CrmContactsTemplate({ contacts, total, actions }: {',
+'  contacts: CrmContactDTO[];',
+'  total: number;',
+'  actions: (contact: CrmContactDTO) => React.ReactNode;',
+'}) {',
+'  return <section><h1>Contacts ({total})</h1><CrmContactsTable contacts={contacts} actions={actions} /></section>;',
+'}',
+'export function CrmContactEditPanel(props: {',
+'  open: boolean; pending: boolean; onOpenChange: (open: boolean) => void;',
+'  onSave: (input: { firstName: string; lastName: string }) => void;',
+'}) {',
+'  return <section hidden={!props.open}>Edit dialog UI composes here.</section>;',
+'}',
+'export function CrmPipelineTemplate({ board }: { board: { weightedValue: number } }) {',
+'  return <CrmPipelineBoard value={board.weightedValue} />;',
+'}'
+],block:[
+'import type { CrmContactDTO } from "@/types/crmTypes";',
+'import { Button } from "@/components/ui/button";',
+'',
+'/** Receives data and slots; renders only. */',
+'export function CrmContactsTable({ contacts, actions }: {',
+'  contacts: CrmContactDTO[];',
+'  actions: (contact: CrmContactDTO) => React.ReactNode;',
+'}) {',
+'  return <table><tbody>{contacts.map((contact) => (',
+'    <tr key={contact.id}><td>{contact.name}</td><td>{actions(contact)}</td></tr>',
+'  ))}</tbody></table>;',
+'}',
+'export function CrmContactsTableSkeleton({ rows }: { rows: number }) {',
+'  return <div aria-hidden="true">{Array.from({ length: rows }, (_, i) => <div key={i}>Loading…</div>)}</div>;',
+'}',
+'export function CrmPipelineBoard({ value }: { value: number }) {',
+'  return <div>Weighted pipeline: {value}</div>;',
+'}'
+],uiButton:[
+'/** Representative shadcn primitive contract, not a replacement for a registry-managed file. */',
+'export function Button(props: React.ButtonHTMLAttributes<HTMLButtonElement>) {',
+'  return <button {...props} />;',
+'}'
+],copy:[
+'/** Presentation copy only: no routing, side effects or business decisions. */',
+'export const crmContent = {',
+'  contactsHeading: "Contacts",',
+'  editAction: "Edit contact",',
+'  saveAction: "Save changes",',
+'} as const;'
+],workflow:[
+'import "server-only";',
+'import { listCrmContacts, getCrmPipelineStages, listCrmDeals } from "@/lib/fetchers/crmFetchers";',
+'import { withTenantTransaction } from "@/lib/db/tenant";',
+'import { updateCrmContactTx } from "@/lib/db/transactions/crm-update-contact.tx";',
+'import { assertPermission } from "@/lib/authz/permissions";',
+'',
+'/** Read workflow: the page view model, not a raw query. */',
+'export async function getCrmContactsPage(filters: unknown) {',
+'  return listCrmContacts(filters);',
+'}',
+'',
+'/** One named workflow for the pipeline route. */',
+'export async function getCrmPipelineBoard(filters: unknown) {',
+'  const [stages, deals] = await Promise.all([',
+'    getCrmPipelineStages(), listCrmDeals(filters),',
+'  ]);',
+'  return {',
+'    stages: stages.map(s => ({ ...s, deals: deals.rows.filter(d => d.stageId === s.id) })),',
+'    weightedValue: deals.rows.reduce((sum, d) => sum + Number(d.value) *',
+'      (stages.find(s => s.id === d.stageId)?.probability ?? 0), 0),',
+'  };',
+'}',
+'',
+'/** Write workflow: invoked BY the action after authentication and parsing. */',
+'export async function updateCrmContactDetails(input: { contactId: string; expectedVersion: number; firstName: string; lastName: string }) {',
+'  return withTenantTransaction(async (tx, access) => {',
+'    assertPermission(access, "crm.contact:update");',
+'    return updateCrmContactTx(tx, access, input);',
+'  });',
+'}'
+],fetcher:[
+'import "server-only";',
+'import { withTenantRead } from "@/lib/db/tenant";',
+'import { assertPermission } from "@/lib/authz/permissions";',
+'import { crmContactRowSelect } from "@/lib/db/selects/crm.selects";',
+'import { toCrmContactDTO } from "@/lib/db/dto/crm.dto";',
+'import { listCrmContactsSchema } from "@/schemas/crmSchemas";',
+'',
+'/** Trusted server read boundary. Query and tenant context are validated. */',
+'export async function listCrmContacts(raw: unknown) {',
+'  const query = listCrmContactsSchema.parse(raw);',
+'  return withTenantRead(async (tx, access) => {',
+'    assertPermission(access, "crm.contact:read");',
+'    const where = { organizationId: access.organizationId, deletedAt: null };',
+'    const rows = await tx.crmContact.findMany({',
+'      where, select: crmContactRowSelect,',
+'      orderBy: [{ updatedAt: "desc" }, { id: "asc" }],',
+'      take: Math.min(query.pageSize, 50), skip: (query.page - 1) * Math.min(query.pageSize, 50),',
+'    });',
+'    const total = await tx.crmContact.count({ where });',
+'    return { rows: rows.map(toCrmContactDTO), total, page: query.page };',
+'  });',
+'}',
+'',
+'/** Pipeline fetchers follow the same authenticated, scoped DTO pattern. */',
+'export async function getCrmPipelineStages() { /* tenant-scoped stage DTOs */ }',
+'export async function listCrmDeals(_raw: unknown) { /* tenant-scoped deal DTO page */ }'
+],action:[
+'"use server";',
+'',
+'import { requireIdentity } from "@/lib/auth/auth";',
+'import { updateCrmContactSchema } from "@/schemas/crmSchemas";',
+'import { updateCrmContactDetails } from "@/lib/workflows/crmWorkflows";',
+'import { invalidateCrmContacts } from "@/lib/cache/invalidate";',
+'',
+'/** Public mutation boundary; the workflow cannot be imported into a client island. */',
+'export async function updateCrmContact(raw: unknown) {',
+'  const identity = await requireIdentity();',
+'  await enforceRateLimitForIdentity(identity, "crm.contact.update");',
+'  const input = updateCrmContactSchema.parse(raw);',
+'  const contact = await updateCrmContactDetails(input);',
+'  invalidateCrmContacts();',
+'  return { ok: true as const, data: contact };',
+'}',
+'',
+'// In production, use the doctrine’s shared rate-limit and ActionResult helpers.',
+'async function enforceRateLimitForIdentity(_identity: unknown, _key: string) { /* guard */ }'
+],schema:[
+'import { z } from "zod";',
+'',
+'export const listCrmContactsSchema = z.object({',
+'  page: z.coerce.number().int().min(1).default(1),',
+'  pageSize: z.coerce.number().int().min(1).max(50).default(20),',
+'});',
+'',
+'export const updateCrmContactSchema = z.object({',
+'  contactId: z.uuid(),',
+'  expectedVersion: z.number().int().positive(),',
+'  firstName: z.string().trim().min(1).max(200),',
+'  lastName: z.string().trim().min(1).max(200),',
+'});'
+],type:[
+'import type { z } from "zod";',
+'import type { updateCrmContactSchema } from "@/schemas/crmSchemas";',
+'',
+'export type UpdateCrmContactInput = z.infer<typeof updateCrmContactSchema>;',
+'export type CrmContactDTO = {',
+'  id: string; name: string; version: number;',
+'  updatedAt: string; email: string | null;',
+'};'
+],select:[
+'import { Prisma } from "@/generated/prisma/client";',
+'',
+'/** Column allowlist; never send an unrestricted model to a client. */',
+'export const crmContactRowSelect = {',
+'  id: true, firstName: true, lastName: true,',
+'  email: true, version: true, updatedAt: true,',
+'} as const satisfies Prisma.CrmContactSelect;'
+],dto:[
+'import type { Prisma } from "@/generated/prisma/client";',
+'import type { CrmContactDTO } from "@/types/crmTypes";',
+'import { crmContactRowSelect } from "@/lib/db/selects/crm.selects";',
+'',
+'type Row = Prisma.CrmContactGetPayload<{ select: typeof crmContactRowSelect }>;',
+'export function toCrmContactDTO(row: Row): CrmContactDTO {',
+'  return { id: row.id, name: [row.firstName, row.lastName].join(" "),',
+'    email: row.email, version: row.version, updatedAt: row.updatedAt.toISOString() };',
+'}'
+],tx:[
+'import "server-only";',
+'import type { Prisma } from "@/generated/prisma/client";',
+'import { crmContactRowSelect } from "@/lib/db/selects/crm.selects";',
+'',
+'/** Transaction helper: atomic write + audit; no second independent commit. */',
+'export async function updateCrmContactTx(',
+'  tx: Prisma.TransactionClient,',
+'  access: { organizationId: string; userId: string },',
+'  input: { contactId: string; expectedVersion: number; firstName: string; lastName: string }',
+') {',
+'  const updated = await tx.crmContact.updateMany({',
+'    where: { id: input.contactId, organizationId: access.organizationId, version: input.expectedVersion },',
+'    data: { firstName: input.firstName, lastName: input.lastName, version: { increment: 1 } },',
+'  });',
+'  if (updated.count !== 1) throw new Error("CONTACT_CONFLICT");',
+'  await tx.auditEvent.create({ data: { organizationId: access.organizationId, actorUserId: access.userId,',
+'    action: "crm.contact.updated", resourceType: "CrmContact", resourceId: input.contactId } });',
+'  return tx.crmContact.findFirstOrThrow({',
+'    where: { id: input.contactId, organizationId: access.organizationId }, select: crmContactRowSelect,',
+'  });',
+'}'
+],tenant:[
+'import "server-only";',
+'/** Representative contract. Concrete RLS transaction setup remains infrastructure-owned. */',
+'export async function withTenantRead<T>(fn: (tx: any, access: any) => Promise<T>): Promise<T> {',
+'  throw new Error("Teaching placeholder: use the canonical tenant wrapper");',
+'}',
+'export async function withTenantTransaction<T>(fn: (tx: any, access: any) => Promise<T>): Promise<T> {',
+'  throw new Error("Teaching placeholder: use the canonical tenant wrapper");',
+'}'
+],model:[
+'model CrmContact {',
+'  id             String   @id @default(uuid(7)) @db.Uuid',
+'  organizationId String   @db.Uuid',
+'  firstName      String',
+'  lastName       String',
+'  email          String?',
+'  version        Int      @default(1)',
+'  deletedAt      DateTime?',
+'  updatedAt      DateTime @updatedAt',
+'  @@index([organizationId, updatedAt])',
+'}',
+'// Database RLS policy: separate prisma/rls/crm.sql.'
+],auth:[
+'import "server-only";',
+'/** Identity is read from the authenticated session, not a form field. */',
+'export async function requireIdentity() {',
+'  // Clerk session → trusted identity; reject anonymous.',
+'  throw new Error("Teaching placeholder: integrate actual Clerk auth adapter");',
+'}'
+],permission:[
+'import "server-only";',
+'/** Authorization is checked against tenant membership and requested resource. */',
+'export function assertPermission(access: { permissions: string[] }, grant: string) {',
+'  if (!access.permissions.includes(grant)) throw new Error("FORBIDDEN");',
+'}'
+],cache:[
+'import "server-only";',
+'import { revalidatePath } from "next/cache";',
+'export function invalidateCrmContacts() { revalidatePath("/crm/contacts"); }'
+],webroute:[
+'import { handleStripeWebhookWorkflow } from "@/lib/workflows/billingWebhookWorkflows";',
+'',
+'/** HTTP boundary: keep raw bytes for provider signature verification. */',
+'export async function POST(request: Request) {',
+'  const payload = await request.text();',
+'  const signature = request.headers.get("stripe-signature");',
+'  return handleStripeWebhookWorkflow({ payload, signature });',
+'}'
+],webflow:[
+'import "server-only";',
+'import { verifyStripeWebhook } from "@/lib/integrations/stripe/webhooks";',
+'import { recordStripeWebhook } from "@/lib/actions/billingWebhookActions";',
+'',
+'export async function handleStripeWebhookWorkflow(input: { payload: string; signature: string | null }) {',
+'  if (!input.signature) return new Response("Missing signature", { status: 400 });',
+'  const event = verifyStripeWebhook(input.payload, input.signature);',
+'  await recordStripeWebhook({ eventId: event.id, type: event.type });',
+'  return new Response("OK", { status: 200 });',
+'}'
+],stripe:[
+'import "server-only";',
+'/** Signature verification belongs in the Stripe adapter, not the route. */',
+'export function verifyStripeWebhook(payload: string, signature: string) {',
+'  // Real implementation delegates to stripe.webhooks.constructEvent.',
+'  throw new Error("Teaching placeholder: provider SDK adapter");',
+'}'
+],webaction:[
+'import "server-only";',
+'import { recordStripeWebhookTx } from "@/lib/db/transactions/billingRecordStripeWebhookTx";',
+'',
+'/** Trusted server command; not exposed as a client-callable action. */',
+'export async function recordStripeWebhook(event: { eventId: string; type: string }) {',
+'  return recordStripeWebhookTx(event);',
+'}'
+],webtx:[
+'import "server-only";',
+'/** Illustrative idempotency flow; actual table and RLS implementation are domain-owned. */',
+'export async function recordStripeWebhookTx(event: { eventId: string; type: string }) {',
+'  // Claim provider event ID with a unique constraint before changing subscription state.',
+'  // In one transaction, persist effects and mark event processed.',
+'  // Duplicate event ID: return an idempotent success response.',
+'}'
+]};
+for(const f of F) f.code=(SRC[f.id]||[]).join('\n');
+const groups=[
+{title:'01 / ENTRY POINTS',desc:'Route and HTTP request boundaries. Own URL and request ingress.',ids:['route','pipelineRoute','webroute']},
+{title:'02 / FEATURE + UI',desc:'Server composition, interactive islands and pure presentation.',ids:['feature','client','template','block','uiButton']},
+{title:'03 / APPLICATION',desc:'Named workflows coordinate secured reads, writes and adapters.',ids:['workflow','fetcher','action','webflow']},
+{title:'04 / DATA + SECURITY',desc:'DTO mapping, projection, scoped transactions and policy.',ids:['schema','select','dto','tx','tenant','model']}
+];
+const flows={
+read:{eyebrow:'EXECUTION TRACE / SERVER READ',title:'FOLLOW A CONTACTS PAGE LOAD',desc:'The browser requests a route. Server-side layers load tenant-scoped data and return a serialisable DTO view model. UI blocks only render the result.',steps:[
+['route','NEXT.JS PAGE','Request arrives; Suspense starts the server feature.','URL + searchParams'],
+['feature','SERVER FEATURE','Calls a named workflow; never reads Prisma directly.','raw criteria'],
+['workflow','READ WORKFLOW','Composes the page read use case.','criteria'],
+['fetcher','FETCHER','Parses criteria, authorises and scopes query to tenant.','validated query + access'],
+['tenant','TENANCY BOUNDARY','Uses trusted scoped read context and RLS.','organizationId'],
+['select','PRISMA SELECT','Limits returned columns to the approved projection.','allowlisted fields'],
+['dto','DTO MAPPER','Transforms records to serialisable application contracts.','CrmContactDTO[]'],
+['template','PAGE TEMPLATE','Arranges data and interactive slots into page blocks.','DTO props'],
+['block','UI BLOCK','Renders rows using primitives. No business decisions.','HTML / RSC payload']
+]},
+write:{eyebrow:'EXECUTION TRACE / MUTATION',title:'FOLLOW AN EDIT BUTTON',desc:'This is the cross-boundary transition. The client owns interaction state, while the server action owns the authenticated mutation entry point.',steps:[
+['client','CLIENT ISLAND','User opens edit dialog and submits changed fields.','contactId, version, form fields'],
+['action','SERVER ACTION','Next.js RPC invokes server function. Authenticate and rate-limit.','trusted identity'],
+['schema','ZOD VALIDATION','Rejects malformed or unexpected input.','UpdateCrmContactInput'],
+['workflow','WRITE WORKFLOW','Orchestrates a single scoped transaction.','validated command'],
+['permission','AUTHORIZATION','Checks permission inside the tenant transaction.','effective tenant grant'],
+['tx','TRANSACTION HELPER','Atomically updates row and inserts audit event.','committed row + audit'],
+['dto','DTO MAPPER','Converts changed record into safe output contract.','CrmContactDTO'],
+['cache','INVALIDATION','Refreshes affected router cache only after commit.','fresh route data'],
+['client','CLIENT ISLAND','Handles result; closes the dialog or shows error.','ActionResult']
+]},
+ui:{eyebrow:'COMPOSITION TRACE / PRESENTATION',title:'FOLLOW THE UI HIERARCHY',desc:'Composition proceeds through route → feature → template → block → primitive. Content and types provide inputs but do not own rendering.',steps:[
+['route','ROUTE','Declares page URL and its Suspense boundary.','React Server Component'],
+['feature','SERVER FEATURE','Resolves the read-side DTOs and selects the template.','view model'],
+['template','PAGE TEMPLATE','Defines page structure and arranges blocks.','data / slots'],
+['block','PRESENTATION BLOCK','Groups reusable UI controls and presents narrow states.','UI props'],
+['uiButton','SHADCN PRIMITIVE','Renders a single accessible control.','DOM control'],
+['client','CLIENT ISLAND','Owns hooks and handlers when actual browser state is needed.','interactive slots']
+]},
+webhook:{eyebrow:'EXECUTION TRACE / INBOUND INTEGRATION',title:'FOLLOW A STRIPE WEBHOOK',desc:'HTTP ingress is separate from provider signature verification. A trusted server command processes verified events idempotently.',steps:[
+['webroute','HTTP ROUTE','Receives raw POST body and signature header.','raw payload + signature'],
+['webflow','WEBHOOK WORKFLOW','Dispatches to verification and persistence.','provider event'],
+['stripe','STRIPE ADAPTER','Verifies payload against provider signature.','verified event'],
+['webaction','TRUSTED SERVER COMMAND','Invokes provider-event transaction. Not a browser-facing action.','event ID + type'],
+['webtx','TRANSACTION HELPER','Claims event ID, guards duplicates and persists effects.','idempotent commit'],
+['webroute','HTTP RESPONSE','Acknowledges valid delivery or returns appropriate failure.','HTTP status']
+]}
+};
+let currentView='system',selected='route',query='';
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const short=path=>path.split('/').pop();
+const usedBy=id=>F.filter(f=>f.imports.includes(id));
+function choose(id){if(!BY[id])return;selected=id;renderInspector();renderTree();renderStage();if(innerWidth<=980)$('inspector').classList.add('open');}
+function renderInspector(){
+ const f=BY[selected];$('source-title').textContent=short(f.path);$('source-path').textContent=f.path;
+ $('summary').textContent=f.summary;
+ $('imports').innerHTML=f.imports.length?f.imports.map(id=>chip(id)).join(''):'<span class="empty">No local imports in this reference</span>';
+ const callers=usedBy(f.id);$('usedby').innerHTML=callers.length?callers.map(u=>chip(u.id)).join(''):'<span class="empty">Entry point or standalone primitive</span>';
+ const lines=f.code.split('\n');$('source').innerHTML=lines.map((l,i)=>'<div class="line"><span class="num">'+(i+1)+'</span><span class="txt">'+esc(l||' ')+'</span></div>').join('');
+}
+function chip(id){return '<button class="chip" data-file="'+esc(id)+'" type="button">'+esc(short(BY[id].path))+'</button>';}
+function treeNode(root,name,children){
+ let out='';
+ for(const [key,val] of Object.entries(children).sort((a,b)=>Number(typeof b[1]==='object')-Number(typeof a[1]==='object')||a[0].localeCompare(b[0]))){
+ if(typeof val==='string'){out+='<button class="file-row '+(selected===val?'active':'')+'" type="button" data-file="'+val+'">▣ '+esc(key)+'</button>';}
+ else out+='<details open><summary>'+esc(key)+'</summary>'+treeNode(root,key,val)+'</details>';
+ }return out;
+}
+function renderTree(){
+ const found=F.filter(f=>!query||f.path.toLowerCase().includes(query)||f.role.toLowerCase().includes(query)||f.code.toLowerCase().includes(query));
+ const root={};for(const f of found){let n=root;const parts=f.path.split('/');for(const part of parts.slice(0,-1))n=n[part]??={};n[parts.at(-1)]=f.id;}
+ $('tree').innerHTML=found.length?treeNode('', '',root):'<div class="empty">No matching files</div>';
+}
+function node(id){const f=BY[id];return '<button class="mapnode '+(selected===id?'selected':'')+'" type="button" data-file="'+id+'"><strong>'+esc(short(f.path))+'</strong><span>'+esc(f.role)+'</span></button>';}
+function renderSystem(){
+ $('view-eyebrow').textContent='SYSTEM MODEL / NESTED BOUNDARIES';
+ $('view-title').textContent='THE BIG PICTURE';
+ $('view-desc').textContent='Grouped ownership first, not a plate of intersecting import edges. Arrows indicate the principal request-to-data direction.';
+ const map=groups.map(g=>'<section class="boundary"><h3>'+esc(g.title)+'</h3><p class="desc">'+esc(g.desc)+'</p>'+g.ids.map(node).join('')+'</section>').join('');
+ $('stage').innerHTML='<div class="map-scroll"><div class="system-map">'+map+'</div></div><div class="story"><strong>ONE SYSTEM. FOUR LENSES.</strong><p>The folders show who owns each file. The architecture map shows which boundary owns each responsibility. The trace tabs show the order in which information moves. These are different relationships; the diagrams keep them separate.</p><div class="pills"><button class="pill" data-go="read">TRACE A PAGE READ →</button><button class="pill" data-go="write">TRACE AN EDIT →</button><button class="pill" data-go="ui">TRACE UI COMPOSITION →</button><button class="pill" data-go="webhook">TRACE A WEBHOOK →</button></div></div>';
+}
+function renderFlow(){
+ const f=flows[currentView];$('view-eyebrow').textContent=f.eyebrow;$('view-title').textContent=f.title;$('view-desc').textContent=f.desc;
+ const rows=f.steps.map((s,i)=>'<div class="step"><span class="step-index">'+String(i+1).padStart(2,'0')+'</span><button type="button" data-file="'+s[0]+'" class="stepbtn '+(selected===s[0]?'active':'')+'"><span class="steptitle">'+esc(s[1])+'</span><span class="steppath">'+esc(BY[s[0]].path)+'</span><span class="stepnote">'+esc(s[2])+'</span></button><div class="data"><span>HANDOFF / OUTPUT</span>'+esc(s[3])+'</div></div>').join('');
+ $('stage').innerHTML='<div class="flowintro"><div><h2>'+esc(f.title)+'</h2><p>'+esc(f.desc)+'</p></div><div class="flowhint">TOP → BOTTOM<br>EACH NUMBER = ONE STEP<br>CLICK STEP = OPEN CODE</div></div><div class="subhead">EXECUTION ORDER / '+f.steps.length+' STEPS</div><div class="flow">'+rows+'</div>';
+}
+function renderStage(){if(currentView==='system')renderSystem();else renderFlow();}
+function setView(view){if(view!=='system'&&!flows[view])return;currentView=view;if(flows[view])selected=flows[view].steps[0][0];document.querySelectorAll('.tab').forEach(t=>t.setAttribute('aria-selected',String(t.dataset.view===view)));renderStage();renderTree();renderInspector();if(location.hash!=='#'+view)history.replaceState(null,'','#'+view);}
+document.addEventListener('click',e=>{
+ const t=e.target.closest('[data-file],[data-view],[data-go]');if(!t)return;
+ if(t.dataset.file)choose(t.dataset.file);
+ else if(t.dataset.view)setView(t.dataset.view);
+ else if(t.dataset.go)setView(t.dataset.go);
+});
+$('search').addEventListener('input',e=>{query=e.target.value.toLowerCase().trim();renderTree();});
+$('close').addEventListener('click',()=>$('inspector').classList.remove('open'));
+$('copy').addEventListener('click',async()=>{const t=BY[selected].code;try{await navigator.clipboard.writeText(t);$('copy').textContent='COPIED';setTimeout(()=>$('copy').textContent='COPY SOURCE',1200);}catch(e){$('copy').textContent='SELECT CODE TO COPY';}});
+window.addEventListener('keydown',e=>{if(e.key==='Escape')$('inspector').classList.remove('open');});
+setView(flows[location.hash.slice(1)]?location.hash.slice(1):'system');
+})();
+</script>
+</body></html>
