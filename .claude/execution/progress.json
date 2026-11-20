@@ -4640,6 +4640,18 @@
       {
         "result": "PASS; repeated after final mutation/validation changes.",
         "command": "node.exe C:/nvm4w/nodejs/node_modules/npm/bin/npm-cli.js run typecheck"
+      },
+      {
+        "command": "gh pr checks 387 --watch --interval 10; gh run view 44801999557 --json conclusion,headSha,jobs",
+        "result": "PASS: Changed-file checks succeeded in 49 seconds on head 6c0237e415b73b93ca852a70cd5a670c01fa2f14; job executed only setup, changed formatting/lint, typegen and typecheck. Existing Vercel checks also SUCCESS."
+      },
+      {
+        "command": "gh pr ready 387; gh pr merge 387 --squash --delete-branch --match-head-commit 6c0237e415b73b93ca852a70cd5a670c01fa2f14; gh pr view 387; gh issue view 384",
+        "result": "MERGED as caa9d1663b255b875883a48b426e6d0617e3bc95; Issue #384 CLOSED."
+      },
+      {
+        "command": "gh project item-list 19 --owner DigitalHerencia; git ls-remote --heads origin; git status --porcelain; git branch -vv",
+        "result": "Project Done; task branch absent locally/remotely; only main remains; working tree clean and main synchronized after merge."
       }
     ],
     "not_run": [
@@ -4647,13 +4659,13 @@
       "Builds, servers/watchers, runtime/browser/visual checks",
       "Migrations, seeds and live provider requests"
     ],
-    "branch": "refactor/384-marketing-architecture",
+    "branch": "main",
     "source_snapshot": "cb0af7691541d8c8c7cbcbb6ce9a9f22dd4caf7f",
-    "status": "verified-ready-for-review",
+    "status": "merged-verified",
     "migration": "20261118000000_marketing_cancellation_timestamp is source only; owner must apply before runtime uses canceledAt.",
-    "project_status": "In progress",
+    "project_status": "Done",
     "spec": "context/specs/marketing-owner-refactor.md",
-    "updated": "2026-11-20T19:24:15.2252172Z",
+    "updated": "2026-11-20T19:28:13.0733242Z",
     "issue": 384,
     "implementation": [
       "Singleton blocks, copy, templates, workflows, contracts and persistence files; no parallel marketing client workflow or page-block implementation.",
@@ -4673,6 +4685,12 @@
       "Schema validation returns schedule and lifecycle field errors. Browser options and mutation responses omit arbitrary definition values.",
       "Shared idempotency duplicate insertion uses skipDuplicates; completed replay validates matching campaign/event audit ownership.",
       "CRM and PWA source were not edited. No prohibited verification or provider operation executed."
-    ]
+    ],
+    "pull_request": 387,
+    "pr_url": "https://github.com/DigitalHerencia/CodependentCoding/pull/387",
+    "verified_head": "6c0237e415b73b93ca852a70cd5a670c01fa2f14",
+    "merge_commit": "caa9d1663b255b875883a48b426e6d0617e3bc95",
+    "ci": "https://github.com/DigitalHerencia/CodependentCoding/actions/runs/44801999557",
+    "completion": "Source refactor delivered through PR #387 from the saved main snapshot. Four permitted local scripts and final-head CI passed. CRM, PWA and Anthimeria source preserved. Task branch deleted; execution history updated after merge. Migration remains owner-managed and unapplied; tests and runtime/visual checks unrun."
   }
 }

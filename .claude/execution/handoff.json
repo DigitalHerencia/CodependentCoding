@@ -1,29 +1,16 @@
 {
   "$schema": "codependent-coding/execution/handoff/v1",
-  "updated": "2026-11-20T19:24:15.2252172Z",
+  "updated": "2026-11-20T19:28:13.0733242Z",
   "format": "One current package; history is in progress.json, decisions.json and git.",
-  "status": "verified-ready-for-review",
+  "status": "merged-verified",
   "milestone": "M-T",
-  "current_issue": 384,
-  "next_issue": 384,
+  "current_issue": null,
+  "next_issue": null,
   "queue": ["CC-050", "CC-052", "CC-053", "CC-063"],
-  "branch": "refactor/384-marketing-architecture",
-  "active_package": {
-    "issue": 384,
-    "source_snapshot": "cb0af7691541d8c8c7cbcbb6ce9a9f22dd4caf7f",
-    "spec": "context/specs/marketing-owner-refactor.md",
-    "evidence": ".claude/execution/progress.json#marketing_owner_refactor",
-    "NOT_RUN": [
-      "Tests, builds, runtime/visual checks, migrations, seeds, provider requests"
-    ],
-    "status": "verified-ready-for-review",
-    "remaining": [
-      "Open Issue-linked draft PR, verify allowed CI, mark ready and merge",
-      "Delete task branch, synchronize main, append delivery evidence"
-    ]
-  },
-  "source_commit": "c4dd872bd544dafc4d176fa4a6cd94a9a3878310",
-  "completion": "Marketing implementation and the four permitted checks passed; regression sources authored but unrun. Issue #384 awaiting PR CI and merge. Cancellation timestamp migration remains unapplied; no dashboard image was supplied.",
+  "branch": "main",
+  "active_package": null,
+  "source_commit": "caa9d1663b255b875883a48b426e6d0617e3bc95",
+  "completion": "Source refactor delivered through PR #387 from the saved main snapshot. Four permitted local scripts and final-head CI passed. CRM, PWA and Anthimeria source preserved. Task branch deleted; execution history updated after merge. Migration remains owner-managed and unapplied; tests and runtime/visual checks unrun.",
   "in_flight": [
     "CC-050 token consolidation implemented; focused static checks passed. Affected-site CI and owner browser contrast/reduced-motion verification pending. CC-049 merged in #351; main synced and branch deleted.",
     "Homepage PR #349 has passing CI and ready preview; owner desktop/mobile verification remains pending.",
@@ -44,11 +31,11 @@
   "risks": [
     "Migration source adding Membership.deniedPermissions and the audit index is unapplied; owner application required before runtime uses the new field.",
     "No tests, local builds, servers, runtime/browser checks, migrations or seeds executed.",
-    "Unrelated pre-existing PWA edits remain local and uncommitted.",
     "AI source migration 20261118223000_ai_generation_lifecycle is unapplied; owner applies pending migrations before runtime use.",
     "Terminal invoice transitions OPEN/OVERDUE -> PAID/VOID require an explicit owner policy decision; fail closed until then.",
     "No invoicing migration added; existing unrelated membership/AI migrations remain owner-managed and unapplied.",
-    "CRM unchanged; unrelated local PWA edits remain uncommitted."
+    "Marketing migration 20261118000000_marketing_cancellation_timestamp is unapplied. Owner must apply pending migration source before runtime uses Campaign.canceledAt.",
+    "Marketing test sources, builds and runtime/browser/visual verification deliberately unrun. No dashboard image was supplied."
   ],
   "do_not": [
     "Start any dev server or run full suites",
@@ -130,18 +117,29 @@
     {
       "result": "PASS; repeated after final mutation/validation changes.",
       "command": "node.exe C:/nvm4w/nodejs/node_modules/npm/bin/npm-cli.js run typecheck"
+    },
+    {
+      "command": "gh pr checks 387 --watch --interval 10; gh run view 44801999557 --json conclusion,headSha,jobs",
+      "result": "PASS: Changed-file checks succeeded in 49 seconds on head 6c0237e415b73b93ca852a70cd5a670c01fa2f14; job executed only setup, changed formatting/lint, typegen and typecheck. Existing Vercel checks also SUCCESS."
+    },
+    {
+      "command": "gh pr ready 387; gh pr merge 387 --squash --delete-branch --match-head-commit 6c0237e415b73b93ca852a70cd5a670c01fa2f14; gh pr view 387; gh issue view 384",
+      "result": "MERGED as caa9d1663b255b875883a48b426e6d0617e3bc95; Issue #384 CLOSED."
+    },
+    {
+      "command": "gh project item-list 19 --owner DigitalHerencia; git ls-remote --heads origin; git status --porcelain; git branch -vv",
+      "result": "Project Done; task branch absent locally/remotely; only main remains; working tree clean and main synchronized after merge."
     }
   ],
   "delivery": {
-    "issue_number": 385,
-    "pr_number": 386,
-    "pr_url": "https://github.com/DigitalHerencia/CodependentCoding/pull/386",
+    "status": "merged-verified",
     "branch": "main",
-    "status": "merged-deployed-verified",
-    "merge_commit": "c4dd872bd544dafc4d176fa4a6cd94a9a3878310",
-    "verified_head": "1bac5c89fa7f98fa93d81d40ba1edf58d394a698",
-    "deployment_id": "dpl_Hs1AiSGDLyPEFwqh6kp3kXzpGqsh",
-    "production_url": "https://codependentcoding.vercel.app/anthimeria"
+    "ci": "https://github.com/DigitalHerencia/CodependentCoding/actions/runs/44801999557",
+    "merge_commit": "caa9d1663b255b875883a48b426e6d0617e3bc95",
+    "pr_url": "https://github.com/DigitalHerencia/CodependentCoding/pull/387",
+    "pr_number": 387,
+    "verified_head": "6c0237e415b73b93ca852a70cd5a670c01fa2f14",
+    "issue_number": 384
   },
   "updated_at": "2026-11-18T01:50:17.096543-07:00",
   "active_spec_id": null,

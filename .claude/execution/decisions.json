@@ -1486,6 +1486,13 @@
       "date": "2026-11-20",
       "status": "accepted",
       "title": "Finish owner-approved marketing refactor from the saved main snapshot"
+    },
+    {
+      "title": "Marketing planning architecture refactor merged with constrained verification",
+      "status": "accepted",
+      "id": "MARKETING-384-MERGED-2026-11-20",
+      "decision": "PR #387 squash-merged as caa9d1663b255b875883a48b426e6d0617e3bc95 after permitted local lint/format/typegen/typecheck and CI run 44801999557 passed on verified head 6c0237e415b73b93ca852a70cd5a670c01fa2f14. Issue #384 closed, Project Done, task branch removed locally/remotely, and main synchronized. CRM and unrelated saved PWA/Anthimeria work preserved. Cancellation timestamp migration remains authored but unapplied; owner applies before runtime use. Test sources updated but not executed; no local builds, runtime/visual checks, database jobs or live provider requests were performed. No dashboard image was available. This entry records delivery and does not claim runtime or database verification.",
+      "date": "2026-11-20"
     }
   ]
 }
