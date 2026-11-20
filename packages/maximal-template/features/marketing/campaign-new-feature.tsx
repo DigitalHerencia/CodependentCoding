@@ -1,7 +1,7 @@
 import { loadCampaignNewWorkflow } from "@/lib/workflows/marketingWorkflows";
 import { NewCampaignForm } from "./newCampaignForm";
-
+/** Prepare authorized audience options before rendering the creation form. */
 export async function CampaignNewFeature() {
-  const { audiences } = await loadCampaignNewWorkflow();
-  return <NewCampaignForm audiences={audiences} />;
+  return <NewCampaignForm {...await loadCampaignNewWorkflow()} />;
 }
+

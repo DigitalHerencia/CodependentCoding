@@ -1,197 +1,46 @@
 "use client";
 
-import {
-  marketingPresentationCopy,
-  marketingRemainingCopy,
-} from "@/content/marketing";
-import { Button } from "@/components/ui/button";
-import { Field, FieldError, FieldLabel } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
-import {
-  NativeSelect,
-  NativeSelectOption,
-} from "@/components/ui/native-select";
-import { Textarea } from "@/components/ui/textarea";
-import { createCampaign, updateCampaign } from "@/lib/actions/marketingActions";
-import { createCampaignSchema } from "@/schemas/marketingSchemas";
-import type { AudienceDTO, CampaignDTO } from "@/types/marketingTypes";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useEffect, useId, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
-import type { FieldPath } from "react-hook-form";
-import { Controller, useForm } from "react-hook-form";
-import type { z } from "zod";
+import { Controller, useForm, type FieldPath } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { MarketingCampaignNewTemplate, MarketingCampaignEditTemplate, MarketingFieldTemplate } from "@/components/templates/marketing-templates";
+import { saveCampaignWorkflow } from "@/lib/workflows/marketingWorkflows";
+import { campaignEditorSchema } from "@/schemas/marketingSchemas";
+import type { CampaignEditorValues, MarketingCampaignFormProps, MarketingSubmissionState } from "@/types/marketingTypes";
 
-export function NewCampaignForm({
-  campaign,
-  audiences,
-}: {
-  campaign?: CampaignDTO;
-  audiences: AudienceDTO[];
-}) {
+/** Own campaign RHF state, explicit UTC bindings, validation and server submission. */
+export function NewCampaignForm({ campaign, audiences, canSave }: MarketingCampaignFormProps) {
   const router = useRouter();
-  const [error, setError] = useState("");
-  const {
-    setError: setFieldError,
-    control,
-    handleSubmit,
-    formState: { isSubmitting },
-  } = useForm<
-    z.input<typeof createCampaignSchema>,
-    unknown,
-    z.output<typeof createCampaignSchema>
-  >({
-    resolver: zodResolver(createCampaignSchema),
-    defaultValues: {
-      name: campaign?.name ?? "",
-      description: campaign?.description ?? "",
-      audienceId: campaign?.audience?.id ?? "",
-      scheduledAt: campaign?.scheduledAt?.slice(0, 16) ?? "",
-    },
+  const id = useId();
+  const [state, setState] = useState<MarketingSubmissionState>({ error: null, saved: false });
+  const form = useForm<CampaignEditorValues>({
+    resolver: zodResolver(campaignEditorSchema),
+    defaultValues: { name: campaign?.name ?? "", description: campaign?.description ?? "", audienceId: campaign?.audience?.id ?? "", scheduledAt: campaign?.scheduledAt?.slice(0, 16) ?? "" },
   });
-  return (
-    <form
-      className="mx-auto max-w-3xl space-y-5 surface-card p-5"
-      onSubmit={handleSubmit(async (values) => {
-        setError("");
-        try {
-          const input = {
-            ...values,
-            audienceId: values.audienceId || null,
-            scheduledAt: values.scheduledAt ?? null,
-          };
-          const saved = campaign
-            ? await updateCampaign({
-                ...input,
-                campaignId: campaign.id,
-                expectedVersion: campaign.version,
-              })
-            : await createCampaign(input);
-          if (!saved.ok) {
-            for (const [name, messages] of Object.entries(
-              saved.error.fieldErrors ?? {},
-            ))
-              setFieldError(
-                name as FieldPath<z.input<typeof createCampaignSchema>>,
-                { message: messages[0] ?? saved.error.message },
-              );
-            setError(saved.error.message);
-            return;
-          }
-          router.push(`/marketing/campaigns/${saved.data.id}`);
-          router.refresh();
-        } catch {
-          setError(
-            marketingPresentationCopy.campaignCouldNotBeSavedCheckAccessAudienceOr,
-          );
+  useEffect(() => {
+    if (state.error) document.querySelector<HTMLElement>("[data-marketing-form-error]")?.focus();
+  }, [state.error]);
+  const Template = campaign ? MarketingCampaignEditTemplate : MarketingCampaignNewTemplate;
+  return <Template kind="campaign" pending={form.formState.isSubmitting} unavailable={!canSave} conflict={state.error?.code === "CONFLICT"} error={state.error?.message} onReload={() => location.reload()} cancelHref={campaign ? `/marketing/campaigns/${campaign.id}` : "/marketing/campaigns"} onSubmit={form.handleSubmit(async (values) => {
+    setState({ error: null, saved: false });
+    try {
+      const result = await saveCampaignWorkflow({ values, record: campaign ? { id: campaign.id, version: campaign.version } : null });
+      if (!result.ok) {
+        for (const [name, messages] of Object.entries(result.error.fieldErrors ?? {})) {
+          const path = name.replace(/^values\./, "");
+          if (["name", "description", "audienceId", "scheduledAt"].includes(path)) form.setError(path as FieldPath<CampaignEditorValues>, { message: messages[0] ?? result.error.message }, { shouldFocus: true });
         }
-      })}
-      noValidate
-    >
-      <h1 className="type-title">
-        {campaign
-          ? marketingPresentationCopy.editCampaign
-          : marketingPresentationCopy.planACampaign}
-      </h1>
-      <Controller
-        name={"name"}
-        control={control}
-        render={({ field: controllerField, fieldState }) => (
-          <Field data-invalid={fieldState.invalid}>
-            <FieldLabel htmlFor="campaign-name">
-              {marketingRemainingCopy.campaignName}
-            </FieldLabel>
-            <Input
-              id="campaign-name"
-              required
-              {...controllerField}
-              value={String(controllerField.value ?? "")}
-              aria-invalid={fieldState.invalid}
-            />
-            {fieldState.error && (
-              <FieldError>{fieldState.error.message}</FieldError>
-            )}
-          </Field>
-        )}
-      />
-      <Controller
-        name={"description"}
-        control={control}
-        render={({ field: controllerField, fieldState }) => (
-          <Field data-invalid={fieldState.invalid}>
-            <FieldLabel htmlFor="campaign-brief">
-              {marketingRemainingCopy.campaignBrief}
-            </FieldLabel>
-            <Textarea
-              id="campaign-brief"
-              className="control-field min-h-40"
-              {...controllerField}
-              value={String(controllerField.value ?? "")}
-              aria-invalid={fieldState.invalid}
-            />
-            {fieldState.error && (
-              <FieldError>{fieldState.error.message}</FieldError>
-            )}
-          </Field>
-        )}
-      />
-      <Controller
-        name={"audienceId"}
-        control={control}
-        render={({ field: controllerField, fieldState }) => (
-          <Field data-invalid={fieldState.invalid}>
-            <FieldLabel htmlFor="campaign-audience">
-              {marketingRemainingCopy.targetAudience}
-            </FieldLabel>
-            <NativeSelect
-              id="campaign-audience"
-              className="control-field"
-              {...controllerField}
-              value={String(controllerField.value ?? "")}
-              aria-invalid={fieldState.invalid}
-            >
-              <NativeSelectOption value="">
-                {marketingRemainingCopy.noAudienceSelected}
-              </NativeSelectOption>
-              {audiences.map((audience) => (
-                <NativeSelectOption key={audience.id} value={audience.id}>
-                  {audience.name}
-                </NativeSelectOption>
-              ))}
-            </NativeSelect>
-            {fieldState.error && (
-              <FieldError>{fieldState.error.message}</FieldError>
-            )}
-          </Field>
-        )}
-      />
-      <Controller
-        name={"scheduledAt"}
-        control={control}
-        render={({ field: controllerField, fieldState }) => (
-          <Field data-invalid={fieldState.invalid}>
-            <FieldLabel htmlFor="campaign-date">
-              {marketingRemainingCopy.plannedStartUTC}
-            </FieldLabel>
-            <Input
-              id="campaign-date"
-              type="datetime-local"
-              {...controllerField}
-              value={String(controllerField.value ?? "")}
-              aria-invalid={fieldState.invalid}
-            />
-            {fieldState.error && (
-              <FieldError>{fieldState.error.message}</FieldError>
-            )}
-          </Field>
-        )}
-      />
-      {error && <p role="alert">{error}</p>}
-      <Button type="submit" disabled={isSubmitting}>
-        {isSubmitting
-          ? marketingPresentationCopy.saving
-          : marketingPresentationCopy.saveCampaign}
-      </Button>
-    </form>
-  );
+        setState({ error: result.error, saved: false });
+        return;
+      }
+      router.push(`/marketing/campaigns/${result.data.id}`);
+      router.refresh();
+    } catch {
+      setState({ error: { code: "INTERNAL", message: "" }, saved: false });
+    }
+  })}>
+    {(["name", "description", "audienceId", "scheduledAt"] as const).map((name) => <Controller key={name} name={name} control={form.control} render={({ field, fieldState }) => <MarketingFieldTemplate id={`${id}-${name}`} kind={name} field={field} error={fieldState.error?.message} audiences={audiences} />} />)}
+  </Template>;
 }
+

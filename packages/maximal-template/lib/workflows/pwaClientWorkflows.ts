@@ -1,7 +1,12 @@
 /** Browser installation and cache capabilities; auth owns provider identity operations. */
 import { isDevelopment } from "@/lib/constants/mode";
 import { useEffect, useRef, useState } from "react";
-import type { PwaInstallPromptEvent } from "@/types/pwaTypes";
+
+/** Browser-provided deferred installation event. */
+type InstallPromptEvent = Event & {
+  prompt: () => Promise<void>;
+  userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
+};
 
 const VISITED_KEY = "pwa-visited";
 const DISMISSED_KEY = "pwa-install-dismissed";
@@ -16,7 +21,7 @@ function isIosSafari() {
 
 /** Registers the worker and offers a non-modal install affordance after visit one. */
 export function usePwaInstallWorkflow() {
-  const promptEvent = useRef<PwaInstallPromptEvent | null>(null);
+  const promptEvent = useRef<InstallPromptEvent | null>(null);
   const [canInstall, setCanInstall] = useState(false);
   const [showIosInstructions, setShowIosInstructions] = useState(false);
 
@@ -63,7 +68,7 @@ export function usePwaInstallWorkflow() {
 
     const onBeforeInstallPrompt = (event: Event) => {
       event.preventDefault();
-      promptEvent.current = event as PwaInstallPromptEvent;
+      promptEvent.current = event as InstallPromptEvent;
       setCanInstall(true);
     };
 

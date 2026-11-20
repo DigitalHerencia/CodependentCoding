@@ -1,100 +1,21 @@
-export const marketingBlockCopy = {
-  searchAudiences: "Search audiences",
-  defineAudience: "Define audience",
-  searchCampaigns: "Search campaigns",
-  searchCampaignOrAudience: "Search campaign or audience",
-  planCampaign: "Plan campaign",
+/** Marketing copy is resolved exclusively by presentation blocks. */
+export const marketingCopy = {
+  titles: { campaigns: "Campaign planner", campaign: "Campaign plan", campaignNew: "Plan a campaign", campaignEdit: "Edit campaign", audiences: "Audience segments", audience: "Audience definition", audienceNew: "Define an audience", audienceEdit: "Edit audience", analytics: "Marketing analytics" },
+  description: "Plan campaigns and manage audience definitions in your workspace.",
+  campaignStatuses: { DRAFT: "Draft", SCHEDULED: "Scheduled", ACTIVE: "Active", PAUSED: "Paused", COMPLETED: "Completed", CANCELED: "Canceled" },
+  audienceStatuses: { DRAFT: "Draft", ACTIVE: "Active", ARCHIVED: "Archived" },
+  relationships: { active: "Active", lead: "Lead", inactive: "Inactive" },
+  stepTypes: { EMAIL: "Email", WAIT: "Wait", WEBHOOK: "Webhook" },
+  search: "Search", campaignSearch: "Search campaign or audience", audienceSearch: "Search audience names", status: "Status", allStatuses: "All statuses", apply: "Apply filters", reset: "Reset filters",
+  createCampaign: "Plan campaign", createAudience: "Define audience", edit: "Edit", campaign: "Campaign", audience: "Audience", schedule: "Planned start (UTC)", noSchedule: "Unscheduled", noAudience: "No audience selected", noBrief: "No brief recorded.",
+  emptyCampaigns: "No campaigns match these filters.", emptyAudiences: "No audiences match these filters.", previous: "Previous", next: "Next", pagination: "Marketing results pagination",
+  results: (total: number, page: number, pages: number) => `${total} matching records · Page ${page} of ${Math.max(1, pages)}`,
+  name: "Name", brief: "Campaign brief", saveCampaign: "Save campaign", saveAudience: "Save audience", saving: "Saving…", cancel: "Cancel", saved: "Saved.", saveFailed: "Unable to save. Try again or reload the current record.", conflict: "This record changed. Reload before editing again; your changes were not saved.", unavailable: "This operation is unavailable for your current permissions or this record's lifecycle.", reload: "Reload current record",
+  utcHint: "Enter UTC, not your device's local time. Existing schedules round-trip without changing the instant.",
+  rule: "Contact relationship equals", definition: "Audience definition", customDefinition: "This persisted definition uses rules the editor cannot represent. Name and status can be updated; the existing definition will be preserved.",
+  ruleDescription: (value: string) => `Include contacts whose relationship is ${value.toLowerCase()}.`,
+  lifecycle: "Planning lifecycle", lifecycleHint: "These changes record planning state only. They do not send messages, dispatch webhooks, or publish content.", saveLifecycle: "Save lifecycle", selectTransition: "Choose a permitted transition", terminal: "This campaign has no further permitted lifecycle changes.",
+  details: "Campaign details", started: "Started (UTC)", completed: "Completed (UTC)", canceled: "Canceled (UTC)", notRecorded: "Not recorded", steps: "Campaign steps", noSteps: "No steps are configured.", template: "Template", version: "Version", updated: "Updated (UTC)",
+  analyticsScope: "Counts include records created within this UTC range: start inclusive, end exclusive. All matching workspace records are counted, regardless of the current list page.", from: "Created from (UTC)", to: "Created before (UTC)", campaigns: "Campaigns", audiences: "Audiences", scheduled: "Scheduled campaigns", stepCount: "Configured steps", campaignDistribution: "Campaign lifecycle", audienceDistribution: "Audience status", count: "Count", recent: "Recently updated campaign plans", recentHint: "Up to eight campaign plans in the selected creation range; activity reflects persisted update timestamps.", noActivity: "No campaign updates in this scope.", telemetry: "Measurement availability", telemetryHint: "Audience membership sizes, delivery, open and click rates, conversions, attribution, and revenue are unavailable. This workspace records campaign plans and audience definitions, not the telemetry needed to measure those outcomes.", emptyChart: "No records in this range.", loading: "Loading marketing workspace…", error: "Marketing data is unavailable. Check your access or try again.", retry: "Try again", missing: "This marketing record was not found.", returnCampaigns: "Return to campaigns",
 } as const;
 
-export const marketingPresentationCopy = {
-  audienceCouldNotBeSavedCheckPermissionsOrReload:
-    "Audience could not be saved. Check permissions or reload if it changed.",
-  editAudience: "Edit audience",
-  defineAnAudience: "Define an audience",
-
-  includeContactsMatching: "Include contacts matching",
-
-  audienceStatus: "Audience status",
-
-  thisAudienceUsesRulesThisEditorDoesNotSupport:
-    "This audience uses rules this editor does not support. Its definition has been preserved.",
-  saving: "Saving…",
-  saveAudience: "Save audience",
-
-  campaignCouldNotBeSavedCheckAccessAudienceOr:
-    "Campaign could not be saved. Check access, audience, or reload the current campaign. Only draft, scheduled or paused campaigns can be edited.",
-  editCampaign: "Edit campaign",
-  planACampaign: "Plan a campaign",
-
-  campaignBrief: "Campaign brief",
-
-  saveCampaign: "Save campaign",
-  campaignOperations: "Campaign operations",
-  lifecycleSnapshotOf: "Lifecycle snapshot of ",
-  loadedCampaignsDeliveryAndEngagementRatesRequireRecordedProvider:
-    " loaded campaigns. Delivery and engagement rates require recorded provider events.",
-  campaign: "Campaign",
-  audience: "Audience",
-  lifecycle: "Lifecycle",
-  scheduled: "Scheduled",
-  steps: "Steps",
-  editSegment: "Edit segment",
-  membershipRule: "Membership rule",
-  thisAudienceHasCustomRulesThatTheCurrentEditor:
-    "This audience has custom rules that the current editor cannot modify.",
-  audienceStatus2: "Audience status: ",
-  audienceSegments: "Audience segments",
-  contactRelationship: "Contact relationship:",
-  customRules: "Custom rules",
-  noMatchingAudiences: "No matching audiences.",
-  editPlan: "Edit plan",
-  noBriefRecorded: "No brief recorded.",
-  targetAndSchedule: "Target and schedule",
-  status: "Status: ",
-  scheduled2: "Scheduled: ",
-  notScheduled: "Not scheduled",
-  started: "Started: ",
-  notStarted: "Not started",
-  completed: "Completed: ",
-  notCompleted: "Not completed",
-  workflow: "Workflow",
-  sentenceSeparator: ". ",
-  template: "Template: ",
-  noWorkflowStepsAreConfigured: "No workflow steps are configured.",
-  campaignPlanner: "Campaign planner",
-  noCampaignBrief: "No campaign brief.",
-  audience2: "Audience: ",
-  notSelected: "Not selected",
-  planned: "Planned:",
-  unscheduled: "Unscheduled",
-  workflowSteps: " workflow steps",
-  noCampaignsInThisPhase: "No campaigns in this phase.",
-} as const;
-
-export const marketingControlCopy = {
-  campaignLifecycle: "Campaign lifecycle",
-  saveLifecycle: "Save lifecycle",
-  thisUpdatesCampaignPlanningStateItDoesNot:
-    "This updates campaign planning state. It does not send messages or publish content.",
-} as const;
-
-export const marketingRemainingCopy = {
-  relationshipRule: (value0: unknown) =>
-    `Include contacts whose relationship is ${value0}.`,
-  nameAndStatus: (value0: unknown, value1: unknown) => `${value0} · ${value1}`,
-
-  audienceName: "Audience name",
-  contactRelationshipEquals: "Contact relationship equals",
-  active: "Active",
-  lead: "Lead",
-  inactive: "Inactive",
-  audienceStatus: "Audience status",
-  dRAFT: "DRAFT",
-  aCTIVE: "ACTIVE",
-  aRCHIVED: "ARCHIVED",
-  campaignName: "Campaign name",
-  campaignBrief: "Campaign brief",
-  targetAudience: "Target audience",
-  noAudienceSelected: "No audience selected",
-  plannedStartUTC: "Planned start (UTC)",
-} as const;

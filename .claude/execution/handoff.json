@@ -2,15 +2,29 @@
   "$schema": "codependent-coding/execution/handoff/v1",
   "updated": "2026-11-20",
   "format": "One current package; history is in progress.json, decisions.json and git.",
-  "status": "merged-deployed-verified",
+  "status": "saved-on-main-unverified",
   "milestone": "M-T",
-  "current_issue": null,
-  "next_issue": null,
+  "current_issue": 384,
+  "next_issue": 384,
   "queue": ["CC-050", "CC-052", "CC-053", "CC-063"],
   "branch": "main",
-  "active_package": null,
+  "active_package": {
+    "issue": 384,
+    "status": "saved-on-main-unverified",
+    "spec": "context/specs/marketing-owner-refactor.md",
+    "evidence": ".claude/execution/progress.json#pending_work_save_2026_11_20",
+    "owner_request": "commit all changes on main no pr and sync",
+    "NOT_RUN": [
+      "Marketing/PWA formatting, lint, type generation, typecheck, tests, build and browser verification",
+      "Database migrations, seeds or provider operations"
+    ],
+    "risks": [
+      "Marketing refactor remains unverified and may be incomplete.",
+      "Migration 20261118000000_marketing_cancellation_timestamp is committed source only; not applied."
+    ]
+  },
   "source_commit": "c4dd872bd544dafc4d176fa4a6cd94a9a3878310",
-  "completion": "PR #386 squash-merged, Issue #385 closed and Project Done. Production deployment READY and live browser verification passed. Anthimeria branches deleted; local main and remote main synchronized. Unrelated uncommitted marketing/PWA work retained in its original worktree. Physical iPad Safari remains untested; owner authorized release after disclosure. Existing Next.js warning remains documented.",
+  "completion": "Owner requested direct main commit of all pending marketing/PWA work and sync without a PR. This saves the existing source as-is and does not establish marketing acceptance. Anthimeria was previously merged and production verified.",
   "in_flight": [
     "CC-050 token consolidation implemented; focused static checks passed. Affected-site CI and owner browser contrast/reduced-motion verification pending. CC-049 merged in #351; main synced and branch deleted.",
     "Homepage PR #349 has passing CI and ready preview; owner desktop/mobile verification remains pending.",
@@ -44,21 +58,10 @@
     "Expose credentials in commands/logs/commits; owner-local backups are outside the repo"
   ],
   "latest_followup": {
-    "status": "merged-deployed-verified",
-    "package": "anthimeria-independent-visualizer",
-    "evidence": ".claude/execution/progress.json#anthimeria_385",
-    "delivery": {
-      "issue_number": 385,
-      "pr_number": 386,
-      "pr_url": "https://github.com/DigitalHerencia/CodependentCoding/pull/386",
-      "branch": "main",
-      "status": "merged-deployed-verified",
-      "merge_commit": "c4dd872bd544dafc4d176fa4a6cd94a9a3878310",
-      "verified_head": "1bac5c89fa7f98fa93d81d40ba1edf58d394a698",
-      "deployment_id": "dpl_Hs1AiSGDLyPEFwqh6kp3kXzpGqsh",
-      "production_url": "https://codependentcoding.vercel.app/anthimeria"
-    },
-    "NOT_RUN": ["Physical iPad Safari; broad repository suites"]
+    "status": "saved-on-main-unverified",
+    "package": "pending-marketing-pwa-save",
+    "evidence": ".claude/execution/progress.json#pending_work_save_2026_11_20",
+    "delivery": "Direct main commit and sync requested; no PR; marketing verification and migration application remain unrun."
   },
   "git_maintenance_2026_11_17": {
     "date": "2026-11-17",

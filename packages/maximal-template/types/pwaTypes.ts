@@ -5,9 +5,3 @@ export type PwaInstallProps = {
   onInstall: () => void | Promise<void>;
   onDismiss: () => void | Promise<void>;
 };
-
-/** Browser-provided deferred installation event. */
-export type PwaInstallPromptEvent = Event & {
-  prompt: () => Promise<void>;
-  userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
-};

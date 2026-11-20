@@ -1,191 +1,48 @@
 "use client";
 
-import {
-  marketingPresentationCopy,
-  marketingRemainingCopy,
-} from "@/content/marketing";
-import { Button } from "@/components/ui/button";
-import { Field, FieldError, FieldLabel } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
-import {
-  NativeSelect,
-  NativeSelectOption,
-} from "@/components/ui/native-select";
-import { createAudience, updateAudience } from "@/lib/actions/marketingActions";
-import { audienceFormSchema } from "@/schemas/marketingSchemas";
-import type { AudienceDTO } from "@/types/marketingTypes";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useEffect, useId, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
-import type { FieldPath } from "react-hook-form";
-import { Controller, useForm } from "react-hook-form";
-import type { z } from "zod";
+import { Controller, useForm, type FieldPath } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { MarketingAudienceNewTemplate, MarketingAudienceEditTemplate, MarketingFieldTemplate } from "@/components/templates/marketing-templates";
+import { saveAudienceWorkflow } from "@/lib/workflows/marketingWorkflows";
+import { audienceFormSchema } from "@/schemas/marketingSchemas";
+import type { AudienceEditorValues, MarketingAudienceFormProps, MarketingSubmissionState } from "@/types/marketingTypes";
 
-export function NewAudienceForm({ audience }: { audience?: AudienceDTO }) {
+/** Own audience RHF bindings while preserving definitions outside the supported editor. */
+export function NewAudienceForm({ audience, canSave }: MarketingAudienceFormProps) {
   const router = useRouter();
-  const [error, setError] = useState("");
-  const existing = audience ? audienceFormSchema.safeParse(audience) : null;
-  const unsupported = Boolean(existing && !existing.success);
-  const {
-    setError: setFieldError,
-    control,
-    handleSubmit,
-    formState: { isSubmitting },
-  } = useForm<
-    z.input<typeof audienceFormSchema>,
-    unknown,
-    z.output<typeof audienceFormSchema>
-  >({
+  const id = useId();
+  const [state, setState] = useState<MarketingSubmissionState>({ error: null, saved: false });
+  const form = useForm<AudienceEditorValues>({
     resolver: zodResolver(audienceFormSchema),
-    defaultValues: {
-      name: audience?.name ?? "",
-      status: audience?.status ?? "DRAFT",
-      definition: existing?.success
-        ? existing.data.definition
-        : {
-            operator: "and",
-            rules: [{ field: "status", operator: "equals", value: "active" }],
-          },
-    },
+    defaultValues: { name: audience?.name ?? "", status: audience?.status ?? "DRAFT", definition: { operator: "and", rules: [{ field: "status", operator: "equals", value: audience?.relationship ?? "active" }] } },
   });
-  return (
-    <form
-      className="mx-auto max-w-3xl space-y-5 surface-card p-5"
-      onSubmit={handleSubmit(async (values) => {
-        setError("");
-        try {
-          const input = values;
-          const saved = audience
-            ? await updateAudience({
-                ...input,
-                audienceId: audience.id,
-                expectedUpdatedAt: audience.updatedAt,
-              })
-            : await createAudience(input);
-          if (!saved.ok) {
-            for (const [name, messages] of Object.entries(
-              saved.error.fieldErrors ?? {},
-            ))
-              setFieldError(
-                name as FieldPath<z.input<typeof audienceFormSchema>>,
-                { message: messages[0] ?? saved.error.message },
-              );
-            setError(saved.error.message);
-            return;
-          }
-          router.push(`/marketing/audiences/${saved.data.id}`);
-          router.refresh();
-        } catch {
-          setError(
-            marketingPresentationCopy.audienceCouldNotBeSavedCheckPermissionsOrReload,
-          );
+  useEffect(() => {
+    if (state.error) document.querySelector<HTMLElement>("[data-marketing-form-error]")?.focus();
+  }, [state.error]);
+  const Template = audience ? MarketingAudienceEditTemplate : MarketingAudienceNewTemplate;
+  return <Template kind="audience" pending={form.formState.isSubmitting} unavailable={!canSave} customDefinition={Boolean(audience && !audience.editableDefinition)} conflict={state.error?.code === "CONFLICT"} error={state.error?.message} onReload={() => location.reload()} cancelHref={audience ? `/marketing/audiences/${audience.id}` : "/marketing/audiences"} onSubmit={form.handleSubmit(async (values) => {
+    setState({ error: null, saved: false });
+    try {
+      const result = await saveAudienceWorkflow({ values, record: audience ? { id: audience.id, updatedAt: audience.updatedAt } : null });
+      if (!result.ok) {
+        for (const [name, messages] of Object.entries(result.error.fieldErrors ?? {})) {
+          const path = name.replace(/^values\./, "");
+          if (["name", "status", "definition.rules.0.value"].includes(path)) form.setError(path as FieldPath<AudienceEditorValues>, { message: messages[0] ?? result.error.message }, { shouldFocus: true });
         }
-      })}
-      noValidate
-    >
-      <h1 className="type-title">
-        {audience
-          ? marketingPresentationCopy.editAudience
-          : marketingPresentationCopy.defineAnAudience}
-      </h1>
-      <Controller
-        name={"name"}
-        control={control}
-        render={({ field: controllerField, fieldState }) => (
-          <Field data-invalid={fieldState.invalid}>
-            <FieldLabel htmlFor="audience-name">
-              {marketingRemainingCopy.audienceName}
-            </FieldLabel>
-            <Input
-              id="audience-name"
-              required
-              {...controllerField}
-              value={String(controllerField.value ?? "")}
-              aria-invalid={fieldState.invalid}
-            />
-            {fieldState.error && (
-              <FieldError>{fieldState.error.message}</FieldError>
-            )}
-          </Field>
-        )}
-      />
-      <fieldset className="space-y-3 surface-inset p-5">
-        <legend>{marketingPresentationCopy.includeContactsMatching}</legend>
-        <Controller
-          name="definition.rules.0.value"
-          control={control}
-          render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor="audience-rule">
-                {marketingRemainingCopy.contactRelationshipEquals}
-              </FieldLabel>
-              <NativeSelect
-                {...field}
-                id="audience-rule"
-                className="control-field"
-                aria-invalid={fieldState.invalid}
-              >
-                <NativeSelectOption value="active">
-                  {marketingRemainingCopy.active}
-                </NativeSelectOption>
-                <NativeSelectOption value="lead">
-                  {marketingRemainingCopy.lead}
-                </NativeSelectOption>
-                <NativeSelectOption value="inactive">
-                  {marketingRemainingCopy.inactive}
-                </NativeSelectOption>
-              </NativeSelect>
-              {fieldState.error && (
-                <FieldError>{fieldState.error.message}</FieldError>
-              )}
-            </Field>
-          )}
-        />
-      </fieldset>
-      <Controller
-        name={"status"}
-        control={control}
-        render={({ field: controllerField, fieldState }) => (
-          <Field data-invalid={fieldState.invalid}>
-            <FieldLabel htmlFor="audience-status">
-              {marketingRemainingCopy.audienceStatus}
-            </FieldLabel>
-            <NativeSelect
-              id="audience-status"
-              className="control-field"
-              {...controllerField}
-              value={String(controllerField.value ?? "")}
-              aria-invalid={fieldState.invalid}
-            >
-              <NativeSelectOption>
-                {marketingRemainingCopy.dRAFT}
-              </NativeSelectOption>
-              <NativeSelectOption>
-                {marketingRemainingCopy.aCTIVE}
-              </NativeSelectOption>
-              <NativeSelectOption>
-                {marketingRemainingCopy.aRCHIVED}
-              </NativeSelectOption>
-            </NativeSelect>
-            {fieldState.error && (
-              <FieldError>{fieldState.error.message}</FieldError>
-            )}
-          </Field>
-        )}
-      />
-      {unsupported && (
-        <p role="alert">
-          {
-            marketingPresentationCopy.thisAudienceUsesRulesThisEditorDoesNotSupport
-          }
-        </p>
-      )}
-      {error && <p role="alert">{error}</p>}
-      <Button type="submit" disabled={isSubmitting || unsupported}>
-        {isSubmitting
-          ? marketingPresentationCopy.saving
-          : marketingPresentationCopy.saveAudience}
-      </Button>
-    </form>
-  );
+        setState({ error: result.error, saved: false });
+        return;
+      }
+      router.push(`/marketing/audiences/${result.data.id}`);
+      router.refresh();
+    } catch {
+      setState({ error: { code: "INTERNAL", message: "" }, saved: false });
+    }
+  })}>
+    <Controller name="name" control={form.control} render={({ field, fieldState }) => <MarketingFieldTemplate id={`${id}-name`} kind="name" field={field} error={fieldState.error?.message} />} />
+    <Controller name="status" control={form.control} render={({ field, fieldState }) => <MarketingFieldTemplate id={`${id}-status`} kind="status" field={field} error={fieldState.error?.message} />} />
+    {(!audience || audience.editableDefinition) && <Controller name="definition.rules.0.value" control={form.control} render={({ field, fieldState }) => <MarketingFieldTemplate id={`${id}-relationship`} kind="relationship" field={field} error={fieldState.error?.message} />} />}
+  </Template>;
 }
+

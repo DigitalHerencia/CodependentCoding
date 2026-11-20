@@ -59,6 +59,10 @@ export async function seed({
       name: "Maximal Launch",
       description: "Seed marketing campaign.",
       status: "DRAFT",
+      scheduledAt: null,
+      startedAt: null,
+      completedAt: null,
+      canceledAt: null,
     },
     create: {
       id: seedIds.campaign,

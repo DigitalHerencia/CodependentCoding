@@ -1,5 +1,4 @@
-import { WorkspaceLoadingTemplate } from "@/components/templates/shared-templates";
+import { MarketingSkeletonBlock } from "@/components/blocks/marketing-blocks";
+/** Route loading uses skeleton blocks directly, without skeleton templates. */
+export function CampaignSkeleton() { return <MarketingSkeletonBlock />; }
 
-export function CampaignSkeleton() {
-  return <WorkspaceLoadingTemplate route="/marketing/campaigns/[campaignId]" />;
-}

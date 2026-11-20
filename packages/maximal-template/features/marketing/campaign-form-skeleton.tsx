@@ -1,5 +1,4 @@
-import { FormLoadingTemplate } from "@/components/templates/shared-templates";
+import { MarketingSkeletonBlock } from "@/components/blocks/marketing-blocks";
+/** Route loading uses skeleton blocks directly, without skeleton templates. */
+export function CampaignFormSkeleton() { return <MarketingSkeletonBlock form />; }
 
-export function CampaignFormSkeleton() {
-  return <FormLoadingTemplate fields={5} />;
-}

@@ -49,6 +49,7 @@ model Campaign {
   scheduledAt DateTime?      @db.Timestamptz(6)
   startedAt   DateTime?      @db.Timestamptz(6)
   completedAt DateTime?      @db.Timestamptz(6)
+  canceledAt  DateTime?      @db.Timestamptz(6)
   version     Int            @default(1)
 
   organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)

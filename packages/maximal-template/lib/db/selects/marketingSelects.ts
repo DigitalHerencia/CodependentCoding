@@ -10,6 +10,7 @@ export const campaignSelect = {
   scheduledAt: true,
   startedAt: true,
   completedAt: true,
+  canceledAt: true,
   version: true,
   audience: {
     select: {
@@ -42,3 +43,7 @@ export const audienceSelect = {
 export type AudienceRecord = Prisma.AudienceGetPayload<{
   select: typeof audienceSelect;
 }>;
+
+/** Configuration is narrowed by the DTO before leaving the server. */
+export const campaignStepSelect = { id: true, type: true, position: true, config: true } satisfies Prisma.CampaignStepSelect;
+export type CampaignStepRecord = Prisma.CampaignStepGetPayload<{ select: typeof campaignStepSelect }>;

@@ -1,104 +1,38 @@
 "use client";
 
-import { formResultCopy } from "@/content/application";
-import { Button } from "@/components/ui/button";
-import { Field, FieldError, FieldLabel } from "@/components/ui/field";
-import {
-  NativeSelect,
-  NativeSelectOption,
-} from "@/components/ui/native-select";
-import { marketingControlCopy } from "@/content/marketing";
-import { updateCampaignStatus } from "@/lib/actions/marketingActions";
-import {
-  CampaignStatus,
-  updateCampaignStatusSchema,
-} from "@/schemas/marketingSchemas";
-import type { CampaignDTO } from "@/types/marketingTypes";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useEffect, useId, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useId, useState } from "react";
 import { Controller, useForm, type FieldPath } from "react-hook-form";
-import type { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { MarketingLifecycleTemplate } from "@/components/templates/marketing-templates";
+import { updateCampaignStatusWorkflow } from "@/lib/workflows/marketingWorkflows";
+import { campaignLifecycleEditorSchema } from "@/schemas/marketingSchemas";
+import type { MarketingLifecycleFormProps, MarketingLifecycleValues, MarketingSubmissionState } from "@/types/marketingTypes";
 
-export function EditCampaignStatusForm({
-  campaign,
-}: {
-  campaign: CampaignDTO;
-}) {
+/** Own the lifecycle form; commands remain independently authorized and version checked. */
+export function EditCampaignStatusForm({ campaign, transitions }: MarketingLifecycleFormProps) {
   const router = useRouter();
   const id = useId();
-  const [message, setMessage] = useState("");
-  const form = useForm<
-    z.input<typeof updateCampaignStatusSchema>,
-    unknown,
-    z.output<typeof updateCampaignStatusSchema>
-  >({
-    resolver: zodResolver(updateCampaignStatusSchema),
-    defaultValues: {
-      campaignId: campaign.id,
-      expectedVersion: campaign.version,
-      status: campaign.status,
-    },
-  });
-  return (
-    <form
-      className="space-y-4"
-      onSubmit={form.handleSubmit(async (values) => {
-        setMessage("");
-        try {
-          const result = await updateCampaignStatus(values);
-          if (!result.ok) {
-            for (const [name, messages] of Object.entries(
-              result.error.fieldErrors ?? {},
-            ))
-              form.setError(
-                name as FieldPath<z.input<typeof updateCampaignStatusSchema>>,
-                { message: messages[0] ?? result.error.message },
-              );
-            form.setError("root", { message: result.error.message });
-            return;
-          }
-          setMessage(formResultCopy.saved);
-          router.refresh();
-        } catch {
-          form.setError("root", { message: formResultCopy.failed });
-        }
-      })}
-      noValidate
-    >
-      <Controller
-        name="status"
-        control={form.control}
-        render={({ field, fieldState }) => (
-          <Field data-invalid={fieldState.invalid}>
-            <FieldLabel htmlFor={id + "-status"}>
-              {marketingControlCopy.campaignLifecycle}
-            </FieldLabel>
-            <NativeSelect
-              {...field}
-              value={String(field.value ?? "")}
-              id={id + "-status"}
-              className="control-field"
-              aria-invalid={fieldState.invalid}
-            >
-              {Object.values(CampaignStatus).map((status) => (
-                <NativeSelectOption key={status}>{status}</NativeSelectOption>
-              ))}
-            </NativeSelect>
-            {fieldState.error && (
-              <FieldError>{fieldState.error.message}</FieldError>
-            )}
-          </Field>
-        )}
-      />
-      <p>{marketingControlCopy.thisUpdatesCampaignPlanningStateItDoesNot}</p>
-      {form.formState.errors.root && (
-        <FieldError>{form.formState.errors.root.message}</FieldError>
-      )}
-      <Button type="submit" disabled={form.formState.isSubmitting}>
-        {marketingControlCopy.saveLifecycle}
-      </Button>
-      <p role="status">{message}</p>
-    </form>
-  );
+  const [state, setState] = useState<MarketingSubmissionState>({ error: null, saved: false });
+  const form = useForm<MarketingLifecycleValues>({ resolver: zodResolver(campaignLifecycleEditorSchema), defaultValues: { campaignId: campaign.id, expectedVersion: campaign.version, status: "" } });
+  useEffect(() => {
+    if (state.error) document.querySelector<HTMLElement>("[data-marketing-form-error]")?.focus();
+  }, [state.error]);
+  return <Controller name="status" control={form.control} render={({ field, fieldState }) => <MarketingLifecycleTemplate id={id} field={field} transitions={transitions} pending={form.formState.isSubmitting} error={fieldState.error?.message ?? state.error?.message} conflict={state.error?.code === "CONFLICT"} onReload={() => location.reload()} message={state.saved} onSubmit={form.handleSubmit(async (values) => {
+    setState({ error: null, saved: false });
+    try {
+      const result = await updateCampaignStatusWorkflow(values);
+      if (!result.ok) {
+        for (const [name, messages] of Object.entries(result.error.fieldErrors ?? {})) if (name === "status") form.setError(name as FieldPath<MarketingLifecycleValues>, { message: messages[0] ?? result.error.message }, { shouldFocus: true });
+        setState({ error: result.error, saved: false });
+        return;
+      }
+      form.reset({ campaignId: result.data.id, expectedVersion: result.data.version, status: "" });
+      setState({ error: null, saved: true });
+      router.refresh();
+    } catch {
+      setState({ error: { code: "INTERNAL", message: "" }, saved: false });
+    }
+  })} />} />;
 }
+

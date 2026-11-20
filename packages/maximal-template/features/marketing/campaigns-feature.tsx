@@ -1,7 +1,8 @@
+import { MarketingCampaignsTemplate } from "@/components/templates/marketing-templates";
 import { loadCampaignsWorkflow } from "@/lib/workflows/marketingWorkflows";
-import { CampaignsFeatureClient } from "./campaigns-feature.client";
-
-export async function CampaignsFeature() {
-  const { campaigns } = await loadCampaignsWorkflow();
-  return <CampaignsFeatureClient campaigns={campaigns} />;
+import type { MarketingRouteQuery } from "@/types/marketingTypes";
+/** Compose the campaign directory from one authenticated workflow and one page template. */
+export async function CampaignsFeature({ query = {} }: { query?: MarketingRouteQuery }) {
+  return <MarketingCampaignsTemplate {...await loadCampaignsWorkflow(query)} />;
 }
+

@@ -4578,5 +4578,41 @@
       },
       "browser_errors": []
     }
+  },
+  "pending_work_save_2026_11_20": {
+    "date": "2026-11-20",
+    "status": "saved-on-main-unverified",
+    "owner_request": "commit all changes on main no pr and sync",
+    "scope": "All pending marketing refactor changes, owner spec, unapplied cancellation-timestamp migration and both PWA edits preserved as-is.",
+    "issue": 384,
+    "base_commit": "ad45f256c873de7f2553c94b8011fe0ab4f1ccc1",
+    "branch": "main",
+    "delivery": "Direct commit to main; no PR requested. Issue #384 remains incomplete; saving changes is not implementation acceptance.",
+    "EXECUTED": [
+      {
+        "command": "Review git status, diff/stat, changed mutation/workflow/schema/PWA source and new migration",
+        "result": "Reviewed pending source and confirmed no migration application is part of this task"
+      },
+      {
+        "command": "Added-content credential-pattern scan",
+        "result": "No findings for the inspected patterns; no secret values printed"
+      },
+      {
+        "command": "git diff --check",
+        "result": "Failed: existing trailing blank lines at EOF. Source preserved as-is under the save-all request."
+      },
+      {
+        "command": "Switch original checkout to main after detaching clean secondary main worktree; pull --ff-only; compare pending-file hashes",
+        "result": "59 pending working-file contents preserved; base synchronized with origin/main before commit"
+      }
+    ],
+    "NOT_RUN": [
+      "Marketing/PWA formatting, lint, type generation, typecheck, tests, build and browser verification",
+      "Database migrations, seeds or provider operations"
+    ],
+    "risks": [
+      "Marketing refactor remains unverified and may be incomplete.",
+      "Migration 20261118000000_marketing_cancellation_timestamp is committed source only; not applied."
+    ]
   }
 }
