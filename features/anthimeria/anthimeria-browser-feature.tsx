@@ -1,29 +1,29 @@
 import { AnthimeriaFrame } from "@/components/blocks/anthimeria-frame";
 import { AnthimeriaBrowser } from "@/features/anthimeria/anthimeria-browser.client";
-import { getTemplateFiles, getTemplateSource } from "@/lib/content/template";
-import { getTemplateArchitecture } from "@/lib/content/template-architecture";
+import {
+  getArchitectureSources,
+  getArchitectureGraph,
+} from "@/lib/content/architecture";
 
 export async function AnthimeriaBrowserFeature({
   searchParams,
+  sourceId = "website",
 }: {
   searchParams: Promise<{ file?: string | string[] }>;
+  sourceId?: string;
 }) {
-  const [{ file }, files, modules] = await Promise.all([
+  const [{ file }, sources] = await Promise.all([
     searchParams,
-    getTemplateFiles(),
-    getTemplateArchitecture(),
+    getArchitectureSources(),
   ]);
-  const active =
-    typeof file === "string" && files.includes(file) ? file : "app/layout.tsx";
-  const source = await getTemplateSource(active);
+  const graph = await getArchitectureGraph(sourceId, "containment", "", 0);
 
   return (
     <AnthimeriaFrame>
       <AnthimeriaBrowser
-        files={files}
-        active={active}
-        source={source}
-        modules={modules}
+        sources={sources}
+        initialGraph={graph}
+        initialFile={typeof file === "string" ? file : ""}
       />
     </AnthimeriaFrame>
   );

@@ -1451,6 +1451,20 @@
       "status": "accepted",
       "title": "Verified tenant invoice and expense refactor merged",
       "decision": "PR #383 squash-merged after corrected-head CI passed; Issue #382 closed and Project item Done. Task branch deleted locally/remotely; main synchronized. CRM unchanged; two unrelated PWA edits preserved. Four permitted checks passed; tests and runtime/visual checks deliberately unrun. No invoicing migration required. Terminal invoice status mutations remain disabled pending the owner transition policy; approval and issuance supported. Merge 49b5ccfc2db0bf897afbab7370020b279e79f3db; verified PR head e726f8e599b2c015e30ea5b4c3d0c47abefb7ef0; CI https://github.com/DigitalHerencia/CodependentCoding/actions/runs/44438644599. Only lint:fix, format:write, typegen and typecheck executed locally. Source review corrected Decimal intermediate precision; regression/boundary/transaction source tests remain unrun. No real financial operations, provider requests, local builds, servers, migrations or seeds. No dashboard attachment supplied. Final execution metadata committed after merge verification."
+    },
+    {
+      "id": "ANTHIMERIA-385-2026-11-20",
+      "date": "2026-11-20",
+      "status": "accepted",
+      "title": "Independent source adapters and one bounded ontology at a time",
+      "decision": "Owner-approved visualizer request supersedes prior template-specific visualization. Preserve the clean existing Anthimeria route/identity on a new issue branch from main, incorporating its prior nine site commits. Separate public source snapshots, generic TS/JS AST facts and bounded pure graph projections; containment default, static imports and JSX composition separate, execution unavailable without traces. Server-only Shiki chunks replace Monaco. Preserve /maximal as a template-selected entry and leave unrelated marketing/PWA work untouched. CodeViz reference inspected directly. Physical iPad gate and existing framework security reminder remain explicit; no deployment."
+    },
+    {
+      "id": "ANTHIMERIA-385-RELEASE-AUTHORIZED-2026-11-20",
+      "date": "2026-11-20",
+      "status": "accepted",
+      "title": "Owner authorizes Anthimeria merge and production release",
+      "decision": "Owner's follow-up: deploy commit and merge all changes and clean up branches and sync remote and local. Proceed with the locally verified Anthimeria implementation; physical iPad Safari remains untested and the existing Next.js security warning remains documented. Supersedes the earlier hold on merge/deployment for this delivery. Preserve unrelated uncommitted marketing/PWA work. Only clean Anthimeria branches whose merged state has been verified."
     }
   ]
 }
