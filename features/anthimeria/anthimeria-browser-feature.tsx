@@ -1,8 +1,8 @@
-import { MaximalFrame } from "@/components/blocks/maximal-frame";
-import { MaximalBrowser } from "@/features/maximal/maximal-browser.client";
+import { MaximalFrame } from "@/components/blocks/anthimeria-frame";
+import { AnthimeriaBrowser } from "@/features/anthimeria/anthimeria-browser.client";
 import { getTemplateFiles, getTemplateSource } from "@/lib/content/template";
 
-export async function MaximalBrowserFeature({
+export async function AnthimeriaBrowserFeature({
   searchParams,
 }: {
   searchParams: Promise<{ file?: string | string[] }>;
@@ -17,7 +17,7 @@ export async function MaximalBrowserFeature({
 
   return (
     <MaximalFrame>
-      <MaximalBrowser files={files} active={active} source={source} />
+      <AnthimeriaBrowser files={files} active={active} source={source} />
     </MaximalFrame>
   );
 }

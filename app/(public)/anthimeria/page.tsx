@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
-import { MaximalBrowserFeature } from "@/features/maximal/maximal-browser-feature";
+import { AnthimeriaBrowserFeature } from "@/features/anthimeria/anthimeria-browser-feature";
 
 export const metadata: Metadata = {
   title: "The Anthimeria™ · Codependent Coding™",
@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 export default function Page({ searchParams }: PageProps<"/anthimeria">) {
   return (
     <Suspense fallback={<p>Loading source…</p>}>
-      <MaximalBrowserFeature searchParams={searchParams} />
+      <AnthimeriaBrowserFeature searchParams={searchParams} />
     </Suspense>
   );
 }

@@ -208,7 +208,7 @@ function useHorizontalSplitter() {
   };
 }
 
-export function MaximalBrowser({
+export function AnthimeriaBrowser({
   files,
   active,
   source,

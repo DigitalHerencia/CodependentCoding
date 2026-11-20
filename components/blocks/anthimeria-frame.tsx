@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { PageHero } from "@/components/blocks/page-hero";
 import { anthimeriaCopy } from "@/content/public";
 
-export function MaximalFrame({ children }: { children: ReactNode }) {
+export function AnthimeriaFrame({ children }: { children: ReactNode }) {
   return (
     <main className="px-4 pb-16">
       <PageHero
