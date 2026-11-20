@@ -1,34 +1,47 @@
 "use client";
 
-import { CopyButton } from "@/components/ui/button";
+import { useState } from "react";
 
-const githubBase =
-  "https://github.com/DigitalHerencia/CodependentCoding/blob/main/packages/maximal-template/";
-
-/** Source viewer actions live in a presentation block, outside feature orchestration. */
 export function AnthimeriaSourceActions({
-  active,
-  source,
-  loading,
+  sourceId,
+  file,
+  sourceUrl,
 }: {
-  active: string;
-  source: string;
-  loading: boolean;
+  sourceId: string;
+  file: string;
+  sourceUrl: string;
 }) {
+  const [status, setStatus] = useState("");
+  const copy = async () => {
+    setStatus("");
+    const params = new URLSearchParams({ kind: "raw", source: sourceId, file });
+    const content = fetch(`/api/anthimeria?${params}`).then(
+      async (response) => {
+        if (!response.ok) throw new Error("Source unavailable");
+        return new Blob([await response.text()], { type: "text/plain" });
+      },
+    );
+    try {
+      // Start the clipboard write in the user gesture; Safari resolves the Blob later.
+      if (typeof ClipboardItem !== "undefined")
+        await navigator.clipboard.write([
+          new ClipboardItem({ "text/plain": content }),
+        ]);
+      else await navigator.clipboard.writeText(await (await content).text());
+      setStatus("Copied file");
+    } catch {
+      setStatus("Copy failed. Use the source link to copy this file.");
+    }
+  };
   return (
-    <>
-      <CopyButton
-        value={loading ? "" : source}
-        className="anthimeria-utility-button"
-      />
-      <a
-        className="anthimeria-utility-button inline-flex items-center border border-border px-2 py-1.5 text-xs text-foreground uppercase no-underline hover:border-signal"
-        href={githubBase + active.split("/").map(encodeURIComponent).join("/")}
-        target="_blank"
-        rel="noreferrer"
-      >
-        GitHub
+    <div className="atlas-source-actions">
+      <button type="button" onClick={copy}>
+        Copy file
+      </button>
+      <a href={sourceUrl} target="_blank" rel="noreferrer">
+        Source ↗
       </a>
-    </>
+      <span role="status">{status}</span>
+    </div>
   );
 }

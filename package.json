@@ -10,7 +10,8 @@
   },
   "scripts": {
     "dev": "next dev",
-    "build": "next build --turbopack",
+    "build": "pnpm architecture:snapshot && next build --turbopack",
+    "architecture:snapshot": "node --conditions=react-server --import tsx scripts/build-architecture.ts",
     "start": "next start",
     "lint": "eslint . --max-warnings=0",
     "lint:fix": "eslint --fix --max-warnings=0",
@@ -36,12 +37,11 @@
     "test:factory": "vitest run packages/generator/tests/cli packages/loaded-vibes/tests"
   },
   "dependencies": {
-    "@monaco-editor/react": "4.7.0",
     "@radix-ui/react-accordion": "1.3.1",
     "clsx": "2.1.1",
     "lucide-react": "1.61.0",
     "marked": "18.1.2",
-    "monaco-editor": "0.57.0",
+    "shiki": "4.6.0",
     "next": "16.4.3",
     "react": "19.3.1",
     "react-dom": "19.3.1",

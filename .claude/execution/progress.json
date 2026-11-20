@@ -4377,5 +4377,111 @@
     "completion": "PR #383 squash-merged after corrected-head CI passed; Issue #382 closed and Project item Done. Task branch deleted locally/remotely; main synchronized. CRM unchanged; two unrelated PWA edits preserved. Four permitted checks passed; tests and runtime/visual checks deliberately unrun. No invoicing migration required. Terminal invoice status mutations remain disabled pending the owner transition policy; approval and issuance supported.",
     "cleanup": "Verified task branch absent locally and remotely; local main equals origin/main before metadata finalization.",
     "owner_action": "Decide whether OPEN/OVERDUE -> PAID/VOID is supported and record the financial transition policy before enabling terminal mutations. Existing independently recorded pending migrations remain unapplied; no new invoicing migration."
+  },
+  "anthimeria_385": {
+    "status": "implemented-local-verification-passed-device-gate-open",
+    "issue": 385,
+    "spec": "context/specs/anthimeria-independent-visualizer.md",
+    "branch": "codex/refactor-385-anthimeria-independent",
+    "project_status": "In review",
+    "worktree": "D:/TheCodependentCodingWebAppArchitecture-anthimeria-independent",
+    "EXECUTED": [
+      {
+        "command": "pnpm exec vitest run tests/architecture.test.ts",
+        "result": "9 passed; Monaco, lexical JSX shadowing and server SVG title regressions each reproduced before fixing"
+      },
+      {
+        "command": "pnpm typecheck",
+        "result": "passed: next typegen and root tsc --noEmit"
+      },
+      {
+        "command": "pnpm exec eslint <all changed TypeScript/TSX files> --max-warnings=0",
+        "result": "passed"
+      },
+      {
+        "command": "pnpm exec prettier --write <changed files>; git diff --check",
+        "result": "passed"
+      },
+      {
+        "command": "pnpm build",
+        "result": "preprocessing, compilation, types, 73 static pages completed; final Next.js security reminder returned exit 1"
+      },
+      {
+        "command": "pnpm exec next build --turbopack",
+        "result": "passed on immediate retry; existing Next.js 16.4.3 security warning retained"
+      },
+      {
+        "command": "node <external artifact directory>/verify-anthimeria.mjs",
+        "result": "passed on production build; Browser plugin unavailable, used installed Chromium 1243 with Playwright 1.64.1; no browser/server errors",
+        "checks": [
+          "Initial ontology is containment, seven bounded nodes, zero source/API preloads",
+          "Drilldown, breadcrumbs, lazy search/file selection, server syntax highlighting, repeat line navigation and full-file clipboard",
+          "Rapid ontology switch aborts delayed stale response",
+          "Repository swap, bounded 25-node/60-edge graph pages, no previous source panel retained",
+          "Existing public routes return 200; unknown repositories, unsafe paths, execution ontology and invalid paging rejected",
+          "iPad portrait/landscape touch emulation, 30 ontology switches, no overlays, bounded heap sample, pan frame sample and lazy source chunk paging"
+        ]
+      },
+      {
+        "command": "Inspect .next/static/chunks and production API tracing manifest",
+        "result": "No Monaco, Shiki highlighter or TypeScript AST runtime signatures in client chunks; 846 server snapshot artifacts including catalog traced"
+      },
+      {
+        "command": "Inspect screenshots",
+        "result": "Original failure screenshots and supplied CodeViz reference inspected directly; final desktop and iPad portrait/source screenshots visually reviewed"
+      },
+      {
+        "command": "Temporary production server and Chromium teardown",
+        "result": "all owned processes stopped; no development server, deployment, migration or database operation"
+      }
+    ],
+    "NOT_RUN": [
+      "Physical iPad Safari; deployment; merge; broad repository suites"
+    ],
+    "gates": [
+      "Owner verifies this exact commit on a physical iPad Safari, including touch scrolling, clipboard and network/memory behavior, before release. Chromium emulation does not certify device performance.",
+      "Next.js 16.4.3 emits a known security warning. Recommend a supported security patch as separate scoped work before release."
+    ],
+    "verified_commit": "3c06f9f467ae19721313f7b021bb9bd6d064c3eb",
+    "metrics": {
+      "initialLoadMs": 932,
+      "initialNetwork": {
+        "javascriptBytes": 179422,
+        "transferredBytes": 321377,
+        "apiRequests": 0,
+        "scripts": [
+          "1alyzzwraw-sy.js",
+          "turbopack-2c3mg3r-05n1w.js",
+          "155j2ck_nw7mf.js",
+          "0-34l658omy33.js",
+          "3396p6opu2txe.js",
+          "2u-bci9lelfq5.js",
+          "2fdmbhyidnq6p.js",
+          "2v5b0aw_oie4r.js",
+          "2j5zpvs3pd7mw.js",
+          "136y3hybue0fw.js",
+          "12t9ju0zq43ls.js",
+          "2pzdoadxbj_rw.js",
+          "3cceejrquxjfs.js"
+        ],
+        "longTasks": []
+      },
+      "maximalGraphJsonBytes": 3759,
+      "ipad": {
+        "emulation": "834x1194, touch, Chromium, CPU 4x slowdown, 80ms RTT / 10Mbps",
+        "heapBeforeBytes": 4349836,
+        "heapAfter30SwitchesBytes": 5054468,
+        "heapGrowthBytes": 704632,
+        "switchMedianMs": 62,
+        "switchP95Ms": 249,
+        "panFrameP95Ms": 16.7,
+        "overflow": {
+          "width": 834,
+          "body": 834
+        }
+      }
+    },
+    "artifact_directory": "C:/Users/scree/.codex/visualizations/2026/11/20/01a1f9f8-e2bc-7ed3-8c94-e6463d60ee42",
+    "delivery": "Draft PR to be created; branch-specific Vercel deployment disabled in vercel.json."
   }
 }

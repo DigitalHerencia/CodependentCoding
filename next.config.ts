@@ -22,6 +22,10 @@ const nextConfig: NextConfig = {
   // AGENTS.md already routes agents to CLAUDE.md; stop `next dev` rewriting it.
   agentRules: false,
   turbopack: {},
+  outputFileTracingIncludes: {
+    "/anthimeria": ["./.architecture/**/*"],
+    "/api/anthimeria": ["./.architecture/**/*"],
+  },
   typescript: {
     tsconfigPath: "tsconfig.build.json",
   },

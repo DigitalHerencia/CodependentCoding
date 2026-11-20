@@ -1,6 +1,11 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "nextjs",
+  "git": {
+    "deploymentEnabled": {
+      "codex/refactor-385-anthimeria-independent": false
+    }
+  },
   "installCommand": "corepack pnpm install --frozen-lockfile",
   "buildCommand": "corepack pnpm build"
 }

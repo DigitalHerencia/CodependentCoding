@@ -61,3 +61,4 @@ playwright/.cache/
 # Plugin eval runs (claude plugin eval)
 packages/loaded-vibes/evals/results/
 .neon
+.architecture/
