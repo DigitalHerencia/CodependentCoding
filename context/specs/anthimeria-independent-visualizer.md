@@ -35,8 +35,12 @@ artifacts, never public static assets. Errors are explicit; no fake source fallb
 ## Verification and delivery
 
 Use the requested production build for a temporary local production server, never a
-development server. Stop owned processes. No deployment. Keep the PR unmerged while
-the physical iPad gate is outstanding; do not describe emulation as device evidence.
+development server. Stop owned processes. The initial delivery held merge/deployment
+for physical iPad testing. The owner subsequently instructed, on 2026-11-20:
+"deploy commit and merge all changes and clean up branches and sync remote and local".
+Proceed with merge and production release under that instruction, retaining the
+physical iPad Safari limitation and existing framework warning in the release record.
+Do not describe emulation as physical-device evidence.
 
 ## Reusing the engine
 

@@ -1458,6 +1458,13 @@
       "status": "accepted",
       "title": "Independent source adapters and one bounded ontology at a time",
       "decision": "Owner-approved visualizer request supersedes prior template-specific visualization. Preserve the clean existing Anthimeria route/identity on a new issue branch from main, incorporating its prior nine site commits. Separate public source snapshots, generic TS/JS AST facts and bounded pure graph projections; containment default, static imports and JSX composition separate, execution unavailable without traces. Server-only Shiki chunks replace Monaco. Preserve /maximal as a template-selected entry and leave unrelated marketing/PWA work untouched. CodeViz reference inspected directly. Physical iPad gate and existing framework security reminder remain explicit; no deployment."
+    },
+    {
+      "id": "ANTHIMERIA-385-RELEASE-AUTHORIZED-2026-11-20",
+      "date": "2026-11-20",
+      "status": "accepted",
+      "title": "Owner authorizes Anthimeria merge and production release",
+      "decision": "Owner's follow-up: deploy commit and merge all changes and clean up branches and sync remote and local. Proceed with the locally verified Anthimeria implementation; physical iPad Safari remains untested and the existing Next.js security warning remains documented. Supersedes the earlier hold on merge/deployment for this delivery. Preserve unrelated uncommitted marketing/PWA work. Only clean Anthimeria branches whose merged state has been verified."
     }
   ]
 }
