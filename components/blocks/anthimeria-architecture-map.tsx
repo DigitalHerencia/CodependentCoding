@@ -23,7 +23,7 @@ type Layer = {
   buckets: readonly Bucket[];
 };
 
-const LAYERS: Record<string, Layer> = {
+const LAYERS = {
   routes: {
     id: "routes",
     title: "01 / ENTRY POINTS",

@@ -227,7 +227,7 @@ export function MaximalBrowser({
   function selectFile(file: string) {
     setPane("code");
     startTransition(() => {
-      router.replace("/anthimeria?file=" + encodeURIComponent(file), {
+      router.replace(`/anthimeria?file=${encodeURIComponent(file)}`, {
         scroll: false,
       });
     });
