@@ -4379,11 +4379,11 @@
     "owner_action": "Decide whether OPEN/OVERDUE -> PAID/VOID is supported and record the financial transition policy before enabling terminal mutations. Existing independently recorded pending migrations remain unapplied; no new invoicing migration."
   },
   "anthimeria_385": {
-    "status": "release-authorized",
+    "status": "merged-deployed-verified",
     "issue": 385,
     "spec": "context/specs/anthimeria-independent-visualizer.md",
     "branch": "codex/refactor-385-anthimeria-independent",
-    "project_status": "In review",
+    "project_status": "Done",
     "worktree": "D:/TheCodependentCodingWebAppArchitecture-anthimeria-independent",
     "EXECUTED": [
       {
@@ -4437,14 +4437,28 @@
       {
         "command": "gh pr view 386 --json mergeable,mergeStateStatus,isDraft,statusCheckRollup; inspect port 3105",
         "result": "MERGEABLE/CLEAN draft; no CI checks reported (template-only workflow); no owned server listening"
+      },
+      {
+        "command": "GitHub squash merge of PR #386 at exact head 1bac5c89; gh pr view; gh issue view; Project status",
+        "result": "MERGED as c4dd872; Issue #385 CLOSED; Project Done; merge tree equals verified PR head"
+      },
+      {
+        "command": "Vercel deployment lookup for merge SHA and production build logs",
+        "result": "Production deployment dpl_Hs1AiSGDLyPEFwqh6kp3kXzpGqsh READY; remote build completed; production domains assigned"
+      },
+      {
+        "command": "node <artifact directory>/verify-anthimeria-production.mjs",
+        "result": "PASS against https://codependentcoding.vercel.app; all feature/browser checks passed, no browser errors; no server started"
+      },
+      {
+        "command": "git switch main; git pull --ff-only; delete verified Anthimeria branches; git ls-remote --heads origin",
+        "result": "main synchronized; both local Anthimeria branches and both remote Anthimeria branches removed. Only remote main remains. Unrelated dirty marketing branch retained."
       }
     ],
-    "NOT_RUN": [
-      "Physical iPad Safari; deployment; merge; broad repository suites"
-    ],
+    "NOT_RUN": ["Physical iPad Safari; broad repository suites"],
     "gates": [
-      "Owner verifies this exact commit on a physical iPad Safari, including touch scrolling, clipboard and network/memory behavior, before release. Chromium emulation does not certify device performance.",
-      "Next.js 16.4.3 emits a known security warning. Recommend a supported security patch as separate scoped work before release."
+      "Physical iPad Safari was not tested. Owner authorized release after this limitation was disclosed.",
+      "Existing Next.js 16.4.3 security warning remains; no framework upgrade was included."
     ],
     "verified_commit": "3c06f9f467ae19721313f7b021bb9bd6d064c3eb",
     "metrics": {
@@ -4489,10 +4503,10 @@
     "delivery": {
       "pr": 386,
       "url": "https://github.com/DigitalHerencia/CodependentCoding/pull/386",
-      "status": "ready-for-merge",
-      "project_status": "In review",
-      "deployment": "Production deployment authorized; keep task-branch previews disabled until merge.",
-      "merged": false
+      "status": "merged",
+      "project_status": "Done",
+      "deployment": "production READY and live browser verified",
+      "merged": true
     },
     "history_alignment": {
       "base": "23a92149d4772ae9cf8426a1dd35ec7fc838af47",
@@ -4504,6 +4518,65 @@
       "date": "2026-11-20",
       "request": "deploy commit and merge all changes and clean up branches and sync remote and local",
       "interpretation": "Release authorization received after the owner was informed of the physical-device gap and existing framework security warning. Do not claim physical testing occurred."
+    },
+    "release": {
+      "merge_commit": "c4dd872bd544dafc4d176fa4a6cd94a9a3878310",
+      "pr": 386,
+      "issue": 385,
+      "deployment_id": "dpl_Hs1AiSGDLyPEFwqh6kp3kXzpGqsh",
+      "deployment_state": "READY",
+      "deployment_url": "https://codependent-coding-owwxxq2h6-digital-herencia.vercel.app",
+      "production_url": "https://codependentcoding.vercel.app/anthimeria",
+      "project": "codependent-coding",
+      "team": "Digital Herencia",
+      "verified_pr_head": "1bac5c89fa7f98fa93d81d40ba1edf58d394a698",
+      "owner_authorized": true,
+      "physical_ipad_safari": "NOT RUN; owner authorized release after disclosure",
+      "browser_checks": [
+        "Initial ontology is containment, seven bounded nodes, zero source/API preloads",
+        "Drilldown, breadcrumbs, lazy search/file selection, server syntax highlighting, repeat line navigation and full-file clipboard",
+        "Rapid ontology switch aborts delayed stale response",
+        "Repository swap, bounded 25-node/60-edge graph pages, no previous source panel retained",
+        "Existing public routes return 200; unknown repositories, unsafe paths, execution ontology and invalid paging rejected",
+        "iPad portrait/landscape touch emulation, 30 ontology switches, no overlays, bounded heap sample, pan frame sample and lazy source chunk paging"
+      ],
+      "browser_metrics": {
+        "initialLoadMs": 4482,
+        "initialNetwork": {
+          "javascriptBytes": 173231,
+          "transferredBytes": 305226,
+          "apiRequests": 0,
+          "scripts": [
+            "3_c02vn42s62_.js",
+            "0m_9ddm27ylsg.js",
+            "1o5d5geyvbxrt.js",
+            "turbopack-1byz1flvc-bu1.js",
+            "22ca226ul_4fn.js",
+            "2e67kz2b5agyg.js",
+            "2yj2qg_fuv8a5.js",
+            "1cezu1wtoluku.js",
+            "1heeo1b_dngjg.js",
+            "11vwov_5psrnf.js",
+            "40i8udgpq1p51.js"
+          ],
+          "longTasks": []
+        },
+        "maximalGraphJsonBytes": 3759,
+        "ipad": {
+          "emulation": "834x1194, touch, Chromium, CPU 4x slowdown, 80ms RTT / 10Mbps",
+          "heapBeforeBytes": 4357664,
+          "heapAfter30SwitchesBytes": 5064308,
+          "heapGrowthBytes": 706644,
+          "switchMedianMs": 61,
+          "switchP95Ms": 247,
+          "panFrameP95Ms": 16.8,
+          "overflow": {
+            "width": 834,
+            "body": 834
+          }
+        }
+      },
+      "browser_errors": []
     }
   }
 }

@@ -1465,6 +1465,13 @@
       "status": "accepted",
       "title": "Owner authorizes Anthimeria merge and production release",
       "decision": "Owner's follow-up: deploy commit and merge all changes and clean up branches and sync remote and local. Proceed with the locally verified Anthimeria implementation; physical iPad Safari remains untested and the existing Next.js security warning remains documented. Supersedes the earlier hold on merge/deployment for this delivery. Preserve unrelated uncommitted marketing/PWA work. Only clean Anthimeria branches whose merged state has been verified."
+    },
+    {
+      "id": "ANTHIMERIA-385-MERGED-2026-11-20",
+      "date": "2026-11-20",
+      "status": "accepted",
+      "title": "Independent Anthimeria visualizer merged and production verified",
+      "decision": "Owner-authorized PR #386 squash-merged as c4dd872bd544dafc4d176fa4a6cd94a9a3878310. Issue #385 closed and Project Done. Vercel production deployment dpl_Hs1AiSGDLyPEFwqh6kp3kXzpGqsh READY; canonical production browser checks passed with no errors. Local static checks, nine tests and production build evidence retained. Physical iPad Safari remains untested; owner authorized release after disclosure. Existing Next.js security warning remains. Verified Anthimeria branches removed, unrelated dirty marketing/PWA work preserved. Final execution metadata and obsolete branch-rule removal do not change application implementation."
     }
   ]
 }
