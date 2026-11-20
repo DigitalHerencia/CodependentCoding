@@ -20,10 +20,18 @@
       "Owner verifies this exact commit on a physical iPad Safari, including touch scrolling, clipboard and network/memory behavior, before release. Chromium emulation does not certify device performance.",
       "Next.js 16.4.3 emits a known security warning. Recommend a supported security patch as separate scoped work before release."
     ],
-    "delivery": "Draft PR to be created; branch-specific Vercel deployment disabled in vercel.json."
+    "delivery": {
+      "pr": 386,
+      "url": "https://github.com/DigitalHerencia/CodependentCoding/pull/386",
+      "status": "draft",
+      "project_status": "In review",
+      "deployment": "disabled for task branch; not deployed",
+      "merged": false
+    },
+    "equivalent_implementation_commit": "f9263ae7c9bee136c542a3714bc27fa3541dfec4"
   },
   "source_commit": "49b5ccfc2db0bf897afbab7370020b279e79f3db",
-  "completion": "Implemented and locally verified at 3c06f9f467ae19721313f7b021bb9bd6d064c3eb. Draft PR remains unmerged pending physical iPad Safari acceptance; no deployment. Existing Next.js security warning retained.",
+  "completion": "PR #386 is a clean, mergeable draft with local production/browser verification recorded. Physical iPad Safari acceptance remains open. No deployment or merge. Current main alignment preserved the tested tree exactly; source verified at 3c06f9f, equivalent implementation f9263ae.",
   "in_flight": [
     "CC-050 token consolidation implemented; focused static checks passed. Affected-site CI and owner browser contrast/reduced-motion verification pending. CC-049 merged in #351; main synced and branch deleted.",
     "Homepage PR #349 has passing CI and ready preview; owner desktop/mobile verification remains pending.",
