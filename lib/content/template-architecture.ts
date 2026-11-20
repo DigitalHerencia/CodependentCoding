@@ -16,7 +16,7 @@ export type ArchitectureZone =
 export type ArchitectureModule = {
   path: string;
   zone: ArchitectureZone;
-  /** Resolved, in-repository static module dependencies. */
+  /** Resolved, in-repository static entry dependencies. */
   imports: string[];
 };
 
@@ -54,7 +54,9 @@ function resolveImport(
   if (specifier.startsWith("@/")) {
     base = specifier.slice(2);
   } else if (specifier.startsWith(".")) {
-    base = path.posix.normalize(path.posix.join(path.posix.dirname(importer), specifier));
+    base = path.posix.normalize(
+      path.posix.join(path.posix.dirname(importer), specifier),
+    );
   } else {
     return null;
   }
@@ -90,10 +92,7 @@ export async function getTemplateArchitecture(): Promise<ArchitectureModule[]> {
     sourceFiles.map(async (file): Promise<ArchitectureModule> => {
       let contents: string;
       try {
-        contents = await readFile(
-          path.join(process.cwd(), ROOT, file),
-          "utf8",
-        );
+        contents = await readFile(path.join(process.cwd(), ROOT, file), "utf8");
       } catch {
         return { path: file, zone: zoneFor(file), imports: [] };
       }

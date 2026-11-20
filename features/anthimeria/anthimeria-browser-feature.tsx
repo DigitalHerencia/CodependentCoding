@@ -19,7 +19,12 @@ export async function AnthimeriaBrowserFeature({
 
   return (
     <AnthimeriaFrame>
-      <AnthimeriaBrowser files={files} active={active} source={source} modules={modules} />
+      <AnthimeriaBrowser
+        files={files}
+        active={active}
+        source={source}
+        modules={modules}
+      />
     </AnthimeriaFrame>
   );
 }

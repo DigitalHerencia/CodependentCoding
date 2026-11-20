@@ -16,14 +16,12 @@ import {
   AnthimeriaArchitectureMap,
   type MapView,
 } from "@/components/blocks/anthimeria-architecture-map";
-import { CopyButton } from "@/components/ui/button";
+import { AnthimeriaSourceActions } from "@/components/blocks/anthimeria-source-actions";
 import type { ArchitectureModule } from "@/lib/content/template-architecture";
 import { cn } from "@/lib/utils";
 
 type Node = { name: string; path: string; children: Node[] };
 type Pane = "map" | "code";
-
-const blobBase = "https://github.com/DigitalHerencia/CodependentCoding/blob/main/packages/maximal-template/";
 
 const layers: [RegExp, string][] = [
   [/^app\/api\//, "HTTP boundary: webhook request ingress."],
@@ -225,7 +223,13 @@ export function AnthimeriaBrowser({
   const [isPending, startTransition] = useTransition();
   const [pane, setPane] = useState<Pane>("map");
   const [mapView, setMapView] = useState<MapView>("system");
-  const splitter = useHorizontalSplitter();
+  const {
+    workspaceRef,
+    sidebarWidth,
+    resizeFromPointer,
+    onPointerDown,
+    onKeyDown,
+  } = useHorizontalSplitter();
 
   function selectFile(file: string) {
     setPane("code");
@@ -251,12 +255,12 @@ export function AnthimeriaBrowser({
     "Application configuration or infrastructure.";
 
   const workspaceStyle = {
-    "--anthimeria-sidebar-width": splitter.sidebarWidth + "px",
+    "--anthimeria-sidebar-width": sidebarWidth + "px",
   } as CSSProperties;
 
   return (
     <div
-      ref={splitter.workspaceRef}
+      ref={workspaceRef}
       style={workspaceStyle}
       className="anthimeria-workspace mx-auto max-w-7xl border border-border"
     >
@@ -291,10 +295,10 @@ export function AnthimeriaBrowser({
         aria-orientation="vertical"
         aria-valuemin={190}
         aria-valuemax={650}
-        aria-valuenow={splitter.sidebarWidth}
+        aria-valuenow={sidebarWidth}
         className="anthimeria-resize-handle"
-        onPointerDown={splitter.onPointerDown}
-        onPointerMove={splitter.resizeFromPointer}
+        onPointerDown={onPointerDown}
+        onPointerMove={resizeFromPointer}
         onPointerUp={(event) => {
           if (event.currentTarget.hasPointerCapture(event.pointerId)) {
             event.currentTarget.releasePointerCapture(event.pointerId);
@@ -305,7 +309,7 @@ export function AnthimeriaBrowser({
             event.currentTarget.releasePointerCapture(event.pointerId);
           }
         }}
-        onKeyDown={splitter.onKeyDown}
+        onKeyDown={onKeyDown}
       >
         <span aria-hidden="true" />
       </div>
@@ -315,7 +319,11 @@ export function AnthimeriaBrowser({
             template/{active}
           </code>
           <div className="flex flex-wrap items-center gap-1.5">
-            <div role="tablist" aria-label="Source viewer modes" className="anthimeria-view-tabs">
+            <div
+              role="tablist"
+              aria-label="Source viewer modes"
+              className="anthimeria-view-tabs"
+            >
               <button
                 type="button"
                 role="tab"
@@ -339,18 +347,11 @@ export function AnthimeriaBrowser({
                 Code
               </button>
             </div>
-            <CopyButton
-              value={isPending ? "" : source}
-              className="anthimeria-utility-button"
+            <AnthimeriaSourceActions
+              active={active}
+              source={source}
+              loading={isPending}
             />
-            <a
-              className="anthimeria-utility-button inline-flex items-center border border-border px-2 py-1.5 text-xs text-foreground uppercase no-underline hover:border-signal"
-              href={blobBase + active}
-              target="_blank"
-              rel="noreferrer"
-            >
-              GitHub
-            </a>
           </div>
         </header>
         <p className="m-0 border-b border-border px-3 py-2 text-xs text-signal-text">
