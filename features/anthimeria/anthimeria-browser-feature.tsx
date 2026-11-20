@@ -1,4 +1,4 @@
-import { MaximalFrame } from "@/components/blocks/anthimeria-frame";
+import { AnthimeriaFrame } from "@/components/blocks/anthimeria-frame";
 import { AnthimeriaBrowser } from "@/features/anthimeria/anthimeria-browser.client";
 import { getTemplateFiles, getTemplateSource } from "@/lib/content/template";
 
@@ -16,8 +16,8 @@ export async function AnthimeriaBrowserFeature({
   const source = await getTemplateSource(active);
 
   return (
-    <MaximalFrame>
+    <AnthimeriaFrame>
       <AnthimeriaBrowser files={files} active={active} source={source} />
-    </MaximalFrame>
+    </AnthimeriaFrame>
   );
 }
