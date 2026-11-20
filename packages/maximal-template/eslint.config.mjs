@@ -434,5 +434,62 @@ export default defineConfig([
       authWorkflowImports,
     ]),
   },
+  {
+    name: "codependent/marketing-route-boundaries",
+    files: ["app/(tenant)/marketing/**/*.{ts,tsx}"],
+    ignores: ["**/loading.tsx", "**/error.tsx", "**/not-found.tsx"],
+    rules: authImportRules([
+      authApplicationImports,
+      ...authBlockOnlyImports,
+      authBlockImports,
+      authTemplateImports,
+      authWorkflowImports,
+    ]),
+  },
+  {
+    name: "codependent/marketing-loading-error-boundaries",
+    files: [
+      "features/marketing/*-skeleton.tsx",
+      "app/(tenant)/marketing/**/loading.tsx",
+      "app/(tenant)/marketing/**/error.tsx",
+      "app/(tenant)/marketing/**/not-found.tsx",
+    ],
+    rules: authImportRules([
+      authApplicationImports,
+      ...authBlockOnlyImports,
+      authTemplateImports,
+      authWorkflowImports,
+    ]),
+  },
+  {
+    name: "codependent/marketing-feature-form-boundaries",
+    files: ["features/marketing/**/*.{ts,tsx}"],
+    ignores: ["features/marketing/*-skeleton.tsx"],
+    rules: authImportRules([
+      authApplicationImports,
+      ...authBlockOnlyImports,
+      authBlockImports,
+    ]),
+  },
+  {
+    name: "codependent/marketing-template-boundaries",
+    files: ["components/templates/marketing-templates.tsx"],
+    rules: authImportRules([
+      authApplicationImports,
+      ...authBlockOnlyImports,
+      authTemplateImports,
+      authWorkflowImports,
+    ]),
+  },
+  {
+    name: "codependent/marketing-block-boundaries",
+    files: ["components/blocks/marketing-blocks.tsx"],
+    rules: authImportRules([
+      authApplicationImports,
+      authBlockImports,
+      authTemplateImports,
+      authWorkflowImports,
+    ]),
+  },
   prettier,
 ]);

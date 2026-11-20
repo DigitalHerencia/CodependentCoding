@@ -1479,6 +1479,13 @@
       "status": "accepted",
       "title": "Owner requests direct main save of all pending changes without a PR",
       "decision": "Commit all existing marketing refactor source, its owner spec and unapplied additive migration, plus the existing two PWA edits, directly to main and synchronize origin. This explicit owner instruction overrides the usual issue-branch/PR delivery flow for this save. Preserve source as-is, record existing whitespace findings and unrun verification, do not mark Issue #384 complete, and do not run database operations."
+    },
+    {
+      "decision": "Resume on a fresh Issue #384 branch from cb0af76. Preserve CRM and unrelated saved work. Complete architecture and integrity fixes, minimize browser/mutation DTOs, use database aggregates and bounded queries, retain planning-only lifecycle behavior, and preserve idempotency with conflict-free PostgreSQL insertion. Run only lint:fix, format:write, typegen and typecheck. Author regression sources without execution. Cancellation timestamp migration remains unapplied; visual comparison lacks the image attachment. Complete the originally requested PR, merge and synchronization after permitted checks pass.",
+      "id": "MARKETING-384-RESUME-2026-11-20",
+      "date": "2026-11-20",
+      "status": "accepted",
+      "title": "Finish owner-approved marketing refactor from the saved main snapshot"
     }
   ]
 }

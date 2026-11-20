@@ -207,3 +207,65 @@ test.describe("disposable sign-out session", () => {
     await expect(page).toHaveURL(/\/sign-in/);
   });
 });
+
+test.describe("marketing uses the existing tenant shell for ordinary members", () => {
+  test.skip(
+    !tenantState,
+    "Requires a disposable ACTIVE MEMBER session with marketing permissions.",
+  );
+  test.use({ storageState: tenantState ?? { cookies: [], origins: [] } });
+  for (const width of [390, 1280]) {
+    test(`planning, audience and analytics routes at ${width}px`, async ({
+      page,
+    }) => {
+      await page.setViewportSize({ width, height: 900 });
+      await page.goto("/marketing/campaigns");
+      await expect(
+        page.getByRole("heading", { name: "Campaign planner", exact: true }),
+      ).toBeVisible();
+      await expect(
+        page.getByRole("textbox", { name: "Search", exact: true }),
+      ).toBeVisible();
+      await page
+        .getByRole("link", { name: "Plan campaign", exact: true })
+        .click();
+      await expect(
+        page.getByLabel("Planned start (UTC)", { exact: true }),
+      ).toBeVisible();
+      await expect(
+        page.getByText("Enter UTC, not your device's local time.", {
+          exact: false,
+        }),
+      ).toBeVisible();
+      await page.goto("/marketing/audiences");
+      await expect(
+        page.getByRole("heading", { name: "Audience segments", exact: true }),
+      ).toBeVisible();
+      await page
+        .getByRole("link", { name: "Define audience", exact: true })
+        .click();
+      await expect(
+        page.getByLabel("Contact relationship equals", { exact: true }),
+      ).toBeVisible();
+      await page.goto("/marketing/analytics");
+      await expect(
+        page.getByRole("heading", { name: "Marketing analytics", exact: true }),
+      ).toBeVisible();
+      await expect(
+        page.getByLabel("Created from (UTC)", { exact: true }),
+      ).toBeVisible();
+      await expect(
+        page.getByRole("heading", {
+          name: "Measurement availability",
+          exact: true,
+        }),
+      ).toBeVisible();
+      await expect(
+        page.getByRole("navigation", {
+          name: "Tenant mobile navigation",
+          exact: true,
+        }),
+      ).toHaveCount(0);
+    });
+  }
+});

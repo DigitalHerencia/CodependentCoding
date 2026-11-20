@@ -72,22 +72,22 @@ Required domain files:
 
 Maintain exactly one of each applicable singleton:
 
-Responsibility	Target
-Content	content/marketing.ts
-Blocks	components/blocks/marketing-blocks.tsx
-Templates	components/templates/marketing-templates.tsx
-Types	types/marketingTypes.ts
-Zod contracts	schemas/marketingSchemas.ts
-DTO mappers	lib/db/dtos/marketingDtos.ts
-Prisma selects	lib/db/selects/marketingSelects.ts
-Transaction helpers	lib/db/selects/marketingTx.ts
-Authenticated reads	lib/fetchers/marketingFetchers.ts
-Authenticated mutations	lib/actions/marketingActions.ts
-Application orchestration	lib/workflows/marketingWorkflows.ts
-Module ownership	lib/modules/marketingModule.ts
-Prisma models	prisma/schema/marketing.prisma
-RLS	prisma/rls/marketing.sql
-Seed	prisma/seeds/marketing.ts
+Responsibility Target
+Content content/marketing.ts
+Blocks components/blocks/marketing-blocks.tsx
+Templates components/templates/marketing-templates.tsx
+Types types/marketingTypes.ts
+Zod contracts schemas/marketingSchemas.ts
+DTO mappers lib/db/dtos/marketingDtos.ts
+Prisma selects lib/db/selects/marketingSelects.ts
+Transaction helpers lib/db/selects/marketingTx.ts
+Authenticated reads lib/fetchers/marketingFetchers.ts
+Authenticated mutations lib/actions/marketingActions.ts
+Application orchestration lib/workflows/marketingWorkflows.ts
+Module ownership lib/modules/marketingModule.ts
+Prisma models prisma/schema/marketing.prisma
+RLS prisma/rls/marketing.sql
+Seed prisma/seeds/marketing.ts
 Consolidate marketing-page-blocks.tsx into the prescribed blocks file.
 
 Move the existing marketing transaction implementation into the prescribed transaction file.
@@ -172,4 +172,3 @@ Use the read-only CRM domain for patterns and conventions. Complete the scoped r
 - The supplied attachment contains text only; no dashboard image was available. Use installed BoldKit primitives and the existing tenant shell; visual comparison remains unverified.
 - Existing PWA edits and all CRM source are outside this change.
 - Verify only affected lint:fix, format:write, typegen, typecheck; test sources may change but tests remain unrun.
-

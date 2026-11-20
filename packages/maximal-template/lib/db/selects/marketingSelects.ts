@@ -2,6 +2,7 @@ import "server-only";
 
 import type { Prisma } from "@/generated/prisma/client";
 
+/** Minimal persisted campaign planning fields; RLS covers nested tenant relations. */
 export const campaignSelect = {
   id: true,
   name: true,
@@ -27,10 +28,7 @@ export const campaignSelect = {
   updatedAt: true,
 } satisfies Prisma.CampaignSelect;
 
-export type CampaignRecord = Prisma.CampaignGetPayload<{
-  select: typeof campaignSelect;
-}>;
-
+/** Persisted audience metadata and structured definition, without inferred membership counts. */
 export const audienceSelect = {
   definition: true,
   id: true,
@@ -40,10 +38,10 @@ export const audienceSelect = {
   updatedAt: true,
 } satisfies Prisma.AudienceSelect;
 
-export type AudienceRecord = Prisma.AudienceGetPayload<{
-  select: typeof audienceSelect;
-}>;
-
 /** Configuration is narrowed by the DTO before leaving the server. */
-export const campaignStepSelect = { id: true, type: true, position: true, config: true } satisfies Prisma.CampaignStepSelect;
-export type CampaignStepRecord = Prisma.CampaignStepGetPayload<{ select: typeof campaignStepSelect }>;
+export const campaignStepSelect = {
+  id: true,
+  type: true,
+  position: true,
+  config: true,
+} satisfies Prisma.CampaignStepSelect;
