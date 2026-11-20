@@ -17,6 +17,7 @@ import {
   type MapView,
 } from "@/components/blocks/anthimeria-architecture-map";
 import { CopyButton } from "@/components/ui/button";
+import type { ArchitectureModule } from "@/lib/content/template-architecture";
 import { cn } from "@/lib/utils";
 
 type Node = { name: string; path: string; children: Node[] };
@@ -212,10 +213,12 @@ export function AnthimeriaBrowser({
   files,
   active,
   source,
+  modules,
 }: {
   files: string[];
   active: string;
   source: string;
+  modules: ArchitectureModule[];
 }) {
   const router = useRouter();
   const [query, setQuery] = useState("");
@@ -352,7 +355,7 @@ export function AnthimeriaBrowser({
         </header>
         <p className="m-0 border-b border-border px-3 py-2 text-xs text-signal-text">
           {pane === "map"
-            ? "CONSTITUTED SYSTEM / FILE OWNERSHIP / READ + WRITE TRACES"
+            ? "SOURCE-GROUNDED SYSTEM / STATIC IMPORT CONNECTIONS / READ + WRITE SLICES"
             : layer}
         </p>
         <div
@@ -363,7 +366,7 @@ export function AnthimeriaBrowser({
         >
           {pane === "map" && (
             <AnthimeriaArchitectureMap
-              files={files}
+              modules={modules}
               active={active}
               selectFile={selectFile}
               view={mapView}

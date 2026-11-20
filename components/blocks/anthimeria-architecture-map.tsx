@@ -1,349 +1,735 @@
 "use client";
 
-import { ArrowDown, FileCode2, GitBranch } from "lucide-react";
+import { Maximize2, Minus, Plus, Search } from "lucide-react";
 import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type KeyboardEvent,
+  type PointerEvent,
+} from "react";
+import type {
+  ArchitectureModule,
+  ArchitectureZone,
+} from "@/lib/content/template-architecture";
 
-export type MapView = "system" | "read" | "write";
+/** The system view aggregates real imports; detail views expose their file endpoints. */
+export type MapView = "system" | "crm" | "read" | "write" | "focus";
 
-type Bucket = {
-  id: string;
+type GraphModule = ArchitectureModule;
+type Box = { x: number; y: number; width: number; height: number };
+type Viewport = Box;
+type PositionedFile = Box & { path: string; zone: ArchitectureZone };
+type PositionedZone = Box & {
+  zone: ArchitectureZone;
+  count: number;
+  shown: number;
+  expanded: boolean;
+};
+type GraphEdge = {
+  source: string;
+  target: string;
+  count: number;
+  emphasis: boolean;
+};
+
+const ZONES: readonly {
+  id: ArchitectureZone;
   title: string;
-  pattern: RegExp;
-};
-
-type Layer = {
-  id: string;
-  title: string;
-  caption: string;
-  buckets: readonly Bucket[];
-};
-
-const LAYERS = {
-  routes: {
-    id: "routes",
-    title: "01 / ENTRY POINTS",
-    caption: "URL ownership and inbound HTTP requests",
-    buckets: [
-      { id: "tenant", title: "Tenant routes", pattern: /^app\/\(tenant\)\// },
-      { id: "public", title: "Public routes", pattern: /^app\/\(public\)\// },
-      { id: "http", title: "HTTP / webhooks", pattern: /^app\/api\// },
-      { id: "other-routes", title: "Other app files", pattern: /^app\/(?!\(tenant\)|\(public\)|api\/)/ },
-    ],
-  },
-  features: {
-    id: "features",
-    title: "02 / FEATURE COMPOSITION",
-    caption: "Server features and browser interaction islands",
-    buckets: [
-      { id: "crm-features", title: "CRM feature files", pattern: /^features\/crm\// },
-      { id: "other-features", title: "Other features", pattern: /^features\/(?!crm\/)/ },
-    ],
-  },
-  presentation: {
-    id: "presentation",
-    title: "03 / PRESENTATION",
-    caption: "Page templates constitute blocks; blocks constitute primitives",
-    buckets: [
-      { id: "templates", title: "Page templates", pattern: /^components\/templates\// },
-      { id: "blocks", title: "UI blocks", pattern: /^components\/blocks\// },
-      { id: "primitives", title: "UI primitives", pattern: /^components\/ui\// },
-      { id: "shells", title: "Shells, navigation and charts", pattern: /^components\/(shells|nav|chart)\// },
-      { id: "other-components", title: "Other presentation", pattern: /^components\/(?!templates\/|blocks\/|ui\/|shells\/|nav\/|chart\/)/ },
-    ],
-  },
-  application: {
-    id: "application",
-    title: "04 / APPLICATION LOGIC",
-    caption: "Named workflows compose read and write operations",
-    buckets: [
-      { id: "workflows", title: "Workflow compositions", pattern: /^lib\/workflows\// },
-      { id: "fetchers", title: "Read blocks / fetchers", pattern: /^lib\/fetchers\// },
-      { id: "actions", title: "Write blocks / actions", pattern: /^lib\/actions\// },
-      { id: "integrations", title: "Integration adapters", pattern: /^lib\/integrations\// },
-      { id: "auth", title: "Authentication and authorization", pattern: /^lib\/(auth|authz)\// },
-    ],
-  },
-  contracts: {
-    id: "contracts",
-    title: "05 / CONTRACTS",
-    caption: "Types, runtime schemas, constants and content",
-    buckets: [
-      { id: "schemas", title: "Zod schemas", pattern: /^schemas\// },
-      { id: "types", title: "Type contracts", pattern: /^types\// },
-      { id: "content", title: "Static content", pattern: /^content\// },
-      { id: "utilities", title: "Utilities, constants and cache", pattern: /^lib\/(utils|constants|cache)\// },
-    ],
-  },
-  data: {
-    id: "data",
-    title: "06 / PERSISTENCE",
-    caption: "DTO mapping, Prisma projections, transactions and tenancy",
-    buckets: [
-      { id: "selects", title: "Prisma selects", pattern: /^lib\/db\/selects\// },
-      { id: "dtos", title: "DTO mappers", pattern: /^lib\/db\/(dtos|dto)\// },
-      { id: "transactions", title: "Transaction helpers", pattern: /^lib\/db\/transactions\// },
-      { id: "database", title: "Tenancy, RLS and database infrastructure", pattern: /^lib\/db\/(?!selects\/|dtos\/|dto\/|transactions\/)/ },
-      { id: "prisma", title: "Prisma schema and migrations", pattern: /^prisma\// },
-    ],
-  },
-};
-
-type TraceStep = {
-  label: string;
-  path: string;
-  meaning: string;
-};
-
-const READ_TRACE: readonly TraceStep[] = [
-  { label: "ROUTE", path: "app/(tenant)/crm/accounts/page.tsx", meaning: "URL, criteria, Suspense" },
-  { label: "SERVER FEATURE", path: "features/crm/crmAccountsFeature.tsx", meaning: "Composes workflow and page template" },
-  { label: "READ WORKFLOW", path: "lib/workflows/crmWorkflows.ts", meaning: "loadCrmAccountsWorkflow" },
-  { label: "FETCHER", path: "lib/fetchers/crmFetchers.ts", meaning: "Tenant-scoped authorized read" },
-  { label: "PRISMA SELECT", path: "lib/db/selects/crmSelects.ts", meaning: "Which columns are selected" },
-  { label: "DTO MAPPER", path: "lib/db/dtos/crmDtos.ts", meaning: "Database record becomes view data" },
-  { label: "PAGE TEMPLATE", path: "components/templates/crm-templates.tsx", meaning: "Arranges the page" },
-  { label: "UI BLOCK", path: "components/blocks/crm-blocks.tsx", meaning: "Renders the records" },
+  subtitle: string;
+}[] = [
+  { id: "routes", title: "01 / ROUTES", subtitle: "Entry points and HTTP boundaries" },
+  { id: "features", title: "02 / FEATURES", subtitle: "Feature-level composition" },
+  { id: "presentation", title: "03 / PRESENTATION", subtitle: "Templates, blocks, UI primitives" },
+  { id: "application", title: "04 / APPLICATION", subtitle: "Workflows, fetchers, actions" },
+  { id: "contracts", title: "05 / CONTRACTS", subtitle: "Types, schemas, shared modules" },
+  { id: "persistence", title: "06 / PERSISTENCE", subtitle: "Selects, DTOs, transactions, Prisma" },
 ];
 
-const WRITE_TRACE: readonly TraceStep[] = [
-  { label: "EDIT ROUTE", path: "app/(tenant)/crm/accounts/[accountId]/edit/page.tsx", meaning: "Loads the edit page" },
-  { label: "SERVER FEATURE", path: "features/crm/crmEditAccountFeature.tsx", meaning: "Loads the authorized account" },
-  { label: "CLIENT FORM", path: "features/crm/crmEditAccountForm.tsx", meaning: "Owns React Hook Form and submit" },
-  { label: "SERVER WORKFLOW", path: "lib/workflows/crmWorkflows.ts", meaning: "Client-callable server function invokes the action" },
-  { label: "APPLICATION ACTION", path: "lib/actions/crmActions.ts", meaning: "Validates, authorizes, writes, invalidates" },
-  { label: "TENANT TRANSACTION", path: "lib/db/tenancy.ts", meaning: "Scopes database access to one organization" },
-  { label: "DTO MAPPER", path: "lib/db/dtos/crmDtos.ts", meaning: "Returns client-safe account data" },
+const READ_PATHS = [
+  "app/(tenant)/crm/accounts/page.tsx",
+  "features/crm/crmAccountsFeature.tsx",
+  "lib/workflows/crmWorkflows.ts",
+  "lib/fetchers/crmFetchers.ts",
+  "lib/db/selects/crmSelects.ts",
+  "lib/db/dtos/crmDtos.ts",
+  "components/templates/crm-templates.tsx",
+  "components/blocks/crm-blocks.tsx",
+];
+const WRITE_PATHS = [
+  "app/(tenant)/crm/accounts/[accountId]/edit/page.tsx",
+  "features/crm/crmEditAccountFeature.tsx",
+  "features/crm/crmEditAccountForm.tsx",
+  "lib/workflows/crmWorkflows.ts",
+  "lib/actions/crmActions.ts",
+  "lib/db/tenancy.ts",
+  "lib/db/dtos/crmDtos.ts",
 ];
 
-function FileButtons({
-  files,
-  active,
-  selectFile,
-}: {
-  files: readonly string[];
-  active: string;
-  selectFile: (file: string) => void;
-}) {
-  const initial = files.slice(0, 12);
-  const overflow = files.slice(12);
+function shortName(file: string, length = 37): string {
+  const name = file.split("/").at(-1) ?? file;
+  return name.length > length ? name.slice(0, length - 1) + "…" : name;
+}
 
-  const renderButton = (file: string) => (
-    <button
-      type="button"
-      key={file}
-      title={file}
-      className={"anthimeria-file-node" + (file === active ? " is-active" : "")}
-      onClick={() => selectFile(file)}
-    >
-      <FileCode2 aria-hidden="true" className="size-3.5 shrink-0" />
-      <span>{file.split("/").at(-1)}</span>
-    </button>
-  );
+function getSelectedPaths(
+  modules: readonly GraphModule[],
+  view: MapView,
+  active: string,
+  focusZone: ArchitectureZone | null,
+): Set<string> {
+  const byPath = new Map(modules.map((module) => [module.path, module]));
+  const inbound = new Map<string, string[]>();
+  for (const module of modules) {
+    for (const dependency of module.imports) {
+      if (!byPath.has(dependency)) continue;
+      const neighbors = inbound.get(dependency) ?? [];
+      neighbors.push(module.path);
+      inbound.set(dependency, neighbors);
+    }
+  }
 
+  let seeds: string[];
+  if (view === "crm") {
+    seeds = modules.filter((module) => /crm/i.test(module.path)).map((module) => module.path);
+  } else if (view === "read") {
+    seeds = READ_PATHS.filter((file) => byPath.has(file));
+  } else if (view === "write") {
+    seeds = WRITE_PATHS.filter((file) => byPath.has(file));
+  } else if (focusZone) {
+    seeds = modules
+      .filter((module) => module.zone === focusZone)
+      .sort((a, b) => b.imports.length - a.imports.length)
+      .slice(0, 24)
+      .map((module) => module.path);
+  } else {
+    seeds = byPath.has(active) ? [active] : modules.slice(0, 1).map((module) => module.path);
+  }
+
+  const limit = view === "crm" ? 120 : focusZone ? 80 : view === "focus" ? 55 : 72;
+  const selected = new Set(seeds.slice(0, limit));
+  const direct = new Set<string>();
+
+  for (const seed of seeds) {
+    const module = byPath.get(seed);
+    if (!module) continue;
+    module.imports.forEach((dependency) => direct.add(dependency));
+    (inbound.get(seed) ?? []).forEach((importer) => direct.add(importer));
+  }
+
+  // Add connected neighbors without manufacturing any relationships.
+  for (const file of direct) {
+    if (selected.size >= limit) break;
+    if (byPath.has(file)) selected.add(file);
+  }
+
+  return selected;
+}
+
+function graphLayout(
+  modules: readonly GraphModule[],
+  selected: ReadonlySet<string>,
+  expanded: ReadonlySet<ArchitectureZone>,
+  overview: boolean,
+): {
+  zones: PositionedZone[];
+  files: PositionedFile[];
+  edges: GraphEdge[];
+  width: number;
+  height: number;
+} {
+  const groups = new Map<ArchitectureZone, GraphModule[]>();
+  for (const zone of ZONES) groups.set(zone.id, []);
+  for (const module of modules) {
+    if (overview || selected.has(module.path)) {
+      groups.get(module.zone)?.push(module);
+    }
+  }
+
+  const zoneRects: PositionedZone[] = [];
+  const fileRects: PositionedFile[] = [];
+  const zoneById = new Map<ArchitectureZone, PositionedZone>();
+  const fileByPath = new Map<string, PositionedFile>();
+  const columnWidth = 370;
+  const columns = [46, 496, 946];
+  const firstRow = ZONES.slice(0, 3);
+  const secondRow = ZONES.slice(3);
+
+  function appendRow(
+    row: typeof ZONES,
+    top: number,
+  ): number {
+    let maximum = 0;
+    row.forEach((zone, column) => {
+      const entries = groups.get(zone.id) ?? [];
+      const isExpanded = !overview && expanded.has(zone.id);
+      const shown = isExpanded ? Math.min(14, entries.length) : 0;
+      const height = isExpanded ? Math.max(118, 89 + shown * 39) : 165;
+      const rectangle: PositionedZone = {
+        zone: zone.id,
+        x: columns[column] ?? 46,
+        y: top,
+        width: columnWidth,
+        height,
+        count: entries.length,
+        shown,
+        expanded: isExpanded,
+      };
+      maximum = Math.max(maximum, height);
+      zoneRects.push(rectangle);
+      zoneById.set(zone.id, rectangle);
+
+      if (!isExpanded) return;
+      entries.slice(0, shown).forEach((module, index) => {
+        const file: PositionedFile = {
+          path: module.path,
+          zone: module.zone,
+          x: rectangle.x + 14,
+          y: rectangle.y + 73 + index * 39,
+          width: rectangle.width - 28,
+          height: 32,
+        };
+        fileRects.push(file);
+        fileByPath.set(file.path, file);
+      });
+    });
+    return maximum;
+  }
+
+  const firstHeight = appendRow(firstRow, 44);
+  const secondTop = 44 + firstHeight + 115;
+  const secondHeight = appendRow(secondRow, secondTop);
+
+  // Both aggregated and file-to-file connectors originate from scanned imports.
+  const modulesByPath = new Map(modules.map((module) => [module.path, module]));
+  const connections = new Map<string, GraphEdge>();
+  for (const module of modules) {
+    if (!overview && !selected.has(module.path)) continue;
+    for (const dependency of module.imports) {
+      if (!overview && !selected.has(dependency)) continue;
+      const destination = modulesByPath.get(dependency);
+      if (!destination) continue;
+
+      const from = fileByPath.has(module.path)
+        ? module.path
+        : "zone:" + module.zone;
+      const to = fileByPath.has(dependency)
+        ? dependency
+        : "zone:" + destination.zone;
+      if (from === to) continue;
+      if (module.zone === destination.zone && (!fileByPath.has(module.path) || !fileByPath.has(dependency))) continue;
+      const key = from + "\u0000" + to;
+      const current = connections.get(key);
+      if (current) {
+        current.count += 1;
+      } else {
+        connections.set(key, {
+          source: from,
+          target: to,
+          count: 1,
+          emphasis: false,
+        });
+      }
+    }
+  }
+
+  return {
+    zones: zoneRects,
+    files: fileRects,
+    edges: [...connections.values()],
+    width: 1362,
+    height: secondTop + secondHeight + 65,
+  };
+}
+
+/** Calculate a directional curve between two graph objects. */
+function connector(from: Box, to: Box): string {
+  const fromCenterX = from.x + from.width / 2;
+  const toCenterX = to.x + to.width / 2;
+  const fromCenterY = from.y + from.height / 2;
+  const toCenterY = to.y + to.height / 2;
+  let sx: number;
+  let sy: number;
+  let ex: number;
+  let ey: number;
+  if (Math.abs(fromCenterX - toCenterX) > 130) {
+    const forward = fromCenterX < toCenterX;
+    sx = forward ? from.x + from.width : from.x;
+    sy = fromCenterY;
+    ex = forward ? to.x : to.x + to.width;
+    ey = toCenterY;
+    const bend = Math.max(40, Math.abs(ex - sx) * 0.5);
+    return (
+      "M " + sx + " " + sy + " C " +
+      (sx + (forward ? bend : -bend)) + " " + sy + ", " +
+      (ex + (forward ? -bend : bend)) + " " + ey + ", " +
+      ex + " " + ey
+    );
+  }
+  const down = fromCenterY < toCenterY;
+  sx = fromCenterX;
+  ex = toCenterX;
+  sy = down ? from.y + from.height : from.y;
+  ey = down ? to.y : to.y + to.height;
+  const bend = Math.max(34, Math.abs(ey - sy) * 0.5);
   return (
-    <>
-      <div className="anthimeria-files">{initial.map(renderButton)}</div>
-      {overflow.length > 0 && (
-        <details className="anthimeria-more">
-          <summary>Show {overflow.length} more files</summary>
-          <div className="anthimeria-files">{overflow.map(renderButton)}</div>
-        </details>
-      )}
-    </>
+    "M " + sx + " " + sy + " C " +
+    sx + " " + (sy + (down ? bend : -bend)) + ", " +
+    ex + " " + (ey + (down ? -bend : bend)) + ", " +
+    ex + " " + ey
   );
 }
 
-function LayerBox({
-  layer,
-  files,
+function initialViewport(layout: { width: number; height: number }): Viewport {
+  return { x: -22, y: -20, width: layout.width + 44, height: layout.height + 40 };
+}
+
+function keyActivate(event: KeyboardEvent<SVGGElement>, action: () => void) {
+  if (event.key === "Enter" || event.key === " ") {
+    event.preventDefault();
+    action();
+  }
+}
+
+
+/** Zoomable SVG graph with a pointer-friendly pan surface and accessible node actions. */
+function GraphCanvas({
+  modules,
+  view,
   active,
+  focusZone,
   selectFile,
-  initialOpen = false,
+  openZone,
 }: {
-  layer: Layer;
-  files: readonly string[];
+  modules: readonly GraphModule[];
+  view: MapView;
   active: string;
+  focusZone: ArchitectureZone | null;
   selectFile: (file: string) => void;
-  initialOpen?: boolean;
+  openZone: (zone: ArchitectureZone) => void;
 }) {
-  const entries = layer.buckets.map((bucket) => ({
-    ...bucket,
-    files: files.filter((file) => bucket.pattern.test(file)),
-  }));
-  const count = entries.reduce((total, entry) => total + entry.files.length, 0);
+  const [expanded, setExpanded] = useState<Set<ArchitectureZone>>(
+    () => new Set(ZONES.map((zone) => zone.id)),
+  );
+  const selected = useMemo(
+    () => getSelectedPaths(modules, view, active, focusZone),
+    [modules, view, active, focusZone],
+  );
+  const overview = view === "system";
+  const layout = useMemo(
+    () => graphLayout(modules, selected, expanded, overview),
+    [modules, selected, expanded, overview],
+  );
+  const [viewport, setViewport] = useState<Viewport>(() => initialViewport(layout));
+  const svgRef = useRef<SVGSVGElement>(null);
+  const pointers = useRef(new Map<number, { x: number; y: number }>());
+  const gesture = useRef<{
+    start: Viewport;
+    x: number;
+    y: number;
+    distance: number;
+    isPinch: boolean;
+  } | null>(null);
+
+  const rectByKey = new Map<string, Box>();
+  for (const zone of layout.zones) rectByKey.set("zone:" + zone.zone, zone);
+  for (const file of layout.files) rectByKey.set(file.path, file);
+  const highlighted = new Set<string>([active]);
+  for (const module of modules) {
+    if (module.path === active) module.imports.forEach((file) => highlighted.add(file));
+    if (module.imports.includes(active)) highlighted.add(module.path);
+  }
+
+  function toggleZone(zone: ArchitectureZone) {
+    const updated = new Set(expanded);
+    if (updated.has(zone)) updated.delete(zone);
+    else updated.add(zone);
+    const next = graphLayout(modules, selected, updated, overview);
+    setExpanded(updated);
+    setViewport(initialViewport(next));
+  }
+
+  function zoom(factor: number) {
+    setViewport((current) => {
+      const width = Math.min(5500, Math.max(340, current.width * factor));
+      const height = (width / current.width) * current.height;
+      return {
+        x: current.x + (current.width - width) / 2,
+        y: current.y + (current.height - height) / 2,
+        width,
+        height,
+      };
+    });
+  }
+
+  useEffect(() => {
+    const svg = svgRef.current;
+    if (!svg) return;
+    const onWheel = (event: WheelEvent) => {
+      event.preventDefault();
+      const rect = svg.getBoundingClientRect();
+      setViewport((current) => {
+        const factor = event.deltaY > 0 ? 1.12 : 0.89;
+        const width = Math.min(5500, Math.max(340, current.width * factor));
+        const ratio = width / current.width;
+        const mouseX = (event.clientX - rect.left) / rect.width;
+        const mouseY = (event.clientY - rect.top) / rect.height;
+        return {
+          x: current.x + current.width * mouseX * (1 - ratio),
+          y: current.y + current.height * mouseY * (1 - ratio),
+          width,
+          height: current.height * ratio,
+        };
+      });
+    };
+    svg.addEventListener("wheel", onWheel, { passive: false });
+    return () => svg.removeEventListener("wheel", onWheel);
+  }, []);
+
+  function pointerDown(event: PointerEvent<SVGSVGElement>) {
+    if ((event.target as Element).closest("[data-map-node]")) return;
+    event.currentTarget.setPointerCapture(event.pointerId);
+    pointers.current.set(event.pointerId, { x: event.clientX, y: event.clientY });
+    if (pointers.current.size === 2) {
+      const [first, second] = [...pointers.current.values()];
+      if (!first || !second) return;
+      gesture.current = {
+        start: viewport,
+        x: (first.x + second.x) / 2,
+        y: (first.y + second.y) / 2,
+        distance: Math.hypot(first.x - second.x, first.y - second.y),
+        isPinch: true,
+      };
+    } else {
+      gesture.current = {
+        start: viewport,
+        x: event.clientX,
+        y: event.clientY,
+        distance: 0,
+        isPinch: false,
+      };
+    }
+  }
+
+  function pointerMove(event: PointerEvent<SVGSVGElement>) {
+    if (!pointers.current.has(event.pointerId)) return;
+    pointers.current.set(event.pointerId, { x: event.clientX, y: event.clientY });
+    const current = gesture.current;
+    const rect = svgRef.current?.getBoundingClientRect();
+    if (!current || !rect) return;
+    const scale = Math.min(
+      rect.width / current.start.width,
+      rect.height / current.start.height,
+    );
+    if (current.isPinch && pointers.current.size === 2) {
+      const [first, second] = [...pointers.current.values()];
+      if (!first || !second) return;
+      const distance = Math.hypot(first.x - second.x, first.y - second.y);
+      const ratio = current.distance / Math.max(1, distance);
+      const width = Math.min(5500, Math.max(340, current.start.width * ratio));
+      const height = current.start.height * (width / current.start.width);
+      const cx = (first.x + second.x) / 2;
+      const cy = (first.y + second.y) / 2;
+      setViewport({
+        x: current.start.x + (current.start.width - width) / 2 - (cx - current.x) / scale,
+        y: current.start.y + (current.start.height - height) / 2 - (cy - current.y) / scale,
+        width,
+        height,
+      });
+    } else if (!current.isPinch) {
+      setViewport({
+        ...current.start,
+        x: current.start.x - (event.clientX - current.x) / scale,
+        y: current.start.y - (event.clientY - current.y) / scale,
+      });
+    }
+  }
+
+  function pointerUp(event: PointerEvent<SVGSVGElement>) {
+    pointers.current.delete(event.pointerId);
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    }
+    const remaining = [...pointers.current.values()];
+    if (remaining.length === 1 && remaining[0]) {
+      gesture.current = {
+        start: viewport,
+        x: remaining[0].x,
+        y: remaining[0].y,
+        distance: 0,
+        isPinch: false,
+      };
+    } else {
+      gesture.current = null;
+    }
+  }
+
+  const showEdge = (edge: GraphEdge) => {
+    const from = rectByKey.get(edge.source);
+    const to = rectByKey.get(edge.target);
+    if (!from || !to) return null;
+    const isActive = highlighted.has(edge.source) && highlighted.has(edge.target);
+    return (
+      <path
+        key={edge.source + ">" + edge.target}
+        d={connector(from, to)}
+        fill="none"
+        stroke={isActive ? "var(--signal-strong)" : "var(--signal)"}
+        strokeWidth={isActive ? 3 : Math.min(3.4, 1.1 + Math.log2(edge.count + 1) * 0.55)}
+        strokeOpacity={isActive ? 0.95 : overview ? 0.48 : 0.28}
+        markerEnd="url(#anthimeria-edge-arrow)"
+        vectorEffect="non-scaling-stroke"
+        pointerEvents="none"
+      />
+    );
+  };
 
   return (
-    <Accordion
-      type="single"
-      collapsible
-      defaultValue={initialOpen ? "contents" : undefined}
-      className="anthimeria-layer"
-    >
-      <AccordionItem value="contents" className="anthimeria-layer-item border-0">
-        <AccordionTrigger className="anthimeria-layer-trigger py-3 hover:text-foreground">
-          <span className="flex min-w-0 flex-col gap-1 text-left">
-            <span className="anthimeria-layer-name">{layer.title}</span>
-            <span className="anthimeria-layer-caption">{layer.caption}</span>
-          </span>
-          <span className="anthimeria-count">{count}</span>
-        </AccordionTrigger>
-        <AccordionContent className="anthimeria-layer-contents pb-3">
-          <Accordion type="multiple" className="anthimeria-subgroups">
-            {entries.filter((entry) => entry.files.length > 0).map((entry) => (
-              <AccordionItem
-                key={entry.id}
-                value={entry.id}
-                className="anthimeria-subgroup"
+    <div className="relative overflow-hidden border-y border-border bg-background-strong">
+      <svg
+        ref={svgRef}
+        className="block h-[min(72vh,820px)] min-h-[470px] w-full cursor-grab active:cursor-grabbing"
+        style={{ touchAction: "none", userSelect: "none" }}
+        viewBox={viewport.x + " " + viewport.y + " " + viewport.width + " " + viewport.height}
+        preserveAspectRatio="xMidYMid meet"
+        aria-label="Interactive architecture dependency graph. Arrows point from an importing file to the imported module. Drag empty space to pan; pinch or use controls to zoom."
+        role="group"
+        onPointerDown={pointerDown}
+        onPointerMove={pointerMove}
+        onPointerUp={pointerUp}
+        onPointerCancel={pointerUp}
+      >
+        <defs>
+          <pattern id="anthimeria-grid" width="28" height="28" patternUnits="userSpaceOnUse">
+            <circle cx="1" cy="1" r="1" fill="var(--signal)" opacity=".17" />
+          </pattern>
+          <marker
+            id="anthimeria-edge-arrow"
+            viewBox="0 0 10 10"
+            refX="9"
+            refY="5"
+            markerWidth="6"
+            markerHeight="6"
+            orient="auto-start-reverse"
+          >
+            <path d="M 0 0 L 10 5 L 0 10 Z" fill="var(--signal-strong)" opacity=".75" />
+          </marker>
+        </defs>
+        <rect
+          x="-6000"
+          y="-6000"
+          width="15000"
+          height="15000"
+          fill="url(#anthimeria-grid)"
+          pointerEvents="all"
+        />
+        <g>{layout.edges.map(showEdge)}</g>
+        <g>
+          {layout.zones.map((zone) => {
+            const metadata = ZONES.find((item) => item.id === zone.zone);
+            const action = () => (overview ? openZone(zone.zone) : toggleZone(zone.zone));
+            return (
+              <g
+                key={zone.zone}
+                role="button"
+                tabIndex={0}
+                aria-label={(overview ? "Explore " : zone.expanded ? "Collapse " : "Expand ") + (metadata?.title ?? zone.zone)}
+                data-map-node="zone"
+                onClick={action}
+                onKeyDown={(event) => keyActivate(event, action)}
+                className="cursor-pointer outline-none focus-visible:outline-2 focus-visible:outline-signal"
               >
-                <AccordionTrigger className="anthimeria-subgroup-trigger py-2 hover:text-foreground">
-                  <span className="anthimeria-subgroup-label">{entry.title}</span>
-                  <span className="anthimeria-count">{entry.files.length}</span>
-                </AccordionTrigger>
-                <AccordionContent className="pb-3">
-                  <FileButtons
-                    files={entry.files}
-                    active={active}
-                    selectFile={selectFile}
-                  />
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
-        </AccordionContent>
-      </AccordionItem>
-    </Accordion>
-  );
-}
-
-function FlowConnector({ split = false }: { split?: boolean }) {
-  return (
-    <div className={"anthimeria-connector" + (split ? " is-branch" : "")} aria-hidden="true">
-      {split ? <GitBranch className="size-5" /> : <ArrowDown className="size-5" />}
+                <title>{metadata?.title}: {zone.count} source files. {overview ? "Select to inspect this area." : "Select to expand or collapse."}</title>
+                <rect
+                  x={zone.x}
+                  y={zone.y}
+                  width={zone.width}
+                  height={zone.height}
+                  rx="10"
+                  fill="var(--surface)"
+                  fillOpacity={zone.expanded ? ".58" : ".93"}
+                  stroke="var(--signal)"
+                  strokeWidth="1.7"
+                />
+                <rect x={zone.x} y={zone.y} width={zone.width} height="59" rx="10" fill="var(--surface-raised)" fillOpacity=".92" />
+                <path d={"M " + zone.x + " " + (zone.y + 58) + " h " + zone.width} stroke="var(--signal)" strokeOpacity=".5" />
+                <text x={zone.x + 16} y={zone.y + 25} fontSize="17" fontWeight="700" fill="var(--foreground)" fontFamily="var(--type-heading)">
+                  {metadata?.title}
+                </text>
+                <text x={zone.x + 16} y={zone.y + 44} fontSize="11" fill="var(--muted-foreground)">
+                  {metadata?.subtitle}
+                </text>
+                <text x={zone.x + zone.width - 16} y={zone.y + 26} fontSize="13" fill="var(--signal-strong)" textAnchor="end">
+                  {zone.count}
+                </text>
+                {!zone.expanded && (
+                  <>
+                    <text x={zone.x + 17} y={zone.y + 96} fontSize="13" fill="var(--signal-strong)">
+                      {overview ? "OPEN ARCHITECTURAL LAYER" : "EXPAND FILE NODES"}
+                    </text>
+                    <text x={zone.x + 17} y={zone.y + 122} fontSize="12" fill="var(--muted-foreground)">
+                      Connected by verified local imports
+                    </text>
+                    <path d={"M " + (zone.x + 18) + " " + (zone.y + 143) + " h " + (zone.width - 36)} stroke="var(--signal)" strokeDasharray="4 8" strokeOpacity=".45" />
+                  </>
+                )}
+                {zone.expanded && zone.count > zone.shown && (
+                  <text x={zone.x + 17} y={zone.y + zone.height - 11} fontSize="10" fill="var(--signal-text)">
+                    {"+" + (zone.count - zone.shown) + " additional files available in explorer"}
+                  </text>
+                )}
+              </g>
+            );
+          })}
+        </g>
+        <g>
+          {layout.files.map((file) => {
+            const isActive = file.path === active;
+            const isConnected = highlighted.has(file.path);
+            const action = () => selectFile(file.path);
+            return (
+              <g
+                key={file.path}
+                role="button"
+                tabIndex={0}
+                aria-label={"Open " + file.path}
+                data-map-node="file"
+                className="cursor-pointer outline-none focus-visible:outline-2 focus-visible:outline-signal"
+                onClick={action}
+                onKeyDown={(event) => keyActivate(event, action)}
+              >
+                <title>{file.path}</title>
+                <rect
+                  x={file.x}
+                  y={file.y}
+                  width={file.width}
+                  height={file.height}
+                  rx="4"
+                  fill={isActive ? "var(--signal)" : isConnected ? "#14313a" : "#101521"}
+                  stroke={isActive ? "var(--signal-strong)" : "var(--signal)"}
+                  strokeOpacity={isActive || isConnected ? 1 : 0.4}
+                  strokeWidth={isActive ? 2.3 : 1}
+                />
+                <circle cx={file.x + 11} cy={file.y + file.height / 2} r="3" fill={isActive ? "var(--foreground)" : "var(--signal-strong)"} />
+                <text
+                  x={file.x + 23}
+                  y={file.y + 21}
+                  fontSize="12.2"
+                  fontFamily="var(--type-code)"
+                  fill={isActive ? "var(--background)" : "var(--foreground)"}
+                >
+                  {shortName(file.path)}
+                </text>
+              </g>
+            );
+          })}
+        </g>
+      </svg>
+      <div className="absolute right-3 bottom-3 flex items-center gap-1 border border-border bg-background-strong/95 p-1">
+        <button type="button" aria-label="Zoom in" onClick={() => zoom(0.78)} className="flex size-10 items-center justify-center text-foreground hover:bg-surface-raised">
+          <Plus className="size-5" />
+        </button>
+        <button type="button" aria-label="Zoom out" onClick={() => zoom(1.28)} className="flex size-10 items-center justify-center text-foreground hover:bg-surface-raised">
+          <Minus className="size-5" />
+        </button>
+        <button type="button" aria-label="Fit map" onClick={() => setViewport(initialViewport(layout))} className="flex size-10 items-center justify-center text-foreground hover:bg-surface-raised">
+          <Maximize2 className="size-5" />
+        </button>
+      </div>
     </div>
   );
 }
 
-function ArchitectureOverview({
-  files, active, selectFile,
-}: {
-  files: readonly string[];
-  active: string;
-  selectFile: (file: string) => void;
-}) {
-  return (
-    <div className="anthimeria-diagram" aria-label="Architecture composition">
-      <LayerBox layer={LAYERS.routes} files={files} active={active} selectFile={selectFile} initialOpen />
-      <FlowConnector />
-      <LayerBox layer={LAYERS.features} files={files} active={active} selectFile={selectFile} initialOpen />
-      <FlowConnector split />
-      <div className="anthimeria-split-branches">
-        <LayerBox layer={LAYERS.presentation} files={files} active={active} selectFile={selectFile} initialOpen />
-        <LayerBox layer={LAYERS.application} files={files} active={active} selectFile={selectFile} initialOpen />
-      </div>
-      <FlowConnector />
-      <div className="anthimeria-split-branches">
-        <LayerBox layer={LAYERS.contracts} files={files} active={active} selectFile={selectFile} />
-        <LayerBox layer={LAYERS.data} files={files} active={active} selectFile={selectFile} />
-      </div>
-    </div>
-  );
-}
-
-function ExecutionTrace({
-  steps, files, active, selectFile,
-}: {
-  steps: readonly TraceStep[];
-  files: readonly string[];
-  active: string;
-  selectFile: (file: string) => void;
-}) {
-  const available = new Set(files);
-  return (
-    <ol className="anthimeria-trace">
-      {steps.map((step, index) => (
-        <li key={step.path} className="anthimeria-trace-step">
-          <span className="anthimeria-trace-number">{String(index + 1).padStart(2, "0")}</span>
-          <div className="min-w-0">
-            {available.has(step.path) ? (
-              <button
-                type="button"
-                className={"anthimeria-trace-button" + (active === step.path ? " is-active" : "")}
-                onClick={() => selectFile(step.path)}
-              >
-                <strong>{step.label}</strong>
-                <span>{step.path}</span>
-              </button>
-            ) : (
-              <div className="anthimeria-trace-button is-unavailable">
-                <strong>{step.label}</strong>
-                <span>{step.path}</span>
-              </div>
-            )}
-            <p className="anthimeria-trace-description">{step.meaning}</p>
-          </div>
-        </li>
-      ))}
-    </ol>
-  );
-}
-
-/** Pure presentation graph: given known source paths, shows hierarchy and named traces. */
+/** Actual import relationships visualized as a compound, pannable graph. */
 export function AnthimeriaArchitectureMap({
-  files, active, selectFile, view, setView,
+  modules,
+  active,
+  selectFile,
+  view,
+  setView,
 }: {
-  files: readonly string[];
+  modules: readonly GraphModule[];
   active: string;
   selectFile: (file: string) => void;
   view: MapView;
-  setView: (view: MapView) => void;
+  setView: (value: MapView) => void;
 }) {
-  const options: readonly { value: MapView; title: string }[] = [
-    { value: "system", title: "SYSTEM" },
-    { value: "read", title: "READ TRACE" },
-    { value: "write", title: "WRITE TRACE" },
+  const [focusZone, setFocusZone] = useState<ArchitectureZone | null>(null);
+  const counts = useMemo(() => {
+    const existing = new Set(modules.map((module) => module.path));
+    return modules.reduce(
+      (result, module) => {
+        result.edges += module.imports.filter((dependency) => existing.has(dependency)).length;
+        return result;
+      },
+      { edges: 0 },
+    );
+  }, [modules]);
+
+  const modes: readonly { id: MapView; title: string }[] = [
+    { id: "system", title: "SYSTEM" },
+    { id: "crm", title: "CRM" },
+    { id: "read", title: "READ" },
+    { id: "write", title: "WRITE" },
+    { id: "focus", title: "FOCUS" },
   ];
+
+  function updateView(next: MapView) {
+    setFocusZone(null);
+    setView(next);
+  }
+
+  function openZone(zone: ArchitectureZone) {
+    setFocusZone(zone);
+    setView("focus");
+  }
+
   return (
-    <div className="anthimeria-map">
-      <div className="anthimeria-map-toolbar">
-        <div className="anthimeria-mode-buttons" aria-label="Architecture diagram modes">
-          {options.map((option) => (
+    <div className="min-w-0 bg-background-strong">
+      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border px-3 py-3">
+        <div role="group" aria-label="Architecture map scopes" className="flex flex-wrap items-center gap-1.5">
+          {modes.map((mode) => (
             <button
+              key={mode.id}
               type="button"
-              key={option.value}
-              onClick={() => setView(option.value)}
-              aria-pressed={view === option.value}
-              className="anthimeria-mode-button"
+              aria-pressed={view === mode.id && !(mode.id === "focus" && focusZone)}
+              onClick={() => updateView(mode.id)}
+              className={
+                "min-h-10 border px-3 text-xs font-bold tracking-wider transition-colors " +
+                (view === mode.id
+                  ? "border-signal-strong bg-signal-soft text-foreground"
+                  : "border-border text-muted-foreground hover:text-foreground")
+              }
             >
-              {option.title}
+              {mode.title}
             </button>
           ))}
         </div>
-        <span className="anthimeria-map-count">{files.length} source files</span>
+        <span className="text-[11px] text-muted-foreground">
+          {modules.length} modules · {counts.edges} local imports
+        </span>
       </div>
-      <p className="anthimeria-map-explainer">
+      <div className="flex flex-wrap items-center gap-2 px-4 py-2 text-xs text-muted-foreground">
+        <Search className="size-3.5 text-signal-text" aria-hidden="true" />
         {view === "system"
-          ? "Hierarchy shows ownership and composition. Expand a layer, then a sublayer, then tap a file to inspect its code."
-          : "The CRM trace follows named files in the existing Maximal Template. Select a stage to inspect the original source."}
-      </p>
-      {view === "system" ? (
-        <ArchitectureOverview files={files} active={active} selectFile={selectFile} />
-      ) : (
-        <ExecutionTrace
-          steps={view === "read" ? READ_TRACE : WRITE_TRACE}
-          files={files}
-          active={active}
-          selectFile={selectFile}
-        />
-      )}
-      <p className="anthimeria-map-foot">
-        {view === "system"
-          ? "Arrows show architectural composition, not a runtime call stack. READ and WRITE trace the actual CRM example files."
-          : "These stages show a representative execution path; inspect the source for exact function calls and branches."}
+          ? "System boundaries and dependency connections. Select a group to reveal its files."
+          : view === "focus"
+            ? focusZone
+              ? "Connections within " + focusZone + " and its neighboring modules."
+              : "Imports to and from the currently selected file."
+            : "Real imported module connections for this slice; select any file to open its source."}
+      </div>
+      <GraphCanvas
+        key={view + "-" + (focusZone ?? "") + (view === "focus" ? active : "")}
+        modules={modules}
+        view={view}
+        active={active}
+        focusZone={focusZone}
+        selectFile={selectFile}
+        openZone={openZone}
+      />
+      <p className="m-0 border-t border-border px-4 py-3 text-[11px] leading-relaxed text-muted-foreground">
+        Arrows run from importing modules toward their local dependencies. They are derived from source imports and exports—not inferred runtime calls. Drag empty space to pan, pinch or scroll to zoom, or use the zoom controls. File nodes open Monaco; the explorer includes every template file.
       </p>
     </div>
   );
