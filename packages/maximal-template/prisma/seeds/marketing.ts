@@ -6,6 +6,7 @@ export const seedIds = {
   campaignStep: "00000000-0000-4000-8000-000000000062",
 } as const;
 
+/** Seed planning-only fixtures; no delivery, provider calls or campaign activation. */
 export async function seed({
   tx,
   organization,

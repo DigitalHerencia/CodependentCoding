@@ -4,4 +4,3 @@ import { NewCampaignForm } from "./newCampaignForm";
 export async function CampaignNewFeature() {
   return <NewCampaignForm {...await loadCampaignNewWorkflow()} />;
 }
-

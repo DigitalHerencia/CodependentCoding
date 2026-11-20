@@ -1,6 +1,6 @@
 import "server-only";
 
-import { Prisma } from "@/generated/prisma/client";
+import type { Prisma } from "@/generated/prisma/client";
 
 const idempotencySelect = {
   id: true,
@@ -13,6 +13,7 @@ const idempotencySelect = {
   completedAt: true,
 } as const;
 
+/** Claim without a uniqueness exception that would abort the caller's PostgreSQL transaction. */
 export async function claimIdempotencyTx(
   tx: Prisma.TransactionClient,
   input: {
@@ -25,33 +26,23 @@ export async function claimIdempotencyTx(
     ? `${input.organizationId}:${input.scope}`
     : input.scope;
 
-  try {
-    const record = await tx.idempotencyRecord.create({
-      data: {
-        organizationId: input.organizationId ?? null,
-        scope,
-        key: input.key,
-        state: "STARTED",
-      },
-      select: idempotencySelect,
-    });
-    return { ...record, claimed: true as const };
-  } catch (cause) {
-    if (
-      !(cause instanceof Prisma.PrismaClientKnownRequestError) ||
-      cause.code !== "P2002"
-    ) {
-      throw cause;
-    }
-
-    const record = await tx.idempotencyRecord.findUniqueOrThrow({
-      where: { scope_key: { scope, key: input.key } },
-      select: idempotencySelect,
-    });
-    return { ...record, claimed: false as const };
-  }
+  const inserted = await tx.idempotencyRecord.createMany({
+    data: {
+      organizationId: input.organizationId ?? null,
+      scope,
+      key: input.key,
+      state: "STARTED",
+    },
+    skipDuplicates: true,
+  });
+  const record = await tx.idempotencyRecord.findUniqueOrThrow({
+    where: { scope_key: { scope, key: input.key } },
+    select: idempotencySelect,
+  });
+  return { ...record, claimed: inserted.count === 1 };
 }
 
+/** Store a successful replay result within the same transaction as its audit event. */
 export async function completeIdempotencyTx(
   tx: Prisma.TransactionClient,
   input: {

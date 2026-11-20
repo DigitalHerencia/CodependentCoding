@@ -532,7 +532,7 @@
       "decision": "DEC-054",
       "note": "template/scripts/sync-issues.mjs (+ .d.mts, issues:sync), app issues README format, skills/plan/SKILL.md, tests/plugin/syncIssues.test.ts.",
       "acceptance": {
-        "Generated issues parse with the sync script dry run": "EXECUTED: composed greenroute (--preset crm) in template/.sandbox/plan-dry, carried over the /idea dry-run docs, wrote 9 issues per skills/plan/SKILL.md (GR-001..GR-009: 4 slices, completion policy, price hiding, recurrence spike, deploy, G1 test). `node scripts/sync-issues.mjs` in the app -> '9 issues valid', 10 labels and milestone 'M1 \u00b7 MVP' would be created, 9 would-create lines, exit 0. Broken files -> exit 1 with each problem named (tests/plugin/syncIssues.test.ts)."
+        "Generated issues parse with the sync script dry run": "EXECUTED: composed greenroute (--preset crm) in template/.sandbox/plan-dry, carried over the /idea dry-run docs, wrote 9 issues per skills/plan/SKILL.md (GR-001..GR-009: 4 slices, completion policy, price hiding, recurrence spike, deploy, G1 test). `node scripts/sync-issues.mjs` in the app -> '9 issues valid', 10 labels and milestone 'M1 · MVP' would be created, 9 would-create lines, exit 0. Broken files -> exit 1 with each problem named (tests/plugin/syncIssues.test.ts)."
       },
       "pr": 251,
       "merged": "fd02417"
@@ -568,7 +568,7 @@
       "github": 201,
       "branch": "feat/201-agents-reviewer-verifier",
       "decision": "DEC-057",
-      "note": "agents/reviewer.md (doctrine + AUTH \u00a711 table mapped to CC IDs, findings [sev] CC-ID file:line), agents/verifier.md (reruns claimed commands, CONFIRMED/CONTRADICTED/UNVERIFIABLE/MISSING). Both read-only (Read, Grep, Glob, Bash).",
+      "note": "agents/reviewer.md (doctrine + AUTH §11 table mapped to CC IDs, findings [sev] CC-ID file:line), agents/verifier.md (reruns claimed commands, CONFIRMED/CONTRADICTED/UNVERIFIABLE/MISSING). Both read-only (Read, Grep, Glob, Bash).",
       "acceptance": {
         "Reviewer catches a planted violation (cross-tenant query without predicate)": "EXECUTED: in template/.sandbox/ship-dry (hipster-stack new, crm) added findCrmDealsByTitle with tx.crmDeal.findMany where { title, archivedAt } (no organizationId) next to a correct getCrmDealCount; headless `claude -p 'Use the loaded-vibes:reviewer agent to review the uncommitted changes' --plugin-dir plugin/loaded-vibes` -> '[high] CC-SEC-001 lib/fetchers/crmFetchers.ts:204 findMany on tx.crmDeal ... no organizationId', getCrmDealCount passed, verdict changes requested. No files edited by the agent ($0.25).",
         "Verifier flags a claimed-but-not-run check": "EXECUTED: same app, planted SD-001 in-review with claims `pnpm lint` exit 0 (true), `pnpm test` 9 files/64 passed (false: 8/46), `pnpm test:rls` 12 passed (impossible: no DATABASE_URL_TEST). Headless loaded-vibes:verifier reran lint, test, test:rls, validate -> CONFIRMED lint, CONTRADICTED test, CONTRADICTED test:rls ('DATABASE_URL_TEST is required'), MISSING validate and build. No edits ($0.15). Wording then tightened so a missing-prerequisite failure reads UNVERIFIABLE."
@@ -598,7 +598,7 @@
       "friction_issues": [255, 256, 257, 258, 259, 260, 261],
       "acceptance": {
         "Deployed URL exists": "OUT_OF_SCOPE (DEC-060): owner decided 2026-10-25 that the job is the template, not deploying apps. Local evidence EXECUTED: validate, test (61 passed/1 skipped), build exit 0; ship-env dry run lists names only.",
-        "Total time \u2264 1 working day or a written gap analysis": "EXECUTED: new to /ship dry run took 873 s (14.6 min) of agent time across 9 headless runs, $2.08; plus db:init and test:rls by hand. Gap: the deploy (provisioning + vercel deploy + smoke) is not yet timed; 7 friction issues #255-#261 (one bug: test:rls fails without crm, #255)."
+        "Total time ≤ 1 working day or a written gap analysis": "EXECUTED: new to /ship dry run took 873 s (14.6 min) of agent time across 9 headless runs, $2.08; plus db:init and test:rls by hand. Gap: the deploy (provisioning + vercel deploy + smoke) is not yet timed; 7 friction issues #255-#261 (one bug: test:rls fails without crm, #255)."
       }
     },
     "CC-043": {
@@ -606,7 +606,7 @@
       "github": 203,
       "branch": "docs/203-readme-doctrine-check",
       "decision": "DEC-060",
-      "note": "README rewritten (what it is, install CLI, make an app, install plugin, MVP loop; retired terms removed). pnpm doctrine:check = scripts/doctrine-check.mjs, part of pnpm validate. PRD G2/\u00a78.4 no longer require a deployed URL; AUTH.md + tech-requirements use DIRECT_DATABASE_URL.",
+      "note": "README rewritten (what it is, install CLI, make an app, install plugin, MVP loop; retired terms removed). pnpm doctrine:check = scripts/doctrine-check.mjs, part of pnpm validate. PRD G2/§8.4 no longer require a deployed URL; AUTH.md + tech-requirements use DIRECT_DATABASE_URL.",
       "acceptance": {
         "pnpm doctrine:check passes": "EXECUTED: exit 0, \"doctrine ok: 47 rules in .claude/contracts/validation.yaml; 35 IDs and 12 rules in template/eslint agree\". Negative: a planted unknown ID and an unlisted plugin rule were both reported, exit 1.",
         "README instructions work on a clean clone": "EXECUTED on a fresh clone in the scratchpad with an isolated HOME: pnpm install, pnpm --dir template install, pnpm setup, pnpm cli:link (needed pnpm global bin dir on PATH; README now says so), hipster-stack --help, hipster-stack new ../my-app --preset crm --yes; in the app pnpm typecheck 0, pnpm lint 0, pnpm build 0 (placeholder env); claude plugin marketplace add <clone> + plugin install loaded-vibes@codependent-coding enabled (isolated CLAUDE_CONFIG_DIR)."
@@ -619,11 +619,11 @@
       "decision": "DEC-061",
       "note": "Release profile run on a fresh clone of main 403e37b in the scratchpad. GitHub Actions removed by the owner 2026-10-25, so every check is local.",
       "acceptance": {
-        "PRD \u00a78.1 blank app installs, lints, type-checks, builds": "EXECUTED: hipster-stack new <dir> --preset blank --yes exit 0; pnpm lint 0, pnpm typecheck 0, pnpm build 0 (placeholder env).",
-        "PRD \u00a78.2 blank, each preset and the maximal set pass lint/typecheck/build": "EXECUTED earlier: CI presets matrix green on main run 40136570161 (M5 close). Not rerun locally for v1.",
-        "PRD \u00a78.3 template 0 doctrine findings; RLS cross-tenant test on real Postgres": "EXECUTED: pnpm --dir template validate exit 0 (format, lint, typecheck, check:modules, check:ownership, check:env); template pnpm test 66 passed/1 skipped; test:rls 10/10 on local Postgres 16.",
-        "PRD \u00a78.4 dogfood run": "EXECUTED (CC-042, DEC-060): idea to validated local app in 873 s of agent time; deploy out of scope.",
-        "PRD \u00a78.5 M0-M6 closed with evidence": "EXECUTED: every M0-M6 issue closed; dogfood follow-ups #256-#261 moved out of M6 (still open, no milestone).",
+        "PRD §8.1 blank app installs, lints, type-checks, builds": "EXECUTED: hipster-stack new <dir> --preset blank --yes exit 0; pnpm lint 0, pnpm typecheck 0, pnpm build 0 (placeholder env).",
+        "PRD §8.2 blank, each preset and the maximal set pass lint/typecheck/build": "EXECUTED earlier: CI presets matrix green on main run 40136570161 (M5 close). Not rerun locally for v1.",
+        "PRD §8.3 template 0 doctrine findings; RLS cross-tenant test on real Postgres": "EXECUTED: pnpm --dir template validate exit 0 (format, lint, typecheck, check:modules, check:ownership, check:env); template pnpm test 66 passed/1 skipped; test:rls 10/10 on local Postgres 16.",
+        "PRD §8.4 dogfood run": "EXECUTED (CC-042, DEC-060): idea to validated local app in 873 s of agent time; deploy out of scope.",
+        "PRD §8.5 M0-M6 closed with evidence": "EXECUTED: every M0-M6 issue closed; dogfood follow-ups #256-#261 moved out of M6 (still open, no milestone).",
         "Tag exists": "pending: tag v1.0.0 on the merge commit of this PR."
       }
     },
@@ -633,7 +633,7 @@
       "decision": "DEC-072",
       "note": "Terminal app plan approved by Ivan 2026-10-28 (plan doc https://claude.ai/artifact/D2bQyknDraP3A54tR5oMgu). Step 1: doctrine terminal profile.",
       "acceptance": {
-        "terminal profile in doctrine-map + plugin + contract + Architecture \u00a74.1": "EXECUTED: pnpm doctrine:check -> doctrine ok: 47 rules; 35 IDs and 12 rules agree",
+        "terminal profile in doctrine-map + plugin + contract + Architecture §4.1": "EXECUTED: pnpm doctrine:check -> doctrine ok: 47 rules; 35 IDs and 12 rules agree",
         "RuleTester cases": "EXECUTED: pnpm --dir template doctrine:test -> 55 pass, 0 fail",
         "web doctrine unchanged": "EXECUTED: pnpm --dir template lint -> exit 0; pnpm format:check (root + template) clean; vitest tests/doctrine 1 passed"
       },
@@ -957,7 +957,7 @@
       "date": "2026-10-22",
       "state": "EXECUTED",
       "command": "eslint . --fix (copy of template)",
-      "result": "241 \u2192 73 findings; tsc error count unchanged at 123 (pre-existing, Prisma client not generated in sandbox)"
+      "result": "241 → 73 findings; tsc error count unchanged at 123 (pre-existing, Prisma client not generated in sandbox)"
     },
     {
       "date": "2026-10-22",
@@ -1072,7 +1072,7 @@
       "date": "2026-10-22",
       "state": "EXECUTED",
       "command": "pnpm issues:sync (dry run, owner's PC)",
-      "result": "DRY RUN \u00b7 44 issues \u00b7 27 labels; labels: 27 would upsert; no issues or milestones would be created (idempotent)",
+      "result": "DRY RUN · 44 issues · 27 labels; labels: 27 would upsert; no issues or milestones would be created (idempotent)",
       "issue": "CC-003"
     },
     {
@@ -1279,7 +1279,7 @@
       "issue": "CC-006",
       "env": "linux node 22.22.0, pnpm 12.3.4",
       "command": "pnpm build",
-      "result": "exit 0; Route (app): \u25cb / and \u25cb /_not-found only"
+      "result": "exit 0; Route (app): ○ / and ○ /_not-found only"
     },
     {
       "date": "2026-10-23",
@@ -1799,7 +1799,7 @@
       "issue": "CC-015",
       "env": "cloud container linux, dummy env vars (no real services)",
       "command": "pnpm --dir template build",
-      "result": "exit 0; / , /faq, /privacy, /terms are \u25cb static with Revalidate 1d; tenant routes \u0192 dynamic"
+      "result": "exit 0; / , /faq, /privacy, /terms are ○ static with Revalidate 1d; tenant routes ƒ dynamic"
     },
     {
       "date": "2026-10-23",
@@ -3649,35 +3649,35 @@
       "result": "CI failed static navigation enforcement on uncached public filesystem reads. Added route-level use cache to the five public file-backed pages; features/fetchers and tenant boundaries unchanged. Focused ESLint and TypeScript exit 0 after fix; corrected CI build pending."
     },
     {
-      "date": "2026-11-02T12:42:27.535932+00:00",
+      "date": "2026-11-02T05:42:27.535932-07:00",
       "state": "EXECUTED",
       "issue": "CC-046",
       "command": "gh pr merge 350 --squash --delete-branch; git sync; CI run 41445972223",
       "result": "Corrected affected-site CI and Vercel preview passed; merged b8d305a1e38d2c387fcd5c9bfab41333605171a7, main synced, branch removed."
     },
     {
-      "date": "2026-11-02T12:42:27.535932+00:00",
+      "date": "2026-11-02T05:42:27.535932-07:00",
       "state": "EXECUTED",
       "issue": "CC-049",
       "command": "node --test --test-name-pattern=public-content --test-reporter=dot template/eslint/codependent-plugin.test.mjs",
       "result": "Before enforcement: four missing-boundary regressions fail. After implementation: all nine scoped cases pass. Template default profile remains unaffected."
     },
     {
-      "date": "2026-11-02T12:43:55.400130+00:00",
+      "date": "2026-11-02T05:43:55.40013-07:00",
       "state": "EXECUTED",
       "issue": "CC-049",
       "command": "Changed-file Prettier and ESLint (root + two plugin files); tsc --project tsconfig.build.json --noEmit; node scripts/doctrine-check.mjs; exact original/moved export and loader comparison; git diff --check",
       "result": "All passed. Eight public copy exports and four loader bodies preserved exactly. Doctrine: 51 rules / 15 ESLint rules consistent. No full suite, local build, install or dev server. One affected-site CI run pending."
     },
     {
-      "date": "2026-11-02T12:51:23.743235+00:00",
+      "date": "2026-11-02T05:51:23.743235-07:00",
       "state": "EXECUTED",
       "issue": "CC-049",
       "command": "gh pr merge 351 --squash --delete-branch; merge verification; Project Done",
       "result": "CI run 41447122368 and Vercel preview passed. Merged a2788e794d03c508678e355f1bf785033ff61a01; local main equals origin/main; branch removed."
     },
     {
-      "date": "2026-11-02T12:51:23.743235+00:00",
+      "date": "2026-11-02T05:51:23.743235-07:00",
       "state": "EXECUTED",
       "issue": "CC-050",
       "command": "node scripts/check-contrast.mjs; changed-file Prettier and ESLint; tsc --project tsconfig.build.json --noEmit",
@@ -3769,12 +3769,12 @@
     "NOT_RUN": [
       "Full suites, builds, migrations, deployments, final repeated checks and PR/CI. Final focused test process stopped at owner request."
     ],
-    "updated": "2026-11-05T19:53:13.498331+00:00",
+    "updated": "2026-11-05T12:53:13.498331-07:00",
     "delivery": "Direct local fast-forward merge to main; all working changes included at owner direction; delivery branch deleted; no PR or remote push."
   },
   "route-group-shells": {
     "status": "complete-local-main",
-    "updated": "2026-11-05T20:19:23.330509+00:00",
+    "updated": "2026-11-05T13:19:23.330509-07:00",
     "scope": "Owner-directed group navigation, shells, layouts and loading/error boundaries in maximal-template. Existing plural components/shells convention retained. Home route moved into public group without URL changes. Root document/global error/not-found unchanged.",
     "EXECUTED": [
       "Affected TSX files: node node_modules/prettier/bin/prettier.cjs --write; passed.",
@@ -3790,7 +3790,7 @@
   },
   "unused-portal-shell": {
     "status": "complete-local-main",
-    "updated": "2026-11-05T20:23:14.171004+00:00",
+    "updated": "2026-11-05T13:23:14.171004-07:00",
     "scope": "Delete unused Maximal Template PortalShell and remove its current design inventory references. Preserve historical evidence and the portal feature.",
     "EXECUTED": [
       "Repository reference search found only the component definition, design inventories and historical records; no code consumers."
@@ -3801,7 +3801,7 @@
   },
   "public-content-consolidation": {
     "status": "complete-local-main",
-    "updated": "2026-11-05T20:30:30.344943+00:00",
+    "updated": "2026-11-05T13:30:30.344943-07:00",
     "scope": "Consolidate FAQ, terms, privacy policy and landing JSX content into plain data in maximal-template/content/public.ts. Preserve copy and render presentation in the consuming templates.",
     "EXECUTED": [
       "Inspected source content and its public-template consumers; updated imports and rendering."
@@ -3812,7 +3812,7 @@
   },
   "environment-layout": {
     "status": "complete-local-main",
-    "updated": "2026-11-05T20:50:01.032754+00:00",
+    "updated": "2026-11-05T13:50:01.032754-07:00",
     "scope": "Replace template lib/env with server-only lib/utils/env.ts and provider-local integration env.ts modules. Zod parsing is in schemas/envSchemas.ts; schema directory and affected consumers/generation/governance paths use schemas. Browser mode flags have one client-safe definition in lib/constants/mode.ts and are re-exported by server env utility. Lazy validation, required fields and credential boundaries preserved.",
     "EXECUTED": [
       "Affected template files: node node_modules/prettier/bin/prettier.cjs --write; passed.",
@@ -3828,7 +3828,7 @@
   },
   "runtime-module-status-reporting": {
     "status": "complete-local-main",
-    "updated": "2026-11-05T21:03:55.157469+00:00",
+    "updated": "2026-11-05T14:03:55.157469-07:00",
     "scope": "Retain template lib/modules as application runtime metadata (navigation, dashboard, authorization and admin records); generator/plugin consume and edit this application-owned configuration. Move runtime integration status to lib/modules/status.ts. Retain action error reporter as lib/utils/reportError.ts; update consumers, docs and server-only/naming rules.",
     "EXECUTED": [
       "Affected template files: direct installed Prettier --write and ESLint --fix --max-warnings=0; passed.",
@@ -3839,7 +3839,7 @@
   },
   "crm-pipeline-consolidation": {
     "status": "complete-local-main",
-    "updated": "2026-11-05T21:15:21.548796+00:00",
+    "updated": "2026-11-05T14:15:21.548796-07:00",
     "scope": "Pipeline calculation is used, not duplicated. Move decimal conversion helpers into lib/utils/money.ts and CRM calculation into existing crmWorkflows.ts. Remove workflows/crm directory and update existing test import without running tests. Preserve six-place exact bigint weighting and lost-deal exclusion.",
     "EXECUTED": [
       "Affected money utility, CRM workflow and test import: Prettier --write; passed.",
@@ -3850,7 +3850,7 @@
   },
   "mirrored-template-architecture": {
     "status": "complete-local-main",
-    "updated": "2026-11-06T00:33:03.257397+00:00",
+    "updated": "2026-11-05T17:33:03.257397-07:00",
     "source_commit": "cdc27d273ecebda7d4744f23a5f674cff184fca7",
     "owner_instruction": "Implement mirrored template presentation/business composition directly on main. Commit without branch, PR or push. Only format write, lint fix, type generation/check; no tests/builds/servers.",
     "scope": [
@@ -3880,7 +3880,7 @@
   },
   "template-build-publication": {
     "status": "build-passed",
-    "updated": "2026-11-06T00:52:23.100031+00:00",
+    "updated": "2026-11-05T17:52:23.100031-07:00",
     "source_commit": "233817d9ae44714b39ff6d95a537ba1ea1a391c1",
     "owner_instruction": "Build the template and push only after success; then clean safe machine/network temporary state and stop task processes.",
     "scope": "Fix client TenantShell importing cached server PublicFooter by passing TenantFooter as a server-rendered layout slot. No auth, tenancy, schema or dependency version changes.",
@@ -4075,7 +4075,7 @@
     "source_review": "Existing browser expectations aligned with retired routes/modal contracts without executing tests.",
     "project_status": "Done",
     "merge_commit": "59ad92417dd5681a6fa831c4ba8d399cbc8f6277",
-    "completed_at": "2026-11-18T08:50:17.096543+00:00",
+    "completed_at": "2026-11-18T01:50:17.096543-07:00",
     "remaining": []
   },
   "admin-domain-conformance": {
@@ -4163,7 +4163,7 @@
     "pr_url": "https://github.com/DigitalHerencia/CodependentCoding/pull/375",
     "checked_source_commit": "04e83715a79f7753eb32a95f99df221e85cd8020",
     "merge_commit": "f513865b392b54525d96eeeaefcc2f85487bb87a",
-    "completed_at": "2026-11-18T19:12:12.205445+00:00"
+    "completed_at": "2026-11-18T12:12:12.205445-07:00"
   },
   "admin-376-sidebar-account": {
     "spec_id": "ADMIN-376-OWNER-PROMPT",
@@ -4225,12 +4225,12 @@
       "Only a dashboard screenshot was attached; no dashboard source file was available. Existing registry primitives implement the reference hierarchy.",
       "Context7 was unavailable; official Clerk/shadcn/BoldKit documentation and installed types were consulted."
     ],
-    "last_updated": "2026-11-18T20:19:44.991910+00:00",
+    "last_updated": "2026-11-18T13:19:44.99191-07:00",
     "pr_url": "https://github.com/DigitalHerencia/CodependentCoding/pull/377",
     "checked_source_commit": "9effbc49f1c22d2cc8727f49e3ae05ce4bd659b1",
     "merge_commit": "126b2046c7b776eb4586dd09d326e3d45202b2e5",
     "project_status": "Done",
-    "completed_at": "2026-11-18T20:19:44.991910+00:00",
+    "completed_at": "2026-11-18T13:19:44.99191-07:00",
     "remaining_source_work": [],
     "source_review": [
       "CRM changed-file count zero.",
@@ -4318,7 +4318,7 @@
     "status": "merged-verified",
     "branch": "refactor/382-invoicing-architecture",
     "project": "DigitalHerencia project 19",
-    "updated": "2026-11-19T01:43:47.189284+00:00",
+    "updated": "2026-11-18T18:43:47.189284-07:00",
     "scope": "Consolidate tenant invoices and expenses; CRM read-only; preserve PWA edits.",
     "verification": [
       {
@@ -4613,6 +4613,66 @@
     "risks": [
       "Marketing refactor remains unverified and may be incomplete.",
       "Migration 20261118000000_marketing_cancellation_timestamp is committed source only; not applied."
+    ]
+  },
+  "marketing_owner_refactor": {
+    "references": [
+      "https://nextjs.org/docs/app/api-reference/directives/use-server",
+      "https://react-hook-form.com/docs/usecontroller/controller"
+    ],
+    "limitations": [
+      "No supplied dashboard image; visual resemblance cannot be verified.",
+      "Context7 unavailable; installed API types and directly retrieved official Next.js/RHF docs used."
+    ],
+    "verification": [
+      {
+        "result": "PASS, zero warnings; initial type-import-style errors fixed. Only the four affected files repeated after review changes.",
+        "command": "node.exe C:/nvm4w/nodejs/node_modules/npm/bin/npm-cli.js run lint:fix -- <marketing routes/features/tests and affected domain/shared source files>"
+      },
+      {
+        "result": "PASS; includes owner spec and execution records. Four code files repeated after review changes.",
+        "command": "node.exe C:/nvm4w/nodejs/node_modules/npm/bin/npm-cli.js run format:write -- --ignore-unknown <affected files>"
+      },
+      {
+        "result": "PASS: Prisma Client 7.10.1 and Next route types generated without database requests.",
+        "command": "node.exe C:/nvm4w/nodejs/node_modules/npm/bin/npm-cli.js run typegen"
+      },
+      {
+        "result": "PASS; repeated after final mutation/validation changes.",
+        "command": "node.exe C:/nvm4w/nodejs/node_modules/npm/bin/npm-cli.js run typecheck"
+      }
+    ],
+    "not_run": [
+      "Tests, including updated unit/integration/E2E source",
+      "Builds, servers/watchers, runtime/browser/visual checks",
+      "Migrations, seeds and live provider requests"
+    ],
+    "branch": "refactor/384-marketing-architecture",
+    "source_snapshot": "cb0af7691541d8c8c7cbcbb6ce9a9f22dd4caf7f",
+    "status": "verified-ready-for-review",
+    "migration": "20261118000000_marketing_cancellation_timestamp is source only; owner must apply before runtime uses canceledAt.",
+    "project_status": "In progress",
+    "spec": "context/specs/marketing-owner-refactor.md",
+    "updated": "2026-11-20T19:24:15.2252172Z",
+    "issue": 384,
+    "implementation": [
+      "Singleton blocks, copy, templates, workflows, contracts and persistence files; no parallel marketing client workflow or page-block implementation.",
+      "Authorized direct detail reads, database search/status/pagination and full-range planning aggregates.",
+      "RHF forms, explicit UTC schedules, concurrency conflicts, preserved unsupported audience rules, atomic audit and replay validation.",
+      "Bounded step pagination, searchable bounded audience options, minimal mutation and browser DTOs, accessible safe recovery states.",
+      "Shared marketing idempotency insert now skips duplicate conflicts without aborting PostgreSQL replay transaction; original scope and stored results retained."
+    ],
+    "scope": "Nine marketing tenant routes; CRM read-only; saved PWA and Anthimeria work preserved.",
+    "environment_findings": [
+      "Inherited GIT_CONFIG_COUNT lacked its matching keys; task Git commands set the process-local count to zero.",
+      "pnpm.cmd could not parse route parentheses; direct pnpm then rejected stale registryRoutes metadata. Used installed npm runner for the same allowed scripts, without installation or dependency changes."
+    ],
+    "review": [
+      "Added post-commit marketing cache invalidation and existing lib/authz record-write policy calls.",
+      "Rejected direct attempts to replace complex definitions; metadata-only updates preserve them.",
+      "Schema validation returns schedule and lifecycle field errors. Browser options and mutation responses omit arbitrary definition values.",
+      "Shared idempotency duplicate insertion uses skipDuplicates; completed replay validates matching campaign/event audit ownership.",
+      "CRM and PWA source were not edited. No prohibited verification or provider operation executed."
     ]
   }
 }

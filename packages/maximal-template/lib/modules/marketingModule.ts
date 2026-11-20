@@ -1,5 +1,6 @@
 import type { ModuleDefinition } from "@/types/moduleTypes";
 
+/** Own marketing navigation, planning dashboard contributions, permissions and records. */
 export const marketingModule = {
   id: "marketing",
   nav: {
@@ -23,5 +24,16 @@ export const marketingModule = {
     resources: ["marketing.campaign", "marketing.audience"],
     grants: { MEMBER: ["read", "create", "update"] },
   },
-  records: [{ label: "Campaigns", model: "campaign" }],
+  records: [
+    {
+      label: "Campaigns",
+      model: "campaign",
+      permission: "marketing.campaign:read",
+    },
+    {
+      label: "Audiences",
+      model: "audience",
+      permission: "marketing.audience:read",
+    },
+  ],
 } satisfies ModuleDefinition;

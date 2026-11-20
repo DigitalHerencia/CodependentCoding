@@ -4,4 +4,3 @@ import { MarketingErrorBlock } from "@/components/blocks/marketing-blocks";
 export default function MarketingError({ reset }: { reset: () => void }) {
   return <MarketingErrorBlock reset={reset} />;
 }
-
