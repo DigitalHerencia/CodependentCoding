@@ -3,7 +3,7 @@ import Link from "next/link";
 
 const primaryLinks = [
   { label: "Doctrine", href: "/doctrine" },
-  { label: "Maximal", href: "/maximal" },
+  { label: "Anthimeria", href: "/anthimeria" },
   { label: "Hipster Stack", href: "/hipster-stack" },
   { label: "Loaded Vibes", href: "/loaded-vibes" },
 ] as const;

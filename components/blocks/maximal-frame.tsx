@@ -1,17 +1,17 @@
 import type { ReactNode } from "react";
 import { PageHero } from "@/components/blocks/page-hero";
-import { maximalCopy } from "@/content/public";
+import { anthimeriaCopy } from "@/content/public";
 
 export function MaximalFrame({ children }: { children: ReactNode }) {
   return (
     <main className="px-4 pb-16">
       <PageHero
-        kicker={maximalCopy.kicker}
-        title={maximalCopy.title}
-        subtitle={maximalCopy.subtitle}
+        kicker={anthimeriaCopy.kicker}
+        title={anthimeriaCopy.title}
+        subtitle={anthimeriaCopy.subtitle}
       />
       <p className="site-rise mx-auto max-w-2xl text-center text-sm text-muted-foreground">
-        {maximalCopy.line}
+        {anthimeriaCopy.line}
       </p>
       <div className="site-rise mt-8">{children}</div>
     </main>

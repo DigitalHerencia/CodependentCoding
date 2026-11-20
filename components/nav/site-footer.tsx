@@ -25,7 +25,6 @@ export function SiteFooter() {
           />
         </Link>
         <nav aria-label="Footer navigation">
-          <a className="nav-link" href="/anthimeria.html">Anthimeria</a>
           {footerLinks.map((link) => (
             <Link className="nav-link" href={link.href} key={link.label}>
               {link.label}

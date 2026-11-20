@@ -763,3 +763,160 @@ pre {
     transition: none;
   }
 }
+
+
+/* Anthimeria: visual topology alongside the existing Maximal source browser. */
+.anthimeria-workspace {
+  display: grid;
+  grid-template-columns: minmax(190px, var(--anthimeria-sidebar-width, 280px)) 10px minmax(0, 1fr);
+  background: var(--background-strong);
+}
+.anthimeria-explorer { max-height: 78vh; min-width: 0; }
+.anthimeria-inspection { min-width: 0; }
+.anthimeria-resize-handle {
+  display: grid;
+  place-items: center;
+  border-right: 1px solid var(--border);
+  border-left: 1px solid var(--border);
+  background: var(--surface);
+  cursor: col-resize;
+  touch-action: none;
+  user-select: none;
+}
+.anthimeria-resize-handle span {
+  width: 2px; height: 44px;
+  background: var(--signal);
+}
+.anthimeria-resize-handle:hover,
+.anthimeria-resize-handle:focus-visible { background: var(--surface-raised); outline: 2px solid var(--signal); }
+.anthimeria-view-tabs { display: inline-flex; border: 1px solid var(--border); }
+.anthimeria-view-tab {
+  min-width: 3.3rem;
+  min-height: 30px;
+  padding: .3rem .55rem;
+  border: 0;
+  background: transparent;
+  color: var(--muted-foreground);
+  font: 700 .7rem var(--type-code);
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.anthimeria-view-tab + .anthimeria-view-tab { border-left: 1px solid var(--border); }
+.anthimeria-view-tab[aria-selected="true"] { background: var(--signal); color: var(--foreground); }
+.anthimeria-view-tab:hover { color: var(--foreground); }
+.anthimeria-utility-button { min-height: 32px; white-space: nowrap; }
+.anthimeria-map {
+  height: min(68vh, 880px);
+  min-height: 430px;
+  overflow-y: auto;
+  padding: clamp(.6rem, 1.4vw, 1.2rem);
+  background: var(--background-strong);
+  container-type: inline-size;
+}
+.anthimeria-map :is(h2,h3,p) { text-shadow: none; }
+.anthimeria-map-toolbar { display: flex; align-items: center; justify-content: space-between; gap: .5rem; flex-wrap: wrap; }
+.anthimeria-mode-buttons { display: inline-flex; flex-wrap: wrap; border: 1px solid var(--border); }
+.anthimeria-mode-button {
+  border: 0; border-right: 1px solid var(--border);
+  padding: .55rem .75rem;
+  background: transparent;
+  color: var(--muted-foreground);
+  font: 700 .7rem var(--type-code);
+  cursor: pointer;
+}
+.anthimeria-mode-button:last-child { border-right: 0; }
+.anthimeria-mode-button[aria-pressed="true"] { background: var(--signal); color: var(--foreground); }
+.anthimeria-map-count { color: var(--muted-foreground); font: .67rem var(--type-code); }
+.anthimeria-map-explainer, .anthimeria-map-foot {
+  margin: .8rem 0 1rem;
+  color: var(--muted-foreground);
+  font: .73rem/1.6 var(--type-code);
+}
+.anthimeria-map-foot { border-top: 1px solid var(--hairline); padding-top: .8rem; margin-top: 1rem; }
+.anthimeria-diagram { max-width: 790px; margin: 0 auto; }
+.anthimeria-connector { display: flex; justify-content: center; align-items: center; min-height: 29px; color: var(--foreground); }
+.anthimeria-connector.is-branch { min-height: 39px; color: var(--signal-text); }
+.anthimeria-split-branches { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: .8rem; }
+.anthimeria-layer { min-width: 0; }
+.anthimeria-layer-item {
+  border: 1px solid var(--border);
+  background: var(--surface-raised);
+  min-width: 0;
+}
+.anthimeria-layer-item[data-state="open"] {
+  background: color-mix(in srgb,var(--surface-raised) 30%,transparent);
+}
+.anthimeria-layer-trigger {
+  padding: .65rem .8rem;
+  min-width: 0;
+}
+.anthimeria-layer-trigger:hover { background: var(--surface); }
+.anthimeria-layer-name { color: var(--foreground); font: 700 .75rem var(--type-code); letter-spacing: .04em; }
+.anthimeria-layer-caption {
+  color: var(--muted-foreground);
+  font: .65rem/1.5 var(--type-body);
+  text-transform: none;
+  overflow-wrap: anywhere;
+}
+.anthimeria-count {
+  align-self: flex-start; margin-left: auto; padding: 0 .35rem;
+  color: var(--signal-text); font: .67rem var(--type-code);
+  flex-shrink: 0;
+}
+.anthimeria-layer-contents { padding: 0 .55rem .5rem; }
+.anthimeria-subgroups { display: grid; gap: .4rem; }
+.anthimeria-subgroup {
+  background: var(--surface-raised);
+  border: 1px solid var(--hairline);
+}
+.anthimeria-subgroup[data-state="open"] {
+  background: color-mix(in srgb,var(--surface-raised) 30%,transparent);
+}
+.anthimeria-subgroup-trigger { padding: .5rem; gap: .3rem; }
+.anthimeria-subgroup-trigger svg { width: .8rem; height: .8rem; }
+.anthimeria-subgroup-label { font: 700 .66rem var(--type-code); text-align: left; text-transform: uppercase; overflow-wrap: anywhere; }
+.anthimeria-files { display: grid; grid-template-columns: repeat(auto-fit,minmax(min(100%,140px),1fr)); gap: .3rem; padding: .35rem; }
+.anthimeria-file-node {
+  display: flex; gap: .35rem; align-items: center;
+  min-width: 0; padding: .55rem .4rem;
+  border: 1px solid var(--hairline);
+  color: var(--foreground);
+  background: var(--surface);
+  font: .65rem/1.35 var(--type-code);
+  text-align: left; cursor: pointer;
+}
+.anthimeria-file-node span { overflow-wrap: anywhere; }
+.anthimeria-file-node:hover, .anthimeria-file-node.is-active { border-color: var(--signal); background: var(--signal-soft); }
+.anthimeria-more { margin: .35rem; border: 1px solid var(--hairline); font: .67rem var(--type-code); }
+.anthimeria-more summary { cursor: pointer; padding: .65rem; color: var(--signal-text); }
+.anthimeria-trace { list-style: none; padding: 0; margin: 1.1rem 0; }
+.anthimeria-trace-step {
+  position: relative; display: grid;
+  grid-template-columns: 2.1rem minmax(0,1fr); gap: .6rem; padding-bottom: 1.25rem;
+}
+.anthimeria-trace-step:not(:last-child)::after {
+  content: "↓"; position: absolute; top: 3.2rem; left: .6rem;
+  color: var(--signal-text); font: 700 1rem var(--type-code);
+}
+.anthimeria-trace-number { padding: .5rem 0; color: var(--signal-text); font: .75rem var(--type-code); }
+.anthimeria-trace-button {
+  display: flex; flex-direction: column; gap: .3rem; width: 100%;
+  padding: .75rem; border: 1px solid var(--border);
+  background: var(--surface-raised); color: var(--foreground);
+  cursor: pointer; text-align: left;
+}
+.anthimeria-trace-button strong { font: 700 .72rem var(--type-code); }
+.anthimeria-trace-button span { color: var(--muted-foreground); font: .66rem/1.5 var(--type-code); overflow-wrap: anywhere; }
+.anthimeria-trace-button:hover, .anthimeria-trace-button.is-active { border-color: var(--signal); background: var(--signal-soft); }
+.anthimeria-trace-button.is-unavailable { opacity: .5; cursor: default; }
+.anthimeria-trace-description { margin: .4rem .2rem 0; color: var(--muted-foreground); font: .69rem/1.5 var(--type-body); }
+@container (max-width: 600px) {
+  .anthimeria-split-branches { grid-template-columns: minmax(0,1fr); }
+  .anthimeria-files { grid-template-columns: repeat(auto-fit,minmax(min(100%,130px),1fr)); }
+}
+@media (max-width: 767px) {
+  .anthimeria-workspace { display: block; }
+  .anthimeria-explorer { max-height: 14rem; border-bottom: 2px solid var(--border); }
+  .anthimeria-resize-handle { display: none; }
+  .anthimeria-map { height: 68vh; }
+}

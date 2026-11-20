@@ -3,12 +3,12 @@ import type { Metadata } from "next";
 import { MaximalBrowserFeature } from "@/features/maximal/maximal-browser-feature";
 
 export const metadata: Metadata = {
-  title: "The Maximal Template™ · Codependent Coding™",
+  title: "The Anthimeria™ · Codependent Coding™",
 };
 
-export default function Page({ searchParams }: PageProps<"/maximal">) {
+export default function Page({ searchParams }: PageProps<"/anthimeria">) {
   return (
-    <Suspense fallback={<p>Loading source�</p>}>
+    <Suspense fallback={<p>Loading source…</p>}>
       <MaximalBrowserFeature searchParams={searchParams} />
     </Suspense>
   );

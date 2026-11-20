@@ -73,11 +73,11 @@ export const loadedVibesCopy = {
   ],
 } as const;
 
-export const maximalCopy = {
+export const anthimeriaCopy = {
   kicker: "The",
-  title: "Maximal Template™",
-  subtitle: "Normalized defaults · read-only",
-  line: "One runnable app containing the base and every module. Build maximal. Select deliberately. Delete aggressively.",
+  title: "Anthimeria™",
+  subtitle: "Architecture visualizer · source explorer",
+  line: "A system constituted of simples, currently hipstering. Trace the architecture. Open the files. Read the code.",
 } as const;
 
 export const hipsterStackCopy = {

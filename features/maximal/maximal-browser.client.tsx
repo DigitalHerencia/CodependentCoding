@@ -3,43 +3,44 @@
 import Editor, { type BeforeMount } from "@monaco-editor/react";
 import { ChevronRight, FileCode2, Folder } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useMemo, useState, useTransition } from "react";
+import {
+  useMemo,
+  useRef,
+  useState,
+  useTransition,
+  type CSSProperties,
+  type PointerEvent,
+  type KeyboardEvent,
+} from "react";
+import {
+  AnthimeriaArchitectureMap,
+  type MapView,
+} from "@/components/blocks/anthimeria-architecture-map";
 import { CopyButton } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 type Node = { name: string; path: string; children: Node[] };
+type Pane = "map" | "code";
 
-const repo = "DigitalHerencia/CodependentCoding";
-const blobBase = `https://github.com/${repo}/blob/main/template/`;
+const blobBase = "https://github.com/DigitalHerencia/CodependentCoding/blob/main/packages/maximal-template/";
 
 const layers: [RegExp, string][] = [
-  [
-    /^app\/api\//,
-    "Webhook route: raw-body verify → idempotent persistence → ack",
-  ],
-  [/^app\//, "Route: owns the URL. Thin. Hands off to a feature."],
-  [/^features\//, "Feature: orchestrates a capability and renders blocks."],
-  [/^components\/ui\//, "Primitive: shadcn-derived UI control."],
-  [/^components\//, "Presentation: renders. Knows nothing. Blissfully."],
-  [/^lib\/fetchers\//, "Fetcher: auth → authz → scoped select → DTO."],
-  [/^lib\/actions\//, "Action: auth → authz → Zod → write → invalidate."],
-  [
-    /^lib\/workflows\//,
-    "Workflow: named application logic, no Prisma, no SDKs.",
-  ],
-  [/^lib\/db\//, "Database: transactions, selects, DTOs, RLS context."],
-  [
-    /^lib\/(auth|authz)\//,
-    "Identity and access. Authentication never decides.",
-  ],
-  [
-    /^lib\/integrations\//,
-    "Integration: the only place a provider SDK may live.",
-  ],
-  [/^lib\//, "Library: cache, env, constants, utils, modules."],
-  [/^schemas\//, "Schema: Zod, client- and server-safe."],
-  [/^prisma\//, "Prisma: schema, RLS policies, seed."],
-  [/^eslint\//, "Doctrine, compiled to lint rules."],
+  [/^app\/api\//, "HTTP boundary: webhook request ingress."],
+  [/^app\//, "Route boundary: URL ownership and feature composition."],
+  [/^features\//, "Feature: connects application workflows and presentation."],
+  [/^components\/ui\//, "UI primitive: an individual accessible control."],
+  [/^components\/blocks\//, "Presentation block: composes primitives."],
+  [/^components\/templates\//, "Page template: composes blocks."],
+  [/^components\//, "Presentation: layout, navigation, and shared display."],
+  [/^lib\/workflows\//, "Workflow: use-case orchestration."],
+  [/^lib\/fetchers\//, "Fetcher: authenticated tenant-scoped read."],
+  [/^lib\/actions\//, "Action: validated, authorized server mutation."],
+  [/^lib\/db\//, "Persistence: DTOs, selects, transactions, and RLS."],
+  [/^lib\/integrations\//, "Integration: external provider adapter."],
+  [/^lib\/(auth|authz)\//, "Authentication and authorization."],
+  [/^schemas\//, "Schema: runtime validation and input contracts."],
+  [/^types\//, "Types: shape contracts for application data."],
+  [/^prisma\//, "Prisma schema, policies, and migrations."],
 ];
 
 function buildTree(paths: string[]) {
@@ -79,6 +80,7 @@ function language(file: string) {
   if (file.endsWith(".md")) return "markdown";
   if (/\.ya?ml$/.test(file)) return "yaml";
   if (file.endsWith(".sql")) return "sql";
+  if (file.endsWith(".prisma")) return "plaintext";
   return "plaintext";
 }
 
@@ -133,7 +135,7 @@ function TreeNode({
   return (
     <li>
       <details
-        open={open || active.startsWith(`${node.path}/`)}
+        open={open || active.startsWith(node.path + "/") || undefined}
         className="group"
       >
         <summary className="flex cursor-pointer list-none items-center gap-1.5 py-0.5 text-xs text-foreground">
@@ -163,6 +165,49 @@ function TreeNode({
   );
 }
 
+/** X-axis splitter with pointer/touch capture and keyboard adjustment. */
+function useHorizontalSplitter() {
+  const workspaceRef = useRef<HTMLDivElement>(null);
+  const [sidebarWidth, setSidebarWidth] = useState(280);
+
+  function resizeFromPointer(event: PointerEvent<HTMLDivElement>) {
+    if (!event.currentTarget.hasPointerCapture(event.pointerId)) return;
+    const bounds = workspaceRef.current?.getBoundingClientRect();
+    if (!bounds) return;
+    setSidebarWidth(
+      Math.max(190, Math.min(event.clientX - bounds.left, bounds.width - 300)),
+    );
+  }
+
+  function onPointerDown(event: PointerEvent<HTMLDivElement>) {
+    if (event.button !== 0) return;
+    event.currentTarget.setPointerCapture(event.pointerId);
+    resizeFromPointer(event);
+  }
+
+  function onKeyDown(event: KeyboardEvent<HTMLDivElement>) {
+    if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
+      event.preventDefault();
+      const delta = event.key === "ArrowLeft" ? -20 : 20;
+      setSidebarWidth((value) => Math.max(190, Math.min(650, value + delta)));
+    } else if (event.key === "Home") {
+      event.preventDefault();
+      setSidebarWidth(190);
+    } else if (event.key === "End") {
+      event.preventDefault();
+      setSidebarWidth(650);
+    }
+  }
+
+  return {
+    workspaceRef,
+    sidebarWidth,
+    resizeFromPointer,
+    onPointerDown,
+    onKeyDown,
+  };
+}
+
 export function MaximalBrowser({
   files,
   active,
@@ -175,10 +220,14 @@ export function MaximalBrowser({
   const router = useRouter();
   const [query, setQuery] = useState("");
   const [isPending, startTransition] = useTransition();
+  const [pane, setPane] = useState<Pane>("map");
+  const [mapView, setMapView] = useState<MapView>("system");
+  const splitter = useHorizontalSplitter();
 
   function selectFile(file: string) {
+    setPane("code");
     startTransition(() => {
-      router.replace(`/maximal?file=${encodeURIComponent(file)}`, {
+      router.replace("/anthimeria?file=" + encodeURIComponent(file), {
         scroll: false,
       });
     });
@@ -196,20 +245,28 @@ export function MaximalBrowser({
   );
   const layer =
     layers.find(([pattern]) => pattern.test(active))?.[1] ??
-    "Configuration. Load-bearing, unfortunately.";
+    "Application configuration or infrastructure.";
+
+  const workspaceStyle = {
+    "--anthimeria-sidebar-width": splitter.sidebarWidth + "px",
+  } as CSSProperties;
 
   return (
-    <div className="mx-auto grid max-w-7xl border border-border md:grid-cols-[17rem_minmax(0,1fr)]">
-      <aside className="max-h-80 overflow-y-auto border-b border-border p-3 md:max-h-[75vh] md:border-r md:border-b-0">
-        <label className="sr-only" htmlFor="maximal-filter">
-          Filter files
+    <div
+      ref={splitter.workspaceRef}
+      style={workspaceStyle}
+      className="anthimeria-workspace mx-auto max-w-7xl border border-border"
+    >
+      <aside className="anthimeria-explorer min-w-0 overflow-y-auto border-b border-border p-3 md:max-h-[78vh] md:border-b-0">
+        <label className="sr-only" htmlFor="anthimeria-filter">
+          Filter source files
         </label>
         <input
-          id="maximal-filter"
+          id="anthimeria-filter"
           type="search"
           value={query}
           onChange={(event) => setQuery(event.target.value)}
-          placeholder={`Filter ${files.length} files…`}
+          placeholder={"Filter " + files.length + " files…"}
           className="mb-3 w-full border border-border bg-background-strong px-3 py-2 text-xs text-foreground focus-visible:ring-2 focus-visible:ring-signal focus-visible:outline-none"
         />
         <ul className="m-0 list-none p-0">
@@ -224,39 +281,121 @@ export function MaximalBrowser({
           ))}
         </ul>
       </aside>
-      <section className="min-w-0">
-        <header className="flex flex-wrap items-center justify-between gap-3 border-b border-border px-4 py-2">
-          <code className="truncate text-xs text-foreground">
+      <div
+        role="separator"
+        tabIndex={0}
+        aria-label="Resize source explorer horizontally"
+        aria-orientation="vertical"
+        aria-valuemin={190}
+        aria-valuemax={650}
+        aria-valuenow={splitter.sidebarWidth}
+        className="anthimeria-resize-handle"
+        onPointerDown={splitter.onPointerDown}
+        onPointerMove={splitter.resizeFromPointer}
+        onPointerUp={(event) => {
+          if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+            event.currentTarget.releasePointerCapture(event.pointerId);
+          }
+        }}
+        onPointerCancel={(event) => {
+          if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+            event.currentTarget.releasePointerCapture(event.pointerId);
+          }
+        }}
+        onKeyDown={splitter.onKeyDown}
+      >
+        <span aria-hidden="true" />
+      </div>
+      <section className="anthimeria-inspection min-w-0">
+        <header className="anthimeria-inspection-header flex flex-wrap items-center justify-between gap-3 border-b border-border px-3 py-2">
+          <code className="min-w-0 flex-1 truncate text-xs text-foreground">
             template/{active}
           </code>
-          <span className="flex gap-2">
-            <CopyButton value={isPending ? "Loading�" : source} />
+          <div className="flex flex-wrap items-center gap-1.5">
+            <div role="tablist" aria-label="Source viewer modes" className="anthimeria-view-tabs">
+              <button
+                type="button"
+                role="tab"
+                aria-selected={pane === "map"}
+                aria-controls="anthimeria-map-panel"
+                id="anthimeria-map-tab"
+                onClick={() => setPane("map")}
+                className="anthimeria-view-tab"
+              >
+                Map
+              </button>
+              <button
+                type="button"
+                role="tab"
+                aria-selected={pane === "code"}
+                aria-controls="anthimeria-code-panel"
+                id="anthimeria-code-tab"
+                onClick={() => setPane("code")}
+                className="anthimeria-view-tab"
+              >
+                Code
+              </button>
+            </div>
+            <CopyButton
+              value={isPending ? "" : source}
+              className="anthimeria-utility-button"
+            />
             <a
-              className="border border-border px-3 py-1.5 text-xs text-foreground uppercase no-underline hover:border-signal"
+              className="anthimeria-utility-button inline-flex items-center border border-border px-2 py-1.5 text-xs text-foreground uppercase no-underline hover:border-signal"
               href={blobBase + active}
+              target="_blank"
+              rel="noreferrer"
             >
               GitHub
             </a>
-          </span>
+          </div>
         </header>
-        <p className="m-0 border-b border-border px-4 py-2 text-xs text-signal-text">
-          {layer}
+        <p className="m-0 border-b border-border px-3 py-2 text-xs text-signal-text">
+          {pane === "map"
+            ? "CONSTITUTED SYSTEM / FILE OWNERSHIP / READ + WRITE TRACES"
+            : layer}
         </p>
-        <Editor
-          height="65vh"
-          theme="codependent"
-          beforeMount={beforeMount}
-          path={active}
-          language={language(active)}
-          value={isPending ? "Loading�" : source}
-          options={{
-            readOnly: true,
-            minimap: { enabled: false },
-            fontSize: 13,
-            fontFamily: "Fira Code, JetBrains Mono, monospace",
-            scrollBeyondLastLine: false,
-          }}
-        />
+        <div
+          id="anthimeria-map-panel"
+          role="tabpanel"
+          aria-labelledby="anthimeria-map-tab"
+          hidden={pane !== "map"}
+        >
+          {pane === "map" && (
+            <AnthimeriaArchitectureMap
+              files={files}
+              active={active}
+              selectFile={selectFile}
+              view={mapView}
+              setView={setMapView}
+            />
+          )}
+        </div>
+        <div
+          id="anthimeria-code-panel"
+          role="tabpanel"
+          aria-labelledby="anthimeria-code-tab"
+          hidden={pane !== "code"}
+        >
+          {pane === "code" && (
+            <Editor
+              height="65vh"
+              theme="codependent"
+              beforeMount={beforeMount}
+              path={active}
+              language={language(active)}
+              value={isPending ? "// Loading source…" : source}
+              options={{
+                readOnly: true,
+                automaticLayout: true,
+                minimap: { enabled: false },
+                fontSize: 13,
+                fontFamily: "Fira Code, JetBrains Mono, monospace",
+                scrollBeyondLastLine: false,
+              }}
+            />
+          )}
+        </div>
       </section>
     </div>
   );
