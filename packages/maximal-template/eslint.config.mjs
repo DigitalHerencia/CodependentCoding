@@ -96,7 +96,7 @@ export default defineConfig([
   },
   {
     name: "codependent/vendored-ui",
-    files: ["components/ui/**", "components/chart/**"],
+    files: ["components/ui/**", "components/charts/**"],
     rules: { "@typescript-eslint/no-non-null-assertion": "off" },
   },
 

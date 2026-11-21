@@ -24,7 +24,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { cn, safeHref } from "@/components/ui/utils";
+import { cn, safeHref } from "@/lib/utilites/utils";
 import { sharedLibraryCopy } from "@/content/shared";
 import {
   columnFilteringFeature,

@@ -4,19 +4,19 @@ import type { LoaderCurveKey } from "@/types/uiTypes";
 
 import * as React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
-import { cn } from "@/components/ui/utils";
+import { cn } from "@/lib/utilites/utils";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import {
   prefersReducedMotion,
   onReducedMotionChange,
-} from "@/components/ui/motion-core";
+} from "@/lib/utilites/motion-core";
 import {
   buildPath,
   getPoint,
   getAngle,
   getDetailScale,
   getCurvePulseDuration,
-} from "@/components/ui/math-curves";
+} from "@/lib/utilites/math-curves";
 
 const mathCurveLoaderVariants = cva("", {
   variants: {

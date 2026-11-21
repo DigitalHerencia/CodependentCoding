@@ -1,5 +1,5 @@
 import * as React from "react";
-import { cn } from "@/components/ui/utils";
+import { cn } from "@/lib/utilites/utils";
 
 export interface ButtonGroupProps extends React.HTMLAttributes<HTMLDivElement> {
   orientation?: "horizontal" | "vertical";

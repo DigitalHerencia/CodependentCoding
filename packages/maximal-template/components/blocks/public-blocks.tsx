@@ -24,8 +24,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { cn, safeHref } from "@/components/ui/utils";
-import { publicErrorCopy, publicLoadingCopy, publicUiCopy } from "@/content/public";
+import { cn, safeHref } from "@/lib/utilites/utils";
+import {
+  publicErrorCopy,
+  publicLoadingCopy,
+  publicUiCopy,
+} from "@/content/public";
 import { ArrowRight, Quote, Star } from "lucide-react";
 import Link from "next/link";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -154,7 +158,9 @@ function HeroCentered({
             )}
             {secondaryAction && (
               <Button size="lg" variant="outline" asChild>
-                <a href={safeHref(secondaryAction.href)}>{secondaryAction.label}</a>
+                <a href={safeHref(secondaryAction.href)}>
+                  {secondaryAction.label}
+                </a>
               </Button>
             )}
           </div>
@@ -257,7 +263,9 @@ export function CTASimple({
           </Button>
           {secondaryAction && (
             <Button size="lg" variant="outline" asChild>
-              <a href={safeHref(secondaryAction.href)}>{secondaryAction.label}</a>
+              <a href={safeHref(secondaryAction.href)}>
+                {secondaryAction.label}
+              </a>
             </Button>
           )}
         </div>
@@ -370,9 +378,10 @@ export function TestimonialsGrid({
           )}
         >
           {testimonials.map((testimonial, index) => {
-            const rating = testimonial.rating == null
-              ? null
-              : Math.max(0, Math.min(5, Math.floor(testimonial.rating)));
+            const rating =
+              testimonial.rating == null
+                ? null
+                : Math.max(0, Math.min(5, Math.floor(testimonial.rating)));
 
             return (
               <Card
@@ -411,8 +420,13 @@ export function TestimonialsGrid({
                   <div className="flex items-center gap-4 border-t border-border pt-4">
                     {testimonial.avatar && (
                       <Avatar>
-                        <AvatarImage src={testimonial.avatar} alt={testimonial.author} />
-                        <AvatarFallback>{testimonial.author.slice(0, 1)}</AvatarFallback>
+                        <AvatarImage
+                          src={testimonial.avatar}
+                          alt={testimonial.author}
+                        />
+                        <AvatarFallback>
+                          {testimonial.author.slice(0, 1)}
+                        </AvatarFallback>
                       </Avatar>
                     )}
                     <div>

@@ -1,4 +1,4 @@
-import { cn } from "@/components/ui/utils";
+import { cn } from "@/lib/utilites/utils";
 import { GripVertical } from "lucide-react";
 import * as React from "react";
 import { Group, Panel, Separator } from "react-resizable-panels";

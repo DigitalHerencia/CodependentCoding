@@ -1,5 +1,5 @@
 import * as React from "react";
-import { cn } from "@/components/ui/utils";
+import { cn } from "@/lib/utilites/utils";
 
 /**
  * A bordered container that joins an input with leading/trailing addons

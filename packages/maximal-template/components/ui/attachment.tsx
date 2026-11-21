@@ -10,7 +10,7 @@ import {
   Image,
   X,
 } from "lucide-react";
-import { cn } from "@/components/ui/utils";
+import { cn } from "@/lib/utilites/utils";
 import { Progress } from "@/components/ui/progress";
 
 /*

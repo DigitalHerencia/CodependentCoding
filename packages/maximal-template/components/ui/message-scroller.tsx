@@ -1,6 +1,6 @@
 import * as React from "react";
 import { ArrowDown } from "lucide-react";
-import { cn } from "@/components/ui/utils";
+import { cn } from "@/lib/utilites/utils";
 
 /*
  * MessageScroller — the scroll container for a conversation.

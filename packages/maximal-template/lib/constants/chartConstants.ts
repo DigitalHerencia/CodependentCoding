@@ -1,4 +1,5 @@
-import type { ChartConfig } from "./types";
+// Format: { THEME_NAME: CSS_SELECTOR }
+export const THEMES = { light: "", dark: ".dark" } as const;
 
 // Neubrutalism color palettes for charts
 export const CHART_PALETTES = {
@@ -35,27 +36,3 @@ export const CHART_PALETTES = {
     "hsl(var(--foreground) / 0.1)",
   ],
 } as const;
-
-export type ChartPalette = keyof typeof CHART_PALETTES;
-
-// Helper to get colors from a palette
-export function getChartColor(palette: ChartPalette, index: number): string {
-  const colors = CHART_PALETTES[palette];
-  return colors[index % colors.length]!;
-}
-
-// Generate ChartConfig from palette
-export function createChartConfig(
-  keys: string[],
-  labels: string[],
-  palette: ChartPalette = "bold",
-): ChartConfig {
-  const config: ChartConfig = {};
-  keys.forEach((key, index) => {
-    config[key] = {
-      label: labels[index] || key,
-      color: getChartColor(palette, index),
-    };
-  });
-  return config;
-}

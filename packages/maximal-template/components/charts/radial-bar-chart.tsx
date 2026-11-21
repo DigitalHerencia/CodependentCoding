@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { cn } from "@/components/ui/utils";
+import { cn } from "@/lib/utilites/utils";
 import {
   RadialBarChart as RechartsRadialBarChart,
   RadialBar,
@@ -11,7 +11,7 @@ import { ChartContainer, type ChartContainerProps } from "./container";
 import { ChartEmpty } from "./empty";
 import { ChartTooltip, ChartTooltipContent } from "./tooltip";
 import { ChartLegend, ChartLegendContent } from "./legend";
-import type { ChartConfig } from "./types";
+import type { ChartConfig } from "@/types/chartTypes";
 
 export interface RadialBarChartData {
   name: string;

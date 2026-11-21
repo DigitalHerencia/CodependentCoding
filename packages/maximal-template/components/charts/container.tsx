@@ -1,8 +1,10 @@
 import * as React from "react";
 import * as RechartsPrimitive from "recharts";
 import { cva, type VariantProps } from "class-variance-authority";
-import { cn, sanitizeCssValue } from "@/components/ui/utils";
-import { ChartContext, THEMES, type ChartConfig } from "./types";
+import { cn, sanitizeCssValue } from "@/lib/utilites/utils";
+import { ChartContext } from "./context";
+import { THEMES } from "@/lib/constants/chartConstants";
+import type { ChartConfig } from "@/types/chartTypes";
 import { ChartLoading } from "./loading";
 
 export const chartContainerVariants = cva(

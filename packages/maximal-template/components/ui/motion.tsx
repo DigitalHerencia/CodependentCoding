@@ -17,14 +17,14 @@ import type {
  * BoldKit's globals.css, the recipes are already included.
  */
 import * as React from "react";
-import { cn } from "@/components/ui/utils";
+import { cn } from "@/lib/utilites/utils";
 import {
   observeReveal,
   staggerChildren,
   triggerAnimation,
   startViewTransition,
   prefersReducedMotion,
-} from "@/components/ui/motion-core";
+} from "@/lib/utilites/motion-core";
 
 // ──────────────────────────────────────────────────────────────────
 // <Reveal> — scroll-triggered entrance

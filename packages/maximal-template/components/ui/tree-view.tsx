@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { ChevronRight, Folder, File, Check } from "lucide-react";
-import { cn } from "@/components/ui/utils";
+import { cn } from "@/lib/utilites/utils";
 import { Collapsible, CollapsibleContent } from "@/components/ui/collapsible";
 
 export interface TreeNode {

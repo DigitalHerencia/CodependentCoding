@@ -1,4 +1,5 @@
-import * as React from "react";
+import type * as React from "react";
+import type { CHART_PALETTES, THEMES } from "@/lib/constants/chartConstants";
 
 // ---------------------------------------------------------------------------
 // Chart annotation vocabulary (shared, unified across React/Recharts and
@@ -31,9 +32,6 @@ export type ChartAnnotation =
   | ({ kind: "callout" } & ChartCalloutSpec)
   | ({ kind: "arrow" } & ChartArrowSpec);
 
-// Format: { THEME_NAME: CSS_SELECTOR }
-export const THEMES = { light: "", dark: ".dark" } as const;
-
 export type ChartConfig = {
   [k in string]: {
     label?: React.ReactNode;
@@ -48,14 +46,4 @@ export type ChartContextProps = {
   config: ChartConfig;
 };
 
-export const ChartContext = React.createContext<ChartContextProps | null>(null);
-
-export function useChart() {
-  const context = React.useContext(ChartContext);
-
-  if (!context) {
-    throw new Error("useChart must be used within a <ChartContainer />");
-  }
-
-  return context;
-}
+export type ChartPalette = keyof typeof CHART_PALETTES;

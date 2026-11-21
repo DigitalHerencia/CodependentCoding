@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { cn } from "@/components/ui/utils";
+import { cn } from "@/lib/utilites/utils";
 import { ChartEmpty } from "./empty";
 
 // Typed here so the dev-only guards compile without @types/node (Vite's

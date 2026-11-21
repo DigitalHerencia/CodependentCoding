@@ -7,7 +7,7 @@ import {
   NativeSelectOption,
 } from "@/components/ui/native-select";
 import { Skeleton } from "@/components/ui/skeleton";
-import { cn } from "@/components/ui/utils";
+import { cn } from "@/lib/utilites/utils";
 import { sharedLibraryCopy, sharedRemainingCopy } from "@/content/shared";
 import { type IntegrationStatus } from "@/types/integrationTypes";
 import Link from "next/link";

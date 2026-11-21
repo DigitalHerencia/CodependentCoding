@@ -1,5 +1,5 @@
 import * as React from "react";
-import { cn } from "@/components/ui/utils";
+import { cn } from "@/lib/utilites/utils";
 import { Label } from "@/components/ui/label";
 
 /** A vertical stack of related fields. */

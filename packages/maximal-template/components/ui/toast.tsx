@@ -10,7 +10,7 @@ import {
   TriangleAlert,
   X,
 } from "lucide-react";
-import { cn } from "@/components/ui/utils";
+import { cn } from "@/lib/utilites/utils";
 
 /* -------------------------------------------------------------------------------------------------
  * Store — a tiny module-level store so `toast()` can be called from anywhere (event handlers,

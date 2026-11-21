@@ -1,6 +1,6 @@
 import * as React from "react";
 import { ArrowLeft, ArrowRight, Check } from "lucide-react";
-import { cn } from "@/components/ui/utils";
+import { cn } from "@/lib/utilites/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Kbd } from "@/components/ui/kbd";

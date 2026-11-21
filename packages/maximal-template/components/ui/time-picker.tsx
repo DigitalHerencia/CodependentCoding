@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { cn } from "@/components/ui/utils";
+import { cn } from "@/lib/utilites/utils";
 import { Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {

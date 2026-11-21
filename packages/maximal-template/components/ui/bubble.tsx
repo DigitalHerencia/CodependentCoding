@@ -1,5 +1,5 @@
 import * as React from "react";
-import { cn } from "@/components/ui/utils";
+import { cn } from "@/lib/utilites/utils";
 
 /*
  * Bubble — the hard-edged message surface. No tail: the offset shadow does the

@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Minus, Plus } from "lucide-react";
-import { cn } from "@/components/ui/utils";
+import { cn } from "@/lib/utilites/utils";
 
 // ── Number helpers ───────────────────────────────────────────────────────────
 //

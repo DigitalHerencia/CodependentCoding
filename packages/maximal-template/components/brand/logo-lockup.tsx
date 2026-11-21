@@ -1,4 +1,4 @@
-import { cn } from "@/components/ui/utils";
+import { cn } from "@/lib/utilites/utils";
 import { applicationProduct } from "@/content/application";
 import Image from "next/image";
 

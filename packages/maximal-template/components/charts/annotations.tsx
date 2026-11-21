@@ -5,7 +5,7 @@ import type {
   ChartReferenceLineSpec,
   ChartCalloutSpec,
   ChartArrowSpec,
-} from "./types";
+} from "@/types/chartTypes";
 
 /**
  * Unified chart annotations for Recharts. Recharts only renders its own

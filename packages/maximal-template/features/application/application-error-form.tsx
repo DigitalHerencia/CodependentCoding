@@ -1,12 +1,15 @@
 "use client";
 
-import { cn, safeHref } from "@/components/ui/utils";
+import { cn, safeHref } from "@/lib/utilites/utils";
 import { Button } from "@/components/ui/button";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { formResultCopy } from "@/content/application";
 import { sharedLibraryCopy } from "@/content/shared";
-import { applicationEmailSchema, applicationSearchSchema } from "@/schemas/applicationSchemas";
+import {
+  applicationEmailSchema,
+  applicationSearchSchema,
+} from "@/schemas/applicationSchemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft, Clock, FileQuestion, Home, Search } from "lucide-react";
 import * as React from "react";

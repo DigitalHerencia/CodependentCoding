@@ -1,10 +1,10 @@
 import * as React from "react";
-import { cn } from "@/components/ui/utils";
+import { cn } from "@/lib/utilites/utils";
 import { Pie, PieChart, Cell, Label } from "recharts";
 import { ChartContainer, type ChartContainerProps } from "./container";
 import { ChartEmpty } from "./empty";
 import { ChartTooltip, ChartTooltipContent } from "./tooltip";
-import type { ChartConfig } from "./types";
+import type { ChartConfig } from "@/types/chartTypes";
 
 export interface DonutChartData {
   name: string;

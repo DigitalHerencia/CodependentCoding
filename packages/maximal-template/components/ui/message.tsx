@@ -1,5 +1,5 @@
 import * as React from "react";
-import { cn } from "@/components/ui/utils";
+import { cn } from "@/lib/utilites/utils";
 
 /*
  * Message — one conversation row. Layout is a two-column grid (avatar | body);
