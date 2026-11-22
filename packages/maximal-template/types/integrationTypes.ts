@@ -1,7 +1,6 @@
-/** Integration Types contracts and composition for the owning application slice. */
+/** Environment presence projected for one installed provider, with no connectivity claim. */
 export type IntegrationStatus = {
   name: string;
   purpose: string;
-  state: "CONFIGURED" | "MISSING SECRET";
-  mode: "LIVE" | "DEMO MODE" | "UNAVAILABLE";
+  configuration: "present" | "missing";
 };

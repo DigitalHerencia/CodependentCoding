@@ -1,45 +1,11 @@
-/** Shared templates contracts and composition for the owning application slice. */
-import { InvitationsBlock } from "@/components/blocks/settings-blocks";
+/** Shared loading and error presentation used by multiple domains. */
 import {
-  DashboardLayout,
   WorkspaceLoadingState,
   FormLoadingState,
   PageLoadingState,
 } from "@/components/blocks/shared-blocks";
-import {
-  SharedIntegrationsContentBlock,
-  SharedMembersContentBlock,
-} from "@/components/blocks/shared-page-blocks";
-import { sharedPresentationCopy } from "@/content/shared";
 import type { ComponentProps } from "react";
 import { GenericErrorPage } from "@/components/blocks/shared-blocks.client";
-
-export function SharedIntegrationsTemplate(
-  props: ComponentProps<typeof SharedIntegrationsContentBlock>,
-) {
-  return (
-    <DashboardLayout
-      title={sharedPresentationCopy.integrationConfiguration}
-      nav={[]}
-    >
-      <SharedIntegrationsContentBlock {...props} />
-    </DashboardLayout>
-  );
-}
-export function SharedMembersTemplate(
-  props: ComponentProps<typeof SharedMembersContentBlock>,
-) {
-  return (
-    <DashboardLayout title={sharedPresentationCopy.workspaceDirectory} nav={[]}>
-      <SharedMembersContentBlock {...props} />
-    </DashboardLayout>
-  );
-}
-export function InvitationsTemplate(
-  props: ComponentProps<typeof InvitationsBlock>,
-) {
-  return <InvitationsBlock {...props} />;
-}
 
 export function WorkspaceLoadingTemplate(
   props: ComponentProps<typeof WorkspaceLoadingState>,

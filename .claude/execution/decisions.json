@@ -1493,6 +1493,22 @@
       "id": "MARKETING-384-MERGED-2026-11-20",
       "decision": "PR #387 squash-merged as caa9d1663b255b875883a48b426e6d0617e3bc95 after permitted local lint/format/typegen/typecheck and CI run 44801999557 passed on verified head 6c0237e415b73b93ca852a70cd5a670c01fa2f14. Issue #384 closed, Project Done, task branch removed locally/remotely, and main synchronized. CRM and unrelated saved PWA/Anthimeria work preserved. Cancellation timestamp migration remains authored but unapplied; owner applies before runtime use. Test sources updated but not executed; no local builds, runtime/visual checks, database jobs or live provider requests were performed. No dashboard image was available. This entry records delivery and does not claim runtime or database verification.",
       "date": "2026-11-20"
+    },
+    {
+      "id": "DEC-SETTINGS-388-001",
+      "date": "2026-11-22",
+      "status": "accepted",
+      "spec_id": "ENG-SETTINGS-388",
+      "title": "Normalize settings composition and preserve deployment gate",
+      "decision": "Use owner-projected permissions and configuration presence, preserve module inventory and existing tenant routes, and stop Git delivery until automatic Vercel builds and deployments can be avoided.",
+      "source_commit": "b3605dfcc89926347a8ce0c99921228d4989e0c7"
+    },
+    {
+      "id": "DEC-SETTINGS-388-002",
+      "date": "2026-11-22",
+      "status": "accepted",
+      "title": "Deliver settings directly to main",
+      "decision": "Owner directed a direct squash merge and synchronization without a PR or additional checks, with the CodeViz diagram removed."
     }
   ]
 }

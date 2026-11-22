@@ -1,12 +1,13 @@
 import { Suspense } from "react";
+import { SettingsMembersFeature } from "@/features/settings/settingsMembersFeature";
+import { SettingsMembersSkeleton } from "@/features/settings/settingsMembersSkeleton";
+import type { SettingsMembersRouteProps } from "@/types/settingsTypes";
 
-import { MembersFeature } from "@/features/settings/members-feature";
-import { MembersSkeleton } from "@/features/settings/members-skeleton";
-
-export default async function Page() {
+/** Preserve the members route and isolate its authorized server projection. */
+export default function Page({ searchParams }: SettingsMembersRouteProps) {
   return (
-    <Suspense fallback={<MembersSkeleton />}>
-      <MembersFeature />
+    <Suspense fallback={<SettingsMembersSkeleton />}>
+      <SettingsMembersFeature criteria={searchParams} />
     </Suspense>
   );
 }

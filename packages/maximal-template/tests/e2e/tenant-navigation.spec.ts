@@ -73,6 +73,15 @@ test.describe("authenticated workspace navigation", () => {
       await trigger.click();
       await dialog.getByRole("link", { name: "Members", exact: true }).click();
       await expect(page).toHaveURL(/\/settings\/members$/);
+      await expect(
+        page.getByRole("heading", { name: "Workspace directory", level: 1 }),
+      ).toBeVisible();
+      await expect(
+        page.getByRole("columnheader", { name: "Access" }),
+      ).toBeVisible();
+      await expect(
+        page.getByRole("heading", { name: "Pending invitations" }),
+      ).toHaveCount(0);
       await expect(page.getByRole("dialog")).toHaveCount(0);
     });
   }

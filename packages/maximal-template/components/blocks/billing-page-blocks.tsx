@@ -1,17 +1,15 @@
-import { DashboardPanel } from "@/components/blocks/shared-blocks";
+import { Card } from "@/components/ui/card";
 import { billingPresentationCopy } from "@/content/billing";
-import type { BillingSubscriptionDTO } from "@/types/billingTypes";
+import type { BillingSubscriptionPresentationProps } from "@/types/billingTypes";
 
-// Why: Templates: pure presentation for the billing pages, laid out from DTOs; data and slots come from features.
-
+/** Present the authoritative billing record without deriving subscription state. */
 export function BillingSettingsContentBlock({
   subscription,
-}: {
-  subscription: BillingSubscriptionDTO | null;
-}) {
+}: BillingSubscriptionPresentationProps) {
   return (
     <>
-      <DashboardPanel title={billingPresentationCopy.subscription}>
+      <Card className="space-y-4 p-5">
+        <h2 className="type-heading">{billingPresentationCopy.subscription}</h2>
         {subscription ? (
           <dl className="grid gap-3 sm:grid-cols-2">
             <dt>{billingPresentationCopy.plan}</dt>
@@ -35,7 +33,7 @@ export function BillingSettingsContentBlock({
             {billingPresentationCopy.noSubscriptionIsRecordedForThisWorkspace}
           </p>
         )}
-      </DashboardPanel>
+      </Card>
     </>
   );
 }

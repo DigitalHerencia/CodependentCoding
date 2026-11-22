@@ -1,4 +1,40 @@
 {
+  "settings_architecture_388": {
+    "spec_id": "ENG-SETTINGS-388",
+    "spec": "context/specs/settings-architecture.md",
+    "issue_number": 388,
+    "branch": "main",
+    "status": "done",
+    "source_commit": "b3605dfcc89926347a8ce0c99921228d4989e0c7",
+    "project_status": "Done",
+    "verification": [
+      {
+        "command": "npm run lint:fix -- <changed TypeScript files>",
+        "result": "PASS, zero warnings. Reran on affected files after source corrections."
+      },
+      {
+        "command": "npm run format:write -- <changed source and spec files>",
+        "result": "PASS. Reran on affected files after source corrections."
+      },
+      {
+        "command": "npm run typegen",
+        "result": "PASS. Generated Prisma Client 7.10.1 and Next.js route types."
+      },
+      {
+        "command": "npm run typecheck",
+        "result": "PASS after correcting members query and billing projection types. Repeated after final invitation-state changes."
+      }
+    ],
+    "not_run": [
+      "Unit, integration and E2E suites",
+      "builds and runtime checks",
+      "migrations and seeds",
+      "provider, billing and invitation delivery operations"
+    ],
+    "migration_required": false,
+    "delivery": "Owner directed direct squash merge to main, branch cleanup and synchronization without PR or additional checks.",
+    "pending": []
+  },
   "schema_version": "1.0",
   "kind": "handoff",
   "source_contracts": [
@@ -10,6 +46,7 @@
   "active_spec_id": null,
   "next_spec_id": null,
   "completed_spec_ids": [
+    "ENG-SETTINGS-388",
     "TYPESCRIPTION-T2",
     "TYPESCRIPTION-T3",
     "CC-080",

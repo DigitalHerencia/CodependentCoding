@@ -7,6 +7,11 @@ export type BillingSubscriptionDTO = {
   cancelAtPeriodEnd: boolean;
 };
 
+/** Read-only billing presentation supplied by the authorized owner fetcher. */
+export type BillingSubscriptionPresentationProps = {
+  subscription: BillingSubscriptionDTO | null;
+};
+
 export type BillingProviderStateDTO = {
   id: string;
   organizationId: string;

@@ -19,6 +19,7 @@ const state = vi.hoisted(() => ({
   verifiedEmail: "invitee@example.test" as string | null,
   role: "ADMIN" as AccessContext["role"],
   permission: true,
+  deniedPermission: undefined as string | undefined,
   tenant: vi.fn(),
   identity: vi.fn(),
   read: vi.fn(),
@@ -47,7 +48,8 @@ vi.mock("@/lib/authz/tenancy", () => ({
 }));
 vi.mock("@/lib/authz/permissions", () => ({
   assertPermission: vi.fn(),
-  hasPermission: () => state.permission,
+  hasPermission: (_access: AccessContext, permission: string) =>
+    state.permission && permission !== state.deniedPermission,
 }));
 vi.mock("@/lib/db/rls", () => ({ withIdentityTransaction: state.identity }));
 vi.mock("@/lib/db/tenancy", () => ({
@@ -102,6 +104,7 @@ beforeEach(() => {
   state.verifiedEmail = record.email;
   state.role = "ADMIN";
   state.permission = true;
+  state.deniedPermission = undefined;
   state.tenant.mockImplementation(
     async (
       _identity,
@@ -321,6 +324,9 @@ test.each(["MEMBER", "VIEWER"] as const)(
     state.role = role;
     expect(await getPendingInvitations()).toEqual({
       canInvite: false,
+      canEdit: false,
+      canRevoke: false,
+      organizationId: null,
       invitations: [],
     });
     expect(tx.invitation.findMany).not.toHaveBeenCalled();
@@ -330,8 +336,11 @@ test.each(["MEMBER", "VIEWER"] as const)(
 test("admin list is limited to unexpired pending invitations in the active organization", async () => {
   const result = await getPendingInvitations();
   expect(result.canInvite).toBe(true);
+  expect(result.organizationId).toBe(org);
   expect(tx.invitation.findMany).toHaveBeenCalledWith(
     expect.objectContaining({
+      orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+      take: 100,
       where: {
         organizationId: org,
         status: "PENDING",
@@ -340,4 +349,20 @@ test("admin list is limited to unexpired pending invitations in the active organ
       },
     }),
   );
+});
+
+test("invitation creation does not grant denied edit or revoke controls", async () => {
+  state.deniedPermission = "base.membership:update";
+  expect(await getPendingInvitations()).toMatchObject({
+    canInvite: true,
+    canEdit: false,
+    canRevoke: true,
+  });
+
+  state.deniedPermission = "base.membership:delete";
+  expect(await getPendingInvitations()).toMatchObject({
+    canInvite: true,
+    canEdit: true,
+    canRevoke: false,
+  });
 });

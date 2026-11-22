@@ -1,12 +1,12 @@
 import { Suspense } from "react";
+import { SettingsBillingFeature } from "@/features/settings/settingsBillingFeature";
+import { SettingsBillingSkeleton } from "@/features/settings/settingsBillingSkeleton";
 
-import { BillingFeature } from "@/features/settings/billing-feature";
-import { BillingSkeleton } from "@/features/settings/billing-skeleton";
-
-export default async function Page() {
+/** Preserve the billing route with a route-specific pending boundary. */
+export default function Page() {
   return (
-    <Suspense fallback={<BillingSkeleton />}>
-      <BillingFeature />
+    <Suspense fallback={<SettingsBillingSkeleton />}>
+      <SettingsBillingFeature />
     </Suspense>
   );
 }

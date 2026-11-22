@@ -5,21 +5,30 @@ import { isProduction } from "@/lib/constants/mode";
 import { installedModules } from "@/lib/modules/registry";
 import type { IntegrationStatus } from "@/types/integrationTypes";
 
-/** One row per installed add-on that wraps a provider (ModuleDefinition.integration). */
+/** Project only display metadata and environment presence for installed providers. */
 export function getProviderStatuses(): IntegrationStatus[] {
-  return installedModules.flatMap(({ integration }) => {
-    if (!integration) return [];
-    const configured = hasValues(integration.env);
-    const unconfiguredMode = isProduction ? "UNAVAILABLE" : "DEMO MODE";
-    return [
-      {
-        name: integration.name,
-        purpose: integration.purpose,
-        state: configured ? "CONFIGURED" : "MISSING SECRET",
-        mode: configured ? "LIVE" : unconfiguredMode,
-      },
-    ];
-  });
+  return installedModules.flatMap(({ integration }) =>
+    integration
+      ? [
+          {
+            name: integration.name,
+            purpose: integration.purpose,
+            configuration: hasValues(integration.env) ? "present" : "missing",
+          },
+        ]
+      : [],
+  );
+}
+
+/** Read one installed module's configuration presence without constructing a provider client. */
+export function getProviderConfiguration(
+  moduleId: string,
+): IntegrationStatus["configuration"] | "unavailable" {
+  const integration = installedModules.find(
+    ({ id }) => id === moduleId,
+  )?.integration;
+  if (!integration) return "unavailable";
+  return hasValues(integration.env) ? "present" : "missing";
 }
 
 /** Optional integrations may be absent, but selected production integrations must be complete. */

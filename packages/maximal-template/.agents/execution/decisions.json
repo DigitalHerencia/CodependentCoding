@@ -161,6 +161,22 @@
       "status": "accepted",
       "title": "Verified tenant invoice and expense refactor merged",
       "decision": "PR #383 squash-merged after corrected-head CI passed; Issue #382 closed and Project item Done. Task branch deleted locally/remotely; main synchronized. CRM unchanged; two unrelated PWA edits preserved. Four permitted checks passed; tests and runtime/visual checks deliberately unrun. No invoicing migration required. Terminal invoice status mutations remain disabled pending the owner transition policy; approval and issuance supported. Merge 49b5ccfc2db0bf897afbab7370020b279e79f3db; verified PR head e726f8e599b2c015e30ea5b4c3d0c47abefb7ef0; CI https://github.com/DigitalHerencia/CodependentCoding/actions/runs/44438644599. Only lint:fix, format:write, typegen and typecheck executed locally. Source review corrected Decimal intermediate precision; regression/boundary/transaction source tests remain unrun. No real financial operations, provider requests, local builds, servers, migrations or seeds. No dashboard attachment supplied. Final execution metadata committed after merge verification."
+    },
+    {
+      "id": "DEC-SETTINGS-388-001",
+      "date": "2026-11-22",
+      "status": "accepted",
+      "spec_id": "ENG-SETTINGS-388",
+      "title": "Normalize settings composition and preserve deployment gate",
+      "decision": "Use owner-projected permissions and configuration presence, preserve module inventory and existing tenant routes, and stop Git delivery until automatic Vercel builds and deployments can be avoided.",
+      "source_commit": "b3605dfcc89926347a8ce0c99921228d4989e0c7"
+    },
+    {
+      "id": "DEC-SETTINGS-388-002",
+      "date": "2026-11-22",
+      "status": "accepted",
+      "title": "Deliver settings directly to main",
+      "decision": "Owner directed a direct squash merge and synchronization without a PR or additional checks, with the CodeViz diagram removed."
     }
   ]
 }

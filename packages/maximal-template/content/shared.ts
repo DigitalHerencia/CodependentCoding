@@ -1,19 +1,3 @@
-export const sharedPresentationCopy = {
-  members: " members",
-  integrationConfiguration: "Integration configuration",
-  configurationPresenceOnlyTheseChecksDoNotContactProviders:
-    "Configuration presence only. These checks do not contact providers or verify connectivity.",
-  requiredConfigurationPresent: "Required configuration present",
-  workspaceDirectory: "Workspace directory",
-  member: "Member",
-  role: "Role",
-  access: "Access",
-  workspace: "Workspace",
-
-  workspaceSettings: "Workspace settings",
-  regionalPreferences: "Regional preferences",
-} as const;
-
 export const sharedLibraryCopy = {
   email: "Email",
   columns: "Columns",
@@ -106,7 +90,5 @@ export const sharedLibraryCopy = {
 } as const;
 
 export const sharedRemainingCopy = {
-  configurationMissing: (value0: unknown) =>
-    `Configuration missing (${value0})`,
   loading: (value0: unknown) => `Loading ${value0}`,
 } as const;

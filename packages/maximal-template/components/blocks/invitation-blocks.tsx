@@ -178,22 +178,26 @@ export function InvitationsBlock({
                 {copy.expires}{" "}
                 {new Date(invitation.expiresAt).toLocaleDateString()}
               </span>
-              <Button
-                type="button"
-                variant="outline"
-                disabled={pending}
-                onClick={() => onEdit(invitation)}
-              >
-                {copy.edit}
-              </Button>
-              <Button
-                disabled={pending}
-                onClick={() => onRevoke(invitation.id)}
-                type="button"
-                variant="outline"
-              >
-                {copy.revoke}
-              </Button>
+              {onEdit && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  disabled={pending}
+                  onClick={() => onEdit(invitation)}
+                >
+                  {copy.edit}
+                </Button>
+              )}
+              {onRevoke && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  disabled={pending}
+                  onClick={() => onRevoke(invitation.id)}
+                >
+                  {copy.revoke}
+                </Button>
+              )}
             </li>
           ))}
         </ul>

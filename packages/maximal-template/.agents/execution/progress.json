@@ -1178,6 +1178,33 @@
         "Strict optional Link handler type corrected.",
         "Retired PWA hook consumer removed with its unused presentation."
       ]
+    },
+    {
+      "spec_id": "ENG-SETTINGS-388",
+      "status": "done",
+      "issue_number": 388,
+      "pr_numbers": [],
+      "validation_runs": [
+        {
+          "command": "npm run lint:fix -- <changed TypeScript files>",
+          "result": "PASS, zero warnings. Reran on affected files after source corrections."
+        },
+        {
+          "command": "npm run format:write -- <changed source and spec files>",
+          "result": "PASS. Reran on affected files after source corrections."
+        },
+        {
+          "command": "npm run typegen",
+          "result": "PASS. Generated Prisma Client 7.10.1 and Next.js route types."
+        },
+        {
+          "command": "npm run typecheck",
+          "result": "PASS after correcting members query and billing projection types. Repeated after final invitation-state changes."
+        }
+      ],
+      "last_updated": "2026-11-22",
+      "source_commit": "b3605dfcc89926347a8ce0c99921228d4989e0c7",
+      "delivery": "Owner directed direct squash merge to main, branch cleanup and synchronization without PR or additional checks."
     }
   ],
   "git_maintenance_2026_11_17": {

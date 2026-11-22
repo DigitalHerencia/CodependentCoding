@@ -14,6 +14,8 @@ import { useState, useTransition } from "react";
 /** Orchestrate pending invitation edits and cancellation from the authenticated list. */
 export function InvitationsFeatureClient({
   invitations,
+  canEdit,
+  canRevoke,
 }: InvitationsFeatureProps) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
@@ -21,7 +23,7 @@ export function InvitationsFeatureClient({
   const [error, setError] = useState("");
   return (
     <>
-      {editing && (
+      {canEdit && editing && (
         <InvitationsEditMemberForm
           key={editing.id}
           invitation={editing}
@@ -32,19 +34,25 @@ export function InvitationsFeatureClient({
         invitations={invitations}
         pending={pending}
         error={error}
-        onEdit={setEditing}
-        onRevoke={(invitationId) =>
-          startTransition(async () => {
-            setError("");
-            try {
-              const result = await revokeInvitationWorkflow({ invitationId });
-              if (!result.ok) setError("revokeFailed");
-              else if (editing?.id === invitationId) setEditing(undefined);
-              router.refresh();
-            } catch {
-              setError("revokeFailed");
-            }
-          })
+        onEdit={canEdit ? setEditing : undefined}
+        onRevoke={
+          canRevoke
+            ? (invitationId) =>
+                startTransition(async () => {
+                  setError("");
+                  try {
+                    const result = await revokeInvitationWorkflow({
+                      invitationId,
+                    });
+                    if (!result.ok) setError("revokeFailed");
+                    else if (editing?.id === invitationId)
+                      setEditing(undefined);
+                    router.refresh();
+                  } catch {
+                    setError("revokeFailed");
+                  }
+                })
+            : undefined
         }
       />
     </>

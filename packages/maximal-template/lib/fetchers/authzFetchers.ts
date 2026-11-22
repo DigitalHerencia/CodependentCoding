@@ -64,6 +64,35 @@ export async function getOrganizationSwitcher(): Promise<OrganizationSwitcherDTO
 
 /** Read the current organization directory within the caller's authorized scope. */
 export async function getOrganizationMembers() {
+  return readOrganizationMembers();
+}
+
+/** Fetch a bounded directory window, including one row to detect a next page. */
+export async function getOrganizationMembersPage(requestedPage: number) {
+  const pageSize = 50;
+  const maxPage = Math.floor(2_147_483_647 / pageSize) + 1;
+  const page =
+    Number.isSafeInteger(requestedPage) &&
+    requestedPage > 0 &&
+    requestedPage <= maxPage
+      ? requestedPage
+      : 1;
+  const rows = await readOrganizationMembers({
+    skip: (page - 1) * pageSize,
+    take: pageSize + 1,
+  });
+  return {
+    members: rows.slice(0, pageSize),
+    page,
+    hasNextPage: rows.length > pageSize && page < maxPage,
+  };
+}
+
+/** Apply the same active membership scope for both the directory and existing owner consumers. */
+async function readOrganizationMembers(window?: {
+  skip: number;
+  take: number;
+}) {
   return withAuthenticatedRead(async (tx, access) => {
     assertPermission(access, "base.membership:read");
     const rows = await tx.membership.findMany({
@@ -71,7 +100,8 @@ export async function getOrganizationMembers() {
         organizationId: access.organizationId,
         ...(limitedToCustomerRecords(access) ? { userId: access.userId } : {}),
       },
-      orderBy: { createdAt: "asc" },
+      orderBy: [{ createdAt: "asc" }, { id: "asc" }],
+      ...window,
       select: organizationMemberSelect,
     });
     return rows.map(toOrganizationMemberDTO);

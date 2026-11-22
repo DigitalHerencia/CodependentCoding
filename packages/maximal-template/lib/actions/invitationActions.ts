@@ -137,7 +137,12 @@ export async function acceptInvitation(
       );
       return { organizationId };
     });
-    invalidatePaths(["/dashboard"]);
+    invalidatePaths([
+      "/dashboard",
+      "/settings/members",
+      "/admin",
+      "/admin/users",
+    ]);
     return joined;
   });
 }

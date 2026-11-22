@@ -1,12 +1,12 @@
 import { Suspense } from "react";
+import { SettingsIntegrationsFeature } from "@/features/settings/settingsIntegrationsFeature";
+import { SettingsIntegrationsSkeleton } from "@/features/settings/settingsIntegrationsSkeleton";
 
-import { IntegrationsFeature } from "@/features/settings/integrations-feature";
-import { IntegrationsSkeleton } from "@/features/settings/integrations-skeleton";
-
-export default async function Page() {
+/** Preserve the integrations route with a route-specific pending boundary. */
+export default function Page() {
   return (
-    <Suspense fallback={<IntegrationsSkeleton />}>
-      <IntegrationsFeature />
+    <Suspense fallback={<SettingsIntegrationsSkeleton />}>
+      <SettingsIntegrationsFeature />
     </Suspense>
   );
 }

@@ -1,16 +1,52 @@
 {
+  "settings_architecture_388": {
+    "spec_id": "ENG-SETTINGS-388",
+    "spec": "context/specs/settings-architecture.md",
+    "issue_number": 388,
+    "branch": "main",
+    "status": "done",
+    "source_commit": "b3605dfcc89926347a8ce0c99921228d4989e0c7",
+    "project_status": "Done",
+    "verification": [
+      {
+        "command": "npm run lint:fix -- <changed TypeScript files>",
+        "result": "PASS, zero warnings. Reran on affected files after source corrections."
+      },
+      {
+        "command": "npm run format:write -- <changed source and spec files>",
+        "result": "PASS. Reran on affected files after source corrections."
+      },
+      {
+        "command": "npm run typegen",
+        "result": "PASS. Generated Prisma Client 7.10.1 and Next.js route types."
+      },
+      {
+        "command": "npm run typecheck",
+        "result": "PASS after correcting members query and billing projection types. Repeated after final invitation-state changes."
+      }
+    ],
+    "not_run": [
+      "Unit, integration and E2E suites",
+      "builds and runtime checks",
+      "migrations and seeds",
+      "provider, billing and invitation delivery operations"
+    ],
+    "migration_required": false,
+    "delivery": "Owner directed direct squash merge to main, branch cleanup and synchronization without PR or additional checks.",
+    "pending": []
+  },
   "$schema": "codependent-coding/execution/handoff/v1",
   "updated": "2026-11-20T19:28:13.0733242Z",
   "format": "One current package; history is in progress.json, decisions.json and git.",
-  "status": "merged-verified",
+  "status": "completed",
   "milestone": "M-T",
   "current_issue": null,
   "next_issue": null,
   "queue": ["CC-050", "CC-052", "CC-053", "CC-063"],
   "branch": "main",
   "active_package": null,
-  "source_commit": "caa9d1663b255b875883a48b426e6d0617e3bc95",
-  "completion": "Source refactor delivered through PR #387 from the saved main snapshot. Four permitted local scripts and final-head CI passed. CRM, PWA and Anthimeria source preserved. Task branch deleted; execution history updated after merge. Migration remains owner-managed and unapplied; tests and runtime/visual checks unrun.",
+  "source_commit": "b3605dfcc89926347a8ce0c99921228d4989e0c7",
+  "completion": "Owner directed direct squash merge to main, branch cleanup and synchronization without PR or additional checks.",
   "in_flight": [
     "CC-050 token consolidation implemented; focused static checks passed. Affected-site CI and owner browser contrast/reduced-motion verification pending. CC-049 merged in #351; main synced and branch deleted.",
     "Homepage PR #349 has passing CI and ready preview; owner desktop/mobile verification remains pending.",

@@ -12,7 +12,12 @@ export async function AdminUsersFeature({ criteria }: AdminListFeatureProps) {
       {...view}
       invitations={
         view.pending.canInvite ? (
-          <InvitationsFeatureClient invitations={view.pending.invitations} />
+          <InvitationsFeatureClient
+            key={view.pending.organizationId}
+            invitations={view.pending.invitations}
+            canEdit={view.pending.canEdit}
+            canRevoke={view.pending.canRevoke}
+          />
         ) : null
       }
     />

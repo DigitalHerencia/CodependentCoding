@@ -9,7 +9,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utilites/utils";
 import { sharedLibraryCopy, sharedRemainingCopy } from "@/content/shared";
-import { type IntegrationStatus } from "@/types/integrationTypes";
+
 import Link from "next/link";
 import { type ReactNode } from "react";
 
@@ -17,39 +17,6 @@ export type PageHeaderAction = {
   label: string;
   href: string;
 };
-
-export function IntegrationStatusGridBlock({
-  integrations,
-}: {
-  integrations: IntegrationStatus[];
-}) {
-  return (
-    <section className="grid gap-4 py-6 md:grid-cols-2 xl:grid-cols-3">
-      {integrations.map((integration) => (
-        <Card key={integration.name}>
-          <CardHeader>
-            <div className="flex flex-wrap items-center justify-between gap-2">
-              <CardTitle>{integration.name}</CardTitle>
-              <Badge
-                variant={
-                  integration.state === "CONFIGURED" ? "default" : "outline"
-                }
-              >
-                {integration.state}
-              </Badge>
-            </div>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <p className="text-sm text-muted-foreground">
-              {integration.purpose}
-            </p>
-            <Badge variant="secondary">{integration.mode}</Badge>
-          </CardContent>
-        </Card>
-      ))}
-    </section>
-  );
-}
 
 export function PageHeaderBlock({
   eyebrow,

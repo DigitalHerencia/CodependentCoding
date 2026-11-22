@@ -1,5 +1,9 @@
 import { afterEach, expect, test, vi } from "vitest";
 
+import {
+  getProviderConfiguration,
+  getProviderStatuses,
+} from "@/lib/modules/status";
 import { defineEnv } from "@/lib/utils/env";
 import { optional, required } from "@/schemas/envSchemas";
 
@@ -33,4 +37,17 @@ test("value() reads one variable without requiring the rest", () => {
   vi.stubEnv("EXAMPLE_KEY", undefined);
   vi.stubEnv("EXAMPLE_MODEL", "model");
   expect(env.value("EXAMPLE_MODEL")).toBe("model");
+});
+
+test("provider projection exposes configuration presence without environment values or health claims", () => {
+  vi.stubEnv("STRIPE_SECRET_KEY", "fixture-value");
+  vi.stubEnv("STRIPE_WEBHOOK_SECRET", undefined);
+  expect(getProviderConfiguration("billing")).toBe("missing");
+  vi.stubEnv("STRIPE_WEBHOOK_SECRET", "fixture-webhook");
+  expect(getProviderConfiguration("billing")).toBe("present");
+  expect(getProviderStatuses().find(({ name }) => name === "Stripe")).toEqual({
+    name: "Stripe",
+    purpose: "Billing, checkout, and subscriptions",
+    configuration: "present",
+  });
 });

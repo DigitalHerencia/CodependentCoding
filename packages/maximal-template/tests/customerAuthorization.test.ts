@@ -8,7 +8,7 @@ import {
   getPortalDocuments,
 } from "@/lib/fetchers/portalFetchers";
 import { downloadPortalDocument } from "@/lib/actions/portalActions";
-import { getOrganizationMembers } from "@/lib/fetchers/authzFetchers";
+import { getOrganizationMembersPage } from "@/lib/fetchers/authzFetchers";
 import {
   getSupportInbox,
   getSupportTicket,
@@ -74,9 +74,12 @@ test("two customers in the same organization cannot list tenant-wide memberships
   for (const customer of ["a", "b"]) {
     state.userId = `customer-${customer}`;
     state.membershipId = `member-${customer}`;
-    await getOrganizationMembers();
+    await getOrganizationMembersPage(2);
     expect(tx.membership.findMany).toHaveBeenLastCalledWith(
       expect.objectContaining({
+        skip: 50,
+        take: 51,
+        orderBy: [{ createdAt: "asc" }, { id: "asc" }],
         where: {
           organizationId: access().organizationId,
           userId: state.userId,

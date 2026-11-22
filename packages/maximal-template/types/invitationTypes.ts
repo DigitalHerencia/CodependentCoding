@@ -37,8 +37,8 @@ export type InvitationListProps = {
   invitations: InvitationDTO[];
   pending: boolean;
   error: string;
-  onRevoke: (id: string) => void | Promise<void>;
-  onEdit: (invitation: InvitationDTO) => void;
+  onRevoke?: ((id: string) => void | Promise<void>) | undefined;
+  onEdit?: ((invitation: InvitationDTO) => void) | undefined;
 };
 
 /** Invitation slice contract. */
@@ -57,9 +57,12 @@ export type CreatedInvitationDTO = {
   path: string;
 };
 
-/** Invitation slice contract. */
+/** Pending invitation rows and individually authorized administrative capabilities. */
 export type InvitationListDTO = {
   canInvite: boolean;
+  canEdit: boolean;
+  canRevoke: boolean;
+  organizationId: string | null;
   invitations: InvitationDTO[];
 };
 
@@ -79,8 +82,11 @@ export type InvitationAcceptanceProps = { token: string };
 export type InvitationAcceptanceRouteProps = {
   params: Promise<{ token: string }>;
 };
-/** Props for the pending invitation list. */
-export type InvitationsFeatureProps = { invitations: InvitationDTO[] };
+/** Server-projected rows and affordances for the invitation client feature. */
+export type InvitationsFeatureProps = Pick<
+  InvitationListDTO,
+  "invitations" | "canEdit" | "canRevoke"
+>;
 /** Props for editing one pending invitation. */
 export type InvitationEditFormProps = {
   invitation: InvitationDTO;
