@@ -1,4 +1,46 @@
 {
+  "support_architecture_391": {
+    "spec_id": "ENG-SUPPORT-391",
+    "spec": "context/specs/support-owner-refactor.md",
+    "issue_number": 391,
+    "status": "in-review",
+    "branch": "refactor/391-support-architecture",
+    "project_status": "In progress",
+    "verification": [
+      {
+        "command": "npm.cmd run lint:fix -- <changed template TypeScript files>",
+        "result": "PASS, zero warnings. Reran on affected files after fixes."
+      },
+      {
+        "command": "npm.cmd run format:write -- <changed template files>",
+        "result": "PASS. Reran on affected files after fixes."
+      },
+      {
+        "command": "npm.cmd run typegen",
+        "result": "PASS, generated Prisma Client and Next.js route types."
+      },
+      {
+        "command": "npm.cmd run typecheck",
+        "result": "PASS after correcting exact optional property types."
+      }
+    ],
+    "authored_assertions": [
+      "Requester-relative inbox and aggregate, filtered conversation reads and message counts, retained resolution timestamp and stale-version rejection, shared tenant shell for support entry points."
+    ],
+    "not_run": [
+      "Unit, integration and E2E tests",
+      "Builds, dev servers, runtime and visual checks",
+      "Migrations, seeds and live provider requests"
+    ],
+    "migration_required": false,
+    "acceptance": {
+      "composition": "Eight preserved tenant routes, route features and Suspense skeletons, one page template per route and five RHF forms using a single workflow module.",
+      "confidentiality": "Requester predicate precedes detail and message lookup; public-only customer message predicates apply to rows, lookahead and counts. Search uses ticket metadata only.",
+      "concurrency": "Transaction-scoped allocation lock, tenant uniqueness, version-qualified mutation, resolution retention and atomic replies.",
+      "editorial": "Separate published reader and update-authorized editor queries; duplicate slug and stale edit outcomes; post-commit invalidation.",
+      "analytics": "Database aggregate over the complete caller-visible non-closed queue; deadline display grounded in stored timestamps."
+    }
+  },
   "social_architecture_389": {
     "spec_id": "ENG-SOCIAL-389",
     "spec": "context/specs/social-architecture.md",

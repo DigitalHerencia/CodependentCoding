@@ -1525,6 +1525,14 @@
       "spec_id": "ENG-SOCIAL-389",
       "title": "Record verified social refactor delivery",
       "decision": "PR #390 squash-merged as dd4121d9a02edf9e0b7ecbbbc9bc21f679525d01 after permitted checks passed on 529ba73e1dfbeba9b94a206cd1c86c830c488891 in CI run 45046308047. Issue #389 closed, Project Done, and the task branch was removed locally and remotely. No migration required. Authored assertions, browser/runtime behavior and provider effects remain unexecuted."
+    },
+    {
+      "id": "DEC-SUPPORT-391-001",
+      "date": "2026-11-22",
+      "status": "accepted",
+      "spec_id": "ENG-SUPPORT-391",
+      "title": "Normalize support around authorized projections and atomic commands",
+      "decision": "Preserve the current ticket status destinations, reopening and immediate knowledge publication. Apply requester and public-message predicates before selecting customer data. Use a complete caller-visible active-queue aggregate. Preserve existing tenant-scoped numbering and author no migration."
     }
   ]
 }

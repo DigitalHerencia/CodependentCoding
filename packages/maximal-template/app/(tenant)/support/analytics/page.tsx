@@ -1,9 +1,9 @@
+import { SupportAnalyticsFeature } from "@/features/support/supportAnalyticsFeature";
+import { SupportAnalyticsSkeleton } from "@/features/support/supportAnalyticsSkeleton";
 import { Suspense } from "react";
 
-import { SupportAnalyticsFeature } from "@/features/support/support-analytics-feature";
-import { SupportAnalyticsSkeleton } from "@/features/support/support-analytics-skeleton";
-
-export default async function Page() {
+/** Mount the analytics feature in the tenant shell. */
+export default function Page() {
   return (
     <Suspense fallback={<SupportAnalyticsSkeleton />}>
       <SupportAnalyticsFeature />

@@ -1,12 +1,17 @@
+import { SupportKnowledgeBaseFeature } from "@/features/support/supportKnowledgeBaseFeature";
+import { SupportKnowledgeBaseSkeleton } from "@/features/support/supportKnowledgeBaseSkeleton";
+import type { SupportSearchParams } from "@/types/supportTypes";
 import { Suspense } from "react";
 
-import { KnowledgeBaseFeature } from "@/features/support/knowledge-base-feature";
-import { KnowledgeBaseSkeleton } from "@/features/support/knowledge-base-skeleton";
-
-export default async function Page() {
+/** Mount the knowledge base feature in the tenant shell. */
+export default function Page({
+  searchParams,
+}: {
+  searchParams: Promise<SupportSearchParams>;
+}) {
   return (
-    <Suspense fallback={<KnowledgeBaseSkeleton />}>
-      <KnowledgeBaseFeature />
+    <Suspense fallback={<SupportKnowledgeBaseSkeleton />}>
+      <SupportKnowledgeBaseFeature searchParams={searchParams} />
     </Suspense>
   );
 }

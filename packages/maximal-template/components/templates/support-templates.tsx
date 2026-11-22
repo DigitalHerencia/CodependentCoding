@@ -1,72 +1,139 @@
-import { DashboardLayout } from "@/components/blocks/shared-blocks";
 import {
-  SupportAnalyticsContentBlock,
-  SupportInboxContentBlock,
-  SupportInboxToolbarBlock,
-  SupportKnowledgeArticlePageBlock,
-  SupportKnowledgeBaseContentBlock,
-  SupportKnowledgeBaseToolbarBlock,
-  SupportTicketContentBlock,
-} from "@/components/blocks/support-page-blocks";
-import {
-  supportPresentationCopy,
-  supportRemainingCopy,
-} from "@/content/support";
-import type { ComponentProps } from "react";
+  SupportAnalyticsBlock,
+  SupportArticleBlock,
+  SupportConversationBlock,
+  SupportFormBlock,
+  SupportHeadingBlock,
+  SupportInboxBlock,
+  SupportKnowledgeBlock,
+  SupportPaginationBlock,
+  SupportUnavailableBlock,
+} from "@/components/blocks/support-blocks";
+import type {
+  SupportAnalyticsView,
+  SupportArticleView,
+  SupportConversationView,
+  SupportFormView,
+  SupportInboxView,
+  SupportKnowledgeView,
+  SupportPageKind,
+  SupportPager,
+} from "@/types/supportTypes";
+import type { ActionErrorCode } from "@/types/actionTypes";
+import type { ReactNode } from "react";
 
-export function SupportAnalyticsTemplate(
-  props: ComponentProps<typeof SupportAnalyticsContentBlock>,
-) {
+/** Compose the support route's section inside the existing tenant layout. */
+function SupportSection({
+  page,
+  children,
+}: {
+  page?: SupportPageKind;
+  children: ReactNode;
+}) {
   return (
-    <DashboardLayout
-      title={supportPresentationCopy.supportQueueAnalysis}
-      nav={[]}
-    >
-      <SupportAnalyticsContentBlock {...props} />
-    </DashboardLayout>
+    <section className="space-y-5 p-5">
+      {page && <SupportHeadingBlock page={page} />}
+      {children}
+    </section>
   );
 }
-export function SupportInboxTemplate(
-  props: ComponentProps<typeof SupportInboxContentBlock>,
-) {
+
+/** Compose the inbox filters, ticket rows and adjacent-page navigation. */
+export function SupportInboxTemplate({
+  pager,
+  ...view
+}: SupportInboxView & { pager: SupportPager }) {
   return (
-    <DashboardLayout
-      title={supportPresentationCopy.supportInbox}
-      nav={[]}
-      toolbar={<SupportInboxToolbarBlock {...props} />}
-    >
-      <SupportInboxContentBlock {...props} />
-    </DashboardLayout>
+    <SupportSection page="inbox">
+      <SupportInboxBlock {...view} />
+      <SupportPaginationBlock {...pager} />
+    </SupportSection>
   );
 }
-export function SupportKnowledgeArticleTemplate(
-  props: ComponentProps<typeof SupportKnowledgeArticlePageBlock>,
-) {
-  return <SupportKnowledgeArticlePageBlock {...props} />;
-}
-export function SupportKnowledgeBaseTemplate(
-  props: ComponentProps<typeof SupportKnowledgeBaseContentBlock>,
-) {
+
+/** Compose the published knowledge search and results. */
+export function SupportKnowledgeBaseTemplate({
+  pager,
+  ...view
+}: SupportKnowledgeView & { pager: SupportPager }) {
   return (
-    <DashboardLayout
-      title={supportPresentationCopy.knowledgeBase}
-      nav={[]}
-      toolbar={<SupportKnowledgeBaseToolbarBlock {...props} />}
-    >
-      <SupportKnowledgeBaseContentBlock {...props} />
-    </DashboardLayout>
+    <SupportSection page="knowledge">
+      <SupportKnowledgeBlock {...view} />
+      <SupportPaginationBlock {...pager} />
+    </SupportSection>
   );
 }
-export function SupportTicketTemplate(
-  props: ComponentProps<typeof SupportTicketContentBlock>,
-) {
-  const { ticket } = props;
+
+/** Compose the ticket detail and supported form slots. */
+export function SupportTicketTemplate(view: SupportConversationView) {
   return (
-    <DashboardLayout
-      title={supportRemainingCopy.ticketTitle(ticket.number, ticket.subject)}
-      nav={[]}
-    >
-      <SupportTicketContentBlock {...props} />
-    </DashboardLayout>
+    <SupportSection>
+      <SupportConversationBlock {...view} />
+    </SupportSection>
+  );
+}
+
+/** Compose the published article detail page. */
+export function SupportArticleTemplate(view: SupportArticleView) {
+  return (
+    <SupportSection>
+      <SupportArticleBlock {...view} />
+    </SupportSection>
+  );
+}
+
+/** Compose the active-queue reporting page. */
+export function SupportAnalyticsTemplate(view: SupportAnalyticsView) {
+  return (
+    <SupportSection page="analytics">
+      <SupportAnalyticsBlock {...view} />
+    </SupportSection>
+  );
+}
+
+/** Compose the ticket creation page. */
+export function SupportNewTicketTemplate(view: SupportFormView) {
+  return (
+    <SupportSection page="newTicket">
+      <SupportFormBlock {...view} />
+    </SupportSection>
+  );
+}
+
+/** Compose the article creation page. */
+export function SupportNewArticleTemplate(view: SupportFormView) {
+  return (
+    <SupportSection page="newArticle">
+      <SupportFormBlock {...view} />
+    </SupportSection>
+  );
+}
+
+/** Compose the article editing page. */
+export function SupportEditArticleTemplate(view: SupportFormView) {
+  return (
+    <SupportSection page="editArticle">
+      <SupportFormBlock {...view} />
+    </SupportSection>
+  );
+}
+
+/** Compose a ticket control inside the conversation. */
+export function SupportTicketControlTemplate(view: SupportFormView) {
+  return <SupportFormBlock {...view} />;
+}
+
+/** Render an explicit unavailable state inside the same tenant layout. */
+export function SupportUnavailableTemplate({
+  page,
+  code,
+}: {
+  page: SupportPageKind;
+  code: ActionErrorCode;
+}) {
+  return (
+    <SupportSection page={page}>
+      <SupportUnavailableBlock code={code} />
+    </SupportSection>
   );
 }

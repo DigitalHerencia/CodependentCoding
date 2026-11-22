@@ -29,6 +29,25 @@ test.describe("authenticated workspace navigation", () => {
     }
   });
 
+  /** Support keeps the shared shell and exposes the existing read and creation entry points. */
+  test("support entry points share the workspace sidebar", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 1000 });
+    for (const [path, heading] of [
+      ["/support/inbox", "Support inbox"],
+      ["/support/tickets/new", "Request support"],
+      ["/support/knowledge-base", "Knowledge base"],
+      ["/support/knowledge-base/new", "Write a knowledge article"],
+      ["/support/analytics", "Support queue analysis"],
+    ] as const) {
+      await page.goto(path);
+      await expect(
+        page.getByRole("heading", { name: heading, level: 1 }),
+      ).toBeVisible();
+      await expect(
+        page.getByRole("complementary", { name: "Workspace sidebar" }),
+      ).toHaveCount(1);
+    }
+  });
   for (const viewport of [
     { width: 390, height: 844 },
     { width: 820, height: 1180 },
