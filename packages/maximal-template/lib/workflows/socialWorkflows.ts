@@ -23,8 +23,8 @@ export async function loadSocialVariantReviewWorkflow(input: unknown) {
   return getSocialVariantReview(input);
 }
 /** Load authorized account references without exposing credentials or claiming connectivity. */
-export async function loadComposerWorkflow() {
-  return { accounts: await getSocialAccounts() };
+export async function loadComposerWorkflow(cursor: string | null = null) {
+  return getSocialAccounts(cursor);
 }
 /** Load the social projection of uploads-owned assets. */
 export async function loadMediaLibraryWorkflow() {

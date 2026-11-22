@@ -64,3 +64,6 @@ export const approveSocialPostSchema = z.object({
 
 /** Accept an asset reference for server-side tenant and storage resolution. */
 export const socialAssetIdSchema = z.uuid();
+
+/** A pagination token identifies only a previously returned account. */
+export const socialAccountCursorSchema = z.uuid().nullable();

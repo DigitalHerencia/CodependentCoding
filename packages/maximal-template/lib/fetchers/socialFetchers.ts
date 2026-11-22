@@ -14,7 +14,11 @@ import {
   socialVariantReviewSelect,
 } from "@/lib/db/selects/socialSelects";
 import { withAuthenticatedRead } from "@/lib/db/tenancy";
-import { approveSocialPostSchema } from "@/schemas/socialSchemas";
+import { ResourceNotFoundError } from "@/lib/db/transactions/errors";
+import {
+  approveSocialPostSchema,
+  socialAccountCursorSchema,
+} from "@/schemas/socialSchemas";
 
 /** Read dated posts within the calendar window and reserve space for unscheduled posts. */
 export async function getSocialPosts() {
@@ -75,21 +79,45 @@ export async function getSocialVariantReview(rawInput: unknown) {
   });
 }
 
-/** Read a bounded set of active account references for composition. */
-export async function getSocialAccounts() {
+/** Read one sorted account page using a tenant-resolved anchor. */
+export async function getSocialAccounts(rawCursor: unknown) {
   return withAuthenticatedRead(async (tx, access) => {
     assertPermission(access, "social.account:read");
+    const cursor = socialAccountCursorSchema.parse(rawCursor);
+    const scope = { organizationId: access.organizationId };
+    const anchor = cursor
+      ? await tx.socialAccount.findFirst({
+          where: { ...scope, id: cursor },
+          select: { displayName: true, id: true },
+        })
+      : null;
+    if (cursor && !anchor) {
+      throw new ResourceNotFoundError("Social account page");
+    }
+    const pageSize = 50;
     const rows = await tx.socialAccount.findMany({
       where: {
-        organizationId: access.organizationId,
+        ...scope,
         active: true,
         providerAccountId: { not: "" },
+        ...(anchor
+          ? {
+              OR: [
+                { displayName: { gt: anchor.displayName } },
+                { displayName: anchor.displayName, id: { gt: anchor.id } },
+              ],
+            }
+          : {}),
       },
       orderBy: [{ displayName: "asc" }, { id: "asc" }],
-      take: 200,
+      take: pageSize + 1,
       select: socialAccountSelect,
     });
-    return rows.map(toSocialAccountDTO);
+    const page = rows.slice(0, pageSize);
+    return {
+      accounts: page.map(toSocialAccountDTO),
+      nextCursor: rows.length > pageSize ? (page.at(-1)?.id ?? null) : null,
+    };
   });
 }
 

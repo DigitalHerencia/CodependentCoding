@@ -6,7 +6,10 @@ import {
   SocialTargetsTemplate,
   SocialSubmitTemplate,
 } from "@/components/templates/social-templates";
-import { createSocialPostWorkflow } from "@/lib/workflows/socialWorkflows";
+import {
+  createSocialPostWorkflow,
+  loadComposerWorkflow,
+} from "@/lib/workflows/socialWorkflows";
 import { createSocialPostSchema } from "@/schemas/socialSchemas";
 import type {
   SocialComposerProps,
@@ -14,13 +17,16 @@ import type {
 } from "@/types/socialTypes";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { Controller, useForm, useWatch, type FieldPath } from "react-hook-form";
 
 /** Own draft fields and submit exactly the parent and per-account payloads shown in previews. */
-export function SocialNewPostForm({ accounts }: SocialComposerProps) {
+export function SocialNewPostForm({ initialPage }: SocialComposerProps) {
   const router = useRouter();
   const [saved, setSaved] = useState(false);
+  const [{ accounts, nextCursor }, setAccountPage] = useState(initialPage);
+  const [loadingAccounts, startAccountTransition] = useTransition();
+  const [pageUnavailable, setPageUnavailable] = useState(false);
   const form = useForm<SocialNewPostValues>({
     resolver: zodResolver(createSocialPostSchema),
     defaultValues: { title: "", content: "", variants: [] },
@@ -28,6 +34,29 @@ export function SocialNewPostForm({ accounts }: SocialComposerProps) {
   const title = useWatch({ control: form.control, name: "title" });
   const content = useWatch({ control: form.control, name: "content" });
   const variants = useWatch({ control: form.control, name: "variants" });
+
+  /** Append the next authorized page without changing existing form selections. */
+  function loadMoreAccounts() {
+    if (!nextCursor) return;
+    setPageUnavailable(false);
+    startAccountTransition(async () => {
+      try {
+        const page = await loadComposerWorkflow(nextCursor);
+        setAccountPage((current) => {
+          const loaded = new Map(
+            current.accounts.map((account) => [account.id, account]),
+          );
+          for (const account of page.accounts) loaded.set(account.id, account);
+          return {
+            accounts: [...loaded.values()],
+            nextCursor: page.nextCursor,
+          };
+        });
+      } catch {
+        setPageUnavailable(true);
+      }
+    });
+  }
   return (
     <SocialComposeTemplate
       title={title ?? ""}
@@ -96,6 +125,9 @@ export function SocialNewPostForm({ accounts }: SocialComposerProps) {
               selected={field.value.map((variant) => variant.socialAccountId)}
               onBlur={field.onBlur}
               error={fieldState.error?.message}
+              onLoadMore={nextCursor ? loadMoreAccounts : undefined}
+              pending={loadingAccounts}
+              pageUnavailable={pageUnavailable}
               onToggle={(id, selected) =>
                 field.onChange(
                   selected

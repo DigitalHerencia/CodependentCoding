@@ -18,7 +18,8 @@ export const socialCopy = {
   member: "Workspace member",
   preview: "Post preview",
   previewEmpty: "Your post preview will appear here.",
-  codeUnits: "UTF-16 code units. Provider validation is applied when saving.",
+  codeUnits:
+    "UTF-16 code units. Account-specific app limits apply when saving.",
   fields: {
     title: "Internal title",
     content: "Parent post content",
@@ -26,6 +27,8 @@ export const socialCopy = {
     schedule: "Schedule time in UTC",
   },
   targets: "Target accounts",
+  moreAccounts: "Load more accounts",
+  accountsUnavailable: "The next account page could not be loaded.",
   noAccounts: "No active social accounts are available.",
   saving: "Saving...",
   loading: "Loading...",

@@ -217,6 +217,9 @@ export function SocialTargetsBlock({
   onToggle,
   onBlur,
   error,
+  onLoadMore,
+  pending,
+  pageUnavailable,
 }: SocialTargetsProps) {
   return (
     <Field data-invalid={Boolean(error)}>
@@ -236,6 +239,20 @@ export function SocialTargetsBlock({
         ))}
         {!accounts.length && <p>{socialCopy.noAccounts}</p>}
       </fieldset>
+      {onLoadMore && (
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          disabled={pending}
+          onClick={onLoadMore}
+        >
+          {pending ? socialCopy.loading : socialCopy.moreAccounts}
+        </Button>
+      )}
+      {pageUnavailable && (
+        <FieldError>{socialCopy.accountsUnavailable}</FieldError>
+      )}
       {error && <FieldError>{error}</FieldError>}
     </Field>
   );

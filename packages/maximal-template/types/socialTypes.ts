@@ -118,8 +118,13 @@ export type SocialCalendarProps = {
   toolbarProps: SocialToolbarProps;
   renderControls: (post: SocialPostDTO) => ReactNode;
 };
-/** Authorized account references available for draft targets. */
-export type SocialComposerProps = { accounts: SocialAccountDTO[] };
+/** Authorized account references and the next page's stable anchor. */
+export type SocialAccountPage = {
+  accounts: SocialAccountDTO[];
+  nextCursor: string | null;
+};
+/** First account page for draft composition. */
+export type SocialComposerProps = { initialPage: SocialAccountPage };
 /** Presentation composition for the draft form and truthful per-target previews. */
 export type SocialComposeProps = {
   children: ReactNode;
@@ -144,6 +149,9 @@ export type SocialTargetsProps = {
   onToggle: (id: string, selected: boolean) => void;
   onBlur: () => void;
   error?: string | undefined;
+  onLoadMore?: (() => void) | undefined;
+  pending: boolean;
+  pageUnavailable: boolean;
 };
 /** Mutation presentation describes persisted outcomes without asserting provider execution. */
 export type SocialSubmitProps = {
