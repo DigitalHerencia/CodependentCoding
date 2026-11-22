@@ -1,12 +1,12 @@
 import { Suspense } from "react";
+import { SocialComposeFeature } from "@/features/social/socialComposeFeature";
+import { SocialComposeSkeleton } from "@/features/social/socialComposeSkeleton";
 
-import { ComposerFeature } from "@/features/social/composer-feature";
-import { ComposerSkeleton } from "@/features/social/composer-skeleton";
-
-export default async function Page() {
+/** Preserve the tenant-shell route with its social loading boundary. */
+export default function Page() {
   return (
-    <Suspense fallback={<ComposerSkeleton />}>
-      <ComposerFeature />
+    <Suspense fallback={<SocialComposeSkeleton />}>
+      <SocialComposeFeature />
     </Suspense>
   );
 }

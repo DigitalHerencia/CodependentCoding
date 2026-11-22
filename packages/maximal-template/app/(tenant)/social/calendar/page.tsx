@@ -1,12 +1,12 @@
 import { Suspense } from "react";
+import { SocialCalendarFeature } from "@/features/social/socialCalendarFeature";
+import { SocialCalendarSkeleton } from "@/features/social/socialCalendarSkeleton";
 
-import { CalendarFeature } from "@/features/social/calendar-feature";
-import { CalendarSkeleton } from "@/features/social/calendar-skeleton";
-
-export default async function Page() {
+/** Preserve the tenant-shell route with its social loading boundary. */
+export default function Page() {
   return (
-    <Suspense fallback={<CalendarSkeleton />}>
-      <CalendarFeature />
+    <Suspense fallback={<SocialCalendarSkeleton />}>
+      <SocialCalendarFeature />
     </Suspense>
   );
 }

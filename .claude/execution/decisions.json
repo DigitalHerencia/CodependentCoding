@@ -1509,6 +1509,14 @@
       "status": "accepted",
       "title": "Deliver settings directly to main",
       "decision": "Owner directed a direct squash merge and synchronization without a PR or additional checks, with the CodeViz diagram removed."
+    },
+    {
+      "id": "DEC-SOCIAL-389-001",
+      "date": "2026-11-22",
+      "status": "accepted",
+      "spec_id": "ENG-SOCIAL-389",
+      "title": "Normalize social around authorized local intent",
+      "decision": "Preserve UTC and existing UTF-16 validation rules. Treat the post and its account variants as one aggregate, condition approval and scheduling on the expected revision, and record approval and scheduling provenance atomically. Use bounded tenant read models and on-demand variant review. Remove uncalled media-association and publication writers and preserve persisted state and associations. Author no migration."
     }
   ]
 }

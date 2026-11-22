@@ -1,12 +1,12 @@
 import { Suspense } from "react";
+import { SocialMediaFeature } from "@/features/social/socialMediaFeature";
+import { SocialMediaSkeleton } from "@/features/social/socialMediaSkeleton";
 
-import { MediaLibraryFeature } from "@/features/social/media-library-feature";
-import { MediaLibrarySkeleton } from "@/features/social/media-library-skeleton";
-
-export default async function Page() {
+/** Preserve the tenant-shell route with its social loading boundary. */
+export default function Page() {
   return (
-    <Suspense fallback={<MediaLibrarySkeleton />}>
-      <MediaLibraryFeature />
+    <Suspense fallback={<SocialMediaSkeleton />}>
+      <SocialMediaFeature />
     </Suspense>
   );
 }

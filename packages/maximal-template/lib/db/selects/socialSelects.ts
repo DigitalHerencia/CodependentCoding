@@ -2,6 +2,7 @@ import "server-only";
 
 import type { Prisma } from "@/generated/prisma/client";
 
+/** Calendar and command read model without credential or storage metadata. */
 export const socialPostSelect = {
   id: true,
   title: true,
@@ -18,11 +19,12 @@ export const socialPostSelect = {
   },
   version: true,
   variants: {
+    orderBy: { id: "asc" },
+    take: 20,
     select: {
       id: true,
-      content: true,
       status: true,
-      providerPostId: true,
+
       socialAccount: {
         select: {
           provider: true,
@@ -31,19 +33,29 @@ export const socialPostSelect = {
       },
     },
   },
-  createdAt: true,
-  updatedAt: true,
 } satisfies Prisma.SocialPostSelect;
 
-export type SocialPostRecord = Prisma.SocialPostGetPayload<{
-  select: typeof socialPostSelect;
-}>;
+/** Exact variant text is loaded on demand for a single reviewed revision. */
+export const socialVariantReviewSelect = {
+  id: true,
+  content: true,
+  socialAccount: { select: { displayName: true } },
+} satisfies Prisma.SocialVariantSelect;
 
+/** Versioned receipt for a local command. */
+export const socialPostReceiptSelect = {
+  id: true,
+  status: true,
+  version: true,
+} satisfies Prisma.SocialPostSelect;
+
+/** Public identity of an eligible target account. */
 export const socialAccountSelect = {
   id: true,
   provider: true,
   displayName: true,
 } satisfies Prisma.SocialAccountSelect;
+/** User-facing metadata for an authorized uploads asset. */
 export const mediaAssetSelect = {
   id: true,
   filename: true,
@@ -51,9 +63,3 @@ export const mediaAssetSelect = {
   byteSize: true,
   createdAt: true,
 } satisfies Prisma.AssetSelect;
-export type SocialAccountRecord = Prisma.SocialAccountGetPayload<{
-  select: typeof socialAccountSelect;
-}>;
-export type MediaAssetRecord = Prisma.AssetGetPayload<{
-  select: typeof mediaAssetSelect;
-}>;
