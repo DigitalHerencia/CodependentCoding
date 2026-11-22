@@ -1,8 +1,13 @@
 {
   "delivery": {
-    "status": "in-review",
-    "branch": "refactor/391-support-architecture",
-    "issue_number": 391
+    "status": "merged-verified",
+    "branch": "main",
+    "issue_number": 391,
+    "pr_number": 392,
+    "pr_url": "https://github.com/DigitalHerencia/CodependentCoding/pull/392",
+    "merge_commit": "5df3bcfe7b5db3946849e9f06a3d5a32b7688f5f",
+    "verified_head": "48ae5719ffc775e2ac3d68d00f08ddf1f0d620de",
+    "ci": "https://github.com/DigitalHerencia/CodependentCoding/actions/runs/45049324293"
   },
   "settings_architecture_388": {
     "spec_id": "ENG-SETTINGS-388",
@@ -41,17 +46,17 @@
     "pending": []
   },
   "$schema": "codependent-coding/execution/handoff/v1",
-  "updated": "2026-11-22T17:24:26.2676839Z",
+  "updated": "2026-11-22T17:26:27.4848109Z",
   "format": "One current package; history is in progress.json, decisions.json and git.",
-  "status": "in-progress",
+  "status": "completed",
   "milestone": "M-T",
-  "current_issue": 391,
-  "next_issue": 391,
+  "current_issue": null,
+  "next_issue": null,
   "queue": ["CC-050", "CC-052", "CC-053", "CC-063"],
-  "branch": "refactor/391-support-architecture",
-  "active_package": "context/specs/support-owner-refactor.md",
-  "source_commit": "8c11641a6e164a5ad7d962a87c3ae28842fb74a5",
-  "completion": "Issue #391 implementation and permitted local checks complete. Awaiting the Issue-linked PR and final-head CI.",
+  "branch": "main",
+  "active_package": null,
+  "source_commit": "5df3bcfe7b5db3946849e9f06a3d5a32b7688f5f",
+  "completion": "Issue #391 delivered through PR #392. Final evidence is in progress.json.",
   "in_flight": [
     "CC-050 token consolidation implemented; focused static checks passed. Affected-site CI and owner browser contrast/reduced-motion verification pending. CC-049 merged in #351; main synced and branch deleted.",
     "Homepage PR #349 has passing CI and ready preview; owner desktop/mobile verification remains pending.",

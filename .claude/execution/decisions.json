@@ -1533,6 +1533,14 @@
       "spec_id": "ENG-SUPPORT-391",
       "title": "Normalize support around authorized projections and atomic commands",
       "decision": "Preserve the current ticket status destinations, reopening and immediate knowledge publication. Apply requester and public-message predicates before selecting customer data. Use a complete caller-visible active-queue aggregate. Preserve existing tenant-scoped numbering and author no migration."
+    },
+    {
+      "id": "DEC-SUPPORT-391-002",
+      "date": "2026-11-22",
+      "status": "accepted",
+      "spec_id": "ENG-SUPPORT-391",
+      "title": "Record verified support refactor delivery",
+      "decision": "PR #392 squash-merged as 5df3bcfe7b5db3946849e9f06a3d5a32b7688f5f after permitted CI passed on 48ae5719ffc775e2ac3d68d00f08ddf1f0d620de in run 45049324293. Issue #391 closed, Project Done, and the task branch was removed locally and remotely. No migration required. Test assertions were authored only, and runtime verification remains unexecuted."
     }
   ]
 }

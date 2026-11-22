@@ -3,9 +3,9 @@
     "spec_id": "ENG-SUPPORT-391",
     "spec": "context/specs/support-owner-refactor.md",
     "issue_number": 391,
-    "status": "in-review",
-    "branch": "refactor/391-support-architecture",
-    "project_status": "In progress",
+    "status": "merged-verified",
+    "branch": "main",
+    "project_status": "Done",
     "verification": [
       {
         "command": "npm.cmd run lint:fix -- <changed template TypeScript files>",
@@ -22,6 +22,10 @@
       {
         "command": "npm.cmd run typecheck",
         "result": "PASS after correcting exact optional property types."
+      },
+      {
+        "command": "gh run view 45049324293",
+        "result": "PASS on the final PR head. Changed-file formatting and lint, type generation, and typecheck finished successfully."
       }
     ],
     "authored_assertions": [
@@ -39,7 +43,13 @@
       "concurrency": "Transaction-scoped allocation lock, tenant uniqueness, version-qualified mutation, resolution retention and atomic replies.",
       "editorial": "Separate published reader and update-authorized editor queries; duplicate slug and stale edit outcomes; post-commit invalidation.",
       "analytics": "Database aggregate over the complete caller-visible non-closed queue; deadline display grounded in stored timestamps."
-    }
+    },
+    "pull_request": 392,
+    "pr_url": "https://github.com/DigitalHerencia/CodependentCoding/pull/392",
+    "verified_head": "48ae5719ffc775e2ac3d68d00f08ddf1f0d620de",
+    "merge_commit": "5df3bcfe7b5db3946849e9f06a3d5a32b7688f5f",
+    "ci": "https://github.com/DigitalHerencia/CodependentCoding/actions/runs/45049324293",
+    "completion": "Issue #391 closed after PR #392 squash-merged. Project status Done. Verified local and remote issue branch removal. CRM served as a read-only reference. Runtime and browser evidence remains unexecuted by scope. No migration prerequisite."
   },
   "social_architecture_389": {
     "spec_id": "ENG-SOCIAL-389",
