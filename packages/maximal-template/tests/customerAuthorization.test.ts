@@ -10,15 +10,17 @@ import {
 import { downloadPortalDocument } from "@/lib/actions/portalActions";
 import { getOrganizationMembersPage } from "@/lib/fetchers/authzFetchers";
 import {
-  getSupportInbox,
+  getSupportAnalytics,
+  getSupportInboxPage,
   getSupportTicket,
-  getSupportMessages,
+  getSupportMessagePage,
 } from "@/lib/fetchers/supportFetchers";
 import {
   assertCustomerRequester,
   hasCustomerRelationship,
 } from "@/lib/authz/attributes";
 import { grants, permissions } from "@/lib/authz/permissions";
+import { updateTicketStatusTx } from "@/lib/db/selects/supportTx";
 import { readPrivateBlob } from "@/lib/integrations/vercel-blob/download";
 
 const state = vi.hoisted(() => ({
@@ -28,11 +30,17 @@ const state = vi.hoisted(() => ({
 const tx = vi.hoisted(() => ({
   portalDocument: { findMany: vi.fn(), findFirst: vi.fn() },
   membership: { findMany: vi.fn(async () => []) },
+  $queryRaw: vi.fn(async () => [
+    { id: "00000000-0000-4000-8000-000000000001" },
+  ]),
   supportTicket: {
     findMany: vi.fn(async () => []),
-    findFirst: vi.fn(async () => null),
+    findFirst: vi.fn(async (): Promise<unknown> => null),
+    findFirstOrThrow: vi.fn(async (): Promise<unknown> => null),
+    updateMany: vi.fn(async () => ({ count: 1 })),
+    groupBy: vi.fn(async (): Promise<unknown[]> => []),
   },
-  supportMessage: { findMany: vi.fn() },
+  supportMessage: { findMany: vi.fn(async () => []) },
 }));
 
 const access = (): AccessContext => ({
@@ -86,7 +94,7 @@ test("two customers in the same organization cannot list tenant-wide memberships
         },
       }),
     );
-    await getSupportInbox();
+    await getSupportInboxPage();
     expect(tx.supportTicket.findMany).toHaveBeenLastCalledWith(
       expect.objectContaining({
         where: expect.objectContaining({
@@ -146,8 +154,8 @@ test.each([
 test("another customer's ticket cannot be read or used to fetch messages", async () => {
   const ticketId = "00000000-0000-4000-8000-000000000001";
   expect(await getSupportTicket(ticketId)).toBeNull();
-  await expect(getSupportMessages(ticketId)).rejects.toThrow(
-    "Ticket not found",
+  await expect(getSupportMessagePage(ticketId)).rejects.toThrow(
+    "Ticket was not found in the active organization.",
   );
   expect(tx.supportMessage.findMany).not.toHaveBeenCalled();
   expect(tx.supportTicket.findFirst).toHaveBeenLastCalledWith(
@@ -159,6 +167,117 @@ test("another customer's ticket cannot be read or used to fetch messages", async
       },
     }),
   );
+});
+
+/** Hidden messages cannot influence a customer conversation page or its displayed count. */
+test("customer detail and paginated conversation select only visible messages", async () => {
+  const ticketId = "00000000-0000-4000-8000-000000000001";
+  tx.supportTicket.findFirst.mockResolvedValueOnce({ id: ticketId });
+  await expect(getSupportMessagePage(ticketId, 2)).resolves.toEqual({
+    messages: [],
+    page: 2,
+    hasMore: false,
+  });
+  expect(tx.supportMessage.findMany).toHaveBeenCalledWith(
+    expect.objectContaining({
+      where: {
+        ticketId,
+        organizationId: access().organizationId,
+        isInternal: false,
+      },
+      orderBy: [{ createdAt: "asc" }, { id: "asc" }],
+      skip: 50,
+      take: 51,
+    }),
+  );
+  await getSupportTicket(ticketId);
+  expect(tx.supportTicket.findFirst).toHaveBeenLastCalledWith(
+    expect.objectContaining({
+      select: expect.objectContaining({
+        _count: { select: { messages: { where: { isInternal: false } } } },
+      }),
+    }),
+  );
+});
+/** Analytics uses the same requester predicate and includes all active rows in scope. */
+test("support analytics counts the complete requester-scoped active queue", async () => {
+  tx.supportTicket.groupBy.mockResolvedValueOnce([
+    {
+      priority: "URGENT",
+      status: "WAITING_ON_CUSTOMER",
+      assignedMembershipId: null,
+      _count: { _all: 71 },
+    },
+    {
+      priority: "NORMAL",
+      status: "OPEN",
+      assignedMembershipId: "member-b",
+      _count: { _all: 36 },
+    },
+  ]);
+  const aggregate = await getSupportAnalytics();
+  expect(aggregate.count).toBe(107);
+  expect(aggregate.rows[0]).toEqual({
+    id: "URGENT",
+    priority: "URGENT",
+    count: 71,
+    unassigned: 71,
+    waiting: 71,
+  });
+  expect(tx.supportTicket.groupBy).toHaveBeenCalledWith(
+    expect.objectContaining({
+      where: {
+        requesterUserId: state.userId,
+        organizationId: access().organizationId,
+        status: { not: "CLOSED" },
+      },
+    }),
+  );
+  expect(tx.supportTicket.findMany).not.toHaveBeenCalled();
+});
+/** Closing preserves resolution time, and a stale status change cannot overwrite a newer version. */
+test("closing an already resolved ticket retains its resolution timestamp", async () => {
+  const ticketId = "00000000-0000-4000-8000-000000000001";
+  const resolvedAt = new Date("2026-11-10T09:00:00.000Z");
+  const current = {
+    version: 3,
+    status: "RESOLVED",
+    resolvedAt,
+    closedAt: null,
+  };
+  const input = {
+    ticketId,
+    organizationId: access().organizationId,
+    expectedVersion: 3,
+    status: "CLOSED",
+  } as const;
+  const client = tx as unknown as Prisma.TransactionClient;
+  tx.supportTicket.findFirst.mockResolvedValueOnce(current);
+  tx.supportTicket.findFirstOrThrow.mockResolvedValueOnce({
+    ...current,
+    version: 4,
+    status: "CLOSED",
+  });
+  await updateTicketStatusTx(client, input);
+  expect(tx.supportTicket.updateMany).toHaveBeenCalledWith({
+    where: { id: ticketId, organizationId: input.organizationId, version: 3 },
+    data: {
+      status: "CLOSED",
+      resolvedAt,
+      closedAt: expect.any(Date),
+      version: { increment: 1 },
+    },
+  });
+
+  tx.supportTicket.findFirst.mockResolvedValueOnce({
+    ...current,
+    version: 4,
+    status: "CLOSED",
+  });
+  await expect(updateTicketStatusTx(client, input)).rejects.toMatchObject({
+    code: "CONFLICT",
+  });
+  expect(tx.supportTicket.updateMany).toHaveBeenCalledTimes(1);
 });
 
 test("customer relationships fail closed across tenants and support writes require the requester", () => {

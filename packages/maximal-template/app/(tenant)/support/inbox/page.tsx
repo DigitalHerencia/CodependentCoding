@@ -1,12 +1,17 @@
+import { SupportInboxFeature } from "@/features/support/supportInboxFeature";
+import { SupportInboxSkeleton } from "@/features/support/supportInboxSkeleton";
+import type { SupportSearchParams } from "@/types/supportTypes";
 import { Suspense } from "react";
 
-import { InboxFeature } from "@/features/support/inbox-feature";
-import { InboxSkeleton } from "@/features/support/inbox-skeleton";
-
-export default async function Page() {
+/** Mount the inbox feature in the tenant shell. */
+export default function Page({
+  searchParams,
+}: {
+  searchParams: Promise<SupportSearchParams>;
+}) {
   return (
-    <Suspense fallback={<InboxSkeleton />}>
-      <InboxFeature />
+    <Suspense fallback={<SupportInboxSkeleton />}>
+      <SupportInboxFeature searchParams={searchParams} />
     </Suspense>
   );
 }

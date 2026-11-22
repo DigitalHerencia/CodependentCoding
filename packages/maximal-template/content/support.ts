@@ -1,77 +1,84 @@
-export const supportBlockCopy = {
+/** Vocabulary for the support blocks, including status, priority and outcome labels. */
+export const supportCopy = {
+  headings: {
+    inbox: "Support inbox",
+    newTicket: "Request support",
+    ticket: "Support ticket",
+    knowledge: "Knowledge base",
+    newArticle: "Write a knowledge article",
+    article: "Knowledge article",
+    editArticle: "Edit article",
+    analytics: "Support queue analysis",
+  },
+  fields: {
+    subject: "Subject",
+    description: "What happened, and what did you expect?",
+    priority: "Priority",
+    status: "Ticket status",
+    reply: "Reply to conversation",
+    title: "Title",
+    slug: "Slug",
+    article: "Article",
+  },
+  priority: { LOW: "Low", NORMAL: "Normal", HIGH: "High", URGENT: "Urgent" },
+  status: {
+    OPEN: "Open",
+    IN_PROGRESS: "In progress",
+    WAITING_ON_CUSTOMER: "Waiting on customer",
+    WAITING_ON_INTERNAL: "Waiting on internal work",
+    RESOLVED: "Resolved",
+    CLOSED: "Closed",
+  },
+  submit: {
+    newTicket: "Create ticket",
+    reply: "Save reply",
+    status: "Update status",
+    newArticle: "Publish article",
+    editArticle: "Save article",
+  },
+  saved: {
+    newTicket: "Ticket saved.",
+    reply: "Reply saved.",
+    status: "Status updated.",
+    newArticle: "Article published.",
+    editArticle: "Article saved.",
+  },
+  unavailable: {
+    denied: "You don't have access to this support page.",
+    invalid: "Check the search filters and page number.",
+    missing: "This support resource could not be found.",
+    failed: "Something went wrong. Try again.",
+  },
+  allStatuses: "All active statuses",
+  allPriorities: "All priorities",
+  search: "Search",
   searchTickets: "Search tickets",
-  searchSubjectNumberOrRequester: "Search subject, number or requester",
-  ticketStatus: "Ticket status",
-  allOpenStatuses: "All open statuses",
-  newTicket: "New ticket",
-  searchKnowledgeBase: "Search knowledge base",
+  searchTicketPlaceholder: "Subject, number or requester",
   searchArticles: "Search articles",
+  newTicket: "New ticket",
   writeArticle: "Write article",
-} as const;
-
-export const supportPresentationCopy = {
-  articleCouldNotBeSavedCheckTheUniqueSlug:
-    "Article could not be saved. Check the unique slug, permissions, or reload if the article changed.",
-  editArticle: "Edit article",
-  writeAKnowledgeArticle: "Write a knowledge article",
-
-  article: "Article",
-  articlesAreAvailableToThisWorkspaceSKnowledgeBase:
-    "Articles are available to this workspace’s knowledge-base readers.",
-  saving: "Saving…",
-  saveArticle: "Save article",
-  publishArticle: "Publish article",
-
-  ticketCouldNotBeSavedCheckYourInputAnd:
-    "Ticket could not be saved. Check your input and permissions.",
-  requestSupport: "Request support",
-
-  priority: "Priority",
-  createTicket: "Create ticket",
-  supportQueueAnalysis: "Support queue analysis",
-  currentNonClosedQueueLimitedTo: "Current non-closed queue, limited to ",
-  loadedTicketsThisIsAQueueSnapshotNotHistorical:
-    " loaded tickets. This is a queue snapshot, not historical response-time reporting.",
-  workloadByPriority: "Workload by priority",
   tickets: "Tickets",
   unassigned: "Unassigned",
-  waitingOnCustomer: "Waiting on customer",
-  supportInbox: "Support inbox",
-  openConversationsOrderedByPriorityShowingUpTo100:
-    "Open conversations ordered by priority. Showing up to 100 tickets.",
-  numberPrefix: "#",
-  requester: "Requester",
-  separator: "· ",
-  messages: " messages",
-  responseDue: "Response due:",
-  notSet: "Not set",
-  noMatchingOpenTickets: "No matching open tickets.",
-  knowledgeBase: "Knowledge base",
-  updated: "Updated ",
-  noMatchingArticles: "No matching articles.",
-  conversation: "Conversation",
-  noOpeningDescription: "No opening description.",
-  triage: "Triage",
+  queuePopulation: "Non-closed tickets you can view",
+  noTickets: "No matching tickets.",
+  noArticles: "No matching articles.",
+  noReplies: "No replies on this page.",
   unknown: "Unknown",
+  notSet: "Not set",
+  pagination: "Results pages",
+  previous: "Previous page",
+  next: "Next page",
+  updated: "Updated",
+  conversation: "Conversation",
+  triage: "Triage",
+  noDescription: "No opening description.",
+  internalNote: "Internal note",
+  requester: "Requester",
   assignee: "Assignee",
-  status: "Status",
-  resolutionDue: "Resolution due",
-} as const;
-
-export const supportControlCopy = {
-  replyToConversation: "Reply to conversation",
-  saveReply: "Save reply",
-  ticketStatus: "Ticket status",
-  updateStatus: "Update status",
-} as const;
-
-export const supportRemainingCopy = {
-  ticketTitle: (value0: unknown, value1: unknown) => `#${value0} · ${value1}`,
-
-  title: "Title",
-  slug: "Slug",
-  article: "Article",
-  subject: "Subject",
-  whatHappenedAndWhatDidYouExpect: "What happened, and what did you expect?",
-  priority: "Priority",
+  responseDeadline: "Response deadline",
+  resolutionDeadline: "Resolution deadline",
+  overdue: "Overdue",
+  messages: (count: number) =>
+    `${count} ${count === 1 ? "message" : "messages"}`,
+  saving: "Saving…",
 } as const;

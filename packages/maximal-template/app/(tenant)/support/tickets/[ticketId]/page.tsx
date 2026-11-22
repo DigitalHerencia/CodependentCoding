@@ -1,17 +1,19 @@
+import { SupportTicketFeature } from "@/features/support/supportTicketFeature";
+import { SupportTicketSkeleton } from "@/features/support/supportTicketSkeleton";
+import type { SupportSearchParams } from "@/types/supportTypes";
 import { Suspense } from "react";
 
-import { TicketFeature } from "@/features/support/ticket-feature";
-import { TicketSkeleton } from "@/features/support/ticket-skeleton";
-
-export default async function Page({
+/** Mount the ticket feature in the tenant shell. */
+export default function Page({
   params,
+  searchParams,
 }: {
   params: Promise<{ ticketId: string }>;
+  searchParams: Promise<SupportSearchParams>;
 }) {
-  const { ticketId } = await params;
   return (
-    <Suspense fallback={<TicketSkeleton />}>
-      <TicketFeature ticketId={ticketId} />
+    <Suspense fallback={<SupportTicketSkeleton />}>
+      <SupportTicketFeature params={params} searchParams={searchParams} />
     </Suspense>
   );
 }
