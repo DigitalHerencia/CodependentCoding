@@ -1,50 +1,71 @@
-export const socialBlockCopy = {
+/** Presentation labels describe observable local state and confirmed publication evidence. */
+export const socialCopy = {
+  calendar: "Social calendar",
+  compose: "Compose post",
+  media: "Media library",
+  search: "Search this view",
+  calendarScope:
+    "Up to 50 dated posts from 90 days ago through the next year, plus 50 unscheduled posts. Dates and times use UTC.",
+  mediaScope: "The 100 most recent workspace assets.",
+  unscheduled: "Unscheduled posts",
+  untitled: "Untitled post",
+  noPosts: "No posts in this view.",
+  approved: "Approval recorded",
+  reviewVariants: "Review account content",
+  hideVariants: "Hide account content",
+  reviewUnavailable:
+    "Account content is unavailable for this revision. Refresh the calendar and retry.",
+  member: "Workspace member",
+  preview: "Post preview",
+  previewEmpty: "Your post preview will appear here.",
+  codeUnits:
+    "UTF-16 code units. Account-specific app limits apply when saving.",
+  fields: {
+    title: "Internal title",
+    content: "Parent post content",
+    variant: "Account-specific content",
+    schedule: "Schedule time in UTC",
+  },
+  targets: "Target accounts",
+  moreAccounts: "Load more accounts",
+  accountsUnavailable: "The next account page could not be loaded.",
+  noAccounts: "No active social accounts are available.",
+  saving: "Saving...",
+  loading: "Loading...",
+  unavailable: "The request could not be completed. Try again.",
+  submit: {
+    draft: "Save draft",
+    approval: "Approve draft",
+    schedule: "Save schedule (UTC)",
+  },
+  saved: {
+    draft: "Draft saved.",
+    approval: "Approval recorded.",
+    schedule: "Schedule saved.",
+  },
+  scheduleIntent:
+    "Saving a schedule records UTC scheduling intent. Provider publication is unavailable in this workspace.",
+  status: {
+    DRAFT: "Draft saved",
+    SCHEDULED: "Schedule saved",
+    PUBLISHING: "Publication in progress",
+    PUBLISHED: "Publication confirmed",
+    PARTIALLY_FAILED: "Partial failure",
+    FAILED: "Publication failed",
+    CANCELED: "Canceled",
+  },
+  variantStatus: {
+    DRAFT: "Draft",
+    SCHEDULED: "Scheduled",
+    PUBLISHED: "Publication confirmed",
+    FAILED: "Publication failed",
+  },
+  bytes: "bytes",
+  noMedia: "No matching media assets.",
   previewImage: "Preview image",
-  downloadFile: "Download file",
-  searchMedia: "Search media",
-  searchFilenameOrMediaType: "Search filename or media type",
-  loading: "Loading…",
-} as const;
-
-export const socialPresentationCopy = {
-  approveDraft: "Approve draft",
-
-  scheduleUTC: "Schedule (UTC)",
-  searchPosts: "Search posts",
-
-  separator: " · ",
-
-  saving: "Saving…",
-  saveDraft: "Save draft",
-  fileUnavailableCheckStorageConfigurationOrDownloadSizeMaximum:
-    "File unavailable. Check storage configuration or download size (maximum 10 MB).",
-  unscheduledDrafts: "Unscheduled drafts",
-  publishingCalendar: "Publishing calendar",
-  composePost: "Compose post",
-  untitledPost: "Untitled post",
-  separator2: " ·",
-  noTimeSet: "No time set",
-  uTC: " UTC",
-  noPostsInThisView: "No posts in this view.",
-  composeASocialPost: "Compose a social post",
-  postPreview: "Post preview",
-  mediaLibrary: "Media library",
-  bytes: " bytes",
-  added: "Added ",
-  noMatchingMediaAssets: "No matching media assets.",
-} as const;
-
-export const socialPreviewCopy = {
-  characters: "characters ·",
-  channels: "channels",
-} as const;
-
-export const socialRemainingCopy = {
-  yourPostPreviewWillAppearHere: "Your post preview will appear here.",
-  internalTitle: "Internal title",
-  postContent: "Post content",
-  publishDestinations: "Publish destinations",
-  noActiveSocialAccountsAreAvailable:
-    "No active social accounts are available.",
-  publishTimeInUTC: "Publish time in UTC",
+  download: "Download file",
+  artifactFailed:
+    "File unavailable. Preview or download could not be completed (maximum 10 MB).",
+  downloadStarted: "Download started.",
+  previewReady: "Preview ready.",
 } as const;

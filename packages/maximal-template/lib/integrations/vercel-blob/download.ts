@@ -1,7 +1,8 @@
 import "server-only";
 import { get } from "@vercel/blob";
 import { getBlobToken } from "./client";
-export async function readPrivateBlob(
+/** Read a private storage object with bounds on both metadata and streamed bytes. */
+export async function readPrivateBlobBytes(
   pathname: string,
   maxBytes = 10 * 1024 * 1024,
 ) {
@@ -31,5 +32,19 @@ export async function readPrivateBlob(
   } finally {
     reader.releaseLock();
   }
-  return Buffer.concat(chunks).toString("base64");
+  const bytes = new Uint8Array(size);
+  let offset = 0;
+  for (const chunk of chunks) {
+    bytes.set(chunk, offset);
+    offset += chunk.byteLength;
+  }
+  return bytes;
+}
+
+/** Preserve the existing base64 contract for portal downloads. */
+export async function readPrivateBlob(pathname: string, maxBytes?: number) {
+  const bytes = await readPrivateBlobBytes(pathname, maxBytes);
+  return Buffer.from(bytes.buffer, bytes.byteOffset, bytes.byteLength).toString(
+    "base64",
+  );
 }

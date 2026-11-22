@@ -1,6 +1,7 @@
 import type { SeedContext } from "@/prisma/seeds/base";
 import { seedIds as uploadsSeedIds } from "@/prisma/seeds/uploads";
 
+/** Stable fixture identifiers for the seeded social aggregate. */
 export const seedIds = {
   socialAccount: "00000000-0000-4000-8000-000000000080",
   socialPost: "00000000-0000-4000-8000-000000000081",
@@ -8,6 +9,7 @@ export const seedIds = {
   socialMedia: "00000000-0000-4000-8000-000000000083",
 } as const;
 
+/** Seed a locally scheduled post with approval provenance and an uploads-owned attachment. */
 export async function seed({
   tx,
   organization,
@@ -46,6 +48,8 @@ export async function seed({
       title: "Launch",
       content: "The Maximal Template is coming.",
       status: "SCHEDULED",
+      approvedByMembershipId: ownerMembership.id,
+      approvedAt: new Date("2026-08-31T18:00:00.000Z"),
       scheduledAt: new Date("2026-09-01T18:00:00.000Z"),
     },
     create: {
@@ -55,6 +59,8 @@ export async function seed({
       title: "Launch",
       content: "The Maximal Template is coming.",
       status: "SCHEDULED",
+      approvedByMembershipId: ownerMembership.id,
+      approvedAt: new Date("2026-08-31T18:00:00.000Z"),
       scheduledAt: new Date("2026-09-01T18:00:00.000Z"),
     },
   });

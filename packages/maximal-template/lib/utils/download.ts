@@ -6,12 +6,18 @@ export function downloadBase64File(file: {
   const bytes = Uint8Array.from(atob(file.base64), (character) =>
     character.charCodeAt(0),
   );
-  const url = URL.createObjectURL(
+  downloadBlobFile(
     new Blob([bytes], { type: "application/octet-stream" }),
+    file.filename,
   );
+}
+
+/** Initiate a browser download from an authorized bounded Blob and release its temporary URL. */
+export function downloadBlobFile(blob: Blob, filename: string): void {
+  const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.href = url;
-  link.download = file.filename;
+  link.download = filename;
   document.body.append(link);
   try {
     link.click();

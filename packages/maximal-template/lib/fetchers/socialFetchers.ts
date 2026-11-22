@@ -1,77 +1,139 @@
-/** Social Fetchers contracts and composition for the owning application slice. */
-import { persistedReadLimitSchema } from "@/schemas/commonSchemas";
 import "server-only";
 
-import { assertPermission } from "@/lib/authz/permissions";
+import { assertPermission, hasPermission } from "@/lib/authz/permissions";
 import {
   toMediaAssetDTO,
   toSocialAccountDTO,
   toSocialPostDTO,
+  toSocialVariantReviewDTO,
 } from "@/lib/db/dtos/socialDtos";
 import {
   mediaAssetSelect,
   socialAccountSelect,
   socialPostSelect,
+  socialVariantReviewSelect,
 } from "@/lib/db/selects/socialSelects";
 import { withAuthenticatedRead } from "@/lib/db/tenancy";
+import { ResourceNotFoundError } from "@/lib/db/transactions/errors";
+import {
+  approveSocialPostSchema,
+  socialAccountCursorSchema,
+} from "@/schemas/socialSchemas";
 
-export async function getScheduledSocialPosts(rawLimit: unknown = 100) {
+/** Read dated posts within the calendar window and reserve space for unscheduled posts. */
+export async function getSocialPosts() {
   return withAuthenticatedRead(async (tx, access) => {
     assertPermission(access, "social.post:read");
-    const limit = persistedReadLimitSchema.parse(rawLimit);
-
-    const rows = await tx.socialPost.findMany({
-      where: {
-        organizationId: access.organizationId,
-        status: "SCHEDULED",
-      },
-      orderBy: {
-        scheduledAt: "asc",
-      },
-      take: Math.min(Math.max(limit, 1), 200),
-      select: socialPostSelect,
-    });
-
-    return rows.map(toSocialPostDTO);
+    const today = new Date();
+    today.setUTCHours(0, 0, 0, 0);
+    const start = new Date(today);
+    start.setUTCDate(start.getUTCDate() - 90);
+    const end = new Date(today);
+    end.setUTCDate(end.getUTCDate() + 366);
+    const where = { organizationId: access.organizationId };
+    const [dated, unscheduled] = await Promise.all([
+      tx.socialPost.findMany({
+        where: { ...where, scheduledAt: { gte: start, lt: end } },
+        orderBy: [{ scheduledAt: "asc" }, { id: "asc" }],
+        take: 50,
+        select: socialPostSelect,
+      }),
+      tx.socialPost.findMany({
+        where: { ...where, scheduledAt: null },
+        orderBy: [{ createdAt: "desc" }, { id: "asc" }],
+        take: 50,
+        select: socialPostSelect,
+      }),
+    ]);
+    return {
+      posts: [...dated, ...unscheduled].map(toSocialPostDTO),
+      canUpdate: hasPermission(access, "social.post:update"),
+    };
   });
 }
 
-export async function getSocialAccounts() {
+/** Read exact variant text for the sole revision still referenced by the calendar. */
+export async function getSocialVariantReview(rawInput: unknown) {
+  return withAuthenticatedRead(async (tx, access) => {
+    assertPermission(access, "social.post:read");
+    const { postId, expectedVersion } = approveSocialPostSchema.parse(rawInput);
+    const post = await tx.socialPost.findFirst({
+      where: {
+        id: postId,
+        organizationId: access.organizationId,
+        version: expectedVersion,
+      },
+      select: {
+        variants: {
+          where: {
+            organizationId: access.organizationId,
+            socialAccount: { organizationId: access.organizationId },
+          },
+          orderBy: { id: "asc" },
+          take: 20,
+          select: socialVariantReviewSelect,
+        },
+      },
+    });
+    return post?.variants.map(toSocialVariantReviewDTO) ?? null;
+  });
+}
+
+/** Read one sorted account page using a tenant-resolved anchor. */
+export async function getSocialAccounts(rawCursor: unknown) {
   return withAuthenticatedRead(async (tx, access) => {
     assertPermission(access, "social.account:read");
+    const cursor = socialAccountCursorSchema.parse(rawCursor);
+    const scope = { organizationId: access.organizationId };
+    const anchor = cursor
+      ? await tx.socialAccount.findFirst({
+          where: { ...scope, id: cursor },
+          select: { displayName: true, id: true },
+        })
+      : null;
+    if (cursor && !anchor) {
+      throw new ResourceNotFoundError("Social account page");
+    }
+    const pageSize = 50;
     const rows = await tx.socialAccount.findMany({
-      where: { organizationId: access.organizationId, active: true },
-      orderBy: { displayName: "asc" },
+      where: {
+        ...scope,
+        active: true,
+        providerAccountId: { not: "" },
+        ...(anchor
+          ? {
+              OR: [
+                { displayName: { gt: anchor.displayName } },
+                { displayName: anchor.displayName, id: { gt: anchor.id } },
+              ],
+            }
+          : {}),
+      },
+      orderBy: [{ displayName: "asc" }, { id: "asc" }],
+      take: pageSize + 1,
       select: socialAccountSelect,
     });
-    return rows.map(toSocialAccountDTO);
+    const page = rows.slice(0, pageSize);
+    return {
+      accounts: page.map(toSocialAccountDTO),
+      nextCursor: rows.length > pageSize ? (page.at(-1)?.id ?? null) : null,
+    };
   });
 }
 
-export async function getMediaAssets(rawLimit: unknown = 100) {
+/** Read the organization's most recent uploads without resolving storage artifacts. */
+export async function getMediaAssets() {
   return withAuthenticatedRead(async (tx, access) => {
     assertPermission(access, "social.media:read");
-    const limit = persistedReadLimitSchema.parse(rawLimit);
     const rows = await tx.asset.findMany({
       where: { organizationId: access.organizationId },
-      orderBy: { createdAt: "desc" },
-      take: Math.min(Math.max(limit, 1), 200),
+      orderBy: [{ createdAt: "desc" }, { id: "asc" }],
+      take: 100,
       select: mediaAssetSelect,
     });
-    return rows.map(toMediaAssetDTO);
-  });
-}
-
-export async function getSocialPosts(rawLimit: unknown = 100) {
-  return withAuthenticatedRead(async (tx, access) => {
-    assertPermission(access, "social.post:read");
-    const limit = persistedReadLimitSchema.parse(rawLimit);
-    const rows = await tx.socialPost.findMany({
-      where: { organizationId: access.organizationId },
-      orderBy: [{ scheduledAt: "asc" }, { createdAt: "desc" }],
-      take: Math.min(Math.max(limit, 1), 200),
-      select: socialPostSelect,
-    });
-    return rows.map(toSocialPostDTO);
+    return {
+      assets: rows.map(toMediaAssetDTO),
+      canUpload: hasPermission(access, "social.media:create"),
+    };
   });
 }

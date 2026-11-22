@@ -1,139 +1,115 @@
 "use server";
-/** Social Actions contracts and composition for the owning application slice. */
-import { toActionResult } from "@/lib/utils/actionResult";
-import { socialAssetIdSchema } from "@/schemas/socialSchemas";
-import { readPrivateBlob } from "@/lib/integrations/vercel-blob/download";
 
+import { requireIdentity } from "@/lib/integrations/clerk/server";
+import { assertPermission } from "@/lib/authz/permissions";
+import { invalidatePaths } from "@/lib/cache/invalidate";
+import {
+  isSocialMediaPreviewable,
+  SOCIAL_MEDIA_MAX_BYTES,
+} from "@/lib/constants/social";
+import {
+  approveSocialPostTx,
+  createSocialPostTx,
+  scheduleSocialPostTx,
+} from "@/lib/db/selects/socialTx";
+import { withTenantTransaction } from "@/lib/db/tenancy";
+import { ResourceNotFoundError } from "@/lib/db/transactions/errors";
+import { readPrivateBlobBytes } from "@/lib/integrations/vercel-blob/download";
+import { toActionResult } from "@/lib/utils/actionResult";
 import {
   approveSocialPostSchema,
   createSocialPostSchema,
   scheduleSocialPostSchema,
+  socialAssetIdSchema,
 } from "@/schemas/socialSchemas";
-import { requireIdentity } from "@/lib/integrations/clerk/server";
-import { assertPermission } from "@/lib/authz/permissions";
-import { toSocialPostDTO } from "@/lib/db/dtos/socialDtos";
-import { socialPostSelect } from "@/lib/db/selects/socialSelects";
-import { withTenantTransaction } from "@/lib/db/tenancy";
-import { ResourceNotFoundError } from "@/lib/db/transactions/errors";
-import { scheduleSocialPostTx } from "@/lib/db/transactions/socialSchedulePostTx";
-import { approveSocialPostTx } from "@/lib/db/transactions/socialTx";
 
-const characterLimits = {
-  LINKEDIN: 3_000,
-  X: 280,
-  FACEBOOK: 63_206,
-  INSTAGRAM: 2_200,
-  OTHER: 100_000,
-} as const;
-
-function buildPlatformVariant(
-  provider: keyof typeof characterLimits,
-  content: string,
-) {
-  const normalized = content.trim();
-  if (!normalized) throw new Error("Social content cannot be empty.");
-  const limit = characterLimits[provider];
-  if (normalized.length > limit) {
-    throw new Error(
-      `${provider} content exceeds its ${limit}-character limit.`,
-    );
-  }
-  return normalized;
+/** Refresh the persisted post projections after their transaction commits. */
+function invalidateSocialPosts() {
+  invalidatePaths(["/social/calendar", "/social/compose", "/dashboard"]);
 }
 
-function resolvePublishTime(requestedAt: Date, now = new Date()): Date {
-  if (!Number.isFinite(requestedAt.getTime())) {
-    throw new Error("The publication time is invalid.");
-  }
-  if (requestedAt.getTime() < now.getTime() + 60_000) {
-    throw new Error(
-      "The publication time must be at least one minute in the future.",
-    );
-  }
-  return requestedAt;
-}
-
+/** Save a tenant-scoped draft and its account variants. */
 export async function createSocialPost(rawInput: unknown) {
   return toActionResult(async () => {
     const identity = await requireIdentity();
-    return withTenantTransaction(identity, async (tx, access) => {
+    const saved = await withTenantTransaction(identity, async (tx, access) => {
       assertPermission(access, "social.post:create");
-      const input = createSocialPostSchema.parse(rawInput);
-      const accountIds = [
-        ...new Set(input.variants.map((variant) => variant.socialAccountId)),
-      ];
-      const accounts = await tx.socialAccount.findMany({
-        where: {
-          organizationId: access.organizationId,
-          id: { in: accountIds },
-          active: true,
-        },
-        select: { id: true, provider: true },
-      });
-      if (accounts.length !== accountIds.length)
-        throw new ResourceNotFoundError("Social account");
-      const providersByAccount = new Map(
-        accounts.map((account) => [account.id, account.provider]),
+      return createSocialPostTx(
+        tx,
+        access,
+        createSocialPostSchema.parse(rawInput),
       );
-      const record = await tx.socialPost.create({
-        data: {
-          organizationId: access.organizationId,
-          createdByMembershipId: access.membershipId,
-          title: input.title ?? null,
-          content: input.content,
-          variants: {
-            create: input.variants.map((variant) => {
-              const provider = providersByAccount.get(variant.socialAccountId);
-              if (!provider) throw new ResourceNotFoundError("Social account");
-              return {
-                organizationId: access.organizationId,
-                socialAccountId: variant.socialAccountId,
-                content: buildPlatformVariant(provider, variant.content),
-              };
-            }),
-          },
-        },
-        select: socialPostSelect,
-      });
-      return toSocialPostDTO(record);
     });
+    invalidateSocialPosts();
+    return saved;
   });
 }
 
+/** Save publication timing intent and audit the committed schedule. */
 export async function scheduleSocialPost(rawInput: unknown) {
   return toActionResult(async () => {
     const identity = await requireIdentity();
-    return withTenantTransaction(identity, async (tx, access) => {
+    const saved = await withTenantTransaction(identity, async (tx, access) => {
       assertPermission(access, "social.post:update");
       const input = scheduleSocialPostSchema.parse(rawInput);
       const record = await scheduleSocialPostTx(tx, {
+        ...input,
         organizationId: access.organizationId,
-        postId: input.postId,
-        scheduledAt: resolvePublishTime(input.scheduledAt),
-        expectedVersion: input.expectedVersion,
       });
-      return toSocialPostDTO(record);
+      await tx.auditEvent.create({
+        data: {
+          organizationId: access.organizationId,
+          actorUserId: access.userId,
+          action: "social.post.scheduled",
+          resourceType: "SocialPost",
+          resourceId: record.id,
+          metadata: {
+            scheduledAt: input.scheduledAt.toISOString(),
+            previousVersion: input.expectedVersion,
+          },
+        },
+      });
+      return record;
     });
+    invalidateSocialPosts();
+    return saved;
   });
 }
 
+/** Record a membership's approval of the expected draft revision and audit it atomically. */
 export async function approveSocialPost(rawInput: unknown) {
   return toActionResult(async () => {
     const identity = await requireIdentity();
-    return withTenantTransaction(identity, async (tx, access) => {
+    const saved = await withTenantTransaction(identity, async (tx, access) => {
       assertPermission(access, "social.post:update");
       const input = approveSocialPostSchema.parse(rawInput);
       const record = await approveSocialPostTx(tx, {
+        ...input,
         organizationId: access.organizationId,
         approverMembershipId: access.membershipId,
-        ...input,
       });
-      return toSocialPostDTO(record);
+      await tx.auditEvent.create({
+        data: {
+          organizationId: access.organizationId,
+          actorUserId: access.userId,
+          action: "social.post.approved",
+          resourceType: "SocialPost",
+          resourceId: record.id,
+          metadata: {
+            membershipId: access.membershipId,
+            reviewedVersion: input.expectedVersion,
+          },
+        },
+      });
+      return record;
     });
+    invalidateSocialPosts();
+    return saved;
   });
 }
 
-export async function downloadSocialMedia(rawInput: unknown) {
+/** Resolve an authorized uploads asset before transferring its bounded private content. */
+export async function downloadSocialMedia(rawInput: unknown, preview = false) {
   return toActionResult(async () => {
     const identity = await requireIdentity();
     const asset = await withTenantTransaction(identity, async (tx, access) => {
@@ -149,16 +125,23 @@ export async function downloadSocialMedia(rawInput: unknown) {
           byteSize: true,
         },
       });
-      if (!asset || asset.byteSize > 10485760n)
-        throw new Error("File unavailable or too large.");
-      if (asset.storageProvider !== "vercel-blob")
-        throw new Error("Unsupported file storage provider.");
+      if (
+        !asset ||
+        asset.byteSize > BigInt(SOCIAL_MEDIA_MAX_BYTES) ||
+        asset.storageProvider !== "vercel-blob" ||
+        (preview && !isSocialMediaPreviewable(asset.contentType))
+      ) {
+        throw new ResourceNotFoundError("Available media asset");
+      }
       return asset;
     });
     return {
       filename: asset.filename,
       contentType: asset.contentType,
-      base64: await readPrivateBlob(asset.storageKey),
+      bytes: await readPrivateBlobBytes(
+        asset.storageKey,
+        SOCIAL_MEDIA_MAX_BYTES,
+      ),
     };
   });
 }

@@ -4,13 +4,14 @@ import type {
   MediaAssetDTO,
   SocialAccountDTO,
   SocialPostDTO,
-} from "@/types/socialTypes";
-import type {
   MediaAssetRecord,
   SocialAccountRecord,
   SocialPostRecord,
-} from "@/lib/db/selects/socialSelects";
+  SocialVariantReviewDTO,
+  SocialVariantReviewRecord,
+} from "@/types/socialTypes";
 
+/** Serialize account identity without provider credentials. */
 export function toSocialAccountDTO(
   record: SocialAccountRecord,
 ): SocialAccountDTO {
@@ -20,6 +21,7 @@ export function toSocialAccountDTO(
     displayName: record.displayName,
   };
 }
+/** Serialize safe file metadata across the server boundary. */
 export function toMediaAssetDTO(record: MediaAssetRecord): MediaAssetDTO {
   return {
     id: record.id,
@@ -30,6 +32,7 @@ export function toMediaAssetDTO(record: MediaAssetRecord): MediaAssetDTO {
   };
 }
 
+/** Serialize lifecycle and approval without eagerly sending every variant's content. */
 export function toSocialPostDTO(record: SocialPostRecord): SocialPostDTO {
   return {
     id: record.id,
@@ -50,11 +53,18 @@ export function toSocialPostDTO(record: SocialPostRecord): SocialPostDTO {
       id: variant.id,
       provider: variant.socialAccount.provider,
       accountDisplayName: variant.socialAccount.displayName,
-      content: variant.content,
       status: variant.status,
-      providerPostId: variant.providerPostId,
     })),
-    createdAt: record.createdAt.toISOString(),
-    updatedAt: record.updatedAt.toISOString(),
+  };
+}
+
+/** Keep reviewed content exact and associate it with its target's display name. */
+export function toSocialVariantReviewDTO(
+  record: SocialVariantReviewRecord,
+): SocialVariantReviewDTO {
+  return {
+    id: record.id,
+    accountDisplayName: record.socialAccount.displayName,
+    content: record.content,
   };
 }

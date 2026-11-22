@@ -9,6 +9,26 @@ const signoutState = process.env.E2E_NAV_SIGNOUT_STORAGE_STATE;
 test.describe("authenticated workspace navigation", () => {
   test.skip(!tenantState, "Requires a disposable ACTIVE MEMBER session.");
   test.use({ storageState: tenantState ?? { cookies: [], origins: [] } });
+  /** Each social route renders in the same authenticated desktop shell. */
+  test("social routes use the workspace sidebar and render their own page heading", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1440, height: 1000 });
+    for (const [path, heading] of [
+      ["/social/calendar", "Social calendar"],
+      ["/social/compose", "Compose post"],
+      ["/social/media", "Media library"],
+    ] as const) {
+      await page.goto(path);
+      await expect(
+        page.getByRole("heading", { name: heading, level: 1 }),
+      ).toBeVisible();
+      await expect(
+        page.getByRole("complementary", { name: "Workspace sidebar" }),
+      ).toHaveCount(1);
+    }
+  });
+
   for (const viewport of [
     { width: 390, height: 844 },
     { width: 820, height: 1180 },
