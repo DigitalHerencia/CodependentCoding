@@ -3,9 +3,9 @@
     "spec_id": "ENG-SOCIAL-389",
     "spec": "context/specs/social-architecture.md",
     "issue_number": 389,
-    "status": "local-checks-passed",
-    "branch": "refactor/389-social-architecture",
-    "project_status": "In progress",
+    "status": "done",
+    "branch": "main",
+    "project_status": "Done",
     "verification": [
       {
         "command": "npm.cmd run lint:fix -- <changed template TypeScript files>",
@@ -22,6 +22,14 @@
       {
         "command": "npm.cmd run typecheck",
         "result": "PASS after correcting optional props and browser assertion types"
+      },
+      {
+        "command": "gh run view 45046308047",
+        "result": "PASS on final PR head. Changed-file lint and formatting, type generation, and type checking completed successfully."
+      },
+      {
+        "command": "gh pr view 390; gh issue view 389; git status -sb; git branch -vv; git ls-remote --heads origin",
+        "result": "PR squash-merged, Issue closed, Project Done. Local and remote task branches removed and main matched the merge commit."
       }
     ],
     "not_run": [
@@ -31,7 +39,16 @@
       "Provider, OAuth and live media operations"
     ],
     "migration_required": false,
-    "pending": ["Permitted PR CI, merge verification and branch cleanup"]
+    "pending": [],
+    "pr_number": 390,
+    "pr_url": "https://github.com/DigitalHerencia/CodependentCoding/pull/390",
+    "verified_head": "529ba73e1dfbeba9b94a206cd1c86c830c488891",
+    "merge_commit": "dd4121d9a02edf9e0b7ecbbbc9bc21f679525d01",
+    "ci": "https://github.com/DigitalHerencia/CodependentCoding/actions/runs/45046308047",
+    "notes": [
+      "No dashboard reference image was supplied. Presentation uses installed BoldKit primitives.",
+      "GitHub reported zero deployments for the verified PR head."
+    ]
   },
   "settings_architecture_388": {
     "spec_id": "ENG-SETTINGS-388",

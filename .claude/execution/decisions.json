@@ -1517,6 +1517,14 @@
       "spec_id": "ENG-SOCIAL-389",
       "title": "Normalize social around authorized local intent",
       "decision": "Preserve UTC and existing UTF-16 validation rules. Treat the post and its account variants as one aggregate, condition approval and scheduling on the expected revision, and record approval and scheduling provenance atomically. Use bounded tenant read models and on-demand variant review. Remove uncalled media-association and publication writers and preserve persisted state and associations. Author no migration."
+    },
+    {
+      "id": "DEC-SOCIAL-389-002",
+      "date": "2026-11-22",
+      "status": "accepted",
+      "spec_id": "ENG-SOCIAL-389",
+      "title": "Record verified social refactor delivery",
+      "decision": "PR #390 squash-merged as dd4121d9a02edf9e0b7ecbbbc9bc21f679525d01 after permitted checks passed on 529ba73e1dfbeba9b94a206cd1c86c830c488891 in CI run 45046308047. Issue #389 closed, Project Done, and the task branch was removed locally and remotely. No migration required. Authored assertions, browser/runtime behavior and provider effects remain unexecuted."
     }
   ]
 }
